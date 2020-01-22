@@ -42,11 +42,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public static function is_admin(){
-        if(!Auth::check())return false;//未登录
+    public function is_admin(){
         //判断是否有管理员权限
         return DB::table('privilege')
-            ->where('user_id',Auth::id())
+            ->where('user_id',$this->id)
             ->where('authority','admin')
             ->exists();
     }
