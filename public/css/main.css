@@ -1,0 +1,45 @@
+
+html, body {
+    width:100%;
+    height:100%;
+    background-color: #fafafa;
+}
+
+
+.table th, .table td{
+    text-align: center;
+}
+.table td{
+    font-size: 0.85rem;
+}
+
+
+
+.text-black{
+    color: black;
+}
+.text-gray{
+    color: gray;
+}
+.text-yellow{
+    color: yellow;
+}
+.text-orange{
+    color: orange;
+}
+.text-green{
+    /*color: green;*/
+    color: #05d400;
+}
+.text-blue{
+    color: blue;
+}
+.text-red{
+    color: red;
+}
+.text-sky{
+    color: #56a9e2;
+}
+.text-purple{
+    color: purple;
+}
