@@ -42,7 +42,9 @@
                         {!!$problem->output !!}
                     @endif
 
-                    <h4 class="text-sky">Samples</h4>
+                    @if(count($samples) > 0)
+                        <h4 class="text-sky">Samples</h4>
+                    @endif
                     @foreach($samples as $sam)
                         <div class="border mb-4">
                             <div class="border-bottom pl-2 bg-light">Input</div>
