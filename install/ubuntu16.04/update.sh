@@ -15,5 +15,11 @@ cp -r -p -f ${web_home}/lduoj_last_version/.env ${web_home}/LDUOnlineJudge/.env
 chmod -R 777 ${web_home}/LDUOnlineJudge/bootstrap/cache
 apt remove -y git
 
+apt install -y composer
+cd ${web_home}/LDUOnlineJudge && composer install --ignore-platform-reqs
+
+echo "You have successfully updated LDU Online Judge!"
+echo "Enjoy it!"
+echo "Installation location: ${web_home}/LDUOnlineJudge"
 # delete self
 rm -rf $0
