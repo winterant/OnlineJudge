@@ -36,4 +36,4 @@ echo "You have successfully installed LDU Online Judge!"
 echo "Enjoy it!"
 echo "Installation location: ${web_home}/LDUOnlineJudge"
 # delete self
-rm -rf $0
+rm -rf ${web_home}/install.sh
