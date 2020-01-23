@@ -3,6 +3,7 @@
 web_home=/home    #项目存放位置
 
 # 备份
+rm -rf ${web_home}/lduoj_last_version
 mv -f ${web_home}/LDUOnlineJudge ${web_home}/lduoj_last_version
 
 # 下载项目源码
@@ -17,6 +18,12 @@ apt remove -y git
 
 apt install -y composer
 cd ${web_home}/LDUOnlineJudge && composer install --ignore-platform-reqs
+# laravel artisan
+php artisan key:generate
+php artisan config:clear
+php artisan config:cache
+php artisan route:clear
+php artisan route:cache
 
 echo "You have successfully updated LDU Online Judge!"
 echo "Enjoy it!"

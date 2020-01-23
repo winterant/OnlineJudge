@@ -15,15 +15,22 @@ echo -e "\n" | apt-add-repository ppa:ondrej/php
 apt-get update
 apt install -y php7.2 php7.2-fpm
 
+# composer
+apt install -y composer
+cd ${web_home}/LDUOnlineJudge && composer install --ignore-platform-reqs
+
+# laravel artisan; 必须在composer之后
+php artisan key:generate
+php artisan config:clear
+php artisan config:cache
+php artisan route:clear
+php artisan route:cache
+
 # nignx
 apt install -y nginx
 rm -rf /etc/nginx/sites-available/default
 cp -f ${web_home}/LDUOnlineJudge/install/nginx/lduoj.conf  /etc/nginx/conf.d/lduoj.conf
 service nginx restart
-
-# composer
-apt install -y composer
-cd ${web_home}/LDUOnlineJudge && composer install --ignore-platform-reqs
 
 # mysql
 apt install -y mysql-server mysql-client libmysqlclient-dev
