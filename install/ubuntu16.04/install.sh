@@ -18,7 +18,7 @@ apt install -y php7.2 php7.2-fpm
 # nignx
 apt install -y nginx
 rm -rf /etc/nginx/sites-available/default
-cp  ${web_home}/LDUOnlineJudge/install/nginx/lduoj.conf  /etc/nginx/conf.d/lduoj.conf
+cp -f ${web_home}/LDUOnlineJudge/install/nginx/lduoj.conf  /etc/nginx/conf.d/lduoj.conf
 service nginx restart
 
 # composer
@@ -32,5 +32,8 @@ apt install -y mysql-server mysql-client libmysqlclient-dev
 apt install -y g++
 
 
+echo "You have successfully installed LDU Online Judge!"
+echo "Enjoy it!"
+echo "Installation location: ${web_home}/LDUOnlineJudge"
 # delete self
 rm -rf $0
