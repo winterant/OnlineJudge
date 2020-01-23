@@ -126,7 +126,7 @@
     <hr>
     <div id="localtime"></div>
     <p>
-        Copyright © 2019 <a target="_blank" href="https://github.com/iamwinter">Winter Online Judge</a>. All Rights Reserved
+        Copyright © 2019 <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">Winter Online Judge</a>. All Rights Reserved
     </p>
 </div>
 

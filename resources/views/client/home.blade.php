@@ -5,7 +5,7 @@
 @section('content')
 
     <div class="container">
-        <h1>这里是前台主页</h1>
+        <h1>主页预留</h1>
     </div>
 
 @endsection
