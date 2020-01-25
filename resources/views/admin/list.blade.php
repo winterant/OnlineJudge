@@ -9,9 +9,11 @@
         {{$list->appends($_GET)->links()}}
         <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
         <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
-        @foreach($checkbox_action as $item)
-            <a href="{{$item['href']}}" data-toggle="tooltip" data-placement="bottom" title="{{$item['title']}}">{{$item['content']}}</a>
-        @endforeach
+        @if(isset($checkbox_action))
+            @foreach($checkbox_action as $item)
+                <a href="{{$item['href']}}" data-toggle="tooltip" data-placement="bottom" title="{{$item['title']}}">{{$item['content']}}</a>
+            @endforeach
+        @endif
         <table class="table table-striped table-hover table-sm">
             <thead>
                 <tr>
@@ -58,6 +60,7 @@
         });
 
         function change_state_to(state) {
+            // 修改题目状态 1公开 or 0隐藏
             var pids=[];
             $('td input[type=checkbox]:checked').each(function () { pids.push($(this).val()); });
             $.post(

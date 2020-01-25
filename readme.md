@@ -48,8 +48,6 @@ Ludong University Online Judge
 ### + 系统更新
   ```
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/update.sh
-  ```
-  ```
   chmod +x update.sh
   ./update.sh
   ```

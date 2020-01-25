@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProblemController extends Controller
@@ -113,7 +114,7 @@ class ProblemController extends Controller
 
     //管理员修改题目状态  0密封 or 1公开
     public function change_state_to(Request $request){
-        if($request->ajax()){
+        if($request->ajax() && Auth::user()->is_admin()){
             $pids=$request->input('pids')?:[];
             $state=$request->input('state');
             return DB::table('problems')->whereIn('id',$pids)->update(['state'=>$state]);

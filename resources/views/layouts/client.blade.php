@@ -103,7 +103,11 @@
                         <a class="dropdown-item" href="#">个人信息</a>
 
                         <div class="dropdown-divider"></div>
+                        @if(Auth::user()->is_admin())
+                            <a class="dropdown-item" href="{{route('admin.home')}}">后台管理</a>
+                        @endif
 
+                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ route('logout') }}"
                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                             {{ __('Logout') }}
