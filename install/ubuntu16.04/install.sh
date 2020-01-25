@@ -22,14 +22,14 @@ cd ${web_home}/LDUOnlineJudge && composer install --ignore-platform-reqs
 # laravel artisan; 必须在composer之后
 php artisan key:generate
 php artisan config:clear
-php artisan config:cache
 php artisan route:clear
+php artisan config:cache
 php artisan route:cache
 
 # nignx
 apt -y install nginx
 rm -rf /etc/nginx/sites-enabled/default
-cp -f ${web_home}/LDUOnlineJudge/install/nginx/lduoj.conf  /etc/nginx/conf.d/lduoj.conf
+cp -f ${web_home}/LDUOnlineJudge/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf
 service nginx restart
 
 # mysql
