@@ -37,11 +37,10 @@ apt install -y mysql-server libmysqlclient-dev
 USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
 PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
 service mysql restart
-echo "update mysql.user set authentication_string=password('123456') where user='root';"|mysql -u${USER} -p${PASSWORD}
+echo "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"|mysql -u${USER} -p${PASSWORD}
 echo "CREATE DATABASE lduoj;"|mysql -u${USER} -p${PASSWORD}
 echo "CREATE USER 'lduoj'@'localhost' IDENTIFIED BY '123456789';"|mysql -u${USER} -p${PASSWORD}
-echo "GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost' identified by '123456789';"|mysql -u${USER} -p${PASSWORD}
-echo "flush privileges;"|mysql -u${USER} -p${PASSWORD}
+echo "GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost' identified by '123456789';flush privileges;"|mysql -u${USER} -p${PASSWORD}
 mysql -u${USER} -p${PASSWORD} -Dlduoj < ${web_home}/LDUOnlineJudge/install/mysql/lduoj.sql
 
 
@@ -52,5 +51,6 @@ apt install -y g++
 echo "You have successfully installed LDU Online Judge!"
 echo "Enjoy it!"
 echo "Installation location: ${web_home}/LDUOnlineJudge"
+
 # delete self
-#rm -rf ${web_home}/install.sh
+rm -rf ./$0

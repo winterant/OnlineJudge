@@ -28,5 +28,6 @@ php artisan route:cache
 echo "You have successfully updated LDU Online Judge!"
 echo "Enjoy it!"
 echo "Installation location: ${web_home}/LDUOnlineJudge"
+
 # delete self
-rm -rf ${web_home}/update.sh
+rm -rf ./$0
