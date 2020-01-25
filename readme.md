@@ -18,8 +18,6 @@ Ludong University Online Judge
     
   ```
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/install.sh
-  ```
-  ```
   chmod +x install.sh
   ./install.sh
   ```
@@ -30,13 +28,20 @@ Ludong University Online Judge
     
   1.提示`wget`不存在？请先安装：`apt-get update && apt install -y wget`
   
-  2.访问ip打不开？①若为云服务器请登录控制台检查安全组是否开放对应端口。
+  2.为什么安装时速度很慢？可能是由于你的系统镜像源在国外，下载资源太慢。修改为国内镜像源：
+  ```
+  wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/alter_sources.sh
+  chmod +x alter_sources.sh
+  ./alter_sources.sh
+  ```
+  
+  3.访问ip打不开？①若为云服务器请登录控制台检查安全组是否开放对应端口。
    ②仍失败，请删除nginx配置示例`rm -rf /etc/nginx/sites-available/default`
    **或**把80端口改为其他端口(如8001)`vim /etc/nginx/conf.d/lduoj.conf`。
   
-  3.如何配置域名？`vim /etc/nginx/conf.d/lduoj.conf`，在server_name后面填域名，不要带前缀http://
+  4.如何配置域名？`vim /etc/nginx/conf.d/lduoj.conf`，在server_name后面填域名，不要带前缀http://
   
-  4.如何手动部署？请阅读安装脚本
+  5.如何手动部署？请阅读安装脚本
    <a href="https://github.com/iamwinter/LDUOnlineJudge/blob/master/install/ubuntu16.04/install.sh" target="_blank">install.sh</a>
    ,根据实际情况执行所需命令。
    
