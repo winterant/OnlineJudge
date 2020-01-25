@@ -33,7 +33,17 @@ cp -f ${web_home}/LDUOnlineJudge/install/nginx/lduoj.conf  /etc/nginx/conf.d/ldu
 service nginx restart
 
 # mysql
-apt install -y mysql-server mysql-client libmysqlclient-dev
+apt install -y mysql-server libmysqlclient-dev
+USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
+PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
+service mysql restart
+echo "update mysql.user set authentication_string=password('123456') where user='root';"|mysql -u${USER} -p${PASSWORD}
+echo "CREATE DATABASE lduoj;"|mysql -u${USER} -p${PASSWORD}
+echo "CREATE USER 'lduoj'@'localhost' IDENTIFIED BY '123456789';"|mysql -u${USER} -p${PASSWORD}
+echo "GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost' identified by '123456789';"|mysql -u${USER} -p${PASSWORD}
+echo "flush privileges;"|mysql -u${USER} -p${PASSWORD}
+mysql -u${USER} -p${PASSWORD} -Dlduoj < ${web_home}/LDUOnlineJudge/install/mysql/lduoj.sql
+
 
 # C/C++
 apt install -y g++
@@ -43,4 +53,4 @@ echo "You have successfully installed LDU Online Judge!"
 echo "Enjoy it!"
 echo "Installation location: ${web_home}/LDUOnlineJudge"
 # delete self
-rm -rf ${web_home}/install.sh
+#rm -rf ${web_home}/install.sh
