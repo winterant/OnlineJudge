@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
     public function users(){
-        /**
-         * 使用模板list.blade时的变量含义
-         * $secTitle  必须，表格标题
-         * $thead     必须，表头
-         * $intTrans  可选，个别列的数字含义转化
-         */
         $secTitle='用户列表';
         $thead=['id'=>'#',
             'username'=>'登录名',
@@ -26,7 +20,15 @@ class UserController extends Controller
             'solved'=>'解决',
             'created_at'=>'注册于',
         ];
+
+        //可无。为td添加链接 $key=>[是否使用带一个参数的route，地址 ，a标签target]
+        $links=[
+//            'username'=>[true,'user','_blank'],
+//            'update'=>[true,'update_user','_blank'],
+            'delete'=>[false,'javascript:alert("暂不提供删除用户。");','_self'],
+        ];
+
         $list=DB::table('users')->select(array_keys($thead))->orderBy('id')->paginate(20);
-        return view('admin.list',compact('list','secTitle','thead'));
+        return view('admin.list',compact('list','secTitle','thead','links'));
     }
 }
