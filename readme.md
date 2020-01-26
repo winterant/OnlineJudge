@@ -15,19 +15,23 @@ Ludong University Online Judge
   
   1. **Linux Ubuntu 16.04**
    
+  终端执行下面的命令，安装过程可能5分钟到1小时不等，视网络情况和镜像源(见答疑2)而定。
   ```
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/install.sh
   chmod +x install.sh
   ./install.sh
   ```
   
-  **成功**：打开浏览器输入地址你的服务器ip地址即可访问首页（默认占用80端口）
+  **[安装成功]**：打开浏览器输入地址你的服务器ip地址即可访问首页（默认占用80端口）
   
-  **维护须知**： 
+  **[维护须知]**： 
   1.安装后项目位于/home/LDUOnlieJudge
   
   2.自动安装mysql5.7，设有管理员用户root@localhost(密码rootroot)，
-  该系统专用用户lduoj@localhost(密码123456789)。**为保证安全性请及时修改**！
+  该项目专用用户lduoj@localhost(密码123456789)。
+  **为保证安全性请及时修改**
+  (注：需同时修改.env文件数据库配置和judge/cpp/下的数据库配置，
+  最后执行`php artisan config:clear && php artisan config:cache`)
   
   3.nginx配置中可设置域名，详情见答疑第4条。
   
@@ -47,7 +51,9 @@ Ludong University Online Judge
   
   5.如何手动部署？请阅读安装脚本
    <a href="https://github.com/iamwinter/LDUOnlineJudge/blob/master/install/ubuntu16.04/install.sh" target="_blank">install.sh</a>
-   ,根据实际情况执行所需命令。**注**：需手动复制一份.env.example文件，名为.env，并打开编辑mysql配置。
+   ,根据实际情况执行所需命令。
+   **务必**：①需手动复制一份`.env.example`文件，名为`.env`，并打开填写数据库配置。
+   ②需安装`composer`，并执行`composer install --ignore-platform-reqs`下载依赖包。
    
 ### + 系统更新
   ```
@@ -55,7 +61,7 @@ Ludong University Online Judge
   chmod +x update.sh
   ./update.sh
   ```
-  **提示**：自动备份整个项目目录为`lduoj_last_version/`
+  **提示**：自动备份整个项目目录为`/home/lduoj_last_version`
 
 
 # 展示
