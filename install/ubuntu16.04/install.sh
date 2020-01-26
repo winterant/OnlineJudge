@@ -14,6 +14,7 @@ apt -y install software-properties-common python-software-properties
 echo -e "\n" | apt-add-repository ppa:ondrej/php
 apt-get -y update
 apt -y install php7.2 php7.2-fpm php7.2-mysql
+service php7.2-fpm start
 
 # composer
 apt -y install composer zip unzip
