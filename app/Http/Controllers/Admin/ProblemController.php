@@ -23,30 +23,32 @@ class ProblemController extends Controller
             'in_date'=>'添加时间',
             'state'=>'状态',
         ];
-        //可无。个别列的数字含义转化
-        $intTrans=[
-            'spj'   =>[0=>'否',1=>'特判'],
-            'state'=>[0=>'*隐藏',1=>'公开'],
-        ];
-        //可无。为td添加链接 $key=>[是否使用带一个参数的route，地址 ，a标签target]
-        $links=[
-            'title'=>[true,'problem','_blank'],
-            'update'=>[true,'admin.update_problem_withId','_blank'],
-            'delete'=>[false,'javascript:alert("为保证系统稳定运行，不允许删除题目。您可以修改题目或将题目状态改为隐藏!");','_self'],
-        ];
         //可无。附加批量操作按钮
-        $checkbox_action=[
-            [   'href'=>'javascript:change_state_to(1);',
-                'title'=>'选中的题目将启用，允许普通用户在题库中查看和提交!',
-                'content'=>'状态设为公开'
-            ],
-            [   'href'=>'javascript:change_state_to(0);',
-                'title'=>'选中的题目将密封，普通用户无法在题库中查看和提交，但不会影响竞赛!!',
-                'content'=>'状态设为隐藏'
-            ],
+        $oper_checked=[
+            sprintf('<a href="javascript:change_state_to(1);"
+                    title="选中的题目将启用，允许普通用户在题库中查看和提交!"
+                    data-toggle="tooltip" data-placement="bottom">题目状态公开</a>'),
+            sprintf('<a href="javascript:change_state_to(0);"
+                    title="选中的题目将密封，普通用户无法在题库中查看和提交，但不会影响竞赛!"
+                    data-toggle="tooltip" data-placement="bottom">状态设为*隐藏</a>')
         ];
+
         $list=DB::table('problems')->select(array_keys($thead))->orderBy('id')->paginate(100);
-        return view('admin.list',compact('list','secTitle','thead','intTrans','links','checkbox_action'));
+
+        $operation=[];//操作
+        foreach ($list as $item){
+            $item->title=sprintf('<a href="%s" target="_blank">%s</a>',route('problem',$item->id),$item->title);
+            $item->spj = ($item->spj==1)?'特判':'-';
+            $item->state = ($item->state==1)?'公开':'*隐藏';
+            $operation[$item->id]=sprintf('<a href="%s" target="_blank" class="mr-2">
+                                                      <i class="fa fa-edit" aria-hidden="true"></i> 修改
+                                                  </a>
+                                                  <a href="%s" class="mr-2">
+                                                      <i class="fa fa-trash" aria-hidden="true"></i> 删除
+                                                  </a>',route('admin.update_problem_withId',$item->id),
+                                                    'javascript:alert(\'为保证系统稳定，不允许删除题目，您可以修改它！\')');
+        }
+        return view('admin.list',compact('list','secTitle','thead','oper_checked','operation'));
     }
 
     //管理员添加题目

@@ -22,7 +22,9 @@ Ludong University Online Judge
   bash install.sh
   ```
   
-  **[安装成功]**：浏览器访问你的服务器ip即可打开首页(nginx默认占用80端口,云服务器请先在控制台安全组添加该端口)
+  **[安装成功]**：浏览器访问你的服务器ip即可打开首页
+  (nginx默认占用80端口,云服务器请先在控制台安全组添加该端口),
+  注册用户admin自动成为管理员
   
   **[运维须知]**： 
   
@@ -43,11 +45,7 @@ Ludong University Online Judge
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/update.sh
   bash update.sh
   ```
-  或
-  ```
-  bash /home/LDUOnlineJudge/intall/ubuntu16.04/update.sh
-  ```
-  **提示**：更新时自动产生备份`/home/lduoj_update/ldu_{日期}`，
+  **提示**：更新时自动产生备份`/home/lduoj_update/lduoj_{日期}`，
   包含项目文件夹、数据库备份lduoj.sql、nginx配置文件lduoj.conf
 
 # 系统备份
@@ -55,11 +53,7 @@ Ludong University Online Judge
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/backup.sh
   bash backup.sh
   ```
-  或
-  ```
-  bash /home/LDUOnlineJudge/intall/ubuntu16.04/backup.sh
-  ```
-  **提示**：产生备份`/home/lduoj_update/ldu_{日期}`，
+  **提示**：产生备份`/home/lduoj_update/lduoj_{日期}`，
   包含项目文件夹、数据库备份lduoj.sql、nginx配置文件lduoj.conf
 
 
