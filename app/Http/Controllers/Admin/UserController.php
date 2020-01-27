@@ -21,14 +21,21 @@ class UserController extends Controller
             'created_at'=>'注册于',
         ];
 
-        //可无。为td添加链接 $key=>[是否使用带一个参数的route，地址 ，a标签target]
-        $links=[
-//            'username'=>[true,'user','_blank'],
-//            'update'=>[true,'update_user','_blank'],
-            'delete'=>[false,'javascript:alert("暂不提供删除用户。");','_self'],
+        $oper_checked=[
+            sprintf('<a href="javascript:alert(\'暂未实现删除用户!\');"
+                    title="选中的将被删除!"
+                    data-toggle="tooltip" data-placement="bottom">批量删除</a>'),
         ];
 
         $list=DB::table('users')->select(array_keys($thead))->orderBy('id')->paginate(20);
-        return view('admin.list',compact('list','secTitle','thead','links'));
+        $operation=[];//操作
+        foreach ($list as $item){
+//            $item->username=sprintf('<a href="%s" target="_blank">%s</a>',route('user',$item->id),$item->username);
+
+            $operation[$item->id]=sprintf('<a href="%s" class="mr-2">
+                                                      <i class="fa fa-trash" aria-hidden="true"></i> 删除
+                                                  </a>','javascript:alert(\'暂未实现删除用户!\')');
+        }
+        return view('admin.list',compact('list','secTitle','thead','oper_checked','operation'));
     }
 }

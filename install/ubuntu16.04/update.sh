@@ -9,7 +9,9 @@ if [ ! -d ${web_home}/lduoj_backup/${backup} ];then
 fi;
 mv -f ${web_home}/LDUOnlineJudge ${web_home}/lduoj_backup/${backup}
 # 数据库备份
-mysqldump -uroot -prootroot -B lduoj > ${web_home}/lduoj_backup/${backup}/lduoj.sql
+USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
+PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
+mysqldump -u${USER} -p${PASSWORD} -B lduoj > ${web_home}/lduoj_backup/${backup}/lduoj.sql
 # nginx备份
 cp -r -f -p /etc/nginx/conf.d/lduoj.conf ${web_home}/lduoj_backup/${backup}/lduoj.conf
 
@@ -32,9 +34,9 @@ php artisan route:clear
 php artisan config:cache
 php artisan route:cache
 
-echo "\nYou have successfully updated LDU Online Judge!"
-echo "Enjoy it!"
-echo "Installation location: ${web_home}/LDUOnlineJudge\n"
+echo -e "\nYou have successfully updated LDU Online Judge!"
+echo -e "Enjoy it!"
+echo -e "Installation location: ${web_home}/LDUOnlineJudge\n"
 
 # delete self
 rm -rf ./$0

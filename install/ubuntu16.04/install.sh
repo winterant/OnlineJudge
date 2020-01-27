@@ -49,9 +49,9 @@ mysql -u${USER} -p${PASSWORD} -Dlduoj < ${web_home}/LDUOnlineJudge/install/mysql
 apt -y install g++
 
 
-echo "\nYou have successfully installed LDU Online Judge!"
-echo "Enjoy it!"
-echo "Installation location: ${web_home}/LDUOnlineJudge\n"
+echo -e "\nYou have successfully installed LDU Online Judge!"
+echo -e "Enjoy it!"
+echo -e "Installation location: ${web_home}/LDUOnlineJudge\n"
 
 # delete self
 rm -rf ./$0
