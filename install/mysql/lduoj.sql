@@ -20,7 +20,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for privilege
 -- ----------------------------
-DROP TABLE IF EXISTS `privilege`;
+DROP TABLE IF EXISTS `privileges`;
 CREATE TABLE `privilege`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,

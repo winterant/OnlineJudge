@@ -44,9 +44,15 @@ class User extends Authenticatable
 
     public function is_admin(){
         //判断是否有管理员权限
-        return DB::table('privileges')
-            ->where('user_id',$this->id)
-            ->where('authority','admin')
-            ->exists();
+        if(DB::table('privileges')->where('user_id',$this->id)
+            ->where('authority','admin')->exists()){
+            return true;
+        }else if($this->username == 'admin'){
+            //就算admin误删了自己的权限，该处也会将其恢复
+            DB::table('privileges')->insert(['user_id'=>$this->id,'authority'=>'admin']);
+            return true;
+        }else{
+            return false;
+        }
     }
 }
