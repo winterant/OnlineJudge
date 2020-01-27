@@ -19,8 +19,7 @@ Ludong University Online Judge
   ```
   apt update && apt -y install wget
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/install.sh
-  chmod +x install.sh
-  ./install.sh
+  bash install.sh
   ```
   
   **[安装成功]**：浏览器访问你的服务器ip即可打开首页(nginx默认占用80端口,云服务器请先在控制台安全组添加该端口)
@@ -36,16 +35,32 @@ Ludong University Online Judge
   (注：需同时修改①ubuntu下mysql，②项目下.env文件数据库配置，③项目下judge/cpp/下的数据库配置，
   ④最后在项目根目录下执行`php artisan config:clear && php artisan config:cache`)
   
-  3./etc/nginx/conf.d/lduoj.conf文件内，在`server_name`后面填域名。
+  3.配置域名：在/etc/nginx/conf.d/lduoj.conf文件内，在`server_name`后面填域名。
 
 
 # 系统更新
   ```
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/update.sh
-  chmod +x update.sh
-  ./update.sh
+  bash update.sh
   ```
-  **提示**：自动备份整个项目目录为`/home/lduoj_last_version`
+  或
+  ```
+  bash /home/LDUOnlineJudge/intall/ubuntu16.04/update.sh
+  ```
+  **提示**：更新时自动产生备份`/home/lduoj_update/ldu_{日期}`，
+  包含项目文件夹、数据库备份lduoj.sql、nginx配置文件lduoj.conf
+
+# 系统备份
+  ```
+  wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/backup.sh
+  bash backup.sh
+  ```
+  或
+  ```
+  bash /home/LDUOnlineJudge/intall/ubuntu16.04/backup.sh
+  ```
+  **提示**：产生备份`/home/lduoj_update/ldu_{日期}`，
+  包含项目文件夹、数据库备份lduoj.sql、nginx配置文件lduoj.conf
 
 
 # 展示
