@@ -25,7 +25,11 @@ cp -r -p -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/public/favicon.ico
 cp -r -p -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/.env ${web_home}/LDUOnlineJudge/.env
 chmod -R 777 ${web_home}/LDUOnlineJudge/bootstrap/cache
 
+
+# composer
 apt install -y composer
+#阿里云的composer镜像源
+composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 cd ${web_home}/LDUOnlineJudge && composer install --ignore-platform-reqs
 # laravel artisan
 php artisan key:generate
