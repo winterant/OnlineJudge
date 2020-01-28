@@ -39,6 +39,5 @@ Route::middleware(['auth','CheckAdmin'])->prefix('admin')->name('admin.')->group
     Route::any('/add_problem','Admin\ProblemController@add_problem')->name('add_problem');
     Route::get('/update_problem','Admin\ProblemController@update_problem')->name('update_problem');
     Route::any('/update_problem/{id}','Admin\ProblemController@update_problem')->name('update_problem_withId');
-    Route::post('/delete_problem','Admin\ProblemController@delete_problem')->name('delete_problem');
     Route::post('/change_state_to','Admin\ProblemController@change_state_to')->name('change_state_to');
 });
