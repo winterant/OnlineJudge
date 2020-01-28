@@ -19,6 +19,3 @@ cp -r -f -p /etc/nginx/conf.d/lduoj.conf ${web_home}/lduoj_backup/${backup}/lduo
 
 echo -e "\nYou have successfully backuped LDU Online Judge!"
 echo -e "Backup location: ${web_home}/lduoj_backup/${backup}/\n"
-
-# delete self
-rm -rf ./$0
