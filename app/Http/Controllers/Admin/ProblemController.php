@@ -88,17 +88,10 @@ class ProblemController extends Controller
             $samples=read_problem_samples($problem->id);
 
             //看看有没有特判文件
-            $hasSpj=false;
-            $spjPath = base_path(config('oj.main.judgeDataPath') . '/' . $problem->id . '/spj');
-            if (is_dir($spjPath)) {
-                foreach (scandir($spjPath) as $filename) {
-                    if ($filename === 'spj.cpp'){
-                        $hasSpj=true;break;
-                    }
-                }
-            }
+            $spjPath = base_path(config('oj.main.judgeDataPath').'/'.$problem->id.'/spj/spj.cpp');
+            $hasSpj=file_exists($spjPath);
 
-            return view('admin.edit_problem',compact('pageTitle','hasSpj','problem','samples'));
+            return view('admin.edit_problem',compact('pageTitle','problem','samples','hasSpj'));
         }
 
         // 提交修改好的题目数据

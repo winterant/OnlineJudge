@@ -90,7 +90,8 @@
 
                 <div class="border mt-3">
                     <div class="custom-control custom-checkbox m-2">
-                        <input type="checkbox" name="problem[spj]" value="{{isset($problem->spj)?$problem->spj:0}}" class="custom-control-input" id="customCheck"
+                        <input type="checkbox" name="problem[spj]" value="{{isset($problem->spj)?$problem->spj:0}}"
+                               class="custom-control-input" id="customCheck"
                                onchange="$('#spj_file').attr('disabled',!$(this).prop('checked'))">
                         <label class="custom-control-label pt-1" for="customCheck">启用特判</label>
                     </div>

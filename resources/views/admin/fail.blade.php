@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <h5 class="mb-5 p-3 alert-success">
+    <h5 class="mb-5 p-3 alert-danger">
         @if(isset($msg))
             {!! $msg !!}
         @else
