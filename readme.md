@@ -16,7 +16,7 @@ Ludong University Online Judge
   
   1. **Linux Ubuntu 16.04**
    
-  终端执行以下命令，安装过程10~30分钟。若耗时过长请先<a href="https://blog.csdn.net/winter2121/article/details/103335319" target="_blank">更换软件源</a>再重新安装。
+  终端执行以下命令，安装过程10~30分钟。若耗时过长请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
   ```
   apt update && apt -y install wget
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/install.sh

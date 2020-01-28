@@ -18,6 +18,8 @@ service php7.2-fpm start
 
 # composer
 apt -y install composer zip unzip
+#使用阿里云的composer镜像源
+composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 cd ${web_home}/LDUOnlineJudge && composer install --ignore-platform-reqs
 
 # laravel artisan; 必须在composer之后
