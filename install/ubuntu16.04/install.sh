@@ -6,8 +6,8 @@ apt -y update && apt -y upgrade
 # 下载项目源码
 apt -y install git
 cd ${web_home} && git clone https://github.com/iamwinter/LDUOnlineJudge.git
-cd ${web_home}/LDUOnlineJudge && cp .env.example .env && chmod -R 777 storage/ bootstrap/cache
 apt -y remove git
+cd ${web_home}/LDUOnlineJudge && cp .env.example .env && chmod -R 777 storage/ bootstrap/cache
 
 # php
 apt -y install software-properties-common python-software-properties
@@ -52,8 +52,5 @@ apt -y install g++
 
 
 echo -e "\nYou have successfully installed LDU Online Judge!"
-echo -e "Enjoy it!"
-echo -e "Installation location: ${web_home}/LDUOnlineJudge\n"
-
-# delete self
-rm -rf ./$0
+echo -e "Installation location: ${web_home}/LDUOnlineJudge"
+echo -e "Enjoy it!\n"

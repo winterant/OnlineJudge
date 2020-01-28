@@ -20,6 +20,7 @@ cp -r -f -p /etc/nginx/conf.d/lduoj.conf ${web_home}/lduoj_backup/${backup}/lduo
 apt update
 apt install -y git
 cd ${web_home} && git clone https://github.com/iamwinter/LDUOnlineJudge.git
+apt -y remove git
 cp -r -p -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/storage ${web_home}/LDUOnlineJudge/
 cp -r -p -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/public/favicon.ico ${web_home}/LDUOnlineJudge/public/favicon.ico
 cp -r -p -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/.env ${web_home}/LDUOnlineJudge/.env
@@ -39,8 +40,5 @@ php artisan config:cache
 php artisan route:cache
 
 echo -e "\nYou have successfully updated LDU Online Judge!"
-echo -e "Enjoy it!"
-echo -e "Installation location: ${web_home}/LDUOnlineJudge\n"
-
-# delete self
-rm -rf ./$0
+echo -e "Installation location: ${web_home}/LDUOnlineJudge"
+echo -e "Enjoy it!\n"
