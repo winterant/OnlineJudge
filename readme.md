@@ -8,7 +8,8 @@ Ludong University Online Judge
 
 # 概述
 
-  - 基于php框架 laravel 6.0 开发，php版本>=7.2
+  - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
+  - 基于php框架 laravel 6.0 开发，php版本=7.2
   - web端与判题端分离，judge文件夹为判题端程序，独立于laravel
 
 # 一键安装
