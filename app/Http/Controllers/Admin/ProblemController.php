@@ -107,7 +107,7 @@ class ProblemController extends Controller
             $spjFile=$request->file('spj_file');
 
             save_problem_samples($problem['id'],(array)$samples);
-            if($spjFile->isValid())
+            if($spjFile!=null && $spjFile->isValid())
                 $exec_out=save_problem_spj_code($problem['id'],$spjFile);
 
             DB::table('problems')->where('id',$problem['id'])->update($problem);
