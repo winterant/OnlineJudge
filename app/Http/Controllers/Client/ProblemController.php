@@ -49,9 +49,6 @@ class ProblemController extends Controller
             ->where('problem_id','=',$problem->id)
             ->count('id')>10;
 
-//        arrayToConfig(["siteName"=>"Winter Online Judge11",3=>true],base_path("config/oj/main.php"));
-//        exec("cd ".base_path()." && php artisan config:cache",$res,$status);
-//        print_r($res);
         return view('client.problem',compact('problem','samples','solutions','has_more'));
     }
 
