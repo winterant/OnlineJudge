@@ -103,6 +103,8 @@ class ProblemController extends Controller
         // 提交修改好的题目数据
         if($request->isMethod('post')){
             $problem=$request->input('problem');
+            if(!isset($problem['spj']))
+                $problem['spj']=0;
             $samples=$request->input('samples');
             $spjFile=$request->file('spj_file');
 
