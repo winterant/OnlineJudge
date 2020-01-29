@@ -39,17 +39,17 @@
                 </div>
                 <div class="form-group">
                     <label for="description">题目描述：</label>
-                    <textarea id="description" name="problem[description]" class="form-control-plaintext border bg-white" rows="8">{{isset($problem->description)?$problem->description:''}}</textarea>
+                    <textarea id="description" name="problem[description]" class="form-control-plaintext border bg-white">{{isset($problem->description)?$problem->description:''}}</textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="input">输入描述：</label>
-                    <textarea id="input" name="problem[input]" class="form-control-plaintext border bg-white" rows="3">{{isset($problem->input)?$problem->input:''}}</textarea>
+                    <textarea id="input" name="problem[input]" class="form-control-plaintext border bg-white">{{isset($problem->input)?$problem->input:''}}</textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="output">输出描述：</label>
-                    <textarea id="output" name="problem[output]" class="form-control-plaintext border bg-white" rows="3">{{isset($problem->output)?$problem->output:''}}</textarea>
+                    <textarea id="output" name="problem[output]" class="form-control-plaintext border bg-white">{{isset($problem->output)?$problem->output:''}}</textarea>
                 </div>
 
                 <div class="form-group">
@@ -78,7 +78,7 @@
 
                 <div class="form-group">
                     <label for="hint">提示（公式、样例解释等）：</label>
-                    <textarea id="hint" name="problem[hint]" class="form-control-plaintext border bg-white" rows="3">{{isset($problem->hint)?$problem->hint:''}}</textarea>
+                    <textarea id="hint" name="problem[hint]" class="form-control-plaintext border bg-white">{{isset($problem->hint)?$problem->hint:''}}</textarea>
                 </div>
 
                 <div class="input-group">

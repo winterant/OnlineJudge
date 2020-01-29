@@ -74,16 +74,19 @@ function read_problem_samples($problem_id){
 }
 
 
-
-
+/**
+ * @param $problem_id
+ * @param $file
+ * @return mixed
+ */
 function save_problem_spj_code($problem_id, $file){
     //保存特判文件
     $spjPath=base_path( 'storage/data/'.$problem_id.'/spj' );
     if(!is_dir($spjPath))
         mkdir($spjPath,0777,true); //最大权限，多级目录
     file_put_contents($spjPath.'/spj.cpp',file_get_contents($file->getRealPath()));
-    exec(sprintf('g++ -std=c++11 %s -o %s -lmysqlclient 2>&1',
-        base_path('storage/data/'.$problem_id.'/spj/spj.cpp'),
-        base_path('storage/data/'.$problem_id.'/spj/spj')),$output,$status);
+    chmod($spjPath.'/spj.cpp',0777);
+    exec(sprintf('g++ -std=c++11 %s -o %s -lmysqlclient 2>&1',$spjPath.'/spj.cpp',$spjPath.'/spj'),
+        $output,$status);
     return $output;
 }
