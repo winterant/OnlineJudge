@@ -33,7 +33,7 @@
                         @foreach($item as $key=>$td)
                             <td nowrap>{!! $td !!}</td>
                         @endforeach
-                        <td>@if(isset($operation)){!! $operation[$item->id] !!}@endif</td>
+                        <td nowrap>@if(isset($operation)){!! $operation[$item->id] !!}@endif</td>
                     </tr>
                 @endforeach
             </tbody>

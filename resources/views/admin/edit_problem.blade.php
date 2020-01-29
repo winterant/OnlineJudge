@@ -18,7 +18,7 @@
                 </div>
             </form>
         @else
-            <form class="p-4 w-75" action="" method="post">
+            <form class="p-4 col-12 col-md-9" action="" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="number" name="problem[id]" value="{{isset($problem->id)?$problem->id:''}}" hidden>
                 <div class="input-group">
@@ -97,7 +97,8 @@
                     </div>
                     <div class="form-group">
                         {{-- 特判文件上传 --}}
-                        <input id="spj_file" name="spj_file" type="file" class="ml-2" accept=".c,.cc,.cpp" disabled>
+                        <input id="spj_file" name="spj_file" type="file" class="ml-2"
+                               accept=".c,.cc,.cpp" @if(!isset($problem->spj)||$problem->spj==0) disabled @endif>
                     </div>
                     <div class="m-2 p-2 alert-info">
                         温馨提示：

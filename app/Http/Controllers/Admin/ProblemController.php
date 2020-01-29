@@ -30,7 +30,7 @@ class ProblemController extends Controller
                     data-toggle="tooltip" data-placement="bottom">题目状态公开</a>'),
             sprintf('<a href="javascript:change_state_to(0);"
                     title="选中的题目将密封，普通用户无法在题库中查看和提交，但不会影响竞赛!"
-                    data-toggle="tooltip" data-placement="bottom">状态设为*隐藏</a>')
+                    data-toggle="tooltip" data-placement="bottom">状态设为隐藏</a>')
         ];
 
         $list=DB::table('problems')->select(array_keys($thead))->orderBy('id')->paginate(100);
@@ -39,14 +39,20 @@ class ProblemController extends Controller
         foreach ($list as $item){
             $item->title=sprintf('<a href="%s" target="_blank">%s</a>',route('problem',$item->id),$item->title);
             $item->spj = ($item->spj==1)?'特判':'-';
-            $item->state = ($item->state==1)?'公开':'*隐藏';
-            $operation[$item->id]=sprintf('<a href="%s" target="_blank" class="mr-2">
-                                                      <i class="fa fa-edit" aria-hidden="true"></i> 修改
-                                                  </a>
-                                                  <a href="%s" class="mr-2">
-                                                      <i class="fa fa-trash" aria-hidden="true"></i> 删除
-                                                  </a>',route('admin.update_problem_withId',$item->id),
-                                                    'javascript:alert(\'为保证系统稳定，不允许删除题目，您可以修改它！\')');
+            $item->state = ($item->state==1)?'公开':'隐藏☆私有';
+            $operation[$item->id]=sprintf('
+                <a href="%s" target="_blank" class="mr-2"
+                    data-toggle="tooltip" data-placement="bottom" title="修改">
+                    <i class="fa fa-edit" aria-hidden="true"></i></a>
+                <a href="%s" class="mr-2"
+                    data-toggle="tooltip" data-placement="bottom" title="删除">
+                    <i class="fa fa-trash" aria-hidden="true"></i></a>
+                <a href="#" target="_blank"
+                    data-toggle="tooltip" data-placement="bottom" title="测试数据">
+                    <i class="fa fa-file" aria-hidden="true"></i></a>',
+                route('admin.update_problem_withId',$item->id),
+                'javascript:alert(\'为保证系统稳定，不允许删除题目，您可以修改它！\')'
+            );
         }
         return view('admin.list',compact('list','secTitle','thead','oper_checked','operation'));
     }
@@ -63,7 +69,7 @@ class ProblemController extends Controller
             $problem=$request->input('problem');
             unset($problem['id']);
             $id=DB::table('problems')->insertGetId($problem);
-            save_problem_samples($id,(array)$request->input('samples'));
+            save_problem_samples($id,(array)$request->input('samples'));//保存样例
             $msg=sprintf('题目<a href="%s" target="_blank">%d</a>添加成功',route('problem',$id),$id);
             return view('admin.success',compact('msg'));
         }
@@ -88,7 +94,7 @@ class ProblemController extends Controller
             $samples=read_problem_samples($problem->id);
 
             //看看有没有特判文件
-            $spjPath = base_path(config('oj.main.judgeDataPath').'/'.$problem->id.'/spj/spj.cpp');
+            $spjPath = base_path('storage/data/'.$problem->id.'/spj/spj.cpp');
             $hasSpj=file_exists($spjPath);
 
             return view('admin.edit_problem',compact('pageTitle','problem','samples','hasSpj'));
@@ -98,11 +104,18 @@ class ProblemController extends Controller
         if($request->isMethod('post')){
             $problem=$request->input('problem');
             $samples=$request->input('samples');
+            $spjFile=$request->file('spj_file');
 
             save_problem_samples($problem['id'],(array)$samples);
+            if($spjFile->isValid())
+                $exec_out=save_problem_spj_code($problem['id'],$spjFile);
 
             DB::table('problems')->where('id',$problem['id'])->update($problem);
             $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功',route('problem',$problem['id']),$problem['id']);
+            if(isset($exec_out)){
+                $msg.='<br>Command： g++ spj.cpp -o spj -lmysqlclient';
+                $msg.='<br>Output:'.implode('<br>',$exec_out);
+            }
             return view('admin.success',['msg'=>$msg]);
         }
     }
