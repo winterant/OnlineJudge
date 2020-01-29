@@ -1,5 +1,28 @@
 <?php
 
+
+/**
+ * function: 修改项目.env文件
+ * args: array(key=>aimValue);
+ */
+function modifyEnv(array $data)
+{
+    $envPath = base_path() . DIRECTORY_SEPARATOR . '.env';
+    $contentArray = collect(file($envPath, FILE_IGNORE_NEW_LINES));
+    $contentArray->transform(function ($item) use ($data){
+        foreach ($data as $key => $value){
+            if(strpos(explode('=',$item)[0],$key)!==false){
+                return $key.'='.$value;  //modify
+            }
+        }
+        return $item;
+    });
+    $content = implode($contentArray->toArray(), "\n");
+    file_put_contents($envPath,$content,LOCK_EX);
+}
+
+
+
 /**
  * @param array $arr
  * @param string $configName 相对于/config/
