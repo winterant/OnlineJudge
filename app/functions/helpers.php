@@ -32,7 +32,7 @@ function arrayToConfig(array $arr,string $configName){
  */
 function save_problem_samples($problem_id, $samples){
     //保存样例文件
-    $samplePath=base_path( config('oj.main.judgeDataPath').'/'.$problem_id.'/sample' );
+    $samplePath=base_path( 'storage/data/'.$problem_id.'/sample' );
     if(!is_dir($samplePath))
         mkdir($samplePath,0777,true); //最大权限，多级目录
     foreach(scandir($samplePath) as $filename){
@@ -51,7 +51,7 @@ function save_problem_samples($problem_id, $samples){
  * 读取样例文件
  */
 function read_problem_samples($problem_id){
-    $samplePath=base_path( config('oj.main.judgeDataPath').'/'.$problem_id.'/sample' );
+    $samplePath=base_path( 'storage/data/'.$problem_id.'/sample' );
     $samples=[];
     if(is_dir($samplePath)){
         $flag=[];
@@ -71,4 +71,19 @@ function read_problem_samples($problem_id){
         }
     }
     return $samples;
+}
+
+
+
+
+function save_problem_spj_code($problem_id, $file){
+    //保存特判文件
+    $spjPath=base_path( 'storage/data/'.$problem_id.'/spj' );
+    if(!is_dir($spjPath))
+        mkdir($spjPath,0777,true); //最大权限，多级目录
+    file_put_contents($spjPath.'/spj.cpp',file_get_contents($file->getRealPath()));
+    exec(sprintf('g++ -std=c++11 %s -o %s -lmysqlclient 2>&1',
+        base_path('storage/data/'.$problem_id.'/spj/spj.cpp'),
+        base_path('storage/data/'.$problem_id.'/spj/spj')),$output,$status);
+    return $output;
 }

@@ -1,8 +1,7 @@
 <?php
 
 return [
-	"siteName"	=> "Winter Online Judge",
-    "judgeDataPath"  => "storage/data",
+	"siteName"	=> "LDU Online Judge",
 
     'guest_see_problem' => false,
 ];

@@ -10,12 +10,15 @@
             text-transform: none;  /*不使用大写*/
         }
 
+        /*侧边菜单*/
         .sidebar{
             position: fixed;  /*相对于窗口定位*/
             top: 45px;
             bottom: 0;
             left: 0;
             padding:0;
+            z-index:1100;
+            background-color: rgba(255,255,255,.85);
         }
         .sidebar-sticky {
             height: 100%;
@@ -57,22 +60,45 @@
             content:"\f054"
         }
 
-
         /*选中的菜单项样式*/
         .nav-item .active{
             background-color: #e6e6e6;
             color: #000000;
         }
-    </style>
 
+        /*侧边菜单项不换行*/
+        #left-menu a{
+            white-space:nowrap;
+        }
+
+
+        @media screen and (min-width: 768px) {
+            /*大屏幕，隐藏侧边栏按钮*/
+            #btn-left-menu{
+                display: none;
+            }
+        }
+        @media screen and (max-width: 768px) {
+            /*小屏幕，初始隐藏侧边栏*/
+            #left-menu{
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="h-100" style="padding-top: 60px;min-width: 600px">
+<div class="h-100" style="padding-top: 60px;">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="max-height:45px">
 
-        <a class="navbar-brand" href="{{route('admin.home')}}">{{config('oj.main.siteName')}}&nbsp;/&nbsp;后台管理</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="max-height:45px;z-index: 5">
+
+        <button id="btn-left-menu" class="btn border m-0"
+            onclick="if(screen.width<768)$('#left-menu').css('display')=='none'?$('#left-menu').slideLeftShow():$('#left-menu').slideLeftHide()">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <a class="navbar-brand pl-2" href="{{route('admin.home')}}">{{config('oj.main.siteName')}}/后台</a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
             <span class="navbar-toggler-icon"></span>
@@ -138,7 +164,7 @@
         </div>
     </nav>
 
-    <nav class="col-2 col-sm-2 col-md-2 d-md-block bg-light sidebar">
+    <nav id="left-menu" class="col-10 col-sm-6 col-md-2 sidebar border">
         <div class="sidebar-sticky">
             <ul class="list-unstyled">
                 <li class="nav-item">
@@ -153,7 +179,7 @@
                         <i class="fa fa-users mr-1" aria-hidden="true"></i>
                         账号管理
                     </a>
-                    <ul id="menu-user" class="collapse bg-white">
+                    <ul id="menu-user" class="collapse">
 
                         <li class="nav-item">
                             <a class="nav-link border-bottom" href="#">
@@ -177,7 +203,7 @@
                        data-target="#menu-problem" aria-expanded="false">
                         <i class="fa fa-file-text-o fa-lg mr-2" aria-hidden="true"></i>题目管理
                     </a>
-                    <ul id="menu-problem" class="collapse bg-white">
+                    <ul id="menu-problem" class="collapse">
                         <li class="nav-item">
                             <a class="nav-link border-bottom" href="{{route('admin.problems')}}">
                                 <i class="fa fa-list" aria-hidden="true"></i> 程序设计题</a>
@@ -226,7 +252,7 @@
 
                 <li class="nav-item">
                     <a class="nav-link border-bottom position-relative" href="#" data-toggle="collapse" data-target="#menu2" aria-expanded="false">下拉菜单模板</a>
-                    <ul id="menu2" class="collapse bg-white">
+                    <ul id="menu2" class="collapse">
                         <li class="nav-item">
                             <a class="nav-link border-bottom" href="#"><i class="fa fa-home" aria-hidden="true"></i> 子菜单1</a>
                         </li>
@@ -241,27 +267,41 @@
     </nav>
 
 
-    <main class="col-10 col-sm-10 col-md-10 ml-sm-auto ml-auto px-4">
-{{--        <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">--}}
-{{--            <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">--}}
-{{--                <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>--}}
-{{--            </div>--}}
-{{--            <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">--}}
-{{--                <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
+    <main class="col-12 col-sm-12 col-md-10  ml-auto">
 
         @yield('content')
-        <div id="footer" class="text-center">
+
+        <div id="footer" class="text-center mb-2">
             <hr>
-            <div id="localtime"></div>
-            Copyright © 2019 <a target="_blank" href="https://github.com/iamwinter">Winter Online Judge</a>. All Rights Reserved<br>
+            <div>Server Time：<font id="localtime">{{date('Y-m-d H:i:s')}}</font></div>
+            Copyright © 2020 <a target="_blank" href="https://github.com/iamwinter">LDU Online Judge</a>. All Rights Reserved<br>
         </div>
+
     </main>
 
 </div>
 
-
+<script type="text/javascript">
+    // 左侧菜单栏滑动效果
+    jQuery.fn.slideLeftHide = function( speed, callback ) {
+        this.animate({
+            width : "hide",
+            paddingLeft : "hide",
+            paddingRight : "hide",
+            marginLeft : "hide",
+            marginRight : "hide"
+        }, speed, callback );
+    };
+    jQuery.fn.slideLeftShow = function( speed, callback ) {
+        this.animate({
+            width : "show",
+            paddingLeft : "show",
+            paddingRight : "show",
+            marginLeft : "show",
+            marginRight : "show"
+        }, speed, callback );
+    };
+</script>
 
 <script type="text/javascript">
 
@@ -284,11 +324,9 @@
     })
 
     //自动更新页脚时间
-    var nowTime=function () {
-        document.getElementById('localtime').innerHTML='Local Time: '+new Date();
-        return nowTime; //若不返回，此函数就无法多次执行
-    }
-    setInterval(nowTime(),1000); //每秒刷新时间
+    setInterval(function () {
+        document.getElementById('localtime').innerHTML=new Date();
+    },1000); //每秒刷新时间
 
 </script>
 
