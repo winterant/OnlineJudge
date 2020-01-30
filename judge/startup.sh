@@ -14,10 +14,10 @@ g++ -std=c++11 ./cpp/polling.cpp -o ./program/polling -lmysqlclient
 g++ -std=c++11 ./cpp/judge.cpp  -o  ./program/judge   -lmysqlclient
 
 cd ./program
-if [ "$1" == "log" ];then
-  ./polling ${db_host} ${db_port} ${db_user} ${db_pass} ${db_name} ${max_running}
+if [ "$1" == "debug" ];then
+  bash polling ${db_host} ${db_port} ${db_user} ${db_pass} ${db_name} ${max_running}
 else
-  ./polling ${db_host} ${db_port} ${db_user} ${db_pass} ${db_name} ${max_running} > /dev/null &
+  bash polling ${db_host} ${db_port} ${db_user} ${db_pass} ${db_name} ${max_running} > /dev/null &
 fi
 
 echo " * judge service is running!"

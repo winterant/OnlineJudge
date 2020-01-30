@@ -1,10 +1,7 @@
 Ludong University Online Judge
 ===
-  > 鲁东大学程序设计在线测评系统与教学平台 
+  > 鲁东大学程序设计在线测评系统与教学平台（开发中）
 
-
-
-# 警告：系统处于开发阶段，以下内容可能有错误之处！
 
 # 概述
 
@@ -16,7 +13,7 @@ Ludong University Online Judge
   
   1. **Linux Ubuntu 16.04**
    
-  终端执行以下命令，安装过程10~30分钟。若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
+  在终端执行以下命令，安装过程约10分钟。若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
   ```
   apt update && apt -y install wget
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/install.sh
@@ -35,7 +32,7 @@ Ludong University Online Judge
   该项目专用用户lduoj@localhost(密码123456789)。
   
   **为保证安全性请及时修改**
-  (注：需同时修改①ubuntu下mysql，②项目下.env文件数据库配置，③项目下judge/cpp/下的数据库配置，
+  (注：需同时修改①ubuntu下mysql，②项目下.env文件数据库配置，③项目下judge/judge.conf，
   ④最后在项目根目录下执行`php artisan config:clear && php artisan config:cache`)
   
   3.配置域名：在/etc/nginx/conf.d/lduoj.conf文件内，在`server_name`后面填域名。

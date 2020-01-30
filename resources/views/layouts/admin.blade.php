@@ -168,13 +168,13 @@
         <div class="sidebar-sticky">
             <ul class="list-unstyled">
                 <li class="nav-item">
-                    <a class="nav-link border-bottom" href="{{route('admin.home')}}">
+                    <a class="nav-link" href="{{route('admin.home')}}">
                         <i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i> 概览
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link border-bottom position-relative" href="#" data-toggle="collapse"
+                    <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
                        data-target="#menu-user" aria-expanded="false">
                         <i class="fa fa-users mr-1" aria-hidden="true"></i>
                         账号管理
@@ -182,82 +182,94 @@
                     <ul id="menu-user" class="collapse">
 
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="#">
+                            <a class="nav-link border-top" href="#">
                                 <i class="fa fa-universal-access" aria-hidden="true"></i> 权限管理</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="{{route('admin.users')}}">
+                            <a class="nav-link border-top" href="{{route('admin.users')}}">
                                 <i class="fa fa-list" aria-hidden="true"></i> 账号列表</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="#">
+                            <a class="nav-link border-top" href="#">
                                 <i class="fa fa-user-plus" aria-hidden="true"></i> 比赛账号批量生成</a>
                         </li>
                     </ul>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link border-bottom position-relative" href="#" data-toggle="collapse"
+                    <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
                        data-target="#menu-problem" aria-expanded="false">
                         <i class="fa fa-file-text-o fa-lg mr-2" aria-hidden="true"></i>题目管理
                     </a>
                     <ul id="menu-problem" class="collapse">
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="{{route('admin.problems')}}">
+                            <a class="nav-link border-top" href="{{route('admin.problems')}}">
                                 <i class="fa fa-list" aria-hidden="true"></i> 程序设计题</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="#">
+                            <a class="nav-link border-top" href="#">
                                 <i class="fa fa-list" aria-hidden="true"></i> 选择题</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="#">
+                            <a class="nav-link border-top" href="#">
                                 <i class="fa fa-list" aria-hidden="true"></i> 代码填空题</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="{{route('admin.add_problem')}}">
+                            <a class="nav-link border-top" href="{{route('admin.add_problem')}}">
                                 <i class="fa fa-plus" aria-hidden="true"></i> 添加程序设计题</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="#">
+                            <a class="nav-link border-top" href="#">
                                 <i class="fa fa-plus" aria-hidden="true"></i> 添加选择题</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="#">
+                            <a class="nav-link border-top" href="#">
                                 <i class="fa fa-plus" aria-hidden="true"></i> 添加代码填空题</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="{{route('admin.update_problem')}}">
+                            <a class="nav-link border-top" href="{{route('admin.update_problem')}}">
                                 <i class="fa fa-edit" aria-hidden="true"></i> 修改程序设计题</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="#">
+                            <a class="nav-link border-top" href="#">
                                 <i class="fa fa-edit" aria-hidden="true"></i> 修改选择题</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="#">
+                            <a class="nav-link border-top" href="#">
                                 <i class="fa fa-edit" aria-hidden="true"></i> 修改代码填空题</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-top" href="{{route('admin.rejudge')}}">
+                                <i class="fa fa-recycle" aria-hidden="true"></i> 重判提交记录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-top" href="#">
+                                <i class="fa fa-sign-in" aria-hidden="true"></i> 导入题目</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-top" href="#">
+                                <i class="fa fa-sign-out" aria-hidden="true"></i> 导出题目</a>
                         </li>
                     </ul>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link border-bottom" href="#">
+                    <a class="nav-link border-top" href="#">
                         <i class="fa fa-cogs fa-lg" aria-hidden="true"></i> 系统配置(慎改)
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link border-bottom position-relative" href="#" data-toggle="collapse" data-target="#menu2" aria-expanded="false">下拉菜单模板</a>
+                    <a class="nav-link border-top position-relative" href="#" data-toggle="collapse" data-target="#menu2" aria-expanded="false">下拉菜单模板</a>
                     <ul id="menu2" class="collapse">
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="#"><i class="fa fa-home" aria-hidden="true"></i> 子菜单1</a>
+                            <a class="nav-link border-top" href="#"><i class="fa fa-home" aria-hidden="true"></i> 子菜单1</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-bottom" href="#"><i class="fa fa-home" aria-hidden="true"></i> 子菜单2</a>
+                            <a class="nav-link border-top" href="#"><i class="fa fa-home" aria-hidden="true"></i> 子菜单2</a>
                         </li>
                     </ul>
                 </li>

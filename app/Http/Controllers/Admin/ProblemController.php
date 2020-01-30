@@ -110,26 +110,44 @@ class ProblemController extends Controller
 
             save_problem_samples($problem['id'],(array)$samples);
             if($spjFile!=null && $spjFile->isValid())
-                $exec_out=save_problem_spj_code($problem['id'],$spjFile);
+                save_problem_spj_code($problem['id'],$spjFile);
 
             DB::table('problems')->where('id',$problem['id'])->update($problem);
             $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功',route('problem',$problem['id']),$problem['id']);
-            if(isset($exec_out)){
-                $msg.='<br>Command： g++ spj.cpp -o spj -lmysqlclient';
-                $msg.='<br>Output:'.implode('<br>',$exec_out);
-            }
             return view('admin.success',['msg'=>$msg]);
         }
     }
 
     //管理员修改题目状态  0密封 or 1公开
     public function change_state_to(Request $request){
-        if($request->ajax() && Auth::user()->is_admin()){
+        if($request->ajax()){
             $pids=$request->input('pids')?:[];
             $state=$request->input('state');
             return DB::table('problems')->whereIn('id',$pids)->update(['state'=>$state]);
         }
         return 0;
+    }
+
+    //重判题目|竞赛|提交记录
+    public function rejudge(Request $request){
+
+        if($request->isMethod('get')){
+            $pageTitle='重判';
+            return view('admin.rejudge',compact('pageTitle'));
+        }
+
+        if($request->isMethod('post')){
+            $pid=$request->input('pid');
+            $cid=$request->input('cid');
+            $sid=$request->input('sid');
+
+            $count=DB::table('solutions')->where('problem_id',$pid)
+                ->orWhere('contest_id',$cid)
+                ->orWhere('id',$sid)
+                ->update(['result'=>0]);
+
+            return view('admin.success',['msg'=>sprintf('已重判%d条提交记录，可前往状态查看',$count)]);
+        }
     }
 
 }
