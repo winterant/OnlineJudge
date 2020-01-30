@@ -1,14 +1,6 @@
 #!/bin/bash
 
-#mysql config
-db_host="192.168.31.16"
-db_port=3306
-db_user="testuser"
-db_pass="123456"
-db_name="woj"
-max_running=5
-
-
+source ./judge.conf
 
 ps -e | grep polling | awk '{print "kill -9 " $1}' | sh
 
@@ -27,3 +19,5 @@ if [ "$1" == "log" ];then
 else
   ./polling ${db_host} ${db_port} ${db_user} ${db_pass} ${db_name} ${max_running} > /dev/null &
 fi
+
+echo " * judge service is running!"

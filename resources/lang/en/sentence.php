@@ -10,7 +10,7 @@ return [
     "Please login first"=> "Please login first!",
 
 //    client/problem.blade.php
-    "noSolutions"       => "You didn't submit it!",
+    "noSolutions"       => "You didn't submit any solution!",
     "Submit"            => "Submit your solution",
 
 //    "Submit File"       => "Submit your code file",
