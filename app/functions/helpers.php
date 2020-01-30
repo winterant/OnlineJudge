@@ -108,8 +108,7 @@ function save_problem_spj_code($problem_id, $file){
     if(!is_dir($spjPath))
         mkdir($spjPath,0777,true); //最大权限，多级目录
     file_put_contents($spjPath.'/spj.cpp',file_get_contents($file->getRealPath()));
-    chmod($spjPath.'/spj.cpp',0777);
+//    chmod($spjPath.'/spj.cpp',0777);
 //    exec(sprintf('sudo g++ -std=c++11 %s -o %s -lmysqlclient 2>&1',$spjPath.'/spj.cpp',$spjPath.'/spj'),$output);
 //    return $output;
-    return 'no exec';
 }

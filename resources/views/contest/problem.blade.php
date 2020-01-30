@@ -20,7 +20,7 @@
                     [<font class="text-red">{{trans('main.Hidden')}}</font>]
                 @endif
                 <h3 class="text-center">{{$problem->id}}. {{$problem->title}}</h3>
-                <hr class="mt-0 mb-1">
+                <hr class="mt-0">
                 <div >
                     <h4 class="text-sky">Description</h4>
                     {!! $problem->description !!}
@@ -71,25 +71,25 @@
                 <div class="table-responsive">
                     <table id="table-overview" class="table table-sm">
                         <tbody>
-                            <style type="text/css">
-                                #table-overview td{border: 0;text-align: left}
-                            </style>
-                            <tr>
-                                <td nowrap>Time Limit:</td>
-                                <td nowrap>{{$problem->time_limit*1000}}MS (C/C++,Others×2)</td>
-                            </tr>
-                            <tr>
-                                <td nowrap>Memory Limit:</td>
-                                <td nowrap>{{$problem->memory_limit}}MB (C/C++,Others×2)</td>
-                            </tr>
-                            <tr>
-                                <td nowrap>Special Judge:</td>
-                                @if($problem->spj==1)
-                                    <td class="text-red">Yes</td>
-                                @else
-                                    <td>No</td>
-                                @endif
-                            </tr>
+                        <style type="text/css">
+                            #table-overview td{border: 0;text-align: left}
+                        </style>
+                        <tr>
+                            <td nowrap>Time Limit:</td>
+                            <td nowrap>{{$problem->time_limit*1000}}MS (C/C++,Others×2)</td>
+                        </tr>
+                        <tr>
+                            <td nowrap>Memory Limit:</td>
+                            <td nowrap>{{$problem->memory_limit}}MB (C/C++,Others×2)</td>
+                        </tr>
+                        <tr>
+                            <td nowrap>Special Judge:</td>
+                            @if($problem->spj==1)
+                                <td class="text-red">Yes</td>
+                            @else
+                                <td>No</td>
+                            @endif
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -110,19 +110,19 @@
                         <div class="table-responsive">
                             <table id="table-solutions-sm" class="table table-hover">
                                 <thead>
-                                    <tr>
+                                <tr>
 
-                                        <th>#</th>
-                                        <th>Result</th>
-                                        <th>Time</th>
-                                        <th>Memory</th>
-                                        <th>Language</th>
-                                    </tr>
+                                    <th>#</th>
+                                    <th>Result</th>
+                                    <th>Time</th>
+                                    <th>Memory</th>
+                                    <th>Language</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <style type="text/css">
-                                        #table-solutions-sm td, #table-solutions-sm th{padding: 0;text-align:center}
-                                    </style>
+                                <style type="text/css">
+                                    #table-solutions-sm td, #table-solutions-sm th{padding: 0;text-align:center}
+                                </style>
                                 @foreach($solutions as $sol)
                                     <tr>
                                         <td>{{$sol->id}}</td>
@@ -158,7 +158,7 @@
                     @csrf
                     {{csrf_field()}}
                     <input name="solution[pid]" value="{{$problem->id}}" hidden>
-{{--                    <input name="solution[cid]" value="{{$contest->id}}" hidden>--}}
+                    {{--                    <input name="solution[cid]" value="{{$contest->id}}" hidden>--}}
 
                     <div>
                         <ul class="nav nav-tabs nav-justified mb-1">
@@ -222,4 +222,3 @@
     </div>
 
 @endsection
-

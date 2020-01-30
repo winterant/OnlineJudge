@@ -8,7 +8,7 @@
     <hr>
     <div>
         @if(isset($lack_id)?$lack_id:false)
-            <form class="p-4 w-75" action="" method="get">
+            <form class="p-4 col-12 col-md-9" action="" method="get">
                 <div class="form-inline">
                     <label for="">
                         请输入要修改的题号：
@@ -34,7 +34,7 @@
                 </div>
                 <div class="form-inline">
                     <label>存储限制：
-                        <input type="number" name="problem[memory_limit]" value="{{isset($problem->memory_limit)?$problem->memory_limit:32}}" required class="form-control">MB
+                        <input type="number" name="problem[memory_limit]" value="{{isset($problem->memory_limit)?$problem->memory_limit:64}}" required class="form-control">MB
                     </label>
                 </div>
                 <div class="form-group">

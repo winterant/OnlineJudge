@@ -65,7 +65,7 @@ void polling()  //轮询数据库收集待判提交
 {
     int running_cnt=0,queueing_cnt;     //正在判题数,排队数
     int *solution_queue=new int[max_running];    //判题队列
-    int pid;
+    int pid,did;
     while(true)
     {
         get_wating_solution(solution_queue,queueing_cnt);
@@ -100,11 +100,10 @@ void polling()  //轮询数据库收集待判提交
             }
         }
 
-        printf("%d......\n",waitpid(-1,NULL,WNOHANG));
-        while (waitpid(-1,NULL,WNOHANG)>0) //回收僵尸进程,WNOHANG不等待,若无死进程立马返回0
+        while( (did=waitpid(-1,NULL,WNOHANG))>0 ) //回收僵尸进程,WNOHANG不等待,若无死进程立马返回0
         {
             running_cnt--;
-            printf("running_cnt--    ------\n");
+            printf("Recycled a process: %d\n",did);
         }
     }
 }

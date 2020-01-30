@@ -55,4 +55,14 @@ class User extends Authenticatable
             return false;
         }
     }
+    public function privilege($power){
+        //判断用户是否具有某项权限, admin一定有权
+        if(DB::table('privileges')->where('user_id',$this->id)
+            ->where('authority',$power)
+            ->orWhere('authority','admin')->exists()){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

@@ -18,7 +18,8 @@ class StatusController extends Controller
     {
         $list=DB::table('solutions')
             ->join('users','solutions.user_id','=','users.id')
-            ->select('solutions.id','problem_id','username','result','time','memory','language','submit_time');
+            ->select('solutions.id','problem_id','username','result','time','memory','language','submit_time')
+            ->where('solutions.source',0);
         if(isset($_GET['pid'])&&$_GET['pid']!='')
             $list=$list->where('problem_id','=',$_GET['pid']);
         if(isset($_GET['username'])&&$_GET['username']!='')
@@ -51,6 +52,10 @@ class StatusController extends Controller
             'result'        => 0,
             'language'      => ($data['language']!=null)?$data['language']:0,
             'submit_time'   => date('Y-m-d H:i:s'),
+
+            'source'        => isset($data['source'])?$data['source']:0,
+            'judge_type'    => isset($data['judge_type'])?$data['judge_type']:'acm',
+
             'ip'            => $request->getClientIp(),
             'code_length'   => strlen($data['code']),
             'code'          => $data['code'],
