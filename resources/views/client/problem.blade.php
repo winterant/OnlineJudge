@@ -23,22 +23,18 @@
                     [<font class="text-red">{{trans('main.Hidden')}}</font>]
                 @endif
                 <h3 class="text-center">{{$problem->id}}. {{$problem->title}}</h3>
-                <div class="text-center">
-                    Time Limit:&nbsp;{{$problem->time_limit*1000}}MS (C/C++,Others×2)
-                    &nbsp;&nbsp;
-                    Memory Limit:&nbsp;{{$problem->memory_limit}}MB
-                </div>
                 <hr class="mt-0">
                 <div >
+                    <h4 class="text-sky">Description</h4>
                     {!! $problem->description !!}
 
                     @if($problem->input!=null)
-                        <h4 class="text-sky">Input description</h4>
+                        <h4 class="text-sky">Input</h4>
                         {!!$problem->input !!}
                     @endif
 
                     @if($problem->output!=null)
-                        <h4 class="text-sky">Output description</h4>
+                        <h4 class="text-sky">Output</h4>
                         {!!$problem->output !!}
                     @endif
 
@@ -69,57 +65,91 @@
 
         <div class="col-md-4 col-sm-12 col-12">
 
+            {{-- 题目信息 --}}
+            <div class="my-container">
+
+                <h5>Problem Infomation</h5>
+                <hr class="mt-0">
+
+                <div class="table-responsive">
+                    <table id="table-overview" class="table table-sm">
+                        <tbody>
+                            <style type="text/css">
+                                #table-overview td{border: 0;text-align: left}
+                            </style>
+                            <tr>
+                                <td nowrap>Time Limit:</td>
+                                <td nowrap>{{$problem->time_limit*1000}}MS (C/C++,Others×2)</td>
+                            </tr>
+                            <tr>
+                                <td nowrap>Memory Limit:</td>
+                                <td nowrap>{{$problem->memory_limit}}MB (C/C++,Others×2)</td>
+                            </tr>
+                            <tr>
+                                <td nowrap>Special Judge:</td>
+                                @if($problem->spj==1)
+                                    <td class="text-red">Yes</td>
+                                @else
+                                    <td>No</td>
+                                @endif
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
 
             {{-- 提交记录--}}
             @auth
                 <div class="my-container">
 
-                <h5>{{trans('main.MySolution')}}</h5>
-                <hr class="mt-0">
+                    <h5>{{trans('main.MySolution')}}</h5>
+                    <hr class="mt-0">
 
-                @if($solutions->count()==0)
-                    <div class="alert alert-dismissible"><h6>{{trans('sentence.noSolutions')}}</h6></div>
-                @else
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
+                    @if($solutions->count()==0)
+                        <div class="alert alert-dismissible"><h6>{{trans('sentence.noSolutions')}}</h6></div>
+                    @else
+                        <div class="table-responsive">
+                            <table id="table-solutions-sm" class="table table-hover">
+                                <thead>
+                                    <tr>
 
-                                <th>#</th>
-                                <th>Result</th>
-                                <th>Time</th>
-                                <th>Memory</th>
-                                <th>Language</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <style type="text/css">
-                                .table td, .table th{padding: 0;}
-                            </style>
-                            @foreach($solutions as $sol)
-                                <tr>
-                                    <td>{{$sol->id}}</td>
-                                    <td nowrap class="{{config('oj.resColor.'.$sol->result)}}">
-                                        @if($sol->result<4)
-                                            <i class="fa fa-spinner" aria-hidden="true"></i>
-                                        @endif
-                                        {{config('oj.result.'.$sol->result)}}
-                                    </td>
-                                    <td>{{$sol->time}}ms</td>
-                                    <td>{{round($sol->memory,2)}}MB</td>
-                                    <td>{{config('oj.lang.'.$sol->language)}}</td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
-                @if($has_more)
-                    <div class="text-right">
-                        <a href="{{route('status',['pid'=>$problem->id,'username'=>Auth::user()->username])}}">{{trans('main.More')}}>></a>
-                    </div>
-                @endif
-            </div>
+                                        <th>#</th>
+                                        <th>Result</th>
+                                        <th>Time</th>
+                                        <th>Memory</th>
+                                        <th>Language</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <style type="text/css">
+                                        #table-solutions-sm td, #table-solutions-sm th{padding: 0;text-align:center}
+                                    </style>
+                                @foreach($solutions as $sol)
+                                    <tr>
+                                        <td>{{$sol->id}}</td>
+                                        <td nowrap class="{{config('oj.resColor.'.$sol->result)}}">
+                                            @if($sol->result<4)
+                                                <i class="fa fa-spinner" aria-hidden="true"></i>
+                                            @endif
+                                            {{config('oj.result.'.$sol->result)}}
+                                        </td>
+                                        <td>{{$sol->time}}ms</td>
+                                        <td>{{round($sol->memory,2)}}MB</td>
+                                        <td>{{config('oj.lang.'.$sol->language)}}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                    @if($has_more)
+                        <div class="text-right">
+                            <a href="{{route('status',['pid'=>$problem->id,'username'=>Auth::user()->username])}}">{{trans('main.More')}}>></a>
+                        </div>
+                    @endif
+                </div>
             @endauth
 
             {{-- 提交窗口 --}}

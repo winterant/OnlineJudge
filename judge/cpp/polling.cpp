@@ -104,7 +104,7 @@ void polling()  //轮询数据库收集待判提交
         while (waitpid(-1,NULL,WNOHANG)>0) //回收僵尸进程,WNOHANG不等待,若无死进程立马返回0
         {
             running_cnt--;
-            printf("------\n");
+            printf("running_cnt--    ------\n");
         }
     }
 }

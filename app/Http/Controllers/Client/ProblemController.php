@@ -43,11 +43,11 @@ class ProblemController extends Controller
             ->where('user_id','=',Auth::id())
             ->where('problem_id','=',$problem->id)
             ->orderByDesc('id')
-            ->limit(10)->get();
+            ->limit(8)->get();
         $has_more=DB::table('solutions')
             ->where('user_id','=',Auth::id())
             ->where('problem_id','=',$problem->id)
-            ->count('id')>10;
+            ->count('id')>8;
 
         return view('client.problem',compact('problem','samples','solutions','has_more'));
     }

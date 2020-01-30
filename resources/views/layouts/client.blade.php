@@ -128,7 +128,7 @@
 
 <div id="footer" class="text-center">
     <hr>
-    <div id="localtime"></div>
+    <div>Server Time：<font id="localtime">{{date('Y-m-d H:i:s')}}</font></div>
     <p>
         Copyright © 2019 <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">Winter Online Judge</a>. All Rights Reserved
     </p>
@@ -150,27 +150,18 @@
         });
     })
 
-    //访问主页时，导航栏透明
-    // if(window.location.pathname.indexOf('index')>=0 || window.location.pathname=='/'){
-    //     //在主页
-    //     $("nav").removeClass("navbar-default")
-    //     $("nav").addClass("navbar-fixed-top")
-    //     $("nav").addClass("navbar-transparent")
-    //     $(window).scroll(function(){
-    //         if($(window).scrollTop()<100){
-    //             $("nav").fadeIn(300)
-    //         }else{
-    //             $("nav").fadeOut(300);
-    //         }
-    //     });
-    // }
-
     //自动更新页脚时间
-    var nowTime=function () {
-        document.getElementById('localtime').innerHTML='Local Time: '+new Date();
-        return nowTime; //若不返回，此函数就无法多次执行
-    }
-    setInterval(nowTime(),1000); //每秒刷新时间
+    setInterval(function () {
+        var now=new Date( $('#localtime').html() );
+        now=new Date(now.getTime()+1000);
+        var str=now.getFullYear();
+        str+='-'+(now.getMonth()<9?'0':'')   +(now.getMonth()+1);
+        str+='-'+(now.getDate()<10?'0':'')   +now.getDate();
+        str+=' '+(now.getHours()<10?'0':'')  +now.getHours();
+        str+=':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+        str+=':'+(now.getSeconds()<10?'0':'')+now.getSeconds();
+        document.getElementById('localtime').innerHTML=str;
+    },1000); //每秒刷新时间
 
 </script>
 

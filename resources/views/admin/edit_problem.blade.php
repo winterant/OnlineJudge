@@ -25,7 +25,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">题目：</span>
                     </div>
-                    <input autofocus type="text" name="problem[title]" value="{{isset($problem->title)?$problem->title:''}}" required class="form-control">
+                    <input type="text" name="problem[title]" value="{{isset($problem->title)?$problem->title:''}}" required class="form-control">
                 </div>
                 <div class="form-inline">
                     <label>时间限制：
@@ -91,8 +91,9 @@
                 <div class="border mt-3">
                     <div class="custom-control custom-checkbox m-2">
                         <input type="checkbox" name="problem[spj]" value="{{isset($problem->spj)?$problem->spj:0}}"
-                               class="custom-control-input" id="customCheck"
-                               onchange="$('#spj_file').attr('disabled',!$(this).prop('checked'));$(this).val($(this).prop('checked')?1:0)">
+                            class="custom-control-input" id="customCheck"
+                            onchange="$('#spj_file').attr('disabled',!$(this).prop('checked'));$(this).val($(this).prop('checked')?1:0)"
+                            @if($problem->spj==1)checked @endif>
                         <label class="custom-control-label pt-1" for="customCheck">启用特判</label>
                     </div>
                     <div class="form-group">
@@ -103,7 +104,7 @@
                     <div class="m-2 p-2 alert-info">
                         温馨提示：
                         @if(isset($hasSpj)?$hasSpj:false)
-                            题目已存在特判程序源码spj.cpp，上传新的特判程序将自动舍弃原有程序！
+                            已存在特判程序源码spj.cpp，继续上传特判程序将自动舍弃原有程序！
                         @else
                             若题目需要特判，请勾选此项，并上传特判程序的C/C++源代码文件。
                         @endif
