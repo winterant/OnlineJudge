@@ -13,18 +13,6 @@
         .nav-link, .btn {
             text-transform: none;
         }
-        .my-container {
-            display: block;
-            box-shadow: rgba(0, 0, 0, 0.1) 0 0 30px;
-            border-radius: 4px;
-            transition: .2s ease-out .0s;
-            /*background: #fff;*/
-            width: 100%;
-            padding: 1.25rem;
-            position: relative;
-             /*border: 1px solid rgba(0, 0, 0, 0.15);*/
-            margin-bottom: 2rem;
-        }
     </style>
 
 </head>
@@ -56,7 +44,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-nowrap" href="#">
+                <a class="nav-link text-nowrap" href="{{route('contests')}}">
                     <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
                 </a>
             </li>
@@ -131,7 +119,7 @@
     <hr>
     <div>Server Time：<font id="localtime">{{date('Y-m-d H:i:s')}}</font></div>
     <p>
-        Copyright © 2019 <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">Winter Online Judge</a>. All Rights Reserved
+        Copyright © 2019 <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">LDU Online Judge</a>. All Rights Reserved
     </p>
 </div>
 
@@ -139,9 +127,8 @@
 
     // 遍历导航栏按钮，如果href与当前位置相等，就active
     $(function () {
-        $("ul.navbar-nav").find("li").each(function () {
-            var a = $(this).find("a:first")[0];
-            var href = $(a).attr("href")
+        $("ul li").find("a").each(function () {
+            var href = $(this).attr("href")
             if(location.href[location.href.length-1]=='/')href+='/'; //特判home
             if (location.href.split('?')[0]===href) {
                 $(this).addClass("active");

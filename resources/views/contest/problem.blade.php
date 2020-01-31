@@ -65,7 +65,7 @@
             {{-- 题目信息 --}}
             <div class="my-container bg-white">
 
-                <h5>Problem Infomation</h5>
+                <h5>{{trans('main.Problem')}} {{trans('main.Infomation')}}</h5>
                 <hr class="mt-0">
 
                 <div class="table-responsive">
@@ -95,8 +95,6 @@
                 </div>
 
             </div>
-
-
 
 
             {{-- 提交窗口 --}}
@@ -168,6 +166,9 @@
                 </form>
 
             </div>
+
+            {{--  竞赛信息 --}}
+            @include('contest.information')
 
         </div>
 

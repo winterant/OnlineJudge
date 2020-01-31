@@ -27,12 +27,12 @@ Route::get('/status','Client\StatusController@index')->name('status');
 Route::get('/solution/{id}','Client\StatusController@solution')->where(['id'=>'[0-9]+'])->name('solution');
 Route::get('/problems','Client\ProblemController@problems')->name('problems');
 Route::get('/problem/{id}','Client\ProblemController@problem')->where(['id'=>'[0-9]+'])->name('problem');
-
+Route::get('/contests','Client\ContestController@contests')->name('contests');
 Route::post('/status/submit_solution','Client\StatusController@create')->middleware('auth')->name('submit_solution');
 
 
 // Contest
-Route::middleware([])->prefix('contest/{id}')
+Route::middleware(['auth'])->prefix('contest/{id}')
     ->name('contest.')->where(['id'=>'[0-9]+'])->group(function () {
     Route::get('/', 'Client\ContestController@home')->name('home');
 
