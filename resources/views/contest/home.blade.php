@@ -15,7 +15,7 @@
     <div class="container">
 
         <div class="col-md-8 col-sm-12 col-12">
-            <div class="my-container">
+            <div class="my-container bg-white">
 
                 @if($contest->description!=null)
                     <p class="alert-success">{{$contest->description}}</p>
@@ -35,8 +35,8 @@
                         @foreach($problems as $item)
                             <tr>
                                 <td>{{$item->index}}</td>
-                                <td nowrap><a href="{{route('contest.problem',[$contest->id,$item->id])}}">{{$item->title}}</a></td>
-                                <td>@if($item->submit>0){{$item->solved}}&nbsp;/&nbsp;{{$item->submit}}@endif</td>
+                                <td nowrap><a href="{{route('contest.problem',[$contest->id,$item->index])}}">{{$item->title}}</a></td>
+                                <td>@if($item->submit>0){{$item->solved}}&nbsp;/&nbsp;{{$item->submit}}@else - @endif</td>
                                 <td></td>
                             </tr>
                         @endforeach
@@ -49,18 +49,7 @@
         <div class="col-md-4 col-sm-12 col-12">
 
             {{-- 菜单 --}}
-            <div class="my-container">
-
-                <h5>Overview</h5>
-                <hr class="mt-0">
-
-                <a class="d-block" href="{{route('contest.home',$contest->id)}}">{{__('main.Problems')}}</a>
-                <a class="d-block" href="{{route('contest.status',$contest->id)}}">{{__('main.Status')}}</a>
-                <a class="d-block" href="{{route('contest.rank',$contest->id)}}">{{__('main.Rank')}}</a>
-
-            </div>
-
-
+            @include('contest.menu')
 
         </div>
 

@@ -15,7 +15,7 @@
     <div class="container">
 
         <div class="col-md-8 col-sm-12 col-12">
-            <div class="my-container">
+            <div class="my-container bg-white">
                 @if($problem->state==0)
                     [<font class="text-red">{{trans('main.Hidden')}}</font>]
                 @endif
@@ -63,7 +63,7 @@
         <div class="col-md-4 col-sm-12 col-12">
 
             {{-- 题目信息 --}}
-            <div class="my-container">
+            <div class="my-container bg-white">
 
                 <h5>Problem Infomation</h5>
                 <hr class="mt-0">
@@ -85,7 +85,7 @@
                             <tr>
                                 <td nowrap>Special Judge:</td>
                                 @if($problem->spj==1)
-                                    <td class="text-red">Yes</td>
+                                    <td><font class="text-red">Yes</font> @if(!$hasSpj)(Error: Missing judge file) @endif</td>
                                 @else
                                     <td>No</td>
                                 @endif
@@ -99,7 +99,7 @@
 
             {{-- 提交记录--}}
             @auth
-                <div class="my-container">
+                <div class="my-container bg-white">
 
                     <h5>{{trans('main.MySolution')}}</h5>
                     <hr class="mt-0">
@@ -150,7 +150,7 @@
             @endauth
 
             {{-- 提交窗口 --}}
-            <div class="my-container">
+            <div class="my-container bg-white">
 
                 <h5>{{trans('sentence.Submit')}}</h5>
                 <hr class="m-0">

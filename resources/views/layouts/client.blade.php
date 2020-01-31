@@ -18,10 +18,11 @@
             box-shadow: rgba(0, 0, 0, 0.1) 0 0 30px;
             border-radius: 4px;
             transition: .2s ease-out .0s;
-            background: #fff;
+            /*background: #fff;*/
+            width: 100%;
             padding: 1.25rem;
             position: relative;
-            /* border: 1px solid rgba(0, 0, 0, 0.15); */
+             /*border: 1px solid rgba(0, 0, 0, 0.15);*/
             margin-bottom: 2rem;
         }
     </style>

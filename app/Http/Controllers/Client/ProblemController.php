@@ -49,7 +49,8 @@ class ProblemController extends Controller
             ->where('problem_id','=',$problem->id)
             ->count('id')>8;
 
-        return view('client.problem',compact('problem','samples','solutions','has_more'));
+        $hasSpj=file_exists(base_path('storage/data/'.$problem->id.'/spj/spj.cpp'));
+        return view('client.problem',compact('problem','samples','solutions','has_more','hasSpj'));
     }
 
     /**
