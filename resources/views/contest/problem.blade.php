@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title',trans('main.Problem').$problem->id.' | '.config('oj.main.siteName'))
+@section('title',trans('main.Problem').$problem->index.' | '.trans('main.Contest').$contest->id.' | '.config('oj.main.siteName'))
 
 @section('content')
 
@@ -15,11 +15,8 @@
     <div class="container">
 
         <div class="col-md-8 col-sm-12 col-12">
-            <div class="my-container">
-                @if($problem->state==0)
-                    [<font class="text-red">{{trans('main.Hidden')}}</font>]
-                @endif
-                <h3 class="text-center">{{$problem->id}}. {{$problem->title}}</h3>
+            <div class="my-container bg-white">
+                <h3 class="text-center">{{$problem->index}}. {{$problem->title}}</h3>
                 <hr class="mt-0">
                 <div >
                     <h4 class="text-sky">Description</h4>
@@ -52,7 +49,7 @@
                         {!! $problem->hint !!}
                     @endif
 
-                    @if($problem->source!=null)
+                    @if(strtotime($contest->end_time)<strtotime(date('Y-m-d H:i:s')) && $problem->source!=null)
                         <h4 class="mt-2 text-sky">Source</h4>
                         {!!$problem->source !!}
                     @endif
@@ -62,8 +59,11 @@
 
         <div class="col-md-4 col-sm-12 col-12">
 
+            {{-- 菜单 --}}
+            @include('contest.menu')
+
             {{-- 题目信息 --}}
-            <div class="my-container">
+            <div class="my-container bg-white">
 
                 <h5>Problem Infomation</h5>
                 <hr class="mt-0">
@@ -85,7 +85,7 @@
                         <tr>
                             <td nowrap>Special Judge:</td>
                             @if($problem->spj==1)
-                                <td class="text-red">Yes</td>
+                                <td><font class="text-red">Yes</font> @if(!$hasSpj)(System: Missing File) @endif</td>
                             @else
                                 <td>No</td>
                             @endif
@@ -97,68 +97,20 @@
             </div>
 
 
-            {{-- 提交记录--}}
-            @auth
-                <div class="my-container">
 
-                    <h5>{{trans('main.MySolution')}}</h5>
-                    <hr class="mt-0">
-
-                    @if($solutions->count()==0)
-                        <div class="alert alert-dismissible"><h6>{{trans('sentence.noSolutions')}}</h6></div>
-                    @else
-                        <div class="table-responsive">
-                            <table id="table-solutions-sm" class="table table-hover">
-                                <thead>
-                                <tr>
-
-                                    <th>#</th>
-                                    <th>Result</th>
-                                    <th>Time</th>
-                                    <th>Memory</th>
-                                    <th>Language</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <style type="text/css">
-                                    #table-solutions-sm td, #table-solutions-sm th{padding: 0;text-align:center}
-                                </style>
-                                @foreach($solutions as $sol)
-                                    <tr>
-                                        <td>{{$sol->id}}</td>
-                                        <td nowrap class="{{config('oj.resColor.'.$sol->result)}}">
-                                            @if($sol->result<4)
-                                                <i class="fa fa-spinner" aria-hidden="true"></i>
-                                            @endif
-                                            {{config('oj.result.'.$sol->result)}}
-                                        </td>
-                                        <td>{{$sol->time}}ms</td>
-                                        <td>{{round($sol->memory,2)}}MB</td>
-                                        <td>{{config('oj.lang.'.$sol->language)}}</td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endif
-                    @if($has_more)
-                        <div class="text-right">
-                            <a href="{{route('status',['pid'=>$problem->id,'username'=>Auth::user()->username])}}">{{trans('main.More')}}>></a>
-                        </div>
-                    @endif
-                </div>
-            @endauth
 
             {{-- 提交窗口 --}}
-            <div class="my-container">
+            <div class="my-container bg-white">
 
                 <h5>{{trans('sentence.Submit')}}</h5>
                 <hr class="m-0">
                 <form action="{{route('submit_solution')}}" method="post" enctype="multipart/form-data">
                     @csrf
                     {{csrf_field()}}
-                    <input name="solution[pid]" value="{{$problem->id}}" hidden>
-                    {{--                    <input name="solution[cid]" value="{{$contest->id}}" hidden>--}}
+                    <input name="solution[pid]" value="{{$problem->problem_id}}" hidden>
+
+                    <input name="solution[index]" value="{{$problem->index}}" hidden>
+                    <input name="solution[cid]" value="{{$contest->id}}" hidden>
 
                     <div>
                         <ul class="nav nav-tabs nav-justified mb-1">
@@ -200,7 +152,7 @@
                         <select onchange="document.getElementById('code_lang').value=this.value" class="form-control-plaintext border">
                             <option disabled selected>{{trans('sentence.Choose Language')}}</option>
                             @foreach(config('oj.lang') as $key=>$res)
-                                <option value="{{$key}}">{{$res}}</option>
+                                <option value="{{$key}}" {{Cookie::get('submit_language')==$key?'selected':''}}>{{$res}}</option>
                             @endforeach
                         </select>
                     </div>

@@ -24,6 +24,7 @@ Auth::routes();
 Route::get('/', 'Client\HomeController@index')->name('home');
 Route::get('/home', 'Client\HomeController@index');
 Route::get('/status','Client\StatusController@index')->name('status');
+Route::get('/solution/{id}','Client\StatusController@solution')->where(['id'=>'[0-9]+'])->name('solution');
 Route::get('/problems','Client\ProblemController@problems')->name('problems');
 Route::get('/problem/{id}','Client\ProblemController@problem')->where(['id'=>'[0-9]+'])->name('problem');
 

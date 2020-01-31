@@ -12,7 +12,7 @@
         }
     </style>
     <div class="container">
-        <div class="my-container table-responsive">
+        <div class="my-container bg-white table-responsive">
             <table class="table table-hover">
                 <thead>
                 <tr>
@@ -42,10 +42,10 @@
                                 </select>
                             </div>
                         </th>
-                        <th>Time</th>
-                        <th>Memory</th>
-                        <th>Language</th>
-                        <th>Submit Time</th>
+                        <th>{{__('main.Time')}}</th>
+                        <th>{{__('main.Memory')}}</th>
+                        <th>{{__('main.Language')}}</th>
+                        <th>{{__('main.Submit Time')}}</th>
                         <button type="submit" hidden></button>
                     </form>
                 </tr>

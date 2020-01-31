@@ -5,7 +5,7 @@
 @section('content')
 
     <div class="container">
-        <div class="my-container table-responsive">
+        <div class="my-container bg-white table-responsive">
             {{$problems->links()}}
             <table class="table table-hover">
                 <thead>
