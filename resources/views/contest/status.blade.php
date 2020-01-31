@@ -80,6 +80,9 @@
             {{-- 菜单 --}}
             @include('contest.menu')
 
+            {{--  竞赛信息 --}}
+            @include('contest.information')
+
         </div>
 
     </div>

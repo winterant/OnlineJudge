@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\DB;
 
 class ContestController extends Controller
 {
+    public function contests(){
+        $contests=DB::table('contests')->orderByDesc('start_time')->paginate(10);
+        return view('client.contests',compact('contests'));
+    }
+
     public function home($id){
         $contest=DB::table('contests')->find($id);
         $problems=DB::table('problems')

@@ -1,15 +1,20 @@
 <?php
 return [
     "Home"          => "Home",
-    "Problem"       => "Problem",
     "Problems"      => "Problems",
+    "Problem"       => "Problem",
     "Status"        => "Status",
     "Solutions"     => "Solutions",
     "Solution"      => "Solution",
     "Contest"       => "Contest",
     "Contests"      => "Contests",
+    "All Contests"  => "All Contests",
     "Rank"          => "Rank",
     "User"          => "User",
+    "Overview"      => "Overview",
+    "Infomation"    => "Infomation",
+    "Statistics"    => "Statistics",
+    "Discussion"    => "Discussion",
 
     "Register"      => "Register",
     "Login"         => "Login",
@@ -23,7 +28,13 @@ return [
     "Source"        => "Source",
     "AC/Submit"     => "AC/Submit",
     "ACRate"        => "ACRate",
-    "Hidden"        =>"Hidden ☆ before use",
+    "Hidden"        => "Hidden ☆ before use",
+    "Private"       => "Private",
+
+    "months"        => "[*,1] month|[2,*] months",
+    "days"          => "[*,1] day|[2,*] days",
+    "hours"         => "[*,1] hour|[2,*] hours",
+    "problems"      => "[*,1] problem|[2,*] problems",
 
 
     "Time"          => "Time",
