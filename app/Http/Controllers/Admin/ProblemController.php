@@ -25,10 +25,10 @@ class ProblemController extends Controller
         ];
         //可无。附加批量操作按钮
         $oper_checked=[
-            sprintf('<a href="javascript:change_state_to(1);"
+            sprintf('<a href="javascript:change_state_to(1);" class="ml-2"
                     title="选中的题目将启用，允许普通用户在题库中查看和提交!"
                     data-toggle="tooltip" data-placement="bottom">题目状态公开</a>'),
-            sprintf('<a href="javascript:change_state_to(0);"
+            sprintf('<a href="javascript:change_state_to(0);" class="ml-2"
                     title="选中的题目将密封，普通用户无法在题库中查看和提交，但不会影响竞赛!"
                     data-toggle="tooltip" data-placement="bottom">状态设为隐藏</a>')
         ];

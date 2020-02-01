@@ -93,7 +93,7 @@
                         <input type="checkbox" name="problem[spj]" value="{{isset($problem->spj)?$problem->spj:0}}"
                             class="custom-control-input" id="customCheck"
                             onchange="$('#spj_file').attr('disabled',!$(this).prop('checked'));$(this).val($(this).prop('checked')?1:0)"
-                            @if($problem->spj==1)checked @endif>
+                            @if(isset($problem) && $problem->spj==1)checked @endif>
                         <label class="custom-control-label pt-1" for="customCheck">启用特判</label>
                     </div>
                     <div class="form-group">

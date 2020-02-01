@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function users(){
+    public function users(Request $request){
         $secTitle='用户列表';
         $thead=['id'=>'#',
             'username'=>'登录名',
@@ -16,25 +16,45 @@ class UserController extends Controller
             'nick'=>'姓名',
             'school'=>'学校',
             'class'=>'班级',
-            'submit'=>'提交',
-            'solved'=>'解决',
             'created_at'=>'注册于',
         ];
 
         $oper_checked=[
-            sprintf('<a href="javascript:alert(\'暂未实现删除用户!\');"
-                    title="选中的将被删除!"
+            sprintf('<a href="javascript:alert(\'暂未实现!\');" class="ml-2"
+                    title="选中的用户将被禁止修改个人资料!"
+                    data-toggle="tooltip" data-placement="bottom">禁止修改</a>
+                    
+                    <a href="javascript:alert(\'暂未实现!\');" class="ml-2"
+                    title="选中的用户将被设为仅有 1 次修改个人资料的机会！可用于防止用户乱改个人资料"
+                    data-toggle="tooltip" data-placement="bottom">允许修改1</a>
+                    
+                    <a href="javascript:alert(\'暂未实现!\');" class="ml-2"
+                    title="选中的用户将被设为有 3 次修改个人资料的机会!"
+                    data-toggle="tooltip" data-placement="bottom">允许修改5</a>
+                    
+                    <a href="javascript:alert(\'暂未实现删除用户!\');" class="ml-2"
+                    title="选中的用户将被删除!"
                     data-toggle="tooltip" data-placement="bottom">批量删除</a>'),
         ];
 
         $list=DB::table('users')->select(array_keys($thead))->orderBy('id')->paginate(20);
         $operation=[];//操作
         foreach ($list as $item){
-//            $item->username=sprintf('<a href="%s" target="_blank">%s</a>',route('user',$item->id),$item->username);
+            $username=''.$item->username;
+            $item->username=sprintf('<a href="%s" target="_blank">%s</a>',route('user',$username),$username);
 
-            $operation[$item->id]=sprintf('<a href="%s" class="mr-2">
-                                                      <i class="fa fa-trash" aria-hidden="true"></i> 删除
-                                                  </a>','javascript:alert(\'暂未实现删除用户!\')');
+            $operation[$item->id]=sprintf('
+                <a href="%s" class="mr-2" target="_blank"
+                    title="修改"
+                    data-toggle="tooltip" data-placement="bottom">
+                    <i class="fa fa-edit" aria-hidden="true"></i>
+                </a>
+                <a href="%s" title="删除"
+                    data-toggle="tooltip" data-placement="bottom">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </a>',
+                route('user_edit',$username),
+                'javascript:alert(\'暂未实现删除用户!\')');
         }
         return view('admin.list',compact('list','secTitle','thead','oper_checked','operation'));
     }

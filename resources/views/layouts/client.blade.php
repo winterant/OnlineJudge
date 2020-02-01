@@ -73,11 +73,11 @@
             <!-- Authentication Links -->
             @guest
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}">{{ trans('Login') }}</a>
+                    <a class="nav-link" href="{{ route('login') }}">{{ trans('main.Login') }}</a>
                 </li>
                 @if (Route::has('register'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">{{ trans('Register') }}</a>
+                        <a class="nav-link" href="{{ route('register') }}">{{ trans('main.Register') }}</a>
                     </li>
                 @endif
             @else
@@ -89,17 +89,16 @@
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 
-                        <a class="dropdown-item" href="#">个人信息</a>
+                        <a class="dropdown-item" href="{{route('user',Auth::user()->username)}}">{{trans('main.Profile')}}</a>
 
                         <div class="dropdown-divider"></div>
                         @if(Auth::user()->is_admin())
-                            <a class="dropdown-item" href="{{route('admin.home')}}">后台管理</a>
+                            <a class="dropdown-item" href="{{route('admin.home')}}">{{trans('main.Administration')}}</a>
                         @endif
 
-                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ route('logout') }}"
                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                            {{ __('Logout') }}
+                            {{ __('main.Logout') }}
                         </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf

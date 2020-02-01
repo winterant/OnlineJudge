@@ -24,7 +24,7 @@ class StatusController extends Controller
         if(isset($_GET['pid'])&&$_GET['pid']!='')
             $list=$list->where('problem_id','=',$_GET['pid']);
         if(isset($_GET['username'])&&$_GET['username']!='')
-            $list=$list->where('username','=',$_GET['username']);
+            $list=$list->where('username','like',$_GET['username'].'%');
         if(isset($_GET['result'])&&$_GET['result']!=-1)
             $list=$list->where('result','=',$_GET['result']);
         $list=$list->orderByDesc('solutions.id')
