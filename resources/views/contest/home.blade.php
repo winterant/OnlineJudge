@@ -37,8 +37,8 @@
                         $('#remain').html(Math.max(0,remain-1))
                         $('#progress').css('width',(length-remain)/length*100+'%')
 
-                        var remain_t=( (remain>3600*24*30) ? parseInt(remain/(3600*24*30))+'/' : '' ); remain%=3600*24*30
-                        remain_t+=( (remain>3600*24) ? parseInt(remain/(3600*24)) : '' ); remain%=3600*24
+                        var remain_t=( (remain>3600*24*30) ? parseInt(remain/(3600*24*30))+' months &nbsp;' : '' ); remain%=3600*24*30
+                        remain_t+=( (remain>3600*24) ? parseInt(remain/(3600*24))+' days &nbsp;' : '' ); remain%=3600*24
                         remain_t+=parseInt(remain/3600)+':'; remain%=3600
                         remain_t+=parseInt(remain/60)+':'; remain%=60
                         remain_t+=remain;
