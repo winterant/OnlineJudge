@@ -22,7 +22,7 @@
         }
         .sidebar-sticky {
             height: 100%;
-            padding: 1rem 0;
+            padding: .7rem 0;
             overflow-y: auto;
         }
         /*下面是菜单栏滚动条样式*/
@@ -88,7 +88,7 @@
 </head>
 <body>
 
-<div class="h-100" style="padding-top: 60px;">
+<div class="h-100" style="padding-top: 54px;">
 
 
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="max-height:45px;z-index: 5">
@@ -126,40 +126,28 @@
 
             <ul class="navbar-nav ml-auto">
                 <!-- Authentication Links -->
-                @guest
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">{{ trans('Login') }}</a>
-                    </li>
-                    @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ trans('Register') }}</a>
-                        </li>
-                    @endif
-                @else
+                <li class="nav-item dropdown">
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        {{ Auth::user()->username }} <span class="caret"></span>
+                    </a>
 
-                    <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ Auth::user()->username }} <span class="caret"></span>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+
+                        <a class="dropdown-item" href="{{route('user',Auth::user()->username)}}">{{trans('main.Profile')}}</a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                           onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                            {{ __('main.Logout') }}
                         </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
 
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-
-                            <a class="dropdown-item" href="#">个人信息</a>
-
-                            <div class="dropdown-divider"></div>
-
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
-                            </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
-                        </div>
-                    </li>
-                @endguest
             </ul>
-
 
         </div>
     </nav>
@@ -182,13 +170,13 @@
                     <ul id="menu-user" class="collapse">
 
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
-                                <i class="fa fa-universal-access" aria-hidden="true"></i> 权限管理</a>
+                            <a class="nav-link border-top" href="{{route('admin.users')}}">
+                                <i class="fa fa-list" aria-hidden="true"></i> 账号列表</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.users')}}">
-                                <i class="fa fa-list" aria-hidden="true"></i> 账号列表</a>
+                            <a class="nav-link border-top" href="#">
+                                <i class="fa fa-universal-access" aria-hidden="true"></i> 权限管理</a>
                         </li>
 
                         <li class="nav-item">

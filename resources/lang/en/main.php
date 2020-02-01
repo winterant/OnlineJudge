@@ -18,11 +18,17 @@ return [
 
     "Register"      => "Register",
     "Login"         => "Login",
+    "Logout"         => "Logout",
     "Username"      => "Username",
     "E-Mail Address"=> "E-Mail Address",
     "Password"      => "Password",
     "Confirm Password" => "Confirm Password",
     "Remember Me"   => "Remember Me",
+    "Profile"       => "Profile",
+    "Administration"=> "Administration",
+    "Name"          => "Name",
+    "School"        => "School",
+    "Class"         => "Class",
 
     "Title"         => "Title",
     "Source"        => "Source",

@@ -5,8 +5,9 @@
 @section('content')
 
     <div class="container">
-        <div class="my-container table-responsive">
-            <h5 class="mb-5 p-3 alert-danger">
+        <div class="my-container alert-danger">
+            <h5>
+                <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
                 @if(isset($msg))
                     {!! $msg !!}
                 @else

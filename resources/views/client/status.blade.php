@@ -33,7 +33,7 @@
                         </th>
                         <th>
                             <div class="form-group m-0 p-0 bmd-form-group">
-                                <select name="result" class="form-control" onChange="javascript:this.form.submit();">
+                                <select name="result" class="form-control" onchange="this.form.submit();">
                                     <option class="form-control" value="-1">All Result</option>
                                     @foreach(config('oj.result') as $key=>$res)
                                         <option value="{{$key}}" class="{{config('oj.resColor.'.$key)}}"

@@ -1,6 +1,9 @@
 <?php
 return [
 
+    "Operation failed"  => "Operation failed",
+
+    "user_edit_chances" => "You have :i more chances to modify your profile!",
 //    auth/register.blade.php
     "Must fill"         => "Must fill",
     "Non essential"     => "Non essential, reset password by email",
