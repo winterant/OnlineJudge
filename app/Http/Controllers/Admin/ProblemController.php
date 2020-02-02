@@ -20,7 +20,7 @@ class ProblemController extends Controller
             'spj'=>'特判',
             'submit'=>'提交',
             'solved'=>'解决',
-            'in_date'=>'添加时间',
+            'created_at'=>'添加时间',
             'state'=>'状态',
         ];
         //可无。附加批量操作按钮

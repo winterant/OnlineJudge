@@ -19,7 +19,7 @@ class StatusController extends Controller
     {
         $list=DB::table('solutions')
             ->join('users','solutions.user_id','=','users.id')
-            ->select('solutions.id','problem_id','username','result','time','memory','language','submit_time')
+            ->select('solutions.id','problem_id','user_id','nick','username','result','time','memory','language','submit_time')
             ->where('contest_id','<',1);
         if(isset($_GET['pid'])&&$_GET['pid']!='')
             $list=$list->where('problem_id','=',$_GET['pid']);
@@ -33,7 +33,14 @@ class StatusController extends Controller
     }
 
     public function solution($id){
-        $solution=DB::table('solutions')->find($id);
+
+        $solution=DB::table('solutions')
+            ->join('users','solutions.user_id','=','users.id')
+            ->select(['solutions.id','problem_id','contest_id','user_id','username','result','time','memory',
+                'submit_time','judge_time','code','code_length','language'])
+            ->where('solutions.id',$id)->first();
+        if(!Auth::user()->privilege('view_solution')&&Auth::id()!=$solution->user_id)
+            return view('client.fail',['msg'=>trans('sentence.Permission denied')]);
         return view('client.solution',compact('solution'));
     }
 

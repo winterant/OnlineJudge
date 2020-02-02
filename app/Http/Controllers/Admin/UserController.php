@@ -30,7 +30,7 @@ class UserController extends Controller
                     
                     <a href="javascript:alert(\'暂未实现!\');" class="ml-2"
                     title="选中的用户将被设为有 3 次修改个人资料的机会!"
-                    data-toggle="tooltip" data-placement="bottom">允许修改5</a>
+                    data-toggle="tooltip" data-placement="bottom">允许修改3</a>
                     
                     <a href="javascript:alert(\'暂未实现删除用户!\');" class="ml-2"
                     title="选中的用户将被删除!"

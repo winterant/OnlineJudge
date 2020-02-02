@@ -146,9 +146,8 @@
 
 
                     <div class="form-group">
-                        <input id="code_lang" name="solution[language]" hidden>
+                        <input id="code_lang" name="solution[language]" value="{{Cookie::get('submit_language')}}" hidden>
                         <select onchange="document.getElementById('code_lang').value=this.value" class="form-control-plaintext border">
-                            <option disabled selected>{{trans('sentence.Choose Language')}}</option>
                             @foreach(config('oj.lang') as $key=>$res)
                                 <option value="{{$key}}" {{Cookie::get('submit_language')==$key?'selected':''}}>{{$res}}</option>
                             @endforeach

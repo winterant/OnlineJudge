@@ -17,8 +17,6 @@
             </p>
             <form action="" method="post" class="d-flex">
                 @csrf
-                <input type="text" name="user[id]" value="{{$user->id}}" hidden>
-                <input type="text" name="user[username]" value="{{$user->username}}" hidden>
                 <div class="form-inline">
                     <label for="">
                         {{trans('main.Name')}}：

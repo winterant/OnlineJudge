@@ -17,11 +17,8 @@ class User extends Authenticatable
      *
      * @var array
      */
-//    protected $fillable = [
-//        'name', 'email', 'password',
-//    ];
     protected $fillable = [
-        'username', 'password',
+        'username', 'email', 'password',
     ];
 
     /**
@@ -58,8 +55,7 @@ class User extends Authenticatable
     public function privilege($power){
         //判断用户是否具有某项权限, admin一定有权
         if(DB::table('privileges')->where('user_id',$this->id)
-            ->where('authority',$power)
-            ->orWhere('authority','admin')->exists()){
+            ->whereIn('authority',[$power,'admin'])->exists()){
             return true;
         }else{
             return false;

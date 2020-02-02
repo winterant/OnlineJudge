@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -27,14 +29,50 @@ class UserController extends Controller
         // 提交修改资料
         if ($request->isMethod('post')){
             $user=$request->input('user');
-            if(DB::table('users')->where('id',$user['id'])->value('revise') <= 0)
+            if(!Auth::user()->is_admin() && Auth::user()->username!=$username //不是管理员&&不是本人 || 没有修改次数
+                ||DB::table('users')->where('username',$username)->value('revise') <= 0)
                 return redirect(url()->previous());
             foreach ($user as $item) if($item==null)$item='';  //DB update null 会报错
-            $ret=DB::table('users')->where('id',$user['id'])->update($user);
+            $user['updated_at']=date('Y-m-d H:i:s');
+            $ret=DB::table('users')->where('username',$username)->update($user);
             if($ret!=1) //失败
                 return view('client.fail',['msg'=>trans('sentence.Operation failed')]);
-            DB::table('users')->where('id',$user['id'])->decrement('revise');
-            return redirect(route('user',$user['username']));
+
+            if(Auth::user()->username==$username) //是本人则次数减一
+                DB::table('users')->where('username',$username)->decrement('revise');
+            return redirect(route('user',$username));
+        }
+    }
+
+    public function password_reset(Request $request,$username){
+
+        // 提供界面
+        if ($request->isMethod('get')){
+            return view('client.password_reset',compact('username'));
+        }
+
+        // 提交修改
+        if ($request->isMethod('post')){
+
+            $user=$request->input('user');
+            if(Auth::user()->username!=$username) //不是本人
+                return view('client.fail',['msg'=>trans('Operation failed')]);
+
+            if(strlen($user['new_password'])<8) //密码太短
+                return back()->with('message','密码太短');
+
+            if($user['new_password']!=$user['password_confirmation']) //密码不一致
+                return back()->with('message','密码不一致');
+
+            $old=DB::table('users')->where('username',$username)->value('password');
+            if(!Hash::check($user['old_password'],$old))  //原密码错误
+                return back()->with('message','原密码错误');
+
+            $ret=DB::table('users')->where('username',$username)
+                ->update(['password'=>Hash::make($user['new_password']),'updated_at'=>date('Y-m-d H:i:s')]);
+            if($ret!=1) //失败
+                return view('client.fail',['msg'=>trans('sentence.Operation failed')]);
+            return view('client.success',['msg'=>'Password modified successfully']);
         }
     }
 }

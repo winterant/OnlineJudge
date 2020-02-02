@@ -29,7 +29,9 @@ Route::get('/problems','Client\ProblemController@problems')->name('problems');
 Route::get('/problem/{id}','Client\ProblemController@problem')->where(['id'=>'[0-9]+'])->name('problem');
 Route::get('/contests','Client\ContestController@contests')->name('contests');
 Route::get('/user/{username}','Client\UserController@user')->name('user');
-Route::any('/user/{username}/edit','Client\UserController@user_edit')->name('user_edit');
+Route::any('/user/{username}/edit','Client\UserController@user_edit')->middleware('auth')->name('user_edit');
+Route::any('/user/{username}/password_reset','Client\UserController@password_reset')
+    ->middleware('auth')->name('password_reset');
 
 Route::post('/status/submit_solution','Client\StatusController@create')->middleware('auth')->name('submit_solution');
 
