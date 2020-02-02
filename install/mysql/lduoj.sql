@@ -1,28 +1,59 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : mysql5.7
+ Source Server         : mysql_win10
  Source Server Type    : MySQL
  Source Server Version : 50726
  Source Host           : localhost:3306
- Source Schema         : lduoj
+ Source Schema         : woj
 
  Target Server Type    : MySQL
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 25/01/2020 15:30:02
+ Date: 02/02/2020 23:21:01
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for privilege
+-- Table structure for contest_problems
+-- ----------------------------
+DROP TABLE IF EXISTS `contest_problems`;
+CREATE TABLE `contest_problems`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `contest_id` int(11) NULL DEFAULT NULL,
+  `index` int(11) NULL DEFAULT 1001,
+  `problem_id` int(11) NULL DEFAULT NULL,
+  `solved` int(11) NULL DEFAULT 0,
+  `submit` int(11) NULL DEFAULT 0,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Fixed;
+
+-- ----------------------------
+-- Table structure for contests
+-- ----------------------------
+DROP TABLE IF EXISTS `contests`;
+CREATE TABLE `contests`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `type` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT 'acm' COMMENT 'acm,oi,exam',
+  `title` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `description` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
+  `start_time` datetime(0) NULL DEFAULT NULL,
+  `end_time` datetime(0) NULL DEFAULT NULL,
+  `access` tinyint(4) NULL DEFAULT 0 COMMENT '0:public,1:password,2:private',
+  `password` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `user_id` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for privileges
 -- ----------------------------
 DROP TABLE IF EXISTS `privileges`;
 CREATE TABLE `privileges`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `authority` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
@@ -33,7 +64,7 @@ CREATE TABLE `privileges`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `problems`;
 CREATE TABLE `problems`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `description` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
   `input` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
@@ -45,7 +76,8 @@ CREATE TABLE `problems`  (
   `memory_limit` int(11) NULL DEFAULT 0 COMMENT 'MB',
   `submit` int(11) NULL DEFAULT 0,
   `solved` int(11) NULL DEFAULT 0,
-  `in_date` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
   `state` tinyint(4) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
@@ -55,10 +87,11 @@ CREATE TABLE `problems`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `solutions`;
 CREATE TABLE `solutions`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `problem_id` int(11) NOT NULL DEFAULT 0,
   `contest_id` int(11) NULL DEFAULT -1,
   `user_id` int(11) NULL DEFAULT NULL,
+  `judge_type` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'acm,oi,exam',
   `result` tinyint(4) NULL DEFAULT 0,
   `time` int(11) NULL DEFAULT 0,
   `memory` float NULL DEFAULT 0,
@@ -75,22 +108,21 @@ CREATE TABLE `solutions`  (
   INDEX `pid`(`problem_id`) USING BTREE,
   INDEX `res`(`result`) USING BTREE,
   INDEX `cid`(`contest_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for users
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` varchar(60) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `password` varchar(60) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `nick` varchar(60) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `school` varchar(60) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `class` varchar(60) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
-  `submit` int(11) NULL DEFAULT 0,
-  `solved` int(11) NULL DEFAULT 0,
+  `revise` int(11) NULL DEFAULT 2,
   `created_at` datetime(0) NULL DEFAULT NULL,
   `updated_at` datetime(0) NULL DEFAULT NULL,
   `remember_token` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,

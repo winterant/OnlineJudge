@@ -41,7 +41,7 @@ class ContestController extends Controller
         $solutions=DB::table('solutions')
             ->join('users','solutions.user_id','=','users.id')
             ->join('contest_problems','solutions.problem_id','=','contest_problems.problem_id')
-            ->select(['solutions.id','index','username','result','time','memory','language','submit_time'])
+            ->select(['solutions.id','index','user_id','username','nick','result','time','memory','language','submit_time'])
             ->where('solutions.contest_id',$id)
             ->where('contest_problems.contest_id',$id);
         if(isset($_GET['index'])&&$_GET['index']!='')

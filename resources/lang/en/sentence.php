@@ -1,6 +1,7 @@
 <?php
 return [
 
+    "Permission denied" => "Permission denied",
     "Operation failed"  => "Operation failed",
 
     "user_edit_chances" => "You have :i more chances to modify your profile!",
@@ -11,6 +12,9 @@ return [
 //    auth/login.blade.php
     "Forgot Password"   => "Forgot Your Password?",
     "Please login first"=> "Please login first!",
+
+//    client/password_reset
+    "Reset Password"    => "Reset Password",
 
 //    client/problem.blade.php
     "noSolutions"       => "You didn't submit any solution!",
