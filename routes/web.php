@@ -55,6 +55,7 @@ Route::middleware(['auth','CheckAdmin'])->prefix('admin')->name('admin.')->group
 
 //    user
     Route::get('/users', 'Admin\UserController@users')->name('users');
+    Route::post('/change_revise_to','Admin\UserController@change_revise_to')->name('change_revise_to');
 
 
 //    problem

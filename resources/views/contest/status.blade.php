@@ -15,7 +15,12 @@
 
     <div class="container">
 
-        <div class="col-md-8 col-sm-12 col-12">
+        <div class="col-12 col-sm-12">
+            {{-- 菜单 --}}
+            @include('contest.menu')
+        </div>
+
+        <div class="col-sm-12 col-12">
             <div class="my-container bg-white table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -84,15 +89,6 @@
             </div>
         </div>
 
-        <div class="col-md-4 col-sm-12 col-12">
-
-            {{-- 菜单 --}}
-            @include('contest.menu')
-
-            {{--  竞赛信息 --}}
-            @include('contest.information')
-
-        </div>
 
     </div>
 

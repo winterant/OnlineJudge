@@ -61,22 +61,40 @@
                     alert(ret+'条数据已更新状态！');
                 }
             );
-            {{--$.ajax({--}}
-            {{--    headers: {--}}
-            {{--        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
+        }
+
+
+        function change_revise_to(revise) {
+            // 修改用户可以修改个人资料的次数
+            var uids=[];
+            $('td input[type=checkbox]:checked').each(function () { uids.push($(this).val()); });
+            {{--$.post(--}}
+            {{--    '{{route('admin.change_revise_to')}}',--}}
+            {{--    {--}}
+            {{--        '_token':'{{csrf_token()}}',--}}
+            {{--        'uids':uids,--}}
+            {{--        'revise':revise,--}}
             {{--    },--}}
-            {{--    type:"post",--}}
-            {{--    url: "{{route('admin.change_state_to')}}",--}}
-            {{--    data:{'pids':pids,'state':state},--}}
-            {{--    dataType:"json",--}}
-            {{--    success:function (ret) {--}}
-            {{--        console.log(ret);--}}
-            {{--    },--}}
-            {{--    error:function (ret) {--}}
-            {{--        alert("系统错误 "+ret);--}}
-            {{--        console.log(ret);--}}
+            {{--    function (ret) {--}}
+            {{--        location.reload();--}}
+            {{--        alert(ret+'条数据已更新！');--}}
             {{--    }--}}
-            {{--})--}}
+            {{--);--}}
+            $.ajax({
+                headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                type:"post",
+                url: "{{route('admin.change_revise_to')}}",
+                data:{'uids':uids,'revise':revise},
+                dataType:"json",
+                success:function (ret) {
+                    location.reload();
+                    alert(ret+'条数据已更新！');
+                },
+                error:function (ret) {
+                    alert("系统错误 "+ret.toString());
+                    console.log(ret);
+                }
+            })
         }
     </script>
 @endsection

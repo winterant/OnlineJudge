@@ -39,16 +39,17 @@
                                 </li>
                                 <li class="pr-2"><div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">
                                         {{strtoupper($item->type)}}</div></li>
-                                @if($item->access>0)
-                                    <li class="pr-2"><div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">
-                                            {{$item->access==1?__('main.Password'):__('main.Private')}}
-                                    </div></li>
-                                @endif
+                                <li class="pr-2">
+                                    <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">
+                                        {{ucfirst($item->access)}}
+                                    </div>
+                                </li>
                                 @if(strtotime(date('Y-m-d H:i:s'))>strtotime($item->start_time))
                                     <li>
                                         <i class="fa fa-user-o pr-1 text-sky" aria-hidden="true"></i>
                                         ×{{\Illuminate\Support\Facades\DB::table('solutions')->distinct()
-                                            ->where('contest_id',$item->id)->count('user_id')}}
+                                            ->where('contest_id',$item->id)
+                                            ->where('submit_time','<',''.$item->end_time)->count('user_id')}}
                                     </li>
                                 @endif
                             </ul>

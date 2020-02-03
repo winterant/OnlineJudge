@@ -57,4 +57,9 @@ return [
     "File"          => "File",
     "MySolution"    => "My history solutions",
     "More"          => "More",
+
+
+//    contest
+    "Solved"        => "Solved",
+    "Penalty"       => "Penalty",
 ];

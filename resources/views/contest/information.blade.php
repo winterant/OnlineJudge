@@ -27,16 +27,15 @@
             <div class="d-inline border bg-light pl-2 pr-2" style="border-radius: 12px">
                 {{strtoupper($contest->type)}}
             </div>
-            @if($contest->access>0)
-                <div class="d-inline border bg-light pl-2 pr-2 ml-2" style="border-radius: 12px">
-                    {{$contest->access==1?__('main.Password'):__('main.Private')}}
-                </div>
-            @endif
+            <div class="d-inline border bg-light pl-2 pr-2 ml-2" style="border-radius: 12px">
+                {{ucfirst($contest->access)}}
+            </div>
         </li>
         <li>
             <i class="fa fa-user-o pr-2 text-sky" aria-hidden="true"></i>
             ×{{\Illuminate\Support\Facades\DB::table('solutions')->distinct()
-                ->where('contest_id',$contest->id)->count('user_id')}}
+                ->where('contest_id',$contest->id)
+                ->where('submit_time','<',''.$contest->end_time)->count('user_id')}}
         </li>
     </ul>
 </div>
