@@ -14,6 +14,11 @@
 
     <div class="container">
 
+        <div class="col-12">
+            {{-- 菜单 --}}
+            @include('contest.menu')
+        </div>
+
         <div class="col-md-8 col-sm-12 col-12">
             <div class="my-container bg-white">
                 <h3 class="text-center">{{$problem->index}}. {{$problem->title}}</h3>
@@ -58,9 +63,6 @@
         </div>
 
         <div class="col-md-4 col-sm-12 col-12">
-
-            {{-- 菜单 --}}
-            @include('contest.menu')
 
             {{-- 题目信息 --}}
             <div class="my-container bg-white">
@@ -167,7 +169,7 @@
             </div>
 
             {{--  竞赛信息 --}}
-            @include('contest.information')
+{{--            @include('contest.information')--}}
 
         </div>
 

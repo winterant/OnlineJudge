@@ -16,19 +16,20 @@ class UserController extends Controller
             'nick'=>'姓名',
             'school'=>'学校',
             'class'=>'班级',
+            'revise'=>'可修改资料次数',
             'created_at'=>'注册于',
         ];
 
         $oper_checked=[
-            sprintf('<a href="javascript:alert(\'暂未实现!\');" class="ml-2"
+            sprintf('<a href="javascript:change_revise_to(0);" class="ml-2"
                     title="选中的用户将被禁止修改个人资料!"
                     data-toggle="tooltip" data-placement="bottom">禁止修改</a>
                     
-                    <a href="javascript:alert(\'暂未实现!\');" class="ml-2"
+                    <a href="javascript:change_revise_to(1);" class="ml-2"
                     title="选中的用户将被设为仅有 1 次修改个人资料的机会！可用于防止用户乱改个人资料"
                     data-toggle="tooltip" data-placement="bottom">允许修改1</a>
                     
-                    <a href="javascript:alert(\'暂未实现!\');" class="ml-2"
+                    <a href="javascript:change_revise_to(3);" class="ml-2"
                     title="选中的用户将被设为有 3 次修改个人资料的机会!"
                     data-toggle="tooltip" data-placement="bottom">允许修改3</a>
                     
@@ -57,5 +58,14 @@ class UserController extends Controller
                 'javascript:alert(\'暂未实现删除用户!\')');
         }
         return view('admin.list',compact('list','secTitle','thead','oper_checked','operation'));
+    }
+
+    public function change_revise_to(Request $request){
+        if($request->ajax()){
+            $uids=$request->input('uids')?:[];
+            $revise=$request->input('revise');
+            return DB::table('users')->whereIn('id',$uids)->update(['revise'=>$revise]);
+        }
+        return 0;
     }
 }

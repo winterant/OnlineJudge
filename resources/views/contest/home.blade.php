@@ -14,13 +14,18 @@
 
     <div class="container">
 
+        <div class="col-12 col-sm-12">
+            {{-- 菜单 --}}
+            @include('contest.menu')
+        </div>
+
         <div class="col-md-8 col-sm-12 col-12">
             <div class="my-container bg-white">
 
                 <h3>{{$contest->id}}. {{$contest->title}}</h3>
                 <hr class="mt-0">
 
-{{--                进度条与倒计时--}}
+                {{--                进度条与倒计时--}}
                 <div class="progress">
                     <p id="length" class="d-none">{{$length=strtotime($contest->end_time)-strtotime($contest->start_time)}}</p>
                     <p id="remain" class="d-none">{{$remain=strtotime($contest->end_time)-time()}}</p>
@@ -77,40 +82,36 @@
                     <p class="alert-success p-3">{{$contest->description}}</p>
                 @endif
 
-                    <table class="table table-sm table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>{{trans('main.Title')}}</th>
-                                <th>{{trans('main.AC/Submit')}}</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($problems as $item)
-                            <tr>
-                                <td>{{$item->index}}</td>
-                                <td nowrap><a href="{{route('contest.problem',[$contest->id,$item->index])}}">{{$item->title}}</a></td>
-                                <td>@if($item->submit>0){{$item->solved}}&nbsp;/&nbsp;{{$item->submit}}@else - @endif</td>
-                                <td></td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                <table class="table table-sm table-hover">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{{trans('main.Title')}}</th>
+                        <th>{{trans('main.AC/Submit')}}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($problems as $item)
+                        <tr>
+                            <td>{{$item->index}}</td>
+                            <td nowrap><a href="{{route('contest.problem',[$contest->id,$item->index])}}">{{$item->title}}</a></td>
+                            <td>@if($item->submit>0){{$item->solved}}&nbsp;/&nbsp;{{$item->submit}}@else - @endif</td>
+                            <td></td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
 
             </div>
         </div>
 
         <div class="col-md-4 col-sm-12 col-12">
 
-            {{-- 菜单 --}}
-            @include('contest.menu')
-
             {{--  竞赛信息 --}}
             @include('contest.information')
 
         </div>
-
     </div>
 
 @endsection
