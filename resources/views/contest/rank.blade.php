@@ -77,8 +77,8 @@
                                 <tr>
                                     <td>
                                         @if($user['rank']==1)
-                                            <font style="background-color: #fff959">
-                                                <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp;Winner
+                                            <font class="text-nowrap" style="background-color: #fff959">
+                                                <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp;WIN
                                             </font>
                                         @elseif($user['rank']<=count($users)*0.1)
                                             <font style="background-color: #fff95a">{{$user['rank']}}</font>
@@ -99,7 +99,12 @@
                                     <td>{{$user['AC']}}</td>
                                     <td>{{$user['penalty']}}</td>
                                     @foreach($indexs as $i=>$pid)
-                                        @if(isset($user[$i]['AC_time']))
+                                        @if(isset($user[$i]['first'])) {{--  一血 --}}
+                                            <td class="border" style="background-color: #12d000" nowrap>
+                                                {{$user[$i]['AC_time']}}
+                                                {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':' '}}
+                                            </td>
+                                        @elseif(isset($user[$i]['AC_time']))
                                             <td class="border" style="background-color: #87ec97" nowrap>
                                                 {{$user[$i]['AC_time']}}
                                                 {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':' '}}
@@ -114,6 +119,12 @@
                             @endforeach
                     </tbody>
                 </table>
+                <div>
+                    <div><i class="fa fa-square" aria-hidden="true" style="color: #12d000"></i> The first to solve the problem</div>
+                    <div><i class="fa fa-square" aria-hidden="true" style="color: #87ec97"></i> Solved the problem</div>
+                    <div><i class="fa fa-square" aria-hidden="true" style="color: #ffafa7"></i> Failed to solve the problem</div>
+                    <div><i class="fa fa-square-o" aria-hidden="true"></i> No solutions submited</div>
+                </div>
 
             </div>
         </div>

@@ -16,6 +16,7 @@ return [
     "Statistics"    => "Statistics",
     "Discussion"    => "Discussion",
 
+    "Confirm"       => "Confirm",
     "Register"      => "Register",
     "Login"         => "Login",
     "Logout"         => "Logout",

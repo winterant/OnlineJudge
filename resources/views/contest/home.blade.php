@@ -95,7 +95,13 @@
                     @foreach($problems as $item)
                         <tr>
                             <td>{{$item->index}}</td>
-                            <td nowrap><a href="{{route('contest.problem',[$contest->id,$item->index])}}">{{$item->title}}</a></td>
+                            <td nowrap>
+                                @if(Auth::user()->privilege('contest')||time()>strtotime($contest->start_time))
+                                    <a href="{{route('contest.problem',[$contest->id,$item->index])}}">{{$item->title}}</a>
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td>@if($item->submit>0){{$item->solved}}&nbsp;/&nbsp;{{$item->submit}}@else - @endif</td>
                             <td></td>
                         </tr>

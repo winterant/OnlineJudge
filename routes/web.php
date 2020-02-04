@@ -37,8 +37,9 @@ Route::post('/status/submit_solution','Client\StatusController@create')->middlew
 
 
 // Contest
-Route::middleware(['auth'])->prefix('contest/{id}')
+Route::middleware(['auth','CheckContest'])->prefix('contest/{id}')
     ->name('contest.')->where(['id'=>'[0-9]+'])->group(function () {
+
     Route::get('/', 'Client\ContestController@home')->name('home');
 
     Route::get('/problem/{pid}', 'Client\ContestController@problem')
@@ -47,6 +48,8 @@ Route::middleware(['auth'])->prefix('contest/{id}')
     Route::get('/rank', 'Client\ContestController@rank')->name('rank');
     Route::get('/statistics', 'Client\ContestController@statistics')->name('statistics');
 });
+Route::any('contest/{id}/password', 'Client\ContestController@password')
+    ->middleware(['auth'])->name('contest.password'); //不检查密码
 
 
 // Administration
