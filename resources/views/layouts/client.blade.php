@@ -27,24 +27,24 @@
     </button>
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link text-nowrap" href="{{route('home')}}">
+                <a class="nav-link text-nowrap p-2" href="{{route('home')}}" style="padding: 0">
                     <i class="fa fa-home" aria-hidden="true">&nbsp;{{trans('main.Home')}}</i>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-nowrap" href="{{route('status')}}">
+                <a class="nav-link text-nowrap p-2" href="{{route('status')}}">
                     <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;{{trans('main.Status')}}</i>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-nowrap" href="{{route('problems')}}">
+                <a class="nav-link text-nowrap p-2" href="{{route('problems')}}">
                     <i class="fa fa-list" aria-hidden="true">&nbsp;{{trans('main.Problems')}}</i>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-nowrap" href="{{route('contests')}}">
+                <a class="nav-link text-nowrap p-2" href="{{route('contests')}}">
                     <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
                 </a>
             </li>
@@ -118,8 +118,9 @@
 <div id="footer" class="text-center">
     <hr>
     <div>Server Time：<font id="localtime">{{date('Y-m-d H:i:s')}}</font></div>
+    <p class="mb-0">Ludong University Online Judge.</p>
     <p>
-        Copyright © 2019 <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">LDU Online Judge</a>. All Rights Reserved
+        © 2020 <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">LDU Online Judge</a>. All Rights Reserved.
     </p>
 </div>
 
