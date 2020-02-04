@@ -27,21 +27,39 @@
                 <h4 class="text-center">{{$contest->id}}. {{$contest->title}}</h4>
                 <hr class="mt-0">
 
+                @if($contest->lock_rate>0&&time()>strtotime($lock_time))  {{-- 封榜了 --}}
+                    <div class="float-left">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: red"></i>
+                        {{trans('sentence.rank_end_time',['time'=>$lock_time])}}
+
+                        @if(Auth::user()->is_admin()) {{-- 管理员可以取消封榜 --}}
+                            <a href="javascript:" onclick="$('#form_cl').submit()" class="ml-2">{{trans('main.Cancel')}}</a>
+                            <form id="form_cl" action="{{route('contest.cancel_lock',$contest->id)}}" method="post"
+                                  onsubmit="return confirm('当前处于封榜状态，确认开放榜单？')" hidden>
+                                @csrf
+                            </form>
+                        @endif
+                    </div>
+                @endif
+
                 <div class="pull-right">
                     <form id="form_switch" action="" method="get">
-                        <input type="text" name="buti" value="{{isset($_GET['buti'])?$_GET['buti']:'false'}}" hidden>
-                        <input type="text" name="big" value="{{isset($_GET['big'])?$_GET['big']:'false'}}" hidden>
 
                         <link href="{{asset('static/switch-dist/switch.css')}}" rel="stylesheet"/>
                         <script src="{{asset('static/switch-dist/switch.js')}}"></script>
-                        @if(Auth::user()->is_admin() || $contest->lock_rate==0)
-                            包含赛后：<input id="switch_buti" type="checkbox">
+
+                        @if($contest->end_time<time() && ( Auth::user()->is_admin() || $contest->lock_rate==0) )
+                            <font title="{{__('sentence.Up to now')}}">{{trans('main.Up to now')}}：</font>
+                            <input id="switch_buti" type="checkbox">
+                            <input type="text" name="buti" value="{{isset($_GET['buti'])?$_GET['buti']:'false'}}" hidden>
                         @endif
-                        全屏：<input id="switch_big" type="checkbox" value="{{isset($_GET['big'])?$_GET['big']:0}}">
+                        {{trans('main.Full screen')}}：<input id="switch_big" type="checkbox">
+                        <input type="text" name="big" value="{{isset($_GET['big'])?$_GET['big']:'false'}}" hidden>
+
                         <script>
                             new Switch($("#switch_buti")[0],{
                                 size: 'small',
-                                checked: {{isset($_GET['buti'])?$_GET['buti']:'false'}},
+                                checked: $('input[name=buti]').attr('value')==='true',
                                 onChange:function () {
                                     $("input[name=buti]").attr('value',this.getChecked());
                                     $("#form_switch").submit();
@@ -49,13 +67,14 @@
                             });
                             new Switch($("#switch_big")[0],{
                                 size: 'small',
-                                checked: {{isset($_GET['big'])?$_GET['big']:'false'}},
+                                checked: $('input[name=big]').attr('value')==='true',
                                 onChange:function () {
                                     $("input[name=big]").attr('value',this.getChecked());
                                     $("#form_switch").submit();
                                 }
                             });
                         </script>
+
                     </form>
                 </div>
 
@@ -67,7 +86,7 @@
                             <th></th>
                             <th>{{trans('main.Solved')}}</th>
                             <th>{{trans('main.Penalty')}}</th>
-                            @foreach($indexs as $i=>$pid)
+                            @foreach($index_map as $i=>$pid)
                                 <th><a href="{{route('contest.problem',[$contest->id,$i])}}">{{$i}}</a></th>
                             @endforeach
                         </tr>
@@ -83,7 +102,7 @@
                                         @elseif($user['rank']<=count($users)*0.1)
                                             <font style="background-color: #fff95a">{{$user['rank']}}</font>
                                         @elseif($user['rank']<=count($users)*0.3)
-                                            <font style="background-color: #e2e2e2">{{$user['rank']}}</font>
+                                            <font style="background-color: #e8e8e8">{{$user['rank']}}</font>
                                         @elseif($user['rank']<=count($users)*0.6)
                                             <font style="background-color: #f5ac00">{{$user['rank']}}</font>
                                         @else
@@ -98,8 +117,8 @@
                                     </td>
                                     <td>{{$user['AC']}}</td>
                                     <td>{{$user['penalty']}}</td>
-                                    @foreach($indexs as $i=>$pid)
-                                        @if(isset($user[$i]['first'])) {{--  一血 --}}
+                                    @foreach($index_map as $i=>$pid)
+                                        @if(isset($user[$i]['first'])) {{--  first AC --}}
                                             <td class="border" style="background-color: #12d000" nowrap>
                                                 {{$user[$i]['AC_time']}}
                                                 {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':' '}}

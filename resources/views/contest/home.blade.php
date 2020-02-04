@@ -22,10 +22,10 @@
         <div class="col-md-8 col-sm-12 col-12">
             <div class="my-container bg-white">
 
-                <h3>{{$contest->id}}. {{$contest->title}}</h3>
+                <h3 class="text-center">{{$contest->id}}. {{$contest->title}}</h3>
                 <hr class="mt-0">
 
-                {{--                进度条与倒计时--}}
+                {{--  进度条与倒计时 --}}
                 <div class="progress">
                     <p id="length" class="d-none">{{$length=strtotime($contest->end_time)-strtotime($contest->start_time)}}</p>
                     <p id="remain" class="d-none">{{$remain=strtotime($contest->end_time)-time()}}</p>
@@ -47,6 +47,7 @@
                         if(remain<0)//结束了
                         {
                             $('#remain_area').html('Ended')
+                            $('#progress').css('width','100%')
                             ended=true;
                             clearInterval(timer_id);
                             return remain_time;

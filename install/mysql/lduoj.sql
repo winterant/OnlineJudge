@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 50726
  Source Host           : localhost:3306
- Source Schema         : woj
+ Source Schema         : lduoj
 
  Target Server Type    : MySQL
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 02/02/2020 23:21:01
+ Date: 04/02/2020 22:42:28
 */
 
 SET NAMES utf8mb4;
@@ -29,7 +29,18 @@ CREATE TABLE `contest_problems`  (
   `solved` int(11) NULL DEFAULT 0,
   `submit` int(11) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Fixed;
+
+-- ----------------------------
+-- Table structure for contest_users
+-- ----------------------------
+DROP TABLE IF EXISTS `contest_users`;
+CREATE TABLE `contest_users`  (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `contest_id` int(11) NULL DEFAULT NULL,
+  `user_id` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Table structure for contests
@@ -42,7 +53,8 @@ CREATE TABLE `contests`  (
   `description` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
   `start_time` datetime(0) NULL DEFAULT NULL,
   `end_time` datetime(0) NULL DEFAULT NULL,
-  `access` tinyint(4) NULL DEFAULT 0 COMMENT '0:public,1:password,2:private',
+  `lock_rate` float NULL DEFAULT 0 COMMENT '封榜比例，0.00~1.00',
+  `access` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT 'public' COMMENT 'public,password,private',
   `password` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `user_id` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
@@ -108,7 +120,7 @@ CREATE TABLE `solutions`  (
   INDEX `pid`(`problem_id`) USING BTREE,
   INDEX `res`(`result`) USING BTREE,
   INDEX `cid`(`contest_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for users
