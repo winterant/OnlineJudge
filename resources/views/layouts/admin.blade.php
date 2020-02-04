@@ -98,7 +98,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <a class="navbar-brand pl-2" href="{{route('admin.home')}}">{{config('oj.main.siteName')}}/后台</a>
+        <a class="navbar-brand pl-2" href="{{route('admin.home')}}">后台管理</a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
             <span class="navbar-toggler-icon"></span>
@@ -275,7 +275,7 @@
         <div id="footer" class="text-center mb-2">
             <hr>
             <div>Server Time：<font id="localtime">{{date('Y-m-d H:i:s')}}</font></div>
-            Copyright © 2020 <a target="_blank" href="https://github.com/iamwinter">LDU Online Judge</a>. All Rights Reserved<br>
+            © 2020 <a target="_blank" href="https://github.com/iamwinter">LDU Online Judge</a>.
         </div>
 
     </main>
