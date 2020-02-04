@@ -17,6 +17,7 @@ return [
     "Discussion"    => "Discussion",
 
     "Confirm"       => "Confirm",
+    "Cancel"        => "Cancel",
     "Register"      => "Register",
     "Login"         => "Login",
     "Logout"         => "Logout",
@@ -63,4 +64,6 @@ return [
 //    contest
     "Solved"        => "Solved",
     "Penalty"       => "Penalty",
+    "Full screen"   => "Full screen",
+    "Up to now"     => "Up to now",
 ];

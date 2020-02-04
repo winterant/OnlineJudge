@@ -28,4 +28,7 @@ return [
 //    contest.password
     "pwd wrong"         => "The password is wrong",
 
+//    contest.rank
+    "rank_end_time"     => "To contestants, stoped updating at :time",
+    "Up to now"         => "Add submission after contest to the ranking",
 ];

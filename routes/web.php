@@ -46,6 +46,8 @@ Route::middleware(['auth','CheckContest'])->prefix('contest/{id}')
         ->where(['pid'=>'[0-9]+'])->name('problem');
     Route::get('/status', 'Client\ContestController@status')->name('status');
     Route::get('/rank', 'Client\ContestController@rank')->name('rank');
+    Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->name('cancel_lock');//取消封榜
+
     Route::get('/statistics', 'Client\ContestController@statistics')->name('statistics');
 });
 Route::any('contest/{id}/password', 'Client\ContestController@password')
