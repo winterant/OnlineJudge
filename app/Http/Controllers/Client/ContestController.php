@@ -15,6 +15,27 @@ class ContestController extends Controller
         return view('contest.contests',compact('contests'));
     }
 
+    public function password(Request $request,$id){
+        // 验证密码
+        $contest=DB::table('contests')->find($id);
+        if ($request->isMethod('get')){
+            return view('contest.password',compact('contest'));
+        }
+        if ($request->isMethod('post'))//接收提交的密码
+        {
+            if($request->input('pwd')==$contest->password) //通过验证
+            {
+                DB::table('contest_users')->updateOrInsert(['contest_id'=>$contest->id,'user_id'=>Auth::id()]);//保存
+                return redirect(route('contest.home',$contest->id));
+            }
+            else
+            {
+                $msg=trans('sentence.pwd wrong');
+                return view('contest.password',compact('contest','msg'));
+            }
+        }
+    }
+
     public function home($id){
         $contest=DB::table('contests')->find($id);
         $problems=DB::table('problems')
@@ -153,6 +174,12 @@ class ContestController extends Controller
                     //AC罚时+额外罚时!
                     $penalty += strtotime($firstAC->submit_time)-strtotime($contest->start_time)
                         + $users[$user->id][$i]['wrong']*config('oj.main.penalty_acm');
+
+                    //标记是不是第一个AC此题
+                    if(DB::table('solutions')->where('contest_id',$id)
+                            ->where('problem_id',$pid)->where('result',4)
+                            ->where('id','<',$firstAC->id)->doesntExist())
+                        $users[$user->id][$i]['first']=true;
                 }
                 else  //没有AC, 设置wrong
                 {

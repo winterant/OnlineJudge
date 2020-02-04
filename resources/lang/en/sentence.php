@@ -24,4 +24,8 @@ return [
     "Choose Language"   => "----Choose Language----",
     "Input Code"        => "Input your code to solve this problem...",
 
+
+//    contest.password
+    "pwd wrong"         => "The password is wrong",
+
 ];

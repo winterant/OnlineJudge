@@ -28,7 +28,7 @@
                                 <li class="pr-3"><i class="fa fa-calendar-times-o pr-1 text-sky" aria-hidden="true"></i>{{$item->end_time}}</li>
                                 <li class="pr-2">
                                     <i class="fa fa-clock-o text-sky" aria-hidden="true"></i>
-                                    @php $time_len=strtotime($item->end_time)-strtotime($item->start_time) @endphp
+                                    {{null,$time_len=strtotime($item->end_time)-strtotime($item->start_time)}}
                                     @if($time_len>3600*24*30)
                                         {{round($time_len/(3600*24*30),1)}} {{trans_choice('main.months',round($time_len/(3600*24*30),1))}}
                                     @elseif($time_len>3600*24)
@@ -47,9 +47,12 @@
                                 @if(strtotime(date('Y-m-d H:i:s'))>strtotime($item->start_time))
                                     <li>
                                         <i class="fa fa-user-o pr-1 text-sky" aria-hidden="true"></i>
-                                        ×{{\Illuminate\Support\Facades\DB::table('solutions')->distinct()
-                                            ->where('contest_id',$item->id)
-                                            ->where('submit_time','<',''.$item->end_time)->count('user_id')}}
+                                        ×{{$item->access=='public'?
+                                            \Illuminate\Support\Facades\DB::table('solutions')->distinct()
+                                            ->where('contest_id',$item->id)->count('user_id')
+                                            :
+                                            \Illuminate\Support\Facades\DB::table('contest_users')
+                                            ->where('contest_id',$item->id)->count('user_id')}}
                                     </li>
                                 @endif
                             </ul>

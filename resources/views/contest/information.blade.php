@@ -33,9 +33,12 @@
         </li>
         <li>
             <i class="fa fa-user-o pr-2 text-sky" aria-hidden="true"></i>
-            ×{{\Illuminate\Support\Facades\DB::table('solutions')->distinct()
-                ->where('contest_id',$contest->id)
-                ->where('submit_time','<',''.$contest->end_time)->count('user_id')}}
+            ×{{$contest->access=='public'?
+                \Illuminate\Support\Facades\DB::table('solutions')->distinct()
+                ->where('contest_id',$contest->id)->count('user_id')
+                :
+                \Illuminate\Support\Facades\DB::table('contest_users')
+                ->where('contest_id',$contest->id)->count('user_id')}}
         </li>
     </ul>
 </div>
