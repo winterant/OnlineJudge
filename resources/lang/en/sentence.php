@@ -1,6 +1,7 @@
 <?php
 return [
 
+    "No data"           => "No data!",
     "Permission denied" => "Permission denied",
     "Operation failed"  => "Operation failed",
 
@@ -12,6 +13,9 @@ return [
 //    auth/login.blade.php
     "Forgot Password"   => "Forgot Your Password?",
     "Please login first"=> "Please login first!",
+
+//    user
+    "User not found"    => "The user :un is not exist!",
 
 //    client/password_reset
     "Reset Password"    => "Reset Password",
@@ -28,7 +32,9 @@ return [
 //    contest.password
     "pwd wrong"         => "The password is wrong",
 
-//    contest.rank
+//    contest
+    "Complete Profile"  => "Please complete your personal information before entering the contest!",
+    "Waiting start for" => "Waiting start for",
     "rank_end_time"     => "To contestants, stoped updating at :time",
     "Up to now"         => "Add submission after contest to the ranking",
 ];

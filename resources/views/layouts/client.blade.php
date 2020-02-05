@@ -118,7 +118,6 @@
 <div id="footer" class="text-center">
     <hr>
     <div>Server Time：<font id="localtime">{{date('Y-m-d H:i:s')}}</font></div>
-    <p class="mb-0">Ludong University Online Judge.</p>
     <p>
         © 2020 <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">LDU Online Judge</a>. All Rights Reserved.
     </p>

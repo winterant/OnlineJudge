@@ -61,11 +61,11 @@
                             <div>
                                 <button class="btn border">
                                     @if(strtotime(date('Y-m-d H:i:s'))<strtotime($item->start_time))
-                                        <i class="fa fa-circle text-yellow pr-1" aria-hidden="true"></i>Waiting
+                                        <i class="fa fa-circle text-yellow pr-1" aria-hidden="true"></i>{{__('main.Waiting')}}
                                     @elseif(strtotime(date('Y-m-d H:i:s'))>strtotime($item->end_time))
-                                        <i class="fa fa-thumbs-up text-red pr-1" aria-hidden="true"></i>Ended
+                                        <i class="fa fa-thumbs-up text-red pr-1" aria-hidden="true"></i>{{__('main.Ended')}}
                                     @else
-                                        <i class="fa fa-hourglass text-green pr-1" aria-hidden="true"></i>Running
+                                        <i class="fa fa-hourglass text-green pr-1" aria-hidden="true"></i>{{__('main.Running')}}
                                     @endif
                                 </button>
                             </div>

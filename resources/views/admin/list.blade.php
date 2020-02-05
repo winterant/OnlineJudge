@@ -33,7 +33,7 @@
                         @foreach($item as $key=>$td)
                             <td nowrap>{!! $td !!}</td>
                         @endforeach
-                        <td nowrap>@if(isset($operation)){!! $operation[$item->id] !!}@endif</td>
+                        <td nowrap>@if(isset($operation)){!! $operation[$item->id] !!} @endif</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -42,7 +42,7 @@
     </div>
     <script>
         $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip(); //提示
+            $('[data-toggle="tooltip"]').tooltip({placement:'bottom'}); //提示
         });
 
         function change_state_to(state) {

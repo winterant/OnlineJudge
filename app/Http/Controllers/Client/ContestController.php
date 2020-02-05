@@ -133,12 +133,12 @@ class ContestController extends Controller
         if($contest->access != 'public'){  //私有竞赛or密码竞赛，从表获取
             $users_temp=DB::table('contest_users')
                 ->join('users','users.id','=','user_id')
-                ->select(['users.id','username','nick'])->distinct()
+                ->select(['users.id','username','nick','school'])->distinct()
                 ->where('contest_id',$id)->get();
         }else{   //从提交记录获取账号
             $users_temp=DB::table('users')
                 ->join('solutions','solutions.user_id','=','users.id')
-                ->select(['users.id','username','nick'])->distinct()
+                ->select(['users.id','username','nick','school'])->distinct()
                 ->where('contest_id',$id)
                 ->where('submit_time','<',self::get_rank_end_time($contest))->get();
         }
@@ -187,6 +187,7 @@ class ContestController extends Controller
             }
 
             $users[$user->id]['username']=$user->username;
+            $users[$user->id]['school']=$user->school;
             $users[$user->id]['nick']=$user->nick;
             $users[$user->id]['AC']=$AC_count;
             $users[$user->id]['penalty']=$penalty;

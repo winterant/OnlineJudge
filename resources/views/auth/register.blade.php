@@ -15,7 +15,8 @@
 
                             <div class="col-md-6">
                                 <input id="name" type="text" class="form-control @error('username') is-invalid @enderror"
-                                      name="username" value="{{ old('username') }}" required autofocus placeholder="{{__('sentence.Must fill')}}">
+                                      name="username" value="{{ old('username') }}"
+                                       required autofocus placeholder="{{__('sentence.Must fill')}}" maxlength="16">
 
                                 @error('username')
                                     <span class="invalid-feedback" role="alert">
@@ -44,7 +45,8 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('main.Password') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
+                                       name="password" required autocomplete="new-password" maxlength="30">
 
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
