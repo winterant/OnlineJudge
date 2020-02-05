@@ -25,12 +25,12 @@ class ProblemController extends Controller
         ];
         //可无。附加批量操作按钮
         $oper_checked=[
-            sprintf('<a href="javascript:change_state_to(1);" class="ml-2"
+            sprintf('<a href="javascript:change_state_to(1);" class="px-1"
                     title="选中的题目将启用，允许普通用户在题库中查看和提交!"
-                    data-toggle="tooltip" data-placement="bottom">题目状态公开</a>'),
-            sprintf('<a href="javascript:change_state_to(0);" class="ml-2"
+                    data-toggle="tooltip">题目状态公开</a>'),
+            sprintf('<a href="javascript:change_state_to(0);" class="px-1"
                     title="选中的题目将密封，普通用户无法在题库中查看和提交，但不会影响竞赛!"
-                    data-toggle="tooltip" data-placement="bottom">状态设为隐藏</a>')
+                    data-toggle="tooltip">状态设为隐藏</a>')
         ];
 
         $list=DB::table('problems')->select(array_keys($thead))->orderBy('id')->paginate(100);
@@ -41,14 +41,14 @@ class ProblemController extends Controller
             $item->spj = ($item->spj==1)?'特判':'-';
             $item->state = ($item->state==1)?'公开':'隐藏☆私有';
             $operation[$item->id]=sprintf('
-                <a href="%s" target="_blank" class="mr-2"
-                    data-toggle="tooltip" data-placement="bottom" title="修改">
+                <a href="%s" target="_blank" class="px-1"
+                    data-toggle="tooltip" title="修改">
                     <i class="fa fa-edit" aria-hidden="true"></i></a>
-                <a href="%s" class="mr-2"
-                    data-toggle="tooltip" data-placement="bottom" title="删除">
+                <a href="%s" class="px-1"
+                    data-toggle="tooltip" title="删除">
                     <i class="fa fa-trash" aria-hidden="true"></i></a>
-                <a href="#" target="_blank"
-                    data-toggle="tooltip" data-placement="bottom" title="测试数据">
+                <a href="#" target="_blank" class="px-1"
+                    data-toggle="tooltip" title="测试数据">
                     <i class="fa fa-file" aria-hidden="true"></i></a>',
                 route('admin.update_problem_withId',$item->id),
                 'javascript:alert(\'为保证系统稳定，不允许删除题目，您可以修改它！\')'

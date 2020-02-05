@@ -32,6 +32,7 @@ return [
     "Name"          => "Name",
     "School"        => "School",
     "Class"         => "Class",
+    "From"          => "From",
 
     "Title"         => "Title",
     "Source"        => "Source",
@@ -66,4 +67,7 @@ return [
     "Penalty"       => "Penalty",
     "Full screen"   => "Full screen",
     "Up to now"     => "Up to now",
+    "Waiting"       => "Waiting",
+    "Running"       => "Running",
+    "Ended"         => "Ended",
 ];

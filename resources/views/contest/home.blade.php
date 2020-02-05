@@ -46,7 +46,7 @@
 
                         if(remain<0)//结束了
                         {
-                            $('#remain_area').html('Ended')
+                            $('#remain_area').html("{{__('main.Ended')}}")
                             $('#progress').css('width','100%')
                             ended=true;
                             clearInterval(timer_id);
@@ -56,7 +56,7 @@
                         {
                             $('#time_show').removeClass('text-right');
                             $('#time_show').addClass('text-left');
-                            remain_t+='Waiting for ';
+                            remain_t+="{{__('sentence.Waiting start for')}}"+' ';
                             remain-=length;
                         }else{
                             //比赛中
@@ -64,8 +64,8 @@
                         }
 
 
-                        remain_t+=( (remain>3600*24*30) ? parseInt(remain/(3600*24*30))+' months &nbsp;' : '' ); remain%=3600*24*30
-                        remain_t+=( (remain>3600*24) ? parseInt(remain/(3600*24))+' days &nbsp;' : '' ); remain%=3600*24
+                        remain_t+=( (remain>3600*24*30) ? parseInt(remain/(3600*24*30))+' months and ' : '' ); remain%=3600*24*30
+                        remain_t+=( (remain>3600*24) ? parseInt(remain/(3600*24))+' days and ' : '' ); remain%=3600*24
                         remain_t+=parseInt(remain/3600)+':'; remain%=3600
                         remain_t+=parseInt(remain/60)+':'; remain%=60
                         remain_t+=remain;

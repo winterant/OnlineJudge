@@ -111,16 +111,6 @@
                 <li class="nav-item"><a class="nav-link text-nowrap mb-0" href="{{route('status')}}">
                         <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;</i>{{trans('main.Status')}}</a></li>
 
-{{--                <li class="nav-item dropdown">--}}
-{{--                    <a class="nav-link dropdown-toggle" href="#"--}}
-{{--                       id="navbarDropdownMenuLink" data-toggle="dropdown">下拉菜单</a>--}}
-{{--                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">--}}
-{{--                        <a class="dropdown-item" href="#">Action</a> <a class="dropdown-item" href="#">Another action</a> <a class="dropdown-item" href="#">Something else here</a>--}}
-{{--                        <div class="dropdown-divider">--}}
-{{--                        </div> <a class="dropdown-item" href="#">Separated link</a>--}}
-{{--                    </div>--}}
-{{--                </li>--}}
-
             </ul>
 
 

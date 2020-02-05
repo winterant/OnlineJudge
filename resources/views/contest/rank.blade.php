@@ -83,7 +83,8 @@
                         <tr>
                             <th>{{trans('main.Rank')}}</th>
                             <th>{{trans('main.User')}}</th>
-                            <th></th>
+                            @if(config('oj.main.rank_show_school'))<th>{{trans('main.School')}}</th> @endif
+                            @if(config('oj.main.rank_show_nick'))<th>{{trans('main.Name')}}</th> @endif
                             <th>{{trans('main.Solved')}}</th>
                             <th>{{trans('main.Penalty')}}</th>
                             @foreach($index_map as $i=>$pid)
@@ -112,9 +113,10 @@
                                     <td nowrap>
                                         <a href="{{route('user',$user['username'])}}">{{$user['username']}}</a>
                                     </td>
-                                    <td nowrap>
-                                        {{$user['nick']}}
-                                    </td>
+
+                                    @if(config('oj.main.rank_show_school'))<td>{{$user['school']}}</td> @endif
+                                    @if(config('oj.main.rank_show_nick'))<td>{{$user['nick']}}</td> @endif
+
                                     <td>{{$user['AC']}}</td>
                                     <td>{{$user['penalty']}}</td>
                                     @foreach($index_map as $i=>$pid)

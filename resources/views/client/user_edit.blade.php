@@ -4,43 +4,76 @@
 
 @section('content')
 
-    <div class="container">
+    <div class="container justify-content-center">
+
         @if($user->revise <= 2)
             <div class="my-container alert-danger">
                 <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
                 {{trans('sentence.user_edit_chances',['i'=>$user->revise])}}
             </div>
         @endif
-        <div class="my-container bg-white">
-            <p style="font-weight: bold;font-size: 1.8rem">
-                <font>{{$user->username}}</font>
-            </p>
-            <form action="" method="post" class="d-flex">
-                @csrf
-                <div class="form-inline">
-                    <label for="">
-                        {{trans('main.Name')}}：
-                        <input type="text" name="user[nick]" value="{{$user->nick}}" class="form-control">
-                    </label>
-                </div>
-                <div class="form-inline">
-                    <label for="">
-                        {{trans('main.School')}}：
-                        <input type="text" name="user[school]" value="{{$user->school}}" class="form-control">
-                    </label>
-                </div>
-                <div class="form-inline">
-                    <label for="">
-                        {{trans('main.Class')}}：
-                        <input type="text" name="user[class]" value="{{$user->class}}" class="form-control">
-                    </label>
-                </div>
 
-                <button class="btn border btn-success ml-4">{{trans('main.Submit')}}</button>
-            </form>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">{{trans('main.User')}} {{trans('main.Infomation')}}</div>
 
+                <div class="card-body">
+                    <form method="POST" action="">
+                        @csrf
+                        <div class="form-group row">
+                            <label for="email" class="col-md-4 col-form-label text-md-right">
+                                {{trans('main.E-Mail Address')}}：
+                            </label>
+                            <div class="col-md-6">
+                                <input id="email" type="email" class="form-control" name="user[email]" value="{{$user->email}}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="school" class="col-md-4 col-form-label text-md-right">
+                                {{trans('main.School')}}：
+                            </label>
+
+                            <div class="col-md-6">
+                                <input id="school" type="text" class="form-control" name="user[school]" value="{{$user->school}}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="class" class="col-md-4 col-form-label text-md-right">
+                                {{trans('main.Class')}}：
+                            </label>
+
+                            <div class="col-md-6">
+                                <input id="class" type="text" class="form-control" name="user[class]" value="{{$user->class}}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="nick" class="col-md-4 col-form-label text-md-right">
+                                {{trans('main.Name')}}：
+                            </label>
+                            <div class="col-md-6">
+                                <input id="nick" type="text" class="form-control" name="user[nick]" value="{{$user->nick}}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-0">
+                            <div class="col-md-8 offset-md-4">
+                                <button type="submit" class="btn btn-primary border">
+                                    {{trans('main.Submit')}}
+                                </button>
+
+                                <a class="btn btn-link" href="{{route('password_reset',Auth::user()->username)}}">
+                                    {{trans('sentence.Reset Password')}}
+                                </a>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
         </div>
-
     </div>
 
 @endsection
