@@ -74,9 +74,7 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="text-center">
-                {{$solutions->appends($_GET)->links()}}
-            </div>
+            {{$solutions->appends($_GET)->links()}}
         </div>
     </div>
 

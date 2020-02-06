@@ -17,7 +17,9 @@ class ProblemController extends Controller
      */
     public function problems(){
         $list=DB::table('problems')
-            ->select('problems.id','title','source','solved','submit','state')
+            ->select('problems.id','title','source','hidden',
+                DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
+                DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as solved"))
             ->orderBy('id')
             ->paginate(100);
         return view('client.problems',['problems' => $list,]);
@@ -31,7 +33,7 @@ class ProblemController extends Controller
         if(!Auth::check() && !config('oj.main.guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
             return view('client.fail',['msg'=>trans('sentence.Please login first')]);
 
-        if (Auth::check() && !Auth::user()->is_admin() && $problem->state==0) //已登录&&不是管理员&&问题隐藏 => 不允许查看
+        if (Auth::check() && !Auth::user()->is_admin() && $problem->hidden==1) //已登录&&不是管理员&&问题隐藏 => 不允许查看
             return view('client.fail',['msg'=>trans('main.Problem').$problem->id.'：'.trans('main.Hidden')]);
 
         //读取样例文件
@@ -53,69 +55,4 @@ class ProblemController extends Controller
         return view('client.problem',compact('problem','samples','solutions','has_more','hasSpj'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Problem  $problem
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Problem $problem)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Problem  $problem
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Problem $problem)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Problem  $problem
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Problem $problem)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Problem  $problem
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Problem $problem)
-    {
-        //
-    }
 }

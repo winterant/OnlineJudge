@@ -11,7 +11,19 @@ use Illuminate\Support\Facades\DB;
 class ContestController extends Controller
 {
     public function contests(){
-        $contests=DB::table('contests')->orderByDesc('start_time')->paginate(10);
+//        DB::connection()->enableQueryLog();
+        $contests=DB::table('contests')
+            ->select(['id','type','title','start_time','end_time','access','password',
+                DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
+                DB::raw("case access when 'public'
+                    then (select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id)
+                    else (select count(DISTINCT C.user_id) from contest_users C where C.contest_id=contests.id)
+                    end as number")])
+            ->orderBy('state')
+            ->orderBy('id')
+            ->paginate(10);
+//        dump(DB::getQueryLog());
+//        dd($contests);
         return view('contest.contests',compact('contests'));
     }
 
@@ -37,11 +49,20 @@ class ContestController extends Controller
     }
 
     public function home($id){
-        $contest=DB::table('contests')->find($id);
+        $contest=DB::table('contests')
+            ->select(['id','type','title','start_time','end_time','access','password','description',
+                DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
+                DB::raw("case access when 'public'
+                    then (select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id)
+                    else (select count(DISTINCT C.user_id) from contest_users C where C.contest_id=contests.id)
+                    end as number")])->find($id);
         $problems=DB::table('problems')
             ->join('contest_problems','contest_problems.problem_id','=','problems.id')
             ->where('contest_id',$id)
-            ->select(['problems.id','problems.title','contest_problems.index','contest_problems.solved','contest_problems.submit'])
+            ->select(['problems.id','problems.title','contest_problems.index',
+                DB::raw("(select count(*) from solutions where contest_id=".$contest->id." and problem_id=problems.id and result=4) as solved"),
+                DB::raw("(select count(*) from solutions where contest_id=".$contest->id." and problem_id=problems.id) as submit"),
+                ])
             ->orderBy('contest_problems.index')
             ->get();
         return view('contest.home',compact('contest','problems'));
@@ -70,14 +91,11 @@ class ContestController extends Controller
             ->join('contest_problems','solutions.problem_id','=','contest_problems.problem_id')
             ->select(['solutions.id','index','user_id','username','nick','result','time','memory','language','submit_time'])
             ->where('solutions.contest_id',$id)
-            ->where('contest_problems.contest_id',$id);
-        if(isset($_GET['index'])&&$_GET['index']!='')
-            $solutions=$solutions->where('index',$_GET['index']);
-        if(isset($_GET['username'])&&$_GET['username']!='')
-            $solutions=$solutions->where('username',$_GET['username']);
-        if(isset($_GET['result'])&&$_GET['result']!=-1)
-            $solutions=$solutions->where('result',$_GET['result']);
-        $solutions=$solutions->orderByDesc('solutions.id')
+            ->where('contest_problems.contest_id',$id)
+            ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('problem_id',$_GET['pid']);})
+            ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username','like',$_GET['username'].'%');})
+            ->when(isset($_GET['result'])&&$_GET['result']!='',function ($q){return $q->where('result',$_GET['result']);})
+            ->orderByDesc('solutions.id')
             ->paginate(10);
 
         return view('contest.status',compact('contest','solutions'));

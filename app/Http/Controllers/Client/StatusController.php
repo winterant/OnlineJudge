@@ -20,15 +20,13 @@ class StatusController extends Controller
         $list=DB::table('solutions')
             ->join('users','solutions.user_id','=','users.id')
             ->select('solutions.id','problem_id','user_id','nick','username','result','time','memory','language','submit_time')
-            ->where('contest_id','<',1);
-        if(isset($_GET['pid'])&&$_GET['pid']!='')
-            $list=$list->where('problem_id','=',$_GET['pid']);
-        if(isset($_GET['username'])&&$_GET['username']!='')
-            $list=$list->where('username','like',$_GET['username'].'%');
-        if(isset($_GET['result'])&&$_GET['result']!=-1)
-            $list=$list->where('result','=',$_GET['result']);
-        $list=$list->orderByDesc('solutions.id')
+            ->where('contest_id','=',-1)
+            ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('problem_id',$_GET['pid']);})
+            ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username','like',$_GET['username'].'%');})
+            ->when(isset($_GET['result'])&&$_GET['result']!='-1',function ($q){return $q->where('result',$_GET['result']);})
+            ->orderByDesc('solutions.id')
             ->paginate(10);
+
         return view('client.status',['solutions' => $list,]);
     }
 
@@ -58,8 +56,8 @@ class StatusController extends Controller
 
         if(!Auth::check() && !config('oj.main.guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
             return view('client.fail',['msg'=>trans('sentence.Please login first')]);
-        $problem=DB::table('problems')->select('state')->find($data['pid']);
-        if (Auth::check() && !Auth::user()->is_admin() && $problem->state==0) //已登录&&不是管理员&&问题隐藏 => 不允许查看
+        $problem=DB::table('problems')->select('hidden')->find($data['pid']);
+        if (Auth::check() && !Auth::user()->is_admin() && $problem->hidden==1) //已登录&&不是管理员&&问题隐藏 => 不允许查看
             return view('client.fail',['msg'=>trans('main.Problem').$problem->id.'：'.trans('main.Hidden')]);
 
 

@@ -129,8 +129,9 @@
     $(function () {
         $("ul li").find("a").each(function () {
             var href = $(this).attr("href")
-            if(location.href[location.href.length-1]=='/')href+='/'; //特判home
-            if (location.href.split('?')[0]===href) {
+            var url=location.href.split('?')[0];
+            if(url[url.length-1]=='/')href+='/'; //特判home
+            if (url===href) {
                 $(this).addClass("active");
             } else {
                 $(this).removeClass("active");

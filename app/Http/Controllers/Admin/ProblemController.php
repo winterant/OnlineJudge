@@ -21,25 +21,28 @@ class ProblemController extends Controller
             'submit'=>'提交',
             'solved'=>'解决',
             'created_at'=>'添加时间',
-            'state'=>'状态',
+            'hidden'=>'隐藏',
         ];
         //可无。附加批量操作按钮
         $oper_checked=[
-            sprintf('<a href="javascript:change_state_to(1);" class="px-1"
-                    title="选中的题目将启用，允许普通用户在题库中查看和提交!"
+            sprintf('<a href="javascript:change_hidden_to(0);" class="px-1"
+                    title="选中的题目将被公开，允许普通用户在题库中查看和提交!"
                     data-toggle="tooltip">题目状态公开</a>'),
-            sprintf('<a href="javascript:change_state_to(0);" class="px-1"
-                    title="选中的题目将密封，普通用户无法在题库中查看和提交，但不会影响竞赛!"
+            sprintf('<a href="javascript:change_hidden_to(1);" class="px-1"
+                    title="选中的题目将被隐藏，普通用户无法在题库中查看和提交，但不会影响竞赛!"
                     data-toggle="tooltip">状态设为隐藏</a>')
         ];
 
-        $list=DB::table('problems')->select(array_keys($thead))->orderBy('id')->paginate(100);
+        $list=DB::table('problems')->select('id','title','source','spj',
+            DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
+            DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as  solved"),
+            'created_at','hidden')->orderBy('id')->paginate(100);
 
         $operation=[];//操作
         foreach ($list as $item){
             $item->title=sprintf('<a href="%s" target="_blank">%s</a>',route('problem',$item->id),$item->title);
             $item->spj = ($item->spj==1)?'特判':'-';
-            $item->state = ($item->state==1)?'公开':'隐藏☆私有';
+            $item->hidden = ($item->hidden==1)?'公开':'隐藏☆私有';
             $operation[$item->id]=sprintf('
                 <a href="%s" target="_blank" class="px-1"
                     data-toggle="tooltip" title="修改">
@@ -119,11 +122,11 @@ class ProblemController extends Controller
     }
 
     //管理员修改题目状态  0密封 or 1公开
-    public function change_state_to(Request $request){
+    public function change_hidden_to(Request $request){
         if($request->ajax()){
             $pids=$request->input('pids')?:[];
-            $state=$request->input('state');
-            return DB::table('problems')->whereIn('id',$pids)->update(['state'=>$state]);
+            $hidden=$request->input('hidden');
+            return DB::table('problems')->whereIn('id',$pids)->update(['hidden'=>$hidden]);
         }
         return 0;
     }
@@ -141,9 +144,10 @@ class ProblemController extends Controller
             $cid=$request->input('cid');
             $sid=$request->input('sid');
 
-            $count=DB::table('solutions')->where('problem_id',$pid)
-                ->orWhere('contest_id',$cid)
-                ->orWhere('id',$sid)
+            $count=DB::table('solutions')
+                ->when($pid,function ($q)use($pid){$q->orWhere('problem_id',$pid);})
+                ->when($cid&&$pid>0,function ($q)use($cid){$q->orWhere('contest_id',$cid);})
+                ->when($sid,function ($q)use($sid){$q->orWhere('id',$sid);})
                 ->update(['result'=>0]);
 
             return view('admin.success',['msg'=>sprintf('已重判%d条提交记录，可前往状态查看',$count)]);
