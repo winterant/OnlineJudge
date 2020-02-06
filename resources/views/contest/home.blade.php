@@ -27,11 +27,11 @@
 
                 {{--  进度条与倒计时 --}}
                 <div class="progress">
-                    <p id="length" class="d-none">{{$length=strtotime($contest->end_time)-strtotime($contest->start_time)}}</p>
-                    <p id="remain" class="d-none">{{$remain=strtotime($contest->end_time)-time()}}</p>
                     <div id="progress" class="progress-bar bg-info" style="width: 0"></div>
                 </div>
                 <div id="time_show" class="text-right mb-2">
+                    <p id="length" class="d-none">{{$length=strtotime($contest->end_time)-strtotime($contest->start_time)}}</p>
+                    <p id="remain" class="d-none">{{$remain=strtotime($contest->end_time)-time()}}</p>
                     <i class="fa fa-clock-o pr-2 text-sky" aria-hidden="true"></i>
                     <font id="remain_area"></font>
                 </div>
@@ -103,7 +103,7 @@
                                     -
                                 @endif
                             </td>
-                            <td>@if($item->submit>0){{$item->solved}}&nbsp;/&nbsp;{{$item->submit}}@else - @endif</td>
+                            <td>@if($item->submit>0){{$item->solved}}&nbsp;/&nbsp;{{$item->submit}}@else - / - @endif</td>
                             <td></td>
                         </tr>
                     @endforeach

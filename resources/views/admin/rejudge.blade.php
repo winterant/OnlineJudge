@@ -12,19 +12,19 @@
             <div class="form-inline">
                 <label for="">
                     重判题目编号：
-                    <input type="number" name="pid" class="form-control">
+                    <input type="number" name="pid" class="form-control" autocomplete="off">
                 </label>
             </div>
             <div class="form-inline">
                 <label for="">
                     重判竞赛编号：
-                    <input type="number" name="cid" class="form-control">
+                    <input type="number" name="cid" class="form-control" autocomplete="off">
                 </label>
             </div>
             <div class="form-inline">
                 <label for="">
                     提交记录编号：
-                    <input type="number" name="sid" class="form-control">
+                    <input type="number" name="sid" class="form-control" autocomplete="off">
                 </label>
             </div>
 

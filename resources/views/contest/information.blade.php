@@ -33,12 +33,7 @@
         </li>
         <li>
             <i class="fa fa-user-o pr-2 text-sky" aria-hidden="true"></i>
-            ×{{$contest->access=='public'?
-                \Illuminate\Support\Facades\DB::table('solutions')->distinct()
-                ->where('contest_id',$contest->id)->count('user_id')
-                :
-                \Illuminate\Support\Facades\DB::table('contest_users')
-                ->where('contest_id',$contest->id)->count('user_id')}}
+            ×{{$contest->number}}
         </li>
     </ul>
 </div>

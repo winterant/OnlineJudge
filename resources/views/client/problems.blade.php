@@ -21,10 +21,10 @@
                 @foreach($problems as $item)
                     <tr>
                         <td>{{$item->id}}</td>
-                        @if($item->state==1 || Auth::check()&&Auth::user()->is_admin())
+                        @if($item->hidden==0 || Auth::check()&&Auth::user()->is_admin())
                             <td nowrap>
                                 <a href="{{route('problem',$item->id)}}">{{$item->title}}</a>
-                                @if($item->state==0)
+                                @if($item->hidden==1)
                                     (<font class="text-red">{{trans('main.Hidden')}}</font>)
                                 @endif
                             </td>

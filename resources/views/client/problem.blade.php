@@ -16,7 +16,7 @@
 
         <div class="col-md-8 col-sm-12 col-12">
             <div class="my-container bg-white">
-                @if($problem->state==0)
+                @if($problem->hidden==1)
                     [<font class="text-red">{{trans('main.Hidden')}}</font>]
                 @endif
                 <h3 class="text-center">{{$problem->id}}. {{$problem->title}}</h3>
@@ -134,7 +134,9 @@
                                         </td>
                                         <td>{{$sol->time}}ms</td>
                                         <td>{{round($sol->memory,2)}}MB</td>
-                                        <td>{{config('oj.lang.'.$sol->language)}}</td>
+                                        <td>
+                                            <a href="{{route('solution',$sol->id)}}" target="_blank">{{config('oj.lang.'.$sol->language)}}</a>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>

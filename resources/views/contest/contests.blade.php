@@ -20,7 +20,9 @@
             <ul class="list-unstyled border-top">
                 @foreach($contests as $item)
                     <li class="d-flex flex-wrap border-bottom pt-3 pb-2">
-                        <div class="col-3 col-sm-1 p-xs-0"><img class="w-100" src="{{asset('images/trophy/gold.png')}}" alt=""></div>
+                        <div class="col-3 col-sm-1 p-xs-0">
+                            <img class="w-100" src="{{$item->state==1?asset('images/trophy/running.png'):asset('images/trophy/gold.png')}}">
+                        </div>
                         <div class="col-9 col-sm-8 pr-0">
                             <h5>{{$item->id}}. <a href="{{route('contest.home',$item->id)}}">{{$item->title}}</a></h5>
                             <ul class="d-flex flex-wrap list-unstyled" style="font-size: .9rem;">
@@ -41,18 +43,14 @@
                                         {{strtoupper($item->type)}}</div></li>
                                 <li class="pr-2">
                                     <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">
-                                        {{ucfirst($item->access)}}
+                                        <font @if($item->access=='public')style="color: green"
+                                            @else style="color: indianred"@endif>{{ucfirst($item->access)}}</font>
                                     </div>
                                 </li>
                                 @if(strtotime(date('Y-m-d H:i:s'))>strtotime($item->start_time))
                                     <li>
                                         <i class="fa fa-user-o pr-1 text-sky" aria-hidden="true"></i>
-                                        ×{{$item->access=='public'?
-                                            \Illuminate\Support\Facades\DB::table('solutions')->distinct()
-                                            ->where('contest_id',$item->id)->count('user_id')
-                                            :
-                                            \Illuminate\Support\Facades\DB::table('contest_users')
-                                            ->where('contest_id',$item->id)->count('user_id')}}
+                                        ×{{$item->number}}
                                     </li>
                                 @endif
                             </ul>

@@ -9,6 +9,12 @@ class HomeController extends Controller
 {
     //home page
     public function index(){
+
+        $notices=DB::table('notices')
+            ->where('state','!=',0)
+            ->orderByDesc('state')
+            ->orderByDesc('updated_at')->paginate(5);
+
         $day=(date("w")+6)%7; //昨天是周几，周日=0
         $this_week=DB::table('solutions')->join('users','users.id','=','solutions.user_id')
             ->where('submit_time','>',date('Y-m-d 00:00:00',time()-3600*24*$day))
@@ -25,6 +31,6 @@ class HomeController extends Controller
             ->groupBy(['user_id'])
             ->orderByDesc('solved')
             ->limit(10)->get();
-        return view('client.home',compact('this_week','last_week'));
+        return view('client.home',compact('notices','this_week','last_week'));
     }
 }

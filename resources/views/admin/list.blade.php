@@ -45,16 +45,16 @@
             $('[data-toggle="tooltip"]').tooltip({placement:'bottom'}); //提示
         });
 
-        function change_state_to(state) {
+        function change_hidden_to(hidden) {
             // 修改题目状态 1公开 or 0隐藏
             var pids=[];
             $('td input[type=checkbox]:checked').each(function () { pids.push($(this).val()); });
             $.post(
-                '{{route('admin.change_state_to')}}',
+                '{{route('admin.change_hidden_to')}}',
                 {
                     '_token':'{{csrf_token()}}',
                     'pids':pids,
-                    'state':state,
+                    'hidden':hidden,
                 },
                 function (ret) {
                     location.reload();

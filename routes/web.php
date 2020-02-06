@@ -37,21 +37,18 @@ Route::post('/status/submit_solution','Client\StatusController@create')->middlew
 
 
 // Contest
-Route::middleware(['auth','CheckContest'])->prefix('contest/{id}')
-    ->name('contest.')->where(['id'=>'[0-9]+'])->group(function () {
+Route::prefix('contest/{id}')
+    ->name('contest.')->where(['id'=>'[0-9]+'])->where(['pid'=>'[0-9]+'])->group(function () {
 
-    Route::get('/', 'Client\ContestController@home')->name('home');
+    Route::get('/', 'Client\ContestController@home')->middleware(['auth','CheckContest'])->name('home');
+    Route::any('/password', 'Client\ContestController@password')->middleware(['auth'])->name('password');
 
-    Route::get('/problem/{pid}', 'Client\ContestController@problem')
-        ->where(['pid'=>'[0-9]+'])->name('problem');
-    Route::get('/status', 'Client\ContestController@status')->name('status');
+    Route::get('/problem/{pid}', 'Client\ContestController@problem')->middleware(['auth','CheckContest'])->name('problem');
+    Route::get('/status', 'Client\ContestController@status')->middleware(['auth','CheckContest'])->name('status');
     Route::get('/rank', 'Client\ContestController@rank')->name('rank');
-    Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->name('cancel_lock');//取消封榜
-
-    Route::get('/statistics', 'Client\ContestController@statistics')->name('statistics');
+//    Route::get('/statistics', 'Client\ContestController@statistics')->name('statistics');
+    Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->middleware(['auth','CheckContest'])->name('cancel_lock');//取消封榜
 });
-Route::any('contest/{id}/password', 'Client\ContestController@password')
-    ->middleware(['auth'])->name('contest.password'); //不检查密码
 
 
 // Administration
@@ -68,6 +65,6 @@ Route::middleware(['auth','CheckAdmin'])->prefix('admin')->name('admin.')->group
     Route::any('/add_problem','Admin\ProblemController@add_problem')->name('add_problem');
     Route::get('/update_problem','Admin\ProblemController@update_problem')->name('update_problem');
     Route::any('/update_problem/{id}','Admin\ProblemController@update_problem')->name('update_problem_withId');
-    Route::post('/change_state_to','Admin\ProblemController@change_state_to')->name('change_state_to');
+    Route::post('/change_hidden_to','Admin\ProblemController@change_hidden_to')->name('change_hidden_to');
     Route::any('/rejudge','Admin\ProblemController@rejudge')->name('rejudge');
 });
