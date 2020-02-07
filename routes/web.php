@@ -32,6 +32,7 @@ Route::get('/user/{username}','Client\UserController@user')->name('user');
 Route::any('/user/{username}/edit','Client\UserController@user_edit')->middleware('auth')->name('user_edit');
 Route::any('/user/{username}/password_reset','Client\UserController@password_reset')
     ->middleware('auth')->name('password_reset');
+Route::post('/get_notice','Client\HomeController@get_notice')->name('get_notice');
 
 Route::post('/status/submit_solution','Client\StatusController@create')->middleware('auth')->name('submit_solution');
 

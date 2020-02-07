@@ -5,19 +5,17 @@
 @section('content')
 
     <div class="modal fade" id="myModal">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
 
                 <!-- 模态框头部 -->
                 <div class="modal-header">
-                    <h4 class="modal-title">模态框头部</h4>
+                    <h4 id="notice-title" class="modal-title"></h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
                 <!-- 模态框主体 -->
-                <div class="modal-body">
-                    模态框内容..
-                </div>
+                <div id="notice-content" class="modal-body"></div>
 
                 <!-- 模态框底部 -->
                 <div class="modal-footer">
@@ -27,6 +25,23 @@
             </div>
         </div>
     </div>
+    <script>
+        function get_notice(id) {
+            $.post(
+                '{{route('get_notice')}}',
+                {
+                    '_token':'{{csrf_token()}}',
+                    'id':id
+                },
+                function (ret) {
+                    ret=JSON.parse(ret);
+                    console.log(ret)
+                    $("#notice-title").html(ret.title)
+                    $("#notice-content").html(ret.content)
+                }
+            );
+        }
+    </script>
 
 
     <div class="container">
@@ -45,7 +60,7 @@
                                 </td>
                                 <td class="text-left" nowrap>
                                     <font class="pull-left m-0 @if($item->state==2) font-weight-bold @endif" style="letter-spacing: 2px">{{$item->title}}</font>&nbsp;&nbsp;
-                                    <a href="#" data-toggle="modal" data-target="#myModal">{{__("Detail")}}>> </a>
+                                    <a href="javascript:" onclick="get_notice({{$item->id}})" data-toggle="modal" data-target="#myModal">{{__("Detail")}}>> </a>
                                 </td>
                                 <td class="text-right" nowrap>
                                     @if($item->state==2)
