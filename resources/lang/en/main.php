@@ -1,5 +1,12 @@
 <?php
 return [
+    //home.blade
+    "Notice Board"  => "Notice Board",
+    "To Top"        => "To Top",
+    "This Week Ranking" => "This Week Ranking",
+    "Last Week Ranking" => "Last Week Ranking",
+
+
     "Home"          => "Home",
     "Problems"      => "Problems",
     "Problem"       => "Problem",

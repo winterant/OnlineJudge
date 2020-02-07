@@ -9,7 +9,7 @@
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-header pt-2 pb-0" style="border-top: 5px solid #2b15ff;">
-                    <h3 class="text-center mb-0">Notice Board</h3>
+                    <h3 class="text-center mb-0">{{__("main.Notice Board")}}</h3>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-hover border-bottom">
@@ -24,7 +24,7 @@
                                 </td>
                                 <td class="text-right" nowrap>
                                     @if($item->state==2)
-                                        <font style="color: red">置顶</font>
+                                        <font style="color: red">{{__('main.To Top')}}</font>
                                     @endif
                                     {{$item->updated_at}}
                                 </td>
@@ -47,7 +47,7 @@
                        title="This list is updating in real time. It shows some users who solved most problems this week">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
-                    <h3 class="text-center mb-0">This Week Ranking</h3>
+                    <h3 class="text-center mb-0">{{__("This Week Ranking")}}</h3>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-hover border-bottom">
@@ -84,7 +84,7 @@
                        title="The list was updating at this Monday 00:00. It shows some users who solved most problems last week">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
-                    <h3 class="text-center mb-0">Last Week Ranking</h3>
+                    <h3 class="text-center mb-0">{{__("Last Week Ranking")}}</h3>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-hover border-bottom">
