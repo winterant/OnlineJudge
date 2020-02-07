@@ -3,6 +3,7 @@ return [
     //home.blade
     "Notice Board"  => "Notice Board",
     "To Top"        => "To Top",
+    "Detail"        => "Detail",
     "This Week Ranking" => "This Week Ranking",
     "Last Week Ranking" => "Last Week Ranking",
 

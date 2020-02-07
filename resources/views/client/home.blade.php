@@ -4,6 +4,31 @@
 
 @section('content')
 
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">模态框头部</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    模态框内容..
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
     <div class="container">
 
         <div class="col-12 mb-4">
@@ -20,7 +45,7 @@
                                 </td>
                                 <td class="text-left" nowrap>
                                     <font class="pull-left m-0 @if($item->state==2) font-weight-bold @endif" style="letter-spacing: 2px">{{$item->title}}</font>&nbsp;&nbsp;
-                                    <a href="#">Detail>> </a>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">{{__("Detail")}}>> </a>
                                 </td>
                                 <td class="text-right" nowrap>
                                     @if($item->state==2)

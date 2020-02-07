@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 50726
  Source Host           : localhost:3306
- Source Schema         : lduoj
+ Source Schema         : woj
 
  Target Server Type    : MySQL
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 04/02/2020 22:42:28
+ Date: 07/02/2020 11:34:44
 */
 
 SET NAMES utf8mb4;
@@ -26,8 +26,6 @@ CREATE TABLE `contest_problems`  (
   `contest_id` int(11) NULL DEFAULT NULL,
   `index` int(11) NULL DEFAULT 1001,
   `problem_id` int(11) NULL DEFAULT NULL,
-  `solved` int(11) NULL DEFAULT 0,
-  `submit` int(11) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Fixed;
 
@@ -57,8 +55,22 @@ CREATE TABLE `contests`  (
   `access` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT 'public' COMMENT 'public,password,private',
   `password` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `user_id` int(11) NULL DEFAULT NULL,
+  `hidden` tinyint(4) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for notices
+-- ----------------------------
+DROP TABLE IF EXISTS `notices`;
+CREATE TABLE `notices`  (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
+  `state` tinyint(4) NULL DEFAULT 1 COMMENT '0:hidden,1:normal,2:置顶',
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for privileges
@@ -86,11 +98,9 @@ CREATE TABLE `problems`  (
   `spj` tinyint(4) NULL DEFAULT 0,
   `time_limit` int(11) NULL DEFAULT 0 COMMENT 'ms',
   `memory_limit` int(11) NULL DEFAULT 0 COMMENT 'MB',
-  `submit` int(11) NULL DEFAULT 0,
-  `solved` int(11) NULL DEFAULT 0,
   `created_at` datetime(0) NULL DEFAULT NULL,
   `updated_at` datetime(0) NULL DEFAULT NULL,
-  `state` tinyint(4) NULL DEFAULT 0,
+  `hidden` tinyint(4) NULL DEFAULT 1,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 
@@ -142,5 +152,3 @@ CREATE TABLE `users`  (
 ) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
-
-ALTER TABLE TableName AUTO_INCREMENT=1000；  --自增id起始数字
