@@ -41,7 +41,10 @@
                 @endforeach
                 </tbody>
             </table>
-            {{$problems->links()}}
+            {{$problems->appends($_GET)->links()}}
+            @if(count($problems)==0)
+                <p class="text-center">{{__('sentence.No data')}}</p>
+            @endif
         </div>
     </div>
 

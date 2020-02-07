@@ -71,9 +71,10 @@
                     </li>
                 @endforeach
             </ul>
-            <div class="text-center">
-                {{$contests->appends($_GET)->links()}}
-            </div>
+            {{$contests->appends($_GET)->links()}}
+            @if(count($contests)==0)
+                <p class="text-center">{{__('sentence.No data')}}</p>
+            @endif
         </div>
     </div>
 

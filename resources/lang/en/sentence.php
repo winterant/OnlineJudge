@@ -24,7 +24,8 @@ return [
     "noSolutions"       => "You didn't submit any solution!",
     "Submit"            => "Submit your solution",
 
-//    "Submit File"       => "Submit your code file",
+//   problem
+    "Missing spj"=> "Error: Missing judge file",
     "Choose Language"   => "----Choose Language----",
     "Input Code"        => "Input your code to solve this problem...",
 

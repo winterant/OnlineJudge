@@ -74,6 +74,9 @@
                     @endforeach
                 </tbody>
             </table>
+            @if(count($solutions)==0)
+                <p class="text-center">{{__('sentence.No data')}}</p>
+            @endif
             {{$solutions->appends($_GET)->links()}}
         </div>
     </div>

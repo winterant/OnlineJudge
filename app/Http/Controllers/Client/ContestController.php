@@ -71,6 +71,9 @@ class ContestController extends Controller
     public function problem($id,$pid){
         $contest=DB::table('contests')->find($id);
         $problem=DB::table('problems')
+            ->select('*',
+                DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
+                DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as solved"))
             ->join('contest_problems','contest_problems.problem_id','=','problems.id')
             ->where('contest_id',$id)
             ->where('index',$pid)
@@ -150,7 +153,7 @@ class ContestController extends Controller
         //获得榜单要显示的用户
         if($contest->access != 'public'){  //私有竞赛or密码竞赛，从表获取
             $users_temp=DB::table('contest_users')
-                ->join('users','users.id','=','user_id')
+                ->leftJoin('users','users.id','=','user_id')
                 ->select(['users.id','username','nick','school'])->distinct()
                 ->where('contest_id',$id)->get();
         }else{   //从提交记录获取账号
