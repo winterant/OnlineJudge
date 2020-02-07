@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -32,5 +33,9 @@ class HomeController extends Controller
             ->orderByDesc('solved')
             ->limit(10)->get();
         return view('client.home',compact('notices','this_week','last_week'));
+    }
+    public function get_notice(Request $request){
+        $notice=DB::table('notices')->select(['title','content'])->find($request->input('id'));
+        return json_encode($notice);
     }
 }
