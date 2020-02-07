@@ -77,20 +77,24 @@
                             #table-overview td{border: 0;text-align: left}
                         </style>
                         <tr>
-                            <td nowrap>Time Limit:</td>
+                            <td nowrap>{{__('main.Time Limit')}}:</td>
                             <td nowrap>{{$problem->time_limit*1000}}MS (C/C++,Others×2)</td>
                         </tr>
                         <tr>
-                            <td nowrap>Memory Limit:</td>
+                            <td nowrap>{{__("main.Memory Limit")}}:</td>
                             <td nowrap>{{$problem->memory_limit}}MB (C/C++,Others×2)</td>
                         </tr>
                         <tr>
-                            <td nowrap>Special Judge:</td>
+                            <td nowrap>{{__('main.Special Judge')}}:</td>
                             @if($problem->spj==1)
-                                <td><font class="text-red">Yes</font> @if(!$hasSpj)(System: Missing File) @endif</td>
+                                <td><font class="text-red">Yes</font> @if(!$hasSpj)({{__('sentence.Missing spj')}}) @endif</td>
                             @else
                                 <td>No</td>
                             @endif
+                        </tr>
+                        <tr>
+                            <td nowrap>{{__("main.AC/Submit")}}:</td>
+                            <td nowrap>{{$problem->solved}} / {{$problem->submit}}</td>
                         </tr>
                         </tbody>
                     </table>

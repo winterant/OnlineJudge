@@ -14,7 +14,7 @@ class HomeController extends Controller
         $notices=DB::table('notices')
             ->where('state','!=',0)
             ->orderByDesc('state')
-            ->orderByDesc('updated_at')->paginate(5);
+            ->orderByDesc('updated_at')->paginate(6);
 
         $day=(date("w")+6)%7; //昨天是周几，周日=0
         $this_week=DB::table('solutions')->join('users','users.id','=','solutions.user_id')

@@ -11,53 +11,11 @@ class ProblemController extends Controller
 {
     //管理员显示题目列表
     public function problems(){
-        //*表格标题
-        $secTitle='问题列表';
-        //*表头
-        $thead=['id'=>'题号',
-            'title'=>'题目',
-            'source'=>'出处',
-            'spj'=>'特判',
-            'submit'=>'提交',
-            'solved'=>'解决',
-            'created_at'=>'添加时间',
-            'hidden'=>'隐藏',
-        ];
-        //可无。附加批量操作按钮
-        $oper_checked=[
-            sprintf('<a href="javascript:change_hidden_to(0);" class="px-1"
-                    title="选中的题目将被公开，允许普通用户在题库中查看和提交!"
-                    data-toggle="tooltip">题目状态公开</a>'),
-            sprintf('<a href="javascript:change_hidden_to(1);" class="px-1"
-                    title="选中的题目将被隐藏，普通用户无法在题库中查看和提交，但不会影响竞赛!"
-                    data-toggle="tooltip">状态设为隐藏</a>')
-        ];
-
-        $list=DB::table('problems')->select('id','title','source','spj',
+        $problems=DB::table('problems')->select('id','title','source','spj','created_at','hidden',
             DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
-            DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as  solved"),
-            'created_at','hidden')->orderBy('id')->paginate(100);
-
-        $operation=[];//操作
-        foreach ($list as $item){
-            $item->title=sprintf('<a href="%s" target="_blank">%s</a>',route('problem',$item->id),$item->title);
-            $item->spj = ($item->spj==1)?'特判':'-';
-            $item->hidden = ($item->hidden==1)?'公开':'隐藏☆私有';
-            $operation[$item->id]=sprintf('
-                <a href="%s" target="_blank" class="px-1"
-                    data-toggle="tooltip" title="修改">
-                    <i class="fa fa-edit" aria-hidden="true"></i></a>
-                <a href="%s" class="px-1"
-                    data-toggle="tooltip" title="删除">
-                    <i class="fa fa-trash" aria-hidden="true"></i></a>
-                <a href="#" target="_blank" class="px-1"
-                    data-toggle="tooltip" title="测试数据">
-                    <i class="fa fa-file" aria-hidden="true"></i></a>',
-                route('admin.update_problem_withId',$item->id),
-                'javascript:alert(\'为保证系统稳定，不允许删除题目，您可以修改它！\')'
-            );
-        }
-        return view('admin.list',compact('list','secTitle','thead','oper_checked','operation'));
+            DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as  solved")
+            )->orderBy('id')->paginate(100);
+        return view('admin.problem.list',compact('problems'));
     }
 
     //管理员添加题目
@@ -65,7 +23,7 @@ class ProblemController extends Controller
         //提供加题界面
         if($request->isMethod('get')){
             $pageTitle='添加题目 - 程序设计';
-            return view('admin.edit_problem',compact('pageTitle'));
+            return view('admin.problem.edit',compact('pageTitle'));
         }
         //提交一条新数据
         if($request->isMethod('post')){
@@ -88,7 +46,7 @@ class ProblemController extends Controller
             if($id==-1) {
                 if(isset($_GET['id']))//用户手动输入了题号
                     return redirect(route('admin.update_problem_withId',$_GET['id']));
-                return view('admin.edit_problem',compact('pageTitle'))->with('lack_id',true);
+                return view('admin.edit',compact('pageTitle'))->with('lack_id',true);
             } //询问要修改的题号
             $problem=DB::table('problems')->find($id);
             if($problem==null)
@@ -100,7 +58,7 @@ class ProblemController extends Controller
             $spjPath = base_path('storage/data/'.$problem->id.'/spj/spj.cpp');
             $hasSpj=file_exists($spjPath);
 
-            return view('admin.edit_problem',compact('pageTitle','problem','samples','hasSpj'));
+            return view('admin.problem.edit',compact('pageTitle','problem','samples','hasSpj'));
         }
 
         // 提交修改好的题目数据
@@ -136,7 +94,7 @@ class ProblemController extends Controller
 
         if($request->isMethod('get')){
             $pageTitle='重判';
-            return view('admin.rejudge',compact('pageTitle'));
+            return view('admin.problem.rejudge',compact('pageTitle'));
         }
 
         if($request->isMethod('post')){

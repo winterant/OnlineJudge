@@ -236,6 +236,23 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
+                       data-target="#menu-contest" aria-expanded="false">
+                        <i class="fa fa-trophy fa-lg mr-2" aria-hidden="true"></i>竞赛管理
+                    </a>
+                    <ul id="menu-contest" class="collapse">
+                        <li class="nav-item">
+                            <a class="nav-link border-top" href="{{route('admin.contests')}}">
+                                <i class="fa fa-list" aria-hidden="true"></i> 竞赛列表</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-top" href="#">
+                                <i class="fa fa-list" aria-hidden="true"></i> 选择题</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link border-top" href="#">
                         <i class="fa fa-cogs fa-lg" aria-hidden="true"></i> 系统配置(慎改)
                     </a>

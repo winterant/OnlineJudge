@@ -68,4 +68,7 @@ Route::middleware(['auth','CheckAdmin'])->prefix('admin')->name('admin.')->group
     Route::any('/update_problem/{id}','Admin\ProblemController@update_problem')->name('update_problem_withId');
     Route::post('/change_hidden_to','Admin\ProblemController@change_hidden_to')->name('change_hidden_to');
     Route::any('/rejudge','Admin\ProblemController@rejudge')->name('rejudge');
+
+//    contest
+    Route::get('/contests','Admin\ContestController@contests')->name('contests');
 });

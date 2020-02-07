@@ -60,6 +60,7 @@ return [
     "Language"      => "Language",
     "Time Limit"    => "Time Limit",
     "Memory Limit"  => "Memory Limit",
+    "Special Judge" => "Special Judge",
     "Submit"        => "Submit",
     "Submit Time"   => "Submit Time",
     "Judge Time"    => "Judge Time",

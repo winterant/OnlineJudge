@@ -127,7 +127,7 @@
 
     // 遍历导航栏按钮，如果href与当前位置相等，就active
     $(function () {
-        $("ul li").find("a").each(function () {
+        $("ul.navbar-nav li").find("a").each(function () {
             var href = $(this).attr("href")
             var url=location.href.split('?')[0];
             if(url[url.length-1]=='/')href+='/'; //特判home
