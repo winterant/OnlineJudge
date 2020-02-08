@@ -93,7 +93,7 @@
                         <a class="dropdown-item" href="{{route('password_reset',Auth::user()->username)}}">{{trans('sentence.Reset Password')}}</a>
 
                         <div class="dropdown-divider"></div>
-                        @if(Auth::user()->is_admin())
+                        @if(Auth::user()->privilege(['admin','problem','contest']))
                             <a class="dropdown-item" href="{{route('admin.home')}}">{{trans('main.Administration')}}</a>
                         @endif
 
@@ -127,14 +127,14 @@
 
     // 遍历导航栏按钮，如果href与当前位置相等，就active
     $(function () {
-        $("ul.navbar-nav li").find("a").each(function () {
+        $("ul li").find("a").each(function () {
             var href = $(this).attr("href")
             var url=location.href.split('?')[0];
             if(url[url.length-1]=='/')href+='/'; //特判home
             if (url===href) {
                 $(this).addClass("active");
             } else {
-                $(this).removeClass("active");
+                // $(this).removeClass("active");
             }
         });
     })

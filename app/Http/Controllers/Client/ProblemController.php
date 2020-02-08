@@ -36,7 +36,7 @@ class ProblemController extends Controller
         if(!Auth::check() && !config('oj.main.guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
             return view('client.fail',['msg'=>trans('sentence.Please login first')]);
 
-        if (Auth::check() && !Auth::user()->is_admin() && $problem->hidden==1) //已登录&&不是管理员&&问题隐藏 => 不允许查看
+        if (Auth::check() && !Auth::user()->privilege('problem') && $problem->hidden==1) //已登录&&不是管理员&&问题隐藏 => 不允许查看
             return view('client.fail',['msg'=>trans('main.Problem').$problem->id.'：'.trans('main.Hidden')]);
 
         //读取样例文件

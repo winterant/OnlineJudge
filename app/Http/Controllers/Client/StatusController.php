@@ -37,7 +37,7 @@ class StatusController extends Controller
             ->select(['solutions.id','problem_id','contest_id','user_id','username','result','time','memory',
                 'submit_time','judge_time','code','code_length','language'])
             ->where('solutions.id',$id)->first();
-        if(!Auth::user()->privilege('view_solution')&&Auth::id()!=$solution->user_id)
+        if(!Auth::user()->privilege('solution')&&Auth::id()!=$solution->user_id)
             return view('client.fail',['msg'=>trans('sentence.Permission denied')]);
         return view('client.solution',compact('solution'));
     }
@@ -57,14 +57,13 @@ class StatusController extends Controller
         if(!Auth::check() && !config('oj.main.guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
             return view('client.fail',['msg'=>trans('sentence.Please login first')]);
         $problem=DB::table('problems')->select('hidden')->find($data['pid']);
-        if (Auth::check() && !Auth::user()->is_admin() && $problem->hidden==1) //已登录&&不是管理员&&问题隐藏 => 不允许查看
+        if (Auth::check() && !Auth::user()->privilege('problem') && $problem->hidden==1) //已登录&&不是管理员&&问题隐藏 => 不允许查看
             return view('client.fail',['msg'=>trans('main.Problem').$problem->id.'：'.trans('main.Hidden')]);
 
 
-        if($request->input('submit_way')=='#tag_file'){
-            $file=$request->file('code_file');//用户提交了文件,从临时文件中直接提取文本
+        if(null!=($file=$request->file('code_file')))//用户提交了文件,从临时文件中直接提取文本
             $data['code']=file_get_contents($file->getRealPath());
-        }
+
         DB::table('solutions')->insert([
             'problem_id'    => $data['pid'],
             'contest_id'    => isset($data['cid'])?$data['cid']:-1,
@@ -77,7 +76,7 @@ class StatusController extends Controller
 
             'ip'            => $request->getClientIp(),
             'code_length'   => strlen($data['code']),
-            'code'          => $data['code'],
+            'code'          => '\''.$data['code'].'\'',
             ]);
         Cookie::queue('submit_language',$data['language']);
         if(isset($data['cid'])) //竞赛提交

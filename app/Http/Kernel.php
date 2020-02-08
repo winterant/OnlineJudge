@@ -2,7 +2,7 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\CheckAdmin;
+use App\Http\Middleware\Privilege;
 use App\Http\Middleware\CheckContest;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -63,7 +63,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        'CheckAdmin' => CheckAdmin::class,
+        'Privilege' => Privilege::class,
         'CheckContest' => CheckContest::class,
     ];
 

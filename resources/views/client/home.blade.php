@@ -66,7 +66,7 @@
                                     @if($item->state==2)
                                         <font style="color: red">{{__('main.To Top')}}</font>
                                     @endif
-                                    {{$item->updated_at}}
+                                    {{$item->created_at}}
                                 </td>
                             </tr>
                         @endforeach
@@ -91,12 +91,12 @@
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-hover border-bottom">
-                        <tr>
+                        <thead>
                             <th class="border-top-0">{{__('main.Rank')}}</th>
                             <th class="border-top-0">{{__('main.User')}}</th>
                             <th class="border-top-0">{{__('main.From')}}</th>
                             <th class="border-top-0">{{__('main.Solved')}}</th>
-                        </tr>
+                        </thead>
                         @foreach($this_week as $item)
                             <tr>
                                 <td class="py-1">
@@ -128,12 +128,12 @@
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-hover border-bottom">
-                        <tr>
+                        <thead>
                             <th class="border-top-0">{{__('main.Rank')}}</th>
                             <th class="border-top-0">{{__('main.User')}}</th>
                             <th class="border-top-0">{{__('main.From')}}</th>
                             <th class="border-top-0">{{__('main.Solved')}}</th>
-                        </tr>
+                        </thead>
                         @foreach($last_week as $item)
                             <tr>
                                 <td class="py-1">

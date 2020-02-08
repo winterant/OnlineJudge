@@ -57,13 +57,13 @@
                             <td><a href="{{route('problem',$sol->problem_id)}}">{{$sol->problem_id}}</a></td>
                             <td nowrap>
                                 <a href="{{route('user',$sol->username)}}" target="_blank">{{$sol->username}}</a>
-                                @if($sol->nick && Auth::check()&&Auth::user()->is_admin())&nbsp;{{$sol->nick}}@endif
+                                @if($sol->nick && Auth::check()&&Auth::user()->privilege('solution'))&nbsp;{{$sol->nick}}@endif
                             </td>
                             <td nowrap class="{{config('oj.resColor.'.$sol->result)}}">{{config('oj.result.'.$sol->result)}}</td>
                             <td>{{$sol->time}}ms</td>
                             <td>{{round($sol->memory,2)}}MB</td>
                             <td>
-                                @if(Auth::check() && (Auth::user()->privilege('view_solution') || Auth::id()==$sol->user_id) )
+                                @if(Auth::check() && (Auth::user()->privilege('solution') || Auth::id()==$sol->user_id) )
                                     <a href="{{route('solution',$sol->id)}}" target="_blank">{{config('oj.lang.'.$sol->language)}}</a>
                                 @else
                                     {{config('oj.lang.'.$sol->language)}}

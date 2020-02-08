@@ -66,7 +66,7 @@
                             <td><a href="{{route('contest.problem',[$contest->id,$sol->index])}}">{{$sol->index}}</a></td>
                             <td nowrap>
                                 <a href="{{route('user',$sol->username)}}" target="_blank">{{$sol->username}}</a>
-                                @if($sol->nick && Auth::check()&&Auth::user()->is_admin())&nbsp;{{$sol->nick}}@endif
+                                @if($sol->nick && Auth::check()&&Auth::user()->privilege('contest'))&nbsp;{{$sol->nick}}@endif
                             </td>
                             <td nowrap class="{{config('oj.resColor.'.$sol->result)}}">{{config('oj.result.'.$sol->result)}}</td>
                             <td>{{$sol->time}}ms</td>

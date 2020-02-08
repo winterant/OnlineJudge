@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ContestController extends Controller
 {
-    //
     public function contests(){
         $contests=DB::table('contests')
             ->leftJoin('users','users.id','=','user_id')

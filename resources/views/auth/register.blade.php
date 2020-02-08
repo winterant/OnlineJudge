@@ -16,7 +16,8 @@
                             <div class="col-md-6">
                                 <input id="name" type="text" class="form-control @error('username') is-invalid @enderror"
                                       name="username" value="{{ old('username') }}"
-                                       required autofocus placeholder="{{__('sentence.Must fill')}}" maxlength="16">
+                                       onkeyup = "this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')"
+                                       required autofocus placeholder="{{__('sentence.Must fill')}}" maxlength="30">
 
                                 @error('username')
                                     <span class="invalid-feedback" role="alert">
@@ -63,6 +64,32 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                             </div>
                         </div>
+
+
+                        <div class="form-group row">
+                            <label for="school" class="col-md-4 col-form-label text-md-right">{{ __('main.School') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="school" type="text" class="form-control" name="school" value="{{ old('school') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="class" class="col-md-4 col-form-label text-md-right">{{ __('main.Class') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="class" type="text" class="form-control" name="class" value="{{ old('class') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="nick" class="col-md-4 col-form-label text-md-right">{{ __('main.Name') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="nick" type="text" class="form-control" name="nick" value="{{ old('nick') }}">
+                            </div>
+                        </div>
+
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
