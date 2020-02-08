@@ -166,13 +166,13 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
+                            <a class="nav-link border-top" href="{{route('admin.privileges')}}">
                                 <i class="fa fa-universal-access" aria-hidden="true"></i> 权限管理</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
-                                <i class="fa fa-user-plus" aria-hidden="true"></i> 比赛账号批量生成</a>
+                            <a class="nav-link border-top" href="{{route('admin.create_users')}}">
+                                <i class="fa fa-user-plus" aria-hidden="true"></i> 账号批量生成</a>
                         </li>
                     </ul>
                 </li>
@@ -325,8 +325,6 @@
                 $(a).addClass("active");
                 $(this).parent().prev().click();
                 $('.sidebar-sticky').animate({scrollTop:$(this).parent().position().top-50+'px'});
-            } else {
-                $(a).removeClass("active");
             }
         });
     })

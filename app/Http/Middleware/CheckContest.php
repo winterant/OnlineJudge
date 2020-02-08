@@ -21,7 +21,7 @@ class CheckContest
     public function handle($request, Closure $next)
     {
         $contest=DB::table('contests')->find($request->route()->parameter('id'));
-        if(Auth::user()->privilege('contest')) //contest管理员无条件进入
+        if(Auth::user()->privilege('contest')) //contest管理员直接进入
             return $next($request);
         if(time()<strtotime($contest->start_time)&& \Request::route()->getName()!='contest.home') //比赛尚未开始,必须重定向到home
             return redirect(route('contest.home',$contest->id));

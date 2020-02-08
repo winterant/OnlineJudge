@@ -86,7 +86,7 @@ class ContestController extends Controller
 
     public function status($id){
         $contest=DB::table('contests')->find($id);
-        if(!Auth::user()->is_admin() && time()<strtotime($contest->end_time)) //比赛没结束，只能看自己
+        if(!Auth::user()->privilege('contest') && time()<strtotime($contest->end_time)) //比赛没结束，只能看自己
             $_GET['username']=Auth::user()->username;
 
         $solutions=DB::table('solutions')
@@ -109,7 +109,7 @@ class ContestController extends Controller
 
     private static function get_rank_end_time($contest){
         //rank的辅助函数，获取榜单的截止时间
-        if(Auth::user()->is_admin()){
+        if(Auth::user()->privilege('contest')){
             if(isset($_GET['buti'])?$_GET['buti']=='true':false) //全榜
                 $end=time();
             else //终榜

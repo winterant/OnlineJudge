@@ -32,7 +32,7 @@
                         <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: red"></i>
                         {{trans('sentence.rank_end_time',['time'=>$lock_time])}}
 
-                        @if(Auth::user()->is_admin()) {{-- 管理员可以取消封榜 --}}
+                        @if(Auth::user()->privilege('contest')) {{-- 管理员可以取消封榜 --}}
                             <a href="javascript:" onclick="$('#form_cl').submit()" class="ml-2">{{trans('main.Cancel')}}</a>
                             <form id="form_cl" action="{{route('contest.cancel_lock',$contest->id)}}" method="post"
                                   onsubmit="return confirm('当前处于封榜状态，确认开放榜单？')" hidden>
@@ -48,7 +48,7 @@
                         <link href="{{asset('static/switch-dist/switch.css')}}" rel="stylesheet"/>
                         <script src="{{asset('static/switch-dist/switch.js')}}"></script>
 
-                        @if($contest->end_time<time() && ( Auth::user()->is_admin() || $contest->lock_rate==0) )
+                        @if($contest->end_time<time() && ( Auth::user()->privilege('contest') || $contest->lock_rate==0) )
                             <font title="{{__('sentence.Up to now')}}">{{trans('main.Up to now')}}：</font>
                             <input id="switch_buti" type="checkbox">
                             <input type="text" name="buti" value="{{isset($_GET['buti'])?$_GET['buti']:'false'}}" hidden>

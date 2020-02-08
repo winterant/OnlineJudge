@@ -164,49 +164,61 @@
                     @csrf
                     <input name="solution[pid]" value="{{$problem->id}}" hidden>
 
-                    <div>
-                        <ul class="nav nav-tabs nav-justified mb-1">
-                            <li class="nav-item">
-                                <a class="nav-link p-2 active" href="#tag_code" data-toggle="tab">{{trans('main.Code')}}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link p-2" href="#tag_file" data-toggle="tab">{{trans('main.File')}}</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div id="tag_code" class="tab-pane fade show active form-group">
-                                <textarea class="ttt form-control-plaintext border p-2" rows="7" name="solution[code]"
-                                          minlength="10"
-                                          placeholder="{{trans('sentence.Input Code')}}" required></textarea>
-                            </div>
-                            <div id="tag_file" class="tab-pane fade form-group">
-                                <input type="file" class="ttt form-control-file" name="code_file" accept=".txt .c, .cc, .cpp, .java, .py"/>
-                            </div>
-                            <input name="submit_way" value="tag_code" hidden>
-                        </div>
-                        <script type="text/javascript">
-                            $(function(){
-                                {{-- 监听code/file的选项卡，选中时为输入框添加required属性 --}}
-                                $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                                    var activeTab = $(e.target).attr('href'); // 获取已激活的标签页
-                                    var previousTab = $(e.relatedTarget).attr('href');// 获取上一个标签页
-                                    $(activeTab+' .ttt').attr('required',true);
-                                    $(previousTab+' .ttt').attr('required',false);
-                                    $("input[name=submit_way]").val(activeTab);
-                                });
-                            });
-                        </script>
-                    </div>
-
-
-                    <div class="form-group">
-                        <input id="code_lang" name="solution[language]" value="{{Cookie::get('submit_language')}}" hidden>
-                        <select onchange="document.getElementById('code_lang').value=this.value" class="form-control-plaintext border">
+                    <div class="form-inline my-2">
+                        <select name="solution[language]" class="form-control border border-bottom-0 col-4">
                             @foreach(config('oj.lang') as $key=>$res)
                                 <option value="{{$key}}" {{Cookie::get('submit_language')==$key?'selected':''}}>{{$res}}</option>
                             @endforeach
                         </select>
+                        <div class="col-4">
+                            <a href="javascript:" class="btn m-0" onclick="$('[name=code_file]').click()" title="{{__('main.File')}}">
+                                <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <input type="file" class="form-control-file" name="code_file" accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
                     </div>
+
+                    <div class="form-group">
+                        <textarea class="form-control-plaintext border p-2" rows="7" name="solution[code]"
+                            placeholder="{{trans('sentence.Input Code')}}"></textarea>
+                    </div>
+
+{{--                    <div>--}}
+{{--                        <ul class="nav nav-tabs nav-justified mb-1">--}}
+{{--                            <li class="nav-item">--}}
+{{--                                <a class="nav-link p-2 active" href="#tag_code" data-toggle="tab">{{trans('main.Code')}}</a>--}}
+{{--                            </li>--}}
+{{--                            <li class="nav-item">--}}
+{{--                                <a class="nav-link p-2" href="#tag_file" data-toggle="tab">{{trans('main.File')}}</a>--}}
+{{--                            </li>--}}
+{{--                        </ul>--}}
+{{--                        <div class="tab-content">--}}
+{{--                            <div id="tag_code" class="tab-pane fade show active form-group">--}}
+{{--                                <textarea class="form-control-plaintext border p-2" rows="7" name="solution[code]"--}}
+{{--                                          minlength="10"--}}
+{{--                                          placeholder="{{trans('sentence.Input Code')}}" required></textarea>--}}
+{{--                            </div>--}}
+{{--                            <div id="tag_file" class="tab-pane fade form-group">--}}
+{{--                                <input type="file" class="form-control-file" name="code_file" accept=".txt .c, .cc, .cpp, .java, .py"/>--}}
+{{--                            </div>--}}
+{{--                            <input name="submit_way" value="tag_code" hidden>--}}
+{{--                        </div>--}}
+{{--                        <script type="text/javascript">--}}
+{{--                            $(function(){--}}
+{{--                                --}}{{-- 监听code/file的选项卡，选中时为输入框添加required属性 --}}
+{{--                                $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {--}}
+{{--                                    var activeTab = $(e.target).attr('href'); // 获取已激活的标签页--}}
+{{--                                    var previousTab = $(e.relatedTarget).attr('href');// 获取上一个标签页--}}
+{{--                                    $(activeTab+' .ttt').attr('required',true);--}}
+{{--                                    $(previousTab+' .ttt').attr('required',false);--}}
+{{--                                    $("input[name=submit_way]").val(activeTab);--}}
+{{--                                });--}}
+{{--                            });--}}
+{{--                        </script>--}}
+{{--                    </div>--}}
+
+
+
                     @guest
                         <button type="submit" class="btn bg-light" disabled>{{trans('main.Submit')}}</button>&nbsp;
                         <a  href="{{ route('login') }}">{{ trans('Login') }}</a>&nbsp;
