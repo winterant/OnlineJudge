@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 class ProblemController extends Controller
 {
     //管理员显示题目列表
-    public function problems(){
+    public function list(){
         $problems=DB::table('problems')->select('id','title','source','spj','created_at','hidden',
             DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
             DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as  solved")
@@ -19,7 +19,7 @@ class ProblemController extends Controller
     }
 
     //管理员添加题目
-    public function add_problem(Request $request){
+    public function add(Request $request){
         //提供加题界面
         if($request->isMethod('get')){
             $pageTitle='添加题目 - 程序设计';
@@ -37,7 +37,7 @@ class ProblemController extends Controller
     }
 
     //管理员修改题目
-    public function update_problem(Request $request,$id=-1)
+    public function update(Request $request,$id=-1)
     {
         //get提供修改界面
         if ($request->isMethod('get')) {
@@ -45,8 +45,8 @@ class ProblemController extends Controller
             $pageTitle='修改题目 - 程序设计';
             if($id==-1) {
                 if(isset($_GET['id']))//用户手动输入了题号
-                    return redirect(route('admin.update_problem_withId',$_GET['id']));
-                return view('admin.edit',compact('pageTitle'))->with('lack_id',true);
+                    return redirect(route('admin.problem.update_withId',$_GET['id']));
+                return view('admin.problem.edit',compact('pageTitle'))->with('lack_id',true);
             } //询问要修改的题号
             $problem=DB::table('problems')->find($id);
             if($problem==null)
@@ -80,7 +80,7 @@ class ProblemController extends Controller
     }
 
     //管理员修改题目状态  0密封 or 1公开
-    public function change_hidden_to(Request $request){
+    public function change_hidden(Request $request){
         if($request->ajax()){
             $pids=$request->input('pids')?:[];
             $hidden=$request->input('hidden');

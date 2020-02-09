@@ -15,7 +15,7 @@
                     </a>
                 @endif
             </h2>
-            <div class="d-flex">
+            <div class="">
                 <p>
                     {{__('main.School')}}: <font class="mx-1 p-1 alert-info border" style="border-radius: 4px;">{{$user->school}}</font>
                     {{__('main.Class')}}: <font class="mx-1 p-1 alert-info border" style="border-radius: 4px;">{{$user->class}}</font>

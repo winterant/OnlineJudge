@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function users(Request $request){
+    public function list(Request $request){
         $users=DB::table('users')->select(['id','username','email','nick','school','class','revise','created_at'])
             ->orderBy('id')->paginate(20);
         return view('admin.user.list',compact('users'));
@@ -23,14 +24,31 @@ class UserController extends Controller
         return view('admin.user.privilege',compact('privileges'));
     }
 
-    public function create_users(Request $request){
+
+
+
+    private function trans_data($list_str,$use_end_num=false){
+        $list=explode(PHP_EOL,$list_str); //按行分割
+        $ret=[];
+        foreach ($list as &$item) {
+            if($use_end_num && preg_match('/\d+$/',$item,$arr)) {
+                $c=intval($arr[0]);
+                $item=trim(substr($item,0,-strlen($arr[0])));
+            }
+            else $c=1;
+            while($c--){array_push($ret,$item);}
+        }
+        return $ret;
+    }
+    private function make_passwd($len){
+        return substr(str_shuffle("0123456789ABCDEF"),0,8);
+    }
+    public function create(Request $request){
         if ($request->isMethod('get')){
             return view('admin.user.create');
         }
         if($request->isMethod('post')){
-            $users=[]; //生成用户
             $data=$request->input('data');
-            dump($data);
             if($data['stu_id']!=null){
                 $usernames=explode(PHP_EOL,$data['stu_id']); //将要注册的账号名收集到$usernames中
             }else{
@@ -39,18 +57,29 @@ class UserController extends Controller
                 for ($i=intval($data['begin']);$i<=intval($data['end']);$i++)
                     array_push($usernames,sprintf($format,$data['prefix'],$i));
             }
-            dd($usernames);
+            $number=count($usernames);
+            $nick=$this->trans_data($data['nick']);
+            $email=$this->trans_data($data['email']);
+            $school=$this->trans_data($data['school'],true);
+            $class=$this->trans_data($data['class'],true);
+            $users=[];  //保存用户信息
+            foreach($usernames as $i=>$username){
+                $password[$username]=$this->make_passwd(8);
+                array_push($users,[
+                    'username'=>$username,
+                    'password'=>Hash::make($password[$username]),
+                    'revise'=>$data['revise'],
+                    'nick'=>isset($nick[$i])?$nick[$i]:'',
+                    'email'=>isset($email[$i])?$email[$i]:'',
+                    'school'=>isset($school[$i])?$school[$i]:'',
+                    'class'=>isset($class[$i])?$class[$i]:'',
+                ]);
+            }
 
-
-
-            $data['nick']  =explode(PHP_EOL,$data['nick']);
-            $data['school']=explode(PHP_EOL,$data['school']);
-            $data['class'] =explode(PHP_EOL,$data['class']);
-            $data['email'] =explode(PHP_EOL,$data['email']);
-            dd($data);
-
-            $users='{1:one,2:two}';
-            return view('admin.user.create',['users'=>json_encode($users)]);
+            DB::table('users')->whereIn('username',$usernames)->delete();
+            DB::table('users')->insert($users);
+            foreach($users as &$user)$user['password']=$password[$user['username']];
+            return view('admin.user.create',compact('users'));
         }
     }
 
@@ -65,13 +94,13 @@ class UserController extends Controller
                 $msg='成功添加'.DB::table('privileges')->insert([$privilege]).'个权限用户';
             }
 
-            return redirect(route('admin.privileges'))->with('msg',$msg);
+            return redirect(route('admin.user.privileges'))->with('msg',$msg);
         }else if($request->input('type')=='delete'){   //删除
             DB::table('privileges')->delete($request->input('id'));
         }
     }
 
-    public function change_revise_to(Request $request){
+    public function change_revise(Request $request){
         if($request->ajax()){
             $uids=$request->input('uids')?:[];
             $revise=$request->input('revise');

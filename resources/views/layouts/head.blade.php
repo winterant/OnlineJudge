@@ -11,7 +11,12 @@
 <link href="{{asset('static/font-awesome-4.7.0/css/font-awesome.min.css')}}" rel="stylesheet">
 <link href="{{asset('css/main.css')}}" rel="stylesheet">
 
+
 <script src="{{asset('static/jquery-3.4.1/jquery-3.4.1.min.js')}}"></script>
 <script src="{{asset('static/popper.js/dist/umd/popper.min.js')}}" defer></script>
 <script src="{{asset('static/bootstrap-material-design-dist/js/bootstrap-material-design.min.js')}}" defer></script>
+
+
+<link href="{{asset('static/notiflix/css/notiflix-1.3.0.min.css')}}" rel="stylesheet">
+<script src="{{asset('static/notiflix/js/notiflix-1.3.0.min.js')}}" defer></script>
 

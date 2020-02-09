@@ -152,6 +152,12 @@
         document.getElementById('localtime').innerHTML=str;
     },1000); //每秒刷新时间
 
+    //通用提示框，小问号提示这是什么
+    function whatisthis(text) {
+        Notiflix.Report.Init();
+        Notiflix.Report.Info( '{{__('What\'s this?')}}',text,'confirm');
+    }
+
 </script>
 
 </body>

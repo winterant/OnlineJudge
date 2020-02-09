@@ -11,14 +11,14 @@
         <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
 
         <a href="javascript:change_revise_to(0);" class="ml-3">禁止修改</a>
-        <a href="javascript:" class="text-gray" data-toggle="tooltip"
-           title="选中的用户将被禁止修改个人资料!防止用户私自乱改信息，混淆视听！管理员不受限制">
+        <a href="javascript:" class="text-gray"
+           onclick="whatisthis('选中的用户将被禁止修改个人资料!防止用户私自乱改信息，混淆视听！管理员不受限制')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
 
         <a href="javascript:change_revise_to(1);" class="ml-3">允许资料变动1</a>
-        <a href="javascript:" class="text-gray" data-toggle="tooltip"
-           title="选中的用户将被设为仅有 1 次修改个人资料的机会！可用于防止用户乱改个人资料">
+        <a href="javascript:" class="text-gray"
+           onclick="whatisthis('选中的用户将被设为仅有 1 次修改个人资料的机会！可用于防止用户乱改个人资料')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
 
@@ -36,8 +36,8 @@
                 <th>学校</th>
                 <th>班级</th>
                 <th>资料变动次数
-                    <a href="javascript:" style="color: #838383" data-toggle="tooltip"
-                       title="允许用户可自行修改个人资料的次数，可防止用户随意改动。影响状态、榜单等混乱。管理员不受限制">
+                    <a href="javascript:" style="color: #838383"
+                       onclick="whatisthis('允许用户可自行修改个人资料的次数，可防止用户随意改动。影响状态、榜单等混乱。管理员不受限制')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                 </th>
@@ -60,10 +60,10 @@
                     <td>{{$item->revise}}</td>
                     <td nowrap>{{$item->created_at}}</td>
                     <td>
-                        <a href="{{route('user_edit',$item->username)}}" class="px-1" target="_blank" title="修改" data-toggle="tooltip">
+                        <a href="{{route('user_edit',$item->username)}}" class="px-1" target="_blank" title="修改">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                         </a>
-                        <a href="javascript:alert('暂不支持删除用户!')" class="px-1" title="删除" data-toggle="tooltip">
+                        <a href="javascript:alert('暂不支持删除用户!')" class="px-1" title="删除">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                         </a>
                     </td>
@@ -74,24 +74,25 @@
         {{$users->appends($_GET)->links()}}
     </div>
     <script>
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip({placement:'bottom'}); //提示
-        });
 
         function change_revise_to(revise) {
             // 修改用户可以修改个人资料的次数
             var uids=[];
             $('td input[type=checkbox]:checked').each(function () { uids.push($(this).val()); });
             $.post(
-                '{{route('admin.change_revise_to')}}',
+                '{{route('admin.user.revise.change')}}',
                 {
                     '_token':'{{csrf_token()}}',
                     'uids':uids,
                     'revise':revise,
                 },
                 function (ret) {
-                    location.reload();
-                    alert(ret+'条数据已更新！');
+                    if(id===-1){
+                        Notiflix.Report.Init();
+                        Notiflix.Report.Success( '操作成功',ret+'条数据已更新','confirm' ,function () {
+                            location.reload();
+                        });
+                    }
                 }
             );
         }

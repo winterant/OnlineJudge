@@ -9,11 +9,27 @@ use Illuminate\Support\Facades\DB;
 
 class ContestController extends Controller
 {
-    public function contests(){
+    public function list(){
         $contests=DB::table('contests')
             ->leftJoin('users','users.id','=','user_id')
             ->select('contests.*','username')
             ->orderBy('id')->paginate();
         return view('admin.contest.list',compact('contests'));
+    }
+
+    public function add(){
+        //todo
+    }
+
+    public function update(Request $request,$id=-1){
+        //todo
+    }
+
+    public function delete(){
+        //todo
+    }
+
+    public function change_hidden(){
+        //todo
     }
 }

@@ -51,30 +51,42 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id'=>'[0-9]+'])->where(
 
 
 // Administration
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9]+'])->group(function () {
     Route::get('/', 'Admin\HomeController@index')->name('home');
 
+//    manage notice
+    Route::middleware(['Privilege:admin'])->prefix('notice')->name('notice.')->group(function (){
+        Route::get('/list','Admin\NoticeController@list')->name('list');
+        Route::any('/add','Admin\NoticeController@add')->name('add');
+        Route::any('/update/{id}','Admin\NoticeController@update')->name('update');
+    });
+
 //   manage user
-    Route::middleware(['Privilege:admin'])->group(function (){
-        Route::get('/users', 'Admin\UserController@users')->name('users');
+    Route::middleware(['Privilege:admin'])->prefix('user')->name('user.')->group(function (){
+        Route::get('/list', 'Admin\UserController@list')->name('list');
         Route::get('/privileges', 'Admin\UserController@privileges')->name('privileges');
-        Route::any('/create_users','Admin\UserController@create_users')->name('create_users');
-        Route::post('/change_revise_to','Admin\UserController@change_revise_to')->name('change_revise_to');
-        Route::post('/change_privilege','Admin\UserController@change_privilege')->name('change_privilege');
+        Route::any('/create','Admin\UserController@create')->name('create');
+        Route::post('/revise/change','Admin\UserController@change_revise')->name('revise.change');
+        Route::post('/privilege/change','Admin\UserController@change_privilege')->name('privilege.change');
     });
 
 //   manage problem
-    Route::middleware(['Privilege:problem'])->group(function (){
-        Route::get('/problems', 'Admin\ProblemController@problems')->name('problems');
-        Route::any('/add_problem','Admin\ProblemController@add_problem')->name('add_problem');
-        Route::get('/update_problem','Admin\ProblemController@update_problem')->name('update_problem');
-        Route::any('/update_problem/{id}','Admin\ProblemController@update_problem')->name('update_problem_withId');
-        Route::post('/change_hidden_to','Admin\ProblemController@change_hidden_to')->name('change_hidden_to');
+    Route::middleware(['Privilege:problem'])->prefix('problem')->name('problem.')->group(function (){
+        Route::get('/list', 'Admin\ProblemController@list')->name('list');
+        Route::any('/add','Admin\ProblemController@add')->name('add');
+        Route::get('/update','Admin\ProblemController@update')->name('update');
+        Route::any('/update/{id}','Admin\ProblemController@update')->name('update_withId');
+        Route::post('/hidden/change','Admin\ProblemController@change_hidden')->name('hidden.change');
         Route::any('/rejudge','Admin\ProblemController@rejudge')->name('rejudge');
     });
 
 //   manage contest
-    Route::middleware(['Privilege:contest'])->group(function (){
-        Route::get('/contests','Admin\ContestController@contests')->name('contests');
+    Route::middleware(['Privilege:contest'])->prefix('contest')->name('contest.')->group(function (){
+        Route::get('/list','Admin\ContestController@list')->name('list');
+        Route::get('/add','Admin\ContestController@add')->name('add');
+        Route::get('/update','Admin\ContestController@update')->name('update');
+        Route::get('/update/{id}','Admin\ContestController@update')->name('update_withId');
+        Route::post('/delete','Admin\ContestController@delete')->name('delete');
+        Route::post('/hidden/change','Admin\ContestController@change_hidden')->name('hidden.change');
     });
 });

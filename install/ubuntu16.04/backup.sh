@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -x
+
 web_home=/home    #项目存放位置
 backup='lduoj_'$(date "+%Y%m%d_%H%M%S")
 

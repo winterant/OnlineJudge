@@ -19,18 +19,15 @@ class UserController extends Controller
     }
 
     public function user_edit(Request $request,$username){
-
-        if(!Auth::user()->privilege('admin') && Auth::user()->username!=$username) //不是管理员&&不是本人
+        $online=Auth::user();
+        $user=DB::table('users')->where('username',$username)->first();
+        if(!$online->privilege('admin') && $online->username!=$username) //不是管理员&&不是本人
             return view('client.fail',['msg'=>trans('sentence.Permission denied')]);
-        if(DB::table('users')->where('username',$username)->value('revise')<=0
-            && Auth::user()->username==$username) //是本人&没有修改次数
+        if($online->id==$user->id && $user->revise<=0) //是本人&&没有修改次数
             return view('client.fail',['msg'=>trans('sentence.user_edit_chances',['i'=>Auth::user()->revise])]);
 
         // 提供修改界面
         if ($request->isMethod('get')){
-            $user=DB::table('users')->where('username',$username)->first();
-            if($user->revise <= 0)
-                return view('client.fail',['msg'=>trans('sentence.user_edit_chances',['i'=>$user->revise])]);
             return view('client.user_edit',compact('user'));
         }
 
@@ -49,7 +46,8 @@ class UserController extends Controller
     }
 
     public function password_reset(Request $request,$username){
-        if(!Auth::user()->privilege('admin') && Auth::user()->username!=$username) //不是管理员&&不是本人
+        $online=Auth::user();
+        if(!$online->privilege('admin') && $online->username!=$username) //不是管理员&&不是本人
             return view('client.fail',['msg'=>trans('sentence.Permission denied')]);
 
         // 提供界面

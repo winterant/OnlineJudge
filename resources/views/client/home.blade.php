@@ -25,23 +25,6 @@
             </div>
         </div>
     </div>
-    <script>
-        function get_notice(id) {
-            $.post(
-                '{{route('get_notice')}}',
-                {
-                    '_token':'{{csrf_token()}}',
-                    'id':id
-                },
-                function (ret) {
-                    ret=JSON.parse(ret);
-                    console.log(ret)
-                    $("#notice-title").html(ret.title)
-                    $("#notice-content").html(ret.content)
-                }
-            );
-        }
-    </script>
 
 
     <div class="container">
@@ -83,8 +66,8 @@
         <div class="col-sm-6 mb-5">
             <div class="card">
                 <div class="card-header pt-2 pb-0" style="border-top: 5px solid #fcc700;">
-                    <a href="javascript:" class="pull-right" style="color: #838383" data-toggle="tooltip"
-                       title="This list is updating in real time. It shows some users who solved most problems this week">
+                    <a href="javascript:" class="pull-right" style="color: #838383"
+                        onclick="whatisthis('This list is updating in real time. It shows some users who solved most problems this week')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                     <h3 class="text-center mb-0">{{__("This Week Ranking")}}</h3>
@@ -120,8 +103,8 @@
         <div class="col-sm-6 mb-5">
             <div class="card">
                 <div class="card-header pt-2 pb-0" style="border-top: 5px solid #ff0023;">
-                    <a href="javascript:" class="pull-right" style="color: #838383" data-toggle="tooltip"
-                       title="The list was updating at this Monday 00:00. It shows some users who solved most problems last week">
+                    <a href="javascript:" class="pull-right" style="color: #838383"
+                        onclick="whatisthis('The list was updating at this Monday 00:00. It shows some users who solved most problems last week')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                     <h3 class="text-center mb-0">{{__("Last Week Ranking")}}</h3>
@@ -157,8 +140,20 @@
     </div>
 
     <script>
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip({placement:'bottom'}); //提示
-        });
+        function get_notice(id) {
+            $.post(
+                '{{route('get_notice')}}',
+                {
+                    '_token':'{{csrf_token()}}',
+                    'id':id
+                },
+                function (ret) {
+                    ret=JSON.parse(ret);
+                    console.log(ret)
+                    $("#notice-title").html(ret.title)
+                    $("#notice-content").html(ret.content)
+                }
+            );
+        }
     </script>
 @endsection
