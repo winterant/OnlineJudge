@@ -154,6 +154,27 @@
 
                 <li class="nav-item">
                     <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
+                       data-target="#menu-notice" aria-expanded="false">
+                        <i class="fa fa-sticky-note-o mr-1" aria-hidden="true"></i>
+                        首页公告/新闻
+                    </a>
+                    <ul id="menu-notice" class="collapse">
+
+                        <li class="nav-item">
+                            <a class="nav-link border-top" href="{{route('admin.notice.list')}}">
+                                <i class="fa fa-list" aria-hidden="true"></i> 公告列表</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link border-top" href="{{route('admin.notice.add')}}">
+                                <i class="fa fa-plus" aria-hidden="true"></i> 发布公告</a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
                        data-target="#menu-user" aria-expanded="false">
                         <i class="fa fa-users mr-1" aria-hidden="true"></i>
                         账号管理
@@ -161,17 +182,17 @@
                     <ul id="menu-user" class="collapse">
 
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.users')}}">
+                            <a class="nav-link border-top" href="{{route('admin.user.list')}}">
                                 <i class="fa fa-list" aria-hidden="true"></i> 账号列表</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.privileges')}}">
+                            <a class="nav-link border-top" href="{{route('admin.user.privileges')}}">
                                 <i class="fa fa-universal-access" aria-hidden="true"></i> 权限管理</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.create_users')}}">
+                            <a class="nav-link border-top" href="{{route('admin.user.create')}}">
                                 <i class="fa fa-user-plus" aria-hidden="true"></i> 账号批量生成</a>
                         </li>
                     </ul>
@@ -184,7 +205,7 @@
                     </a>
                     <ul id="menu-problem" class="collapse">
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.problems')}}">
+                            <a class="nav-link border-top" href="{{route('admin.problem.list')}}">
                                 <i class="fa fa-list" aria-hidden="true"></i> 程序设计题</a>
                         </li>
                         <li class="nav-item">
@@ -196,7 +217,7 @@
                                 <i class="fa fa-list" aria-hidden="true"></i> 代码填空题</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.add_problem')}}">
+                            <a class="nav-link border-top" href="{{route('admin.problem.add')}}">
                                 <i class="fa fa-plus" aria-hidden="true"></i> 添加程序设计题</a>
                         </li>
                         <li class="nav-item">
@@ -209,7 +230,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.update_problem')}}">
+                            <a class="nav-link border-top" href="{{route('admin.problem.update')}}">
                                 <i class="fa fa-edit" aria-hidden="true"></i> 修改程序设计题</a>
                         </li>
                         <li class="nav-item">
@@ -221,7 +242,7 @@
                                 <i class="fa fa-edit" aria-hidden="true"></i> 修改代码填空题</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.rejudge')}}">
+                            <a class="nav-link border-top" href="{{route('admin.problem.rejudge')}}">
                                 <i class="fa fa-recycle" aria-hidden="true"></i> 重判提交记录</a>
                         </li>
                         <li class="nav-item">
@@ -242,32 +263,20 @@
                     </a>
                     <ul id="menu-contest" class="collapse">
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.contests')}}">
+                            <a class="nav-link border-top" href="{{route('admin.contest.list')}}">
                                 <i class="fa fa-list" aria-hidden="true"></i> 竞赛列表</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link border-top" href="#">
-                                <i class="fa fa-list" aria-hidden="true"></i> 选择题</a>
+                                <i class="fa fa-list" aria-hidden="true"></i> 预留</a>
                         </li>
                     </ul>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link border-top" href="#">
-                        <i class="fa fa-cogs fa-lg" aria-hidden="true"></i> 系统配置(慎改)
+                        <i class="fa fa-cogs fa-lg" aria-hidden="true"></i> 预留系统配置(慎改)
                     </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link border-top position-relative" href="#" data-toggle="collapse" data-target="#menu2" aria-expanded="false">下拉菜单模板</a>
-                    <ul id="menu2" class="collapse">
-                        <li class="nav-item">
-                            <a class="nav-link border-top" href="#"><i class="fa fa-home" aria-hidden="true"></i> 子菜单1</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link border-top" href="#"><i class="fa fa-home" aria-hidden="true"></i> 子菜单2</a>
-                        </li>
-                    </ul>
                 </li>
 
             </ul>
@@ -341,6 +350,12 @@
         str+=':'+(now.getSeconds()<10?'0':'')+now.getSeconds();
         document.getElementById('localtime').innerHTML=str;
     },1000); //每秒刷新时间
+
+    //通用提示框，小问号提示这是什么
+    function whatisthis(text) {
+        Notiflix.Report.Init();
+        Notiflix.Report.Info( '{{__('What\'s this?')}}',text,'confirm');
+    }
 
 </script>
 

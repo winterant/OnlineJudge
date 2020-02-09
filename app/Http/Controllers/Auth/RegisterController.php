@@ -6,6 +6,7 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -66,7 +67,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user=User::create([
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
@@ -74,5 +75,8 @@ class RegisterController extends Controller
             'class'   => $data['class'],
             'nick'   => $data['nick'],
         ]);
+        if($data['username']=='admin')//默认管理员
+            DB::table('privileges')->insert(['user_id'=>$user->getAttributes()['id'],'authority'=>'admin']);
+        return $user;
     }
 }

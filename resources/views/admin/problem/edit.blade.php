@@ -152,12 +152,7 @@
             console.log(error);
         } );
 
-        ClassicEditor.create(document.querySelector('#hint'), {
-                ckfinder: {
-                    uploadUrl: '/'
-                }
-            }
-        ).then(editor => {
+        ClassicEditor.create(document.querySelector('#hint'),config).then(editor => {
             window.editor = editor;
             console.log(editor.getData());
         } ).catch(error => {

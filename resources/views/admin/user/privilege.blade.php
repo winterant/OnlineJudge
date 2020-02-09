@@ -43,7 +43,7 @@
                         <td nowrap>{{$item->created_at}}</td>
                         <td>
                             @if($item->username!='admin'||$item->authority!='admin')
-                                <a href="javascript:delete_privilege({{$item->id}})" class="px-1" title="删除" data-toggle="tooltip">
+                                <a href="javascript:delete_privilege({{$item->id}})" class="px-1" title="删除">
                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                 </a>
                             @endif
@@ -61,7 +61,7 @@
                     {{ session('msg') }}
                 </div>
             @endif
-            <form action="{{route('admin.change_privilege')}}" method="post">
+            <form action="{{route('admin.user.privilege.change')}}" method="post">
                 @csrf
                 <input type="text" name="type" value="add" hidden>
                 <div class="form-group col-8">
@@ -113,28 +113,27 @@
                         </tr>
                     </tbody>
                 </table>
-                <h6>特别说明：登录名为admin的用户恒有admin权限</h6>
             </div>
         </div>
     </div>
 
     <script>
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip({placement:'bottom'}); //提示
-        });
 
         function delete_privilege(id) {
-            $.post(
-                '{{route('admin.change_privilege')}}',
-                {
-                    '_token':'{{csrf_token()}}',
-                    'id':id,
-                    'type':'delete',
-                },
-                function (ret) {
-                    location.reload();
-                }
-            );
+            Notiflix.Confirm.Init();
+            Notiflix.Confirm.Show( '敏感操作', '确定删除该权限?', '确认', '取消', function(){
+                $.post(
+                    '{{route('admin.user.privilege.change')}}',
+                    {
+                        '_token':'{{csrf_token()}}',
+                        'id':id,
+                        'type':'delete',
+                    },
+                    function (ret) {
+                        location.reload();
+                    }
+                );
+            });
         }
     </script>
 @endsection

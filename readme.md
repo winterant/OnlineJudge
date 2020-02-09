@@ -19,6 +19,7 @@ Ludong University Online Judge
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/install.sh
   bash install.sh
   ```
+  **注意**：安装过程mysql可能会提示设置root密码，请输入并谨记。
   
   **[安装成功]**：浏览器访问你的服务器ip即可打开首页
   (nginx默认占用80端口,云服务器请先在控制台安全组添加该端口),

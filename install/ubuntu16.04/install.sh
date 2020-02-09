@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -x
+
 web_home=/home    #项目存放位置
 apt -y update && apt -y upgrade
 
