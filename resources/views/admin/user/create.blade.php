@@ -98,7 +98,7 @@
                         <div id="tag_2" class="tab-pane fade form-group w-50">
                             <label for="description">用户名/学号列表：</label>
                             <textarea id="description" name="data[stu_id]" class="ttt form-control-plaintext border bg-white"
-                                 rows="6" placeholder="{{"20182209134\n说明：每行一个学号"}}"></textarea>
+                                 rows="6" placeholder="{{"20182209134\n说明：每行一个学号；仅允许英文字母或数字！"}}"></textarea>
                         </div>
                     </div>
                     <script type="text/javascript">

@@ -68,12 +68,12 @@ class ProblemController extends Controller
             $samples=$request->input('samples');
             $spjFile=$request->file('spj_file');
 
-            save_problem_samples($problem['id'],(array)$samples);
+            save_problem_samples($id,(array)$samples);
             if($spjFile!=null && $spjFile->isValid())
-                save_problem_spj($problem['id'],$spjFile);
+                save_problem_spj($id,$spjFile);
 
-            DB::table('problems')->where('id',$problem['id'])->update($problem);
-            $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功',route('problem',$problem['id']),$problem['id']);
+            DB::table('problems')->where('id',$id)->update($problem);
+            $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功',route('problem',$id),$id);
             return view('admin.success',['msg'=>$msg]);
         }
     }
@@ -116,4 +116,47 @@ class ProblemController extends Controller
         }
     }
 
+    public function import_export(){
+        return view('admin.problem.import_export');
+    }
+    public function import(Request $request){
+        $file=$request->file('import_xml');
+        $xmlDoc=simplexml_load_file($file->getRealPath(),'SimpleXMLElement',LIBXML_PARSEHUGE);
+        $searchNodes = $xmlDoc->xpath ( "/fps/item" );
+        foreach ($searchNodes as $node) {
+            $problem=[
+                'title'       => ''.$node->title,
+                'description' => ''.$node->description,
+                'input'       => ''.$node->input,
+                'output'      => ''.$node->output,
+                'hint'        => ''.$node->hint,
+                'source'      => ''.$node->source,
+                'spj'         => ''.$node->spj?:0,
+                'time_limit'  => ''.$node->time_limit / ($node->time_limit->attributes()->unit==='ms'?1000:1),
+                'memory_limit'=> ''.$node->memory_limit / ($node->memory_limit->attributes()->unit==='kb'?1024:1),
+            ];
+            $pid=DB::table('problems')->insertGetId($problem);
+            //下面保存sample，spj，test
+            $test_inputs =$node->children()->test_input;
+            $test_outputs=$node->children()->test_output;
+            $test_count=0;
+            foreach ($test_inputs as $test_in){
+                var_dump($test_in);
+            print_r("<p style='margin-left:300px;margin-top: 80px;'>".$test_in.'</p>');
+//                Storage::put(sprintf('data/%d/test/test%d.in',$pid,$test_count++), json_decode(json_encode($test_in),true));
+            }
+//            foreach ($test as $test1) {
+//            print_r("<p style='margin-left:300px;margin-top: 80px;'>".$test1.'</p>');
+//
+//            }
+            dd(1);
+//            dump($problem);
+//            $test=$node->time_limit->attributes()->unit;
+//            print_r("<p style='margin-left:300px;margin-top: 80px;'>".$test.'</p>');
+        }
+        return view('admin.success',['msg'=>'已导入题目']);
+    }
+    public function export(Request $request){
+
+    }
 }

@@ -16,7 +16,7 @@
                             <div class="col-md-6">
                                 <input id="name" type="text" class="form-control @error('username') is-invalid @enderror"
                                       name="username" value="{{ old('username') }}"
-                                       onkeyup = "this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')"
+                                       oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')"
                                        required autofocus placeholder="{{__('sentence.Must fill')}}" maxlength="30">
 
                                 @error('username')

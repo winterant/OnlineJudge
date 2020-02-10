@@ -83,6 +83,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::any('/update/{id}','Admin\ProblemController@update')->name('update_withId');
         Route::post('/update/hidden','Admin\ProblemController@update_hidden')->name('update_hidden');
         Route::any('/rejudge','Admin\ProblemController@rejudge')->name('rejudge');
+        Route::get('/import_export','Admin\ProblemController@import_export')->name('import_export');
+        Route::post('/import','Admin\ProblemController@import')->name('import');
+        Route::post('/export','Admin\ProblemController@export')->name('export');
     });
 
 //   manage contest

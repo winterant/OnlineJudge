@@ -10,7 +10,7 @@
         @if(isset($lack_id)?$lack_id:false)
             <form class="p-4 col-12 col-md-9" action="" method="get">
                 <div class="form-inline">
-                    <label for="">
+                    <label>
                         请输入要修改的题号：
                         <input type="number" name="id" class="form-control" autofocus>
                         <button class="btn btn-success bg-light border ml-3">确认</button>
@@ -20,7 +20,6 @@
         @else
             <form class="p-4 col-12 col-md-9" action="" method="post" enctype="multipart/form-data">
                 @csrf
-                <input type="number" name="problem[id]" value="{{isset($problem->id)?$problem->id:''}}" hidden>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">题目：</span>
