@@ -209,49 +209,20 @@
                                 <i class="fa fa-list" aria-hidden="true"></i> 程序设计题</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
-                                <i class="fa fa-list" aria-hidden="true"></i> 选择题</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
-                                <i class="fa fa-list" aria-hidden="true"></i> 代码填空题</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link border-top" href="{{route('admin.problem.add')}}">
                                 <i class="fa fa-plus" aria-hidden="true"></i> 添加程序设计题</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
-                                <i class="fa fa-plus" aria-hidden="true"></i> 添加选择题</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
-                                <i class="fa fa-plus" aria-hidden="true"></i> 添加代码填空题</a>
-                        </li>
-
-                        <li class="nav-item">
                             <a class="nav-link border-top" href="{{route('admin.problem.update')}}">
                                 <i class="fa fa-edit" aria-hidden="true"></i> 修改程序设计题</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
-                                <i class="fa fa-edit" aria-hidden="true"></i> 修改选择题</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
-                                <i class="fa fa-edit" aria-hidden="true"></i> 修改代码填空题</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link border-top" href="{{route('admin.problem.rejudge')}}">
                                 <i class="fa fa-recycle" aria-hidden="true"></i> 重判提交记录</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
-                                <i class="fa fa-sign-in" aria-hidden="true"></i> 导入题目</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
-                                <i class="fa fa-sign-out" aria-hidden="true"></i> 导出题目</a>
+                            <a class="nav-link border-top" href="{{route('admin.problem.import')}}">
+                                <i class="fa fa-sign-in" aria-hidden="true"></i> 导入与导出</a>
                         </li>
                     </ul>
                 </li>
