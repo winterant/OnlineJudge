@@ -61,7 +61,7 @@
                     {{ session('msg') }}
                 </div>
             @endif
-            <form action="{{route('admin.user.privilege.change')}}" method="post">
+            <form action="{{route('admin.user.privilege_create')}}" method="post">
                 @csrf
                 <input type="text" name="type" value="add" hidden>
                 <div class="form-group col-8">
@@ -123,7 +123,7 @@
             Notiflix.Confirm.Init();
             Notiflix.Confirm.Show( '敏感操作', '确定删除该权限?', '确认', '取消', function(){
                 $.post(
-                    '{{route('admin.user.privilege.change')}}',
+                    '{{route('admin.user.privilege_delete')}}',
                     {
                         '_token':'{{csrf_token()}}',
                         'id':id,

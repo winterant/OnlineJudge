@@ -21,7 +21,7 @@
                 @endif
                 <h3 class="text-center">{{$problem->id}}. {{$problem->title}}</h3>
                 <hr class="mt-0 mb-1">
-                <div >
+                <div class="ck-content">
                     <h4 class="text-sky">Description</h4>
                     {!! $problem->description !!}
 
@@ -183,42 +183,6 @@
                             placeholder="{{trans('sentence.Input Code')}}"></textarea>
                     </div>
 
-{{--                    <div>--}}
-{{--                        <ul class="nav nav-tabs nav-justified mb-1">--}}
-{{--                            <li class="nav-item">--}}
-{{--                                <a class="nav-link p-2 active" href="#tag_code" data-toggle="tab">{{trans('main.Code')}}</a>--}}
-{{--                            </li>--}}
-{{--                            <li class="nav-item">--}}
-{{--                                <a class="nav-link p-2" href="#tag_file" data-toggle="tab">{{trans('main.File')}}</a>--}}
-{{--                            </li>--}}
-{{--                        </ul>--}}
-{{--                        <div class="tab-content">--}}
-{{--                            <div id="tag_code" class="tab-pane fade show active form-group">--}}
-{{--                                <textarea class="form-control-plaintext border p-2" rows="7" name="solution[code]"--}}
-{{--                                          minlength="10"--}}
-{{--                                          placeholder="{{trans('sentence.Input Code')}}" required></textarea>--}}
-{{--                            </div>--}}
-{{--                            <div id="tag_file" class="tab-pane fade form-group">--}}
-{{--                                <input type="file" class="form-control-file" name="code_file" accept=".txt .c, .cc, .cpp, .java, .py"/>--}}
-{{--                            </div>--}}
-{{--                            <input name="submit_way" value="tag_code" hidden>--}}
-{{--                        </div>--}}
-{{--                        <script type="text/javascript">--}}
-{{--                            $(function(){--}}
-{{--                                --}}{{-- 监听code/file的选项卡，选中时为输入框添加required属性 --}}
-{{--                                $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {--}}
-{{--                                    var activeTab = $(e.target).attr('href'); // 获取已激活的标签页--}}
-{{--                                    var previousTab = $(e.relatedTarget).attr('href');// 获取上一个标签页--}}
-{{--                                    $(activeTab+' .ttt').attr('required',true);--}}
-{{--                                    $(previousTab+' .ttt').attr('required',false);--}}
-{{--                                    $("input[name=submit_way]").val(activeTab);--}}
-{{--                                });--}}
-{{--                            });--}}
-{{--                        </script>--}}
-{{--                    </div>--}}
-
-
-
                     @guest
                         <button type="submit" class="btn bg-light" disabled>{{trans('main.Submit')}}</button>&nbsp;
                         <a  href="{{ route('login') }}">{{ trans('Login') }}</a>&nbsp;
@@ -236,5 +200,6 @@
 
     </div>
 
+    <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script> {{-- ckeditor样式 --}}
 @endsection
 

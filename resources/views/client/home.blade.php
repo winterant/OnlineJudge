@@ -15,7 +15,7 @@
                 </div>
 
                 <!-- 模态框主体 -->
-                <div id="notice-content" class="modal-body"></div>
+                <div id="notice-content" class="modal-body ck-content"></div>
 
                 <!-- 模态框底部 -->
                 <div class="modal-footer">
@@ -139,6 +139,7 @@
 
     </div>
 
+    <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script> {{-- ckeditor样式 --}}
     <script>
         function get_notice(id) {
             $.post(

@@ -29,7 +29,7 @@ class ContestController extends Controller
         //todo
     }
 
-    public function change_hidden(){
+    public function update_hidden(){
         //todo
     }
 }

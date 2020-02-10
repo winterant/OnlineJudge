@@ -83,24 +83,12 @@ class UserController extends Controller
         }
     }
 
-    public function change_privilege(Request $request){
-        if(!$request->isMethod('post'))return view('admin.fail',['msg'=>'请求有误！']);
-        if($request->input('type')=='add'){
-            $privilege=$request->input('privilege');
-            $privilege['user_id']=DB::table('users')->where('username',$request->input('username'))->value('id');
-            if($privilege['user_id']==null)
-                $msg='该用户不存在！请先至用户列表确认用户的登录名！';
-            else{
-                $msg='成功添加'.DB::table('privileges')->insert([$privilege]).'个权限用户';
-            }
-
-            return redirect(route('admin.user.privileges'))->with('msg',$msg);
-        }else if($request->input('type')=='delete'){   //删除
-            DB::table('privileges')->delete($request->input('id'));
-        }
+    public function delete(Request $request){
+        $uids=$request->input('uids')?:[];
+        DB::table('users')->whereIn('id',$uids)->delete();
     }
 
-    public function change_revise(Request $request){
+    public function update_revise(Request $request){
         if($request->ajax()){
             $uids=$request->input('uids')?:[];
             $revise=$request->input('revise');
@@ -108,4 +96,22 @@ class UserController extends Controller
         }
         return 0;
     }
+
+
+    public function privilege_create(Request $request){
+        if(!$request->isMethod('post'))return view('admin.fail',['msg'=>'请求有误！']);
+        $privilege=$request->input('privilege');
+        $privilege['user_id']=DB::table('users')->where('username',$request->input('username'))->value('id');
+        if($privilege['user_id']==null)
+            $msg='该用户不存在！请先至用户列表确认用户的登录名！';
+        else{
+            $msg='成功添加'.DB::table('privileges')->insert($privilege).'个权限用户';
+        }
+        return back()->with('msg',$msg);
+    }
+
+    public function privilege_delete(Request $request){
+        return DB::table('privileges')->delete($request->input('id'));
+    }
+
 }

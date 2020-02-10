@@ -59,6 +59,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::get('/list','Admin\NoticeController@list')->name('list');
         Route::any('/add','Admin\NoticeController@add')->name('add');
         Route::any('/update/{id}','Admin\NoticeController@update')->name('update');
+        Route::post('/delete','Admin\NoticeController@delete')->name('delete');
+        Route::post('/update/state','Admin\NoticeController@update_state')->name('update_state');
+        Route::post('/upload/image','Admin\NoticeController@upload_image')->name('upload_image');
     });
 
 //   manage user
@@ -66,8 +69,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::get('/list', 'Admin\UserController@list')->name('list');
         Route::get('/privileges', 'Admin\UserController@privileges')->name('privileges');
         Route::any('/create','Admin\UserController@create')->name('create');
-        Route::post('/revise/change','Admin\UserController@change_revise')->name('revise.change');
-        Route::post('/privilege/change','Admin\UserController@change_privilege')->name('privilege.change');
+        Route::post('/delete','Admin\UserController@delete')->name('delete');
+        Route::post('/update/revise','Admin\UserController@update_revise')->name('update_revise');
+        Route::post('/privilege/create','Admin\UserController@privilege_create')->name('privilege_create');
+        Route::post('/privilege/delete','Admin\UserController@privilege_delete')->name('privilege_delete');
     });
 
 //   manage problem
@@ -76,7 +81,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::any('/add','Admin\ProblemController@add')->name('add');
         Route::get('/update','Admin\ProblemController@update')->name('update');
         Route::any('/update/{id}','Admin\ProblemController@update')->name('update_withId');
-        Route::post('/hidden/change','Admin\ProblemController@change_hidden')->name('hidden.change');
+        Route::post('/update/hidden','Admin\ProblemController@update_hidden')->name('update_hidden');
         Route::any('/rejudge','Admin\ProblemController@rejudge')->name('rejudge');
     });
 
@@ -87,6 +92,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::get('/update','Admin\ContestController@update')->name('update');
         Route::get('/update/{id}','Admin\ContestController@update')->name('update_withId');
         Route::post('/delete','Admin\ContestController@delete')->name('delete');
-        Route::post('/hidden/change','Admin\ContestController@change_hidden')->name('hidden.change');
+        Route::post('/update/hidden','Admin\ContestController@update_hidden')->name('update_hidden');
     });
 });

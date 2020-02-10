@@ -7,6 +7,7 @@ use App\Problem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProblemController extends Controller
 {
@@ -54,7 +55,7 @@ class ProblemController extends Controller
             ->where('problem_id','=',$problem->id)
             ->count('id')>8;
 
-        $hasSpj=file_exists(base_path('storage/data/'.$problem->id.'/spj/spj.cpp'));
+        $hasSpj=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
         return view('client.problem',compact('problem','samples','solutions','has_more','hasSpj'));
     }
 
