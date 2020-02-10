@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ContestController extends Controller
 {
@@ -80,7 +81,7 @@ class ContestController extends Controller
             ->first();
         $samples=read_problem_samples($problem->problem_id);
 
-        $hasSpj=file_exists(base_path('storage/data/'.$problem->id.'/spj/spj.cpp'));
+        $hasSpj=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
         return view('contest.problem',compact('contest','problem','samples','hasSpj'));
     }
 

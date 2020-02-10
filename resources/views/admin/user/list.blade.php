@@ -10,20 +10,20 @@
         <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
         <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
 
-        <a href="javascript:change_revise_to(0);" class="ml-3">禁止修改</a>
+        <a href="javascript:update_revise(0);" class="ml-3">禁止修改</a>
         <a href="javascript:" class="text-gray"
            onclick="whatisthis('选中的用户将被禁止修改个人资料!防止用户私自乱改信息，混淆视听！管理员不受限制')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
 
-        <a href="javascript:change_revise_to(1);" class="ml-3">允许资料变动1</a>
+        <a href="javascript:update_revise(1);" class="ml-3">允许资料变动1</a>
         <a href="javascript:" class="text-gray"
            onclick="whatisthis('选中的用户将被设为仅有 1 次修改个人资料的机会！可用于防止用户乱改个人资料')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
 
-        <a href="javascript:change_revise_to(3);" class="ml-3">允许资料变动3</a>
-        <a href="javascript:alert('暂未实现删除用户!');" class="ml-3">批量删除</a>
+        <a href="javascript:update_revise(3);" class="ml-3">允许资料变动3</a>
+        <a href="javascript:" onclick="delete_user()" class="ml-3">批量删除</a>
 
         <table class="table table-striped table-hover table-sm">
             <thead>
@@ -63,7 +63,7 @@
                         <a href="{{route('user_edit',$item->username)}}" class="px-1" target="_blank" title="修改">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                         </a>
-                        <a href="javascript:alert('暂不支持删除用户!')" class="px-1" title="删除">
+                        <a href="javascript:" onclick="delete_user({{$item->id}})" class="px-1" title="删除">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                         </a>
                     </td>
@@ -75,24 +75,44 @@
     </div>
     <script>
 
-        function change_revise_to(revise) {
+        function delete_user(id=-1) {
+            Notiflix.Confirm.Init();
+            Notiflix.Confirm.Show('操作确认','选中的用户信息将永久丢失，请三思！坚持删除吗？','确认删除','取消',function () {
+                if(id!==-1){  ///单独一个
+                    $('td input[type=checkbox]').prop('checked',false)
+                    $('td input[value='+id+']').prop('checked',true)
+                }
+                var nids=[];
+                $('td input[type=checkbox]:checked').each(function () { nids.push($(this).val()); });
+                $.post(
+                    '{{route('admin.user.delete')}}',
+                    {
+                        '_token':'{{csrf_token()}}',
+                        'uids':nids,
+                    },
+                    function (ret) {
+                        location.reload();
+                    }
+                );
+            })
+        }
+
+        function update_revise(revise) {
             // 修改用户可以修改个人资料的次数
             var uids=[];
             $('td input[type=checkbox]:checked').each(function () { uids.push($(this).val()); });
             $.post(
-                '{{route('admin.user.revise.change')}}',
+                '{{route('admin.user.update_revise')}}',
                 {
                     '_token':'{{csrf_token()}}',
                     'uids':uids,
                     'revise':revise,
                 },
                 function (ret) {
-                    if(id===-1){
-                        Notiflix.Report.Init();
-                        Notiflix.Report.Success( '操作成功',ret+'条数据已更新','confirm' ,function () {
-                            location.reload();
-                        });
-                    }
+                    Notiflix.Report.Init();
+                    Notiflix.Report.Success( '操作成功',ret+'条数据已更新','confirm' ,function () {
+                        location.reload();
+                    });
                 }
             );
         }

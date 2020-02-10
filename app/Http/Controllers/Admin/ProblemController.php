@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProblemController extends Controller
 {
@@ -55,9 +56,7 @@ class ProblemController extends Controller
             $samples=read_problem_samples($problem->id);
 
             //看看有没有特判文件
-            $spjPath = base_path('storage/data/'.$problem->id.'/spj/spj.cpp');
-            $hasSpj=file_exists($spjPath);
-
+            $hasSpj=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
             return view('admin.problem.edit',compact('pageTitle','problem','samples','hasSpj'));
         }
 
@@ -71,7 +70,7 @@ class ProblemController extends Controller
 
             save_problem_samples($problem['id'],(array)$samples);
             if($spjFile!=null && $spjFile->isValid())
-                save_problem_spj_code($problem['id'],$spjFile);
+                save_problem_spj($problem['id'],$spjFile);
 
             DB::table('problems')->where('id',$problem['id'])->update($problem);
             $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功',route('problem',$problem['id']),$problem['id']);
@@ -80,7 +79,7 @@ class ProblemController extends Controller
     }
 
     //管理员修改题目状态  0密封 or 1公开
-    public function change_hidden(Request $request){
+    public function update_hidden(Request $request){
         if($request->ajax()){
             $pids=$request->input('pids')?:[];
             $hidden=$request->input('hidden');
@@ -101,14 +100,19 @@ class ProblemController extends Controller
             $pid=$request->input('pid');
             $cid=$request->input('cid');
             $sid=$request->input('sid');
-
-            $count=DB::table('solutions')
-                ->when($pid,function ($q)use($pid){$q->orWhere('problem_id',$pid);})
-                ->when($cid&&$pid>0,function ($q)use($cid){$q->orWhere('contest_id',$cid);})
-                ->when($sid,function ($q)use($sid){$q->orWhere('id',$sid);})
-                ->update(['result'=>0]);
-
-            return view('admin.success',['msg'=>sprintf('已重判%d条提交记录，可前往状态查看',$count)]);
+            $date=$request->input('date');
+            if($pid||$cid||$sid||($date[1]&&$date[2])){
+                $count=DB::table('solutions')
+                    ->when($pid,function ($q)use($pid){$q->where('problem_id',$pid);})
+                    ->when($cid,function ($q)use($cid){$q->where('contest_id',$cid);})
+                    ->when($sid,function ($q)use($sid){$q->where('id',$sid);})
+                    ->when($date[1],function ($q)use($date){
+                            foreach ($date as &$d){$d=str_replace('T',' ',$d);}
+                            $q->where('submit_time','>',$date[1])->where('submit_time','<',$date[2]);
+                        })
+                    ->update(['result'=>0]);
+            }
+            return view('admin.success',['msg'=>sprintf('已重判%d条提交记录，可前往状态查看',isset($count)?$count:0)]);
         }
     }
 

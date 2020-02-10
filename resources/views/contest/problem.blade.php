@@ -23,7 +23,7 @@
             <div class="my-container bg-white">
                 <h3 class="text-center">{{$problem->index}}. {{$problem->title}}</h3>
                 <hr class="mt-0">
-                <div >
+                <div class="ck-content">
                     <h4 class="text-sky">Description</h4>
                     {!! $problem->description !!}
 
@@ -155,4 +155,5 @@
 
     </div>
 
+    <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script> {{-- ckeditor样式 --}}
 @endsection

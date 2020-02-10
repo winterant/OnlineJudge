@@ -10,12 +10,13 @@
         <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
         <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
 
-        <a href="javascript:" class="ml-3">设为公开</a>
+        <a href="javascript:" onclick="update_hidden(0)" class="ml-3">设为公开</a>
         <a href="javascript:" class="text-gray"
            onclick="whatisthis('选中的竞赛将被公开，即前台竞赛页面可以看到；隐藏反之')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
-        <a href="javascript:" class="ml-3">设为隐藏</a>
+        <a href="javascript:" onclick="update_hidden(1)" class="ml-3">设为隐藏</a>
+        <a href="javascript:" onclick="delete_contest()" class="ml-3">批量删除</a>
 
         <table class="table table-striped table-hover table-sm">
             <thead>
@@ -57,7 +58,7 @@
                     <td nowrap>{{$item->lock_rate}}</td>
                     <td nowrap>{{$item->access}}</td>
                     <td nowrap>
-                        <a href="javascript:" title="点击切换" onclick="change_contest_hidden('{{1-$item->hidden}}',{{$item->id}})">
+                        <a href="javascript:" title="点击切换" onclick="update_hidden('{{1-$item->hidden}}',{{$item->id}})">
                             {{$item->hidden?"**隐藏**":"公开"}}
                         </a>
                     </td>
@@ -77,7 +78,7 @@
         {{$contests->appends($_GET)->links()}}
     </div>
     <script>
-        function delete_contest(id) {
+        function delete_contest(id=-1) {
             Notiflix.Confirm.Init();
             Notiflix.Confirm.Show( '敏感操作', '确定删除该竞赛?无法找回', '确认', '取消', function(){
                 $.post(
@@ -88,22 +89,27 @@
                         'type':'delete',
                     },
                     function (ret) {
-                        location.reload();
+                        if(id===-1){
+                            Notiflix.Report.Init();
+                            Notiflix.Report.Success( '操作成功',ret+'条数据已更新','confirm' ,function () {
+                                location.reload();
+                            });
+                        }else location.reload();
                     }
                 );
             });
         }
 
-        function change_contest_hidden(hidden,id=-1) {
+        function update_hidden(hidden,id=-1) {
             if(id!==-1){  ///单独删除一个
                 $('td input[type=checkbox]').prop('checked',false)
                 $('td input[value='+id+']').prop('checked',true)
             }
-            // 修改题目状态 1公开 or 0隐藏
+            // 修改竞赛状态 1公开 or 0隐藏
             var cids=[];
             $('td input[type=checkbox]:checked').each(function () { cids.push($(this).val()); });
             $.post(
-                '{{route('admin.contest.hidden.change')}}',
+                '{{route('admin.contest.update_hidden')}}',
                 {
                     '_token':'{{csrf_token()}}',
                     'cids':cids,
@@ -115,7 +121,7 @@
                         Notiflix.Report.Success( '操作成功',ret+'条数据已更新','confirm' ,function () {
                             location.reload();
                         });
-                    }
+                    }else location.reload();
                 }
             );
         }

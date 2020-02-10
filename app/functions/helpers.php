@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
+
 
 /**
  * function: 修改项目.env文件
@@ -54,17 +56,11 @@ function arrayToConfig(array $arr,string $configName){
  * 保存样例到文件
  */
 function save_problem_samples($problem_id, $samples){
-    //保存样例文件
-    $samplePath=base_path( 'storage/data/'.$problem_id.'/sample' );
-    if(!is_dir($samplePath))
-        mkdir($samplePath,0777,true); //最大权限，多级目录
-    foreach(scandir($samplePath) as $filename){
-        if($filename!=='.'&&$filename!=='..')
-            unlink($samplePath.'/'.$filename); //删除原有样例文件
-    }
+    $dir='data/'.$problem_id.'/sample';
+    Storage::delete($dir);  //删除原有样例文件
     foreach ($samples as $k=>$txt){
         $name="sample".intval($k/2).(($k%2==0)?'.in':'.out');
-        file_put_contents($samplePath.'/'.$name,$txt);
+        Storage::put($dir.'/'.$name,$txt);
     }
 }
 
@@ -74,23 +70,20 @@ function save_problem_samples($problem_id, $samples){
  * 读取样例文件
  */
 function read_problem_samples($problem_id){
-    $samplePath=base_path( 'storage/data/'.$problem_id.'/sample' );
+    $dir='data/'.$problem_id.'/sample';
     $samples=[];
-    if(is_dir($samplePath)){
-        $flag=[];
-        foreach(scandir($samplePath) as $filename){
-            $name=pathinfo($filename,PATHINFO_FILENAME);
-            $ext=pathinfo($filename,PATHINFO_EXTENSION);
-            if(!isset($flag[$name]))$flag[$name]=0;
-            if($ext==='in')$flag[$name]++;
-            if($ext==='out')$flag[$name]++;
-        }
-        foreach ($flag as $key=>$val){  //in和out都有的，读取
-            if($val==2){
-                $in=file_get_contents($samplePath.'/'.$key.'.in');
-                $out=file_get_contents($samplePath.'/'.$key.'.out');
-                array_push($samples,[$in,$out]);
-            }
+    foreach (Storage::allFiles($dir) as $filepath){
+        $name=pathinfo($filepath,PATHINFO_FILENAME);  //文件名
+        $ext=pathinfo($filepath,PATHINFO_EXTENSION);    //拓展名
+        if(!isset($flag[$name]))$flag[$name]=0;
+        if($ext==='in')$flag[$name]++;
+        if($ext==='out')$flag[$name]++;
+    }
+    foreach (isset($flag)?$flag:[] as $key=>$val){  //in和out都有的，读取
+        if($val==2){
+            $in =Storage::get($dir.'/'.$key.'.in');
+            $out=Storage::get($dir.'/'.$key.'.out');
+            array_push($samples,[$in,$out]);
         }
     }
     return $samples;
@@ -101,13 +94,12 @@ function read_problem_samples($problem_id){
  * @param $problem_id
  * @param $file
  * @return mixed
+ *  保存特判文件
  */
-function save_problem_spj_code($problem_id, $file){
-    //保存特判文件
-    $spjPath=base_path( 'storage/data/'.$problem_id.'/spj' );
-    if(!is_dir($spjPath))
-        mkdir($spjPath,0777,true); //最大权限，多级目录
-    file_put_contents($spjPath.'/spj.cpp',file_get_contents($file->getRealPath()));
+function save_problem_spj($problem_id, $file){
+    $dir='data/'.$problem_id.'/spj';
+    Storage::delete($dir);
+    $file->move(storage_path('app/'.$dir),'spj.cpp');
 //    chmod($spjPath.'/spj.cpp',0777);
 //    exec(sprintf('sudo g++ -std=c++11 %s -o %s -lmysqlclient 2>&1',$spjPath.'/spj.cpp',$spjPath.'/spj'),$output);
 //    return $output;
