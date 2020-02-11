@@ -6,9 +6,8 @@ web_home=/home    #项目存放位置
 backup='lduoj_'$(date "+%Y%m%d_%H%M%S")
 
 # 项目备份
-if [ ! -d ${web_home}/lduoj_backup/${backup} ];then
-  mkdir -p ${web_home}/lduoj_backup/${backup}
-fi;
+mkdir -p ${web_home}/lduoj_backup/${backup}
+
 mv -f ${web_home}/LDUOnlineJudge ${web_home}/lduoj_backup/${backup}
 # 数据库备份
 USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
@@ -25,8 +24,8 @@ cd ${web_home} && git clone https://github.com/iamwinter/LDUOnlineJudge.git
 apt -y remove git
 mv -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/storage ${web_home}/LDUOnlineJudge/
 mv -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/vendor  ${web_home}/LDUOnlineJudge/
-cp -r -p -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/public/favicon.ico ${web_home}/LDUOnlineJudge/public/favicon.ico
 cp -r -p -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/.env ${web_home}/LDUOnlineJudge/.env
+cp -r -p -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/public/favicon.ico ${web_home}/LDUOnlineJudge/public/favicon.ico
 chmod -R 777 ${web_home}/LDUOnlineJudge/bootstrap/cache
 
 

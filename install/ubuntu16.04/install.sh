@@ -9,7 +9,7 @@ apt -y update && apt -y upgrade
 apt -y install git
 cd ${web_home} && git clone https://github.com/iamwinter/LDUOnlineJudge.git
 apt -y remove git
-cd ${web_home}/LDUOnlineJudge && cp .env.example .env && chmod -R 777 storage/ bootstrap/cache
+cd ${web_home}/LDUOnlineJudge && cp .env.example .env && chmod -R 777 storage bootstrap/cache
 
 # php
 apt -y install software-properties-common python-software-properties
