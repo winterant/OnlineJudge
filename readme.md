@@ -16,7 +16,7 @@ Ludong University Online Judge
   在终端执行以下命令，安装过程约10分钟。若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
   ```
   apt update && apt -y install wget
-  wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/install.sh
+  wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/install.sh -e robots=off
   bash install.sh
   ```
   **注意**：安装过程mysql可能会提示设置root密码，请输入并谨记。
@@ -41,7 +41,7 @@ Ludong University Online Judge
 
 # 系统更新
   ```
-  wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/update.sh
+  wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/update.sh -e robots=off
   bash update.sh
   ```
   **提示**：更新时自动产生备份`/home/lduoj_update/lduoj_{日期}`，

@@ -22,6 +22,7 @@ apt update
 apt install -y git
 cd ${web_home} && git clone https://github.com/iamwinter/LDUOnlineJudge.git
 apt -y remove git
+rm -rf ${web_home}/LDUOnlineJudge/storage
 mv -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/storage ${web_home}/LDUOnlineJudge/
 mv -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/vendor  ${web_home}/LDUOnlineJudge/
 cp -r -p -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/.env ${web_home}/LDUOnlineJudge/.env

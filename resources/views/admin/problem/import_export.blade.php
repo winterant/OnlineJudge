@@ -51,8 +51,8 @@
     </div>
     <script>
 
-        //递归切割文件并上传，file大文件，start切割起点，block每块大小2MB
-        function dfs_upload(file,start=0,block=1024*1024*2) {
+        //递归切割文件并上传，file大文件，start切割起点，block每块大小1MB
+        function dfs_upload(file,start=0,block=1024*1024*1) {
             if(start===0) {Notiflix.Loading.Init();Notiflix.Loading.Hourglass()} //本次上传第一块，设置提示
             else if(start+block >=file.size)Notiflix.Loading.Change('上传成功！正在导入题库... 请勿刷新或关闭页面!');//本次上传最后一块
 
