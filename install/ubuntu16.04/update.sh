@@ -40,6 +40,5 @@ php artisan route:clear
 php artisan config:cache
 php artisan route:cache
 
-echo -e "\nYou have successfully updated LDU Online Judge!"
+echo -e "\nYou have successfully updated LDU Online Judge! Enjoy it!"
 echo -e "Installation location: ${web_home}/LDUOnlineJudge"
-echo -e "Enjoy it!\n"
