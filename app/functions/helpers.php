@@ -52,20 +52,6 @@ function arrayToConfig(array $arr,string $configName){
 
 /**
  * @param $problem_id
- * @param $samples： 一维数组  偶数项.in <=> 奇数项.out
- * 保存样例到文件
- */
-function save_problem_samples($problem_id, $samples){
-    $dir='data/'.$problem_id.'/sample';
-    Storage::delete($dir);  //删除原有样例文件
-    foreach ($samples as $k=>$txt){
-        $name="sample".intval($k/2).(($k%2==0)?'.in':'.out');
-        Storage::put($dir.'/'.$name,$txt);
-    }
-}
-
-/**
- * @param $problem_id
  * @return array  返回二维数组，第一维[sample0,sample1,...]，第二维[in,out]
  * 读取样例文件
  */
@@ -89,18 +75,24 @@ function read_problem_samples($problem_id){
     return $samples;
 }
 
+/**
+ * @param $problem_id
+ * @param $ins,$outs，均为文本
+ * 保存样例到文件
+ */
+function save_problem_samples($problem_id, $ins,$outs){
+    Storage::delete(sprintf('data/%d/sample',$problem_id));  //删除原有样例文件
+    foreach ($ins as $i=>$in)Storage::put(sprintf('data/%d/sample/sample%d.in',$problem_id,$i),$in);
+    foreach ($outs as $i=>$out)Storage::put(sprintf('data/%d/sample/sample%d.out',$problem_id,$i),$out);
+}
 
 /**
  * @param $problem_id
- * @param $file
+ * @param $code
  * @return mixed
  *  保存特判文件
  */
-function save_problem_spj($problem_id, $file){
-    $dir='data/'.$problem_id.'/spj';
-    Storage::delete($dir);
-    $file->move(storage_path('app/'.$dir),'spj.cpp');
-//    chmod($spjPath.'/spj.cpp',0777);
-//    exec(sprintf('sudo g++ -std=c++11 %s -o %s -lmysqlclient 2>&1',$spjPath.'/spj.cpp',$spjPath.'/spj'),$output);
-//    return $output;
+function save_problem_spj($problem_id, $code){
+    Storage::delete(sprintf('data/%d/spj',$problem_id));
+    Storage::put(sprintf('data/%d/spj/spj.cpp',$problem_id),$code);
 }

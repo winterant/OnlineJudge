@@ -221,7 +221,7 @@
                                 <i class="fa fa-recycle" aria-hidden="true"></i> 重判提交记录</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.problem.import')}}">
+                            <a class="nav-link border-top" href="{{route('admin.problem.import_export')}}">
                                 <i class="fa fa-sign-in" aria-hidden="true"></i> 导入与导出</a>
                         </li>
                     </ul>
