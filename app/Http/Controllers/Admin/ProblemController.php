@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Console\Input\Input;
 
 class ProblemController extends Controller
 {
@@ -26,13 +27,17 @@ class ProblemController extends Controller
             $pageTitle='添加题目 - 程序设计';
             return view('admin.problem.edit',compact('pageTitle'));
         }
-        //提交一条新数据
+        //提交一条新题目
         if($request->isMethod('post')){
             $problem=$request->input('problem');
-            unset($problem['id']);
-            $id=DB::table('problems')->insertGetId($problem);
-            save_problem_samples($id,(array)$request->input('samples'));//保存样例
-            $msg=sprintf('题目<a href="%s" target="_blank">%d</a>添加成功',route('problem',$id),$id);
+            if(!isset($problem['spj'])) $problem['spj']=0;
+            $pid=DB::table('problems')->insertGetId($problem);
+            $samp_ins =$request->input('sample_ins');
+            $samp_outs=$request->input('sample_outs');
+            save_problem_samples($pid,(array)$samp_ins,(array)$samp_outs);//保存样例
+            $spjFile=$request->file('spj_file');
+            if($spjFile!=null && $spjFile->isValid()) save_problem_spj($pid,file_get_contents($spjFile)); //保存spj
+            $msg=sprintf('题目<a href="%s" target="_blank">%d</a>添加成功！请及时 <a href="#">上传测试数据</a>',route('problem',$pid),$pid);
             return view('admin.success',compact('msg'));
         }
     }
@@ -54,26 +59,25 @@ class ProblemController extends Controller
                 return view('admin.fail',['msg'=>'该题目不存在或操作有误!']);
 
             $samples=read_problem_samples($problem->id);
-
             //看看有没有特判文件
             $hasSpj=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
             return view('admin.problem.edit',compact('pageTitle','problem','samples','hasSpj'));
         }
 
-        // 提交修改好的题目数据
+        // 提交修改好的题目
         if($request->isMethod('post')){
             $problem=$request->input('problem');
-            if(!isset($problem['spj']))
-                $problem['spj']=0;
-            $samples=$request->input('samples');
-            $spjFile=$request->file('spj_file');
-
-            save_problem_samples($id,(array)$samples);
-            if($spjFile!=null && $spjFile->isValid())
-                save_problem_spj($id,$spjFile);
-
+            if(!isset($problem['spj'])) $problem['spj']=0;
             DB::table('problems')->where('id',$id)->update($problem);
-            $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功',route('problem',$id),$id);
+            ///保存样例、spj
+            $samp_ins =$request->input('sample_ins');
+            $samp_outs=$request->input('sample_outs');
+            $spjFile=$request->file('spj_file');
+            save_problem_samples($id,(array)$samp_ins,(array)$samp_outs); //保存样例
+            if($spjFile!=null && $spjFile->isValid())
+                save_problem_spj($id,file_get_contents($spjFile));
+
+            $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功！ <a href="#">上传测试数据</a>',route('problem',$id),$id);
             return view('admin.success',['msg'=>$msg]);
         }
     }
@@ -116,46 +120,48 @@ class ProblemController extends Controller
         }
     }
 
+    
     public function import_export(){
         return view('admin.problem.import_export');
     }
+
     public function import(Request $request){
+        //ajax post: 接收xml，并导入题库
         $file=$request->file('import_xml');
-        $xmlDoc=simplexml_load_file($file->getRealPath(),'SimpleXMLElement',LIBXML_PARSEHUGE);
+        $xmlDoc=simplexml_load_file($file->getRealPath(),null,LIBXML_NOCDATA|LIBXML_PARSEHUGE);
         $searchNodes = $xmlDoc->xpath ( "/fps/item" );
+        $first_pid=null;
         foreach ($searchNodes as $node) {
             $problem=[
-                'title'       => ''.$node->title,
-                'description' => ''.$node->description,
-                'input'       => ''.$node->input,
-                'output'      => ''.$node->output,
-                'hint'        => ''.$node->hint,
-                'source'      => ''.$node->source,
-                'spj'         => ''.$node->spj?:0,
-                'time_limit'  => ''.$node->time_limit / ($node->time_limit->attributes()->unit==='ms'?1000:1),
-                'memory_limit'=> ''.$node->memory_limit / ($node->memory_limit->attributes()->unit==='kb'?1024:1),
+                'title'       => $node->title,
+                'description' => $node->description,
+                'input'       => $node->input,
+                'output'      => $node->output,
+                'hint'        => $node->hint,
+                'source'      => $node->source,
+                'spj'         => $node->spj?1:0,
+                'time_limit'  => $node->time_limit / ($node->time_limit->attributes()->unit==='s'?1000:1),
+                'memory_limit'=> $node->memory_limit / ($node->memory_limit->attributes()->unit==='kb'?1024:1),
             ];
             $pid=DB::table('problems')->insertGetId($problem);
-            //下面保存sample，spj，test
-            $test_inputs =$node->children()->test_input;
-            $test_outputs=$node->children()->test_output;
-            $test_count=0;
-            foreach ($test_inputs as $test_in){
-                var_dump($test_in);
-            print_r("<p style='margin-left:300px;margin-top: 80px;'>".$test_in.'</p>');
-//                Storage::put(sprintf('data/%d/test/test%d.in',$pid,$test_count++), json_decode(json_encode($test_in),true));
+            if (!$first_pid)$first_pid=$pid;
+            //下面保存sample，test，spj
+            $samp_inputs =(array)$node->children()->sample_input;
+            $samp_outputs=(array)$node->children()->sample_output;
+            $test_inputs =(array)$node->children()->test_input;
+            $test_outputs=(array)$node->children()->test_output;
+            save_problem_samples($pid,$samp_inputs,$samp_outputs);
+            foreach ($test_inputs as $i=>$in){
+                Storage::put(sprintf('data/%d/test/%d.in',$pid,$i),$in);
             }
-//            foreach ($test as $test1) {
-//            print_r("<p style='margin-left:300px;margin-top: 80px;'>".$test1.'</p>');
-//
-//            }
-            dd(1);
-//            dump($problem);
-//            $test=$node->time_limit->attributes()->unit;
-//            print_r("<p style='margin-left:300px;margin-top: 80px;'>".$test.'</p>');
+            foreach ($test_outputs as $i=>$out){
+                Storage::put(sprintf('data/%d/test/%d.out',$pid,$i),$out);
+            }
+            if($node->spj) save_problem_spj($pid,$node->spj);
         }
-        return view('admin.success',['msg'=>'已导入题目']);
+        return $first_pid.' ~ '.$pid;
     }
+
     public function export(Request $request){
 
     }

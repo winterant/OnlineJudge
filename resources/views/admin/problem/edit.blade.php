@@ -61,11 +61,11 @@
                                 <div class="form-inline border m-2">
                                     <div class="w-50 p-2">
                                         输入：
-                                        <textarea name="samples[]" class="form-control-plaintext bg-white" rows="4" required>{{$sam[0]}}</textarea>
+                                        <textarea name="sample_ins[]" class="form-control-plaintext bg-white" rows="4" required>{{$sam[0]}}</textarea>
                                     </div>
                                     <div class="w-50 p-2">
                                         输出：
-                                        <textarea name="samples[]" class="form-control-plaintext bg-white" rows="4" required>{{$sam[1]}}</textarea>
+                                        <textarea name="sample_outs[]" class="form-control-plaintext bg-white" rows="4" required>{{$sam[1]}}</textarea>
                                     </div>
                                 </div>
                             @endforeach
@@ -109,6 +109,10 @@
                         @endif
                         使用前请阅读《<a href="#" target="_blank">特判使用教程</a>》.
                     </div>
+                </div>
+
+                <div class="form-group m-2 p-2 alert-success">
+                    请在添加完题目后，前往 题目管理->测试数据管理 上传测试数据!
                 </div>
 
                 <div class="form-group m-4 text-center">
@@ -164,11 +168,11 @@
             var dom="<div class=\"form-inline border m-2\">\n" +
                 "         <div class=\"w-50 p-2\">\n" +
                 "             输入：\n" +
-                "             <textarea name=\"samples[]\" class=\"form-control-plaintext bg-white\" rows=\"4\" required></textarea>\n" +
+                "             <textarea name=\"sample_ins[]\" class=\"form-control-plaintext bg-white\" rows=\"4\" required></textarea>\n" +
                 "         </div>\n" +
                 "         <div class=\"w-50 p-2\">\n" +
                 "             输出：\n" +
-                "             <textarea name=\"samples[]\" class=\"form-control-plaintext bg-white\" rows=\"4\" required></textarea>\n" +
+                "             <textarea name=\"sample_outs[]\" class=\"form-control-plaintext bg-white\" rows=\"4\" required></textarea>\n" +
                 "         </div>\n" +
                 "     </div>";
             $(that).before(dom);
