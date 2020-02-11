@@ -72,6 +72,7 @@
                             +Math.round(event.total/1024/1024,2)+'MB : '+percent+'%... 请勿刷新或关闭页面!');
                     }, false);
                     xhr.upload.addEventListener("loadend", function (e) {
+                        Notiflix.Loading.Remove();
                         Notiflix.Loading.Change('上传成功！正在导入题库... 请勿刷新或关闭页面!');
                     }, false);
                     xhr.upload.addEventListener("error", function (e) {
@@ -82,7 +83,6 @@
                 },
                 success:function(data){
                     Notiflix.Loading.Remove();
-                    Notiflix.Report.Init();
                     Notiflix.Report.Success('题目导入成功','导入的题目在题库中的编号为 '+data,'好的',function () {that[0].reset();});
                 },
                 error:function(err){
