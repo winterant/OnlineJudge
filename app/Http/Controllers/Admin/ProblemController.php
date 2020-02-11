@@ -120,15 +120,31 @@ class ProblemController extends Controller
         }
     }
 
-    
+
     public function import_export(){
         return view('admin.problem.import_export');
     }
 
     public function import(Request $request){
-        //ajax post: 接收xml，并导入题库
-        $file=$request->file('import_xml');
-        $xmlDoc=simplexml_load_file($file->getRealPath(),null,LIBXML_NOCDATA|LIBXML_PARSEHUGE);
+        //ajax post: 接收分片的xml大文件.
+        $block_id=intval($request->input('block_id'));    //块号
+        $block_total=intval($request->input('block_total'));//块数
+        $file_block=$request->file('file_block');  //文件块
+
+        if($block_id==0)Storage::deleteDirectory('temp_xml'); //删除以前的残留
+        Storage::put('temp_xml/'.$block_id,file_get_contents($file_block->getRealPath())); //暂存切片
+        if($block_id<$block_total-1)
+            return '当前块号：'.$block_id.'，总块数：'.$block_total; //返回，继续上传
+
+        //上传完成，下面合并切片，最后导入题库
+
+        for($i=0;$i<$block_total;$i++){
+            $block=Storage::get('temp_xml/'.$i);
+            file_put_contents(storage_path('app/temp_xml/import_problems.xml'),$block,FILE_APPEND);//追加
+        }
+        //读取xml->导入题库
+        $xmlDoc=simplexml_load_file(storage_path('app/temp_xml/import_problems.xml'),null,LIBXML_NOCDATA|LIBXML_PARSEHUGE);
+        Storage::deleteDirectory('temp_xml'); //删除已经没用的xml文件
         $searchNodes = $xmlDoc->xpath ( "/fps/item" );
         $first_pid=null;
         foreach ($searchNodes as $node) {

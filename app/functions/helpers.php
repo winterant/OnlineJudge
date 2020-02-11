@@ -81,7 +81,7 @@ function read_problem_samples($problem_id){
  * 保存样例到文件
  */
 function save_problem_samples($problem_id, $ins,$outs){
-    Storage::delete(sprintf('data/%d/sample',$problem_id));  //删除原有样例文件
+    Storage::deleteDirectory(sprintf('data/%d/sample',$problem_id));  //删除原有样例文件
     foreach ($ins as $i=>$in)Storage::put(sprintf('data/%d/sample/sample%d.in',$problem_id,$i),$in);
     foreach ($outs as $i=>$out)Storage::put(sprintf('data/%d/sample/sample%d.out',$problem_id,$i),$out);
 }
@@ -93,6 +93,6 @@ function save_problem_samples($problem_id, $ins,$outs){
  *  保存特判文件
  */
 function save_problem_spj($problem_id, $code){
-    Storage::delete(sprintf('data/%d/spj',$problem_id));
+    Storage::deleteDirectory(sprintf('data/%d/spj',$problem_id));
     Storage::put(sprintf('data/%d/spj/spj.cpp',$problem_id),$code);
 }
