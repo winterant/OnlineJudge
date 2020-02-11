@@ -12,7 +12,7 @@
         <div class="col-12 col-md-6">
             <h2>导入题目</h2>
             <hr>
-            <form id="form_import" method="post" onsubmit="return do_import($(this))">
+            <form id="form_import" method="post" onsubmit="return dfs_upload($('[name=import_xml]')[0].files[0])">
                 @csrf
                 <div class="form-inline">
                     <label>导入xml文件：
@@ -50,6 +50,48 @@
 
     </div>
     <script>
+
+        //递归切割文件并上传，file大文件，start切割起点，block每块大小2MB
+        function dfs_upload(file,start=0,block=1024*1024*2) {
+            if(start===0) {Notiflix.Loading.Init();Notiflix.Loading.Hourglass()} //本次上传第一块，设置提示
+            else if(start+block >=file.size)Notiflix.Loading.Change('上传成功！正在导入题库... 请勿刷新或关闭页面!');//本次上传最后一块
+
+            var formData = new FormData();
+            formData.append('block_id',Math.round(start/block))     //块号
+            formData.append('block_total',Math.ceil(file.size/block))  //块数
+            formData.append('file_block',file.slice(start,start+block)) //文件块
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                },
+                url: '{{route('admin.problem.import')}}' ,
+                type: 'post',
+                data: formData ,
+                processData:false,
+                contentType: false,
+                // cache: false,
+                success:function(data){
+                    console.log(data);
+                    if(start+block>=file.size) { //最后一块上传结束
+                        Notiflix.Loading.Remove();
+                        Notiflix.Report.Init();
+                        Notiflix.Report.Success('题目导入成功','导入的题目在题库中的编号为 '+data,'好的');
+                    }else{
+                        Notiflix.Loading.Change('文件上传中 '+Math.round(start/1024/1024,2)+'MB/'+Math.round(file.size/1024/1024,2)
+                            +'MB : '+Math.round(start/file.size*100)+'% 请勿刷新或关闭页面!');
+                        dfs_upload(file,start+block,block);//继续上传
+                    }
+                },
+                error:function(err){
+                    console.log('dfs_upload失败：'+err);
+                    Notiflix.Loading.Remove();
+                    Notiflix.Report.Init();
+                    Notiflix.Report.Failure('题目导入失败',err,'好的');
+                }
+            });
+            return false;
+        }
+
         function do_import(that) {
             var formData = new FormData(that[0]);
             $.ajax({
