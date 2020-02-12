@@ -23,6 +23,7 @@ apt -y install composer zip unzip
 cd ${web_home}/LDUOnlineJudge && composer install --ignore-platform-reqs
 
 # laravel artisan; 必须在composer之后
+php artisan storage:link
 php artisan key:generate
 php artisan config:clear
 php artisan route:clear

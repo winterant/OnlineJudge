@@ -35,6 +35,7 @@ chmod -R 777 ${web_home}/LDUOnlineJudge/bootstrap/cache
 apt install -y composer
 cd ${web_home}/LDUOnlineJudge && composer install --ignore-platform-reqs
 # laravel artisan
+php artisan storage:link
 php artisan key:generate
 php artisan config:clear
 php artisan route:clear
