@@ -8,7 +8,7 @@ backup='lduoj_'$(date "+%Y%m%d_%H%M%S")
 # 项目备份
 mkdir -p ${web_home}/lduoj_backup/${backup}
 
-mv -f ${web_home}/LDUOnlineJudge ${web_home}/lduoj_backup/${backup}
+mv -f ${web_home}/LDUOnlineJudge ${web_home}/lduoj_backup/${backup}/
 # 数据库备份
 USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
 PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
@@ -22,6 +22,7 @@ apt update
 apt install -y git
 cd ${web_home} && git clone https://github.com/iamwinter/LDUOnlineJudge.git
 apt -y remove git
+
 rm -rf ${web_home}/LDUOnlineJudge/storage
 mv -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/storage ${web_home}/LDUOnlineJudge/
 mv -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/vendor  ${web_home}/LDUOnlineJudge/
