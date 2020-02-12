@@ -4,6 +4,4 @@
 *.js linguist-vendored
 CHANGELOG.md export-ignore
 
-*.js linguist-language=php；
-*.css linguist-language=php；
-*.html linguist-language=php
+resources/* linguist-vendored

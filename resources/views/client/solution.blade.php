@@ -18,23 +18,29 @@
                 &nbsp;{{config('oj.result.'.$solution->result)}}
             </div>
 
-            <div>
-                <font class="mr-4">{{__('main.Solution').': '.$solution->id}}</font>
-                <font class="mr-4">{{__('main.Problem').': '}}
-                    @if($solution->contest_id!=-1)
-                        <a href="{{route('contest.home',$solution->contest_id)}}">contest&nbsp;{{$solution->contest_id}}</a></font>
-                    @else
-                        <a href="{{route('problem',$solution->problem_id)}}">{{$solution->problem_id}}</a></font>
-                    @endif
-                <font class="mr-4">{{__('main.User').': '}}<a href="{{route('user',$solution->username)}}">{{$solution->username}}</a></font>
-                <font class="mr-4">{{__('main.Submit Time').': '.$solution->submit_time}}</font>
-                <font class="mr-4">{{__('main.Judge Time').': '.$solution->judge_time}}</font>
-            </div>
-            <div>
-                <font class="mr-4">{{__('main.Time').': '.$solution->time}}MS</font>
-                <font class="mr-4">{{__('main.Memory').': '.round($solution->memory,2)}}MB</font>
-                <font class="mr-4">{{__('main.Language').': '.config('oj.lang.'.$solution->language)}}</font>
-                <font class="mr-4">{{__('main.Code Length').': '.$solution->code_length}}B</font>
+            <div class="table-responsive">
+                <table class="table table-sm mt-1 mb-0">
+                    <tr>
+                        <td class="text-left border-top-0">{{__('main.Solution').': '.$solution->id}}</td>
+                        <td class="text-left border-top-0">{{__('main.Problem').': '}}
+                            @if($solution->contest_id!=-1)
+                                <a href="{{route('contest.home',$solution->contest_id)}}">contest&nbsp;{{$solution->contest_id}}</a>
+                            @else
+                                <a href="{{route('problem',$solution->problem_id)}}">{{$solution->problem_id}}</a>
+                            @endif
+                        </td>
+                        <td class="text-left border-top-0">{{__('main.User').': '}}<a href="{{route('user',$solution->username)}}">{{$solution->username}}</a></td>
+                        <td class="text-left border-top-0">{{__('main.Submit Time').': '.$solution->submit_time}}</td>
+                        <td class="text-left border-top-0">{{__('main.Judge Time').': '.$solution->judge_time}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left border-top-0">{{__('main.Judge Type').': '.$solution->judge_type}}</td>
+                        <td class="text-left border-top-0">{{__('main.Time').': '.$solution->time}}MS</td>
+                        <td class="text-left border-top-0">{{__('main.Memory').': '.round($solution->memory,2)}}MB</td>
+                        <td class="text-left border-top-0">{{__('main.Language').': '.config('oj.lang.'.$solution->language)}}</td>
+                        <td class="text-left border-top-0">{{__('main.Code Length').': '.$solution->code_length}}B</td>
+                    </tr>
+                </table>
             </div>
         </div>
 

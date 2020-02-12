@@ -42,7 +42,7 @@
                                     {{$item->id}}.
                                 </td>
                                 <td class="text-left" nowrap>
-                                    <font class="pull-left m-0 @if($item->state==2) font-weight-bold @endif" style="letter-spacing: 2px">{{$item->title}}</font>&nbsp;&nbsp;
+                                    <font class="pull-left m-0 @if($item->state==2) font-weight-bold @endif">{{$item->title}}</font>&nbsp;&nbsp;
                                     <a href="javascript:" onclick="get_notice({{$item->id}})" data-toggle="modal" data-target="#myModal">{{__("Detail")}}>> </a>
                                 </td>
                                 <td class="text-right" nowrap>

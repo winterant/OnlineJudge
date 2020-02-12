@@ -58,6 +58,7 @@ return [
     "Time"          => "Time",
     "Memory"        => "Memory",
     "Language"      => "Language",
+    "Judge Type"    => "Judge Type",
     "Time Limit"    => "Time Limit",
     "Memory Limit"  => "Memory Limit",
     "Special Judge" => "Special Judge",
