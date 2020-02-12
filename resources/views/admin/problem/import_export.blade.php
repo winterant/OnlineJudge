@@ -51,9 +51,9 @@
     </div>
     <script>
 
-        //递归切割文件并上传，file大文件，start切割起点，block每块大小1MB
-        function dfs_upload(file,start=0,block=1024*1024*1) {
-            if(start===0) {Notiflix.Loading.Init();Notiflix.Loading.Hourglass()} //本次上传第一块，设置提示
+        //递归切割文件并上传，file大文件，start切割起点，block每块大小800KB
+        function dfs_upload(file,start=0,block=1024*800) {
+            if(start===0) {Notiflix.Loading.Hourglass('开始上传')} //本次上传第一块，设置提示
             else if(start+block >=file.size)Notiflix.Loading.Change('上传成功！正在导入题库... 请勿刷新或关闭页面!');//本次上传最后一块
 
             var formData = new FormData();
@@ -72,66 +72,22 @@
                 // cache: false,
                 success:function(data){
                     console.log(data);
-                    if(start+block>=file.size) { //最后一块上传结束
+                    if(start+block>=file.size) { //最后一块上传结束,并导入结束
                         Notiflix.Loading.Remove();
-                        Notiflix.Report.Init();
-                        Notiflix.Report.Success('题目导入成功','导入的题目在题库中的编号为 '+data,'好的');
+                        Notiflix.Report.Success('题目导入成功','导入的题目在题库中的编号为'+data+'，处于隐藏状态','好的');
                     }else{
-                        Notiflix.Loading.Change('文件上传中 '+Math.round(start/1024/1024,2)+'MB/'+Math.round(file.size/1024/1024,2)
+                        Notiflix.Loading.Change('文件上传中 '+(start/1024/1024).toFixed(2)+'MB/'+(file.size/1024/1024).toFixed(2)
                             +'MB : '+Math.round(start/file.size*100)+'% 请勿刷新或关闭页面!');
                         dfs_upload(file,start+block,block);//继续上传
                     }
                 },
-                error:function(err){
-                    console.log('dfs_upload失败：'+err);
+                error:function(xhr,status,err){
                     Notiflix.Loading.Remove();
-                    Notiflix.Report.Init();
                     Notiflix.Report.Failure('题目导入失败',err,'好的');
                 }
             });
             return false;
         }
 
-        function do_import(that) {
-            var formData = new FormData(that[0]);
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': '{{csrf_token()}}'
-                },
-                url: '{{route('admin.problem.import')}}' ,
-                type: 'post',
-                data: formData ,
-                processData:false,
-                contentType: false,
-                cache: false,
-                xhr:function(){
-                    var xhr = $.ajaxSettings.xhr();
-                    Notiflix.Loading.Init(); //提示工具
-                    Notiflix.Loading.Hourglass();
-                    xhr.upload.addEventListener('progress', function(event) {
-                        var percent = Math.round(event.loaded / event.total * 100);
-                        Notiflix.Loading.Change('上传文件 '+Math.round(event.loaded/1024/1024,2)+'MB/'
-                            +Math.round(event.total/1024/1024,2)+'MB : '+percent+'%... 请勿刷新或关闭页面!');
-                    }, false);
-                    xhr.upload.addEventListener("loadend", function (e) {
-                        Notiflix.Loading.Remove();
-                        Notiflix.Loading.Change('上传成功！正在导入题库... 请勿刷新或关闭页面!');
-                    }, false);
-                    xhr.upload.addEventListener("error", function (e) {
-                        Notiflix.Loading.Remove();
-                        alert('文件上传失败！');
-                    }, false);
-                    return xhr;
-                },
-                success:function(data){
-                    Notiflix.Loading.Remove();
-                    Notiflix.Report.Success('题目导入成功','导入的题目在题库中的编号为 '+data,'好的',function () {that[0].reset();});
-                },
-                error:function(err){
-                    alert('失败：'+JSON.parse(err));
-                }
-            });
-            return false; //用ajax提交，让form自己不要提交
-        }
     </script>
 @endsection

@@ -48,7 +48,7 @@ class NoticeController extends Controller
         $image=$request->file('upload');
         $fname=uniqid(date('Ymd_His_')).'.'.$image->getClientOriginalExtension();
         $image->move(storage_path('app/public/notice/images'),$fname);
-        return json_encode(['uploaded'=>true,'url'=>'/storage/notice/images/'.$fname]);
+        return json_encode(['uploaded'=>true,'url'=> Storage::url('public/notice/images/'.$fname)]);
     }
 
     public function update_state(Request $request){

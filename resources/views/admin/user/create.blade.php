@@ -17,7 +17,7 @@
                     <tr>
                         <th nowrap>登录名</th>
                         <th nowrap>密码</th>
-                        <th nowrap>姓名</th>
+                        <th nowrap>姓名/队名</th>
                         <th nowrap>学校</th>
                         <th nowrap>班级</th>
                         <th nowrap>邮箱</th>

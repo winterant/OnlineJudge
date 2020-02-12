@@ -17,6 +17,5 @@
 <script src="{{asset('static/bootstrap-material-design-dist/js/bootstrap-material-design.min.js')}}" defer></script>
 
 
-<link href="{{asset('static/notiflix/css/notiflix-1.3.0.min.css')}}" rel="stylesheet">
-<script src="{{asset('static/notiflix/js/notiflix-1.3.0.min.js')}}" defer></script>
-
+<link href="{{asset('static/notiflix/minified/notiflix-2.0.0.min.css')}}" rel="stylesheet">
+<script src="{{asset('static/notiflix/minified/notiflix-2.0.0.min.js')}}" defer></script>

@@ -126,25 +126,23 @@ class ProblemController extends Controller
     }
 
     public function import(Request $request){
+        date_default_timezone_set("Asia/Shanghai");
+
         //ajax post: 接收分片的xml大文件.
         $block_id=intval($request->input('block_id'));    //块号
         $block_total=intval($request->input('block_total'));//块数
         $file_block=$request->file('file_block');  //文件块
-
-        if($block_id==0)Storage::deleteDirectory('temp_xml'); //删除以前的残留
         Storage::put('temp_xml/'.$block_id,file_get_contents($file_block->getRealPath())); //暂存切片
         if($block_id<$block_total-1)
             return '当前块号：'.$block_id.'，总块数：'.$block_total; //返回，继续上传
 
         //上传完成，下面合并切片，最后导入题库
-
         for($i=0;$i<$block_total;$i++){
             $block=Storage::get('temp_xml/'.$i);
-            file_put_contents(storage_path('app/temp_xml/import_problems.xml'),$block,FILE_APPEND);//追加
+            file_put_contents(storage_path('app/temp_xml/import_problems.xml'),$block,$i?FILE_APPEND:FILE_TEXT);//追加:覆盖
         }
         //读取xml->导入题库
         $xmlDoc=simplexml_load_file(storage_path('app/temp_xml/import_problems.xml'),null,LIBXML_NOCDATA|LIBXML_PARSEHUGE);
-        Storage::deleteDirectory('temp_xml'); //删除已经没用的xml文件
         $searchNodes = $xmlDoc->xpath ( "/fps/item" );
         $first_pid=null;
         foreach ($searchNodes as $node) {
@@ -156,9 +154,19 @@ class ProblemController extends Controller
                 'hint'        => $node->hint,
                 'source'      => $node->source,
                 'spj'         => $node->spj?1:0,
-                'time_limit'  => $node->time_limit / ($node->time_limit->attributes()->unit==='s'?1000:1),
-                'memory_limit'=> $node->memory_limit / ($node->memory_limit->attributes()->unit==='kb'?1024:1),
+                'time_limit'  => $node->time_limit / ($node->time_limit->attributes()->unit=='ms'?1000:1),
+                'memory_limit'=> $node->memory_limit / ($node->memory_limit->attributes()->unit=='kb'?1024:1),
             ];
+            //保存图片
+            foreach($node->img as $img) {
+                $ext=pathinfo($img->src,PATHINFO_EXTENSION); //后缀
+                $save_path='public/problem/images/'.uniqid(date('Ymd_His_')).'.'.$ext; //路径
+                Storage::put($save_path, base64_decode($img->base64)); //保存
+                $problem['description']=str_replace($img->src,Storage::url($save_path),$problem['description']);
+                $problem['input']      =str_replace($img->src,Storage::url($save_path),$problem['input']);
+                $problem['output']     =str_replace($img->src,Storage::url($save_path),$problem['output']);
+                $problem['hint']       =str_replace($img->src,Storage::url($save_path),$problem['hint']);
+            }
             $pid=DB::table('problems')->insertGetId($problem);
             if (!$first_pid)$first_pid=$pid;
             //下面保存sample，test，spj
@@ -173,9 +181,33 @@ class ProblemController extends Controller
             foreach ($test_outputs as $i=>$out){
                 Storage::put(sprintf('data/%d/test/%d.out',$pid,$i),$out);
             }
-            if($node->spj) save_problem_spj($pid,$node->spj);
+            if($node->spj) save_problem_spj($pid,$node->spj); //保存特判
+            foreach($node->solution as $solu){
+                switch (strtolower($solu->attributes()->language)){
+                    case 'c'   : $lang=0; break;
+                    case 'c++' : $lang=1; break;
+                    case 'java': $lang=2; break;
+                }
+                if(isset($lang)){
+                    DB::table('solutions')->insert([
+                        'problem_id'    => $pid,
+                        'contest_id'    => -1,
+                        'user_id'       => Auth::id(),
+                        'result'        => 0,
+                        'language'      => $lang,
+                        'submit_time'   => date('Y-m-d H:i:s'),
+
+                        'judge_type'    => 'acm', //acm,oi,exam
+
+                        'ip'            => $request->getClientIp(),
+                        'code_length'   => strlen($solu),
+                        'code'          => $solu,
+                    ]);
+                }
+            }
         }
-        return $first_pid.' ~ '.$pid;
+        Storage::deleteDirectory('temp_xml'); //删除已经没用的xml文件
+        return $first_pid.($first_pid<$pid?' ~ '.$pid:'');
     }
 
     public function export(Request $request){

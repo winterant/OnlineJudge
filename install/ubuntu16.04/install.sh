@@ -15,7 +15,7 @@ cd ${web_home}/LDUOnlineJudge && cp .env.example .env && chmod -R 777 storage bo
 apt -y install software-properties-common python-software-properties
 echo -e "\n" | apt-add-repository ppa:ondrej/php
 apt -y update
-apt -y install php7.2 php7.2-fpm php7.2-mysql
+apt -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml
 service php7.2-fpm start
 
 # composer
