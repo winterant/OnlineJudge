@@ -81,6 +81,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::any('/add','Admin\ProblemController@add')->name('add');
         Route::get('/update','Admin\ProblemController@update')->name('update');
         Route::any('/update/{id}','Admin\ProblemController@update')->name('update_withId');
+        Route::post('/upload/image','Admin\ProblemController@upload_image')->name('upload_image');
         Route::post('/update/hidden','Admin\ProblemController@update_hidden')->name('update_hidden');
         Route::any('/rejudge','Admin\ProblemController@rejudge')->name('rejudge');
         Route::get('/import_export','Admin\ProblemController@import_export')->name('import_export');
@@ -91,9 +92,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
 //   manage contest
     Route::middleware(['Privilege:contest'])->prefix('contest')->name('contest.')->group(function (){
         Route::get('/list','Admin\ContestController@list')->name('list');
-        Route::get('/add','Admin\ContestController@add')->name('add');
-        Route::get('/update','Admin\ContestController@update')->name('update');
-        Route::get('/update/{id}','Admin\ContestController@update')->name('update_withId');
+        Route::any('/add','Admin\ContestController@add')->name('add');
+        Route::any('/update/{id}','Admin\ContestController@update')->name('update');
+        Route::post('/upload/image','Admin\ContestController@upload_image')->name('upload_image');
         Route::post('/delete','Admin\ContestController@delete')->name('delete');
         Route::post('/update/hidden','Admin\ContestController@update_hidden')->name('update_hidden');
     });

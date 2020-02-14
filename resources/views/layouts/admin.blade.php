@@ -238,8 +238,8 @@
                                 <i class="fa fa-list" aria-hidden="true"></i> 竞赛列表</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-top" href="#">
-                                <i class="fa fa-list" aria-hidden="true"></i> 预留</a>
+                            <a class="nav-link border-top" href="{{route('admin.contest.add')}}">
+                                <i class="fa fa-plus" aria-hidden="true"></i> 添加竞赛</a>
                         </li>
                     </ul>
                 </li>

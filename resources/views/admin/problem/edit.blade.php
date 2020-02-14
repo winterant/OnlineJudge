@@ -130,7 +130,7 @@
         var config={
             language: "zh-cn",
             ckfinder: {
-                uploadUrl: '/'
+                uploadUrl: '{{route('admin.problem.upload_image',['_token'=>csrf_token()])}}'
             }
         };
         //各个编辑框ckeditor

@@ -82,6 +82,13 @@ class ProblemController extends Controller
         }
     }
 
+    public function upload_image(Request $request){
+        $image=$request->file('upload');
+        $fname=uniqid(date('Ymd_His_')).'.'.$image->getClientOriginalExtension();
+        $image->move(storage_path('app/public/problem/images'),$fname);
+        return json_encode(['uploaded'=>true,'url'=> Storage::url('public/problem/images/'.$fname)]);
+    }
+
     //管理员修改题目状态  0密封 or 1公开
     public function update_hidden(Request $request){
         if($request->ajax()){
@@ -112,7 +119,8 @@ class ProblemController extends Controller
                     ->when($sid,function ($q)use($sid){$q->where('id',$sid);})
                     ->when($date[1],function ($q)use($date){
                             foreach ($date as &$d){$d=str_replace('T',' ',$d);}
-                            $q->where('submit_time','>',$date[1])->where('submit_time','<',$date[2]);
+                            $q->where('submit_time','>',str_replace('T',' ',$date[1]))
+                                ->where('submit_time','<',str_replace('T',' ',$date[2]));
                         })
                     ->update(['result'=>0]);
             }
@@ -196,9 +204,7 @@ class ProblemController extends Controller
                         'result'        => 0,
                         'language'      => $lang,
                         'submit_time'   => date('Y-m-d H:i:s'),
-
                         'judge_type'    => 'acm', //acm,oi,exam
-
                         'ip'            => $request->getClientIp(),
                         'code_length'   => strlen($solu),
                         'code'          => $solu,

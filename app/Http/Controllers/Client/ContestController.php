@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Storage;
 class ContestController extends Controller
 {
     public function contests(){
-//        DB::connection()->enableQueryLog();
         $contests=DB::table('contests')
             ->select(['id','type','title','start_time','end_time','access','password',
                 DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
@@ -23,8 +22,6 @@ class ContestController extends Controller
             ->orderBy('state')
             ->orderBy('id')
             ->paginate(10);
-//        dump(DB::getQueryLog());
-//        dd($contests);
         return view('contest.contests',compact('contests'));
     }
 
@@ -110,7 +107,7 @@ class ContestController extends Controller
 
     private static function get_rank_end_time($contest){
         //rank的辅助函数，获取榜单的截止时间
-        if(Auth::user()->privilege('contest')){
+        if(Auth::check()&&Auth::user()->privilege('contest')){
             if(isset($_GET['buti'])?$_GET['buti']=='true':false) //全榜
                 $end=time();
             else //终榜

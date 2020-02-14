@@ -15,7 +15,7 @@
     <div class="container">
 
         <div class="col-md-8 col-sm-12 col-12">
-            <div class="my-container bg-white">
+            <div class="my-container bg-white d-inline-block">
                 @if($problem->hidden==1)
                     [<font class="text-red">{{trans('main.Hidden')}}</font>]
                 @endif

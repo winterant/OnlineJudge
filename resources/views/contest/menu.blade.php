@@ -1,6 +1,6 @@
 {{-- 菜单 --}}
 
-@if(Auth::user()->nick==null)
+@if(Auth::check() && Auth::user()->nick==null)
     <div class="my-container alert alert-danger">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
             &times;
