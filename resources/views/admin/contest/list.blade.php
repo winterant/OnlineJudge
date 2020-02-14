@@ -64,7 +64,7 @@
                     </td>
                     <td nowrap>{{$item->username}}</td>
                     <td>
-                        <a href="#" class="px-1" target="_blank" title="修改">
+                        <a href="{{route('admin.contest.update',$item->id)}}" class="px-1" target="_blank" title="修改">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                         </a>
                         <a href="javascript:" onclick="delete_contest({{$item->id}})" class="px-1" title="删除">
@@ -79,19 +79,23 @@
     </div>
     <script>
         function delete_contest(id=-1) {
-            Notiflix.Confirm.Init();
             Notiflix.Confirm.Show( '敏感操作', '确定删除该竞赛?无法找回', '确认', '取消', function(){
+                if(id!==-1){  ///单独删除一个
+                    $('td input[type=checkbox]').prop('checked',false)
+                    $('td input[value='+id+']').prop('checked',true)
+                }
+                var cids=[];
+                $('td input[type=checkbox]:checked').each(function () { cids.push($(this).val()); });
                 $.post(
                     '{{route('admin.contest.delete')}}',
                     {
                         '_token':'{{csrf_token()}}',
-                        'id':id,
-                        'type':'delete',
+                        'cids':cids,
                     },
                     function (ret) {
                         if(id===-1){
                             Notiflix.Report.Init();
-                            Notiflix.Report.Success( '操作成功',ret+'条数据已更新','confirm' ,function () {
+                            Notiflix.Report.Success( '删除成功',ret+'条数据已删除','confirm' ,function () {
                                 location.reload();
                             });
                         }else location.reload();

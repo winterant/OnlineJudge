@@ -80,7 +80,7 @@
 
 
                 @if($contest->description!=null)
-                    <p class="alert-success p-3">{{$contest->description}}</p>
+                    <p class="alert-info p-3">{{$contest->description}}</p>
                 @endif
 
                 <table class="table table-sm table-hover">
@@ -120,6 +120,6 @@
 
         </div>
     </div>
-
+    <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script> {{-- ckeditor样式 --}}
 @endsection
 

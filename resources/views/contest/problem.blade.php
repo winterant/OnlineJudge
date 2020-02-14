@@ -20,7 +20,7 @@
         </div>
 
         <div class="col-md-8 col-sm-12 col-12">
-            <div class="my-container bg-white">
+            <div class="my-container bg-white d-inline-block">
                 <h3 class="text-center">{{$problem->index}}. {{$problem->title}}</h3>
                 <hr class="mt-0">
                 <div class="ck-content">
