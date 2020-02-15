@@ -22,7 +22,7 @@
                         <option value="oi" {{isset($contest)&&$contest->type=='oi'?'checked':''}}>oi：信息学竞赛规则</option>
                         <option value="exam" {{isset($contest)&&$contest->type=='exam'?'checked':''}}>exam：考试</option>
                     </select>
-                    <a href="javascript:" class="pull-right" style="color: #838383"
+                    <a href="javascript:" class="ml-1" style="color: #838383"
                        onclick="whatisthis('icpc规则：对于每题，通过时间累加为罚时，通过前的每次错误提交罚时20分钟；' +
                             'oi规则：对于每题，满分100分，错误提交没有惩罚；')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
@@ -36,35 +36,36 @@
             </div>
 
             <div class="form-group">
-                <div class="d-flex">设置题目：</div>
-
-                <div id="pids" class="form-inline mb-2">
-                    <div class="">
-                        <input type="number" name="problems[]" class="form-control">
-                        <a href="javascript:" onclick="add_problem_input(this.prev().value+1)" class="mx-3"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                        <a href="javascript:" onclick="$(this).parent().remove()"><i class="fa fa-close" aria-hidden="true"></i></a>
-                    </div>
-                </div>
-                <button type="button" class="btn border" onclick="add_problem_input()">增加题号</button>
+                <div class="pull-left">题目列表：</div>
+                <label class="">
+                    <textarea name="problems" class="form-control-plaintext border bg-white"
+                          autoHeight cols="26" placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间"
+                        >@foreach(isset($pids)?$pids:[] as $item){{$item}}&#13;&#10;@endforeach</textarea>
+                </label>
+                <a href="javascript:" class="text-gray" style="vertical-align: top"
+                   onclick="whatisthis('填写方法：每行一个题号（如1024），或每行一个区间（如1024-1036）')">
+                    <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
+                </a>
             </div>
 
             <div class="form-inline">
                 <label>
                     比赛时间：
-                    <input type="datetime-local" name="contest[start_time]" value="{{isset($contest)?$contest->start_time:''}}" class="form-control" required>
+                    <input type="datetime-local" name="contest[start_time]"
+                           value="{{isset($contest)?substr(str_replace(' ','T',$contest->start_time),0,16)
+                           :str_replace(' ','T',date('Y-m-d H:00'))}}" class="form-control" required>
                     <font class="mx-2">—</font>
-                    <input type="datetime-local" name="contest[end_time]" value="{{isset($contest)?$contest->end_time:''}}" class="form-control" required>
+                    <input type="datetime-local" name="contest[end_time]"
+                           value="{{isset($contest)?substr(str_replace(' ','T',$contest->end_time),0,16)
+                           :str_replace(' ','T',date('Y-m-d H:00'))}}" class="form-control" required>
                 </label>
             </div>
 
             <div class="form-group mt-2">
                 <label class="form-inline">封榜比例：
-                    <input type="text" name="contest[lock_rate]" value="{{isset($contest)?$contest->lock_rate:0}}"
-                           oninput="this.value=this.value.replace(/[^\d.]/g,'');
-                                this.value=this.value.replace(/\.{2,}/g,'.');
-                                this.value=this.value.replace(/^\./g,'');
-                                this.value=this.value.replace('.','$#$').replace(/\./g,'').replace('$#$','.');" class="form-control">
-                    <a href="javascript:" class="pull-right" style="color: #838383"
+                    <input type="number" step="0.01" max="1" min="0" name="contest[lock_rate]"
+                           value="{{isset($contest)?$contest->lock_rate:0}}" class="form-control">
+                    <a href="javascript:" class="ml-1" style="color: #838383"
                        onclick="whatisthis('比赛时长×封榜比例=比赛结尾封榜时间；数值范围0.0~1.0')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
@@ -75,8 +76,8 @@
                 <label class="form-inline">验证方式：
                     <select name="contest[access]" class="form-control" onchange="type_has_change($(this).val())">
                         <option value="public">public：任意用户可以参与</option>
-                        <option value="password" {{isset($contest)&&$contest->access=='password'?'checked':''}}>password：需要输入密码进入</option>
-                        <option value="private" {{isset($contest)&&$contest->access=='private'?'checked':''}}>private：指定用户可参与</option>
+                        <option value="password" {{isset($contest)&&$contest->access=='password'?'selected':''}}>password：需要输入密码进入</option>
+                        <option value="private" {{isset($contest)&&$contest->access=='private'?'selected':''}}>private：指定用户可参与</option>
                     </select>
                 </label>
             </div>
@@ -92,7 +93,8 @@
                 <div class="float-left">指定用户：</div>
                 <label>
                     <textarea name="contest_users" class="form-control-plaintext border bg-white"
-                    rows="6" cols="30" placeholder="user1&#13;&#10;user2&#13;&#10;每行一个用户登录名"></textarea>
+                        rows="8" cols="26" placeholder="user1&#13;&#10;user2&#13;&#10;每行一个用户登录名&#13;&#10;你可以将表格的整列粘贴到这里"
+                        >@foreach(isset($unames)?$unames:[] as $item){{$item}}&#13;&#10;@endforeach</textarea>
                 </label>
             </div>
 
@@ -105,8 +107,12 @@
             @if(isset($files)&&$files)
                 <div class="form-group">
                     <div class="form-inline">已有附件：
-                        @foreach($files as $file)
-                            <a href="/{{$file}}" class="mx-2" target="_blank">{{$file}}</a>
+                        @foreach($files as $i=>$file)
+                            <div class="mr-4">
+                                {{$i+1}}.
+                                <a href="{{Storage::url('public/contest/files/'.$contest->id.'/'.$file)}}" class="mr-1" target="_blank">{{$file}}</a>
+                                <a href="javascript:" onclick="delete_file($(this),'{{$file}}')" title="删除"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                            </div>
                         @endforeach
                     </div>
                 </div>
@@ -136,10 +142,25 @@
         type_has_change('{{isset($contest)?$contest->access:'public'}}');  //初始执行一次
 
 
-        function add_problem_input() {
-            var input='<input name="problems[]" value="'+''+'"/>'
-            $("#pids").append()
+        //删除附件
+        function delete_file(that,filename) {
+            Notiflix.Confirm.Show( '删除前确认', '确定删除这个附件？'+filename, '确认', '取消', function(){
+                $.post(
+                    '{{route('admin.contest.delete_file',isset($contest)?$contest->id:0)}}',
+                    {
+                        '_token':'{{csrf_token()}}',
+                        'filename':filename,
+                    },
+                    function (ret) {
+                        if(ret){
+                            that.parent().remove()
+                            Notiflix.Notify.Success('删除成功！')
+                        }else Notiflix.Notify.Failure('删除失败,系统错误或权限不足！');
+                    }
+                );
+            });
         }
+
 
         //编辑框配置
         var config={
@@ -155,6 +176,25 @@
         } ).catch(error => {
             console.log(error);
         } );
+
+
+        // textarea自动高度
+        $(function(){
+            $.fn.autoHeight = function(){
+                function autoHeight(elem){
+                    elem.style.height = 'auto';
+                    elem.scrollTop = 0; //防抖动
+                    elem.style.height = elem.scrollHeight+2 + 'px';
+                }
+                this.each(function(){
+                    autoHeight(this);
+                    $(this).on('input', function(){
+                        autoHeight(this);
+                    });
+                });
+            }
+            $('textarea[autoHeight]').autoHeight();
+        })
 
     </script>
 @endsection
