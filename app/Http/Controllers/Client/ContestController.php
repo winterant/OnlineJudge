@@ -152,6 +152,9 @@ class ContestController extends Controller
         $contest=DB::table('contests')
             ->select(['id','title','description','access','start_time','end_time','lock_rate'])->find($id);
 
+        if($contest->start_time>date('Y-m-d H:i:s'))
+            return view('client.fail',['msg'=>trans('main.Waiting')]);
+
         //获得榜单要显示的用户
         if($contest->access != 'public'){  //私有竞赛or密码竞赛，从表获取
             $users_temp=DB::table('contest_users')
