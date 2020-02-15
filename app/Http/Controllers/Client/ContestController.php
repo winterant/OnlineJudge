@@ -63,7 +63,11 @@ class ContestController extends Controller
                 ])
             ->orderBy('contest_problems.index')
             ->get();
-        return view('contest.home',compact('contest','problems'));
+        $files=[];
+        foreach(Storage::allFiles('public/contest/files/'.$id) as &$item){
+            $files[]=array_slice(explode('/',$item),-1,1)[0];
+        }
+        return view('contest.home',compact('contest','problems','files'));
     }
 
     public function problem($id,$pid){

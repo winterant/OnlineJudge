@@ -79,8 +79,20 @@
 
 
 
-                @if($contest->description!=null)
-                    <p class="alert-info p-3">{{$contest->description}}</p>
+                @if($contest->description)
+                    <div class="alert-info px-3 pt-2 pb-1 mb-2">{!! $contest->description !!}</div>
+                @endif
+
+                @if(isset($files)&&!empty($files))
+                    <div>附件：</div>
+                    <div>
+                        @foreach($files as $i=>$file)
+                            <div class="mr-4">
+                                {{$i+1}}.
+                                <a href="{{Storage::url('public/contest/files/'.$contest->id.'/'.$file)}}" class="mr-1" target="_blank">{{$file}}</a>
+                            </div>
+                        @endforeach
+                    </div>
                 @endif
 
                 <table class="table table-sm table-hover">
