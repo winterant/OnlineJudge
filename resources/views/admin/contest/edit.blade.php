@@ -35,6 +35,19 @@
                 <textarea id="description" name="contest[description]" class="form-control-plaintext border bg-white">{{isset($contest->description)?$contest->description:''}}</textarea>
             </div>
 
+            <div class="form-group">
+                <div class="d-flex">设置题目：</div>
+
+                <div id="pids" class="form-inline mb-2">
+                    <div class="">
+                        <input type="number" name="problems[]" class="form-control">
+                        <a href="javascript:" onclick="add_problem_input(this.prev().value+1)" class="mx-3"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                        <a href="javascript:" onclick="$(this).parent().remove()"><i class="fa fa-close" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+                <button type="button" class="btn border" onclick="add_problem_input()">增加题号</button>
+            </div>
+
             <div class="form-inline">
                 <label>
                     比赛时间：
@@ -121,6 +134,12 @@
             }
         }
         type_has_change('{{isset($contest)?$contest->access:'public'}}');  //初始执行一次
+
+
+        function add_problem_input() {
+            var input='<input name="problems[]" value="'+''+'"/>'
+            $("#pids").append()
+        }
 
         //编辑框配置
         var config={
