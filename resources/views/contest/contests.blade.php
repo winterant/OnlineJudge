@@ -57,7 +57,7 @@
                         </div>
                         <div class="col-12 col-sm-3 m-auto">
                             <div>
-                                <button class="btn border">
+                                <a href="{{route('contest.rank',$item->id)}}" class="btn border">
                                     @if(strtotime(date('Y-m-d H:i:s'))<strtotime($item->start_time))
                                         <i class="fa fa-circle text-yellow pr-1" aria-hidden="true"></i>{{__('main.Waiting')}}
                                     @elseif(strtotime(date('Y-m-d H:i:s'))>strtotime($item->end_time))
@@ -65,7 +65,7 @@
                                     @else
                                         <i class="fa fa-hourglass text-green pr-1" aria-hidden="true"></i>{{__('main.Running')}}
                                     @endif
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </li>
