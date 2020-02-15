@@ -29,14 +29,13 @@ class UserController extends Controller
 
     private function trans_data($list_str,$use_end_num=false){
         $list=explode(PHP_EOL,$list_str); //按行分割
-        $ret=[];
         foreach ($list as &$item) {
             if($use_end_num && preg_match('/\d+$/',$item,$arr)) {
                 $c=intval($arr[0]);
                 $item=trim(substr($item,0,-strlen($arr[0])));
             }
             else $c=1;
-            while($c--){array_push($ret,$item);}
+            while($c--)$ret[]=$item;
         }
         return $ret;
     }
@@ -52,20 +51,18 @@ class UserController extends Controller
             if($data['stu_id']!=null){
                 $usernames=explode(PHP_EOL,$data['stu_id']); //将要注册的账号名收集到$usernames中
             }else{
-                $usernames=array();
                 $format="%s%0".strlen($data['end'])."d";
                 for ($i=intval($data['begin']);$i<=intval($data['end']);$i++)
-                    array_push($usernames,sprintf($format,$data['prefix'],$i));
+                    $usernames[]=sprintf($format,$data['prefix'],$i);
             }
             $number=count($usernames);
             $nick=$this->trans_data($data['nick']);
             $email=$this->trans_data($data['email']);
             $school=$this->trans_data($data['school'],true);
             $class=$this->trans_data($data['class'],true);
-            $users=[];  //保存用户信息
             foreach($usernames as $i=>$username){
                 $password[$username]=$this->make_passwd(8);
-                array_push($users,[
+                $users[]=[
                     'username'=>$username,
                     'password'=>Hash::make($password[$username]),
                     'revise'=>$data['revise'],
@@ -73,7 +70,7 @@ class UserController extends Controller
                     'email'=>isset($email[$i])?$email[$i]:'',
                     'school'=>isset($school[$i])?$school[$i]:'',
                     'class'=>isset($class[$i])?$class[$i]:'',
-                ]);
+                ];
             }
 
             DB::table('users')->whereIn('username',$usernames)->delete();

@@ -25,30 +25,8 @@ class ContestController extends Controller
             return view('admin.contest.edit',compact('pageTitle'));
         }
         if($request->isMethod('post')){
-            $contest=$request->input('contest');
-            $c_users=$request->input('contest_users'); //指定用户
-            $files=$request->file('files')?:[];
-
-            //数据格式处理
-            $contest['start_time']=str_replace('T',' ',$contest['start_time']);
-            $contest['end_time']  =str_replace('T',' ',$contest['end_time']);
-            $contest['lock_rate']=is_numeric($contest['lock_rate'])?min(1,max(0,intval($contest['lock_rate']))):0;
-            if($contest['access']!='password')unset($contest['password']);
-            $contest['user_id']=Auth::id(); //创建者
-
-            //数据库插入
-            $cid=DB::table('contests')->insertGetId($contest);
-            if($contest['access']=='private'){
-                $uids=DB::table('users')->whereIn('username',explode(PHP_EOL,$c_users))->pluck('id');
-                $u_c=[];
-                foreach ($uids as &$u)
-                    array_push($u_c,['user_id'=>$u,'contest_id'=>$cid]);
-                DB::table('contest_users')->insert($u_c);
-            }
-
-            foreach ($files as $file) {     //保存附件
-                $file->move(storage_path('app/public/contest/files/'.$cid),$file->getClientOriginalName());//保存附件
-            }
+            $cid=DB::table('contests')->insertGetId(['user_id'=>Auth::id()]);
+            $this->update($request,$cid);
             $msg=sprintf('成功创建竞赛：<a href="%s" target="_blank">%d</a>',route('contest.home',$cid),$cid);
             return view('admin.success',compact('msg'));
         }
@@ -56,37 +34,57 @@ class ContestController extends Controller
 
     public function update(Request $request,$id){
         if (!Auth::user()->privilege('admin')&&Auth::id()!=DB::table('contests')->where('id',$id)->value('id'))
-            return view('admin.fail',['msg'=>'权限不足!您不是这场比赛的创建者']);
+            return view('admin.fail',['msg'=>'权限不足！您不是这场比赛的创建者']);
 
         if($request->isMethod('get')){
             $contest=DB::table('contests')->find($id);
-            $files=Storage::allFiles('public/contest/files/'.$id);
+            $unames=DB::table('contest_users')
+                ->leftJoin('users','users.id','=','user_id')
+                ->where('contest_id',$id)->pluck('username');
+            $pids=DB::table('contest_problems')->where('contest_id',$id)
+                ->orderBy('index')->pluck('problem_id');
+            $files=[];
+            foreach(Storage::allFiles('public/contest/files/'.$id) as &$item){
+                $files[]=array_slice(explode('/',$item),-1,1)[0];
+            }
             $pageTitle='修改竞赛';
-            return view('admin.contest.edit',compact('pageTitle','contest','files'));
+            return view('admin.contest.edit',compact('pageTitle','contest','unames','pids','files'));
         }
         if($request->isMethod('post')){
             $contest=$request->input('contest');
+            $problem_ids=$request->input('problems');
             $c_users=$request->input('contest_users'); //指定用户
             $files=$request->file('files')?:[];
 
             //数据格式处理
+            foreach (explode(PHP_EOL,$problem_ids) as &$item){
+                $line=explode('-',$item);
+                if(count($line)==1) $pids[]=intval($line[0]);
+                else foreach (range(intval($line[0]),intval(($line[1]))) as $i) $pids[]=$i;
+            }
+            $pids=array_filter($pids,function ($val){return DB::table('problems')->where('id',$val)->exists();});//过滤
             $contest['start_time']=str_replace('T',' ',$contest['start_time']);
             $contest['end_time']  =str_replace('T',' ',$contest['end_time']);
             $contest['lock_rate']=is_numeric($contest['lock_rate'])?intval(min(1,max(0,intval($contest['lock_rate'])))):0;
             if($contest['access']!='password')unset($contest['password']);
 
-            //数据库插入
-            if($contest['access']=='private'||$contest['password']!=DB::table('contests')->where('id',$id)->value('password'))
-                DB::table('contest_users')->where('contest_id',$id)->delete(); //删掉已通行的用户，重新加入
-            $ret=DB::table('contests')->where('id',$id)->update($contest);
+            //数据库
+            DB::table('contests')->where('id',$id)->update($contest);
+            DB::table('contest_problems')->where('contest_id',$id)->whereNotIn('problem_id',$pids)->delete();//舍弃的
+            foreach ($pids as $i=>$pid){
+                DB::table('contest_problems')->updateOrInsert(['contest_id'=>$id,'problem_id'=>$pid],['index'=>1001+$i]);
+            }
             if($contest['access']=='private'){
                 $uids=DB::table('users')->whereIn('username',explode(PHP_EOL,$c_users))->pluck('id');
-                $u_c=[];
-                foreach ($uids as &$u)
-                    array_push($u_c,['user_id'=>$u,'contest_id'=>$id]);
-                DB::table('contest_users')->insert($u_c);
+                DB::table('contest_users')->where('contest_id',$id)->whereNotIn('user_id',$uids)->delete();
+                foreach($uids as &$uid)
+                    DB::table('contest_users')->updateOrInsert(['contest_id'=>$id,'user_id'=>$uid],[]);
+            }
+            if($contest['access']=='password'){
+                DB::table('contest_users')->where('contest_id',$id)->delete();
             }
 
+            //附件
             foreach ($files as $file) {     //保存附件
                 $file->move(storage_path('app/public/contest/files/'.$id),$file->getClientOriginalName());//保存附件
             }
@@ -104,12 +102,24 @@ class ContestController extends Controller
 
     public function delete(Request $request){
         $cids=$request->input('cids')?:[];
-        return DB::table('contests')->whereIn('id',$cids)->delete();
+        if (Auth::user()->privilege('admin')) //超管，直接进行
+            return DB::table('contests')->whereIn('id',$cids)->delete();
+        return DB::table('contests')->whereIn('id',$cids)->where('user_id',Auth::id())->delete();//创建者
+    }
+
+    public function delete_file(Request $request,$id){  //$id:竞赛id
+        $filename=$request->input('filename');
+        if(Storage::exists('public/contest/files/'.$id.'/'.$filename))
+            return Storage::delete('public/contest/files/'.$id.'/'.$filename)?1:0;
+        return 0;
     }
 
     public function update_hidden(Request $request){
         $cids=$request->input('cids')?:[];
         $hidden=$request->input('hidden');
-        return DB::table('contests')->whereIn('id',$cids)->update(['hidden'=>$hidden]);
+        if (Auth::user()->privilege('admin')) //超管，直接进行
+            return DB::table('contests')->whereIn('id',$cids)->update(['hidden'=>$hidden]);
+        return DB::table('contests')->whereIn('id',$cids)
+            ->where('user_id',Auth::id())->update(['hidden'=>$hidden]);
     }
 }

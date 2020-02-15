@@ -96,6 +96,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::any('/update/{id}','Admin\ContestController@update')->name('update');
         Route::post('/upload/image','Admin\ContestController@upload_image')->name('upload_image');
         Route::post('/delete','Admin\ContestController@delete')->name('delete');
+        Route::post('/delete/file/{id}','Admin\ContestController@delete_file')->name('delete_file');
         Route::post('/update/hidden','Admin\ContestController@update_hidden')->name('update_hidden');
     });
 });

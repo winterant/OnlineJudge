@@ -83,7 +83,7 @@
                 },
                 error:function(xhr,status,err){
                     Notiflix.Loading.Remove();
-                    Notiflix.Report.Failure('题目导入失败','文件内容缺失！'+err,'好的');
+                    Notiflix.Report.Failure('题目导入失败','您上传的文件内容有缺失！'+err,'好的');
                 }
             });
             return false;
