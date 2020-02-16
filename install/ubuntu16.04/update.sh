@@ -13,9 +13,6 @@ mv -f ${web_home}/LDUOnlineJudge ${web_home}/lduoj_backup/${backup}/
 USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
 PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
 mysqldump -u${USER} -p${PASSWORD} -B lduoj > ${web_home}/lduoj_backup/${backup}/lduoj.sql
-# nginx备份
-cp -r -f -p /etc/nginx/conf.d/lduoj.conf ${web_home}/lduoj_backup/${backup}/lduoj.nginx.conf
-
 
 # 下载项目源码
 apt update
