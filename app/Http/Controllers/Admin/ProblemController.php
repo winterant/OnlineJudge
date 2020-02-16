@@ -134,18 +134,18 @@ class ProblemController extends Controller
     }
 
     public function import(Request $request){
-        date_default_timezone_set("Asia/Shanghai");
-
         //ajax post: 接收分片的xml大文件.
-        $block_id=intval($request->input('block_id'));    //块号
-        $block_total=intval($request->input('block_total'));//块数
-        $file_block=$request->file('file_block');  //文件块
-        Storage::put('temp_xml/'.$block_id,file_get_contents($file_block->getRealPath())); //暂存切片
-        if($block_id<$block_total-1)
-            return '当前块号：'.$block_id.'，总块数：'.$block_total; //返回，继续上传
+        $import=intval($request->input('import'));  //是否执行导入的指令
+        if(!$import){
+            $block_id=intval($request->input('block_id')); //块号
+            $file_block=$request->file('file_block');  //文件块
+            $file_block->move(storage_path('app/temp_xml'),$block_id);
+            return $block_id;
+        }
+
 
         //上传完成，下面合并切片，最后导入题库
-        for($i=0;$i<$block_total;$i++){
+        for($i=0;$i<intval($import);$i++){
             $block=Storage::get('temp_xml/'.$i);
             file_put_contents(storage_path('app/temp_xml/import_problems.xml'),$block,$i?FILE_APPEND:FILE_TEXT);//追加:覆盖
         }
