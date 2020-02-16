@@ -36,6 +36,7 @@ return [
 //    contest
     "Complete Profile"  => "Please complete your personal information before entering the contest!",
     "Waiting start for" => "Waiting start for",
+    "Waiting to start after" => "Waiting to start after",
     "rank_end_time"     => "To contestants, stoped updating at :time",
     "Up to now"         => "Add submission after contest to the ranking",
 ];

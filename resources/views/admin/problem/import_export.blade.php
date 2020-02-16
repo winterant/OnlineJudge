@@ -28,22 +28,18 @@
             <hr>
             <form action="{{route('admin.problem.export')}}" method="post">
                 @csrf
-                <div class="form-group d-flex">
-                    <font>题号区间：</font>
-                    <input type="number" name="pid[1]" required class="form-control col-2">
-                    <font class="mx-2">—</font>
-                    <input type="number" name="pid[2]" required class="form-control col-2">
-                    <button type="submit" class="btn btn-success ml-3 border">下载</button>
-                </div>
-            </form>
-            <form action="{{route('admin.problem.export')}}" method="post">
-                @csrf
-                <div class="form-group d-flex">
-                    <font>题号集合：</font>
-                    <input type="text" name="pid" required class="form-control col-5"
-                           placeholder="1000,1024,2048 注:英文逗号"
-                           oninput="value=value.replace(/[^\d,]/g,'');value=value.replace(/(,{2})/g,',')">
-                    <button type="submit" class="btn btn-success ml-3 border">下载</button>
+                <div class="form-group">
+                    <div class="pull-left">题目列表：</div>
+                    <label class="">
+                    <textarea name="problems" class="form-control-plaintext border bg-white"
+                              autoHeight cols="26" placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间"
+                    >@foreach(isset($pids)?$pids:[] as $item){{$item}}&#13;&#10;@endforeach</textarea>
+                    </label>
+                    <a href="javascript:" class="text-gray" style="vertical-align: top"
+                       onclick="whatisthis('填写方法：每行一个题号（如1024），或每行一个区间（如1024-1036）')">
+                        <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
+                    </a>
+                    <button type="submit" class="btn btn-success ml-3 border" style="vertical-align: top">下载</button>
                 </div>
             </form>
         </div>
@@ -141,5 +137,22 @@
             return false;
         }
 
+        // textarea自动高度
+        $(function(){
+            $.fn.autoHeight = function(){
+                function autoHeight(elem){
+                    elem.style.height = 'auto';
+                    elem.scrollTop = 0; //防抖动
+                    elem.style.height = elem.scrollHeight+2 + 'px';
+                }
+                this.each(function(){
+                    autoHeight(this);
+                    $(this).on('input', function(){
+                        autoHeight(this);
+                    });
+                });
+            }
+            $('textarea[autoHeight]').autoHeight();
+        })
     </script>
 @endsection
