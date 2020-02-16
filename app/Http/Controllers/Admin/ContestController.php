@@ -65,7 +65,6 @@ class ContestController extends Controller
             $pids=array_filter($pids,function ($val){return DB::table('problems')->where('id',$val)->exists();});//过滤
             $contest['start_time']=str_replace('T',' ',$contest['start_time']);
             $contest['end_time']  =str_replace('T',' ',$contest['end_time']);
-            $contest['lock_rate']=is_numeric($contest['lock_rate'])?intval(min(1,max(0,intval($contest['lock_rate'])))):0;
             if($contest['access']!='password')unset($contest['password']);
 
             //数据库

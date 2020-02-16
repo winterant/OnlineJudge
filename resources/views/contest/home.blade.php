@@ -56,7 +56,7 @@
                         {
                             $('#time_show').removeClass('text-right');
                             $('#time_show').addClass('text-left');
-                            remain_t+="{{__('sentence.Waiting start for')}}"+' ';
+                            remain_t+="{{__('sentence.Waiting to start after')}}"+' ';
                             remain-=length;
                         }else{
                             //比赛中
@@ -80,7 +80,10 @@
 
 
                 @if($contest->description)
-                    <div class="alert-info px-3 pt-2 pb-1 mb-2">{!! $contest->description !!}</div>
+                    <style>
+                        #description_div p{margin-bottom: 0}
+                    </style>
+                    <div id="description_div" class="alert-info p-2">{!! $contest->description !!}</div>
                 @endif
 
                 @if(isset($files)&&!empty($files))
