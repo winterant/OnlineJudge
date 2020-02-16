@@ -20,6 +20,11 @@ apt install -y git
 cd ${web_home} && git clone https://github.com/iamwinter/LDUOnlineJudge.git
 apt -y remove git
 
+if [ ! -d ${web_home}/LDUOnlineJudge ];then
+  echo "failed to git clone LDUOnlineJudge!"
+  exit 1
+fi
+
 rm -rf ${web_home}/LDUOnlineJudge/storage
 mv -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/storage ${web_home}/LDUOnlineJudge/
 mv -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge/vendor  ${web_home}/LDUOnlineJudge/
