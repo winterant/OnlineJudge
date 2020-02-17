@@ -87,4 +87,8 @@ return [
     "Waiting"       => "Waiting",
     "Running"       => "Running",
     "Ended"         => "Ended",
+
+    "ACM"           => "ACM",
+    "OI"            => "OI",
+    "EXAM"          => "EXAM",
 ];

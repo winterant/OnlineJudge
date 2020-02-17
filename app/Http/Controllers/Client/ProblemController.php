@@ -21,8 +21,12 @@ class ProblemController extends Controller
             ->select('problems.id','title','source','hidden',
                 DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
                 DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as solved"))
+            ->when(!Auth::check()||!Auth::user()->privilege('problem'),function ($q){return $q->where('hidden',0);})
+            ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('id',$_GET['pid']);})
+            ->when(isset($_GET['title'])&&$_GET['title']!='',function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
+            ->when(isset($_GET['source'])&&$_GET['source']!='',function ($q){return $q->where('source','like','%'.$_GET['source'].'%');})
             ->orderBy('id')
-            ->paginate(100);
+            ->paginate(isset($_GET['perPage'])?$_GET['perPage']:100);
         return view('client.problems',['problems' => $list,]);
     }
 

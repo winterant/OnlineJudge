@@ -13,32 +13,36 @@
     </style>
     <div class="container">
         <div class="my-container bg-white table-responsive">
-            <form action="" method="get" class="pull-right form-inline">
-                <div class="form-inline mx-3">
-                    <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
-                        <option value="10" @if(isset($_GET['perPage'])&&$_GET['perPage']==10)selected @endif>10</option>
-                        <option value="20" @if(isset($_GET['perPage'])&&$_GET['perPage']==20)selected @endif>20</option>
-                        <option value="30" @if(!isset($_GET['perPage'])||$_GET['perPage']==30)selected @endif>30</option>
-                        <option value="50" @if(isset($_GET['perPage'])&&$_GET['perPage']==50)selected @endif>50</option>
-                        <option value="100" @if(isset($_GET['perPage'])&&$_GET['perPage']==100)selected @endif>100</option>
-                        <option value="200" @if(isset($_GET['perPage'])&&$_GET['perPage']==200)selected @endif>200</option>
-                    </select>
-                </div>
-                <div class="form-inline mx-3">
-                    <select name="range" class="form-control px-3" onchange="this.form.submit();">
-                        <option value="0">{{__('main.All')}}</option>
-                        <option value="year" @if(isset($_GET['range'])&&$_GET['range']=='year')selected @endif>{{__('main.Year')}}</option>
-                        <option value="month" @if(isset($_GET['range'])&&$_GET['range']=='month')selected @endif>{{__('main.Month')}}</option>
-                        <option value="week" @if(isset($_GET['range'])&&$_GET['range']=='week')selected @endif>{{__('main.Week')}}</option>
-                        <option value="day" @if(isset($_GET['range'])&&$_GET['range']=='day')selected @endif>{{__('main.Day')}}</option>
-                    </select>
-                </div>
-                <div class="form-inline mx-3">
-                    <input type="text" class="form-control text-center" placeholder="Username" onchange="this.form.submit();"
-                           name="username" value="{{isset($_GET['username'])?$_GET['username']:''}}">
-                </div>
-                <button class="btn border">{{__('main.Submit')}}</button>
-            </form>
+            <div class="overflow-hidden">
+                <h4 class="pull-left">{{__('main.Standings')}}</h4>
+                <form action="" method="get" class="pull-right form-inline">
+                    <div class="form-inline mx-3">
+                        <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
+                            <option value="10" @if(isset($_GET['perPage'])&&$_GET['perPage']==10)selected @endif>10</option>
+                            <option value="20" @if(isset($_GET['perPage'])&&$_GET['perPage']==20)selected @endif>20</option>
+                            <option value="30" @if(!isset($_GET['perPage'])||$_GET['perPage']==30)selected @endif>30</option>
+                            <option value="50" @if(isset($_GET['perPage'])&&$_GET['perPage']==50)selected @endif>50</option>
+                            <option value="100" @if(isset($_GET['perPage'])&&$_GET['perPage']==100)selected @endif>100</option>
+                            <option value="200" @if(isset($_GET['perPage'])&&$_GET['perPage']==200)selected @endif>200</option>
+                        </select>
+                    </div>
+                    <div class="form-inline mx-3">
+                        <select name="range" class="form-control px-3" onchange="this.form.submit();">
+                            <option value="0">{{__('main.All')}}</option>
+                            <option value="year" @if(isset($_GET['range'])&&$_GET['range']=='year')selected @endif>{{__('main.Year')}}</option>
+                            <option value="month" @if(isset($_GET['range'])&&$_GET['range']=='month')selected @endif>{{__('main.Month')}}</option>
+                            <option value="week" @if(isset($_GET['range'])&&$_GET['range']=='week')selected @endif>{{__('main.Week')}}</option>
+                            <option value="day" @if(isset($_GET['range'])&&$_GET['range']=='day')selected @endif>{{__('main.Day')}}</option>
+                        </select>
+                    </div>
+                    <div class="form-inline mx-3">
+                        <input type="text" class="form-control text-center" placeholder="Username" onchange="this.form.submit();"
+                               name="username" value="{{isset($_GET['username'])?$_GET['username']:''}}">
+                    </div>
+                    <button class="btn border">{{__('main.Submit')}}</button>
+                </form>
+            </div>
+
             {{$users->appends($_GET)->links()}}
             <table class="table table-hover">
                 <thead>

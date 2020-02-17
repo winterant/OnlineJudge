@@ -86,7 +86,7 @@ class UserController extends Controller
                 DB::raw("(select count(id) from solutions where user_id=users.id".$timediff.") as submit"),
                 DB::raw("(select count(distinct user_id) from solutions where user_id=users.id and result=4".$timediff.") as solved")
             )
-            ->where('username','like',$_GET['username'].'%')
+            ->when(isset($_GET['username']),function ($q){return $q->where('username','like',$_GET['username'].'%');})
             ->orderByDesc('solved')
             ->orderBy('submit')
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:30);
