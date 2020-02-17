@@ -19,9 +19,16 @@ class ContestController extends Controller
                     then (select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id)
                     else (select count(DISTINCT C.user_id) from contest_users C where C.contest_id=contests.id)
                     end as number")])
+            ->when(isset($_GET['state'])&&$_GET['state']!='all',function ($q){
+                if($_GET['state']=='ended')return $q->where('end_time','<',date('Y-m-d H:i:s'));
+                else if($_GET['state']=='waiting')return $q->where('start_time','>',date('Y-m-d H:i:s'));
+                else return $q->where('start_time','<',date('Y-m-d H:i:s'))->where('end_time','>',date('Y-m-d H:i:s'));
+            })
+            ->when(isset($_GET['type'])&&$_GET['type']!='0',function ($q){return $q->where('type',$_GET['type']);})
+            ->when(isset($_GET['title']),function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
             ->orderBy('state')
             ->orderBy('id')
-            ->paginate(10);
+            ->paginate(isset($_GET['perPage'])?$_GET['perPage']:10);
         return view('contest.contests',compact('contests'));
     }
 

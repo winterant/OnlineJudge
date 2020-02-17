@@ -6,7 +6,32 @@
 
     <div class="container">
         <div class="my-container bg-white table-responsive">
-            {{$problems->links()}}
+            <div class="overflow-hidden">
+                <h4 class="pull-left">{{__('main.Problems')}}</h4>
+                <form action="" method="get" class="pull-right form-inline">
+                    <div class="form-inline mx-3">
+                        <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
+                            <option value="20" @if(isset($_GET['perPage'])&&$_GET['perPage']==20)selected @endif>20</option>
+                            <option value="50" @if(isset($_GET['perPage'])&&$_GET['perPage']==50)selected @endif>50</option>
+                            <option value="100" @if(!isset($_GET['perPage'])||$_GET['perPage']==100)selected @endif>100</option>
+                        </select>
+                    </div>
+                    <div class="form-inline mx-3">
+                        <input type="number" class="form-control text-center" placeholder="{{__('main.Problem')}} ID" onchange="this.form.submit();"
+                               name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:''}}">
+                    </div>
+                    <div class="form-inline mx-3">
+                        <input type="text" class="form-control text-center" placeholder="{{__('main.Title')}}" onchange="this.form.submit();"
+                               name="title" value="{{isset($_GET['title'])?$_GET['title']:''}}">
+                    </div>
+                    <div class="form-inline mx-3">
+                        <input type="text" class="form-control text-center" placeholder="{{__('main.Source')}}" onchange="this.form.submit();"
+                               name="source" value="{{isset($_GET['source'])?$_GET['source']:''}}">
+                    </div>
+                    <button class="btn border">{{__('main.Submit')}}</button>
+                </form>
+            </div>
+            {{$problems->appends($_GET)->links()}}
             <table class="table table-hover">
                 <thead>
                 <tr>

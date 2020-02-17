@@ -123,12 +123,12 @@
                 },
                 function (ret) {
                     if(id===-1){
-                        Notiflix.Report.Success( '删除成功',ret+'条数据已删除','confirm' ,function () {location.reload();});
+                        Notiflix.Report.Success( '修改成功',ret+'条数据已更新','confirm' ,function () {location.reload();});
                     }else{
                         if(ret>0){
-                            Notiflix.Report.Success( '删除成功','该场竞赛已删除','confirm' ,function () {location.reload();});
+                            Notiflix.Report.Success( '修改成功','该场竞赛已更新','confirm' ,function () {location.reload();});
                         }
-                        else Notiflix.Report.Failure('删除失败','没有可以更新的数据或权限不足','confirm')
+                        else Notiflix.Report.Failure('修改失败','没有可以更新的数据或权限不足','confirm')
                     }
                 }
             );

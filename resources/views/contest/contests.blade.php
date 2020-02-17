@@ -15,8 +15,43 @@
         }
     </style>
     <div class="container">
-        <div class="my-container bg-white table-responsive">
-            <h4>{{__('main.All Contests')}}</h4>
+        <div class="my-container bg-white">
+            <div class="overflow-hidden">
+                <h4 class="pull-left">{{isset($_GET['state'])?ucfirst($_GET['state']):'All'}} {{__('main.Contests')}}</h4>
+                <form action="" method="get" class="pull-right form-inline">
+                    <div class="form-inline mx-3">
+                        <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
+                            <option value="10">10</option>
+                            <option value="20" @if(isset($_GET['perPage'])&&$_GET['perPage']==20)selected @endif>20</option>
+                            <option value="30" @if(isset($_GET['perPage'])&&$_GET['perPage']==30)selected @endif>30</option>
+                            <option value="50" @if(isset($_GET['perPage'])&&$_GET['perPage']==50)selected @endif>50</option>
+                            <option value="100" @if(isset($_GET['perPage'])&&$_GET['perPage']==100)selected @endif>100</option>
+                        </select>
+                    </div>
+                    <div class="form-inline mx-3">
+                        <select name="state" class="form-control px-3" onchange="this.form.submit();">
+                            <option value="all">{{__('main.All')}}</option>
+                            <option value="waiting" @if(isset($_GET['state'])&&$_GET['state']=='waiting')selected @endif>{{__('main.Waiting')}}</option>
+                            <option value="running" @if(isset($_GET['state'])&&$_GET['state']=='running')selected @endif>{{__('main.Running')}}</option>
+                            <option value="ended" @if(isset($_GET['state'])&&$_GET['state']=='ended')selected @endif>{{__('main.Ended')}}</option>
+                        </select>
+                    </div>
+                    <div class="form-inline mx-3">
+                        <select name="type" class="form-control px-3" onchange="this.form.submit();">
+                            <option value="0">{{__('main.All')}}</option>
+                            <option value="acm" @if(isset($_GET['type'])&&$_GET['type']=='acm')selected @endif>{{__('main.ACM')}}</option>
+                            <option value="oi" @if(isset($_GET['type'])&&$_GET['type']=='oi')selected @endif>{{__('main.OI')}}</option>
+                            <option value="exam" @if(isset($_GET['type'])&&$_GET['type']=='exam')selected @endif>{{__('main.EXAM')}}</option>
+                        </select>
+                    </div>
+                    <div class="form-inline mx-3">
+                        <input type="text" class="form-control text-center" placeholder="{{__('main.Title')}}" onchange="this.form.submit();"
+                               name="title" value="{{isset($_GET['title'])?$_GET['title']:''}}">
+                    </div>
+                    <button class="btn border">{{__('main.Submit')}}</button>
+                </form>
+            </div>
+            {{$contests->appends($_GET)->links()}}
             <ul class="list-unstyled border-top">
                 @foreach($contests as $item)
                     <li class="d-flex flex-wrap border-bottom pt-3 pb-2">
@@ -44,7 +79,7 @@
                                 <li class="pr-2">
                                     <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">
                                         <font @if($item->access=='public')style="color: green"
-                                            @else style="color: indianred"@endif>{{ucfirst($item->access)}}</font>
+                                              @else style="color: indianred"@endif>{{ucfirst($item->access)}}</font>
                                     </div>
                                 </li>
                                 @if(strtotime(date('Y-m-d H:i:s'))>strtotime($item->start_time))
