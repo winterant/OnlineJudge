@@ -18,6 +18,7 @@ return [
     "Contests"      => "Contests",
     "All Contests"  => "All Contests",
     "Rank"          => "Rank",
+    "Standings"     => "Standings",
     "User"          => "User",
     "Overview"      => "Overview",
     "Infomation"    => "Infomation",
@@ -53,6 +54,12 @@ return [
     "days"          => "[*,1] day|[2,*] days",
     "hours"         => "[*,1] hour|[2,*] hours",
     "problems"      => "[*,1] problem|[2,*] problems",
+
+    "All"           => "All",
+    "Year"          => "Year",
+    "Month"         => "Month",
+    "Week"          => "Week",
+    "Day"           => "Day",
 
 
     "Time"          => "Time",

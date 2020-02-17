@@ -60,7 +60,7 @@
                                 @if($sol->nick && Auth::check()&&Auth::user()->privilege('solution'))&nbsp;{{$sol->nick}}@endif
                             </td>
                             <td nowrap class="{{config('oj.resColor.'.$sol->result)}}">{{config('oj.result.'.$sol->result)}}</td>
-                            <td>{{$sol->time}}ms</td>
+                            <td>{{$sol->time}}MS</td>
                             <td>{{round($sol->memory,2)}}MB</td>
                             <td>
                                 @if(Auth::check() && (Auth::user()->privilege('solution') || Auth::id()==$sol->user_id) )

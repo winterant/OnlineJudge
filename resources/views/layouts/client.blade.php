@@ -48,6 +48,11 @@
                     <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-nowrap p-2" href="{{route('standings')}}">
+                    <i class="fa fa-sort-amount-desc" aria-hidden="true">&nbsp;{{trans('main.Standings')}}</i>
+                </a>
+            </li>
 
             {{--            <li class="nav-item dropdown">--}}
             {{--                <a class="nav-link dropdown-toggle" href="#"--}}

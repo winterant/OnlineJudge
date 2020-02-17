@@ -26,6 +26,7 @@ Route::get('/solution/{id}','Client\StatusController@solution')->where(['id'=>'[
 Route::get('/problems','Client\ProblemController@problems')->name('problems');
 Route::get('/problem/{id}','Client\ProblemController@problem')->where(['id'=>'[0-9]+'])->name('problem');
 Route::get('/contests','Client\ContestController@contests')->name('contests');
+Route::get('/standings','Client\UserController@standings')->name('standings');
 Route::get('/user/{username}','Client\UserController@user')->name('user');
 Route::middleware(['auth'])->group(function (){
     Route::any('/user/{username}/edit','Client\UserController@user_edit')->name('user_edit');

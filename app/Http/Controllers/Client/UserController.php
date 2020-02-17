@@ -77,4 +77,19 @@ class UserController extends Controller
             return view('client.success',['msg'=>'Password modified successfully']);
         }
     }
+
+
+    public function standings(){
+        $timediff=isset($_GET['range'])&&$_GET['range']!='0'
+            ?sprintf(' and TIMESTAMPDIFF(%s,submit_time,now())=0',$_GET['range']):'';
+        $users=DB::table('users')->select('username','nick',
+                DB::raw("(select count(id) from solutions where user_id=users.id".$timediff.") as submit"),
+                DB::raw("(select count(distinct user_id) from solutions where user_id=users.id and result=4".$timediff.") as solved")
+            )
+            ->where('username','like',$_GET['username'].'%')
+            ->orderByDesc('solved')
+            ->orderBy('submit')
+            ->paginate(isset($_GET['perPage'])?$_GET['perPage']:30);
+        return view('client.standings',compact('users'));
+    }
 }
