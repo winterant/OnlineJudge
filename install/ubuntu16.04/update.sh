@@ -21,6 +21,7 @@ cd ${web_home} && git clone https://github.com/iamwinter/LDUOnlineJudge.git
 apt -y remove git
 
 if [ ! -d ${web_home}/LDUOnlineJudge ];then
+  mv -f ${web_home}/lduoj_backup/${backup}/LDUOnlineJudge ${web_home}/
   echo "failed to git clone LDUOnlineJudge!"
   exit 1
 fi

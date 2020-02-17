@@ -78,7 +78,7 @@
                         </style>
                         <tr>
                             <td nowrap>{{__('main.Time Limit')}}:</td>
-                            <td nowrap>{{$problem->time_limit*1000}}MS (C/C++,Others×2)</td>
+                            <td nowrap>{{$problem->time_limit}}MS (C/C++,Others×2)</td>
                         </tr>
                         <tr>
                             <td nowrap>{{__("main.Memory Limit")}}:</td>

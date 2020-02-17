@@ -28,12 +28,16 @@
                 </div>
                 <div class="form-inline">
                     <label>时间限制：
-                        <input type="number" name="problem[time_limit]" value="{{isset($problem->time_limit)?$problem->time_limit:1}}" required class="form-control">秒
+                        <input type="number" name="problem[time_limit]"
+                               value="{{isset($problem->time_limit)?$problem->time_limit:1000}}"
+                               required class="form-control">MS（1000MS=1秒）
                     </label>
                 </div>
                 <div class="form-inline">
                     <label>存储限制：
-                        <input type="number" name="problem[memory_limit]" value="{{isset($problem->memory_limit)?$problem->memory_limit:64}}" required class="form-control">MB
+                        <input type="number" name="problem[memory_limit]"
+                               value="{{isset($problem->memory_limit)?$problem->memory_limit:64}}"
+                               required class="form-control">MB
                     </label>
                 </div>
                 <div class="form-group">

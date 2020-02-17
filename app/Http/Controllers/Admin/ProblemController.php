@@ -162,8 +162,8 @@ class ProblemController extends Controller
                 'hint'        => $node->hint,
                 'source'      => $node->source,
                 'spj'         => $node->spj?1:0,
-                'time_limit'  => $node->time_limit / ($node->time_limit->attributes()->unit=='ms'?1000:1),
-                'memory_limit'=> $node->memory_limit / ($node->memory_limit->attributes()->unit=='kb'?1024:1),
+                'time_limit'  => $node->time_limit * (strtolower($node->time_limit->attributes()->unit)=='s'?1000:1), //本oj用ms
+                'memory_limit'=> $node->memory_limit / (strtolower($node->memory_limit->attributes()->unit)=='kb'?1024:1),
             ];
             //保存图片
             foreach($node->img as $img) {
