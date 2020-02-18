@@ -7,6 +7,7 @@
 #include<sys/types.h>
 #include<sys/wait.h>
 
+
 #define OJ_WT  0    //waiting
 #define OJ_QI  1    //queueing
 #define OJ_CI  2    //compiling
@@ -29,28 +30,85 @@ char *db_user;
 char *db_pass;
 char *db_name;
 
-const char *lang[15]={"c","cpp","java","py"}; //ÅĞÌâÓïÑÔ
+const char *lang[15]={"c","cpp","java","py"}; //åˆ¤é¢˜è¯­è¨€åç¼€
 
-MYSQL *mysql;    //Êı¾İ¿âÁ¬½Ó¶ÔÏó
-MYSQL_RES *mysql_res;   //sql²éÑ¯½á¹û
-MYSQL_ROW mysql_row;    //sql²éÑ¯µ½µÄµ¥ĞĞÊı¾İ
-char sql[256];   //Ôİ´æsqlÓï¾ä
+MYSQL *mysql;    //æ•°æ®åº“è¿æ¥å¯¹è±¡
+MYSQL_RES *mysql_res;   //sqlæŸ¥è¯¢ç»“æœ
+MYSQL_ROW mysql_row;    //sqlæŸ¥è¯¢åˆ°çš„å•è¡Œæ•°æ®
+char sql[256];   //æš‚å­˜sqlè¯­å¥
+
+struct Solution{
+    int id;
+    char *judge_type;
+    int time_limit;  //é™åˆ¶
+    float memory_limit;
+    int language;
+    char *code;
+
+    int result=1;
+    int time=0; //MS å®é™…è€—æ—¶
+    float memory=0; //MB å®é™…å†…å­˜
+    float pass_rate=0;
+    char *error_info=NULL;
+
+    void load_solution(int sid) //ä»æ•°æ®åº“è¯»å–æäº¤è®°å½•ï¼Œæ³¨ï¼šç”¨åˆ°äº†å…¨å±€mysql
+    {
+        sprintf(sql,"select `judge_type`,`time_limit`,`memory_limit`,`language`,`code` from solutions A inner join problems B on A.problem_id=B.id where A.id=%d",sid);
+        if(mysql_real_query(mysql,sql,strlen(sql))!=0){
+            printf("select failed!\n");
+            exit(1);
+        }
+        mysql_res=mysql_store_result(mysql); //ä¿å­˜æŸ¥è¯¢ç»“æœ
+        mysql_row=mysql_fetch_row(mysql_res); //è¯»å–
+        this->id=sid;
+        this->judge_type  =mysql_row[0];
+        this->time_limit  =atoi(mysql_row[1]);
+        this->memory_limit=atof(mysql_row[2]);
+        this->language    =atoi(mysql_row[3]);
+        this->code        =mysql_row[4];
+    }
+
+    void update_result(int result)  //åªæ›´æ–°result
+    {
+        this->result=result;
+        sprintf(sql,"UPDATE solutions SET result=%d WHERE id=%d",this->result,this->id);
+        mysql_real_query(mysql,sql,strlen(sql));
+    }
+
+    void update_solution()  //æ›´æ–°æ•´ä¸ªsolution
+    {
+        sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,error_info='%s',judge_time=now() WHERE id=%d",
+            this->result,this->time,this->memory,this->pass_rate,this->error_info,this->id); //æ›´æ–°
+        mysql_real_query(mysql,sql,strlen(sql));
+    }
+}solution;
 
 
 
-void judge(int sid)
+//ç¼–è¯‘ç”¨æˆ·æäº¤çš„ä»£ç 
+int compile()
 {
-    sprintf(sql,"UPDATE solutions SET result=%d WHERE id=%d",OJ_RI,sid); //¸üĞÂrunning×´Ì¬
-    mysql_real_query(mysql,sql,strlen(sql));
+    const char *CP_C[]  ={"gcc","Main.c",  "-o","Main","-Wall","-lm","--static","-std=c99",  "-fmax-errors=10","-DONLINE_JUDGE","-O2",NULL};
+	const char *CP_CPP[]={"g++","Main.cpp","-o","Main","-Wall","-lm","--static","-std=c++11","-fmax-errors=10","-DONLINE_JUDGE","-fno-asm", NULL};
+	const char *CP_JAVA[]={"javac","-J-Xms64m","-J-Xmx128m","-encoding","UTF-8","Main.java",NULL};
+
+    return 0;
+}
+
+
+//è¿è¡Œå¯æ‰§è¡Œæ–‡ä»¶
+int judge(int sid)
+{
     printf("judging!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: %d\n",sid);
-    sleep(3);
+    sleep(1);
     printf("judging end   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: %d\n",sid);
+    return OJ_AC;
 }
 
 int main (int argc, char* argv[])
 {
     if(argc!=6+1){
-        printf("Judge argv error!\n");
+        printf("Judge arg number error!\n");
         exit(1);
     }
     db_host=argv[1];
@@ -60,13 +118,19 @@ int main (int argc, char* argv[])
     db_name=argv[5];
     int sid=atoi(argv[6]); //solution id
 
-    mysql = mysql_init(NULL);   //³õÊ¼»¯Êı¾İ¿âÁ¬½Ó±äÁ¿
-    mysql = mysql_real_connect(mysql,db_host,db_user,db_pass,db_name,atoi(db_port),NULL,0);
+    mysql = mysql_init(NULL);   //åˆå§‹åŒ–æ•°æ®åº“è¿æ¥å˜é‡
+    mysql = mysql_real_connect(mysql,db_host,db_user,db_pass,db_name,atoi(db_port),NULL,0); //è¿æ¥
     if(!mysql){
         printf("Judge Error: Can't connect to database!\n\n");
         exit(1);
     }
-    judge(sid);
+
+    solution.load_solution(sid);   //loading the solution whose id is sid
+    solution.update_result(OJ_CI); //update to compiling
+    compile();
+    solution.update_result(OJ_RI); //update to running
+    solution.result = judge(sid);
+    solution.update_solution();    // update all of data
     mysql_close(mysql);
     return 0;
 }

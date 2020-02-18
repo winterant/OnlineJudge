@@ -8,8 +8,23 @@ Ludong University Online Judge
   - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
   - 基于php框架 laravel 6.0 开发，php版本=7.2
   - web端与判题端分离，judge文件夹为判题端程序，独立于laravel
+  
+  前台概览
+  
+  + 首页；公告/新闻，本周榜，上周榜
+  + 状态；用户提交记录与判题结果
+  + 问题；题库
+  + 竞赛；竞赛列表
+  + 排名；用户解题排行榜，可按年/月/周/日查询
+  
+  后台功能概览
 
-# 一键安装
+  + 公告/新闻；用户访问首页可见
+  + 用户管理；权限授权，批量生成账号
+  + 题目管理；增改查，公开/隐藏，重判结果，导入与导出(兼容hustoj)
+  + 竞赛管理；增删查改，公开/隐藏
+
+# 安装
   
   1. **Linux Ubuntu 16.04**
    
@@ -39,15 +54,14 @@ Ludong University Online Judge
   3.配置域名：在/etc/nginx/conf.d/lduoj.conf文件内，在`server_name`后面填域名。
 
 
-# 系统更新
+# 更新
   ```
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/update.sh -e robots=off
   bash update.sh
   ```
-  **提示**：更新时自动产生备份`/home/lduoj_update/lduoj_{日期}`，
-  包含项目文件夹、数据库备份lduoj.sql、nginx配置文件lduoj.conf
+  **提示**：更新时自动进行一次备份
 
-# 系统备份
+# 备份
   ```
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/backup.sh
   bash backup.sh
@@ -57,4 +71,3 @@ Ludong University Online Judge
 
 
 # 展示
-

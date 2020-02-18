@@ -38,7 +38,7 @@ char sql[256];   //暂存sql语句
 
 
 
-void get_wating_solution(int solution_queue[],int &queueing_cnt) //从solution表读取max_running个待判编号
+void get_wating_solution(int solution_queue[],int &queueing_cnt) //从solutions表读取max_running个待判编号
 {
     queueing_cnt=0;
     sprintf(sql,"SELECT id FROM solutions WHERE result<=%d ORDER BY id ASC limit %d",OJ_WT,max_running);
@@ -54,7 +54,7 @@ void get_wating_solution(int solution_queue[],int &queueing_cnt) //从solution�
         if(sid_str[0]!='\0')strcat(sid_str,",");
         strcat(sid_str,mysql_row[0]);
     }
-    if(queueing_cnt>0)  //更新已读入的solution的result
+    if(queueing_cnt>0)  //更新已读入的solution的result=queueing
     {
         sprintf(sql,"UPDATE solutions SET result=%d WHERE id in (%s)",OJ_QI,sid_str); //更新状态
         mysql_real_query(mysql,sql,strlen(sql));
@@ -68,9 +68,14 @@ void polling()  //轮询数据库收集待判提交
     int pid,did;
     while(true)
     {
-        get_wating_solution(solution_queue,queueing_cnt);
+        get_wating_solution(solution_queue,queueing_cnt);  //获取判题队列
         if(queueing_cnt==0)
         {
+            while( (did=waitpid(-1,NULL,WNOHANG))>0 ) //回收僵尸进程,WNOHANG不等待,若无死进程立马返回0; 其实不回收也可以，判题前会回收一次
+            {
+                running_cnt--;
+                printf("Recycled a process: %d\n",did);
+            }
             printf("Solution queue is empty, process is sleeping for 1 second... [ time : %d ]\n",(int)clock());
             sleep(1); //当前无题可判，休息1秒
             continue;
@@ -78,18 +83,18 @@ void polling()  //轮询数据库收集待判提交
 
         for(int i=0;i<queueing_cnt;i++)     //遍历队列
         {
-            char sid_str[12];
-            sprintf(sid_str,"%d",solution_queue[i]);
             if(running_cnt>=max_running)   //已达到最大正在判题数,等待任意判题进程结束,亦可回收僵尸进程
             {
                 waitpid(-1,NULL,0);
                 running_cnt--;
             }
 
+            char sid_str[12];
+            sprintf(sid_str,"%d",solution_queue[i]);
             running_cnt++;
             if( (pid=fork()) == 0 )  //当前为子进程，进行一次判题
             {
-                if(0>execl("./judge","",db_host,db_port,db_user,db_pass,db_name,sid_str,(char*)NULL) )
+                if( 0 > execl("./judge","",db_host,db_port,db_user,db_pass,db_name,sid_str,(char*)NULL) )
                     perror("Polling execl error:");
                 exit(0);  //结束子进程
             }
@@ -98,12 +103,6 @@ void polling()  //轮询数据库收集待判提交
                 printf("Error: fork error!\n");
                 exit(1);
             }
-        }
-
-        while( (did=waitpid(-1,NULL,WNOHANG))>0 ) //回收僵尸进程,WNOHANG不等待,若无死进程立马返回0
-        {
-            running_cnt--;
-            printf("Recycled a process: %d\n",did);
         }
     }
 }

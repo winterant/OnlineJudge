@@ -37,7 +37,7 @@ cp -f ${web_home}/LDUOnlineJudge/install/nginx/lduoj.conf /etc/nginx/conf.d/lduo
 service nginx restart
 
 # mysql
-apt -y install mysql-server libmysqlclient-dev
+apt -y install mysql-server
 service mysql restart
 USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
 PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
@@ -48,10 +48,6 @@ mysql -u${USER} -p${PASSWORD} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'loc
 mysql -u${USER} -p${PASSWORD} -Dlduoj < ${web_home}/LDUOnlineJudge/install/mysql/lduoj.sql
 
 
-# C/C++
-apt -y install g++
-
-
-echo -e "\nYou have successfully installed LDU Online Judge!"
+echo -e "You have successfully installed LDU Online Judge!"
 echo -e "Installation location: ${web_home}/LDUOnlineJudge"
-echo -e "Enjoy it!\n"
+echo -e "Enjoy it!"
