@@ -14,4 +14,5 @@ return [
     11=> 'Compile Error',
     12=> 'Test Completed',
     13=> 'Skipped',
+    14=> 'System Error',
 ];

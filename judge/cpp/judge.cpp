@@ -2,11 +2,14 @@
 #include<stdlib.h>
 #include<string.h>
 #include<time.h>
-#include<mysql/mysql.h>
 #include<unistd.h>
+#include<sys/stat.h>
 #include<sys/types.h>
 #include<sys/wait.h>
+#include<sys/resource.h>
+#include<mysql/mysql.h>
 
+#include<string>
 
 #define OJ_WT  0    //waiting
 #define OJ_QI  1    //queueing
@@ -22,7 +25,14 @@
 #define OJ_CE 11    //compile error
 #define OJ_TC 12    //test completed
 #define OJ_SK 13    //skipped
+#define OJ_SE 14    //system error
 
+#define COMPILE_TIME 10     //10s, compile time limit
+#define COMPILE_FSIZE (10<<20)  //10MB,compile file size limit
+#define COMPILE_MEM (512<<20)  //512MB,compile memory
+
+
+const char *LANG[15]={"Main.c","Main.cpp","Main.java","Main.py"}; //判题文件名
 
 char *db_host;
 char *db_port;
@@ -30,12 +40,11 @@ char *db_user;
 char *db_pass;
 char *db_name;
 
-const char *lang[15]={"c","cpp","java","py"}; //判题语言后缀
-
 MYSQL *mysql;    //数据库连接对象
 MYSQL_RES *mysql_res;   //sql查询结果
 MYSQL_ROW mysql_row;    //sql查询到的单行数据
 char sql[256];   //暂存sql语句
+
 
 struct Solution{
     int id;
@@ -49,7 +58,7 @@ struct Solution{
     int time=0; //MS 实际耗时
     float memory=0; //MB 实际内存
     float pass_rate=0;
-    char *error_info=NULL;
+    char *error_info=(char*)"NULL";
 
     void load_solution(int sid) //从数据库读取提交记录，注：用到了全局mysql
     {
@@ -66,6 +75,10 @@ struct Solution{
         this->memory_limit=atof(mysql_row[2]);
         this->language    =atoi(mysql_row[3]);
         this->code        =mysql_row[4];
+
+        freopen(LANG[this->language],"w",stdout);
+        printf("%s",this->code);
+        freopen("/dev/tty","w",stdout);
     }
 
     void update_result(int result)  //只更新result
@@ -77,7 +90,7 @@ struct Solution{
 
     void update_solution()  //更新整个solution
     {
-        sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,error_info='%s',judge_time=now() WHERE id=%d",
+        sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,error_info=%s,judge_time=now() WHERE id=%d",
             this->result,this->time,this->memory,this->pass_rate,this->error_info,this->id); //更新
         mysql_real_query(mysql,sql,strlen(sql));
     }
@@ -88,11 +101,39 @@ struct Solution{
 //编译用户提交的代码
 int compile()
 {
+    int pid;
     const char *CP_C[]  ={"gcc","Main.c",  "-o","Main","-Wall","-lm","--static","-std=c99",  "-fmax-errors=10","-DONLINE_JUDGE","-O2",NULL};
 	const char *CP_CPP[]={"g++","Main.cpp","-o","Main","-Wall","-lm","--static","-std=c++11","-fmax-errors=10","-DONLINE_JUDGE","-fno-asm", NULL};
 	const char *CP_JAVA[]={"javac","-J-Xms64m","-J-Xmx128m","-encoding","UTF-8","Main.java",NULL};
 
-    return 0;
+    if( (pid=fork()) == 0 ) //子进程编译
+    {
+        struct rlimit LIM;
+        LIM.rlim_max=LIM.rlim_cur=COMPILE_TIME;
+        setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit; 10s
+        LIM.rlim_max=LIM.rlim_cur=COMPILE_FSIZE;
+        setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 10MB
+        LIM.rlim_max=LIM.rlim_cur= solution.language==2 ? COMPILE_MEM<<2 : COMPILE_MEM; //java要扩大
+        setrlimit(RLIMIT_AS, &LIM); //memory limit; c/c++ 512MB, java 2048MB
+        alarm(COMPILE_TIME);  //定时
+
+        freopen("ce.txt","w",stderr);
+        switch(solution.language){
+            case 0: execvp(CP_C[0],   (char * const *)CP_C); break;
+            case 1: execvp(CP_CPP[0], (char * const *)CP_CPP); break;
+            case 2: execvp(CP_JAVA[0],(char * const *)CP_JAVA); break;
+        }
+        exit(0);
+    }
+    else if(pid>0) //父进程
+    {
+        int status;
+        waitpid(pid, &status, 0);
+        return status;   //+:compile error
+    }
+    else
+        return -1;  //-1:system error,
+    return 0; //0:compile success,
 }
 
 
@@ -100,9 +141,8 @@ int compile()
 int judge(int sid)
 {
     printf("judging!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: %d\n",sid);
-    sleep(1);
-    printf("judging end   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: %d\n",sid);
-    return OJ_AC;
+//    sleep(1);
+    return OJ_TC;
 }
 
 int main (int argc, char* argv[])
@@ -125,12 +165,44 @@ int main (int argc, char* argv[])
         exit(1);
     }
 
-    solution.load_solution(sid);   //loading the solution whose id is sid
+    if(access("../run",0)==-1)
+        mkdir("../run",0777);
+    chdir("../run"); //进入工作目录
+    mkdir(argv[6],0777);
+    chdir(argv[6]); //进入sid临时文件夹
+
+    solution.load_solution(sid);   //从数据库读取提交记录
     solution.update_result(OJ_CI); //update to compiling
-    compile();
-    solution.update_result(OJ_RI); //update to running
-    solution.result = judge(sid);
+
+    int CP_result=compile();
+    if(CP_result==-1)//系统错误，正常情况下没有
+    {
+        solution.result=OJ_SE;
+    }
+    else if(CP_result>0) //编译错误
+    {
+        solution.result=OJ_CE;
+
+        FILE *fp=fopen("ce.txt","r"); //将编译信息读到solution结构体变量
+        fseek(fp,0L,SEEK_END);
+        int ce_size=ftell(fp);
+        fseek(fp,0L,SEEK_SET);
+        char ch, *ps = solution.error_info = new char[ce_size+3];
+        for (*ps++='\'';(ch=fgetc(fp))!=EOF;*ps++=ch);
+        *ps='\'';
+        fclose(fp);
+    }
+    else    //编译成功
+    {
+        solution.update_result(OJ_RI); //update to running
+        solution.result = judge(sid);
+    }
+
     solution.update_solution();    // update all of data
+
     mysql_close(mysql);
+    char run_dir[24];
+    sprintf(run_dir,"rm -rf ../%d",sid);
+    system(run_dir); //删除该记录所用的临时文件夹
     return 0;
 }
