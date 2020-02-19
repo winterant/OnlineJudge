@@ -14,4 +14,5 @@ return [
     11=> 'text-blue',
     12=> 'text-sky',
     13=> 'text-purple',
+    14=> 'text-purple',
 ];

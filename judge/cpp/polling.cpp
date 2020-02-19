@@ -64,7 +64,7 @@ void get_wating_solution(int solution_queue[],int &queueing_cnt) //从solutions�
 void polling()  //轮询数据库收集待判提交
 {
     int running_cnt=0,queueing_cnt;     //正在判题数,排队数
-    int *solution_queue=new int[max_running];    //判题队列
+    int *solution_queue=new int[max_running];  //判题队列
     int pid,did;
     while(true)
     {
@@ -126,7 +126,9 @@ int main (int argc, char* argv[])
         printf("Polling Error: Can't connect to database!\n\n");
         exit(1);
     }
+
     polling();
+
     mysql_close(mysql);
     return 0;
 }
