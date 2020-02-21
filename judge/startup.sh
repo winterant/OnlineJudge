@@ -1,8 +1,9 @@
 #!/bin/bash
 
 ps -e | grep polling | awk '{print "kill -9 " $1}' | sh
-source ./judge.conf
 
+cd `dirname $0`
+source ./judge.conf
 
 if [ ! -d ./program ]; then
   mkdir ./program
