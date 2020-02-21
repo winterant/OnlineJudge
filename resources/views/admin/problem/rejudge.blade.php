@@ -46,9 +46,9 @@
             <div class="form-inline">
                 <label for="">
                     选定时间区间：
-                    <input type="datetime-local" name="date[1]" class="form-control" required>
+                    <input type="datetime-local" name="date[1]" value="{{str_replace(' ','T',date('Y-m-d H:00'))}}" class="form-control" required>
                     <font class="mx-2">—</font>
-                    <input type="datetime-local" name="date[2]" class="form-control" required>
+                    <input type="datetime-local" name="date[2]" value="{{str_replace(' ','T',date('Y-m-d H:i'))}}" class="form-control" required>
                 </label>
                 <button class="btn btn-success bg-light mb-0 ml-3">确认重判</button>
             </div>

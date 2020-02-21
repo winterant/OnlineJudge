@@ -46,6 +46,31 @@ MYSQL_ROW mysql_row;    //sql查询到的单行数据
 char sql[256];   //暂存sql语句
 
 
+
+
+//从文件读取内容，返回字符串指针
+char *read_file(const char *filename)
+{
+    FILE *fp=fopen(filename,"r");
+    fseek(fp,0L,SEEK_END);
+    int ce_size=ftell(fp);  //获得内容长度
+    fseek(fp,0L,SEEK_SET);
+    char ch, *p, *str = new char[ce_size+1];
+    for (p=str;(ch=fgetc(fp))!=EOF;*p++=ch);
+    fclose(fp);
+    return str;
+}
+
+//将字符串写入文件
+void write_file(const char *str, const char *filename)
+{
+    FILE *fp=fopen(filename,"w");
+    fprintf(fp,"%s",str);
+    fclose(fp);
+}
+
+
+//结构体，一条提交记录
 struct Solution{
     int id;
     char *judge_type;
@@ -58,7 +83,7 @@ struct Solution{
     int time=0; //MS 实际耗时
     float memory=0; //MB 实际内存
     float pass_rate=0;
-    char *error_info=(char*)"NULL";
+    char *error_info=(char*)"";
 
     void load_solution(int sid) //从数据库读取提交记录，注：用到了全局mysql
     {
@@ -76,9 +101,7 @@ struct Solution{
         this->language    =atoi(mysql_row[3]);
         this->code        =mysql_row[4];
 
-        freopen(LANG[this->language],"w",stdout);
-        printf("%s",this->code);
-        freopen("/dev/tty","w",stdout);
+        write_file(this->code,LANG[this->language]);
     }
 
     void update_result(int result)  //只更新result
@@ -90,11 +113,21 @@ struct Solution{
 
     void update_solution()  //更新整个solution
     {
-        sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,error_info=%s,judge_time=now() WHERE id=%d",
-            this->result,this->time,this->memory,this->pass_rate,this->error_info,this->id); //更新
+        sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%.2f,pass_rate=%.2f,judge_time=now() WHERE id=%d",
+            this->result,this->time,this->memory,this->pass_rate,this->id); //更新
         mysql_real_query(mysql,sql,strlen(sql));
+        if(this->result==OJ_CE){    //更新编译信息
+            char *new_sql = new char[2*strlen(this->error_info)+35];
+            char *p=new_sql;
+            p+=sprintf(p,"UPDATE solutions SET error_info=\'");
+            p+=mysql_real_escape_string(mysql,p,this->error_info,strlen(this->error_info));
+            p+=sprintf(p,"\' where id=%d",this->id);
+            mysql_real_query(mysql,new_sql,strlen(new_sql));
+        }
     }
 }solution;
+
+
 
 
 
@@ -147,6 +180,7 @@ int judge(int sid)
 
 int main (int argc, char* argv[])
 {
+    // 1. 读取参数
     if(argc!=6+1){
         printf("Judge arg number error!\n");
         exit(1);
@@ -158,6 +192,7 @@ int main (int argc, char* argv[])
     db_name=argv[5];
     int sid=atoi(argv[6]); //solution id
 
+    // 2. 连接数据库
     mysql = mysql_init(NULL);   //初始化数据库连接变量
     mysql = mysql_real_connect(mysql,db_host,db_user,db_pass,db_name,atoi(db_port),NULL,0); //连接
     if(!mysql){
@@ -165,44 +200,41 @@ int main (int argc, char* argv[])
         exit(1);
     }
 
+    // 3. 创建临时文件夹并进入
     if(access("../run",0)==-1)
         mkdir("../run",0777);
     chdir("../run"); //进入工作目录
     mkdir(argv[6],0777);
     chdir(argv[6]); //进入sid临时文件夹
 
+    // 4.读取+编译+判题
     solution.load_solution(sid);   //从数据库读取提交记录
     solution.update_result(OJ_CI); //update to compiling
 
     int CP_result=compile();
     if(CP_result==-1)//系统错误，正常情况下没有
     {
+        printf("%d,compiling: System Error on fork();\n",sid);
         solution.result=OJ_SE;
     }
     else if(CP_result>0) //编译错误
     {
+        printf("%d,compiling: Compile Error!\n",sid);
         solution.result=OJ_CE;
-
-        FILE *fp=fopen("ce.txt","r"); //将编译信息读到solution结构体变量
-        fseek(fp,0L,SEEK_END);
-        int ce_size=ftell(fp);
-        fseek(fp,0L,SEEK_SET);
-        char ch, *ps = solution.error_info = new char[ce_size+3];
-        for (*ps++='\'';(ch=fgetc(fp))!=EOF;*ps++=ch);
-        *ps='\'';
-        fclose(fp);
+        solution.error_info = read_file("ce.txt");//将编译信息读到solution结构体变量
     }
-    else    //编译成功
+    else    //编译成功，运行
     {
+        printf("%d,Compiling successfully! begin with running\n",sid);
         solution.update_result(OJ_RI); //update to running
         solution.result = judge(sid);
     }
 
+    // 5. 判题结果写回数据库
     solution.update_solution();    // update all of data
 
+    // 6. 关闭数据库+删除临时文件夹
     mysql_close(mysql);
-    char run_dir[24];
-    sprintf(run_dir,"rm -rf ../%d",sid);
-    system(run_dir); //删除该记录所用的临时文件夹
+//    system("rm -rf `pwd`"); //删除该记录所用的临时文件夹
     return 0;
 }
