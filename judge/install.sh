@@ -5,3 +5,4 @@
 apt update && apt -y upgrade
 apt -y install libmysqlclient-dev g++
 apt -y install openjdk-8-jdk
+apt -y install python3.6

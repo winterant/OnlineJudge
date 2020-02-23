@@ -32,7 +32,7 @@
 #define COMPILE_MEM (512<<20)  //512MB,compile memory
 
 
-const char *LANG[15]={"Main.c","Main.cpp","Main.java","Main.py"}; //判题文件名
+const char *LANG[]={"Main.c","Main.cpp","Main.java","Main.py"}; //判题文件名
 
 char *db_host;
 char *db_port;
@@ -44,52 +44,6 @@ MYSQL *mysql;    //数据库连接对象
 MYSQL_RES *mysql_res;   //sql查询结果
 MYSQL_ROW mysql_row;    //sql查询到的单行数据
 char sql[256];   //暂存sql语句
-
-
-
-
-//从文件读取内容，返回字符串指针
-char *read_file(const char *filename)
-{
-    FILE *fp=fopen(filename,"r");
-    fseek(fp,0L,SEEK_END);
-    int ce_size=ftell(fp);  //获得内容长度
-    fseek(fp,0L,SEEK_SET);
-    char ch, *p, *str = new char[ce_size+1];
-    for (p=str;(ch=fgetc(fp))!=EOF;*p++=ch);
-    fclose(fp);
-    return str;
-}
-
-//将字符串写入文件
-void write_file(const char *str, const char *filename)
-{
-    FILE *fp=fopen(filename,"w");
-    fprintf(fp,"%s",str);
-    fclose(fp);
-}
-
-char* isInFile(const char fname[])  //检查文件名后缀是否为.in
-{
-	int l = strlen(fname);
-	if (l > 3 && strcmp(fname + l - 3, ".in") == 0)
-	{
-	    char *name=new char[strlen(fname)-2];
-	    strncpy(name,fname,l-3); //返回文件名（去后缀）
-	    return name;
-	}
-	return NULL;
-}
-
-void copy_tests(const char* data_dir,const char *test_name)
-{
-    char cmd[128];
-    sprintf(cmd,"/bin/cp %s/%s.in  ./data.in",data_dir,test_name);
-    system(cmd);
-    sprintf(cmd,"/bin/cp %s/%s.out ./data.out",data_dir,test_name);
-    system(cmd);
-}
-
 
 
 //结构体，一条提交记录
@@ -124,8 +78,6 @@ struct Solution{
         this->memory_limit=atof(mysql_row[3]);
         this->language    =atoi(mysql_row[4]);
         this->code        =mysql_row[5];
-
-        write_file(this->code,LANG[this->language]);
     }
 
     void update_result(int result)  //数据库，只更新result
@@ -153,11 +105,68 @@ struct Solution{
 
 
 
+//从文件读取内容，返回字符串指针
+char *read_file(const char *filename)
+{
+    FILE *fp=fopen(filename,"r");
+    fseek(fp,0L,SEEK_END);
+    int ce_size=ftell(fp);  //获得内容长度
+    fseek(fp,0L,SEEK_SET);
+    char ch, *p, *str = new char[ce_size+1];
+    for (p=str;(ch=fgetc(fp))!=EOF;*p++=ch);
+    *p='\0';
+    fclose(fp);
+    return str;
+}
 
+//将字符串写入文件
+void write_file(const char *str, const char *filename)
+{
+    FILE *fp=fopen(filename,"w");
+    fprintf(fp,"%s",str);
+    fclose(fp);
+}
+
+char* isInFile(const char fname[])  //检查文件名后缀是否为.in
+{
+	int len = strlen(fname);
+	if (len > 3 && strcmp(fname + len - 3, ".in") == 0)
+	{
+	    char *name=new char[len-2];
+	    strncpy(name,fname,len-3);
+	    name[len-3]='\0';
+	    return name;//返回文件名
+	}
+	return NULL;
+}
+
+void copy_tests(const char* data_dir,const char *test_name)
+{
+    char cmd[128];
+    sprintf(cmd,"/bin/cp %s/%s.in  ./data.in",data_dir,test_name);
+    system(cmd);
+    sprintf(cmd,"/bin/cp %s/%s.out ./data.out",data_dir,test_name);
+    system(cmd);
+}
+
+int compare_file(const char* fname1,const char *fname2)
+{
+    char *text1 = read_file(fname1);
+    char *text2 = read_file(fname2);
+    char *text1_end = text1 + strlen(text1)-1;
+    while(*text1_end == '\n')*text1_end--='\0'; //忽略末尾换行
+    char *text2_end = text2 + strlen(text2)-1;
+    while(*text2_end == '\n')*text2_end--='\0'; //忽略末尾换行
+    if(strcmp(text1,text2)==0)
+        return OJ_AC;
+    return OJ_WA;
+}
 
 //编译用户提交的代码
 int compile()
 {
+    if(solution.language==3)//python不需要编译
+        return 0;
     int pid;
     const char *CP_C[]  ={"gcc","Main.c",  "-o","Main","-Wall","-lm","--static","-std=c99",  "-fmax-errors=10","-DONLINE_JUDGE","-O2",NULL};
 	const char *CP_CPP[]={"g++","Main.cpp","-o","Main","-Wall","-lm","--static","-std=c++11","-fmax-errors=10","-DONLINE_JUDGE","-fno-asm", NULL};
@@ -221,7 +230,6 @@ void running()
     freopen("data.in", "r", stdin);
     freopen("user.out", "w", stdout);
     freopen("error.out", "a+", stderr);
-    printf("language: %d\n",solution.language);
     switch(solution.language)
     {
         case 0: //c
@@ -232,9 +240,12 @@ void running()
             				"-Djava.security.manager",
             				"-Djava.security.policy=./java.policy", "Main", (char *) NULL);
         case 3: //python 3.6
-            execl("/python", "/python", "Main.py", (char *) NULL);
+            execl("python3", "python3", "./Main.py", (char *) NULL);
     }
 }
+
+
+
 
 //运行可执行文件
 int judge(char *data_dir)
@@ -248,7 +259,7 @@ int judge(char *data_dir)
     int test_count=0,ac_count=0;
     while((dirfile=readdir(dir))!=NULL)
     {
-        char *test_name=isInFile(dirfile->d_name);
+        char *test_name = isInFile(dirfile->d_name);
         if(test_name==NULL)continue;
         copy_tests(data_dir,test_name); //复制测试数据
         test_count++;
@@ -261,10 +272,16 @@ int judge(char *data_dir)
         }
         else if(pid>0)
         {
-            //监视子进程运行
+            //监视子进程运行,记得改为ptrace
+            waitpid(pid,NULL,0);
+            int result = compare_file("data.out","user.out");
+            if(result==OJ_AC)ac_count++;
+            if(strcmp(solution.judge_type,"acm")==0 && result!=OJ_AC) //acm遇到WA直接返回
+                return result;
         }
         else return OJ_SE;  //system error
     }
+    solution.pass_rate = ac_count*1.0/test_count;
     return OJ_AC; //accepted
 }
 
@@ -299,6 +316,7 @@ int main (int argc, char* argv[])
 
     // 4.读取+编译+判题
     solution.load_solution(sid);   //从数据库读取提交记录
+    write_file(solution.code,LANG[solution.language]); //创建代码文件
     solution.update_result(OJ_CI); //update to compiling
 
     int CP_result=compile();
