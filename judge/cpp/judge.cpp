@@ -3,13 +3,13 @@
 #include<string.h>
 #include<time.h>
 #include<unistd.h>
+#include <dirent.h>
 #include<sys/stat.h>
 #include<sys/types.h>
 #include<sys/wait.h>
 #include<sys/resource.h>
 #include<mysql/mysql.h>
 
-#include<string>
 
 #define OJ_WT  0    //waiting
 #define OJ_QI  1    //queueing
@@ -69,11 +69,34 @@ void write_file(const char *str, const char *filename)
     fclose(fp);
 }
 
+char* isInFile(const char fname[])  //检查文件名后缀是否为.in
+{
+	int l = strlen(fname);
+	if (l > 3 && strcmp(fname + l - 3, ".in") == 0)
+	{
+	    char *name=new char[strlen(fname)-2];
+	    strncpy(name,fname,l-3); //返回文件名（去后缀）
+	    return name;
+	}
+	return NULL;
+}
+
+void copy_tests(const char* data_dir,const char *test_name)
+{
+    char cmd[128];
+    sprintf(cmd,"/bin/cp %s/%s.in  ./data.in",data_dir,test_name);
+    system(cmd);
+    sprintf(cmd,"/bin/cp %s/%s.out ./data.out",data_dir,test_name);
+    system(cmd);
+}
+
+
 
 //结构体，一条提交记录
 struct Solution{
     int id;
     char *judge_type;
+    int problem_id;
     int time_limit;  //限制
     float memory_limit;
     int language;
@@ -83,11 +106,11 @@ struct Solution{
     int time=0; //MS 实际耗时
     float memory=0; //MB 实际内存
     float pass_rate=0;
-    char *error_info=(char*)"";
+    char *error_info;
 
     void load_solution(int sid) //从数据库读取提交记录，注：用到了全局mysql
     {
-        sprintf(sql,"select `judge_type`,`time_limit`,`memory_limit`,`language`,`code` from solutions A inner join problems B on A.problem_id=B.id where A.id=%d",sid);
+        sprintf(sql,"select `judge_type`,`problem_id`,`time_limit`,`memory_limit`,`language`,`code` from solutions A inner join problems B on A.problem_id=B.id where A.id=%d",sid);
         if(mysql_real_query(mysql,sql,strlen(sql))!=0){
             printf("select failed!\n");
             exit(1);
@@ -96,22 +119,23 @@ struct Solution{
         mysql_row=mysql_fetch_row(mysql_res); //读取
         this->id=sid;
         this->judge_type  =mysql_row[0];
-        this->time_limit  =atoi(mysql_row[1]);
-        this->memory_limit=atof(mysql_row[2]);
-        this->language    =atoi(mysql_row[3]);
-        this->code        =mysql_row[4];
+        this->problem_id  =atoi(mysql_row[1]);
+        this->time_limit  =atoi(mysql_row[2]);
+        this->memory_limit=atof(mysql_row[3]);
+        this->language    =atoi(mysql_row[4]);
+        this->code        =mysql_row[5];
 
         write_file(this->code,LANG[this->language]);
     }
 
-    void update_result(int result)  //只更新result
+    void update_result(int result)  //数据库，只更新result
     {
         this->result=result;
         sprintf(sql,"UPDATE solutions SET result=%d WHERE id=%d",this->result,this->id);
         mysql_real_query(mysql,sql,strlen(sql));
     }
 
-    void update_solution()  //更新整个solution
+    void update_solution()  //数据库，更新solution
     {
         sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%.2f,pass_rate=%.2f,judge_time=now() WHERE id=%d",
             this->result,this->time,this->memory,this->pass_rate,this->id); //更新
@@ -146,7 +170,7 @@ int compile()
         setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit; 10s
         LIM.rlim_max=LIM.rlim_cur=COMPILE_FSIZE;
         setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 10MB
-        LIM.rlim_max=LIM.rlim_cur= solution.language==2 ? COMPILE_MEM<<2 : COMPILE_MEM; //java要扩大
+        LIM.rlim_max=LIM.rlim_cur= solution.language>1 ? COMPILE_MEM<<2 : COMPILE_MEM; //java,python要扩大
         setrlimit(RLIMIT_AS, &LIM); //memory limit; c/c++ 512MB, java 2048MB
         alarm(COMPILE_TIME);  //定时
 
@@ -170,12 +194,78 @@ int compile()
 }
 
 
-//运行可执行文件
-int judge(int sid)
+void running()
 {
-    printf("judging!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: %d\n",sid);
-//    sleep(1);
-    return OJ_TC;
+    struct rlimit LIM;
+    //time limit
+    LIM.rlim_max=LIM.rlim_cur=solution.time_limit*(solution.language<=1? 1 : 2); //除c/c++，翻倍
+    setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit
+    alarm(0);
+    alarm(LIM.rlim_cur);
+
+    //memory limit
+    LIM.rlim_max=LIM.rlim_cur= solution.language>1 ? COMPILE_MEM<<1 : COMPILE_MEM; //java,python要扩大
+    setrlimit(RLIMIT_AS, &LIM); //memory limit;
+
+    LIM.rlim_max=LIM.rlim_cur=COMPILE_FSIZE;
+    setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 10MB
+
+    //proc limit;
+    LIM.rlim_cur = LIM.rlim_max = solution.language==2 ? 50 : 1; // java扩大
+    setrlimit(RLIMIT_NPROC, &LIM);
+
+    // set the stack
+    LIM.rlim_cur = LIM.rlim_max = 128<<20;  //128MB
+    setrlimit(RLIMIT_STACK, &LIM);
+
+    freopen("data.in", "r", stdin);
+    freopen("user.out", "w", stdout);
+    freopen("error.out", "a+", stderr);
+    printf("language: %d\n",solution.language);
+    switch(solution.language)
+    {
+        case 0: //c
+        case 1: //c++
+            execl("./Main", "./Main", (char *) NULL); break;
+        case 2: //java
+            execl("/usr/bin/java", "/usr/bin/java", "-Xms32m", "Xmx256m",
+            				"-Djava.security.manager",
+            				"-Djava.security.policy=./java.policy", "Main", (char *) NULL);
+        case 3: //python 3.6
+            execl("/python", "/python", "Main.py", (char *) NULL);
+    }
+}
+
+//运行可执行文件
+int judge(char *data_dir)
+{
+    DIR *dir=opendir(data_dir);  //数据文件夹
+    dirent *dirfile;
+    if(dir==NULL){
+        printf("problem %d doesn't have test data!\n",solution.problem_id);
+        return OJ_AC; //accepted
+    }
+    int test_count=0,ac_count=0;
+    while((dirfile=readdir(dir))!=NULL)
+    {
+        char *test_name=isInFile(dirfile->d_name);
+        if(test_name==NULL)continue;
+        copy_tests(data_dir,test_name); //复制测试数据
+        test_count++;
+        int pid=fork();
+        if(pid==0)//child
+        {
+            printf("running on test %d\n",test_count);
+            running();
+            exit(0);
+        }
+        else if(pid>0)
+        {
+            //监视子进程运行
+        }
+        else return OJ_SE;  //system error
+    }
+    return OJ_AC; //accepted
 }
 
 int main (int argc, char* argv[])
@@ -227,7 +317,9 @@ int main (int argc, char* argv[])
     {
         printf("%d,Compiling successfully! begin with running\n",sid);
         solution.update_result(OJ_RI); //update to running
-        solution.result = judge(sid);
+        char data_dir[64];
+        sprintf(data_dir,"../../../storage/app/data/%d/test",solution.problem_id); //测试数据
+        solution.result = judge(data_dir);
     }
 
     // 5. 判题结果写回数据库
