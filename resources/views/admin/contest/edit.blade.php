@@ -20,7 +20,7 @@
                     <select name="contest[type]" class="form-control">
                         <option value="acm" {{isset($contest)&&$contest->type=='acm'?'checked':''}}>acm：icpc程序设计竞赛规则</option>
                         <option value="oi" {{isset($contest)&&$contest->type=='oi'?'checked':''}}>oi：信息学竞赛规则</option>
-                        <option value="exam" {{isset($contest)&&$contest->type=='exam'?'checked':''}}>exam：考试</option>
+{{--                        <option value="exam" {{isset($contest)&&$contest->type=='exam'?'checked':''}}>exam：考试</option>--}}
                     </select>
                     <a href="javascript:" class="ml-1" style="color: #838383"
                        onclick="whatisthis('icpc规则：对于每题，通过时间累加为罚时，通过前的每次错误提交罚时20分钟；' +

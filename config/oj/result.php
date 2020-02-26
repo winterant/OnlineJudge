@@ -8,7 +8,7 @@ return [
     5 => 'Presentation Error',
     6 => 'Wrong Answer',
     7 => 'Time Limit Exceeded',
-    8 => 'Time Limit Exceeded',
+    8 => 'Memory Limit Exceeded',
     9 => 'Output Limit Exceeded',
     10=> 'Runtime Error',
     11=> 'Compile Error',
