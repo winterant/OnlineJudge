@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    @if(config('oj.result.'.$solution->result)=='Compile Error')  {{-- 编译错误 --}}
+    @if($solution->error_info!=null)  {{-- 错误信息 --}}
         <div class="container">
             <div class="my-container bg-white">
                 <pre>{{$solution->error_info}}</pre>

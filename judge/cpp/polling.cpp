@@ -76,7 +76,7 @@ void polling()  //轮询数据库收集待判提交
                 running_cnt--;
                 printf("Recycled a process: %d\n",did);
             }
-            printf("Solution queue is empty, process is sleeping for 1 second... [ time : %d ]\n",(int)clock());
+//            printf("Solution queue is empty, process is sleeping for 1 second... [ time : %d ]\n",(int)clock());
             sleep(1); //当前无题可判，休息1秒
             continue;
         }
