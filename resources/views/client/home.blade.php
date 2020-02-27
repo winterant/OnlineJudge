@@ -152,7 +152,7 @@
                     ret=JSON.parse(ret);
                     console.log(ret)
                     $("#notice-title").html(ret.title)
-                    $("#notice-content").html(ret.content)
+                    $("#notice-content").html(ret.content + "<div class='text-right mt-3'>"+ret.created_at+"</div>")
                 }
             );
         }

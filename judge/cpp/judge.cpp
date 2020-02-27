@@ -271,17 +271,8 @@ int compile()
 }
 
 //寻找和编译spj.cpp
-int compile_spj(const char* spj_path)
+int compile_spj()
 {
-    if(access(spj_path,F_OK)==0) //spj.cpp存在
-    {
-        char cmd[128];
-        sprintf(cmd,"/bin/cp %s  ./spj.cpp",spj_path);
-        system(cmd);  //spj复制到当前文件夹
-    }
-    else
-        return -1; //spj失败
-
     int pid;
     const char *CP_CPP[]={"g++","spj.cpp","-o","spj","-Wall","-lm","--static","-std=c++11","-fmax-errors=5","-DONLINE_JUDGE","-fno-asm", NULL};
 
@@ -464,10 +455,20 @@ int judge(char *data_dir, char *spj_path)
 
     if(solution.spj) //特判
     {
-        int cp_spj=compile_spj(spj_path);
+        if(access(spj_path,F_OK)==-1) //spj.cpp不存在
+        {
+            char *error = (char*)"[ERROR] This problem need special judge, BUT lack of spj.cpp!\n";
+            write_file(error,"error.out","a+");
+            return OJ_SE; //系统错误
+        }
+        char cmd[128];
+        sprintf(cmd,"/bin/cp %s ./spj.cpp",spj_path);
+        system(cmd);  //spj复制到当前文件夹
+
+        int cp_spj=compile_spj();
         if(cp_spj!=0) //spj.cpp编译失败，没必要判题了
         {
-            char *error = (char*)"[ERROR] This problem need special judge, BUT lack of spj.cpp or spj.cpp failed to compile!\n";
+            char *error = (char*)"[ERROR] spj.cpp failed to compile!\n";
             write_file(error,"error.out","a+");
             return OJ_SE;  //系统错误
         }
