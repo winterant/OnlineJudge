@@ -34,7 +34,7 @@ Ludong University Online Judge
   wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/install.sh -e robots=off
   bash install.sh
   ```
-  **注意**：安装过程mysql可能会提示设置root密码，请输入并谨记。
+  **注意**：安装过程mysql**可能**会提示设置root密码，请输入并谨记。
   
   **[安装成功]**：浏览器访问你的服务器ip即可打开首页
   (nginx默认占用80端口,云服务器请先在控制台安全组添加该端口),
@@ -49,7 +49,7 @@ Ludong University Online Judge
   
   **为保证安全性请及时修改**
   (注：需同时修改①ubuntu下mysql，②项目下.env文件数据库配置，③项目下judge/judge.conf，
-  ④最后在项目根目录下执行`php artisan config:clear && php artisan config:cache`)
+  ④最后在项目根目录下执行`php artisan config:cache`)
   
   3.配置域名：在/etc/nginx/conf.d/lduoj.conf文件内，在`server_name`后面填域名。
 
@@ -63,7 +63,7 @@ Ludong University Online Judge
 
 # 备份
   ```
-  wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/backup.sh
+  wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/backup.sh -e robots=off
   bash backup.sh
   ```
   **提示**：产生备份`/home/lduoj_update/lduoj_{日期}`，

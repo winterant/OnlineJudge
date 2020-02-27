@@ -36,7 +36,7 @@ class HomeController extends Controller
     }
 
     public function get_notice(Request $request){
-        $notice=DB::table('notices')->select(['title','content'])->find($request->input('id'));
+        $notice=DB::table('notices')->select(['title','content','created_at'])->find($request->input('id'));
         return json_encode($notice);
     }
 }
