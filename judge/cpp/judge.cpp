@@ -10,8 +10,8 @@
 #include<sys/wait.h>
 #include<sys/resource.h>
 #include<sys/ptrace.h>
-#include<sys/reg.h>
 #include<sys/user.h>
+#include<sys/reg.h>
 #include<sys/syscall.h>
 #include<mysql/mysql.h>
 
@@ -36,34 +36,41 @@
 #define OJ_SK 13    //skipped
 #define OJ_SE 14    //system error
 
+#define BUFFER_SIZE 5120    //about 5KB
+
 #define COMPILE_TIME 10     //10s, compile time limit
 #define COMPILE_FSIZE (10<<20)  //10MB,compile file size limit
 #define COMPILE_MEM (512<<20)  //512MB,compile memory
 
-
 const char *LANG[]={"Main.c","Main.cpp","Main.java","Main.py"}; //判题文件名
+
+//x64
 //允许用户的系统调用c/c++
-int LANG_C[] = {0,1,2,3,4,5,8,9,11,12,20,21,59,63,89,99,158,202,231,240,272,273,275,511, SYS_time, SYS_read, SYS_uname, SYS_write, SYS_open,
+int LANG_C[] = {0,1,3,4,5,8,9,11,12,20,21,59,63,89,99,158,202,231,240,272,273,275,511,
+        SYS_time, SYS_read, SYS_uname, SYS_write,/*SYS_open,*/
 		SYS_close, SYS_access, SYS_brk, SYS_munmap, SYS_mprotect,
-		SYS_mmap, SYS_fstat, SYS_set_thread_area, 252, SYS_arch_prctl, 0 ,EOF};
+		SYS_mmap, SYS_fstat, SYS_set_thread_area, 252, SYS_arch_prctl, EOF};
+
 //java
-int LANG_JAVA[] = { 0,39,157,257,302,2,3,4,5,9,10,11,12,13,14,21,56,59,89,97,104,158,202,218,231,273,257,
+int LANG_JAVA[] = { 0,39,157,257,302,3,4,5,9,10,11,12,13,14,21,56,59,89,97,104,158,202,218,231,273,257,
 		61, 22, 6, 33, 8, 13, 16, 111, 110, 39, 79, SYS_fcntl,
 		SYS_getdents64, SYS_getrlimit, SYS_rt_sigprocmask, SYS_futex, SYS_read,
 		SYS_mmap, SYS_stat, SYS_open, SYS_close, SYS_execve, SYS_access,
 		SYS_brk, SYS_readlink, SYS_munmap, SYS_close, SYS_uname, SYS_clone,
 		SYS_uname, SYS_mprotect, SYS_rt_sigaction, SYS_getrlimit, SYS_fstat,
 		SYS_getuid, SYS_getgid, SYS_geteuid, SYS_getegid, SYS_set_thread_area,
-		SYS_set_tid_address, SYS_set_robust_list, SYS_exit_group, 158, 0 ,EOF};
+		SYS_set_tid_address, SYS_set_robust_list, SYS_exit_group, 158, EOF};
 //python
-int LANG_PY[] = {0,2,3,4,5,6,8,9,10,11,12,13,14,16,21,32,59,72,78,79,89,97,99,102,104,107,108,131,158,217,218,228,231,272,273,318,39,99,302,99,32,72,131,1,202,257,41, 42, 146, SYS_mremap, 158, 117, 60, 39, 102, 191,
+int LANG_PY[] = {3,4,5,6,8,9,10,11,12,13,14,16,21,32,59,72,78,79,89,97,99,102,104,107,108,
+        131,158,217,218,228,231,272,273,318,39,99,302,99,32,72,131,202,257,41, 42, 146,
+        SYS_mremap, 158, 117, 60, 39, 102, 191,
 		SYS_access, SYS_arch_prctl, SYS_brk, SYS_close, SYS_execve,
 		SYS_exit_group, SYS_fcntl, SYS_fstat, SYS_futex, SYS_getcwd,
 		SYS_getdents, SYS_getegid, SYS_geteuid, SYS_getgid, SYS_getrlimit,
 		SYS_getuid, SYS_ioctl, SYS_lseek, SYS_lstat, SYS_mmap, SYS_mprotect,
 		SYS_munmap, SYS_open, SYS_read, SYS_readlink, SYS_rt_sigaction,
 		SYS_rt_sigprocmask, SYS_set_robust_list, SYS_set_tid_address, SYS_stat,
-		SYS_write, 0, EOF};
+		SYS_write, SYS_statfs, EOF};
 
 bool allow_sys_call[512]={0}; //系统调用标记
 
@@ -76,7 +83,7 @@ char *db_name;
 MYSQL *mysql;    //数据库连接对象
 MYSQL_RES *mysql_res;   //sql查询结果
 MYSQL_ROW mysql_row;    //sql查询到的单行数据
-char sql[256];   //暂存sql语句
+char sql[BUFFER_SIZE];   //暂存sql语句
 
 
 //结构体，一条提交记录
@@ -129,7 +136,7 @@ struct Solution{
 
     void update_solution()  //数据库，更新solution
     {
-        sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,judge_time=now() WHERE id=%d",
+        sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,judge_time=now(),error_info=NULL WHERE id=%d",
             this->result,this->time,this->memory,this->pass_rate,this->id); //更新
         mysql_real_query(mysql,sql,strlen(sql));
         if(this->error_info!=NULL){    //更新出错信息
@@ -144,9 +151,7 @@ struct Solution{
 }solution;
 
 
-
-//获取文件内容长度
-int get_file_size(const char *filename)
+int get_file_size(const char *filename)//获取文件内容长度
 {
     FILE *fp=fopen(filename,"r");
     fseek(fp,0L,SEEK_END);
@@ -155,8 +160,7 @@ int get_file_size(const char *filename)
     return size;
 }
 
-//从文件读取内容，返回字符串指针
-char *read_file(const char *filename)
+char *read_file(const char *filename)//从文件读取内容，返回字符串指针
 {
     int ce_size=get_file_size(filename);
     FILE *fp=fopen(filename,"r");
@@ -167,8 +171,7 @@ char *read_file(const char *filename)
     return str;
 }
 
-//将字符串写入文件
-void write_file(const char *str, const char *filename,const char* mode)
+void write_file(const char *str, const char *filename,const char* mode)//将字符串写入文件
 {
     FILE *fp=fopen(filename,mode);
     fprintf(fp,"%s",str);
@@ -188,13 +191,11 @@ char* isInFile(const char fname[])  //检查文件名后缀是否为.in
 	return NULL;
 }
 
-void copy_tests(const char* data_dir,const char *test_name)
+char* get_data_out_path(const char* data_dir,const char* test_name) //获取测试答案的路径
 {
-    char cmd[128];
-    sprintf(cmd,"/bin/cp %s/%s.in  ./data.in",data_dir,test_name);
-    system(cmd);
-    sprintf(cmd,"/bin/cp %s/%s.out ./data.out",data_dir,test_name);
-    system(cmd);
+    char *path = new char[128];
+    sprintf(path,"%s/%s.out",data_dir,test_name);
+    return path;
 }
 
 int compare_file(const char* fname1,const char *fname2)
@@ -207,13 +208,11 @@ int compare_file(const char* fname1,const char *fname2)
     while(*text2_end == '\n')*text2_end--='\0'; //忽略末尾换行
     if(strcmp(text1,text2)==0)
         return OJ_AC;
-    puts(text1);
-    puts(text2);
     return OJ_WA;
 }
 
-//读取进程pid的内存使用情况
-int get_proc_memory(int pid) {
+int get_proc_memory(int pid)//读取进程pid的内存使用情况
+{
 	int memory = 0;
 	char buf[64], mark[]="VmPeak:";
 	sprintf(buf, "/proc/%d/status", pid);
@@ -267,9 +266,8 @@ int compile()
         waitpid(pid, &status, 0);
         return status;   //+:compile error
     }
-    else
-        return -1;  //-1:system error,
-    return 0; //0:compile success,
+
+    return -1;  //-1:system error
 }
 
 //寻找和编译spj.cpp
@@ -313,7 +311,7 @@ int compile_spj(const char* spj_path)
     return 0; //0:compile success,
 }
 
-//运行一次用户程序，产生user.out
+//运行一次用户程序，产生用户答案user.out
 void running()
 {
     nice(19); //优先级-20~19，19最低
@@ -338,7 +336,7 @@ void running()
     setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 16MB
 
     //程序可创建的最大进程数;
-    LIM.rlim_cur = LIM.rlim_max = solution.language==2 ? 50 : 1; // java扩大
+    LIM.rlim_cur = LIM.rlim_max = solution.language>1 ? 200 : 1; // java,python扩大
     setrlimit(RLIMIT_NPROC, &LIM);
 
     //程序所使用的的堆栈最大空间
@@ -352,23 +350,24 @@ void running()
             execl("./Main", "./Main", (char *) NULL);
             break;
         case 2: //java
-            execl("/usr/bin/java", "/usr/bin/java", "-Xms32m", "Xmx256m",
+            char java_xmx[16];
+            sprintf(java_xmx, "-Xmx%.fM", solution.memory_limit);
+            execl("/usr/bin/java", "/usr/bin/java", java_xmx,
             				"-Djava.security.manager",
             				"-Djava.security.policy=./java.policy", "Main", (char *) NULL);
             break;
         case 3: //python 3.6
-            execl("python3", "python3", "./Main.py", (char *) NULL);
+            execl("/usr/bin/python3", "/usr/bin/python3", "Main.py", (char *) NULL);
             break;
     }
     fflush(stderr);
 }
 
 //监视子进程running
-int watch_running(int child_pid, float &memory_MB, int &time_MS)
+int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_size)
 {
     int status=0, result=OJ_TC; //初始result=测试通过
     struct rusage ruse;    //保存用户子进程的内存时间等
-    struct user_regs_struct reg;  //保存子进程系统调用信息
     while(1)
     {
         wait4(child_pid, &status, __WALL, &ruse); //跟踪子进程，子进程可能并未结束
@@ -389,7 +388,7 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS)
             result = OJ_RE; break; //运行错误
         }
 
-        if (!solution.spj && get_file_size("user.out") > get_file_size("data.out")*2+1024 ){
+        if (!solution.spj && get_file_size("user.out") > max_out_size ){
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             result = OJ_OL; break; //输出超限
         }
@@ -409,7 +408,6 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS)
             ptrace(PTRACE_KILL, child_pid, nullptr, nullptr);
             break;
 		}
-
         if(WIFSIGNALED(status)) //子进程异常终止
         {
             int sig = WTERMSIG(status); //信号
@@ -429,26 +427,27 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS)
 
         //检查系统调用
 		int sysCall = ptrace(PTRACE_PEEKUSER, child_pid, ORIG_RAX<<3, NULL);
-		if(!allow_sys_call[sysCall]) //不允许的系统调用
+		if(!allow_sys_call[sysCall]) //没有被许可的系统调用
 		{
             result = OJ_RE;
             char *error = new char[64];
             sprintf(error,"[ERROR] A Not allowed system call: call id = %d\n",sysCall);
-            write_file(error,"error.txt","a+");
+            write_file(error,"error.out","a+");
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             break;
 		}
 
-        ptrace(PTRACE_SYSCALL, child_pid, NULL, NULL); //唤醒子进程，继续执行
+        ptrace(PTRACE_SYSCALL, child_pid, NULL, NULL); //唤醒暂停的子进程，继续执行
     }
     int used_time = (ruse.ru_utime.tv_sec * 1000 + ruse.ru_utime.tv_usec / 1000); //用户态时间
     used_time += (ruse.ru_stime.tv_sec * 1000 + ruse.ru_stime.tv_usec / 1000); //内核时间
     time_MS = max(time_MS,used_time);
     if(used_time>solution.time_limit)
         result = OJ_TL; //超时
-    printf("running used time: %dMS,   limit is %dMS\n",time_MS,solution.time_limit);
+    printf("running used time: %dMS,  limit is %dMS\n",time_MS,solution.time_limit);
     printf("running used memory: %f MB, limit is %fMB\n",memory_MB,solution.memory_limit);
-    printf("result=%d\n",result);
+    if(result == OJ_TL)
+        solution.time = solution.time_limit;
     return result;
 }
 
@@ -469,7 +468,7 @@ int judge(char *data_dir, char *spj_path)
         if(cp_spj!=0) //spj.cpp编译失败，没必要判题了
         {
             char *error = (char*)"[ERROR] This problem need special judge, BUT lack of spj.cpp or spj.cpp failed to compile!\n";
-            write_file(error,"error.txt","a+");
+            write_file(error,"error.out","a+");
             return OJ_SE;  //系统错误
         }
     }
@@ -478,8 +477,12 @@ int judge(char *data_dir, char *spj_path)
     while((dirfile=readdir(dir))!=NULL)
     {
         char *test_name = isInFile(dirfile->d_name);
-        if(test_name==NULL)continue;
-        copy_tests(data_dir,test_name); //复制测试数据
+        if(test_name==NULL)continue; //不是输入数据，跳过
+
+        char cmd[128];
+        sprintf(cmd,"/bin/cp %s/%s.in  ./data.in",data_dir,test_name);
+        system(cmd);  //复制输入数据到当前目录
+
         test_count++;
         int pid=fork();
         if(pid==0)//child
@@ -490,8 +493,8 @@ int judge(char *data_dir, char *spj_path)
         }
         else if(pid>0)
         {
-            printf("Father process, watching child running on test %d\n",test_count);
-            int result = watch_running(pid, solution.memory, solution.time);
+            char *data_out_path = get_data_out_path(data_dir,test_name);
+            int result = watch_running(pid, solution.memory, solution.time, get_file_size(data_out_path)*2+1024);
             if(result == OJ_TC)  //运行完成，需要判断用户的答案
             {
                 if(solution.spj)  //special judge
@@ -499,9 +502,9 @@ int judge(char *data_dir, char *spj_path)
                     result = OJ_SK;
                 }
                 else  //比较文件
-                    result = compare_file("data.out","user.out");  //非spj直接比较文件
+                    result = compare_file(data_out_path,"user.out");  //非spj直接比较文件
             }
-
+            printf("test %d result: %d\n",test_count,result);
             if(result==OJ_AC)ac_count++;
             if(strcmp(solution.judge_type,"acm")==0 && result!=OJ_AC) //acm遇到WA直接返回
                 return result;
@@ -549,18 +552,18 @@ int main (int argc, char* argv[])
     int CP_result=compile();
     if(CP_result==-1)//系统错误，正常情况下没有
     {
-        printf("%d,compiling: System Error on fork();\n",sid);
+        printf("solution id: %d, compiling: System Error on fork();\n",sid);
         solution.result=OJ_SE;
     }
     else if(CP_result>0) //编译错误
     {
-        printf("%d,compiling: Compile Error!\n",sid);
+        printf("solution id: %d, compiling: Compile Error!\n",sid);
         solution.result=OJ_CE;
         solution.error_info = read_file("ce.txt");//将编译信息读到solution结构体变量
     }
     else    //编译成功，运行
     {
-        printf("%d,Compiling successfully! begin with running\n",sid);
+        printf("solution id: %d, Compiling successfully! begin with running\n",sid);
         solution.update_result(OJ_RI); //update to running
         char data_dir[64], spj_path[64];
         sprintf(data_dir,"../../../storage/app/data/%d/test",solution.problem_id); //测试数据
@@ -579,9 +582,10 @@ int main (int argc, char* argv[])
             allow_sys_call[call_lang[i]]=true; //允许调用
 
         //开始判题
+        system("rm -rf error.out");
         solution.result = judge(data_dir, spj_path);
-        if(access("error.txt",F_OK)==0) //存在error.txt，记录错误信息
-            solution.error_info = read_file("error.txt");
+        if(access("error.out",F_OK)==0) //存在error.out，记录错误信息
+            solution.error_info = read_file("error.out");
     }
 
     // 5. 判题结果写回数据库
@@ -589,6 +593,6 @@ int main (int argc, char* argv[])
 
     // 6. 关闭数据库+删除临时文件夹
     mysql_close(mysql);
-    system("rm -rf `pwd`"); //删除该记录所用的临时文件夹
+//    system("rm -rf `pwd`"); //删除该记录所用的临时文件夹
     return 0;
 }
