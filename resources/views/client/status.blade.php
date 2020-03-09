@@ -37,14 +37,24 @@
                                     <option class="form-control" value="-1">All Result</option>
                                     @foreach(config('oj.result') as $key=>$res)
                                         <option value="{{$key}}" class="{{config('oj.resColor.'.$key)}}"
-                                        {{isset($_GET['result'])?($key==$_GET['result']?'selected':''):''}} >{{$res}}</option>
+                                        {{isset($_GET['result'])&&$key==$_GET['result']?'selected':''}} >{{$res}}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </th>
                         <th>{{__('main.Time')}}</th>
                         <th>{{__('main.Memory')}}</th>
-                        <th>{{__('main.Language')}}</th>
+                        <th>
+                            <div class="form-group m-0 p-0 bmd-form-group">
+                                <select name="language" class="form-control" onchange="this.form.submit();">
+                                    <option class="form-control" value="-1">{{__('main.Language')}}</option>
+                                    @foreach(config('oj.lang') as $key=>$res)
+                                        <option value="{{$key}}"
+                                            {{isset($_GET['language'])&&$key==$_GET['language']?'selected':''}} >{{$res}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </th>
                         <th>{{__('main.Submit Time')}}</th>
                         <button type="submit" hidden></button>
                     </form>
@@ -59,7 +69,12 @@
                                 <a href="{{route('user',$sol->username)}}" target="_blank">{{$sol->username}}</a>
                                 @if($sol->nick && Auth::check()&&Auth::user()->privilege('solution'))&nbsp;{{$sol->nick}}@endif
                             </td>
-                            <td nowrap class="{{config('oj.resColor.'.$sol->result)}}">{{config('oj.result.'.$sol->result)}}</td>
+                            <td nowrap class="{{config('oj.resColor.'.$sol->result)}}">
+                                {{config('oj.result.'.$sol->result)}}
+                                @if($sol->judge_type=='oi')
+                                    ( {{round($sol->pass_rate*100)}} )
+                                @endif
+                            </td>
                             <td>{{$sol->time}}MS</td>
                             <td>{{round($sol->memory,2)}}MB</td>
                             <td>

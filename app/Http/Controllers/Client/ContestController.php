@@ -107,6 +107,7 @@ class ContestController extends Controller
             ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('problem_id',$_GET['pid']);})
             ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username','like',$_GET['username'].'%');})
             ->when(isset($_GET['result'])&&$_GET['result']!='',function ($q){return $q->where('result',$_GET['result']);})
+            ->when(isset($_GET['language'])&&$_GET['language']!='',function ($q){return $q->where('language',$_GET['language']);})
             ->orderByDesc('solutions.id')
             ->paginate(10);
 
