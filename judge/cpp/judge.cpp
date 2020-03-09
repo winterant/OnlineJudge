@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<stdarg.h>
 #include<string.h>
 #include<time.h>
 #include<unistd.h>
@@ -154,6 +155,7 @@ struct Solution{
 int get_file_size(const char *filename)//获取文件内容长度
 {
     FILE *fp=fopen(filename,"r");
+    if(fp==NULL)return -1; //文件打开失败
     fseek(fp,0L,SEEK_END);
     int size=ftell(fp);  //获得内容长度
     fclose(fp);
@@ -164,6 +166,7 @@ char *read_file(const char *filename)//从文件读取内容，返回字符串�
 {
     int ce_size=get_file_size(filename);
     FILE *fp=fopen(filename,"r");
+    if(fp==NULL) return NULL; //文件打开失败
     char ch, *p, *str = new char[ce_size+1];
     for (p=str;(ch=fgetc(fp))!=EOF;*p++=ch);
     *p='\0';
@@ -230,6 +233,17 @@ int get_proc_memory(int pid)//读取进程pid的内存使用情况
 }
 
 
+int system_cmd(const char *fmt, ...) //执行一条linux命令
+{
+	char cmd[BUFFER_SIZE];
+	va_list ap;
+	va_start(ap, fmt);
+	vsprintf(cmd, fmt, ap);
+	int ret = system(cmd);
+	va_end(ap);
+	return ret;
+}
+
 
 //编译用户提交的代码
 int compile()
@@ -238,7 +252,7 @@ int compile()
         return 0;
     int pid;
     const char *CP_C[]  ={"gcc","Main.c",  "-o","Main","-Wall","-lm","--static","-std=c99",  "-fmax-errors=5","-DONLINE_JUDGE","-O2",NULL};
-	const char *CP_CPP[]={"g++","Main.cpp","-o","Main","-Wall","-lm","--static","-std=c++11","-fmax-errors=5","-DONLINE_JUDGE","-fno-asm", NULL};
+	const char *CP_CPP[]={"g++","Main.cpp","-o","Main","-Wall","-lm","--static","-std=c++11","-fmax-errors=5","-DONLINE_JUDGE","-O2","-fno-asm", NULL};
 	const char *CP_JAVA[]={"javac","-J-Xms64m","-J-Xmx128m","-encoding","UTF-8","Main.java",NULL};
 
     if( (pid=fork()) == 0 ) //子进程编译
@@ -354,6 +368,37 @@ void running()
     fflush(stderr);
 }
 
+//运行special judge
+int running_spj(const char *in,const char *out,const char *user_out)
+{
+    struct rlimit LIM;
+    //time limit
+    LIM.rlim_max=LIM.rlim_cur = 60; //60S
+    setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit
+    alarm(0);
+    alarm((int)LIM.rlim_cur);
+
+    //memory limit
+    LIM.rlim_max=LIM.rlim_cur = 1024<<20; //1024MB
+    setrlimit(RLIMIT_AS, &LIM);
+
+    //程序可创建的文件最大长度
+    LIM.rlim_max=LIM.rlim_cur = 16<<20;
+    setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 16MB
+
+    //程序可创建的最大进程数;
+    LIM.rlim_cur = LIM.rlim_max = solution.language>1 ? 200 : 1; // java,python扩大
+    setrlimit(RLIMIT_NPROC, &LIM);
+
+    //程序所使用的的堆栈最大空间
+    LIM.rlim_cur = LIM.rlim_max = 256<<20;  //256MB
+    setrlimit(RLIMIT_STACK, &LIM);
+
+    int ret = system_cmd("./spj %s %s %s",in,out,user_out);
+    if(ret==0) return OJ_AC;
+    return OJ_WA;
+}
+
 //监视子进程running
 int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_size)
 {
@@ -457,15 +502,13 @@ int judge(char *data_dir, char *spj_path)
     {
         if(access(spj_path,F_OK)==-1) //spj.cpp不存在
         {
-            char *error = (char*)"[ERROR] This problem need special judge, BUT lack of spj.cpp!\n";
+            char *error = (char*)"[ERROR] This problem need special judge, BUT spj.cpp is not exist!\n";
             write_file(error,"error.out","a+");
             return OJ_SE; //系统错误
         }
-        char cmd[128];
-        sprintf(cmd,"/bin/cp %s ./spj.cpp",spj_path);
-        system(cmd);  //spj复制到当前文件夹
+        system_cmd("/bin/cp %s ./spj.cpp",spj_path);
 
-        int cp_spj=compile_spj();
+        int cp_spj=compile_spj(); //编译
         if(cp_spj!=0) //spj.cpp编译失败，没必要判题了
         {
             char *error = (char*)"[ERROR] spj.cpp failed to compile!\n";
@@ -479,11 +522,7 @@ int judge(char *data_dir, char *spj_path)
     {
         char *test_name = isInFile(dirfile->d_name);
         if(test_name==NULL)continue; //不是输入数据，跳过
-
-        char cmd[128];
-        sprintf(cmd,"/bin/cp %s/%s.in  ./data.in",data_dir,test_name);
-        system(cmd);  //复制输入数据到当前目录
-
+        system_cmd("/bin/cp %s/%s.in  ./data.in",data_dir,test_name); //复制输入数据到当前目录
         test_count++;
         int pid=fork();
         if(pid==0)//child
@@ -499,9 +538,7 @@ int judge(char *data_dir, char *spj_path)
             if(result == OJ_TC)  //运行完成，需要判断用户的答案
             {
                 if(solution.spj)  //special judge
-                {
-                    result = OJ_SK;
-                }
+                    result = running_spj("data.in",data_out_path,"user.out");
                 else  //比较文件
                     result = compare_file(data_out_path,"user.out");  //非spj直接比较文件
             }
@@ -564,7 +601,7 @@ int main (int argc, char* argv[])
     }
     else    //编译成功，运行
     {
-        printf("solution id: %d, Compiling successfully! begin with running\n",sid);
+        printf("solution id: %d, Compiling successfully! start running\n",sid);
         solution.update_result(OJ_RI); //update to running
         char data_dir[64], spj_path[64];
         sprintf(data_dir,"../../../storage/app/data/%d/test",solution.problem_id); //测试数据
@@ -583,10 +620,9 @@ int main (int argc, char* argv[])
             allow_sys_call[call_lang[i]]=true; //允许调用
 
         //开始判题
-        system("rm -rf error.out");
+        system_cmd("rm -rf error.out");
         solution.result = judge(data_dir, spj_path);
-        if(access("error.out",F_OK)==0) //存在error.out，记录错误信息
-            solution.error_info = read_file("error.out");
+        solution.error_info = read_file("error.out");
     }
 
     // 5. 判题结果写回数据库
@@ -594,6 +630,6 @@ int main (int argc, char* argv[])
 
     // 6. 关闭数据库+删除临时文件夹
     mysql_close(mysql);
-//    system("rm -rf `pwd`"); //删除该记录所用的临时文件夹
+    system_cmd("rm -rf `pwd`"); //删除该记录所用的临时文件夹
     return 0;
 }

@@ -72,7 +72,7 @@ class StatusController extends Controller
             'language'      => ($data['language']!=null)?$data['language']:0,
             'submit_time'   => date('Y-m-d H:i:s'),
 
-            'judge_type'    => isset($data['judge_type'])?$data['judge_type']:'acm', //acm,oi,exam
+            'judge_type'    => isset($data['judge_type'])?$data['judge_type']:'acm', //acm,oi
 
             'ip'            => $request->getClientIp(),
             'code_length'   => strlen($data['code']),
