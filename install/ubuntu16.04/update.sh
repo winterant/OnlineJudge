@@ -16,10 +16,9 @@ mv -f ${web_home}/LDUOnlineJudge/vendor  ${web_home}/lduoj_temp/
 mv -f ${web_home}/LDUOnlineJudge/.env    ${web_home}/lduoj_temp/
 mv -f ${web_home}/LDUOnlineJudge/public/favicon.ico  ${web_home}/lduoj_temp/public/
 rm -rf ${web_home}/LDUOnlineJudge
-mv -f ${web_home}/lduoj_temp  ${web_home}/LDUOnlineJudge
+mv ${web_home}/lduoj_temp  ${web_home}/LDUOnlineJudge
 
-# shellcheck disable=SC2164
-cd ${web_home}/LDUOnlineJudge
+cd ${web_home}/LDUOnlineJudge || exit 2;
 chmod -R 777 storage bootstrap/cache
 
 # composer
@@ -32,3 +31,9 @@ php artisan config:cache
 php artisan route:cache
 
 echo "You have successfully updated LDU Online Judge! Enjoy it!"
+
+#judge
+bash ${web_home}/LDUOnlineJudge/judge/install.sh
+bash ${web_home}/LDUOnlineJudge/judge/startup.sh
+
+rm -rf ${web_home}/update.sh

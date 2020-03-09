@@ -49,6 +49,6 @@ mysql -u${USER} -p${PASSWORD} -Dlduoj < ${web_home}/LDUOnlineJudge/install/mysql
 
 echo -e "You have successfully installed LDU Online Judge!"
 
-#judge
+#start to judge
 bash ${web_home}/LDUOnlineJudge/judge/install.sh
 bash ${web_home}/LDUOnlineJudge/judge/startup.sh

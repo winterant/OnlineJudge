@@ -22,8 +22,7 @@ fi
 sleep 1;
 polling_name=`ps -e | grep polling | awk '{print $4}'`
 if [ "${polling_name}" == "polling" ];then
-  echo "[Judge is OK] It's start to judge!"
+  echo "[Judge is OK] Server has started to judge!"
 else
   echo "[Judge Failed] Please check host or user for database in LDUOnlineJudge/judge/judge.conf"
-  exit 3;
 fi

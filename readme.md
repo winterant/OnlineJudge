@@ -57,14 +57,15 @@ Ludong University Online Judge
   bash /home/LDUOnlineJudge/install/ubuntu16.04/backup.sh
   ```
   **提示**：产生备份`/home/lduoj_update/lduoj_{日期}`，
-  包含项目文件夹、数据库备份lduoj.sql、nginx配置文件lduoj.conf
+  包含项目文件夹（含测试数据、图片、文件）、数据库备份lduoj.sql、nginx配置文件lduoj.conf
 
 # 更新
 
   建议更新前进行一次备份，以免数据丢失。
   ```
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_temp
-  bash /home/LDUOnlineJudge/install/ubuntu16.04/update.sh
+  cp /home/LDUOnlineJudge/install/ubuntu16.04/update.sh /home/
+  bash /home/update.sh
   ```
 
 # 展示
