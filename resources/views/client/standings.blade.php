@@ -61,7 +61,7 @@
                         <td nowrap><a href="{{route('user',$item->username)}}" target="_blank">{{$item->username}}</a></td>
                         <td nowrap>{{$item->nick}}</td>
                         <td>{{$item->solved}} / {{$item->submit}}</td>
-                        <td>{{round($item->solved/max(1,$item->submit),2)}}</td>
+                        <td>{{round($item->solved*100/max(1,$item->submit),2)}}%</td>
                     </tr>
                 @endforeach
                 </tbody>

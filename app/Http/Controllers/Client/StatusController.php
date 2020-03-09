@@ -19,11 +19,13 @@ class StatusController extends Controller
     {
         $list=DB::table('solutions')
             ->join('users','solutions.user_id','=','users.id')
-            ->select('solutions.id','problem_id','user_id','nick','username','result','time','memory','language','submit_time')
+            ->select('solutions.id','problem_id','user_id','nick','username','result','time','memory',
+                'language', 'submit_time', 'judge_type', 'pass_rate')
             ->where('contest_id','=',-1)
             ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('problem_id',$_GET['pid']);})
             ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username','like',$_GET['username'].'%');})
             ->when(isset($_GET['result'])&&$_GET['result']!='-1',function ($q){return $q->where('result',$_GET['result']);})
+            ->when(isset($_GET['language'])&&$_GET['language']!='-1',function ($q){return $q->where('language',$_GET['language']);})
             ->orderByDesc('solutions.id')
             ->paginate(10);
 

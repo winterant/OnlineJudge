@@ -46,14 +46,24 @@
                                         <option class="form-control" value="-1">All Result</option>
                                         @foreach(config('oj.result') as $key=>$res)
                                             <option value="{{$key}}" class="{{config('oj.resColor.'.$key)}}"
-                                                {{isset($_GET['result'])?($key==$_GET['result']?'selected':''):''}} >{{$res}}</option>
+                                                {{isset($_GET['result'])&&$key==$_GET['result']?'selected':''}} >{{$res}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </th>
                             <th>{{__('main.Time')}}</th>
                             <th>{{__('main.Memory')}}</th>
-                            <th>{{__('main.Language')}}</th>
+                            <th>
+                                <div class="form-group m-0 p-0 bmd-form-group">
+                                    <select name="language" class="form-control" onchange="this.form.submit();">
+                                        <option class="form-control" value="-1">{{__('main.Language')}}</option>
+                                        @foreach(config('oj.lang') as $key=>$res)
+                                            <option value="{{$key}}"
+                                                {{isset($_GET['language'])&&$key==$_GET['language']?'selected':''}} >{{$res}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </th>
                             <th>{{__('main.Submit Time')}}</th>
                             <button type="submit" hidden></button>
                         </form>
