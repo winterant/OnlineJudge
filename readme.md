@@ -30,9 +30,8 @@ Ludong University Online Judge
    
   在终端执行以下命令，安装过程约10分钟。若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
   ```
-  apt update && apt -y install wget
-  wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/install.sh -e robots=off
-  bash install.sh
+  git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
+  bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
   ```
   **注意**：安装过程mysql**可能**会提示设置root密码，请输入并谨记。
   
@@ -53,21 +52,19 @@ Ludong University Online Judge
   
   3.配置域名：在/etc/nginx/conf.d/lduoj.conf文件内，在`server_name`后面填域名。
 
-
-# 更新
-  ```
-  wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/update.sh -e robots=off
-  bash update.sh
-  ```
-  **提示**：更新时自动进行一次备份
-
 # 备份
   ```
-  wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/ubuntu16.04/backup.sh -e robots=off
-  bash backup.sh
+  bash /home/LDUOnlineJudge/install/ubuntu16.04/backup.sh
   ```
   **提示**：产生备份`/home/lduoj_update/lduoj_{日期}`，
   包含项目文件夹、数据库备份lduoj.sql、nginx配置文件lduoj.conf
 
+# 更新
+
+  建议更新前进行一次备份，以免数据丢失。
+  ```
+  git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_temp
+  bash /home/LDUOnlineJudge/install/ubuntu16.04/update.sh
+  ```
 
 # 展示
