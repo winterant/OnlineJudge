@@ -123,8 +123,8 @@ int main (int argc, char* argv[])
     mysql = mysql_init(NULL);   //初始化数据库连接变量
     mysql = mysql_real_connect(mysql,db_host,db_user,db_pass,db_name,atoi(db_port),NULL,0);
     if(!mysql){
-        printf("Polling Error: Can't connect to database!\n\n");
-        exit(1);
+        printf("Polling Error: Can't connect to database!\n");
+        exit(3);
     }
 
     polling();

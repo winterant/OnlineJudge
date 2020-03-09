@@ -5,7 +5,7 @@ web_home=/home    #项目存放位置
 
 if [ ! -d ${web_home}/LDUOnlineJudge ];then
   echo No such project: ${web_home}/LDUOnlineJudge
-  exit -1;
+  exit 1;
 fi;
 cd ${web_home}/LDUOnlineJudge
 
@@ -47,5 +47,8 @@ mysql -u${USER} -p${PASSWORD} -e"CREATE USER 'lduoj'@'localhost' IDENTIFIED BY '
 mysql -u${USER} -p${PASSWORD} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost' identified by '123456789';flush privileges;"
 mysql -u${USER} -p${PASSWORD} -Dlduoj < ${web_home}/LDUOnlineJudge/install/mysql/lduoj.sql
 
-
 echo -e "You have successfully installed LDU Online Judge!"
+
+#judge
+bash ${web_home}/LDUOnlineJudge/judge/install.sh
+bash ${web_home}/LDUOnlineJudge/judge/startup.sh
