@@ -4,9 +4,9 @@ set -x
 web_home=/home    #项目存放位置
 
 if [ ! -d ${web_home}/lduoj_temp ];then
-  echo -e "No such project: ${web_home}/lduoj_temp"
-  echo -e "Please first: git clone https://github.com/iamwinter/LDUOnlineJudge.git ${web_home}/lduoj_temp"
-  exit -1;
+  echo "No such project: ${web_home}/lduoj_temp"
+  echo "Please first: git clone https://github.com/iamwinter/LDUOnlineJudge.git ${web_home}/lduoj_temp"
+  exit 1;
 fi;
 
 rm -rf ${web_home}/lduoj_temp/storage
@@ -18,6 +18,7 @@ mv -f ${web_home}/LDUOnlineJudge/public/favicon.ico  ${web_home}/lduoj_temp/publ
 rm -rf ${web_home}/LDUOnlineJudge
 mv -f ${web_home}/lduoj_temp  ${web_home}/LDUOnlineJudge
 
+# shellcheck disable=SC2164
 cd ${web_home}/LDUOnlineJudge
 chmod -R 777 storage bootstrap/cache
 
@@ -30,4 +31,4 @@ php artisan key:generate
 php artisan config:cache
 php artisan route:cache
 
-echo -e "You have successfully updated LDU Online Judge! Enjoy it!"
+echo "You have successfully updated LDU Online Judge! Enjoy it!"
