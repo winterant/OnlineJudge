@@ -20,7 +20,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4">
 
-    <a class="navbar-brand" href="/">{{config('oj.main.siteName')}}</a>
+    <a class="navbar-brand">{{config('oj.main.siteName')}}</a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
         <span class="navbar-toggler-icon"></span>
@@ -29,7 +29,7 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="navbar-nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('home')}}" style="padding: 0">
+                <a class="nav-link text-nowrap p-2" href="{{route('home')}}">
                     <i class="fa fa-home" aria-hidden="true">&nbsp;{{trans('main.Home')}}</i>
                 </a>
             </li>

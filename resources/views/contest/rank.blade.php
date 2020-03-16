@@ -85,8 +85,14 @@
                             <th>{{trans('main.User')}}</th>
                             @if(config('oj.main.rank_show_school'))<th>{{trans('main.School')}}</th> @endif
                             @if(config('oj.main.rank_show_nick'))<th>{{trans('main.Name')}}</th> @endif
-                            <th>{{trans('main.Solved')}}</th>
-                            <th>{{trans('main.Penalty')}}</th>
+
+                            @if($contest->type == 'acm')
+                                <th>{{trans('main.Solved')}}</th>
+                                <th>{{trans('main.Penalty')}}</th>
+                            @else
+                                <th>{{trans('main.Score')}}</th>
+                            @endif
+
                             @foreach($index_map as $i=>$pid)
                                 <th><a href="{{route('contest.problem',[$contest->id,$i])}}">{{$i}}</a></th>
                             @endforeach
@@ -118,7 +124,9 @@
                                     @if(config('oj.main.rank_show_nick'))<td>{{$user['nick']}}</td> @endif
 
                                     <td>{{$user['AC']}}</td>
-                                    <td>{{$user['penalty']}}</td>
+                                    @if($contest->type == 'acm')
+                                        <td>{{$user['penalty']}}</td>
+                                    @endif
                                     @foreach($index_map as $i=>$pid)
                                         @if(isset($user[$i]['first'])) {{--  first AC --}}
                                             <td class="border" style="background-color: #12d000" nowrap>
@@ -126,7 +134,8 @@
                                                 {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':' '}}
                                             </td>
                                         @elseif(isset($user[$i]['AC_time']))
-                                            <td class="border" style="background-color: #87ec97" nowrap>
+                                            <td class="border" style="@if($contest->type=='oi'&&$user[$i]['AC_time']<100)background-color:#ffafa7;
+                                                    @else background-color:#87ec97;@endif" nowrap>
                                                 {{$user[$i]['AC_time']}}
                                                 {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':' '}}
                                             </td>

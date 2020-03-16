@@ -4,14 +4,6 @@
 
 @section('content')
 
-    <style type="text/css">
-        select {
-            text-align: center;
-            text-align-last: center;
-        }
-    </style>
-
-
     <div class="container">
 
         <div class="col-12 col-sm-12">
@@ -101,7 +93,8 @@
                 <table class="table table-sm table-hover">
                     <thead>
                     <tr>
-                        <th>#</th>
+                        <th width="5"></th>
+                        <th width="10">#</th>
                         <th>{{trans('main.Title')}}</th>
                         <th>{{trans('main.AC/Submit')}}</th>
                         <th></th>
@@ -110,6 +103,13 @@
                     <tbody>
                     @foreach($problems as $item)
                         <tr>
+                            <td>
+                                @if($item->status==4)
+                                    <i class="fa fa-check text-green" aria-hidden="true"></i>
+                                @elseif($item->status==6)
+                                    <i class="fa fa-times text-red" aria-hidden="true"></i>
+                                @endif
+                            </td>
                             <td>{{$item->index}}</td>
                             <td nowrap>
                                 @if(Auth::user()->privilege('contest')||time()>strtotime($contest->start_time))

@@ -14,20 +14,26 @@
 <div class="my-container bg-white pt-2 pb-1">
     <ul class="nav nav-tabs nav-justified">
         <li class="nav-item">
-            <a class="nav-link p-2" href="{{route('contest.home',$contest->id)}}">{{trans('main.Home')}}</a>
+            <a class="nav-link p-2" href="{{route('contest.home',$contest->id)}}">{{trans('main.Overview')}}</a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link p-2" href="{{route('contest.status',$contest->id)}}">{{trans('main.Status')}}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link p-2" href="{{route('contest.rank',$contest->id)}}">{{trans('main.Rank')}}</a>
+            <a class="nav-link p-2" href="{{route('contest.rank',$contest->id)}}">{{trans('main.Rank')}} [ {{$contest->type}} ]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link p-2" href="{{route('contest.notices',$contest->id)}}">
+                {{trans('main.Notification')}}
+                @if(DB::table('contest_notices')->where('contest_id',$contest->id)->max('id')
+                    > (Cookie::get('read_max_notification')?:-1) )
+                    <i class="fa fa-commenting text-red" aria-hidden="true"></i>
+                @endif
+            </a>
         </li>
         <li class="nav-item">
             <a class="nav-link p-2" href="#">{{trans('main.Discussion')}}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link p-2" href="#">{{trans('main.Statistics')}}</a>
         </li>
     </ul>
 </div>

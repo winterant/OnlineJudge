@@ -115,7 +115,7 @@
 
                     <input name="solution[index]" value="{{$problem->index}}" hidden>
                     <input name="solution[cid]" value="{{$contest->id}}" hidden>
-                    <input name="solution[judge_type]" value="{{$contest->judge_type}}" hidden>
+                    <input name="solution[judge_type]" value="{{$contest->type}}" hidden>
 
                     <div class="form-inline my-2">
                         <select name="solution[language]" class="form-control border border-bottom-0 col-4">

@@ -44,6 +44,8 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id'=>'[0-9]+'])->where(
         Route::get('/problem/{pid}', 'Client\ContestController@problem')->name('problem');
         Route::get('/status', 'Client\ContestController@status')->name('status');
         Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->name('cancel_lock');//取消封榜
+        Route::get('/notices', 'Client\ContestController@notices')->name('notices');//公告
+        Route::post('/get_notice', 'Client\ContestController@get_notice')->name('get_notice');//获取一条公告
     });
     Route::any('/password', 'Client\ContestController@password')->middleware(['auth'])->name('password');
     Route::get('/rank', 'Client\ContestController@rank')->name('rank');
