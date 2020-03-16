@@ -21,11 +21,7 @@
             <div class="row mt-2">
                 <div class="col-6 col-sm-2">{{__('main.Solution').': '.$solution->id}}</div>
                 <div class="col-6 col-sm-2">{{__('main.Problem').': '}}
-                    @if($solution->contest_id!=-1)
-                        <a href="{{route('contest.home',$solution->contest_id)}}">contest&nbsp;{{$solution->contest_id}}</a>
-                    @else
-                        <a href="{{route('problem',$solution->problem_id)}}">{{$solution->problem_id}}</a>
-                    @endif
+                    <a href="{{route('problem',$solution->problem_id)}}">{{$solution->problem_id}}</a>
                 </div>
                 <div class="col-6 col-sm-2">{{__('main.User').': '}}<a href="{{route('user',$solution->username)}}">{{$solution->username}}</a></div>
                 <div class="col-6 col-sm-2">{{__('main.Judge Type').': '.$solution->judge_type}}</div>

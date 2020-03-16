@@ -22,7 +22,7 @@ return [
     "User"          => "User",
     "Overview"      => "Overview",
     "Infomation"    => "Infomation",
-    "Statistics"    => "Statistics",
+    "Notification"  => "Notification",
     "Discussion"    => "Discussion",
 
     "Confirm"       => "Confirm",
@@ -80,6 +80,7 @@ return [
 
 
 //    contest
+    "Score"         => "Score",
     "Solved"        => "Solved",
     "Penalty"       => "Penalty",
     "Full screen"   => "Full screen",

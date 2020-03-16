@@ -111,7 +111,7 @@
                         @else
                             若题目需要特判，请勾选此项，并上传特判程序的C/C++源代码文件。
                         @endif
-                        使用前请阅读《<a href="#" target="_blank">特判使用教程</a>》.
+                        使用前请阅读《<a href="https://blog.csdn.net/winter2121/article/details/104901188" target="_blank">特判使用教程</a>》.
                     </div>
                 </div>
 

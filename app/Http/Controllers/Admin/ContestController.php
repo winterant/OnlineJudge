@@ -77,7 +77,7 @@ class ContestController extends Controller
                 $uids=DB::table('users')->whereIn('username',explode(PHP_EOL,$c_users))->pluck('id');
                 DB::table('contest_users')->where('contest_id',$id)->whereNotIn('user_id',$uids)->delete();
                 foreach($uids as &$uid)
-                    DB::table('contest_users')->updateOrInsert(['contest_id'=>$id,'user_id'=>$uid],[]);
+                    DB::table('contest_users')->insertOrIgnore(['contest_id'=>$id,'user_id'=>$uid]);
             }
             if($contest['access']=='password'){
                 DB::table('contest_users')->where('contest_id',$id)->delete();

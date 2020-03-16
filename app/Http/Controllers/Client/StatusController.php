@@ -51,17 +51,18 @@ class StatusController extends Controller
      */
     public function create(Request $request)
     {
+        if(!Auth::check()) //未登录 => 请先登录
+            return view('client.fail',['msg'=>trans('sentence.Please login first')]);
+
         //提交一条solution
-        date_default_timezone_set('PRC'); //设置时区
         $data = $request->input('solution');
 
-
-        if(!Auth::check() && !config('oj.main.guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
-            return view('client.fail',['msg'=>trans('sentence.Please login first')]);
-        $problem=DB::table('problems')->select('hidden')->find($data['pid']);
-        if (Auth::check() && !Auth::user()->privilege(isset($data['cid'])?'contest':'problem') && $problem->hidden==1) //已登录&&不是管理员&&问题隐藏 => 不允许查看
-            return view('client.fail',['msg'=>trans('main.Problem').$problem->id.'：'.trans('main.Hidden')]);
-
+        if(!isset($data['cid'])) //通过题库提交
+        {
+            $hidden=DB::table('problems')->where('id',$data['pid'])->value('hidden');
+            if(!Auth::user()->privilege('problem') && $hidden==1) //不是管理员&&问题隐藏 => 不允许提交
+                return view('client.fail',['msg'=>trans('main.Problem').$data['pid'].'：'.trans('main.Hidden')]);
+        }
 
         if(null!=($file=$request->file('code_file')))//用户提交了文件,从临时文件中直接提取文本
             $data['code']=file_get_contents($file->getRealPath());
