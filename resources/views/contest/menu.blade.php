@@ -27,14 +27,16 @@
             <a class="nav-link p-2" href="{{route('contest.notices',$contest->id)}}">
                 {{trans('main.Notification')}}
                 @if(DB::table('contest_notices')->where('contest_id',$contest->id)->max('id')
-                    > (Cookie::get('read_max_notification')?:-1) )
+                    > (Cookie::get('read_max_notification_'.$contest->id)?:-1) )
                     <i class="fa fa-commenting text-red" aria-hidden="true"></i>
                 @endif
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link p-2" href="#">{{trans('main.Discussion')}}</a>
-        </li>
+        @if(Auth::user()->privilege('balloon'))
+            <li class="nav-item">
+                <a class="nav-link p-2" href="{{route('contest.balloons',$contest->id)}}">{{trans('main.Balloon')}}</a>
+            </li>
+        @endif
     </ul>
 </div>
 

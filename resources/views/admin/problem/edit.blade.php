@@ -115,10 +115,6 @@
                     </div>
                 </div>
 
-                <div class="form-group m-2 p-2 alert-success">
-                    请在添加完题目后，前往 题目管理->测试数据管理 上传测试数据!
-                </div>
-
                 <div class="form-group m-4 text-center">
                     <button type="submit" class="btn-lg btn-success">提交</button>
                 </div>
