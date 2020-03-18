@@ -122,13 +122,14 @@ class ContestController extends Controller
             ->select(['solutions.id','index','user_id','username','nick','result','time','memory','language','submit_time'])
             ->where('solutions.contest_id',$id)
             ->where('contest_problems.contest_id',$id)
-            ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('problem_id',$_GET['pid']);})
+            ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('index',$_GET['pid']);})
             ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username',$_GET['username']);})
-            ->when(isset($_GET['result'])&&$_GET['result']!='',function ($q){return $q->where('result',$_GET['result']);})
-            ->when(isset($_GET['language'])&&$_GET['language']!='',function ($q){return $q->where('language',$_GET['language']);})
+            ->when(isset($_GET['result'])&&$_GET['result']!='-1',function ($q){return $q->where('result',$_GET['result']);})
+            ->when(isset($_GET['language'])&&$_GET['language']!='-1',function ($q){return $q->where('language',$_GET['language']);})
             ->orderByDesc('solutions.id')
             ->paginate(10);
 
+//        dd($solutions);
         return view('contest.status',compact('contest','solutions'));
     }
 
@@ -298,21 +299,82 @@ class ContestController extends Controller
 
 
     public function notices($id){
-        $read_max_notice=Cookie::get('read_max_notification')?:-1;
+        $read_max_notice=Cookie::get('read_max_notification_'.$id)?:-1;
         $notices=DB::table('contest_notices')
             ->where('contest_id',$id)
             ->orderByDesc('id')
             ->get();
         if($notices[0]->id > $read_max_notice)
-            Cookie::queue('read_max_notification',$notices[0]->id); //保存榜单是否全屏
-//        dd($notices[0]->id , $read_max_notice, Cookie::get('read_max_notification'));
+            Cookie::queue('read_max_notification_'.$id,$notices[0]->id); //cookie保存已查看的通知最大编号
         $contest=DB::table('contests')->find($id);
         return view('contest.notices',compact('contest','notices'));
     }
 
     public function get_notice(Request $request,$id){
+        //post
         $notice=DB::table('contest_notices')->select(['title','content','created_at'])->find($request->input('nid'));
         return json_encode($notice);
     }
 
+    public function edit_notice(Request $request,$id){
+        //post
+        $notice=$request->input('notice');
+        if($notice['id']==null){
+            //new
+            $notice['contest_id']=$id;
+            DB::table('contest_notices')->insert($notice);
+        }
+        else{
+            //update
+            DB::table('contest_notices')->where('id',$notice['id'])->update($notice);
+        }
+        return back();
+    }
+    public function delete_notice($id,$nid){
+        //post
+        DB::table('contest_notices')->where('id',$nid)->delete();
+        return back();
+    }
+
+
+
+
+    public function balloons($id){
+        $contest=DB::table('contests')->find($id);
+
+        //扫描新增AC记录，添加到气球队列
+        $max_added_sid=DB::table('contest_balloons')
+            ->join('solutions','solutions.id','=','solution_id')
+            ->where('contest_id',$id)->max('solution_id');
+        $new_sids=DB::table('solutions')
+            ->where('contest_id',$id)
+            ->where('result',4)
+            ->where('id','>',$max_added_sid)
+            ->pluck('id');
+        $format_sids=[];
+        foreach ($new_sids as $item)
+            $format_sids[]=['solution_id'=>$item];
+        DB::table('contest_balloons')->insert($format_sids);
+
+        //读取气球队列
+        $balloons=DB::table('contest_balloons')
+            ->join('solutions','solutions.id','=','solution_id')
+            ->join('contest_problems','solutions.problem_id','=','contest_problems.problem_id')
+            ->leftJoin('users','solutions.user_id','=','users.id')
+            ->select(['contest_balloons.id','solution_id','username','index','sent','send_time'])
+            ->where('solutions.contest_id',$id)
+            ->where('contest_problems.contest_id',$id)
+            ->orderBy('sent')
+            ->orderByDesc('send_time')
+            ->orderBy('contest_balloons.id')
+            ->paginate(10);
+
+        return view('contest.balloons',compact('contest','balloons'));
+    }
+
+    public function deliver_ball($id,$bid){
+        //送一个气球，更新一条气球记录
+        DB::table('contest_balloons')->where('id',$bid)->update(['sent'=>1,'send_time'=>date('Y-m-d H:i:s')]);
+        return back();
+    }
 }

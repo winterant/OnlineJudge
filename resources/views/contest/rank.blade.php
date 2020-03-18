@@ -33,10 +33,10 @@
                         {{trans('sentence.rank_end_time',['time'=>$lock_time])}}
 
                         @if(Auth::check() && Auth::user()->privilege('contest')) {{-- 管理员可以取消封榜 --}}
-                            <a href="javascript:" onclick="$('#form_cl').submit()" class="ml-2">{{trans('main.Cancel')}}</a>
-                            <form id="form_cl" action="{{route('contest.cancel_lock',$contest->id)}}" method="post"
+                            <form class="d-inline" action="{{route('contest.cancel_lock',$contest->id)}}" method="post"
                                   onsubmit="return confirm('当前处于封榜状态，确认开放榜单？')" hidden>
                                 @csrf
+                                <button class="btn btn-sm btn-warning">{{trans('main.Cancel')}}</button>
                             </form>
                         @endif
                     </div>

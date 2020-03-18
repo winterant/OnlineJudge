@@ -25,7 +25,52 @@
         </div>
 
         <div class="my-container bg-white">
-            我的提交记录（等待完善）user: {{$user->username}}
+            <div class="table-responsive">
+                <table class="table table-sm mb-0 col-12 col-md-3">
+                    <tbody>
+                        <tr>
+                            <td class="border-top-0 text-left">{{__('main.Opened Problems')}}</td>
+                            <td class="border-top-0">{{$opened}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-top-0 text-left">{{__('main.Submissions')}}</td>
+                            <td class="border-top-0">{{$submissions}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-top-0 text-left">{{__('main.Accepted')}}</td>
+                            <td class="border-top-0">{{$results[4]}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-top-0 text-left">{{__('main.Solved')}}</td>
+                            <td class="border-top-0">{{$solved}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <hr>
+            <div>
+                <h6 class="text-center">{{__('main.Attempting')}} {{__('main.Problems')}}</h6>
+                <div>
+                    @foreach($submit as $item)
+                        @if($item->ac==0)
+                            <a href="{{route('problem',$item->problem_id)}}">{{$item->problem_id}}</a>
+                            <font class="text-danger" style="font-size: 0.7rem">{{$item->ac}}/{{$item->sum}}</font>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h6 class="text-center">{{__('main.Solved')}} {{__('main.Problems')}}</h6>
+                <div>
+                    @foreach($submit as $item)
+                        @if($item->ac)
+                            <a href="{{route('problem',$item->problem_id)}}">{{$item->problem_id}}</a>
+                            <font class="text-danger" style="font-size: 0.7rem">{{$item->ac}}/{{$item->sum}}</font>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
         </div>
     </div>
 

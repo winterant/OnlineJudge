@@ -16,8 +16,8 @@ class Privilege
      */
     public function handle($request, Closure $next,$role,$page=null)
     {
-        if($page==null)$page='admin'; //默认是后台页面的fail
-        if(!Auth::user()->privilege($role))
+        if($page==null)$page='admin'; //默认是后台的fail页面
+        if(!Auth::check() || !Auth::user()->privilege($role))
             return response()->view($page.'.fail',['msg'=>'权限不足！']);
         return $next($request);
     }

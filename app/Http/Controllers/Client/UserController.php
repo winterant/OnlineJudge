@@ -15,7 +15,46 @@ class UserController extends Controller
         $user=DB::table('users')->where('username',$username)->first();
         if($user==null)
             return view('client.fail',['msg'=>trans('sentence.User not found',['un'=>$username])]);
-        return view('client.user',compact('user'));
+
+        $opened=DB::table('solutions')
+            ->leftJoin('users','user_id','=','users.id')
+            ->where('username',$username)
+            ->distinct()
+            ->count('problem_id');
+
+        $submissions=DB::table('solutions')
+            ->leftJoin('users','user_id','=','users.id')
+            ->where('username',$username)
+            ->count();
+
+        $group_results=DB::table('solutions')
+            ->leftJoin('users','user_id','=','users.id')
+            ->where('username',$username)
+            ->select('result',DB::raw('COUNT(*) as num'))
+            ->groupBy('result')
+            ->get();
+        foreach($group_results as $item)
+            $results[$item->result]=$item->num;
+
+        $solved=DB::table('solutions')
+            ->leftJoin('users','user_id','=','users.id')
+            ->where('username',$username)
+            ->where('result',4)
+            ->distinct()
+            ->count('problem_id');
+
+        $submit=DB::table('solutions as A')
+            ->leftJoin('users','user_id','=','users.id')
+            ->select('problem_id',
+                //此处查询AC数目，效率较低
+                DB::raw('(select count(*) from solutions join users on user_id=users.id 
+                    where username=\''.$username.'\' and problem_id=A.problem_id and result=4) as ac'),
+                DB::raw('COUNT(*) as sum'))
+            ->where('username',$username)
+            ->groupBy('problem_id')
+            ->get();
+
+        return view('client.user',compact('user','opened','submissions','results','solved','submit'));
     }
 
     public function user_edit(Request $request,$username){

@@ -1,5 +1,8 @@
 <?php
 return [
+    "Yes"           => "Yes",
+    "No"            => "No",
+
     //home.blade
     "Notice Board"  => "Notice Board",
     "To Top"        => "To Top",
@@ -8,6 +11,7 @@ return [
     "Last Week Ranking" => "Last Week Ranking",
 
 
+    "Id"            => "Id",
     "Home"          => "Home",
     "Problems"      => "Problems",
     "Problem"       => "Problem",
@@ -42,6 +46,12 @@ return [
     "School"        => "School",
     "Class"         => "Class",
     "From"          => "From",
+
+    "Opened Problems" => "Opened Problems",
+    "Submissions"   => "Submissions",
+    "Accepted"      => "Accepted",
+    "Attempting"    => "Attempting",
+
 
     "Title"         => "Title",
     "Source"        => "Source",
@@ -88,8 +98,18 @@ return [
     "Waiting"       => "Waiting",
     "Running"       => "Running",
     "Ended"         => "Ended",
+    "Balloon"       => "Balloon",
+    "Delivery"      => "Delivery",
+    "Color"         => "Color",
+    "Done"          => "Done",
+    "Waiting for delivery" => "Waiting for delivery",
+    "Delivered"     => "Delivered",
+
 
     "ACM"           => "ACM",
     "OI"            => "OI",
     "EXAM"          => "EXAM",
+
+    "New Notice"    => "New Notification",
+    "Content"       => "Content"
 ];
