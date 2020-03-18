@@ -31,7 +31,7 @@
                             <th>
                                 <div class="form-group m-0 p-0 bmd-form-group">
                                     <input type="text" class="form-control text-center" placeholder="Problem"
-                                           name="pid" value="{{isset($_GET['index'])?$_GET['index']:''}}">
+                                           name="index" value="{{isset($_GET['index'])?$_GET['index']:''}}">
                                 </div>
                             </th>
                             <th>
