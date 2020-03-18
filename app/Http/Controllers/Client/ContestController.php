@@ -366,7 +366,7 @@ class ContestController extends Controller
             ->orderBy('sent')
             ->orderByDesc('send_time')
             ->orderBy('contest_balloons.id')
-            ->paginate(10);
+            ->paginate();
 
         return view('contest.balloons',compact('contest','balloons'));
     }
