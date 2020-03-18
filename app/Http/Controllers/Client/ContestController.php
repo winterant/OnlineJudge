@@ -122,14 +122,13 @@ class ContestController extends Controller
             ->select(['solutions.id','index','user_id','username','nick','result','time','memory','language','submit_time'])
             ->where('solutions.contest_id',$id)
             ->where('contest_problems.contest_id',$id)
-            ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('index',$_GET['pid']);})
+            ->when(isset($_GET['index'])&&$_GET['index']!='',function ($q){return $q->where('index',$_GET['index']);})
             ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username',$_GET['username']);})
             ->when(isset($_GET['result'])&&$_GET['result']!='-1',function ($q){return $q->where('result',$_GET['result']);})
             ->when(isset($_GET['language'])&&$_GET['language']!='-1',function ($q){return $q->where('language',$_GET['language']);})
             ->orderByDesc('solutions.id')
             ->paginate(10);
 
-//        dd($solutions);
         return view('contest.status',compact('contest','solutions'));
     }
 
@@ -304,8 +303,8 @@ class ContestController extends Controller
             ->where('contest_id',$id)
             ->orderByDesc('id')
             ->get();
-        if($notices[0]->id > $read_max_notice)
-            Cookie::queue('read_max_notification_'.$id,$notices[0]->id); //cookie保存已查看的通知最大编号
+        if(isset($notices[0]->id)?:-1 > $read_max_notice)
+            Cookie::queue('read_max_notification_'.$id,$notices[0]->id); //cookie更新已查看的通知最大编号
         $contest=DB::table('contests')->find($id);
         return view('contest.notices',compact('contest','notices'));
     }

@@ -14,7 +14,7 @@
         <div class="col-12">
             <div class="my-container bg-white">
 
-                <h3 class="text-center">{{$contest->id}}. {{$contest->title}}</h3>
+                <h4 class="text-center">{{$contest->id}}. {{$contest->title}}</h4>
                 <hr class="mt-0">
                 @if(Auth::user()->privilege('contest'))
                     <button class="btn btn-info" data-toggle="modal" data-target="#edit_notice"
@@ -52,6 +52,11 @@
                     @endforeach
                     </tbody>
                 </table>
+
+                @if(count($notices)==0)
+                    <p class="text-center">{{__('sentence.No data')}}</p>
+                @endif
+
                 {{--    模态框,显示公告内容 --}}
                 <div class="modal fade" id="myModal">
                     <div class="modal-dialog modal-lg">
