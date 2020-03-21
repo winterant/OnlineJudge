@@ -34,13 +34,13 @@
                                 <a href="javascript:" onclick="get_notice({{$item->id}})" data-toggle="modal" data-target="#myModal">{{$item->title}}</a>
                                 @if(Auth::user()->privilege('contest'))
                                     <div class="float-right">
-                                        <a href="javascript:" class="pl-3 text-sky" data-toggle="modal"
+                                        <a href="javascript:" class="text-sky" data-toggle="modal"
                                            onclick="edit_notice({{$item->id}})" data-target="#edit_notice">
                                             <i class="fa fa-edit" aria-hidden="true"></i>
                                         </a>
                                         <form class="d-inline" method="post" action="{{route('contest.delete_notice',[$contest->id,$item->id])}}">
                                             @csrf
-                                            <a href="javascript:" onclick="$(this).parent().submit()" class="pl-1 text-sky">
+                                            <a href="javascript:" onclick="$(this).parent().submit()" class="ml-2 text-sky">
                                                 <i class="fa fa-trash" aria-hidden="true"></i>
                                             </a>
                                         </form>

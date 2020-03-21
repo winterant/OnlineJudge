@@ -245,8 +245,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link border-top" href="#">
-                        <i class="fa fa-cogs fa-lg" aria-hidden="true"></i> 预留系统配置(慎改)
+                    <a class="nav-link border-top" href="{{route('admin.settings')}}">
+                        <i class="fa fa-cogs fa-lg" aria-hidden="true"></i> 系统配置
                     </a>
                 </li>
 

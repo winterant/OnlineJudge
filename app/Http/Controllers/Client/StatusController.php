@@ -67,6 +67,10 @@ class StatusController extends Controller
         if(null!=($file=$request->file('code_file')))//用户提交了文件,从临时文件中直接提取文本
             $data['code']=file_get_contents($file->getRealPath());
 
+        //竞赛提交&&不允许提交的代码语言
+        if(isset($data['cid']) && !((1<<$data['language'])&DB::table('contests')->find($data['cid'])->allow_lang) )
+            return view('client.fail',['msg'=>'A not allowed language!']);
+
         DB::table('solutions')->insert([
             'problem_id'    => $data['pid'],
             'contest_id'    => isset($data['cid'])?$data['cid']:-1,
@@ -81,6 +85,7 @@ class StatusController extends Controller
             'code_length'   => strlen($data['code']),
             'code'          => $data['code'],
             ]);
+
         Cookie::queue('submit_language',$data['language']);
         if(isset($data['cid'])) //竞赛提交
             return redirect(route('contest.status',[$data['cid'],'index'=>$data['index'],'username'=>Auth::user()->username]));

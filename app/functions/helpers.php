@@ -24,32 +24,6 @@ function modifyEnv(array $data)
 }
 
 
-
-/**
- * @param array $arr
- * @param string $configName 相对于/config/
- * @function 将数组以php格式写入配置文件
- */
-function arrayToConfig(array $arr,string $configName){
-    $text="<?php\n\n"."return"." [\n";
-    foreach ($arr as $key=>$value){
-        if(is_numeric($key))
-            $text.="\t".$key."\t=> ";
-        else //is string
-            $text.="\t\"".$key."\"\t=> ";
-
-        if (is_string($value))
-            $text.="\"".$value."\",\n";
-        else if(is_numeric($value))
-            $text.=$value.",\n";
-        else if(is_bool($value))
-            $text.=($value?"true":"false").",\n";
-    }
-    $text.="];";
-    file_put_contents(base_path('config/'.$configName),$text);
-}
-
-
 /**
  * @param $problem_id
  * @return array  返回二维数组，第一维[sample0,sample1,...]，第二维[in,out]
