@@ -120,7 +120,9 @@
                     <div class="form-inline my-2">
                         <select name="solution[language]" class="form-control border border-bottom-0 col-4">
                             @foreach(config('oj.lang') as $key=>$res)
-                                <option value="{{$key}}" {{Cookie::get('submit_language')==$key?'selected':''}}>{{$res}}</option>
+                                @if((1<<$key)&$contest->allow_lang)
+                                    <option value="{{$key}}" {{Cookie::get('submit_language')==$key?'selected':''}}>{{$res}}</option>
+                                @endif
                             @endforeach
                         </select>
                         <div class="col-4">

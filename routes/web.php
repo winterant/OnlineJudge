@@ -109,4 +109,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::post('/delete/file/{id}','Admin\ContestController@delete_file')->name('delete_file');
         Route::post('/update/hidden','Admin\ContestController@update_hidden')->name('update_hidden');
     });
+
+//    setting
+    Route::any('/settings','Admin\SettingController@settings')->middleware(['Privilege:admin'])->name('settings');
 });

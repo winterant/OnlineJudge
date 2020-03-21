@@ -340,7 +340,6 @@ class ContestController extends Controller
 
     public function balloons($id){
         $contest=DB::table('contests')->find($id);
-
         //扫描新增AC记录，添加到气球队列
         $max_added_sid=DB::table('contest_balloons')
             ->join('solutions','solutions.id','=','solution_id')
@@ -348,7 +347,7 @@ class ContestController extends Controller
         $new_sids=DB::table('solutions')
             ->where('contest_id',$id)
             ->where('result',4)
-            ->where('id','>',$max_added_sid)
+            ->where('id','>',$max_added_sid?:0)
             ->pluck('id');
         $format_sids=[];
         foreach ($new_sids as $item)

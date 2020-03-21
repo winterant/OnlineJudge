@@ -20,10 +20,12 @@
                     <select name="contest[type]" class="form-control">
                         <option value="acm" {{isset($contest)&&$contest->type=='acm'?'selected':''}}>acm：icpc程序设计竞赛规则</option>
                         <option value="oi" {{isset($contest)&&$contest->type=='oi'?'selected':''}}>oi：信息学竞赛规则</option>
+                        <option value="exam" {{isset($contest)&&$contest->type=='exam'?'selected':''}}>exam：考试</option>
                     </select>
                     <a href="javascript:" class="ml-1" style="color: #838383"
                        onclick="whatisthis('icpc规则：对于每题，通过时间累加为罚时，通过前的每次错误提交罚时20分钟；' +
-                            'oi规则：对于每题，满分100分，错误提交没有惩罚；')">
+                            'oi规则：对于每题，满分100分，错误提交没有惩罚；' +
+                            'exam规则：适用于班级考试，可设置选择题/填空题/编程题，可设置每题分数；')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                 </label>
@@ -35,14 +37,30 @@
             </div>
 
             <div class="form-group">
-                <div class="pull-left">题目列表：</div>
-                <label class="">
+                <div class="pull-left">程序设计题号列表：</div>
+                <label>
                     <textarea name="problems" class="form-control-plaintext border bg-white"
                           autoHeight cols="26" placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间"
                         >@foreach(isset($pids)?$pids:[] as $item){{$item}}&#13;&#10;@endforeach</textarea>
                 </label>
                 <a href="javascript:" class="text-gray" style="vertical-align: top"
                    onclick="whatisthis('填写方法：每行一个题号（如1024），或每行一个区间（如1024-1036）')">
+                    <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
+                </a>
+            </div>
+
+            <div class="form-group">
+                <div class="pull-left">允许考生提交语言：</div>
+                <label>
+                    <input id="input_allow_lang" type="number" name="contest[allow_lang]" hidden>
+                    <select name="allow_lang" class="form-control" multiple onchange="allow_lang_changed()">
+                        @foreach(config('oj.lang') as $key=>$res)
+                            <option value="{{$key}}" selected>{{$res}}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <a href="javascript:" class="text-gray" style="vertical-align: top"
+                   onclick="whatisthis('允许考生提交的代码语言，默认全选。请按住Ctrl键，点击鼠标左键以选择多项。')">
                     <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
                 </a>
             </div>
@@ -126,6 +144,8 @@
     <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script>
     <script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
     <script type="text/javascript">
+
+        //监听竞赛类型改变
         function type_has_change(type) {
             if(type==='public'){
                 $("#type_password").hide();
@@ -139,6 +159,15 @@
             }
         }
         type_has_change('{{isset($contest)?$contest->access:'public'}}');  //初始执行一次
+
+
+        //监听提交语言的多选框
+        function allow_lang_changed() {
+            var ret=0;
+            $("select[name=allow_lang]").find('option:selected').each(function() {ret|=1<<this.value;});
+            $("#input_allow_lang").val(ret);
+        }
+        allow_lang_changed(); //初始执行一次
 
 
         //删除附件
