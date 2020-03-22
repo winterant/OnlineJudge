@@ -72,7 +72,13 @@
                     <tbody>
                     @foreach($solutions as $sol)
                         <tr>
-                            <td>{{$sol->id}}</td>
+                            <td>
+                                @if(Auth::check() && (Auth::user()->privilege('view_solution') || Auth::id()==$sol->user_id) )
+                                    <a href="{{route('solution',$sol->id)}}" target="_blank">{{$sol->id}}</a>
+                                @else
+                                    {{$sol->id}}
+                                @endif
+                            </td>
                             <td><a href="{{route('contest.problem',[$contest->id,$sol->index])}}">{{$sol->index}}</a></td>
                             <td nowrap>
                                 <a href="{{route('user',$sol->username)}}" target="_blank">{{$sol->username}}</a>
@@ -81,13 +87,7 @@
                             <td nowrap class="{{config('oj.resColor.'.$sol->result)}}">{{config('oj.result.'.$sol->result)}}</td>
                             <td>{{$sol->time}}ms</td>
                             <td>{{round($sol->memory,2)}}MB</td>
-                            <td>
-                                @if(Auth::check() && (Auth::user()->privilege('view_solution') || Auth::id()==$sol->user_id) )
-                                    <a href="{{route('solution',$sol->id)}}" target="_blank">{{config('oj.lang.'.$sol->language)}}</a>
-                                @else
-                                    {{config('oj.lang.'.$sol->language)}}
-                                @endif
-                            </td>
+                            <td>{{config('oj.lang.'.$sol->language)}}</td>
                             <td nowrap>{{$sol->submit_time}}</td>
                         </tr>
                     @endforeach

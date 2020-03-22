@@ -14,7 +14,7 @@ Ludong University Online Judge
   + 首页；公告/新闻，本周榜，上周榜
   + 状态；用户提交记录与判题结果
   + 问题；题库
-  + 竞赛；竞赛列表
+  + 竞赛；题目，排名，公告栏，气球派送
   + 排名；用户解题排行榜，可按年/月/周/日查询
   
   后台功能概览
@@ -64,7 +64,7 @@ Ludong University Online Judge
   建议更新前进行一次备份，以免数据丢失。
   ```
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_temp
-  cp /home/LDUOnlineJudge/install/ubuntu16.04/update.sh /home/
+  cp /home/lduoj_temp/install/ubuntu16.04/update.sh /home/
   bash /home/update.sh
   ```
 

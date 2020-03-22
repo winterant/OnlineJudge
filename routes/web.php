@@ -93,6 +93,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::any('/update/{id}','Admin\ProblemController@update')->name('update_withId');
         Route::post('/upload/image','Admin\ProblemController@upload_image')->name('upload_image');
         Route::post('/update/hidden','Admin\ProblemController@update_hidden')->name('update_hidden');
+
+        Route::get('/test_data','Admin\ProblemController@test_data')->name('test_data');
+
         Route::any('/rejudge','Admin\ProblemController@rejudge')->name('rejudge');
         Route::get('/import_export','Admin\ProblemController@import_export')->name('import_export');
         Route::post('/import','Admin\ProblemController@import')->name('import');

@@ -16,6 +16,10 @@
                     <i class="fa fa-times fa-lg" aria-hidden="true"></i>
                 @endif
                 &nbsp;{{config('oj.result.'.$solution->result)}}
+
+                @if($solution->judge_type!='acm')
+                    ( {{$solution->pass_rate*100}}% )
+                @endif
             </div>
 
             <div class="row mt-2">
