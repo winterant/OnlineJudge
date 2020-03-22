@@ -2,6 +2,7 @@
 return [
 
     "Whats this"     => "What\'s this?",
+    "delete"         => "Are you sure to delete it?",
 
     "No data"           => "No data!",
     "Permission denied" => "Permission denied",

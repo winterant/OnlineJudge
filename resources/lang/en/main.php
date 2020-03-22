@@ -31,6 +31,7 @@ return [
 
     "Confirm"       => "Confirm",
     "Cancel"        => "Cancel",
+    "Delete"        => "Delete",
     "Register"      => "Register",
     "Login"         => "Login",
     "Logout"         => "Logout",

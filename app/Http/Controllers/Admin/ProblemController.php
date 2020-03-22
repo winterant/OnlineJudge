@@ -102,20 +102,52 @@ class ProblemController extends Controller
 
     //测试数据管理
     public function test_data(){
-        if(!isset($_GET['pid']))
-            $_GET['pid']=1000;
         //读取数据文件
-        $dir='data/'.$_GET['pid'].'/test'; //以page表示题号
         $tests=[];
-        foreach (Storage::allFiles($dir) as $filepath){
-            $name=pathinfo($filepath,PATHINFO_FILENAME);  //文件名
-            $ext=pathinfo($filepath,PATHINFO_EXTENSION);    //拓展名
-            if($ext=='in')$tests[]=$name.'.in';
-            if($ext=='out')$tests[]=$name.'.out';
+        if(isset($_GET['pid'])){
+            foreach (Storage::allFiles('data/'.$_GET['pid'].'/test') as $filepath){
+                $name=pathinfo($filepath,PATHINFO_FILENAME);  //文件名
+                $ext=pathinfo($filepath,PATHINFO_EXTENSION);    //拓展名
+                $tests[]=['index'=>$name,'filename'=>$name.'.'.$ext, 'size'=>Storage::size($filepath)];
+            }
         }
+        uasort($tests,function ($x,$y){
+            return $x['index']>$y['index'];
+        });
         return view('admin.problem.test_data',compact('tests'));
     }
 
+    public function upload_data(Request $request){
+        $pid=$request->input('pid');
+        $files=$request->file('files')?:[];
+        foreach ($files as $file) {     //保存文件
+            $file->move(storage_path('app/data/'.$pid.'/test'),$file->getClientOriginalName());//保存附件
+        }
+        return back();
+    }
+
+    public function get_data(Request $request){
+        $pid=$request->input('pid');
+        $filename=$request->input('filename');
+        $data=Storage::get('data/'.$pid.'/test/'.$filename);
+        return json_encode($data);
+    }
+
+    public function update_data(Request $request){
+        $pid=$request->input('pid');
+        $filename=$request->input('filename');
+        $content=$request->input('content');
+        Storage::put('data/'.$pid.'/test/'.$filename,$content);
+        return back();
+    }
+
+    public function delete_data(Request $request){
+        $pid=$request->input('pid');
+        $fnames=$request->input('fnames');
+        foreach ($fnames as $filename)
+            Storage::delete('data/'.$pid.'/test/'.$filename);
+        return back();
+    }
 
 
     //重判题目|竞赛|提交记录

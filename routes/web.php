@@ -95,6 +95,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::post('/update/hidden','Admin\ProblemController@update_hidden')->name('update_hidden');
 
         Route::get('/test_data','Admin\ProblemController@test_data')->name('test_data');
+        Route::post('/upload/data','Admin\ProblemController@upload_data')->name('upload_data');
+        Route::post('/get_data','Admin\ProblemController@get_data')->name('get_data');
+        Route::post('/update/data','Admin\ProblemController@update_data')->name('update_data');
+        Route::post('/delete/data','Admin\ProblemController@delete_data')->name('delete_data');
 
         Route::any('/rejudge','Admin\ProblemController@rejudge')->name('rejudge');
         Route::get('/import_export','Admin\ProblemController@import_export')->name('import_export');

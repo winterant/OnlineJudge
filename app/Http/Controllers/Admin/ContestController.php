@@ -102,8 +102,15 @@ class ContestController extends Controller
     public function delete(Request $request){
         $cids=$request->input('cids')?:[];
         if (Auth::user()->privilege('admin')) //超管，直接进行
-            return DB::table('contests')->whereIn('id',$cids)->delete();
-        return DB::table('contests')->whereIn('id',$cids)->where('user_id',Auth::id())->delete();//创建者
+            $ret=DB::table('contests')->whereIn('id',$cids)->delete();
+        else
+            $ret=DB::table('contests')->whereIn('id',$cids)->where('user_id',Auth::id())->delete();//创建者
+        if($ret>0){
+            foreach ($cids as $cid) {
+                Storage::deleteDirectory('public/contest/files/'.$cid); //删除附件
+            }
+        }
+        return $ret;
     }
 
     public function delete_file(Request $request,$id){  //$id:竞赛id
