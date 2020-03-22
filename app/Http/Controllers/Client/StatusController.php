@@ -36,7 +36,7 @@ class StatusController extends Controller
 
         $solution=DB::table('solutions')
             ->join('users','solutions.user_id','=','users.id')
-            ->select(['solutions.id','problem_id','contest_id','user_id','username','result','time','memory',
+            ->select(['solutions.id','problem_id','contest_id','user_id','username','result','pass_rate','time','memory',
                 'judge_type','submit_time','judge_time','code','code_length','language','error_info'])
             ->where('solutions.id',$id)->first();
         if(!Auth::user()->privilege('solution')&&Auth::id()!=$solution->user_id)

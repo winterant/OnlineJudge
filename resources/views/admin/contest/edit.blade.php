@@ -23,9 +23,9 @@
                         <option value="exam" {{isset($contest)&&$contest->type=='exam'?'selected':''}}>exam：考试</option>
                     </select>
                     <a href="javascript:" class="ml-1" style="color: #838383"
-                       onclick="whatisthis('icpc规则：对于每题，通过时间累加为罚时，通过前的每次错误提交罚时20分钟；' +
-                            'oi规则：对于每题，满分100分，错误提交没有惩罚；' +
-                            'exam规则：适用于班级考试，可设置选择题/填空题/编程题，可设置每题分数；')">
+                       onclick="whatisthis('icpc规则：<br>对于每题，通过时间累加为罚时，通过前的每次错误提交罚时20分钟；<br><br>' +
+                            'oi规则：<br>对于每题，满分100分，错误提交没有惩罚；<br><br>' +
+                            'exam规则：<br>适用于班级考试，可设置选择题/填空题/编程题，可设置每题分数；')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                 </label>
@@ -44,7 +44,7 @@
                         >@foreach(isset($pids)?$pids:[] as $item){{$item}}&#13;&#10;@endforeach</textarea>
                 </label>
                 <a href="javascript:" class="text-gray" style="vertical-align: top"
-                   onclick="whatisthis('填写方法：每行一个题号（如1024），或每行一个区间（如1024-1036）')">
+                   onclick="whatisthis('填写方法：<br>每行一个题号（如1024），或每行一个区间（如1024-1036）')">
                     <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
                 </a>
             </div>
@@ -60,7 +60,7 @@
                     </select>
                 </label>
                 <a href="javascript:" class="text-gray" style="vertical-align: top"
-                   onclick="whatisthis('允许考生提交的代码语言，默认全选。请按住Ctrl键，点击鼠标左键以选择多项。')">
+                   onclick="whatisthis('允许考生提交的代码语言，默认全选。<br>请按住Ctrl键，点击鼠标左键以选择多项。')">
                     <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
                 </a>
             </div>
@@ -83,7 +83,7 @@
                     <input type="number" step="0.01" max="1" min="0" name="contest[lock_rate]"
                            value="{{isset($contest)?$contest->lock_rate:0}}" class="form-control">
                     <a href="javascript:" class="ml-1" style="color: #838383"
-                       onclick="whatisthis('比赛时长×封榜比例=比赛结尾封榜时间；数值范围0.0~1.0')">
+                       onclick="whatisthis('比赛时长×封榜比例=比赛结尾封榜时间；<br>数值范围0.0~1.0')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                 </label>

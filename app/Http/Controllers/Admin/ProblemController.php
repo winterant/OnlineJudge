@@ -99,6 +99,25 @@ class ProblemController extends Controller
         return 0;
     }
 
+
+    //测试数据管理
+    public function test_data(){
+        if(!isset($_GET['pid']))
+            $_GET['pid']=1000;
+        //读取数据文件
+        $dir='data/'.$_GET['pid'].'/test'; //以page表示题号
+        $tests=[];
+        foreach (Storage::allFiles($dir) as $filepath){
+            $name=pathinfo($filepath,PATHINFO_FILENAME);  //文件名
+            $ext=pathinfo($filepath,PATHINFO_EXTENSION);    //拓展名
+            if($ext=='in')$tests[]=$name.'.in';
+            if($ext=='out')$tests[]=$name.'.out';
+        }
+        return view('admin.problem.test_data',compact('tests'));
+    }
+
+
+
     //重判题目|竞赛|提交记录
     public function rejudge(Request $request){
 
@@ -189,14 +208,13 @@ class ProblemController extends Controller
             foreach ($test_outputs as $i=>$out){
                 Storage::put(sprintf('data/%d/test/%d.out',$pid,$i),$out);
             }
-            if($node->spj) save_problem_spj($pid,$node->spj); //保存特判
+            if($node->spj){
+                //保存特判
+                save_problem_spj($pid,$node->spj);
+            }
             foreach($node->solution as $solu){
-                switch (strtolower($solu->attributes()->language)){
-                    case 'c'   : $lang=0; break;
-                    case 'c++' : $lang=1; break;
-                    case 'java': $lang=2; break;
-                }
-                if(isset($lang)){
+                $lang=array_search($solu->attributes()->language,include config_path('oj/lang.php'));
+                if($lang!==false){
                     DB::table('solutions')->insert([
                         'problem_id'    => $pid,
                         'contest_id'    => -1,

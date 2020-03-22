@@ -1,6 +1,8 @@
 <?php
 return [
 
+    "Whats this"     => "What\'s this?",
+
     "No data"           => "No data!",
     "Permission denied" => "Permission denied",
     "Operation failed"  => "Operation failed",

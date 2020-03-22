@@ -31,7 +31,6 @@ function modifyEnv(array $data)
  */
 function read_problem_samples($problem_id){
     $dir='data/'.$problem_id.'/sample';
-    $samples=[];
     foreach (Storage::allFiles($dir) as $filepath){
         $name=pathinfo($filepath,PATHINFO_FILENAME);  //文件名
         $ext=pathinfo($filepath,PATHINFO_EXTENSION);    //拓展名
@@ -39,11 +38,12 @@ function read_problem_samples($problem_id){
         if($ext==='in')$flag[$name]++;
         if($ext==='out')$flag[$name]++;
     }
+    $samples=[];
     foreach (isset($flag)?$flag:[] as $key=>$val){  //in和out都有的，读取
         if($val==2){
             $in =Storage::get($dir.'/'.$key.'.in');
             $out=Storage::get($dir.'/'.$key.'.out');
-            array_push($samples,[$in,$out]);
+            $samples[]=[$in,$out];
         }
     }
     return $samples;

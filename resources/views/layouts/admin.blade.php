@@ -217,6 +217,10 @@
                                 <i class="fa fa-edit" aria-hidden="true"></i> 修改程序设计题</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link border-top" href="{{route('admin.problem.test_data')}}">
+                                <i class="fa fa-file-text" aria-hidden="true"></i> 测试数据管理</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link border-top" href="{{route('admin.problem.rejudge')}}">
                                 <i class="fa fa-recycle" aria-hidden="true"></i> 重判提交记录</a>
                         </li>
@@ -258,19 +262,13 @@
     <main class="col-12 col-sm-12 col-md-10  ml-auto">
 
         @yield('content')
-
-        <div id="footer" class="text-center mb-2">
-            <hr>
-            <div>Server Time：<font id="localtime">{{date('Y-m-d H:i:s')}}</font></div>
-            © 2020 <a target="_blank" href="https://github.com/iamwinter">LDU Online Judge</a>.
-        </div>
-
+        @include('layouts.footer')
     </main>
 
 </div>
 
 <script type="text/javascript">
-    // 左侧菜单栏滑动效果
+    // 移动端 左侧菜单栏滑动效果
     jQuery.fn.slideLeftHide = function( speed, callback ) {
         this.animate({
             width : "hide",
@@ -308,24 +306,6 @@
             }
         });
     })
-
-    //自动更新页脚时间
-    setInterval(function () {
-        var now=new Date( $('#localtime').html() );
-        now=new Date(now.getTime()+1000);
-        var str=now.getFullYear();
-        str+='-'+(now.getMonth()<9?'0':'')   +(now.getMonth()+1);
-        str+='-'+(now.getDate()<10?'0':'')   +now.getDate();
-        str+=' '+(now.getHours()<10?'0':'')  +now.getHours();
-        str+=':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
-        str+=':'+(now.getSeconds()<10?'0':'')+now.getSeconds();
-        document.getElementById('localtime').innerHTML=str;
-    },1000); //每秒刷新时间
-
-    //通用提示框，小问号提示这是什么
-    function whatisthis(text) {
-        Notiflix.Report.Info( '{{__('What\'s this?')}}',text,'confirm');
-    }
 
 </script>
 

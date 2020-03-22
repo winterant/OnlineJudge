@@ -19,6 +19,7 @@
                         <th>#</th>
                         <th>{{__('main.Solution')}} {{__('main.Id')}}</th>
                         <th>{{__('main.Problem')}} {{__('main.Id')}}</th>
+                        <th>{{__('main.User')}}</th>
                         <th>{{__('main.Color')}}</th>
                         <th>{{__('main.Status')}}</th>
                         <th>{{__('main.Delivery')}}</th>
@@ -28,8 +29,9 @@
                     @foreach($balloons as $item)
                         <tr>
                             <td>{{$item->id}}</td>
-                            <td>{{$item->solution_id}}</td>
+                            <td><a href="{{route('solution',$item->solution_id)}}" target="_blank">{{$item->solution_id}}</a></td>
                             <td>{{$item->index}}</td>
+                            <td>{{$item->username}}</td>
                             <td>{{$item->index}}</td>
                             <td>{{$item->sent?__('main.Delivered'):__('main.Waiting for delivery')}}</td>
                             <td>
