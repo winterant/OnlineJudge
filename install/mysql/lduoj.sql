@@ -11,11 +11,36 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 25/02/2020 13:52:52
+ Date: 22/03/2020 22:16:25
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for contest_balloons
+-- ----------------------------
+DROP TABLE IF EXISTS `contest_balloons`;
+CREATE TABLE `contest_balloons`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `solution_id` int(11) NULL DEFAULT NULL,
+  `sent` tinyint(4) NULL DEFAULT 0,
+  `send_time` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Fixed;
+
+-- ----------------------------
+-- Table structure for contest_notices
+-- ----------------------------
+DROP TABLE IF EXISTS `contest_notices`;
+CREATE TABLE `contest_notices`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `contest_id` int(11) NULL DEFAULT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for contest_problems
@@ -49,6 +74,7 @@ CREATE TABLE `contests`  (
   `type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'acm' COMMENT 'acm,oi,exam',
   `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `allow_lang` int(11) NULL DEFAULT 0 COMMENT '按位标记允许的提交语言',
   `start_time` datetime(0) NULL DEFAULT NULL,
   `end_time` datetime(0) NULL DEFAULT NULL,
   `lock_rate` float NULL DEFAULT 0 COMMENT '封榜比例，0.00~1.00',
