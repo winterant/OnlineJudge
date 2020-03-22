@@ -9,12 +9,19 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
         if (!DB::table('privileges')->where('user_id',Auth::id())->exists())
             abort(404);
-        exec('ps -e|grep polling 2>&1',$out,$status);
-//        exec('bash '.base_path('judge/startup.sh').' 2>&1',$out,$status);
-        dd($out,$status);
-        return view('admin.home');
+        exec('sudo ps -e|grep polling 2>&1',$out,$status);
+        return view('admin.home',compact('out'));
+    }
+
+    public function cmd_polling(Request $request){
+        $oper=$request->input('oper');
+        if($oper==='start'||$oper==='restart')
+            exec('sudo bash '.base_path('judge/startup.sh').' 2>&1',$out,$status);
+        else if($oper==='stop')
+            exec('sudo bash '.base_path('judge/stop.sh').' 2>&1',$out,$status);
+        return back()->with('ret',implode('<br>',$out));
     }
 }
