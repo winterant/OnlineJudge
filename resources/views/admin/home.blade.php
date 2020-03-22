@@ -5,7 +5,23 @@
 @section('content')
 
     <div class="container">
-        <h1 class="text-center mt-5">欢迎使用<a target="_blank" href="https://github.com/iamwinter">LDU Online Judge</a>后台管理</h1>
+        <div class="my-container bg-white">
+            <h4>判题机</h4>
+            <hr>
+            <div>
+                当前状态：
+                <div class="float-right">
+                    @if(true)
+                        <a class="btn bg-info text-white">重启</a>
+                        <a class="btn bg-warning text-white">停止</a>
+                    @else
+                        <a class="btn bg-info text-white">启动</a>
+                    @endif
+
+                </div>
+            </div>
+
+        </div>
     </div>
 
 @endsection
