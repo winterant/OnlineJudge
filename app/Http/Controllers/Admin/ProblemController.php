@@ -263,7 +263,7 @@ class ProblemController extends Controller
             }
         }
         Storage::deleteDirectory('temp_xml'); //删除已经没用的xml文件
-        return $first_pid.($first_pid<$pid?' ~ '.$pid:'');
+        return $first_pid.($first_pid<$pid?'-'.$pid:'');
     }
 
     public function export(Request $request){

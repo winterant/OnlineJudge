@@ -57,7 +57,7 @@
                 <tbody>
                 @foreach($users as $i=>$item)
                     <tr>
-                        <td>{{isset($_GET['page']) ? ($_GET['page']-1)*$users->perPage()+$i+1 : $i+1}}</td>
+                        <td>{{isset($_GET['page']) ? ($_GET['page']-1)*$users->perPage()+$i : $i}}</td>
                         <td nowrap><a href="{{route('user',$item->username)}}" target="_blank">{{$item->username}}</a></td>
                         <td nowrap>{{$item->nick}}</td>
                         <td>{{$item->solved}} / {{$item->submit}}</td>

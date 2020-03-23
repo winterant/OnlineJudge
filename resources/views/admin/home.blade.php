@@ -8,7 +8,7 @@
         <div class="my-container bg-white">
             <h4>判题机</h4>
             <hr>
-            <div class="overflow-auto">
+            <div class="overflow-auto px-2">
                 @if(!empty(session('ret')))
                     {!! session('ret') !!}<br>
                 @endif
