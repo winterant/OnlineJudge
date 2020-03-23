@@ -118,7 +118,15 @@
                                 data: {'import':block_total} ,
                                 success:function (ret) {
                                     Notiflix.Loading.Remove();
-                                    Notiflix.Report.Success('题目导入成功','导入的题目在题库中的编号为'+ret+'，处于隐藏状态','好的');
+                                    Notiflix.Confirm.Show(
+                                        '题目导入成功',
+                                        '已导入题目:'+ret+'，是否生成竞赛？',
+                                        '添加竞赛',
+                                        '返回',
+                                        function () {
+                                            location='{{route('admin.contest.add')}}?pids='+ret;
+                                        }
+                                    );
                                 },
                                 error:function (xhr,status,err) {
                                     Notiflix.Loading.Remove();

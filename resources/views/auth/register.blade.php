@@ -17,7 +17,8 @@
                                 <input id="name" type="text" class="form-control @error('username') is-invalid @enderror"
                                       name="username" value="{{ old('username') }}"
                                        oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')"
-                                       required autofocus placeholder="{{__('sentence.Must fill')}}" maxlength="30">
+                                       required autofocus placeholder="{{__('sentence.Must fill')}}"
+                                       maxlength="30" minlength="4">
 
                                 @error('username')
                                     <span class="invalid-feedback" role="alert">

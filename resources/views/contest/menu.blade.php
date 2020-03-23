@@ -21,7 +21,7 @@
             <a class="nav-link p-2" href="{{route('contest.status',$contest->id)}}">{{trans('main.Status')}}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link p-2" href="{{route('contest.rank',$contest->id)}}">{{trans('main.Rank')}} [ {{$contest->type}} ]</a>
+            <a class="nav-link text-nowrap p-2" href="{{route('contest.rank',$contest->id)}}">{{trans('main.Rank')}} [ {{$contest->type}} ]</a>
         </li>
         <li class="nav-item">
             <a class="nav-link p-2" href="{{route('contest.notices',$contest->id)}}">
@@ -32,7 +32,7 @@
                 @endif
             </a>
         </li>
-        @if(Auth::user()->privilege('balloon'))
+        @if(Auth::check()&&Auth::user()->privilege('balloon'))
             <li class="nav-item">
                 <a class="nav-link p-2" href="{{route('contest.balloons',$contest->id)}}">{{trans('main.Balloon')}}</a>
             </li>

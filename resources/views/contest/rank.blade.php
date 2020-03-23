@@ -121,7 +121,7 @@
                                     </td>
 
                                     @if(config('oj.main.rank_show_school'))<td>{{$user['school']}}</td> @endif
-                                    @if(config('oj.main.rank_show_nick'))<td>{{$user['nick']}}</td> @endif
+                                    @if(config('oj.main.rank_show_nick'))<td nowrap>{{$user['nick']}}</td> @endif
 
                                     <td>{{$user['AC']}}</td>
                                     @if($contest->type == 'acm')
