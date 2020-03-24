@@ -3,6 +3,7 @@ return [
 
     "Whats this"     => "What\'s this?",
     "delete"         => "Are you sure to delete it?",
+    "copy"          => "Copied to clipboard!",
 
     "No data"           => "No data!",
     "Permission denied" => "Permission denied",

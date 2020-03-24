@@ -110,7 +110,7 @@
                                     <i class="fa fa-times text-red" aria-hidden="true"></i>
                                 @endif
                             </td>
-                            <td>{{$item->index}}</td>
+                            <td>{{index2ch($item->index)}}</td>
                             <td nowrap>
                                 @if(Auth::user()->privilege('contest')||time()>strtotime($contest->start_time))
                                     <a href="{{route('contest.problem',[$contest->id,$item->index])}}">{{$item->title}}</a>

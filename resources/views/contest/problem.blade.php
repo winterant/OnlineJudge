@@ -21,7 +21,7 @@
 
         <div class="col-md-8 col-sm-12 col-12">
             <div class="my-container bg-white d-inline-block">
-                <h3 class="text-center">{{$problem->index}}. {{$problem->title}}</h3>
+                <h3 class="text-center">{{index2ch($problem->index)}}. {{$problem->title}}</h3>
                 <hr class="mt-0">
                 <div class="ck-content">
                     <h4 class="text-sky">Description</h4>
@@ -40,10 +40,12 @@
                     @if(count($samples) > 0)
                         <h4 class="mt-2 text-sky">Samples</h4>
                     @endif
-                    @foreach($samples as $sam)
+                    @foreach($samples as $i=>$sam)
                         <div class="border mb-4">
-                            <div class="border-bottom pl-2 bg-light">Input</div>
-                            <pre class="m-1">{{$sam[0]}}</pre>
+                            <div class="border-bottom pl-2 bg-light">Input
+                                <a href="javascript:" onclick="copy('sam_in{{$i}}')">{{__('main.Copy')}}</a>
+                            </div>
+                            <pre class="m-1" id="sam_in{{$i}}">{{$sam[0]}}</pre>
                             <div class="border-top border-bottom pl-2 bg-light">Output</div>
                             <pre class="m-1">{{$sam[1]}}</pre>
                         </div>
@@ -159,4 +161,13 @@
     </div>
 
     <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script> {{-- ckeditor样式 --}}
+    <script>
+        function copy(tag_id) {
+            $("body").append('<textarea id="copy_temp">'+$('#'+tag_id).html()+'</textarea>');
+            $("#copy_temp").select();
+            document.execCommand("Copy");
+            $("#copy_temp").remove();
+            Notiflix.Notify.Success('{{__('sentence.copy')}}');
+        }
+    </script>
 @endsection

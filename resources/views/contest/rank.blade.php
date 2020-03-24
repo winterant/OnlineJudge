@@ -41,6 +41,9 @@
                         @endif
                     </div>
                 @endif
+                <div class="float-left">
+                    <button class="btn btn-sm" onclick="down_rank()">{{__('main.Download')}}</button>
+                </div>
 
                 <div class="pull-right">
                     <form id="form_switch" action="" method="get">
@@ -48,7 +51,8 @@
                         <link href="{{asset('static/switch-dist/switch.css')}}" rel="stylesheet"/>
                         <script src="{{asset('static/switch-dist/switch.js')}}"></script>
 
-                        @if($contest->end_time<time() && (Auth::check() && Auth::user()->privilege('contest') || $contest->lock_rate==0) )
+                        @if(strtotime($contest->end_time)<time() &&
+                            (Auth::check() && Auth::user()->privilege('contest') || $contest->lock_rate==0) )
                             <font title="{{__('sentence.Up to now')}}">{{trans('main.Up to now')}}：</font>
                             <input id="switch_buti" type="checkbox">
                             <input type="text" name="buti" value="{{isset($_GET['buti'])?$_GET['buti']:'false'}}" hidden>
@@ -78,7 +82,7 @@
                     </form>
                 </div>
 
-                <table class="table table-sm table-hover border-bottom">
+                <table id="table_rank" class="table table-sm table-hover border-bottom">
                     <thead>
                         <tr>
                             <th>{{trans('main.Rank')}}</th>
@@ -94,7 +98,7 @@
                             @endif
 
                             @foreach($index_map as $i=>$pid)
-                                <th><a href="{{route('contest.problem',[$contest->id,$i])}}">{{$i}}</a></th>
+                                <th><a href="{{route('contest.problem',[$contest->id,$i])}}">{{index2ch($i)}}</a></th>
                             @endforeach
                         </tr>
                     </thead>
@@ -161,5 +165,15 @@
 
     </div>
 
+    <script src="{{asset('static/jquery-table2excel/jquery.table2excel.min.js')}}"></script>
+    <script>
+        function down_rank(){
+            $("#table_rank").table2excel({
+                name: "rank",
+                // Excel文件的名称
+                filename: "Rank-Contest{{$contest->id}}-{{$contest->title}}"
+            });
+        }
+    </script>
 @endsection
 

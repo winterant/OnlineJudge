@@ -71,7 +71,8 @@ class ContestController extends Controller
             DB::table('contests')->where('id',$id)->update($contest);
             DB::table('contest_problems')->where('contest_id',$id)->whereNotIn('problem_id',$pids)->delete();//舍弃的
             foreach ($pids as $i=>$pid){
-                DB::table('contest_problems')->updateOrInsert(['contest_id'=>$id,'problem_id'=>$pid],['index'=>1001+$i]);
+                DB::table('contest_problems')
+                    ->updateOrInsert(['contest_id'=>$id,'problem_id'=>$pid],['index'=>1+$i]);
             }
             if($contest['access']=='private'){
                 $uids=DB::table('users')->whereIn('username',explode(PHP_EOL,$c_users))->pluck('id');

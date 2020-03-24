@@ -63,6 +63,7 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id'=>'[0-9]+'])->where(
 // Administration
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9]+'])->group(function () {
     Route::get('/', 'Admin\HomeController@index')->name('home');
+//    判题端指令
     Route::post('/cmd_polling', 'Admin\HomeController@cmd_polling')->middleware(['Privilege:admin'])->name('cmd_polling');
 
 //    manage notice

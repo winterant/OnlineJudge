@@ -10,7 +10,7 @@
     @if(isset($users))
         <p class="alert alert-success">已成功生成{{count($users)}}个账号，你可以1.下载表格，2.点击复制,将账号与密码复制到剪切板。</p>
         <a class="btn" onclick="down_users()"><i class="fa fa-cloud-download" aria-hidden="true"></i>下载文档</a>
-        <a class="btn" onclick="copy_users()" title="复制登录名+密码"><i class="fa fa-copy" aria-hidden="true"></i>复制</a>
+        <a class="btn" onclick="copy('copy_users')" title="复制登录名+密码"><i class="fa fa-copy" aria-hidden="true"></i>复制</a>
         <div class="table-responsive">
                 <table id="table2excel" class="table table-striped table-hover table-sm">
                     <thead>
@@ -39,7 +39,7 @@
                     </tbody>
                 </table>
             </div>
-        <textarea id="to_copy" hidden>@foreach($users as $u){{$u['username']}}&#9;{{$u['password']}}&#13;@endforeach</textarea>
+        <textarea id="copy_users" hidden>@foreach($users as $u){{$u['username']}}&#9;{{$u['password']}}&#13;@endforeach</textarea>
         <script src="{{asset('static/jquery-table2excel/jquery.table2excel.min.js')}}"></script>
         <script>
             function down_users(){
@@ -49,14 +49,12 @@
                     filename: "批量账号"
                 });
             }
-            function copy_users() {
-                $("#to_copy").attr('hidden',false); //取消hidden才能复制,随后再恢复
-                $("#to_copy").select();
-                document.execCommand("Copy");//执行复制
-                $("#to_copy").attr('hidden',true);
-
-                Notiflix.Notify.Init();
-                Notiflix.Notify.Success('已复制到剪切板');
+            function copy(tag_id) {
+                $("body").append('<textarea id="copy_temp">'+$('#'+tag_id).html()+'</textarea>');
+                $("#copy_temp").select();
+                document.execCommand("Copy");
+                $("#copy_temp").remove();
+                Notiflix.Notify.Success('已复制到本地剪切板');
             }
         </script>
     @else
