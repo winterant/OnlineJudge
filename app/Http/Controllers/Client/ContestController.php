@@ -129,7 +129,11 @@ class ContestController extends Controller
             ->orderByDesc('solutions.id')
             ->paginate(10);
 
-        return view('contest.status',compact('contest','solutions'));
+        //获得[index=>真实题号]
+        $index_map=DB::table('contest_problems')->where('contest_id',$id)
+            ->orderBy('index')
+            ->pluck('problem_id','index');
+        return view('contest.status',compact('contest','solutions','index_map'));
     }
 
 
@@ -197,7 +201,7 @@ class ContestController extends Controller
             ->orWhereIn('id',$saved_user_ids)
             ->get();
 
-        //获得[index=>题号]
+        //获得[index=>真实题号]
         $index_map=DB::table('contest_problems')->where('contest_id',$id)
             ->orderBy('index')
             ->pluck('problem_id','index');

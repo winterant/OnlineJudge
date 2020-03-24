@@ -30,7 +30,7 @@
                         <tr>
                             <td>{{$item->id}}</td>
                             <td><a href="{{route('solution',$item->solution_id)}}" target="_blank">{{$item->solution_id}}</a></td>
-                            <td>{{$item->index}}</td>
+                            <td>{{index2ch($item->index)}}</td>
                             <td>{{$item->username}}</td>
                             <td>{{$item->index}}</td>
                             <td>{{$item->sent?__('main.Delivered'):__('main.Waiting for delivery')}}</td>

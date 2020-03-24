@@ -70,3 +70,11 @@ function save_problem_spj($problem_id, $code){
     Storage::deleteDirectory(sprintf('data/%d/spj',$problem_id));
     Storage::put(sprintf('data/%d/spj/spj.cpp',$problem_id),$code);
 }
+
+
+//将一个数字题号（从1开始）转为大写字母
+function index2ch(int $index){
+    if($index<=26)
+        return chr($index+65-1);
+    return $index;
+}

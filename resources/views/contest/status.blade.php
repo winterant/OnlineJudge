@@ -30,8 +30,12 @@
                             <th>#</th>
                             <th>
                                 <div class="form-group m-0 p-0 bmd-form-group">
-                                    <input type="text" class="form-control text-center" placeholder="Problem"
-                                           name="index" value="{{isset($_GET['index'])?$_GET['index']:''}}">
+                                    <select name="index" class="form-control" onchange="this.form.submit();">
+                                        <option class="form-control" value="">{{__('main.Problems')}}</option>
+                                        @foreach($index_map as $i=>$pid)
+                                            <option value="{{$i}}" {{isset($_GET['index'])&&$_GET['index']==$i?'selected':null}}>{{index2ch($i)}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </th>
                             <th>
@@ -42,7 +46,7 @@
                             </th>
                             <th>
                                 <div class="form-group m-0 p-0 bmd-form-group">
-                                    <select name="result" class="form-control" onChange="javascript:this.form.submit();">
+                                    <select name="result" class="form-control" onchange="this.form.submit();">
                                         <option class="form-control" value="-1">All Result</option>
                                         @foreach(config('oj.result') as $key=>$res)
                                             <option value="{{$key}}" class="{{config('oj.resColor.'.$key)}}"
@@ -79,7 +83,7 @@
                                     {{$sol->id}}
                                 @endif
                             </td>
-                            <td><a href="{{route('contest.problem',[$contest->id,$sol->index])}}">{{$sol->index}}</a></td>
+                            <td><a href="{{route('contest.problem',[$contest->id,$sol->index])}}">{{index2ch($sol->index)}}</a></td>
                             <td nowrap>
                                 <a href="{{route('user',$sol->username)}}" target="_blank">{{$sol->username}}</a>
                                 @if($sol->nick && Auth::check()&&Auth::user()->privilege('contest'))&nbsp;{{$sol->nick}}@endif

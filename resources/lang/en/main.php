@@ -2,6 +2,8 @@
 return [
     "Yes"           => "Yes",
     "No"            => "No",
+    "Copy"          => "Copy",
+    "Download"      => "Download",
 
     //home.blade
     "Notice Board"  => "Notice Board",
