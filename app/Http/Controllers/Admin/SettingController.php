@@ -9,7 +9,8 @@ class SettingController extends Controller
 {
     public function settings(Request $request){
         if ($request->isMethod('get')){
-            return view('admin.settings');
+            $settings=include config_path('oj/main.php');
+            return view('admin.settings',compact('settings'));
         }
 
 
@@ -41,9 +42,9 @@ class SettingController extends Controller
                     $text.=($value?"true":"false").",\n";
             }
             $text.="];";
-            file_put_contents(config_path('oj/main.php'),$text);
+            file_put_contents(config_path('oj/main.php'),$text,LOCK_EX);
             system('php '.base_path('artisan').' config:cache');
-            return back();
+            return "OK";
         }
     }
 }

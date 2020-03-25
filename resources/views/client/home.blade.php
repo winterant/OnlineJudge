@@ -4,7 +4,8 @@
 
 @section('content')
 
-    <div class="modal fade" id="myModal">
+    {{-- 页面顶部滚动公告，模态框--}}
+    <div class="modal fade" id="modal_notice">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
 
@@ -43,7 +44,7 @@
                                 </td>
                                 <td class="text-left" nowrap>
                                     <font class="pull-left m-0 @if($item->state==2) font-weight-bold @endif">{{$item->title}}</font>&nbsp;&nbsp;
-                                    <a href="javascript:" onclick="get_notice({{$item->id}})" data-toggle="modal" data-target="#myModal">{{__("Detail")}}>> </a>
+                                    <a href="javascript:" onclick="get_notice({{$item->id}})" data-toggle="modal" data-target="#modal_notice">{{__("Detail")}}>> </a>
                                 </td>
                                 <td class="text-right" nowrap>
                                     @if($item->state==2)

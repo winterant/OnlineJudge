@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white mb-4">
+<nav class="navbar navbar-expand-lg navbar-light bg-white mb-3">
 
     <a class="navbar-brand">{{config('oj.main.siteName')}}</a>
 
@@ -117,6 +117,8 @@
 
     </div>
 </nav>
+
+<div class="container">@include('layouts.notice_marquee')</div>
 
 @yield('content')
 

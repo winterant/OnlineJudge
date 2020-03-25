@@ -68,7 +68,7 @@
             {{-- 题目信息 --}}
             <div class="my-container bg-white">
 
-                <h5>Problem Infomation</h5>
+                <h5>{{__('main.Problem')}} {{__('main.Information')}}</h5>
                 <hr class="mt-0">
 
                 <div class="table-responsive">
@@ -103,6 +103,30 @@
 
             </div>
 
+            {{-- 涉及到的竞赛 --}}
+            @if($contests!=null)
+                <div class="my-container bg-white">
+
+                    <h5>{{__('main.Contests involved')}}</h5>
+                    <hr class="mt-0">
+
+                    <div class="table-responsive">
+                        <table id="table-overview" class="table table-sm">
+                            <tbody>
+                                <style type="text/css">
+                                    #table-overview td{border: 0;text-align: left}
+                                </style>
+                                @foreach($contests as $item)
+                                <tr>
+                                    <td><a href="{{route('contest.home',$item->id)}}">{{$item->id}}. {{$item->title}}</a></td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            @endif
 
             {{-- 提交记录--}}
             @auth

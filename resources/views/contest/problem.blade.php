@@ -69,7 +69,7 @@
             {{-- 题目信息 --}}
             <div class="my-container bg-white">
 
-                <h5>{{trans('main.Problem')}} {{trans('main.Infomation')}}</h5>
+                <h5>{{trans('main.Problem')}} {{trans('main.Information')}}</h5>
                 <hr class="mt-0">
 
                 <div class="table-responsive">

@@ -1,6 +1,6 @@
 <div class="my-container bg-white">
 
-    <h5>{{trans('main.Contest')}} {{trans('main.Infomation')}}</h5>
+    <h5>{{trans('main.Contest')}} {{trans('main.Information')}}</h5>
     <hr class="mt-0">
 
     <ul class="list-unstyled">

@@ -10,7 +10,9 @@ fi;
 cd ${web_home}/LDUOnlineJudge
 
 # 文件权限
-cp -rf .env.example .env && chmod -R 777 storage bootstrap/cache
+cp -rf .env.example .env
+chmod -R 777 storage bootstrap/cache
+chown -R www-data:www-data ${web_home}/LDUOnlineJudge/config/oj/main.php
 
 # php
 apt -y update && apt -y upgrade
@@ -27,8 +29,7 @@ composer install --ignore-platform-reqs
 # laravel artisan; 必须在composer之后
 php artisan storage:link
 php artisan key:generate
-php artisan config:cache
-php artisan route:cache
+php artisan optimize
 
 # nignx
 apt -y install nginx

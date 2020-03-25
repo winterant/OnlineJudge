@@ -27,7 +27,7 @@ return [
     "Standings"     => "Standings",
     "User"          => "User",
     "Overview"      => "Overview",
-    "Infomation"    => "Infomation",
+    "Information"   => "Information",
     "Notification"  => "Notification",
     "Discussion"    => "Discussion",
 
@@ -107,6 +107,8 @@ return [
     "Done"          => "Done",
     "Waiting for delivery" => "Waiting for delivery",
     "Delivered"     => "Delivered",
+
+    "Contests involved" => "Contests involved",
 
 
     "ACM"           => "ACM",
