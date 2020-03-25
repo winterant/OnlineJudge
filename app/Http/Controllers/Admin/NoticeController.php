@@ -34,6 +34,7 @@ class NoticeController extends Controller
         }
         if($request->isMethod('post')) {
             $notice=$request->input('notice');
+            $notice['updated_at']=date('Y-m-d H:i:s');
             DB::table('notices')->where('id',$id)->update($notice);
             return view('admin.success',['msg'=>'已更新公告（id='.$id.'），你可以在首页查看']);
         }

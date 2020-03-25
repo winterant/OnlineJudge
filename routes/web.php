@@ -56,7 +56,6 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id'=>'[0-9]+'])->where(
     });
     Route::any('/password', 'Client\ContestController@password')->middleware(['auth'])->name('password');
     Route::get('/rank', 'Client\ContestController@rank')->name('rank');
-//    Route::get('/statistics', 'Client\ContestController@statistics')->name('statistics');
 });
 
 

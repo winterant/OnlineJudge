@@ -71,7 +71,7 @@
                         onclick="whatisthis('This list is updating in real time. It shows some users who solved most problems this week')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
-                    <h3 class="text-center mb-0">{{__("This Week Ranking")}}</h3>
+                    <h3 class="text-center mb-0">{{__("main.This Week Ranking")}}</h3>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-hover border-bottom">
@@ -83,11 +83,13 @@
                         </thead>
                         @foreach($this_week as $item)
                             <tr>
-                                <td class="py-1">
-                                    @if($loop->first)
+                                @if($loop->first)
+                                    <td class="py-1">
                                         <img height="35rem" src="{{asset('images/trophy/win.png')}}" alt="WIN">
-                                    @else {{$loop->iteration}} @endif
-                                </td>
+                                    </td>
+                                @else
+                                    <td>{{$loop->iteration}}</td>
+                                @endif
                                 <td nowrap><a href="{{route('user',$item->username)}}">{{$item->username}}</a> {{$item->nick}}</td>
                                 <td nowrap>{{$item->school}} {{$item->class}}</td>
                                 <td>{{$item->solved}}</td>
@@ -108,7 +110,7 @@
                         onclick="whatisthis('The list was updating at this Monday 00:00. It shows some users who solved most problems last week')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
-                    <h3 class="text-center mb-0">{{__("Last Week Ranking")}}</h3>
+                    <h3 class="text-center mb-0">{{__("main.Last Week Ranking")}}</h3>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-hover border-bottom">
@@ -120,11 +122,11 @@
                         </thead>
                         @foreach($last_week as $item)
                             <tr>
-                                <td class="py-1">
-                                    @if($loop->first)
+                                @if($loop->first)
+                                    <td class="py-1">
                                         <img height="35rem" src="{{asset('images/trophy/win.png')}}" alt="WIN">
-                                    @else {{$loop->iteration}} @endif
-                                </td>
+                                    </td>
+                                @else <td>{{$loop->iteration}}</td> @endif
                                 <td nowrap><a href="{{route('user',$item->username)}}">{{$item->username}}</a> {{$item->nick}}</td>
                                 <td nowrap>{{$item->school}} {{$item->class}}</td>
                                 <td>{{$item->solved}}</td>
