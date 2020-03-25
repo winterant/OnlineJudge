@@ -37,7 +37,8 @@ class ProblemController extends Controller
             save_problem_samples($pid,(array)$samp_ins,(array)$samp_outs);//保存样例
             $spjFile=$request->file('spj_file');
             if($spjFile!=null && $spjFile->isValid()) save_problem_spj($pid,file_get_contents($spjFile)); //保存spj
-            $msg=sprintf('题目<a href="%s" target="_blank">%d</a>添加成功！请及时 <a href="#">上传测试数据</a>',route('problem',$pid),$pid);
+            $msg=sprintf('题目<a href="%s" target="_blank">%d</a>添加成功！请及时 <a href="%s">上传测试数据</a>',
+                route('problem',$pid),$pid,route('admin.problem.test_data','pid='.$pid));
             return view('admin.success',compact('msg'));
         }
     }
