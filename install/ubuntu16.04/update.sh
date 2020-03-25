@@ -20,6 +20,7 @@ mv ${web_home}/lduoj_temp  ${web_home}/LDUOnlineJudge
 
 cd ${web_home}/LDUOnlineJudge || exit 2;
 chmod -R 777 storage bootstrap/cache
+chown -R www-data:www-data ${web_home}/LDUOnlineJudge/config/oj/main.php
 
 # composer
 composer install --ignore-platform-reqs
@@ -27,8 +28,7 @@ composer install --ignore-platform-reqs
 # laravel artisan
 php artisan storage:link
 php artisan key:generate
-php artisan config:cache
-php artisan route:cache
+php artisan optimize
 
 echo "You have successfully updated LDU Online Judge! Enjoy it!"
 

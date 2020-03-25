@@ -13,6 +13,7 @@ return [
 //    auth/register.blade.php
     "Must fill"         => "Must fill, use to login. a-z,A-Z or 0-9",
     "Non essential"     => "Non essential",
+    "Not_allow_register" => "The administrator has turned off the registration function.",
 
 //    auth/login.blade.php
     "Forgot Password"   => "Forgot Your Password?",

@@ -3,10 +3,11 @@
 @section('content')
 <div class="container justify-content-center">
     <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('main.Register') }}</div>
+        <div class="card">
+            <div class="card-header">{{ __('main.Register') }}</div>
 
-                <div class="card-body">
+            <div class="card-body">
+                @if(config('oj.main.allow_register'))
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
@@ -100,8 +101,11 @@
                             </div>
                         </div>
                     </form>
-                </div>
+                @else
+                    <p>{{__('sentence.Not_allow_register')}}</p>
+                @endif
             </div>
         </div>
+    </div>
 </div>
 @endsection
