@@ -19,7 +19,14 @@
                 @if($problem->hidden==1)
                     [<font class="text-red">{{trans('main.Hidden')}}</font>]
                 @endif
-                <h3 class="text-center">{{$problem->id}}. {{$problem->title}}</h3>
+                <h3 class="text-center">{{$problem->id}}. {{$problem->title}}
+                    @if(Auth::check()&&Auth::user()->privilege('problem'))
+                        <font style="font-size: 0.85rem">
+                            [ <a href="{{route('admin.problem.update_withId',$problem->id)}}" target="_blank">{{__('main.Edit')}}</a> ]
+                            [ <a href="{{route('admin.problem.test_data','pid='.$problem->id)}}" target="_blank">{{__('main.Test Data')}}</a> ]
+                        </font>
+                    @endif
+                </h3>
                 <hr class="mt-0 mb-1">
                 <div class="ck-content">
                     <h4 class="text-sky">Description</h4>

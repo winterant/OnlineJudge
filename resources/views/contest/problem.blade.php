@@ -21,7 +21,14 @@
 
         <div class="col-md-8 col-sm-12 col-12">
             <div class="my-container bg-white d-inline-block">
-                <h3 class="text-center">{{index2ch($problem->index)}}. {{$problem->title}}</h3>
+                <h3 class="text-center">{{index2ch($problem->index)}}. {{$problem->title}}
+                    @if(Auth::check()&&Auth::user()->privilege('problem'))
+                        <font style="font-size: 0.85rem">
+                            [ <a href="{{route('admin.problem.update_withId',$problem->problem_id)}}" target="_blank">{{__('main.Edit')}}</a> ]
+                            [ <a href="{{route('admin.problem.test_data','pid='.$problem->problem_id)}}" target="_blank">{{__('main.Test Data')}}</a> ]
+                        </font>
+                    @endif
+                </h3>
                 <hr class="mt-0">
                 <div class="ck-content">
                     <h4 class="text-sky">Description</h4>

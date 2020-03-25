@@ -441,7 +441,7 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_siz
                 default :
                     result = OJ_RE;     //默认运行错误
             }
-            ptrace(PTRACE_KILL, child_pid, nullptr, nullptr);
+            ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             break;
 		}
         if(WIFSIGNALED(status)) //子进程异常终止
@@ -457,7 +457,7 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_siz
                 default :
                     result = OJ_RE;     //默认运行错误
             }
-            ptrace(PTRACE_KILL, child_pid, nullptr, nullptr);
+            ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             break;
         }
 

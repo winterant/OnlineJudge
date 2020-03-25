@@ -78,7 +78,8 @@ class ProblemController extends Controller
             if($spjFile!=null && $spjFile->isValid())
                 save_problem_spj($id,file_get_contents($spjFile));
 
-            $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功！ <a href="#">上传测试数据</a>',route('problem',$id),$id);
+            $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功！ <a href="%s">上传测试数据</a>',
+                route('problem',$id),$id,route('admin.problem.test_data','pid='.$id));
             return view('admin.success',['msg'=>$msg]);
         }
     }

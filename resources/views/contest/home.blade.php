@@ -14,7 +14,13 @@
         <div class="col-md-8 col-sm-12 col-12">
             <div class="my-container bg-white">
 
-                <h3 class="text-center">{{$contest->id}}. {{$contest->title}}</h3>
+                <h3 class="text-center">{{$contest->id}}. {{$contest->title}}
+                    @if(Auth::check()&&Auth::user()->privilege('problem'))
+                        <font style="font-size: 0.85rem">
+                            [ <a href="{{route('admin.contest.update',$contest->id)}}" target="_blank">{{__('main.Edit')}}</a> ]
+                        </font>
+                    @endif
+                </h3>
                 <hr class="mt-0">
 
                 {{--  进度条与倒计时 --}}

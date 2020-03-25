@@ -4,6 +4,8 @@ return [
     "No"            => "No",
     "Copy"          => "Copy",
     "Download"      => "Download",
+    "Edit"          => "Edit",
+    "Test Data"     => "Test Data",
 
     //home.blade
     "Notice Board"  => "Notice Board",

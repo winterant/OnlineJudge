@@ -12,12 +12,12 @@
                 @if(!empty(session('ret')))
                     {!! session('ret') !!}<br>
                 @endif
-                当前状态：{{count($out)>0?"正在运行 ".$out[0]:"停止运行"}}
+                当前状态：{{$info}}
                 <div class="float-right">
                     <form action="{{route('admin.cmd_polling')}}" method="post" class="mb-0">
                         @csrf
                         <input id="oper" type="hidden" name="oper">
-                        @if(count($out)>0)
+                        @if($run)
                             <button onclick="$('#oper').val('restart')" class="btn bg-info text-white">重启</button>
                             <button onclick="$('#oper').val('stop')" class="btn bg-warning text-white">停止</button>
                         @else
