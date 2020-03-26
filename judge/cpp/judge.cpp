@@ -37,7 +37,7 @@
 #define OJ_SK 13    //skipped
 #define OJ_SE 14    //system error
 
-#define BUFFER_SIZE 5120    //about 5KB
+#define BUFFER_SIZE 5<<10    //about 5KB
 
 #define COMPILE_TIME 10     //10s, compile time limit
 #define COMPILE_FSIZE (10<<20)  //10MB,compile file size limit
@@ -144,12 +144,13 @@ struct Solution{
             this->result,this->time,this->memory,this->pass_rate,this->id); //更新
         mysql_real_query(mysql,sql,strlen(sql));
         if(this->error_info!=NULL){    //更新出错信息
-            char *new_sql = new char[2*strlen(this->error_info)+35];
+            char *new_sql = new char[2*strlen(this->error_info)+64];
             char *p=new_sql;
             p+=sprintf(p,"UPDATE solutions SET error_info=\'");
             p+=mysql_real_escape_string(mysql,p,this->error_info,strlen(this->error_info));
             p+=sprintf(p,"\' where id=%d",this->id);
             mysql_real_query(mysql,new_sql,strlen(new_sql));
+            delete new_sql;
         }
     }
 }solution;
@@ -167,10 +168,10 @@ int get_file_size(const char *filename)//获取文件内容长度
 
 char *read_file(const char *filename)//从文件读取内容，返回字符串指针
 {
-    int ce_size=get_file_size(filename);
+    int file_size=get_file_size(filename);
     FILE *fp=fopen(filename,"r");
     if(fp==NULL) return NULL; //文件打开失败
-    char ch, *p, *str = new char[ce_size+1];
+    char ch, *p, *str = new char[file_size+3];
     for (p=str;(ch=fgetc(fp))!=EOF;*p++=ch);
     *p='\0';
     fclose(fp);
@@ -189,7 +190,7 @@ char* isInFile(const char fname[])  //检查文件名后缀是否为.in
 	int len = strlen(fname);
 	if (len > 3 && strcmp(fname + len - 3, ".in") == 0)
 	{
-	    char *name=new char[len-2];
+	    char *name=new char[len];
 	    strncpy(name,fname,len-3);
 	    name[len-3]='\0';
 	    return name;//返回文件名
@@ -199,19 +200,19 @@ char* isInFile(const char fname[])  //检查文件名后缀是否为.in
 
 char* get_data_out_path(const char* data_dir,const char* test_name) //获取测试答案的路径
 {
-    char *path = new char[128];
+    char *path = new char[256];
     sprintf(path,"%s/%s.out",data_dir,test_name);
     return path;
 }
 
-int compare_file(const char* fname1,const char *fname2)
+int compare_file(const char* fname1,const char *fname2) //比较两文件是否一致
 {
     char *text1 = read_file(fname1);
     char *text2 = read_file(fname2);
     char *text1_end = text1 + strlen(text1)-1;
-    while(*text1_end == '\n')*text1_end--='\0'; //忽略末尾换行
+    while(text1!=text1_end && *text1_end == '\n')*text1_end--='\0'; //忽略末尾换行
     char *text2_end = text2 + strlen(text2)-1;
-    while(*text2_end == '\n')*text2_end--='\0'; //忽略末尾换行
+    while(text2!=text2_end && *text2_end == '\n')*text2_end--='\0'; //忽略末尾换行
     if(strcmp(text1,text2)==0)
         return OJ_AC;
     return OJ_WA;
@@ -224,7 +225,7 @@ int get_proc_memory(int pid)//读取进程pid的内存使用情况
 	sprintf(buf, "/proc/%d/status", pid);
 	FILE *fp = fopen(buf, "r");
 	int mark_len = strlen(mark);
-	while (fp && fgets(buf, 63, fp)) {
+	while (fp && fgets(buf, 62, fp)) {
 		buf[strlen(buf) - 1] = 0;
 		if(strncmp(buf, mark, mark_len) == 0){
 			sscanf(buf + mark_len + 1, "%d", &memory);
@@ -249,14 +250,14 @@ int system_cmd(const char *fmt, ...) //执行一条linux命令
 
 
 //编译用户提交的代码
+const char *CP_C[]  ={"gcc","Main.c",  "-o","Main","-Wall","-lm","--static","-std=c99",  "-fmax-errors=5","-DONLINE_JUDGE","-O2",NULL};
+const char *CP_CPP[]={"g++","Main.cpp","-o","Main","-Wall","-lm","--static","-std=c++11","-fmax-errors=5","-DONLINE_JUDGE","-O2","-fno-asm", NULL};
+const char *CP_JAVA[]={"javac","-J-Xms64m","-J-Xmx128m","-encoding","UTF-8","Main.java",NULL};
 int compile()
 {
     if(solution.language==3)//python不需要编译
         return 0;
     int pid;
-    const char *CP_C[]  ={"gcc","Main.c",  "-o","Main","-Wall","-lm","--static","-std=c99",  "-fmax-errors=5","-DONLINE_JUDGE","-O2",NULL};
-	const char *CP_CPP[]={"g++","Main.cpp","-o","Main","-Wall","-lm","--static","-std=c++11","-fmax-errors=5","-DONLINE_JUDGE","-O2","-fno-asm", NULL};
-	const char *CP_JAVA[]={"javac","-J-Xms64m","-J-Xmx128m","-encoding","UTF-8","Main.java",NULL};
 
     if( (pid=fork()) == 0 ) //子进程编译
     {
@@ -437,7 +438,7 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_siz
 		if(!allow_sys_call[sysCall]) //没有被许可的系统调用
 		{
             result = OJ_RE;
-            char *error = new char[64];
+            char error[64];
             sprintf(error,"[ERROR] A Not allowed system call: call id = %d\n",sysCall);
             write_file(error,"error.out","a+");
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
@@ -473,7 +474,7 @@ int judge(char *data_dir, char *spj_path)
     {
         if(access(spj_path,F_OK)==-1) //spj不存在
         {
-            char *error = (char*)"[ERROR] spj was not compiled successfully or spj.cpp does not exist!\n";
+            char error[] = "[ERROR] spj was not compiled successfully or spj.cpp does not exist!\n";
             write_file(error,"error.out","a+");
             return OJ_SE; //系统错误
         }
@@ -567,7 +568,7 @@ int main (int argc, char* argv[])
     {
         printf("solution id: %d, Compiling successfully! start running\n",sid);
         solution.update_result(OJ_RI); //update to running
-        char data_dir[64], spj_path[64];
+        char data_dir[256], spj_path[256];
         sprintf(data_dir,"%s/%d/test",JG_DATA_DIR,solution.problem_id); //测试数据
         sprintf(spj_path,"%s/%d/spj/spj",JG_DATA_DIR,solution.problem_id); //特判程序spj的路径
 
@@ -594,6 +595,6 @@ int main (int argc, char* argv[])
 
     // 6. 关闭数据库+删除临时文件夹
     mysql_close(mysql);
-    system_cmd("rm -rf `pwd`"); //删除该记录所用的临时文件夹
+    system_cmd("now_pwd='pwd' && cd .. && rm -rf ${now_pwd}"); //删除该记录所用的临时文件夹
     return 0;
 }

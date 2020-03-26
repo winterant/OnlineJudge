@@ -26,9 +26,9 @@ class HomeController extends Controller
     public function cmd_polling(Request $request){
         $oper=$request->input('oper');
         if($oper==='start'||$oper==='restart')
-            exec('sudo bash '.base_path('judge/startup.sh').' 2>&1',$out,$status);
+            exec('sudo bash '.base_path('judge/startup.sh'),$out,$status);
         else if($oper==='stop')
-            exec('sudo bash '.base_path('judge/stop.sh').' 2>&1',$out,$status);
+            exec('sudo bash '.base_path('judge/stop.sh'),$out,$status);
         return back()->with('ret',implode('<br>',$out));
     }
 }
