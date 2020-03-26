@@ -30,7 +30,7 @@ char *db_user;
 char *db_pass;
 char *db_name;
 char *JG_DATA_DIR;   //测试数据所在目录
-int  max_running;                     //最大同时判题数
+int  max_running;    //最大同时判题数
 char *JG_NAME;
 
 MYSQL *mysql;    //数据库连接对象
@@ -39,24 +39,25 @@ MYSQL_ROW mysql_row;    //sql查询到的单行数据
 char sql[256];   //暂存sql语句
 
 
-
 void get_wating_solution(int solution_queue[],int &queueing_cnt) //从solutions表读取max_running个待判编号
 {
     queueing_cnt=0;
-    sprintf(sql,"SELECT id FROM solutions WHERE judger is NULL or (judger='%s' and result<=%d) ORDER BY id ASC limit %d",
-        JG_NAME,OJ_RI,max_running);
+    sprintf(sql,"SELECT id FROM solutions WHERE result=%d ORDER BY id ASC limit %d",OJ_WT,max_running);
     if(mysql_real_query(mysql,sql,strlen(sql))!=0){
         printf("sql failed:\n%s\n",sql);
         exit(1);
     }
     mysql_res=mysql_store_result(mysql);    //保存查询结果
-    char sid_str[max_running*11]="\0";
+    char *sid_str=new char[max_running*11];
+    sid_str[0]='\0';
     while((mysql_row=mysql_fetch_row(mysql_res)))  //将结果读入判题队列
     {
         solution_queue[queueing_cnt++]=atoi(mysql_row[0]);
         if(sid_str[0]!='\0')strcat(sid_str,",");
         strcat(sid_str,mysql_row[0]);
     }
+    mysql_free_result(mysql_res); //必须释放结果集，因为它是malloc申请在堆里的内存
+    delete sid_str;
     if(queueing_cnt>0)  //更新已读入的solution的result=queueing
     {
         sprintf(sql,"UPDATE solutions SET result=%d,judger='%s' WHERE id in (%s)",OJ_QI,JG_NAME,sid_str); //更新状态

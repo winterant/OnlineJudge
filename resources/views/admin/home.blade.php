@@ -12,7 +12,7 @@
                 @if(!empty(session('ret')))
                     {!! session('ret') !!}<br>
                 @endif
-                当前状态：{{$info}}
+                当前进程：{{$info}}
                 <div class="float-right">
                     <form action="{{route('admin.cmd_polling')}}" method="post" class="mb-0">
                         @csrf
