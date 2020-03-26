@@ -6,6 +6,7 @@ return [
     "Download"      => "Download",
     "Edit"          => "Edit",
     "Test Data"     => "Test Data",
+    "Judger"        => "Judger",
 
     //home.blade
     "Notice Board"  => "Notice Board",

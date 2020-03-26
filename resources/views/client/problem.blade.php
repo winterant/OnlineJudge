@@ -95,7 +95,7 @@
                             <tr>
                                 <td nowrap>{{__('main.Special Judge')}}:</td>
                                 @if($problem->spj==1)
-                                    <td><font class="text-red">{{__('main.Yes')}}</font> @if(!$hasSpj)({{__('sentence.Missing spj')}}) @endif</td>
+                                    <td><font class="text-red">{{__('main.Yes')}}</font> @if(!$hasSpj)({{__('sentence.Wrong spj')}}) @endif</td>
                                 @else
                                     <td>{{__('main.No')}}</td>
                                 @endif

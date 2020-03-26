@@ -30,7 +30,7 @@ return [
     "Submit"            => "Submit your solution",
 
 //   problem
-    "Missing spj"=> "Error: Missing judge file",
+    "Wrong spj"=> "Wrong spj",
     "Choose Language"   => "----Choose Language----",
     "Input Code"        => "Input your code to solve this problem...",
 

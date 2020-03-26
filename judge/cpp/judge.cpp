@@ -284,38 +284,6 @@ int compile()
     return -1;  //-1:system error
 }
 
-//寻找和编译spj.cpp
-int compile_spj()
-{
-    int pid;
-    const char *CP_CPP[]={"g++","spj.cpp","-o","spj","-Wall","-lm","--static","-std=c++11","-fmax-errors=5","-DONLINE_JUDGE","-fno-asm", NULL};
-
-    if( (pid=fork()) == 0 ) //子进程编译
-    {
-        struct rlimit LIM;
-        LIM.rlim_max=LIM.rlim_cur=COMPILE_TIME;
-        setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit; 10s
-        LIM.rlim_max=LIM.rlim_cur=COMPILE_FSIZE;
-        setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 10MB
-        LIM.rlim_max=LIM.rlim_cur= COMPILE_MEM;
-        setrlimit(RLIMIT_AS, &LIM); //memory limit; c/c++ 512MB, java 2048MB
-        alarm(COMPILE_TIME);  //定时
-
-        freopen("spj_ce.txt","w",stderr);
-        execvp(CP_CPP[0], (char * const *)CP_CPP);
-        exit(0);
-    }
-    else if(pid>0) //父进程
-    {
-        int status;
-        waitpid(pid, &status, 0);
-        return status;   //+:compile error
-    }
-    else
-        return -1;  //-1:system error,
-    return 0; //0:compile success,
-}
-
 //运行一次用户程序，产生用户答案user.out
 void running()
 {
@@ -500,21 +468,13 @@ int judge(char *data_dir, char *spj_path)
 
     if(solution.spj) //特判
     {
-        if(access(spj_path,F_OK)==-1) //spj.cpp不存在
+        if(access(spj_path,F_OK)==-1) //spj不存在
         {
-            char *error = (char*)"[ERROR] This problem need special judge, BUT spj.cpp is not exist!\n";
+            char *error = (char*)"[ERROR] spj was not compiled successfully or spj.cpp does not exist!\n";
             write_file(error,"error.out","a+");
             return OJ_SE; //系统错误
         }
-        system_cmd("/bin/cp %s ./spj.cpp",spj_path);
-
-        int cp_spj=compile_spj(); //编译
-        if(cp_spj!=0) //spj.cpp编译失败，没必要判题了
-        {
-            char *error = (char*)"[ERROR] spj.cpp failed to compile!\n";
-            write_file(error,"error.out","a+");
-            return OJ_SE;  //系统错误
-        }
+        system_cmd("/bin/cp %s ./spj",spj_path);
     }
 
     int test_count=0,ac_count=0;
@@ -556,8 +516,8 @@ int judge(char *data_dir, char *spj_path)
 int main (int argc, char* argv[])
 {
     // 1. 读取参数
-    if(argc!=6+1){
-        printf("Judge arg number error!\n");
+    if(argc!=7+1){
+        printf("Judge arg number error!\n%d\n",argc);
         exit(1);
     }
     db_host=argv[1];
@@ -606,7 +566,7 @@ int main (int argc, char* argv[])
         solution.update_result(OJ_RI); //update to running
         char data_dir[64], spj_path[64];
         sprintf(data_dir,"%s/%d/test",JG_DATA_DIR,solution.problem_id); //测试数据
-        sprintf(spj_path,"%s/%d/spj/spj.cpp",JG_DATA_DIR,solution.problem_id); //特判程序
+        sprintf(spj_path,"%s/%d/spj/spj",JG_DATA_DIR,solution.problem_id); //特判程序spj的路径
 
         //标记允许的系统调用
         int *call_lang=NULL;

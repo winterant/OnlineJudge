@@ -31,6 +31,7 @@ char *db_pass;
 char *db_name;
 char *JG_DATA_DIR;   //测试数据所在目录
 int  max_running;                     //最大同时判题数
+char *JG_NAME;
 
 MYSQL *mysql;    //数据库连接对象
 MYSQL_RES *mysql_res;   //sql查询结果
@@ -42,9 +43,10 @@ char sql[256];   //暂存sql语句
 void get_wating_solution(int solution_queue[],int &queueing_cnt) //从solutions表读取max_running个待判编号
 {
     queueing_cnt=0;
-    sprintf(sql,"SELECT id FROM solutions WHERE result<=%d ORDER BY id ASC limit %d",OJ_WT,max_running);
+    sprintf(sql,"SELECT id FROM solutions WHERE judger is NULL or (judger='%s' and result<=%d) ORDER BY id ASC limit %d",
+        JG_NAME,OJ_RI,max_running);
     if(mysql_real_query(mysql,sql,strlen(sql))!=0){
-        printf("select failed!\n");
+        printf("sql failed:\n%s\n",sql);
         exit(1);
     }
     mysql_res=mysql_store_result(mysql);    //保存查询结果
@@ -57,7 +59,7 @@ void get_wating_solution(int solution_queue[],int &queueing_cnt) //从solutions�
     }
     if(queueing_cnt>0)  //更新已读入的solution的result=queueing
     {
-        sprintf(sql,"UPDATE solutions SET result=%d WHERE id in (%s)",OJ_QI,sid_str); //更新状态
+        sprintf(sql,"UPDATE solutions SET result=%d,judger='%s' WHERE id in (%s)",OJ_QI,JG_NAME,sid_str); //更新状态
         mysql_real_query(mysql,sql,strlen(sql));
     }
 }
@@ -67,6 +69,7 @@ void polling()  //轮询数据库收集待判提交
     int running_cnt=0,queueing_cnt;     //正在判题数,排队数
     int *solution_queue=new int[max_running];  //判题队列
     int pid,did;
+    char sid_str[12];
     while(true)
     {
         get_wating_solution(solution_queue,queueing_cnt);  //获取判题队列
@@ -90,7 +93,6 @@ void polling()  //轮询数据库收集待判提交
                 running_cnt--;
             }
 
-            char sid_str[12];
             sprintf(sid_str,"%d",solution_queue[i]);
             running_cnt++;
             if( (pid=fork()) == 0 )  //当前为子进程，进行一次判题
@@ -110,8 +112,8 @@ void polling()  //轮询数据库收集待判提交
 
 int main (int argc, char* argv[])
 {
-    if(argc!=6+1){
-        printf("Polling Error: argv error!\n");
+    if(argc!=8+1){
+        printf("Polling Error: argv error!\n%d\n",argc);
         exit(1);
     }
     db_host=argv[1];
@@ -121,6 +123,7 @@ int main (int argc, char* argv[])
     db_name=argv[5];
     max_running=atoi(argv[6]);
     JG_DATA_DIR=argv[7];
+    JG_NAME=argv[8];
 
     mysql = mysql_init(NULL);   //初始化数据库连接变量
     mysql = mysql_real_connect(mysql,db_host,db_user,db_pass,db_name,atoi(db_port),NULL,0);

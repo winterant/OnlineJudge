@@ -67,8 +67,10 @@ function save_problem_samples($problem_id, $ins,$outs){
  *  保存特判文件
  */
 function save_problem_spj($problem_id, $code){
-    Storage::deleteDirectory(sprintf('data/%d/spj',$problem_id));
     Storage::put(sprintf('data/%d/spj/spj.cpp',$problem_id),$code);
+    $dir=storage_path('app/data/'.$problem_id.'/spj');
+    exec("sudo g++ ".$dir."/spj.cpp -o ".$dir."/spj -lm -std=c++11 2>&1", $out);
+    return implode('<br>',$out);
 }
 
 

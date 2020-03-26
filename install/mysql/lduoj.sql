@@ -11,7 +11,7 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 22/03/2020 22:16:25
+ Date: 26/03/2020 15:04:43
 */
 
 SET NAMES utf8mb4;
@@ -117,7 +117,7 @@ CREATE TABLE `privileges`  (
 DROP TABLE IF EXISTS `problems`;
 CREATE TABLE `problems`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `input` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `output` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
@@ -151,6 +151,7 @@ CREATE TABLE `solutions`  (
   `pass_rate` decimal(3, 2) UNSIGNED NULL DEFAULT 0.00,
   `error_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `ip` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `judger` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `code_length` int(11) NULL DEFAULT 0,
   `code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE,
