@@ -122,10 +122,13 @@ struct Solution{
         this->language    =atoi(mysql_row[5]);
         this->code        =mysql_row[6];
 
+        mysql_free_result(mysql_res); //必须释放结果集
+
         if(this->language>1){
             this->time_limit*=2;
             this->memory_limit*=2;
         }
+
     }
 
     void update_result(int result)  //数据库，只更新result

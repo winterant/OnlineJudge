@@ -27,7 +27,7 @@ class ContestController extends Controller
             ->when(isset($_GET['type'])&&$_GET['type']!='0',function ($q){return $q->where('type',$_GET['type']);})
             ->when(isset($_GET['title']),function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
             ->orderBy('state')
-            ->orderBy('id')
+            ->orderByDesc('start_time')
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:10);
         return view('contest.contests',compact('contests'));
     }
@@ -119,7 +119,7 @@ class ContestController extends Controller
         $solutions=DB::table('solutions')
             ->join('users','solutions.user_id','=','users.id')
             ->join('contest_problems','solutions.problem_id','=','contest_problems.problem_id')
-            ->select(['solutions.id','index','user_id','username','nick','result','time','memory','language','submit_time'])
+            ->select(['solutions.id','index','user_id','username','nick','result','time','memory','language','submit_time','judger'])
             ->where('solutions.contest_id',$id)
             ->where('contest_problems.contest_id',$id)
             ->when(isset($_GET['index'])&&$_GET['index']!='',function ($q){return $q->where('index',$_GET['index']);})

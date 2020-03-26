@@ -28,7 +28,7 @@
                 <hr class="mt-0">
 
                 @if($contest->lock_rate>0&&time()>strtotime($lock_time))  {{-- 封榜了 --}}
-                    <div class="float-left">
+                    <div class="float-left py-1">
                         <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: red"></i>
                         {{trans('sentence.rank_end_time',['time'=>$lock_time])}}
 
