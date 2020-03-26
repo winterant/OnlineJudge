@@ -14,9 +14,9 @@ g++ -std=c++11 ./cpp/judge.cpp  -o  ./program/judge   -lmysqlclient
 
 cd ./program
 if [ "$1" == "debug" ];then
-  ./polling ${db_host} ${db_port} ${db_user} ${db_pass} ${db_name} ${max_running}
+  ./polling ${DB_HOST} ${DB_PORT} ${DB_USERNAME} ${DB_PASSWORD} ${DB_DATABASE} ${JG_max_running} ${JG_DATA_DIR}
 else
-  ./polling ${db_host} ${db_port} ${db_user} ${db_pass} ${db_name} ${max_running} > /dev/null &
+  ./polling ${DB_HOST} ${DB_PORT} ${DB_USERNAME} ${DB_PASSWORD} ${DB_DATABASE} ${JG_max_running} ${JG_DATA_DIR} > /dev/null &
 fi
 
 sleep 1;

@@ -566,6 +566,7 @@ int main (int argc, char* argv[])
     db_pass=argv[4];
     db_name=argv[5];
     int sid=atoi(argv[6]); //solution id
+    char *JG_DATA_DIR=argv[7];
 
     // 2. 连接数据库
     mysql = mysql_init(NULL);   //初始化数据库连接变量
@@ -604,8 +605,8 @@ int main (int argc, char* argv[])
         printf("solution id: %d, Compiling successfully! start running\n",sid);
         solution.update_result(OJ_RI); //update to running
         char data_dir[64], spj_path[64];
-        sprintf(data_dir,"../../../storage/app/data/%d/test",solution.problem_id); //测试数据
-        sprintf(spj_path,"../../../storage/app/data/%d/spj/spj.cpp",solution.problem_id); //特判程序
+        sprintf(data_dir,"%s/%d/test",JG_DATA_DIR,solution.problem_id); //测试数据
+        sprintf(spj_path,"%s/%d/spj/spj.cpp",JG_DATA_DIR,solution.problem_id); //特判程序
 
         //标记允许的系统调用
         int *call_lang=NULL;

@@ -29,6 +29,7 @@ char *db_port;
 char *db_user;
 char *db_pass;
 char *db_name;
+char *JG_DATA_DIR;   //测试数据所在目录
 int  max_running;                     //最大同时判题数
 
 MYSQL *mysql;    //数据库连接对象
@@ -94,7 +95,7 @@ void polling()  //轮询数据库收集待判提交
             running_cnt++;
             if( (pid=fork()) == 0 )  //当前为子进程，进行一次判题
             {
-                if( 0 > execl("./judge","",db_host,db_port,db_user,db_pass,db_name,sid_str,(char*)NULL) )
+                if( 0 > execl("./judge","",db_host,db_port,db_user,db_pass,db_name,sid_str,JG_DATA_DIR,(char*)NULL) )
                     perror("Polling execl error:");
                 exit(0);  //结束子进程
             }
@@ -119,6 +120,7 @@ int main (int argc, char* argv[])
     db_pass=argv[4];
     db_name=argv[5];
     max_running=atoi(argv[6]);
+    JG_DATA_DIR=argv[7];
 
     mysql = mysql_init(NULL);   //初始化数据库连接变量
     mysql = mysql_real_connect(mysql,db_host,db_user,db_pass,db_name,atoi(db_port),NULL,0);
