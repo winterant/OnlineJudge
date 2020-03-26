@@ -26,7 +26,7 @@ Ludong University Online Judge
   + 竞赛管理；增删查改，公开/隐藏
   + 系统配置；修改网站名称，打开/关闭一些全局功能
 
-# 安装
+# 项目安装
   
   1. **Linux Ubuntu 16.04**
    
@@ -53,14 +53,14 @@ Ludong University Online Judge
   
   3.配置域名及端口：在/etc/nginx/conf.d/lduoj.conf文件内，在`server_name`后面填域名。
 
-# 备份
+# 项目备份
   ```
   bash /home/LDUOnlineJudge/install/ubuntu16.04/backup.sh
   ```
   **提示**：产生备份`/home/lduoj_backup/lduoj_{日期}`，
   包含项目文件夹（含测试数据、图片、文件）、数据库备份lduoj.sql、nginx配置文件lduoj.conf
 
-# 更新
+# 项目更新
 
   建议更新前进行一次备份，以免数据丢失。
   ```
@@ -68,5 +68,29 @@ Ludong University Online Judge
   cp /home/lduoj_temp/install/ubuntu16.04/update.sh /home/
   bash /home/update.sh
   ```
+
+# 判题端使用说明
+  
+  + 启动方式
+  
+    1.网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端  
+    2.通过终端命令启动判题端：bash /home/LDUOnlineJudge/judge/startup.sh
+
+  + 判题端配置
+  
+    数据库连接信息、最大判题数、判题机名称等配置项均在项目根目录下.env文件
+  
+  + 如何多服务器判题？
+  
+    1.首先在一台服务器上部署好本项目，称其为主服务器；主服务器将唯一承担mysql数据库、网页  
+    2.授权mysql用允许远程访问：`待完善`  
+    3.在其他服务器称为从服务器，可以有多台，只负责判题;  
+      故只需要从主服务器克隆judge/、storage/app/data/、.env  
+      克隆后请保持位置与主服务器一致(即.env仍位于/home/LDUOnlineJudge/.env)  
+    4.编辑.env，将其中数据库连接信息修改为主服务器ip及第2步授权的用户  
+    5.在从服务器上安装判题所需的环境支持：`bash /home/LDUOnlineJudge/judge/install.sh`  
+    6.在从服务器上启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`  
+    7.在从服务器上停止判题端：`bash /home/LDUOnlineJudge/judge/stop.sh`
+
 
 # 展示
