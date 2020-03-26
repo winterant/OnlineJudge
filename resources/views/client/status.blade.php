@@ -56,6 +56,7 @@
                             </div>
                         </th>
                         <th>{{__('main.Submit Time')}}</th>
+                        <th>{{__('main.Judger')}}</th>
                         <button type="submit" hidden></button>
                     </form>
                 </tr>
@@ -85,6 +86,7 @@
                             <td>{{round($sol->memory,2)}}MB</td>
                             <td>{{config('oj.lang.'.$sol->language)}}</td>
                             <td nowrap>{{$sol->submit_time}}</td>
+                            <td nowrap>{{$sol->judger}}</td>
                         </tr>
                     @endforeach
                 </tbody>

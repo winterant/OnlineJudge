@@ -29,17 +29,8 @@ class ProblemController extends Controller
         }
         //提交一条新题目
         if($request->isMethod('post')){
-            $problem=$request->input('problem');
-            if(!isset($problem['spj'])) $problem['spj']=0;
-            $pid=DB::table('problems')->insertGetId($problem);
-            $samp_ins =$request->input('sample_ins');
-            $samp_outs=$request->input('sample_outs');
-            save_problem_samples($pid,(array)$samp_ins,(array)$samp_outs);//保存样例
-            $spjFile=$request->file('spj_file');
-            if($spjFile!=null && $spjFile->isValid()) save_problem_spj($pid,file_get_contents($spjFile)); //保存spj
-            $msg=sprintf('题目<a href="%s" target="_blank">%d</a>添加成功！请及时 <a href="%s">上传测试数据</a>',
-                route('problem',$pid),$pid,route('admin.problem.test_data','pid='.$pid));
-            return view('admin.success',compact('msg'));
+            $pid=DB::table('problems')->insertGetId([]);
+            return $this->update($request,$pid);
         }
     }
 
@@ -75,11 +66,18 @@ class ProblemController extends Controller
             $samp_outs=$request->input('sample_outs');
             $spjFile=$request->file('spj_file');
             save_problem_samples($id,(array)$samp_ins,(array)$samp_outs); //保存样例
-            if($spjFile!=null && $spjFile->isValid())
-                save_problem_spj($id,file_get_contents($spjFile));
 
             $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功！ <a href="%s">上传测试数据</a>',
                 route('problem',$id),$id,route('admin.problem.test_data','pid='.$id));
+
+            $spjFile=$request->file('spj_file');
+            if($spjFile!=null && $spjFile->isValid()) {
+                $spj_compile=save_problem_spj($id,file_get_contents($spjFile));
+                if($spj_compile)
+                    $msg.='<br>[ spj.cpp compilation ]:<br>'.$spj_compile;
+                else
+                    $msg.='<br>[ spj.cpp compiled successfully ]';
+            } //保存spj
             return view('admin.success',['msg'=>$msg]);
         }
     }
