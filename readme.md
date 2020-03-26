@@ -14,15 +14,17 @@ Ludong University Online Judge
   + 首页；公告/新闻，本周榜，上周榜
   + 状态；用户提交记录与判题结果
   + 问题；题库
-  + 竞赛；题目，排名，公告栏，气球派送
+  + 竞赛；题目(选择,填空,编程)，排名(ACM,OI,考试)，**赛后补题榜**，公告栏，气球派送；
   + 排名；用户解题排行榜，可按年/月/周/日查询
   
   后台功能概览
 
+  + 判题机；启动/停止linux判题端进程
   + 公告/新闻；用户访问首页可见
   + 用户管理；权限授权，批量生成账号
   + 题目管理；增改查，公开/隐藏，重判结果，导入与导出(兼容hustoj)
   + 竞赛管理；增删查改，公开/隐藏
+  + 系统配置；修改网站名称，打开/关闭一些全局功能
 
 # 安装
   
@@ -35,8 +37,8 @@ Ludong University Online Judge
   ```
   **注意**：安装过程mysql**可能**会提示设置root密码，请输入并谨记。
   
-  **[安装成功]**：浏览器访问你的服务器ip即可打开首页
-  (nginx默认占用80端口,云服务器请先在控制台安全组添加该端口),
+  **[安装成功]**：
+  浏览器访问服务器ip即可打开首页(云服务器请先在控制台安全组添加80端口)；
   注册用户admin自动成为管理员
   
   **[运维须知]**： 
@@ -46,17 +48,16 @@ Ludong University Online Judge
   2.自动安装mysql5.7，管理员root@localhost(密码rootroot)，
   该项目专用用户lduoj@localhost(密码123456789)。
   
-  **为保证安全性请及时修改**
-  (注：需同时修改①ubuntu下mysql，②项目下.env文件数据库配置，③项目下judge/judge.conf，
-  ④最后在项目根目录下执行`php artisan config:cache`)
+  **为保证安全性请及时修改数据库密码**
+  (注：需同时修改①ubuntu下mysql用户，②项目下.env文件数据库配置，③项目根目录下执行`php artisan config:cache`)
   
-  3.配置域名：在/etc/nginx/conf.d/lduoj.conf文件内，在`server_name`后面填域名。
+  3.配置域名及端口：在/etc/nginx/conf.d/lduoj.conf文件内，在`server_name`后面填域名。
 
 # 备份
   ```
   bash /home/LDUOnlineJudge/install/ubuntu16.04/backup.sh
   ```
-  **提示**：产生备份`/home/lduoj_update/lduoj_{日期}`，
+  **提示**：产生备份`/home/lduoj_backup/lduoj_{日期}`，
   包含项目文件夹（含测试数据、图片、文件）、数据库备份lduoj.sql、nginx配置文件lduoj.conf
 
 # 更新
