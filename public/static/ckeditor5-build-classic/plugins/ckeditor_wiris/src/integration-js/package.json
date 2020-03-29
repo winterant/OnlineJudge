@@ -1,0 +1,52 @@
+{
+  "name": "@wiris/mathtype-integration-js-dev",
+  "version" : "7.17.0",
+  "description": "MathType Web Integration JavaScript development tools",
+  "main": "core.src.js",
+  "scripts": {
+    "build-dev": "webpack --mode development",
+    "build": "webpack --mode production",
+    "lint": "eslint --quiet src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wiris/mathtype-integration-js-dev#stable"
+  },
+  "keywords": [
+    "chem",
+    "chemistry",
+    "chemtype",
+    "editor",
+    "equation",
+    "latex",
+    "math",
+    "maths",
+    "mathml",
+    "mathtype",
+    "wiris"
+  ],
+  "homepage": "http://www.wiris.com/",
+  "bugs": {
+    "email": "support@wiris.com"
+  },
+  "author": "WIRIS Team (http://www.wiris.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babel-loader": "^8.0.2",
+    "css-loader": "^1.0.0",
+    "eslint": "^5.6.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "jsdoc": "^3.5.5",
+    "jsdoc-export-default-interop": "^0.3.1",
+    "mini-css-extract-plugin": "^0.4.2",
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "style-loader": "^0.23.0",
+    "uglifyjs-webpack-plugin": "^1.2.8",
+    "url-loader": "^1.1.1",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0"
+  }
+}

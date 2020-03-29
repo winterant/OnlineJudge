@@ -65,7 +65,7 @@ class ContestController extends Controller
             ->join('contest_problems','contest_problems.problem_id','=','problems.id')
             ->where('contest_id',$id)
             ->select(['problems.id','problems.title','contest_problems.index',
-                DB::raw("(select count(*) from solutions where contest_id=".$contest->id." and problem_id=problems.id and result=4) as solved"),
+                DB::raw("(select count(distinct user_id) from solutions where contest_id=".$contest->id." and problem_id=problems.id and result=4) as solved"),
                 DB::raw("(select count(*) from solutions where contest_id=".$contest->id." and problem_id=problems.id) as submit"),
 
                 //查询本人是否通过此题；4:Accepted,6:Attempting,0:没做
