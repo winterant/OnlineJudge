@@ -121,11 +121,13 @@ class ProblemController extends Controller
 
     public function upload_data(Request $request){
         $pid=$request->input('pid');
-        $files=$request->file('files')?:[];
-        foreach ($files as $file) {     //保存文件
-            $file->move(storage_path('app/data/'.$pid.'/test'),$file->getClientOriginalName());//保存附件
-        }
-        return back();
+        $filename=$request->input('filename');
+
+        $uc=new UploadController;
+        $isUploaded=$uc->upload($request,'data/'.$pid.'/test',$filename);
+        if(!$isUploaded)return 0;
+
+        return 1;
     }
 
     public function get_data(Request $request){

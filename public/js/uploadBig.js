@@ -3,6 +3,7 @@ function uploadBig(obj) {
         url:obj.url,        //必须,相当于form的action
         _token:obj._token,  //必须，laravel token：'{{csrf_token()}}'
         files:obj.files,    //必须，上传的文件列表
+        data:obj.data,     //可选，除files外的其他数据
         blockSize:1024*(obj.blockSize!==undefined?obj.blockSize:900),  //可选，每块的大小，默认900KB
         before:   obj.before,    //可选，上传前执行函数
         uploading:obj.uploading, //可选，上传中执行函数
@@ -12,9 +13,15 @@ function uploadBig(obj) {
 
     function dfs_ajax(index=0,start=0) {
         var formData = new FormData();
-        formData.append('block_id',Math.round(start/args.blockSize));     //块号
+        formData.append('filename',args.files[index].name);     //文件原始名
+        formData.append('block_id',Math.round(start/args.blockSize));  //块号
         formData.append('block_tot',Math.ceil(args.files[index].size/args.blockSize));//块数
         formData.append('block',args.files[index].slice(start,start+args.blockSize)); //文件块
+        if(args.data!==undefined && start+args.blockSize>=args.files[index].size)//要上传最后一块了
+        {
+            for(let key of Object.keys(args.data))
+                formData.append(key,args.data[key]); //除文件外的附加数据
+        }
         $.ajax({
             headers: {'X-CSRF-TOKEN': args._token},
             url: args.url ,
@@ -36,8 +43,9 @@ function uploadBig(obj) {
                         args.uploading(args.files.length,index+1,(start+args.blockSize)/1024,args.files[index].size/1024);
 
                     if(start+args.blockSize>=args.files[index].size)//跳到下一个文件
-                        index++;
-                    dfs_ajax(index,start+args.blockSize);//递归
+                        dfs_ajax(index+1,0);//递归
+                    else
+                        dfs_ajax(index,start+args.blockSize);//递归
                 }
 
             },

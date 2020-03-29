@@ -56,7 +56,7 @@
                     Notiflix.Loading.Hourglass('开始上传!总大小：'+(total_size/1024).toFixed(2)+'MB');
                 },
                 uploading: function (file_count,index,up_size,fsize) {
-                    Notiflix.Loading.Change('上传中...'+
+                    Notiflix.Loading.Change('上传中'+index+'/'+file_count+' : '+
                         (up_size/1024).toFixed(2)+'MB/'+(fsize/1024).toFixed(2) +'MB ('+
                         Math.round(up_size/fsize)+'%) 请勿刷新/关闭页面!');
                 },

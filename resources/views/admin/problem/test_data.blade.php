@@ -14,12 +14,11 @@
             </div>
         </form>
         @if(isset($_GET['pid']))
-            <form class="p-3" action="{{route('admin.problem.upload_data')}}" method="post" enctype="multipart/form-data">
+            <form class="p-3" method="post" enctype="multipart/form-data" onsubmit="return do_upload()">
                 @csrf
-                <input type="number" name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:0}}" hidden>
                 <div class="form-inline">
                     <label>上传文件(按住Ctrl多选)：</label>
-                    <input type="file" name="files[]" multiple class="form-control">
+                    <input type="file" id="test_data" required multiple class="form-control">
                     <button class="btn btn-light bg-success ml-1">上传</button>
                 </div>
             </form>
@@ -33,7 +32,7 @@
                 <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
 
                 <a href="javascript:delete_data()" class="ml-3">删除</a>
-                <a href="javascript:" class="text-gray" onclick="whatisthis('选中的测试数据将被删除；<br>注：这将成对删除每组输入及输出')">
+                <a href="javascript:" class="text-gray" onclick="whatisthis('选中的文件将被删除')">
                     <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                 </a>
 
@@ -145,7 +144,38 @@
         </div>
     </div>
 
+    <script src="{{asset('js/uploadBig.js')}}"></script>
     <script>
+        function do_upload() {
+            uploadBig({
+                url:"{{route('admin.problem.upload_data')}}",
+                _token:"{{csrf_token()}}",
+                files:$("#test_data")[0].files,
+                data:{
+                    'pid':"{{isset($_GET['pid'])?$_GET['pid']:0}}"
+                },
+                before:function (file_count, total_size) {
+                    Notiflix.Loading.Hourglass('开始上传'+file_count+'个文件!总大小：'+(total_size/1024).toFixed(1)+'MB');
+                },
+                uploading: function (file_count,index,up_size,fsize) {
+                    Notiflix.Loading.Change('上传中'+index+'/'+file_count+' : '+
+                        (up_size/1024).toFixed(1)+'MB/'+(fsize/1024).toFixed(1) +'MB ('+
+                        Math.round(up_size/fsize)+'%) 请勿刷新/关闭页面!');
+                },
+                success:function (file_count,ret) {
+                    Notiflix.Loading.Remove();
+                    Notiflix.Report.Success('成功', '已导入'+file_count+'个文件','好的',function () {location.reload()});
+                },
+                error:function (xhr,status,err) {
+                    Notiflix.Loading.Remove();
+                    Notiflix.Report.Failure('文件导入失败','您上传的文件似乎已损坏：'+err,'好的');
+                }
+            });
+            return false;
+        }
+
+
+
         function get_data(filename) {
             $.post(
                 '{{route('admin.problem.get_data')}}',
