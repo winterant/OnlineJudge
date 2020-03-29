@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\Input;
 
+use App\Http\Controllers\UploadController;
+
 class ProblemController extends Controller
 {
     //管理员显示题目列表
@@ -185,23 +187,13 @@ class ProblemController extends Controller
     }
 
     public function import(Request $request){
-        //ajax post: 接收分片的xml大文件.
-        $import=intval($request->input('import'));  //是否执行导入的指令
-        if(!$import){
-            $block_id=intval($request->input('block_id')); //块号
-            $file_block=$request->file('file_block');  //文件块
-            $file_block->move(storage_path('app/temp_xml'),$block_id);
-            return $block_id;
-        }
 
+        $uc=new UploadController;
+        $isUploaded=$uc->upload($request,'xml_temp','import_problems.xml');
+        if(!$isUploaded)return 0;
 
-        //上传完成，下面合并切片，最后导入题库
-        for($i=0;$i<intval($import);$i++){
-            $block=Storage::get('temp_xml/'.$i);
-            file_put_contents(storage_path('app/temp_xml/import_problems.xml'),$block,$i?FILE_APPEND:FILE_TEXT);//追加:覆盖
-        }
         //读取xml->导入题库
-        $xmlDoc=simplexml_load_file(storage_path('app/temp_xml/import_problems.xml'),null,LIBXML_NOCDATA|LIBXML_PARSEHUGE);
+        $xmlDoc=simplexml_load_file(storage_path('app/xml_temp/import_problems.xml'),null,LIBXML_NOCDATA|LIBXML_PARSEHUGE);
         $searchNodes = $xmlDoc->xpath ( "/fps/item" );
         $first_pid=null;
         foreach ($searchNodes as $node) {
@@ -262,7 +254,7 @@ class ProblemController extends Controller
                 }
             }
         }
-        Storage::deleteDirectory('temp_xml'); //删除已经没用的xml文件
+        Storage::deleteDirectory("xml_temp"); //删除已经没用的xml文件
         return $first_pid.($first_pid<$pid?'-'.$pid:'');
     }
 
