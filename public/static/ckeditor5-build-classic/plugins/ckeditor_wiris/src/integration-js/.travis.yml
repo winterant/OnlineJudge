@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+- '8'
+cache:
+- node_modules
+env:
+  global:
+  - secure: URTZgBumQl9SO2OQi8uKz46f39d6VJ1QL1Gkp3L6crCBb8h8pSkR/+ASdEFyXJ+veA7J5df3PVgLwOVRYNmv6Imhc6oVPQYam5fKOXvhqHUZKFp5bAZFVGeh0d5KrHTo86ExoGxBQ37S/0I0obakIQpqje6A0EU3f+D9bGaNE9vStvQ/o8ENd1XtZ7x57AWRaU8guEjbys7QIxIydf+8kDvGFBEas8fq3W9T+VjpNIId/nmv90gyB8PirwCt/IpZuRw8G4EA6MzmYM1peqFOsttL6ozRrVlH4MVwxkDymdIdhNSZN6DJXQwxcZ7rmL1dh2EcEzJ+yURyKU6JqKIDxNygOY4PtX3JpAv2sLJqreaEg0m94yx6RTlV5HnqGXtdbAEd4go7MfsGrZRBJGFMClsUutWlRecPiZ5u9PwnV+ovo38gEnrkED5cljS9CqQSA+MKC7RADpSqJsBo6hfJUPw0JDenX+CepJArlUqwDujtUtKsvKy9aG2kTGy61imsJru+Crjvx3JUskf2dGctbJHndbNm69CVEbgkSC2W53PrSA1D6qcsyuEkPccxWLosjGKKx5rOsZXjdRaU5157FOzJVip0eWFCJdTxRM8Yh7WK6CNe5X/PfIfOtoSW6CPd57XiYdbr6QSKfQNHsQ+3uOGuSpy5Q6VzvEMl4dLiub8=
+install:
+- npm install
+script:
+- npm run lint
+- export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: bash scripts/deploy/moodle.sh
+  on:
+    all_branches: true

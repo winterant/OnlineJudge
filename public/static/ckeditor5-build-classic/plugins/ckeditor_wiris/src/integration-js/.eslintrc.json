@@ -1,0 +1,24 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+     "parserOptions": {
+         "parser": "babel-eslint"
+     },
+    "extends": [
+        "airbnb-base"
+    ],
+    "rules": {
+      "no-underscore-dangle" : "off",
+      "no-param-reassign" : "off",
+      "import/no-cycle" : "off"
+    },
+    "globals" : {
+      "_wrs_int_wirisProperties" : "readonly",
+      "event" : "readonly",
+      "com" : "readonly",
+      "_wrs_modalWindow" : "readonly",
+      "ActiveXObject" : "readonly"
+    }
+}
