@@ -4,6 +4,18 @@
 
 @section('content')
 
+    <link rel="stylesheet" href="{{asset('static/textareafullscreen/textareafullscreen.css')}}">
+    <script src="{{asset('static/textareafullscreen/jquery.textareafullscreen.js')}}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#code_editor').textareafullscreen({
+                overlay: true, // Overlay
+                maxWidth: '80%', // Max width
+                maxHeight: '80%', // Max height
+            });
+        });
+    </script>
+
     <style type="text/css">
         select {
             text-align: center;
@@ -139,12 +151,13 @@
                                 <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
                             </a>
                         </div>
-                        <input type="file" class="form-control-file" name="code_file" accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
+                        <input type="file" class="form-control-file" name="code_file" accept=".c, .cc, .cpp, .java, .py" hidden/>
                     </div>
 
                     <div class="form-group">
-                        <textarea class="form-control-plaintext border p-2" rows="7" name="solution[code]"
-                                  placeholder="{{trans('sentence.Input Code')}}"></textarea>
+                        <textarea id="code_editor" class="form-control-plaintext border p-2" rows="7" name="solution[code]"
+                              onkeydown="if(event.keyCode===9){this.value=this.value+'    ';event.returnValue = false;}"
+                              placeholder="{{trans('sentence.Input Code')}}"></textarea>
                     </div>
 
                     @guest

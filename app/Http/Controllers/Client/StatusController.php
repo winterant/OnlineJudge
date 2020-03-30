@@ -54,8 +54,16 @@ class StatusController extends Controller
         if(!Auth::check()) //未登录 => 请先登录
             return view('client.fail',['msg'=>trans('sentence.Please login first')]);
 
-        //提交一条solution
+        //获取前台提交的solution信息
         $data = $request->input('solution');
+
+        //拦截频繁提交
+        $last_submit_time = DB::table('solutions')
+            ->where('user_id',Auth::id())
+            ->orderByDesc('submit_time')
+            ->value('submit_time');
+        if(time()-strtotime($last_submit_time)<intval(config('oj.main.submit_interval')))
+            return view('client.fail',['msg'=>trans('sentence.submit_frequently',['sec'=>config('oj.main.submit_interval')])]);
 
         if(!isset($data['cid'])) //通过题库提交
         {

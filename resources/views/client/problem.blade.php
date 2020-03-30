@@ -4,6 +4,18 @@
 
 @section('content')
 
+    <link rel="stylesheet" href="{{asset('static/textareafullscreen/textareafullscreen.css')}}">
+    <script src="{{asset('static/textareafullscreen/jquery.textareafullscreen.js')}}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#code_editor').textareafullscreen({
+                overlay: true, // Overlay
+                maxWidth: '80%', // Max width
+                maxHeight: '80%', // Max height
+            });
+        });
+    </script>
+
     <style type="text/css">
         select {
             text-align: center;
@@ -213,7 +225,8 @@
                     </div>
 
                     <div class="form-group">
-                        <textarea class="form-control-plaintext border p-2" rows="7" name="solution[code]"
+                        <textarea id="code_editor" class="form-control-plaintext border p-2" rows="7" name="solution[code]"
+                            onkeydown="if(event.keyCode===9){this.value=this.value+'    ';event.returnValue = false;}"
                             placeholder="{{trans('sentence.Input Code')}}"></textarea>
                     </div>
 
