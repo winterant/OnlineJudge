@@ -19,8 +19,8 @@
                 <label class="form-inline">竞赛类型：
                     <select name="contest[type]" class="form-control">
                         <option value="acm" {{isset($contest)&&$contest->type=='acm'?'selected':''}}>acm：icpc程序设计竞赛规则</option>
-                        <option value="oi" {{isset($contest)&&$contest->type=='oi'?'selected':''}}>oi：信息学竞赛规则</option>
-                        <option value="exam" {{isset($contest)&&$contest->type=='exam'?'selected':''}}>exam：考试</option>
+                        <option value="oi" {{isset($contest)&&$contest->type=='oi'?'selected':''}}>experiment/oi：实验/信息学竞赛规则</option>
+                        <option value="exam" {{isset($contest)&&$contest->type=='exam'?'selected':''}}>exam：考试(各题打分)</option>
                     </select>
                     <a href="javascript:" class="ml-1" style="color: #838383"
                        onclick="whatisthis('icpc规则：<br>对于每题，通过时间累加为罚时，通过前的每次错误提交罚时20分钟；<br><br>' +
