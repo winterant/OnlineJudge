@@ -595,6 +595,6 @@ int main (int argc, char* argv[])
 
     // 6. 关闭数据库+删除临时文件夹
     mysql_close(mysql);
-    system_cmd("now_pwd='pwd' && cd .. && rm -rf ${now_pwd}"); //删除该记录所用的临时文件夹
+    system_cmd("now_pwd=`pwd` && cd .. && rm -rf ${now_pwd}"); //删除该记录所用的临时文件夹
     return 0;
 }
