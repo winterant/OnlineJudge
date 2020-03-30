@@ -58,7 +58,7 @@
                     <input id="input_allow_lang" type="number" name="contest[allow_lang]" hidden>
                     <select name="allow_lang" class="form-control" multiple onchange="allow_lang_changed()">
                         @foreach(config('oj.lang') as $key=>$res)
-                            <option value="{{$key}}" selected>{{$res}}</option>
+                            <option value="{{$key}}" @if(!isset($contest)||($contest->allow_lang&(1<<$key)))selected @endif>{{$res}}</option>
                         @endforeach
                     </select>
                 </label>

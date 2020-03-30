@@ -221,14 +221,14 @@ class ContestController extends Controller
                         ->first(['id','submit_time']);
 
                     //计算AC时间与罚时
-                    if($firstAC!=null) //已AC, 设置wrong，AC_time
+                    if($firstAC!=null) //已AC, 设置wrong，AC_info
                     {
                         $users[$user->id][$i]['wrong']=self::get_solutions_rank($contest,$user->id,$pid)
                             ->whereIn('result',[5,6,7,8,9,10])->where('id','<',$firstAC->id)->count();
                         $AC_count++; //AC数量+1
                         //计算AC时间
-                        $users[$user->id][$i]['AC_time']=
-                            self::seconds_to_clock(strtotime($firstAC->submit_time)-strtotime($contest->start_time));
+                        $users[$user->id][$i]['AC_clock']=strtotime($firstAC->submit_time)-strtotime($contest->start_time);
+                        $users[$user->id][$i]['AC_info']=self::seconds_to_clock($users[$user->id][$i]['AC_clock']);
                         //AC罚时+额外罚时!
                         $penalty += strtotime($firstAC->submit_time)-strtotime($contest->start_time)
                             + $users[$user->id][$i]['wrong']*config('oj.main.penalty_acm');
@@ -253,7 +253,7 @@ class ContestController extends Controller
                     if($score!=null) //存在分数
                     {
                         $score=round($score*100);
-                        $users[$user->id][$i]['AC_time']=$score;
+                        $users[$user->id][$i]['AC_info']=$score;
                         $AC_count+=$score; //总得分
                     }
                 }

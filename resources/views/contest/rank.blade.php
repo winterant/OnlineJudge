@@ -28,9 +28,9 @@
                 <hr class="mt-0">
 
                 @if($contest->lock_rate>0&&time()>strtotime($lock_time))  {{-- 封榜了 --}}
-                    <div class="float-left py-1">
+                    <div class="float-left">
                         <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: red"></i>
-                        {{trans('sentence.rank_end_time',['time'=>$lock_time])}}
+                        <span class="py-1">{{trans('sentence.rank_end_time',['time'=>$lock_time])}}</span>
 
                         @if(Auth::check() && Auth::user()->privilege('contest')) {{-- 管理员可以取消封榜 --}}
                             <form class="d-inline" action="{{route('contest.cancel_lock',$contest->id)}}" method="post"
@@ -132,16 +132,21 @@
                                         <td>{{$user['penalty']}}</td>
                                     @endif
                                     @foreach($index_map as $i=>$pid)
-                                        @if(isset($user[$i]['first'])) {{--  first AC --}}
-                                            <td class="border" style="background-color: #12d000" nowrap>
-                                                {{$user[$i]['AC_time']}}
-                                                {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':' '}}
+                                        @if(isset($user[$i]['AC_clock'])&&$user[$i]['AC_clock']>$contest->end_time)
+                                            <td class="border" style="background-color: #99d7ff" nowrap>
+                                                {{$user[$i]['AC_info']}}
+                                                {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
                                             </td>
-                                        @elseif(isset($user[$i]['AC_time']))
-                                            <td class="border" style="@if($contest->type=='oi'&&$user[$i]['AC_time']<100)background-color:#ffafa7;
+                                        @elseif(isset($user[$i]['first'])) {{--  first AC --}}
+                                            <td class="border" style="background-color: #12d000" nowrap>
+                                                {{$user[$i]['AC_info']}}
+                                                {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
+                                            </td>
+                                        @elseif(isset($user[$i]['AC_info']))
+                                            <td class="border" style="@if($contest->type=='oi'&&$user[$i]['AC_info']<100)background-color:#ffafa7;
                                                     @else background-color:#87ec97;@endif" nowrap>
-                                                {{$user[$i]['AC_time']}}
-                                                {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':' '}}
+                                                {{$user[$i]['AC_info']}}
+                                                {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
                                             </td>
                                         @elseif($user[$i]['wrong']>0)
                                             <td class="border" style="background-color: #ffafa7">(-{{$user[$i]['wrong']}})</td>
@@ -158,6 +163,7 @@
                     <div><i class="fa fa-square" aria-hidden="true" style="color: #87ec97"></i> Solved the problem</div>
                     <div><i class="fa fa-square" aria-hidden="true" style="color: #ffafa7"></i> Failed to solve the problem</div>
                     <div><i class="fa fa-square-o" aria-hidden="true"></i> No solutions submited</div>
+                    <div><i class="fa fa-square" aria-hidden="true" style="color: #99d7ff"></i> Accepted after the end of contest</div>
                 </div>
 
             </div>
