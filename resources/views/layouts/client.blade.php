@@ -44,8 +44,18 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>'exam'])}}">
+                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Exam')}}</i>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-nowrap p-2" href="{{route('contests')}}">
                     <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-nowrap p-2" href="{{route('contests',['state'=>'ended'])}}">
+                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Ended')}}</i>
                 </a>
             </li>
             <li class="nav-item">
