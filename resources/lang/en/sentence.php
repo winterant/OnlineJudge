@@ -33,6 +33,7 @@ return [
     "Wrong spj"=> "Wrong spj",
     "Choose Language"   => "----Choose Language----",
     "Input Code"        => "Input your code to solve this problem...",
+    "submit_frequently" => "Submit frequently! You are not allowed to submit twice in :sec seconds",
 
 
 //    contest.password
@@ -44,4 +45,9 @@ return [
     "Waiting to start after" => "Waiting to start after",
     "rank_end_time"     => "To contestants, stoped updating at :time",
     "Up to now"         => "Add submission after contest to the ranking",
+    "firstAC"           => "The first to solve the problem",
+    "normalAC"          => "Solved the problem",
+    "normalWA"          => "Failed to solve the problem",
+    "noSubmit"          => "No solutions submitted",
+    "endedAC"           => "Accepted after the end of contest",
 ];

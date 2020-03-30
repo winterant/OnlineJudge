@@ -159,11 +159,11 @@
                     </tbody>
                 </table>
                 <div>
-                    <div><i class="fa fa-square" aria-hidden="true" style="color: #12d000"></i> The first to solve the problem</div>
-                    <div><i class="fa fa-square" aria-hidden="true" style="color: #87ec97"></i> Solved the problem</div>
-                    <div><i class="fa fa-square" aria-hidden="true" style="color: #ffafa7"></i> Failed to solve the problem</div>
-                    <div><i class="fa fa-square-o" aria-hidden="true"></i> No solutions submited</div>
-                    <div><i class="fa fa-square" aria-hidden="true" style="color: #99d7ff"></i> Accepted after the end of contest</div>
+                    <div><i class="fa fa-square" aria-hidden="true" style="color: #12d000"></i> {{__('sentence.firstAC')}}</div>
+                    <div><i class="fa fa-square" aria-hidden="true" style="color: #87ec97"></i> {{__('sentence.normalAC')}}</div>
+                    <div><i class="fa fa-square" aria-hidden="true" style="color: #ffafa7"></i> {{__('sentence.normalWA')}}</div>
+                    <div><i class="fa fa-square-o" aria-hidden="true"></i> {{__('sentence.noSubmit')}}</div>
+                    <div><i class="fa fa-square" aria-hidden="true" style="color: #99d7ff"></i> {{__('sentence.endedAC')}}</div>
                 </div>
 
             </div>

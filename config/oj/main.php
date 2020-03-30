@@ -8,4 +8,5 @@ return [
 	"rank_show_school"	=> false,
 	"rank_show_nick"	=> true,
 	"penalty_acm"	=> 1200,
+    "submit_interval"   => 20,
 ];
