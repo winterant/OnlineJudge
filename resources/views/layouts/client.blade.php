@@ -44,18 +44,18 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>'acm'])}}">
+                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>'oi'])}}">
-                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Experiments')}}/{{trans('main.Oi')}}</i>
+                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Experiments')}}({{trans('main.Oi')}})</i>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>'exam'])}}">
                     <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Exams')}}</i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('contests')}}">
-                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
                 </a>
             </li>
             <li class="nav-item">
