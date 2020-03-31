@@ -44,9 +44,38 @@ class StatusController extends Controller
         return view('client.solution',compact('solution'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
+    //从txt文件读取的内容转码
+    function autoiconv($text,$type = "gb2312//ignore"){
+        define('UTF32_BIG_ENDIAN_BOM', chr(0x00) . chr(0x00) . chr(0xFE) . chr(0xFF));
+        define('UTF32_LITTLE_ENDIAN_BOM', chr(0xFF) . chr(0xFE) . chr(0x00) . chr(0x00));
+        define('UTF16_BIG_ENDIAN_BOM', chr(0xFE) . chr(0xFF));
+        define('UTF16_LITTLE_ENDIAN_BOM', chr(0xFF) . chr(0xFE));
+        define('UTF8_BOM', chr(0xEF) . chr(0xBB) . chr(0xBF));
+        $first2 = substr($text, 0, 2);
+        $first3 = substr($text, 0, 3);
+        $first4 = substr($text, 0, 3);
+        $encodType = "";
+        if ($first3 == UTF8_BOM)
+            $encodType = 'UTF-8 BOM';
+        else if ($first4 == UTF32_BIG_ENDIAN_BOM)
+            $encodType = 'UTF-32BE';
+        else if ($first4 == UTF32_LITTLE_ENDIAN_BOM)
+            $encodType = 'UTF-32LE';
+        else if ($first2 == UTF16_BIG_ENDIAN_BOM)
+            $encodType = 'UTF-16BE';
+        else if ($first2 == UTF16_LITTLE_ENDIAN_BOM)
+            $encodType = 'UTF-16LE';
+        //下面的判断主要还是判断ANSI编码的·
+        if ($encodType == '') {//即默认创建的txt文本-ANSI编码的
+            $content = iconv("GBK", "UTF-8", $text);
+        } else if ($encodType == 'UTF-8 BOM') {//本来就是UTF-8不用转换
+            $content = $text;
+        } else {//其他的格式都转化为UTF-8就可以了
+            $content = iconv($encodType, "UTF-8", $text);
+        }
+        return $content;
+    }
+    /*
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request)
@@ -73,7 +102,7 @@ class StatusController extends Controller
         }
 
         if(null!=($file=$request->file('code_file')))//用户提交了文件,从临时文件中直接提取文本
-            $data['code']=file_get_contents($file->getRealPath());
+            $data['code']=self::autoiconv(file_get_contents($file->getRealPath()));
 
         //竞赛提交&&不允许提交的代码语言
         if(isset($data['cid']) && !((1<<$data['language'])&DB::table('contests')->find($data['cid'])->allow_lang) )
@@ -91,7 +120,7 @@ class StatusController extends Controller
 
             'ip'            => $request->getClientIp(),
             'code_length'   => strlen($data['code']),
-            'code'          => $data['code'],
+            'code'          => $data['code']
             ]);
 
         Cookie::queue('submit_language',$data['language']);
