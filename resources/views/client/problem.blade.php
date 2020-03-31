@@ -1,6 +1,10 @@
 @extends('layouts.client')
 
-@section('title',trans('main.Problem').$problem->id.' | '.config('oj.main.siteName'))
+@if(isset($contest))
+    @section('title',trans('main.Problem').' '.index2ch($problem->index).' | '.trans('main.Contest').' '.$contest->id.' | '.config('oj.main.siteName'))
+@else
+    @section('title',trans('main.Problem').' '.$problem->id.' | '.config('oj.main.siteName'))
+@endif
 
 @section('content')
 
@@ -16,26 +20,27 @@
         });
     </script>
 
-    <style type="text/css">
-        select {
-            text-align: center;
-            text-align-last: center;
-        }
-    </style>
-
-
     <div class="container">
+
+        {{-- 竞赛下，显示菜单 --}}
+        @if(isset($contest))
+            <div class="col-12">
+                @include('contest.menu')
+            </div>
+        @endif
 
         <div class="col-md-8 col-sm-12 col-12">
             <div class="my-container bg-white d-inline-block">
-                @if($problem->hidden==1)
+{{--                非竞赛&&题目未公开，则提示 --}}
+                @if(!isset($contest)&&$problem->hidden==1)
                     [<font class="text-red">{{trans('main.Hidden')}}</font>]
                 @endif
-                <h3 class="text-center">{{$problem->id}}. {{$problem->title}}
+                <h3 class="text-center">{{isset($contest)?index2ch($problem->index):$problem->id}}. {{$problem->title}}
+{{--                    管理员编辑题目的连接 --}}
                     @if(Auth::check()&&Auth::user()->privilege('problem'))
                         <font style="font-size: 0.85rem">
                             [ <a href="{{route('admin.problem.update_withId',$problem->id)}}" target="_blank">{{__('main.Edit')}}</a> ]
-                            [ <a href="{{route('admin.problem.test_data','pid='.$problem->id)}}" target="_blank">{{__('main.Test Data')}}</a> ]
+                            [ <a href="{{route('admin.problem.test_data',['pid'=>$problem->id])}}" target="_blank">{{__('main.Test Data')}}</a> ]
                         </font>
                     @endif
                 </h3>
@@ -59,8 +64,7 @@
                     @endif
                     @foreach($samples as $i=>$sam)
                         <div class="border mb-4">
-                            <div class="border-bottom pl-2 bg-light">
-                                Input
+                            <div class="border-bottom pl-2 bg-light">Input
                                 <a href="javascript:" onclick="copy('sam_in{{$i}}')">{{__('main.Copy')}}</a>
                             </div>
                             <pre class="m-1" id="sam_in{{$i}}">{{$sam[0]}}</pre>
@@ -122,8 +126,8 @@
 
             </div>
 
-            {{-- 涉及到的竞赛 --}}
-            @if($contests!=null)
+            {{-- 题库中查看题目时，显示涉及到的竞赛 --}}
+            @if(!isset($contest)&&count($contests)>0)
                 <div class="my-container bg-white">
 
                     <h5>{{__('main.Contests involved')}}</h5>
@@ -147,8 +151,8 @@
                 </div>
             @endif
 
-            {{-- 提交记录--}}
-            @auth
+            {{-- 题库中查看，显示提交记录--}}
+            @if(!isset($contest))
                 <div class="my-container bg-white">
 
                     <h5>{{trans('main.MySolution')}}</h5>
@@ -199,7 +203,7 @@
                         </div>
                     @endif
                 </div>
-            @endauth
+            @endif
 
             {{-- 提交窗口 --}}
             <div class="my-container bg-white">
@@ -210,10 +214,18 @@
                     @csrf
                     <input name="solution[pid]" value="{{$problem->id}}" hidden>
 
+                    @if(isset($contest))
+                        <input name="solution[index]" value="{{$problem->index}}" hidden>
+                        <input name="solution[cid]" value="{{$contest->id}}" hidden>
+                        <input name="solution[judge_type]" value="{{$contest->type}}" hidden>
+                    @endif
+
                     <div class="form-inline my-2">
-                        <select name="solution[language]" class="form-control border border-bottom-0 col-4">
+                        <select name="solution[language]" class="form-control border border-bottom-0 col-4" style="text-align-last: center;">
                             @foreach(config('oj.lang') as $key=>$res)
-                                <option value="{{$key}}" {{Cookie::get('submit_language')==$key?'selected':''}}>{{$res}}</option>
+                                @if(!isset($contest) || ( 1<<$key)&$contest->allow_lang) )
+                                    <option value="{{$key}}" @if(Cookie::get('submit_language')==$key)selected @endif>{{$res}}</option>
+                                @endif
                             @endforeach
                         </select>
                         <div class="col-4">
@@ -230,21 +242,14 @@
                             placeholder="{{trans('sentence.Input Code')}}"></textarea>
                     </div>
 
+                    <button type="submit" class="btn bg-light" @guest disabled @endguest>{{trans('main.Submit')}}</button>
                     @guest
-                        <button type="submit" class="btn bg-light" disabled>{{trans('main.Submit')}}</button>&nbsp;
-                        <a  href="{{ route('login') }}">{{ trans('Login') }}</a>&nbsp;
-                        @if (Route::has('register'))
-                            <a  href="{{ route('register') }}">{{ trans('Register') }}</a>
-                        @endif
-                    @else
-                        <button type="submit" class="btn bg-light">{{trans('main.Submit')}}</button>
+                        <a href="{{route('login')}}">{{trans('Login')}}</a>
+                        <a href="{{route('register')}}">{{trans('Register')}}</a>
                     @endguest
                 </form>
-
             </div>
-
         </div>
-
     </div>
 
     <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script> {{-- ckeditor样式 --}}

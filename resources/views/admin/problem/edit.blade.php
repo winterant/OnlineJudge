@@ -105,13 +105,17 @@
                                accept=".c,.cc,.cpp" @if(!isset($problem->spj)||$problem->spj==0) disabled @endif>
                     </div>
                     <div class="m-2 p-2 alert-info">
-                        温馨提示：
-                        @if(isset($hasSpj)?$hasSpj:false)
-                            已存在特判程序源码spj.cpp，继续上传特判程序将自动舍弃原有程序！
+                        备注：
+                        @if(isset($spj_exist)?$spj_exist:false)
+                            已上传
+                            <a href="{{route('admin.problem.get_spj',$problem->id)}}" download>
+                                <i class="fa fa-file-code-o" aria-hidden="true"></i> spj.cpp
+                            </a>
+                            ,重新上传将覆盖！
                         @else
                             若题目需要特判，请勾选此项，并上传特判程序的C/C++源代码文件。
                         @endif
-                        使用前请阅读《<a href="https://blog.csdn.net/winter2121/article/details/104901188" target="_blank">特判使用教程</a>》.
+                        附《<a href="https://blog.csdn.net/winter2121/article/details/104901188" target="_blank">特判使用教程</a>》
                     </div>
                 </div>
 

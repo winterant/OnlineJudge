@@ -57,12 +57,13 @@ void get_wating_solution(int solution_queue[],int &queueing_cnt) //从solutions�
         strcat(sid_str,mysql_row[0]);
     }
     mysql_free_result(mysql_res); //必须释放结果集，因为它是malloc申请在堆里的内存
-    delete sid_str;
     if(queueing_cnt>0)  //更新已读入的solution的result=queueing
     {
+        printf("It's gonna judge following %d sid: (%s)\n",queueing_cnt,sid_str);
         sprintf(sql,"UPDATE solutions SET result=%d,judger='%s' WHERE id in (%s)",OJ_QI,JG_NAME,sid_str); //更新状态
         mysql_real_query(mysql,sql,strlen(sql));
     }
+    delete sid_str;
 }
 
 void polling()  //轮询数据库收集待判提交

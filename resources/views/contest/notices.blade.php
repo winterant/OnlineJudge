@@ -138,21 +138,22 @@
     <script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
     <script>
 
-        //编辑框配置
-        var config={
-            language: "zh-cn",
-            ckfinder: {
-                uploadUrl:'{{route('admin.contest.upload_image',['_token'=>csrf_token()])}}'
-            }
-        };
-        //各个编辑框ckeditor
-        var editor=ClassicEditor.create(document.querySelector('#content'), config).then(editor => {
-            window.editor = editor;
-            console.log(editor.getData());
-        } ).catch(error => {
-            console.log(error);
-        } );
-
+        @if(Auth::user()->privilege('contest'))
+            //编辑框配置
+            var config={
+                language: "zh-cn",
+                ckfinder: {
+                    uploadUrl:'{{route('admin.contest.upload_image',['_token'=>csrf_token()])}}'
+                }
+            };
+            //各个编辑框ckeditor
+            var editor=ClassicEditor.create(document.querySelector('#content'), config).then(editor => {
+                window.editor = editor;
+                console.log(editor.getData());
+            } ).catch(error => {
+                console.log(error);
+            } );
+        @endif
 
         function get_notice(nid) {
             $.post(
