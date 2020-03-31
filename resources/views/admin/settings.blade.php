@@ -115,7 +115,7 @@
                     <label>提交间隔：
                         <input type="number" name="submit_interval"
                                value="{{$settings['submit_interval']}}"
-                               required class="form-control">秒（用户提交代码后，在此时间内将被禁止提交，建议30秒）
+                               required class="form-control">秒（短于该时间内无法提交2次，防止恶意提交；管理员不受限制，建议20秒）
                     </label>
                     <button class="btn text-white ml-4 bg-success">保存</button>
                 </div>
