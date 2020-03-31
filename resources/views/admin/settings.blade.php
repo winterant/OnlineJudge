@@ -25,6 +25,12 @@
                 <script src="{{asset('static/switch-dist/switch.js')}}"></script>
 
                 @csrf
+
+                <div class="form-group">
+                    <input id="web_page_display_wide" type="checkbox">
+                    <input name="web_page_display_wide" value="{{$settings['web_page_display_wide']?'true':'false'}}" type="text" hidden>
+                    <font>前台页面宽度最大化，使得左右两边铺满屏幕</font>
+                </div>
                 <div class="form-group">
                     <input id="allow_register" type="checkbox">
                     <input name="allow_register" value="{{$settings['allow_register']?'true':'false'}}" type="text" hidden>
@@ -51,6 +57,14 @@
                     <font>在竞赛的榜单中，显示用户的名称</font>
                 </div>
                 <script>
+                    new Switch($("#web_page_display_wide")[0],{
+                        // size: 'small',
+                        checked: '{{$settings['web_page_display_wide']?1:0}}'==='1',
+                        onChange:function () {
+                            $("input[name=web_page_display_wide]").attr('value',this.getChecked());
+                            $("#form_switch").submit();
+                        }
+                    });
                     new Switch($("#allow_register")[0],{
                         // size: 'small',
                         checked: '{{$settings['allow_register']?1:0}}'==='1',
@@ -95,6 +109,17 @@
             </form>
         </div>
         <div class="my-container">
+            <form onsubmit="return submit_settings(this)" method="post">
+                @csrf
+                <div class="form-inline">
+                    <label>提交间隔：
+                        <input type="number" name="submit_interval"
+                               value="{{$settings['submit_interval']}}"
+                               required class="form-control">秒（用户提交代码后，在此时间内将被禁止提交，建议30秒）
+                    </label>
+                    <button class="btn text-white ml-4 bg-success">保存</button>
+                </div>
+            </form>
             <form onsubmit="return submit_settings(this)" method="post">
                 @csrf
                 <div class="form-inline">

@@ -55,8 +55,8 @@
             <ul class="list-unstyled border-top">
                 @foreach($contests as $item)
                     <li class="d-flex flex-wrap border-bottom pt-3 pb-2">
-                        <div class="col-3 col-sm-1 p-xs-0">
-                            <img class="w-100" src="{{$item->state==1?asset('images/trophy/running.png'):asset('images/trophy/gold.png')}}">
+                        <div class="col-3 col-sm-1 p-xs-0 text-center">
+                            <img height="50px" src="{{$item->state==1?asset('images/trophy/running.png'):asset('images/trophy/gold.png')}}" alt="pic">
                         </div>
                         <div class="col-9 col-sm-8 pr-0">
                             <h5>{{$item->id}}. <a href="{{route('contest.home',$item->id)}}">{{$item->title}}</a></h5>

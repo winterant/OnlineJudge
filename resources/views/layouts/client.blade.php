@@ -9,6 +9,9 @@
         .container{
             display: flex;
             flex-wrap: wrap;
+            @if(config('oj.main.web_page_display_wide'))
+                max-width:8000px;
+            @endif
         }
         .nav-link, .btn {
             text-transform: none;
