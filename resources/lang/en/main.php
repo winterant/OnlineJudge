@@ -42,6 +42,7 @@ return [
     "Confirm"       => "Confirm",
     "Cancel"        => "Cancel",
     "Delete"        => "Delete",
+    "Find"          => "Find",
     "Register"      => "Register",
     "Login"         => "Login",
     "Logout"         => "Logout",

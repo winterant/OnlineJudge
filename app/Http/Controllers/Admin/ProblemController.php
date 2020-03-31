@@ -54,8 +54,8 @@ class ProblemController extends Controller
 
             $samples=read_problem_samples($problem->id);
             //看看有没有特判文件
-            $hasSpj=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
-            return view('admin.problem.edit',compact('pageTitle','problem','samples','hasSpj'));
+            $spj_exist=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
+            return view('admin.problem.edit',compact('pageTitle','problem','samples','spj_exist'));
         }
 
         // 提交修改好的题目
@@ -84,6 +84,13 @@ class ProblemController extends Controller
         }
     }
 
+    public function get_spj($pid){
+        if(Storage::exists('data/'.$pid.'/spj/spj.cpp')){
+            return Storage::download('data/'.$pid.'/spj/spj.cpp');
+        }
+        return null;
+    }
+
     public function upload_image(Request $request){
         $image=$request->file('upload');
         $fname=uniqid(date('Ymd_His_')).'.'.$image->getClientOriginalExtension();
@@ -102,7 +109,7 @@ class ProblemController extends Controller
     }
 
 
-    //测试数据管理
+    //测试数据管理页面
     public function test_data(){
         //读取数据文件
         $tests=[];

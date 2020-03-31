@@ -98,14 +98,15 @@ class ContestController extends Controller
     public function problem($id,$pid){
         $contest=DB::table('contests')->find($id);
         $problem=DB::table('problems')
-            ->select('*',
+            ->join('contest_problems','contest_problems.problem_id','=','problems.id')
+            ->select('index','hidden','problem_id as id','title','description','input','output','hint','source',
+                'time_limit','memory_limit','spj',
                 DB::raw("(select count(id) from solutions where problem_id=problems.id and contest_id=".$id.") as submit"),
                 DB::raw("(select count(id) from solutions where problem_id=problems.id and contest_id=".$id." and result=4) as solved"))
-            ->join('contest_problems','contest_problems.problem_id','=','problems.id')
             ->where('contest_id',$id)
             ->where('index',$pid)
             ->first();
-        $samples=read_problem_samples($problem->problem_id);
+        $samples=read_problem_samples($problem->id);
 
         $hasSpj=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
         return view('contest.problem',compact('contest','problem','samples','hasSpj'));
@@ -119,7 +120,7 @@ class ContestController extends Controller
         $solutions=DB::table('solutions')
             ->join('users','solutions.user_id','=','users.id')
             ->join('contest_problems','solutions.problem_id','=','contest_problems.problem_id')
-            ->select(['solutions.id','index','user_id','username','nick','result','time','memory','language','submit_time','judger'])
+            ->select(['solutions.id','index','user_id','username','nick','result','judge_type','pass_rate','time','memory','language','submit_time','judger'])
             ->where('solutions.contest_id',$id)
             ->where('contest_problems.contest_id',$id)
             ->when(isset($_GET['index'])&&$_GET['index']!='',function ($q){return $q->where('index',$_GET['index']);})

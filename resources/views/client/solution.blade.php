@@ -18,7 +18,7 @@
                 &nbsp;{{config('oj.result.'.$solution->result)}}
 
                 @if($solution->judge_type!='acm')
-                    ( {{$solution->pass_rate*100}}% )
+                    ({{$solution->pass_rate*100}}%)
                 @endif
             </div>
 

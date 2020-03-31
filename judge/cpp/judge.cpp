@@ -481,7 +481,7 @@ int judge(char *data_dir, char *spj_path)
         system_cmd("/bin/cp %s ./spj",spj_path);
     }
 
-    int test_count=0,ac_count=0;
+    int test_count=0,ac_count=0, judge_result=OJ_AC;
     while((dirfile=readdir(dir))!=NULL)
     {
         char *test_name = isInFile(dirfile->d_name);
@@ -499,7 +499,7 @@ int judge(char *data_dir, char *spj_path)
         {
             char *data_out_path = get_data_out_path(data_dir,test_name);
             int result = watch_running(pid, solution.memory, solution.time, get_file_size(data_out_path)*2+1024);
-            if(result == OJ_TC)  //运行完成，需要判断用户的答案
+            if(result == OJ_TC)  //运行完成，需要判断用户的答案是否正确
             {
                 if(solution.spj)  //special judge
                     result = running_spj("data.in",data_out_path,"user.out");
@@ -509,12 +509,17 @@ int judge(char *data_dir, char *spj_path)
             printf("test %d result: %d\n",test_count,result);
             if(result==OJ_AC)ac_count++;
             if(strcmp(solution.judge_type,"acm")==0 && result!=OJ_AC) //acm遇到WA直接返回
-                return result;
+            {
+                judge_result=result;
+                break;
+            }
+            if(strcmp(solution.judge_type,"oi")==0 && result!=OJ_AC) //oi遇到错误记下来
+                judge_result=result;
         }
         else return OJ_SE;  //system error
     }
     solution.pass_rate = ac_count*1.0/test_count;
-    return OJ_AC; //accepted
+    return judge_result; //判题结果
 }
 
 int main (int argc, char* argv[])
@@ -585,7 +590,7 @@ int main (int argc, char* argv[])
             allow_sys_call[call_lang[i]]=true; //允许调用
 
         //开始判题
-        system_cmd("rm -rf error.out");
+        system_cmd("rm -rf error.out");  //删除原有error.out，实际上没有
         solution.result = judge(data_dir, spj_path);
         solution.error_info = read_file("error.out");
     }
