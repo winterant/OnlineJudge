@@ -228,12 +228,15 @@
                                 @endif
                             @endforeach
                         </select>
-                        <div class="col-4">
+                        <div class="px-1">
                             <a href="javascript:" class="btn m-0" onclick="$('[name=code_file]').click()" title="{{__('main.File')}}">
                                 <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
                             </a>
                         </div>
-                        <input type="file" class="form-control-file" name="code_file" accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
+                        <div id="selected_fname" style="font-size: 0.8rem"></div>
+                        <input type="file" class="form-control-file" name="code_file"
+                               onchange="$('#selected_fname').html(this.files[0].name)"
+                               accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
                     </div>
 
                     <div class="form-group">
