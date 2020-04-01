@@ -45,8 +45,11 @@
         </div>
 
     </div>
-    <script src="{{asset('js/uploadBig.js')}}"></script>
-    <script>
+
+    <script src="{{asset('js/uploadBig.js')}}" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
         function do_upload() {
             uploadBig({
                 url:"{{route('admin.problem.import')}}",
@@ -58,7 +61,7 @@
                 uploading: function (file_count,index,up_size,fsize) {
                     Notiflix.Loading.Change('上传中'+index+'/'+file_count+' : '+
                         (up_size/1024).toFixed(2)+'MB/'+(fsize/1024).toFixed(2) +'MB ('+
-                        Math.round(up_size/fsize)+'%) 请勿刷新/关闭页面!');
+                        Math.round(up_size*100/fsize)+'%)');
                 },
                 success:function (file_count,ret) {
                     Notiflix.Loading.Remove();
@@ -72,7 +75,7 @@
                 },
                 error:function (xhr,status,err) {
                     Notiflix.Loading.Remove();
-                    Notiflix.Report.Failure('文件导入失败','您上传的文件不完整！建议您检查文件内容是否符合xml格式：'+err,'好的');
+                    Notiflix.Report.Failure('文件导入失败','您上传的文件不完整！建议您检查文件内容是否符合xml格式：'+xhr,'好的');
                 }
             });
             return false;

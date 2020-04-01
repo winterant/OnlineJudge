@@ -13,7 +13,7 @@ class ContestController extends Controller
 {
     public function contests(){
         $contests=DB::table('contests')
-            ->select(['id','type','title','start_time','end_time','access','password',
+            ->select(['id','type','judge_type','title','start_time','end_time','access','password',
                 DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
                 DB::raw("case access when 'public'
                     then (select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id)
@@ -24,7 +24,8 @@ class ContestController extends Controller
                 else if($_GET['state']=='waiting')return $q->where('start_time','>',date('Y-m-d H:i:s'));
                 else return $q->where('start_time','<',date('Y-m-d H:i:s'))->where('end_time','>',date('Y-m-d H:i:s'));
             })
-            ->when(isset($_GET['type'])&&$_GET['type']!='0',function ($q){return $q->where('type',$_GET['type']);})
+            ->when(isset($_GET['type'])&&$_GET['type']!=null,function ($q){return $q->where('type',$_GET['type']);})
+            ->when(isset($_GET['judge_type'])&&$_GET['judge_type']!=null,function ($q){return $q->where('judge_type',$_GET['judge_type']);})
             ->when(isset($_GET['title']),function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
             ->orderBy('state')
             ->orderByDesc('start_time')
@@ -55,7 +56,7 @@ class ContestController extends Controller
 
     public function home($id){
         $contest=DB::table('contests')
-            ->select(['id','type','title','start_time','end_time','access','password','description',
+            ->select(['id','type','judge_type','title','start_time','end_time','access','password','description',
                 DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
                 DB::raw("case access when 'public'
                     then (select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id)
@@ -69,8 +70,8 @@ class ContestController extends Controller
                 DB::raw("(select count(*) from solutions where contest_id=".$contest->id." and problem_id=problems.id) as submit"),
 
                 //查询本人是否通过此题；4:Accepted,6:Attempting,0:没做
-                DB::raw("case 
-                    when 
+                DB::raw("case
+                    when
                     (select count(*) from solutions where contest_id=".$contest->id."
                         and problem_id=problems.id
                         and user_id=".Auth::id()." and result=4)>0
@@ -181,7 +182,7 @@ class ContestController extends Controller
             Cookie::queue('rank_table_lg',$_GET['big']); //保存榜单是否全屏
 
         $contest=DB::table('contests')
-            ->select(['id','type','title','description','access','start_time','end_time','lock_rate'])->find($id);
+            ->select(['id','type','judge_type','title','description','access','start_time','end_time','lock_rate'])->find($id);
 
         if($contest->start_time>date('Y-m-d H:i:s')) //比赛尚未开始
             return view('client.fail',['msg'=>trans('main.Waiting')]);
@@ -213,7 +214,7 @@ class ContestController extends Controller
             $penalty=0; //罚时
             $AC_count=0; //AC数量
             foreach ($index_map as $i=>$pid){     //这是一个格子，即某人某题
-                if($contest->type == 'acm') //acm赛制
+                if($contest->judge_type == 'acm') //acm赛制
                 {
                     // 获取第一次AC记录
                     $firstAC=self::get_solutions_rank($contest,$user->id,$pid)
@@ -280,7 +281,7 @@ class ContestController extends Controller
             if($last_user!=null && $last_user['AC']==$user['AC'] && $last_user['penalty']==$user['penalty'])
                 $user['rank'] = $last_user['rank'];
             $user['rank'] = $rank;
-            if($contest->type == 'acm')
+            if($contest->judge_type == 'acm')
                 $user['penalty']=self::seconds_to_clock($user['penalty']);
 
             $last_user=$user;

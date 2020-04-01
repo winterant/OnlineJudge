@@ -21,7 +21,7 @@
             <a class="nav-link p-2" href="{{route('contest.status',$contest->id)}}">{{trans('main.Status')}}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-nowrap p-2" href="{{route('contest.rank',$contest->id)}}">{{trans('main.Rank')}} [ {{$contest->type}} ]</a>
+            <a class="nav-link text-nowrap p-2" href="{{route('contest.rank',$contest->id)}}">{{trans('main.Rank')}} [ {{$contest->judge_type}} ]</a>
         </li>
         <li class="nav-item">
             <a class="nav-link p-2" href="{{route('contest.notices',$contest->id)}}">

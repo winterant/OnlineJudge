@@ -90,7 +90,7 @@
                             @if(config('oj.main.rank_show_school'))<th>{{trans('main.School')}}</th> @endif
                             @if(config('oj.main.rank_show_nick'))<th>{{trans('main.Name')}}</th> @endif
 
-                            @if($contest->type == 'acm')
+                            @if($contest->judge_type == 'acm')
                                 <th>{{trans('main.Solved')}}</th>
                                 <th>{{trans('main.Penalty')}}</th>
                             @else
@@ -128,7 +128,7 @@
                                     @if(config('oj.main.rank_show_nick'))<td nowrap>{{$user['nick']}}</td> @endif
 
                                     <td>{{$user['AC']}}</td>
-                                    @if($contest->type == 'acm')
+                                    @if($contest->judge_type == 'acm')
                                         <td>{{$user['penalty']}}</td>
                                     @endif
                                     @foreach($index_map as $i=>$pid)
@@ -143,7 +143,7 @@
                                                 {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
                                             </td>
                                         @elseif(isset($user[$i]['AC_info']))
-                                            <td class="border" style="@if($contest->type=='oi'&&$user[$i]['AC_info']<100)background-color:#ffafa7;
+                                            <td class="border" style="@if($contest->judge_type=='oi'&&$user[$i]['AC_info']<100)background-color:#ffafa7;
                                                     @else background-color:#87ec97;@endif" nowrap>
                                                 {{$user[$i]['AC_info']}}
                                                 {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
