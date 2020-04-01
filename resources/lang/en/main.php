@@ -60,6 +60,7 @@ return [
     "School"        => "School",
     "Class"         => "Class",
     "From"          => "From",
+    "Registered at" => "Registered at",
 
     "Opened Problems" => "Opened Problems",
     "Submissions"   => "Submissions",
