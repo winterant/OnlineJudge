@@ -61,7 +61,10 @@
                     {{ session('msg') }}
                 </div>
             @endif
-            <form action="{{route('admin.user.privilege_create')}}" method="post">
+            <form action="{{route('admin.user.privilege_create')}}" method="post"
+                onsubmit="if($('#privi').val()==='admin')return confirm('将admin权限分配给用户会使后台数据非常危险!\n' +
+                    '推荐您分配单独权限给用户！\n' +
+                    '若仍要执行，请点击确定')">
                 @csrf
                 <input type="text" name="type" value="add" hidden>
                 <div class="form-group col-8">
@@ -73,7 +76,7 @@
                 <div class="form-group col-8">
                     <label class="form-inline">
                         权限：
-                        <select class="form-control border border-bottom-0 px-3 bg-white" name="privilege[authority]">
+                        <select id="privi" class="form-control border border-bottom-0 px-3 bg-white" name="privilege[authority]">
                             <option value="admin">admin</option>
                             <option value="solution">solution</option>
                             <option value="problem">problem</option>

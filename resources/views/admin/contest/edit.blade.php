@@ -222,7 +222,7 @@
                         'filename':filename,
                     },
                     function (ret) {
-                        if(ret){
+                        if(ret>0){
                             that.parent().remove()
                             Notiflix.Notify.Success('删除成功！')
                         }else Notiflix.Notify.Failure('删除失败,系统错误或权限不足！');

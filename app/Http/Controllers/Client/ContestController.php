@@ -13,7 +13,7 @@ class ContestController extends Controller
 {
     public function contests(){
         $contests=DB::table('contests')
-            ->select(['id','type','judge_type','title','start_time','end_time','access','password',
+            ->select(['id','type','judge_type','title','start_time','end_time','access','password','top',
                 DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
                 DB::raw("case access when 'public'
                     then (select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id)
@@ -27,8 +27,9 @@ class ContestController extends Controller
             ->when(isset($_GET['type'])&&$_GET['type']!=null,function ($q){return $q->where('type',$_GET['type']);})
             ->when(isset($_GET['judge_type'])&&$_GET['judge_type']!=null,function ($q){return $q->where('judge_type',$_GET['judge_type']);})
             ->when(isset($_GET['title']),function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
+            ->orderByDesc('top')
             ->orderBy('state')
-            ->orderByDesc('start_time')
+            ->orderByDesc('id')
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:10);
         return view('contest.contests',compact('contests'));
     }
@@ -91,7 +92,10 @@ class ContestController extends Controller
         //读取附件，位于storage/app/public/contest/files/$cid/*
         $files=[];
         foreach(Storage::allFiles('public/contest/files/'.$id) as &$item){
-            $files[]=array_slice(explode('/',$item),-1,1)[0]; //文件名
+            $files[]=[
+                array_slice(explode('/',$item),-1,1)[0], //文件名
+                Storage::url($item),   //url
+            ];
         }
         return view('contest.home',compact('contest','problems','files'));
     }
@@ -144,7 +148,7 @@ class ContestController extends Controller
     private static function get_rank_end_time($contest){
         //rank的辅助函数，获取榜单的截止时间
         if(Auth::check()&&Auth::user()->privilege('contest')){
-            if(isset($_GET['buti'])?$_GET['buti']=='true':false) //全榜
+            if(isset($_GET['buti'])?$_GET['buti']=='true':false) //实时榜
                 $end=time();
             else //终榜
                 $end=strtotime($contest->end_time);
@@ -229,8 +233,9 @@ class ContestController extends Controller
                             ->whereIn('result',[5,6,7,8,9,10])->where('id','<',$firstAC->id)->count();
                         $AC_count++; //AC数量+1
                         //计算AC时间
-                        $users[$user->id][$i]['AC_clock']=strtotime($firstAC->submit_time)-strtotime($contest->start_time);
-                        $users[$user->id][$i]['AC_info']=self::seconds_to_clock($users[$user->id][$i]['AC_clock']);
+                        $users[$user->id][$i]['AC_time']=$firstAC->submit_time;
+                        $users[$user->id][$i]['AC_info']=
+                            self::seconds_to_clock(strtotime($firstAC->submit_time)-strtotime($contest->start_time));
                         //AC罚时+额外罚时!
                         $penalty += strtotime($firstAC->submit_time)-strtotime($contest->start_time)
                             + $users[$user->id][$i]['wrong']*config('oj.main.penalty_acm');
@@ -250,14 +255,16 @@ class ContestController extends Controller
                 else  //oi赛制
                 {
                     // 获取最高分记录
-                    $score=self::get_solutions_rank($contest,$user->id,$pid)->max('pass_rate');
-                    $users[$user->id][$i]['wrong']=0; //为了兼容acm模式，wrong=0
-                    if($score!=null) //存在分数
+                    $solu=self::get_solutions_rank($contest,$user->id,$pid)
+                        ->orderByDesc('pass_rate')->first(['submit_time','pass_rate']);
+                    if($solu!=null) //存在分数
                     {
-                        $score=round($score*100);
+                        $users[$user->id][$i]['AC_time']=$solu->submit_time;
+                        $score=round($solu->pass_rate*100);
                         $users[$user->id][$i]['AC_info']=$score;
                         $AC_count+=$score; //总得分
                     }
+                    $users[$user->id][$i]['wrong']=0; //为了兼容acm模式，wrong=0
                 }
 
             }
