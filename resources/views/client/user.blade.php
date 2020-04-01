@@ -20,6 +20,7 @@
                     {{__('main.School')}}: <font class="mx-1 p-1 alert-info border" style="border-radius: 4px;">{{$user->school}}</font>
                     {{__('main.Class')}}: <font class="mx-1 p-1 alert-info border" style="border-radius: 4px;">{{$user->class}}</font>
                     {{__('main.Name')}}: <font class="mx-1 p-1 alert-info border" style="border-radius: 4px;">{{$user->nick}}</font>
+                    <font class="mx-1 p-1">{{__('main.Registered at')}} {{$user->created_at}}</font>
                 </p>
             </div>
         </div>
