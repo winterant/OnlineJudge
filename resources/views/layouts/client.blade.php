@@ -47,20 +47,21 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>'acm'])}}">
+                <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>1])}}">
+                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Course')}}</i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>2])}}">
+                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Focus')}}</i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>3])}}">
                     <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>'oi'])}}">
-                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Experiments')}}({{trans('main.Oi')}})</i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>'exam'])}}">
-                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Exams')}}</i>
-                </a>
-            </li>
+
             <li class="nav-item">
                 <a class="nav-link text-nowrap p-2" href="{{route('contests',['state'=>'ended'])}}">
                     <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Ended')}}</i>

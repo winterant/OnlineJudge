@@ -5,6 +5,49 @@
 @section('content')
 
     <h2>竞赛管理</h2>
+    <hr>
+    <form action="" method="get" class="pull-right form-inline">
+        <div class="form-inline mx-3">
+            每页
+            <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
+                <option value="10">10</option>
+                <option value="20" @if(isset($_GET['perPage'])&&$_GET['perPage']==20)selected @endif>20</option>
+                <option value="30" @if(isset($_GET['perPage'])&&$_GET['perPage']==30)selected @endif>30</option>
+                <option value="50" @if(isset($_GET['perPage'])&&$_GET['perPage']==50)selected @endif>50</option>
+                <option value="100" @if(isset($_GET['perPage'])&&$_GET['perPage']==100)selected @endif>100</option>
+            </select>
+            项
+        </div>
+        <div class="form-inline mx-3">
+
+            <select name="type" class="form-control px-3" onchange="this.form.submit();">
+                <option value="">所有类别</option>
+                @foreach(config('oj.contestType') as $key=>$name)
+                    <option value="{{$key}}" @if(isset($_GET['type'])&&$_GET['type']==$key)selected @endif>&nbsp;{{$name}}&nbsp;</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="form-inline mx-3">
+            <select name="state" class="form-control px-3" onchange="this.form.submit();">
+                <option value="all">所有进行阶段</option>
+                <option value="waiting" @if(isset($_GET['state'])&&$_GET['state']=='waiting')selected @endif>尚未开始</option>
+                <option value="running" @if(isset($_GET['state'])&&$_GET['state']=='running')selected @endif>正在进行中</option>
+                <option value="ended" @if(isset($_GET['state'])&&$_GET['state']=='ended')selected @endif>已结束</option>
+            </select>
+        </div>
+        <div class="form-inline mx-3">
+            <select name="judge_type" class="form-control px-3" onchange="this.form.submit();">
+                <option value="">所有规则</option>
+                <option value="acm" @if(isset($_GET['judge_type'])&&$_GET['judge_type']=='acm')selected @endif>ACM</option>
+                <option value="oi" @if(isset($_GET['judge_type'])&&$_GET['judge_type']=='oi')selected @endif>OI</option>
+            </select>
+        </div>
+        <div class="form-inline mx-3">
+            <input type="text" class="form-control text-center" placeholder="标题" onchange="this.form.submit();"
+                   name="title" value="{{isset($_GET['title'])?$_GET['title']:''}}">
+        </div>
+        <button class="btn border">查找</button>
+    </form>
     <div class="table-responsive">
         {{$contests->appends($_GET)->links()}}
         <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
@@ -23,6 +66,7 @@
             <tr>
                 <th></th>
                 <th>编号</th>
+                <th>类别</th>
                 <th>标题</th>
                 <th>模式</th>
                 <th>开始时间</th>
@@ -51,8 +95,9 @@
                         <input type="checkbox" value="{{$item->id}}" onclick="window.event.stopPropagation();" style="vertical-align:middle;zoom: 140%">
                     </td>
                     <td>{{$item->id}}</td>
+                    <td>{{config('oj.contestType.'.$item->type)}}</td>
                     <td nowrap><a href="{{route('contest.home',$item->id)}}" target="_blank">{{$item->title}}</a></td>
-                    <td nowrap>{{$item->type}}</td>
+                    <td nowrap>{{$item->judge_type}}</td>
                     <td nowrap>{{$item->start_time}}</td>
                     <td nowrap>{{$item->end_time}}</td>
                     <td nowrap>{{$item->lock_rate}}</td>
@@ -70,6 +115,14 @@
                         <a href="javascript:" onclick="delete_contest({{$item->id}})" class="px-1" title="删除">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                         </a>
+                        <a href="javascript:" onclick="contest_set_top('{{$item->id}}',1)" class="px-1" title="置顶">
+                            置顶
+                        </a>
+                        @if($item->top>0)
+                            <a href="javascript:" onclick="contest_set_top('{{$item->id}}',0)" class="px-1" title="置顶">
+                                取消置顶
+                            </a>
+                        @endif
                     </td>
                 </tr>
             @endforeach
@@ -78,6 +131,20 @@
         {{$contests->appends($_GET)->links()}}
     </div>
     <script>
+        function contest_set_top(cid, way) {
+            $.post(
+                '{{route('admin.contest.set_top')}}',
+                {
+                    '_token':'{{csrf_token()}}',
+                    'cid':cid,
+                    'way':way
+                },
+                function (ret) {
+                    Notiflix.Notify.Success('已置顶，请刷新页面！');
+                }
+            );
+        }
+
         function delete_contest(id=-1) {
             Notiflix.Confirm.Show( '敏感操作', '确定删除该竞赛?无法找回', '确认', '取消', function(){
                 if(id!==-1){  ///单独删除一个

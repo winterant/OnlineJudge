@@ -15,7 +15,16 @@ class ContestController extends Controller
         $contests=DB::table('contests')
             ->leftJoin('users','users.id','=','user_id')
             ->select('contests.*','username')
-            ->orderBy('id')->paginate();
+            ->when(isset($_GET['state'])&&$_GET['state']!='all',function ($q){
+                if($_GET['state']=='ended')return $q->where('end_time','<',date('Y-m-d H:i:s'));
+                else if($_GET['state']=='waiting')return $q->where('start_time','>',date('Y-m-d H:i:s'));
+                else return $q->where('start_time','<',date('Y-m-d H:i:s'))->where('end_time','>',date('Y-m-d H:i:s'));
+            })
+            ->when(isset($_GET['type'])&&$_GET['type']!=null,function ($q){return $q->where('type',$_GET['type']);})
+            ->when(isset($_GET['judge_type'])&&$_GET['judge_type']!=null,function ($q){return $q->where('judge_type',$_GET['judge_type']);})
+            ->when(isset($_GET['title']),function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
+            ->orderBy('id')
+            ->paginate(isset($_GET['perPage'])?$_GET['perPage']:10);
         return view('admin.contest.list',compact('contests'));
     }
 
@@ -79,8 +88,7 @@ class ContestController extends Controller
                 DB::table('contest_users')->where('contest_id',$id)->whereNotIn('user_id',$uids)->delete();
                 foreach($uids as &$uid)
                     DB::table('contest_users')->insertOrIgnore(['contest_id'=>$id,'user_id'=>$uid]);
-            }
-            if($contest['access']=='password'){
+            }else{
                 DB::table('contest_users')->where('contest_id',$id)->delete();
             }
 
@@ -88,7 +96,7 @@ class ContestController extends Controller
             foreach ($files as $file) {     //保存附件
                 $file->move(storage_path('app/public/contest/files/'.$id),$file->getClientOriginalName());//保存附件
             }
-            $msg=sprintf('成功更新竞赛：<a href="%s" target="_blank">%d</a>',route('contest.home',$id),$id);
+            $msg=sprintf('成功更新竞赛：<a href="%s">%d</a>',route('contest.home',$id),$id);
             return view('admin.success',compact('msg'));
         }
     }
@@ -98,6 +106,17 @@ class ContestController extends Controller
         $fname=uniqid(date('Ymd_His_')).'.'.$image->getClientOriginalExtension();
         $image->move(storage_path('app/public/contest/images'),$fname);
         return json_encode(['uploaded'=>true,'url'=> Storage::url('public/contest/images/'.$fname)]);
+    }
+
+    public function set_top(Request $request){
+        $cid=$request->input('cid');
+        $way=$request->input('way');
+        if($way==0)
+            $new_top=0;
+        else
+            $new_top=DB::table('contests')->max('top')+1;
+        DB::table('contests')->where('id',$cid)->update(['top'=>$new_top]);
+        return $new_top;
     }
 
     public function delete(Request $request){
