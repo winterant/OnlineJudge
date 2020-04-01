@@ -90,7 +90,7 @@
                         @foreach($files as $i=>$file)
                             <div class="mr-4">
                                 {{$i+1}}.
-                                <a href="{{Storage::url('public/contest/files/'.$contest->id.'/'.$file)}}" class="mr-1" target="_blank">{{$file}}</a>
+                                <a href="{{$file[1]}}" class="mr-1" target="_blank">{{$file[0]}}</a>
                             </div>
                         @endforeach
                     </div>

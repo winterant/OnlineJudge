@@ -17,7 +17,13 @@
     <div class="container">
         <div class="my-container bg-white">
             <div class="overflow-hidden">
-                <h4 class="pull-left">{{isset($_GET['state'])?ucfirst($_GET['state']):'All'}} {{__('main.Contests')}}</h4>
+                <h4 class="pull-left">
+                    @if(isset($_GET['type']))
+                        {{ucfirst(config('oj.contestType.'.$_GET['type']))}}
+                    @elseif(isset($_GET['state'])&&$_GET['state']=='ended')
+                        {{__('main.Ended')}}
+                    @endif
+                </h4>
                 <form action="" method="get" class="pull-right form-inline">
                     <input type="number" onchange="this.form.submit();" name="type" value="{{isset($_GET['type'])?$_GET['type']:''}}" hidden>
                     <div class="form-inline mx-3">
@@ -59,7 +65,12 @@
                             <img height="50px" src="{{$item->state==1?asset('images/trophy/running.png'):asset('images/trophy/gold.png')}}" alt="pic">
                         </div>
                         <div class="col-9 col-sm-8 pr-0">
-                            <h5>{{$item->id}}. <a href="{{route('contest.home',$item->id)}}">{{$item->title}}</a></h5>
+                            <h5>
+                                {{$item->id}}. <a href="{{route('contest.home',$item->id)}}">{{$item->title}}</a>
+                                @if($item->top>0)
+                                    <font class="text-red" style="font-size: 0.9rem;vertical-align: top;">{{__('Top')}}</font>
+                                @endif
+                            </h5>
                             <ul class="d-flex flex-wrap list-unstyled" style="font-size: .9rem;">
                                 <li class="pr-3"><i class="fa fa-calendar pr-1 text-sky" aria-hidden="true"></i>{{$item->start_time}}</li>
                                 <li class="pr-3"><i class="fa fa-calendar-times-o pr-1 text-sky" aria-hidden="true"></i>{{$item->end_time}}</li>
@@ -91,17 +102,25 @@
                             </ul>
                         </div>
                         <div class="col-12 col-sm-3 m-auto">
-                            <div>
-                                <a href="{{route('contest.rank',$item->id)}}" class="btn border">
-                                    @if(strtotime(date('Y-m-d H:i:s'))<strtotime($item->start_time))
-                                        <i class="fa fa-circle text-yellow pr-1" aria-hidden="true"></i>{{__('main.Waiting')}}
-                                    @elseif(strtotime(date('Y-m-d H:i:s'))>strtotime($item->end_time))
-                                        <i class="fa fa-thumbs-up text-red pr-1" aria-hidden="true"></i>{{__('main.Ended')}}
-                                    @else
-                                        <i class="fa fa-hourglass text-green pr-1" aria-hidden="true"></i>{{__('main.Running')}}
-                                    @endif
+                            <a href="{{route('contest.rank',$item->id)}}" class="btn border">
+                                @if(strtotime(date('Y-m-d H:i:s'))<strtotime($item->start_time))
+                                    <i class="fa fa-circle text-yellow pr-1" aria-hidden="true"></i>{{__('main.Waiting')}}
+                                @elseif(strtotime(date('Y-m-d H:i:s'))>strtotime($item->end_time))
+                                    <i class="fa fa-thumbs-up text-red pr-1" aria-hidden="true"></i>{{__('main.Ended')}}
+                                @else
+                                    <i class="fa fa-hourglass text-green pr-1" aria-hidden="true"></i>{{__('main.Running')}}
+                                @endif
+                            </a>
+                            @if(Auth::check()&&Auth::user()->privilege('contest'))
+                                <a href="javascript:" class="px-1" onclick="contest_set_top('{{$item->id}}',1)">
+                                    {{__('main.To Top')}}
                                 </a>
-                            </div>
+                                @if($item->top>0)
+                                    <a href="javascript:" class="" onclick="contest_set_top('{{$item->id}}',0)">
+                                        {{__('main.Cancel')}}
+                                    </a>
+                                @endif
+                            @endif
                         </div>
                     </li>
                 @endforeach
@@ -120,5 +139,19 @@
             $("a[href='{{route('contests',isset($_GET['type'])?['type'=>$_GET['type']]:null)}}']").addClass("active");
             $("a[href='{{route('contests',isset($_GET['state'])?['state'=>$_GET['state']]:null)}}']").addClass("active");
         })
+
+        function contest_set_top(cid, way) {
+            $.post(
+                '{{route('admin.contest.set_top')}}',
+                {
+                    '_token':'{{csrf_token()}}',
+                    'cid':cid,
+                    'way':way
+                },
+                function (ret) {
+                    Notiflix.Notify.Success('已置顶，请刷新页面！');
+                }
+            );
+        }
     </script>
 @endsection

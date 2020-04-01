@@ -55,7 +55,7 @@
                            data-toggle="tooltip" title="修改">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                         </a>
-                        <a href="{{route('admin.problem.test_data','pid='.$item->id)}}" target="_blank" class="px-1" data-toggle="tooltip" title="测试数据">
+                        <a href="{{route('admin.problem.test_data',['pid'=>$item->id])}}" target="_blank" class="px-1" data-toggle="tooltip" title="测试数据">
                             <i class="fa fa-file" aria-hidden="true"></i>
                         </a>
                     </td>
