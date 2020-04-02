@@ -481,7 +481,8 @@ int judge(char *data_dir, char *spj_path)
         system_cmd("/bin/cp %s ./spj",spj_path);
     }
 
-    int test_count=0,ac_count=0, judge_result=OJ_AC;
+    bool is_acm = (strcmp(solution.judge_type,"acm")==0);
+    int test_count=0,ac_count=0, oi_result=OJ_AC;
     while((dirfile=readdir(dir))!=NULL)
     {
         char *test_name = isInFile(dirfile->d_name);
@@ -508,18 +509,16 @@ int judge(char *data_dir, char *spj_path)
             }
             printf("test %d result: %d\n",test_count,result);
             if(result==OJ_AC)ac_count++;
-            if(strcmp(solution.judge_type,"acm")==0 && result!=OJ_AC) //acm遇到WA直接返回
-            {
-                judge_result=result;
-                break;
-            }
-            if(strcmp(solution.judge_type,"oi")==0 && result!=OJ_AC) //oi遇到错误记下来
-                judge_result=result;
+            if(is_acm && result!=OJ_AC)   //acm规则遇到WA直接返回，判题结束
+                return result;
+            if(!is_acm && result!=OJ_AC)   //oi规则遇到错误记下来
+                oi_result=result;
         }
         else return OJ_SE;  //system error
     }
+    if(is_acm)return OJ_AC;  //ACM规则走到这说明AC了，后面是oi
     solution.pass_rate = ac_count*1.0/test_count;
-    return judge_result; //判题结果
+    return oi_result; //oi规则结果
 }
 
 int main (int argc, char* argv[])

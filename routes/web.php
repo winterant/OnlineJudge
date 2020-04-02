@@ -85,6 +85,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::post('/update/revise','Admin\UserController@update_revise')->name('update_revise');
         Route::post('/privilege/create','Admin\UserController@privilege_create')->name('privilege_create');
         Route::post('/privilege/delete','Admin\UserController@privilege_delete')->name('privilege_delete');
+        Route::any('/reset_pwd','Admin\UserController@reset_pwd')->name('reset_pwd');
     });
 
 //   manage problem

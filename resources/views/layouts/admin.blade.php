@@ -195,6 +195,11 @@
                             <a class="nav-link border-top" href="{{route('admin.user.create')}}">
                                 <i class="fa fa-user-plus" aria-hidden="true"></i> 账号批量生成</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link border-top" href="{{route('admin.user.reset_pwd')}}">
+                                <i class="fa fa-user-secret" aria-hidden="true"></i> 账号密码重置</a>
+                        </li>
                     </ul>
                 </li>
 
