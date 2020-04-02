@@ -25,10 +25,18 @@
 
         <div class="col-12">
             <div class="my-container bg-white table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <form action="" method="get">
+                <form action="" method="get">
+                    @if(!isset($contest))
+                        <div class="float-right">
+                            <input type="checkbox" name="inc_contest" @if(isset($_GET['inc_contest']))checked @endif
+                                onchange="this.form.submit()" style="vertical-align:middle;zoom: 115%">
+                            <font onclick="$(this).prev().click()" style="cursor: pointer">include contest</font>
+                        </div>
+                    @endif
+
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
 
                             <th>#</th>
                             <th>
@@ -43,7 +51,7 @@
                                     </div>
                                 @else
                                     <div class="form-group m-0 p-0 bmd-form-group">
-                                        <input type="text" class="form-control text-center" placeholder="Problem"
+                                        <input type="text" class="form-control text-center" placeholder="{{__('main.Problem')}} {{__('main.Id')}}"
                                                onfocusout="this.form.submit();"
                                                name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:''}}">
                                     </div>
@@ -82,51 +90,96 @@
                             <th>{{__('main.Submit Time')}}</th>
                             <th>{{__('main.Judger')}}</th>
                             <button type="submit" hidden></button>
-                        </form>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($solutions as $sol)
-                        <tr>
-                            <td>
-                                @if(Auth::check() && (Auth::user()->privilege('solution') || Auth::id()==$sol->user_id) )
-                                    <a href="{{route('solution',$sol->id)}}" target="_blank">{{$sol->id}}</a>
-                                @else
-                                    {{$sol->id}}
-                                @endif
-                            </td>
-                            <td>
-                                @if(isset($contest))
-                                    <a href="{{route('contest.problem',[$contest->id,$sol->index])}}">{{index2ch($sol->index)}}</a>
-                                @else
-                                    <a href="{{route('problem',$sol->problem_id)}}">{{$sol->problem_id}}</a>
-                                @endif
-                            </td>
-                            <td nowrap>
-                                <a href="{{route('user',$sol->username)}}" target="_blank">{{$sol->username}}</a>
-                                @if($sol->nick && Auth::check()&&Auth::user()->privilege('solution'))&nbsp;{{$sol->nick}}@endif
-                            </td>
-                            <td nowrap class="{{config('oj.resColor.'.$sol->result)}}">
-                                {{config('oj.result.'.$sol->result)}}
-                                @if($sol->judge_type=='oi')
-                                    ({{round($sol->pass_rate*100)}})
-                                @endif
-                            </td>
-                            <td>{{$sol->time}}MS</td>
-                            <td>{{round($sol->memory,2)}}MB</td>
-                            <td>{{config('oj.lang.'.$sol->language)}}</td>
-                            <td nowrap>{{$sol->submit_time}}</td>
-                            <td nowrap>{{$sol->judger}}</td>
+
                         </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-                @if(count($solutions)==0)
-                    <p class="text-center">{{__('sentence.No data')}}</p>
-                @endif
-                {{$solutions->appends($_GET)->links()}}
+                        </thead>
+                        <tbody>
+                            @foreach($solutions as $sol)
+                                <tr>
+                                    <td>
+                                        @if(Auth::check() && (Auth::user()->privilege('solution') || Auth::id()==$sol->user_id) )
+                                            <a href="{{route('solution',$sol->id)}}" target="_blank">{{$sol->id}}</a>
+                                        @else
+                                            {{$sol->id}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if(isset($contest))
+                                            <a href="{{route('contest.problem',[$contest->id,$sol->index])}}">{{index2ch($sol->index)}}</a>
+                                        @else
+                                            <a href="{{route('problem',$sol->problem_id)}}">{{$sol->problem_id}}</a>
+                                            @if($sol->contest_id!=-1 && isset($sol->index))
+                                                &nbsp;
+                                                <i class="fa fa-trophy" aria-hidden="true">
+                                                </i><a href="{{route('contest.problem',[$sol->contest_id,$sol->index])}}">{{$sol->contest_id}}-{{index2ch($sol->index)}}</a>
+                                            @endif
+                                        @endif
+                                    </td>
+                                    <td nowrap>
+                                        <a href="{{route('user',$sol->username)}}" target="_blank">{{$sol->username}}</a>
+                                        @if($sol->nick && Auth::check()&&Auth::user()->privilege('solution'))&nbsp;{{$sol->nick}}@endif
+                                    </td>
+                                    <td nowrap>
+                                        <font hidden>{{$sol->id}}</font>
+                                        <font hidden>{{$sol->result}}</font>
+                                        <div id="result_{{$sol->id}}" class="{{config('oj.resColor.'.$sol->result)}} result_td">
+                                            {{config('oj.result.'.$sol->result)}}
+                                            @if($sol->judge_type=='oi')
+                                                ({{round($sol->pass_rate*100)}})
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>{{$sol->time}}MS</td>
+                                    <td>{{round($sol->memory,2)}}MB</td>
+                                    <td>{{config('oj.lang.'.$sol->language)}}</td>
+                                    <td nowrap>{{$sol->submit_time}}</td>
+                                    <td nowrap>{{$sol->judger}}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @if(count($solutions)==0)
+                        <p class="text-center">{{__('sentence.No data')}}</p>
+                    @endif
+                    {{$solutions->appends($_GET)->links()}}
+                </form>
             </div>
         </div>
     </div>
 
+    <script type="text/javascript">
+        $(function () {
+            var intervalID = setInterval(function () {
+                var sids=[];
+                $('td .result_td').each(function () {
+                    var sid=$(this).prev().prev().html().trim();
+                    var result=$(this).prev().html().trim();
+                    if(result<4||result==13)
+                        sids.push(sid);
+                });
+                if(sids.length<1){
+                    clearInterval(intervalID);
+                    return;
+                }
+                $.post(
+                    '{{route('ajax_get_status')}}',
+                    {
+                        '_token':'{{csrf_token()}}',
+                        'sids':sids
+                    },
+                    function (ret) {
+                        ret=JSON.parse(ret);
+                        for(var sol of ret){
+                            $("#result_"+sol.id).prev().prev().html(sol.id);
+                            $("#result_"+sol.id).prev().html(sol.result);
+                            $("#result_"+sol.id).removeClass();
+                            $("#result_"+sol.id).addClass('result_td');
+                            $("#result_"+sol.id).addClass(sol.color);
+                            $("#result_"+sol.id).html(sol.text);
+                        }
+                    }
+                );
+            },400);
+        });
+    </script>
 @endsection

@@ -6,8 +6,8 @@
     <ul class="list-unstyled">
         <li>
             <i class="fa fa-list-ol pr-1 text-sky" aria-hidden="true"></i>
-            {{$pc=\Illuminate\Support\Facades\DB::table('contest_problems')->where('contest_id',$contest->id)->count()}}
-            {{trans_choice('main.problems',$pc)}}
+            {{count($problems)}}
+            {{trans_choice('main.problems',count($problems))}}
         </li>
         <li><i class="fa fa-calendar pr-2 text-sky" aria-hidden="true"></i>{{$contest->start_time}}</li>
         <li><i class="fa fa-calendar-times-o pr-2 text-sky" aria-hidden="true"></i>{{$contest->end_time}}</li>

@@ -85,8 +85,14 @@
                                         {{round($time_len/3600,1)}} {{trans_choice('main.hours',round($time_len/3600,1))}}
                                     @endif
                                 </li>
-                                <li class="pr-2"><div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">
-                                        {{strtoupper($item->judge_type)}}</div></li>
+                                @if(isset($_GET['state'])&&$_GET['state']=='ended')
+                                    <li class="pr-2">
+                                        <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">{{ucfirst(config('oj.contestType.'.$item->type))}}</div>
+                                    </li>
+                                @endif
+                                <li class="pr-2">
+                                    <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">{{strtoupper($item->judge_type)}}</div>
+                                </li>
                                 <li class="pr-2">
                                     <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">
                                         <font @if($item->access=='public')style="color: green"
