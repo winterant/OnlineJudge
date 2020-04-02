@@ -79,9 +79,9 @@
                         {!! $problem->hint !!}
                     @endif
 
-                    @if($problem->source!=null)
+                    @if( ($problem->source!=null) && (!isset($contest)||$contest->end_time<date('Y-m-d H:i:s')) )
                         <h4 class="mt-2 text-sky">Source</h4>
-                        {!!$problem->source !!}
+                        {{$problem->source}}
                     @endif
                 </div>
             </div>

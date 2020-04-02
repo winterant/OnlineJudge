@@ -30,7 +30,7 @@
                         <div class="float-right">
                             <input type="checkbox" name="inc_contest" @if(isset($_GET['inc_contest']))checked @endif
                                 onchange="this.form.submit()" style="vertical-align:middle;zoom: 115%">
-                            <font onclick="$(this).prev().click()" style="cursor: pointer">include contest</font>
+                            <font onclick="$(this).prev().click()" style="cursor: pointer">{{__('main.include contest')}}</font>
                         </div>
                     @endif
 
@@ -103,7 +103,7 @@
                                             {{$sol->id}}
                                         @endif
                                     </td>
-                                    <td>
+                                    <td nowrap>
                                         @if(isset($contest))
                                             <a href="{{route('contest.problem',[$contest->id,$sol->index])}}">{{index2ch($sol->index)}}</a>
                                         @else
