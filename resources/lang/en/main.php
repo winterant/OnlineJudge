@@ -26,7 +26,7 @@ return [
     "Contest"       => "Contest",
     "Contests"      => "Contests",
     "Course"        => "Course",
-    "Focus"         => "Focus",
+    "Training"      => "Training",
     "Exam"          => "Exam",
     "Exams"         => "Exams",
     "Experiment"    => "Experiment",

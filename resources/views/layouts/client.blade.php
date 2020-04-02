@@ -53,7 +53,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>2])}}">
-                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Focus')}}</i>
+                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Training')}}</i>
                 </a>
             </li>
             <li class="nav-item">
