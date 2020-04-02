@@ -87,6 +87,7 @@ return [
     "Day"           => "Day",
 
 
+    "include contest"   => "include contest",
     "Time"          => "Time",
     "Memory"        => "Memory",
     "Language"      => "Language",
