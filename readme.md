@@ -95,15 +95,21 @@ Ludong University Online Judge
   
   + 如何多服务器判题？
   
-    1.首先在一台服务器上部署好本项目，称其为主服务器；主服务器将唯一承担mysql数据库、网页  
-    2.授权mysql用允许远程访问：`待完善`  
-    3.在其他服务器称为从服务器，可以有多台，只负责判题;  
+   1. 首先在一台服务器上部署好本项目，称其为主服务器；主服务器将唯一承担mysql数据库、网页  
+   2. 授权mysql允许远程访问：  
+      登录mysql控制台，并执行命令（请替换中文提示）：
+      ```
+      GRANT ALL PRIVILEGES ON lduoj.* TO '主服务器mysql用户名'@'%' IDENTIFIED BY '密码' WITH GRANT OPTION;
+      FLUSH PRIVILEGES;
+      exit;
+      ```
+   3. 在其他服务器称为从服务器，可以有多台，只负责判题;  
       故只需要从主服务器克隆judge/、storage/app/data/、.env  
       克隆后请保持位置与主服务器一致(即.env仍位于/home/LDUOnlineJudge/.env)  
-    4.编辑.env，将其中数据库连接信息修改为主服务器ip及第2步授权的用户  
-    5.在从服务器上安装判题所需的环境支持：`bash /home/LDUOnlineJudge/judge/install.sh`  
-    6.在从服务器上启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`  
-    7.在从服务器上停止判题端：`bash /home/LDUOnlineJudge/judge/stop.sh`
+   4. 编辑.env，将其中数据库连接信息修改为主服务器ip和第2步授权的用户  
+   5. 在从服务器上安装判题所需的环境支持：`bash /home/LDUOnlineJudge/judge/install.sh`  
+   6. 在从服务器上启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`  
+   7. 在从服务器上停止判题端：`bash /home/LDUOnlineJudge/judge/stop.sh`
 
 
 # 展示
