@@ -42,6 +42,7 @@ class StatusController extends Controller
         return view('client.status',compact('solutions'));
     }
 
+    //状态页面使用ajax实时更新题目的判题结果
     public function ajax_get_status(Request $request){
         if($request->ajax()){
             $sids=$request->input('sids');
@@ -120,7 +121,7 @@ class StatusController extends Controller
             ->where('user_id',Auth::id())
             ->orderByDesc('submit_time')
             ->value('submit_time');
-        if(time()-strtotime($last_submit_time)<intval(config('oj.main.submit_interval')))
+        if(!Auth::user()->privilege('admin') && time()-strtotime($last_submit_time)<intval(config('oj.main.submit_interval')))
             return view('client.fail',['msg'=>trans('sentence.submit_frequently',['sec'=>config('oj.main.submit_interval')])]);
 
         if(!isset($data['cid'])) //通过题库提交
