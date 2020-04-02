@@ -60,7 +60,13 @@ Ludong University Online Judge
   **提示**：产生备份`/home/lduoj_backup/lduoj_{日期}`，
   包含项目文件夹（含测试数据、图片、文件）、数据库备份lduoj.sql、nginx配置文件lduoj.conf
 
-# 项目更新
+# 项目恢复
+  ```
+  bash /home/LDUOnlineJudge/install/ubuntu16.04/recovery.sh  /home/lduoj_backup/备份目录
+  ```  
+  请替换命令中的中文
+
+# 项目升级
 
   建议更新前进行一次备份，以免数据丢失。
   ```
@@ -68,13 +74,20 @@ Ludong University Online Judge
   cp /home/lduoj_temp/install/ubuntu16.04/update.sh /home/
   bash /home/update.sh
   ```
+# 项目迁移（更换服务器）
+  1. 在原服务器执行一次**项目备份**，并将备份好的文件夹拷贝到新服务器相同文件夹！  
+  2. 在新服务器执行一次**项目安装**  
+  3. 在新服务器执行一次**项目恢复**  
+  
+  **注**：若新服务器已安装mysql，需要自行新建数据库lduoj，
+  并使用备份文件lduoj.sql恢复数据。还要修改项目下.env文件的mysql用户信息
 
 # 判题端使用说明
   
   + 启动方式
   
-    1.网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端  
-    2.通过终端命令启动判题端：bash /home/LDUOnlineJudge/judge/startup.sh
+    A. 网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端  
+    B. 通过终端命令启动判题端：bash /home/LDUOnlineJudge/judge/startup.sh
 
   + 判题端配置
   
