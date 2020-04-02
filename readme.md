@@ -61,14 +61,14 @@ Ludong University Online Judge
   包含项目文件夹（含测试数据、图片、文件）、数据库备份lduoj.sql、nginx配置文件lduoj.conf
 
 # 项目恢复
+  从备份中恢复整个系统；执行前请替换命令中的中文
   ```
-  bash /home/LDUOnlineJudge/install/ubuntu16.04/recovery.sh  /home/lduoj_backup/备份目录
-  ```  
-  请替换命令中的中文
+  bash /home/LDUOnlineJudge/install/ubuntu16.04/recover.sh  /home/lduoj_backup/备份名
+  ```
 
 # 项目升级
 
-  建议更新前进行一次备份，以免数据丢失。
+  建议升级前进行一次备份，若升级出错，可恢复系统。
   ```
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_temp
   cp /home/lduoj_temp/install/ubuntu16.04/update.sh /home/
