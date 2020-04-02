@@ -94,7 +94,6 @@ class UserController extends Controller
         return 0;
     }
 
-
     public function privilege_create(Request $request){
         if(!$request->isMethod('post'))return view('admin.fail',['msg'=>'请求有误！']);
         $privilege=$request->input('privilege');
@@ -109,6 +108,21 @@ class UserController extends Controller
 
     public function privilege_delete(Request $request){
         return DB::table('privileges')->delete($request->input('id'));
+    }
+
+    public function reset_pwd(Request $request){
+        if($request->isMethod('get')){
+            return view('admin.user.reset_pwd');
+        }
+        if($request->isMethod('post')){
+            $username=$request->input('username');
+            $password=$request->input('password');
+            $ret=DB::table('users')->where('username',$username)->update(['password'=>Hash::make($password)]);
+            if($ret==0)
+                $msg='用户不存在！';
+            else $msg='重置成功！';
+            return view('admin.user.reset_pwd',compact('msg'));
+        }
     }
 
 }

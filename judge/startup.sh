@@ -1,8 +1,8 @@
 #!/bin/bash
 
-bash ./stop.sh
-
 cd `dirname $0`
+
+bash ./stop.sh
 source ../.env
 
 if [ ! -d ./program ]; then
