@@ -8,6 +8,7 @@
 
 @section('content')
 
+{{--    textarea全屏插件 --}}
     <link rel="stylesheet" href="{{asset('static/textareafullscreen/textareafullscreen.css')}}">
     <script src="{{asset('static/textareafullscreen/jquery.textareafullscreen.js')}}"></script>
     <script>
@@ -233,16 +234,16 @@
                                 <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
                             </a>
                         </div>
-                        <div id="selected_fname" style="font-size: 0.8rem"></div>
                         <input type="file" class="form-control-file" name="code_file"
-                               onchange="$('#selected_fname').html(this.files[0].name)"
+                               onchange="$('#selected_fname').html(this.files[0].name);$('#code_editor').attr('required',false)"
                                accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
+                        <div id="selected_fname" style="font-size: 0.8rem"></div>
                     </div>
 
                     <div class="form-group">
                         <textarea id="code_editor" class="form-control-plaintext border p-2" rows="7" name="solution[code]"
                             onkeydown="if(event.keyCode===9){this.value=this.value+'    ';event.returnValue = false;}"
-                            placeholder="{{trans('sentence.Input Code')}}"></textarea>
+                            placeholder="{{trans('sentence.Input Code')}}" required></textarea>
                     </div>
 
                     <button type="submit" class="btn bg-light" @guest disabled @endguest>{{trans('main.Submit')}}</button>

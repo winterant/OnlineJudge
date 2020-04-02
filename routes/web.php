@@ -22,6 +22,7 @@ Route::get('/', 'Client\HomeController@index')->name('home');
 Route::get('/home', 'Client\HomeController@index');
 Route::post('/get_notice','Client\HomeController@get_notice')->name('get_notice');
 Route::get('/status','Client\StatusController@index')->name('status');
+Route::post('/ajax_get_status','Client\StatusController@ajax_get_status')->name('ajax_get_status');
 Route::get('/solution/{id}','Client\StatusController@solution')->where(['id'=>'[0-9]+'])->name('solution');
 Route::get('/problems','Client\ProblemController@problems')->name('problems');
 Route::get('/problem/{id}','Client\ProblemController@problem')->where(['id'=>'[0-9]+'])->name('problem');

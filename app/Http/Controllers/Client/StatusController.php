@@ -13,23 +13,51 @@ class StatusController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
-        $list=DB::table('solutions')
+        $solutions=DB::table('solutions')
             ->join('users','solutions.user_id','=','users.id')
-            ->select('solutions.id','problem_id','user_id','nick','username','result','time','memory',
-                'language', 'submit_time', 'judge_type', 'pass_rate','judger')
-            ->where('contest_id','=',-1)
-            ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('problem_id',$_GET['pid']);})
+            ->leftJoin('contests','solutions.contest_id','=','contests.id')  //非必须，left
+            ->leftJoin('contest_problems',function ($q){
+                $q->on('solutions.contest_id','=','contest_problems.contest_id')->on('solutions.problem_id','=','contest_problems.problem_id');
+            })
+            ->select('solutions.id','solutions.contest_id','contest_problems.index','solutions.problem_id','solutions.user_id','nick','username',
+                'result','time','memory','language', 'submit_time', 'solutions.judge_type', 'pass_rate','judger')
+            ->when(isset($_GET['inc_contest']),function ($q){
+                if(Auth::check()&&Auth::user()->privilege('solution'))
+                    return $q;
+                return $q->where('solutions.contest_id',-1)
+                    ->orWhere('end_time','<',date('Y-m-d H:i:s'));//普通用户只能查看结束比赛的solution
+            })
+            ->when(!isset($_GET['inc_contest']),function ($q){return $q->where('solutions.contest_id',-1);})
+            ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('solutions.problem_id',$_GET['pid']);})
             ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username','like',$_GET['username'].'%');})
             ->when(isset($_GET['result'])&&$_GET['result']!='-1',function ($q){return $q->where('result',$_GET['result']);})
             ->when(isset($_GET['language'])&&$_GET['language']!='-1',function ($q){return $q->where('language',$_GET['language']);})
             ->orderByDesc('solutions.id')
             ->paginate(10);
 
-        return view('client.status',['solutions' => $list,]);
+        return view('client.status',compact('solutions'));
+    }
+
+    public function ajax_get_status(Request $request){
+        if($request->ajax()){
+            $sids=$request->input('sids');
+            $solutions=DB::table('solutions')->select(['id','judge_type','result','pass_rate'])->whereIn('id',$sids)->get();
+            $ret=[];
+            foreach ($solutions as $item){
+                $ret[]=[
+                    'id'=>$item->id,
+                    'result'=>$item->result,
+                    'color'=>config('oj.resColor.'.$item->result),
+                    'text'=>config('oj.result.'.$item->result).($item->judge_type=='oi' ? sprintf(' (%s)',round($item->pass_rate*100)) : null)
+                ];
+            }
+            return json_encode($ret);
+        }
+        return json_encode([]);
     }
 
     public function solution($id){
@@ -66,8 +94,9 @@ class StatusController extends Controller
         else if ($first2 == UTF16_LITTLE_ENDIAN_BOM)
             $encodType = 'UTF-16LE';
         //下面的判断主要还是判断ANSI编码的·
-        if ($encodType == '') {//即默认创建的txt文本-ANSI编码的
-            $content = iconv("GBK", "UTF-8", $text);
+        if ($encodType == '') { //即默认创建的txt文本-ANSI编码的
+            $content = mb_convert_encoding($text,"UTF-8","auto");
+//            $content = iconv("GBK", "UTF-8//ignore", $text);
         } else if ($encodType == 'UTF-8 BOM') {//本来就是UTF-8不用转换
             $content = $text;
         } else {//其他的格式都转化为UTF-8就可以了
