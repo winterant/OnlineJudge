@@ -27,6 +27,7 @@ class ContestController extends Controller
             ->when(isset($_GET['type'])&&$_GET['type']!=null,function ($q){return $q->where('type',$_GET['type']);})
             ->when(isset($_GET['judge_type'])&&$_GET['judge_type']!=null,function ($q){return $q->where('judge_type',$_GET['judge_type']);})
             ->when(isset($_GET['title']),function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
+            ->when(!Auth::check()||!Auth::user()->privilege('contest'),function ($q){return $q->where('hidden',0);})
             ->orderByDesc('top')
             ->orderBy('state')
             ->orderByDesc('id')

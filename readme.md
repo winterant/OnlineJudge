@@ -1,6 +1,6 @@
 Ludong University Online Judge
 ===
-  > 鲁东大学程序设计在线测评系统与教学平台（开发中）
+  > 鲁东大学程序设计在线测评系统与教学平台
 
 
 # 概述
@@ -113,3 +113,4 @@ Ludong University Online Judge
 
 
 # 展示
+   请移步至https://blog.csdn.net/winter2121/article/details/105294224

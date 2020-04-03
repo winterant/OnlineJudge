@@ -176,6 +176,8 @@
                             $("#result_"+sol.id).addClass('result_td');
                             $("#result_"+sol.id).addClass(sol.color);
                             $("#result_"+sol.id).html(sol.text);
+                            $("#result_"+sol.id).parent().next().html(sol.time);
+                            $("#result_"+sol.id).parent().next().next().html(sol.memory);
                         }
                     }
                 );

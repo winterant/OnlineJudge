@@ -304,20 +304,22 @@ void running()
     alarm(0);
     alarm((int)LIM.rlim_cur);
 
-    //memory limit
-    LIM.rlim_max=LIM.rlim_cur = solution.memory_limit*(1<<20)*2; //Byte, *200%
-    setrlimit(RLIMIT_AS, &LIM); //memory limit;
+    if(solution.language!=2) //非java语言，memory limit
+    {
+        LIM.rlim_max=LIM.rlim_cur = solution.memory_limit*(1<<20); //Byte
+        setrlimit(RLIMIT_AS, &LIM); //memory limit;
+    }
 
     //程序可创建的文件最大长度
-    LIM.rlim_max=LIM.rlim_cur = 16<<20;
-    setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 16MB
+    LIM.rlim_max=LIM.rlim_cur = 32<<20;
+    setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 32MB
 
     //程序可创建的最大进程数;
     LIM.rlim_cur = LIM.rlim_max = solution.language>1 ? 200 : 1; // java,python扩大
     setrlimit(RLIMIT_NPROC, &LIM);
 
     //程序所使用的的堆栈最大空间
-    LIM.rlim_cur = LIM.rlim_max = 256<<20;  //256MB
+    LIM.rlim_cur = LIM.rlim_max = 128<<20;  //128MB
     setrlimit(RLIMIT_STACK, &LIM);
 
     switch(solution.language)
@@ -331,7 +333,7 @@ void running()
             sprintf(java_xmx, "-Xmx%.fM", solution.memory_limit);
             execl("/usr/bin/java", "/usr/bin/java", java_xmx,
             				"-Djava.security.manager",
-            				"-Djava.security.policy=./java.policy", "Main", (char *) NULL);
+            				"-Djava.security.policy=../../java.policy", "Main", (char *) NULL);
             break;
         case 3: //python 3.6
             execl("/usr/bin/python3", "/usr/bin/python3", "Main.py", (char *) NULL);
