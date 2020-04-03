@@ -202,6 +202,7 @@ class ProblemController extends Controller
         if(!$isUploaded)return 0;
 
         //读取xml->导入题库
+        ini_set('memory_limit','4096M');//php单线程最大内存占用，默认128M不够用
         $xmlDoc=simplexml_load_file(storage_path('app/xml_temp/import_problems.xml'),null,LIBXML_NOCDATA|LIBXML_PARSEHUGE);
         $searchNodes = $xmlDoc->xpath ( "/fps/item" );
         $first_pid=null;

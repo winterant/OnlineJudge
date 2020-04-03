@@ -198,11 +198,9 @@
                             </table>
                         </div>
                     @endif
-                    @if($has_more)
-                        <div class="text-right">
-                            <a href="{{route('status',['pid'=>$problem->id,'username'=>Auth::user()->username])}}">{{trans('main.More')}}>></a>
-                        </div>
-                    @endif
+                    <div class="text-right">
+                        <a href="{{route('status',['pid'=>$problem->id,'username'=>Auth::user()->username])}}">{{trans('main.More')}}>></a>
+                    </div>
                 </div>
             @endif
 

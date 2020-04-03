@@ -70,13 +70,9 @@ class ProblemController extends Controller
             ->where('problem_id','=',$problem->id)
             ->orderByDesc('id')
             ->limit(8)->get();
-        $has_more=DB::table('solutions')
-            ->where('user_id','=',Auth::id())
-            ->where('problem_id','=',$problem->id)
-            ->count('id')>8;
 
         $hasSpj=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
-        return view('client.problem',compact('problem','contests','samples','solutions','has_more','hasSpj'));
+        return view('client.problem',compact('problem','contests','samples','solutions','hasSpj'));
     }
 
 }

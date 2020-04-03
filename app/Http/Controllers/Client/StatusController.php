@@ -46,14 +46,18 @@ class StatusController extends Controller
     public function ajax_get_status(Request $request){
         if($request->ajax()){
             $sids=$request->input('sids');
-            $solutions=DB::table('solutions')->select(['id','judge_type','result','pass_rate'])->whereIn('id',$sids)->get();
+            $solutions=DB::table('solutions')
+                ->select(['id','judge_type','result','time','memory','pass_rate'])
+                ->whereIn('id',$sids)->get();
             $ret=[];
             foreach ($solutions as $item){
                 $ret[]=[
                     'id'=>$item->id,
                     'result'=>$item->result,
                     'color'=>config('oj.resColor.'.$item->result),
-                    'text'=>config('oj.result.'.$item->result).($item->judge_type=='oi' ? sprintf(' (%s)',round($item->pass_rate*100)) : null)
+                    'text'=>config('oj.result.'.$item->result).($item->judge_type=='oi' ? sprintf(' (%s)',round($item->pass_rate*100)) : null),
+                    'time'=>$item->time.'MS',
+                    'memory'=>round($item->memory,2).'MB'
                 ];
             }
             return json_encode($ret);
@@ -121,6 +125,7 @@ class StatusController extends Controller
             ->where('user_id',Auth::id())
             ->orderByDesc('submit_time')
             ->value('submit_time');
+        //不要拦截管理员
         if(!Auth::user()->privilege('admin') && time()-strtotime($last_submit_time)<intval(config('oj.main.submit_interval')))
             return view('client.fail',['msg'=>trans('sentence.submit_frequently',['sec'=>config('oj.main.submit_interval')])]);
 
