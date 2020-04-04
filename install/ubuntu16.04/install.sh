@@ -42,17 +42,17 @@ apt -y install mysql-server
 service mysql restart
 USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
 PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
-mysql -u${USER} -p${PASSWORD} -e"ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'rootroot';"
 mysql -u${USER} -p${PASSWORD} -e"CREATE DATABASE lduoj;"
-mysql -u${USER} -p${PASSWORD} -e"CREATE USER 'lduoj'@'localhost' IDENTIFIED BY '123456789';"
+mysql -u${USER} -p${PASSWORD} -e"CREATE USER 'lduoj'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456789';"
 mysql -u${USER} -p${PASSWORD} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost' identified by '123456789';flush privileges;"
 mysql -u${USER} -p${PASSWORD} -Dlduoj < ${web_home}/LDUOnlineJudge/install/mysql/lduoj.sql
 
-echo -e "You have successfully installed LDU Online Judge!"
 
 # allow php user www-data to use 'sudo' to get privilege of root, for sudo polling
 echo 'www-data ALL = NOPASSWD: ALL' >> /etc/sudoers
 
-#start to judge
+echo -e "You have successfully installed LDU Online Judge!"
+
+#install judge environment & start to judge
 bash ${web_home}/LDUOnlineJudge/judge/install.sh
 bash ${web_home}/LDUOnlineJudge/judge/startup.sh

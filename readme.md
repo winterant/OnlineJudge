@@ -28,7 +28,7 @@ Ludong University Online Judge
 
 # 项目安装
   
-  1. **Linux Ubuntu 16.04**
+  - **Linux Ubuntu 16.04**
    
   在终端执行以下命令，安装过程约10分钟。若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
   ```
@@ -38,20 +38,17 @@ Ludong University Online Judge
   **注意**：安装过程mysql**可能**会提示设置root密码，请输入并谨记。
   
   **[安装成功]**：
-  浏览器访问服务器ip即可打开首页(云服务器请先在控制台安全组添加80端口)；
+  浏览器访问服务器ip即可打开首页(云服务器请在控制台安全组添加80端口)；  
   注册用户admin自动成为管理员
   
-  **[运维须知]**： 
+  **[维护须知]**： 
   
-  1.安装后项目位于/home/LDUOnlieJudge
+  1. 安装后项目位于/home/LDUOnlieJudge
   
-  2.自动安装mysql5.7，管理员root@localhost(密码rootroot)，
-  该项目专用用户lduoj@localhost(密码123456789)。
+  2. 自动安装mysql5.7，并新建数据库lduoj，新建用户lduoj@localhost(密码123456789)。  
+  (若修改密码，需修改项目下`.env`，并执行`php /home/LDUOnlineJudge/artisan config:cache`)
   
-  **为保证安全性请及时修改数据库密码**
-  (注：需同时修改①ubuntu下mysql用户，②项目下.env文件数据库配置，③项目根目录下执行`php artisan config:cache`)
-  
-  3.配置域名及端口：在/etc/nginx/conf.d/lduoj.conf文件内，在`server_name`后面填域名。
+  3. 配置域名及端口：修改文件`/etc/nginx/conf.d/lduoj.conf`，在`server_name`后面填域名。
 
 # 项目备份
   ```
@@ -78,9 +75,6 @@ Ludong University Online Judge
   1. 在原服务器执行一次**项目备份**，并将备份好的文件夹拷贝到新服务器相同文件夹！  
   2. 在新服务器执行一次**项目安装**  
   3. 在新服务器执行一次**项目恢复**  
-  
-  **注**：若新服务器已安装mysql，需要自行新建数据库lduoj，
-  并使用备份文件lduoj.sql恢复数据。还要修改项目下.env文件的mysql用户信息
 
 # 判题端使用说明
   
@@ -91,7 +85,8 @@ Ludong University Online Judge
 
   + 判题端配置
   
-    数据库连接信息、最大判题数、判题机名称等配置项均在项目根目录下.env文件
+    数据库连接信息、判题线程数、判题机名称等配置项均在项目根目录下.env文件  
+    默认判题线程数为5，可根据服务器内存及性能适当调节
   
   + 如何多服务器判题？
   
