@@ -361,7 +361,7 @@ int running_spj(const char *in,const char *out,const char *user_out)
     setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 16MB
 
     //程序可创建的最大进程数;
-    LIM.rlim_cur = LIM.rlim_max = solution.language>1 ? 200 : 1; // java,python扩大
+    LIM.rlim_cur = LIM.rlim_max = 1;
     setrlimit(RLIMIT_NPROC, &LIM);
 
     //程序所使用的的堆栈最大空间
@@ -440,8 +440,8 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_siz
 		if(!allow_sys_call[sysCall]) //没有被许可的系统调用
 		{
             result = OJ_RE;
-            char error[64];
-            sprintf(error,"[ERROR] A Not allowed system call: call id = %d\n",sysCall);
+            char error[128];
+            sprintf(error,"[ERROR] A Not allowed system call: call id = %d, Please remove system function from your code!\n",sysCall);
             write_file(error,"error.out","a+");
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             break;
@@ -468,15 +468,16 @@ int judge(char *data_dir, char *spj_path)
     DIR *dir=opendir(data_dir);  //数据文件夹
     dirent *dirfile;
     if(dir==NULL){
-        printf("problem %d doesn't have test data!\n",solution.problem_id);
-        return OJ_AC; //accepted
+        char error[128]="Missing test data, please contact the administrator to add test data!";
+        write_file(error,"error.out","a+");
+        return OJ_SE; //system error 缺少测试数据
     }
 
     if(solution.spj) //特判
     {
         if(access(spj_path,F_OK)==-1) //spj不存在
         {
-            char error[] = "[ERROR] spj was not compiled successfully or spj.cpp does not exist!\n";
+            char error[] = "[ERROR] spj was not compiled successfully or spj.cpp does not exist! Please contact the administrator to resolve\n";
             write_file(error,"error.out","a+");
             return OJ_SE; //系统错误
         }
@@ -519,6 +520,11 @@ int judge(char *data_dir, char *spj_path)
         else return OJ_SE;  //system error
     }
     if(is_acm)return OJ_AC;  //ACM规则走到这说明AC了，后面是oi
+    if(test_count==0){
+        char error[128]="Missing input file of test data, please contact the administrator to add test data!";
+        write_file(error,"error.out","a+");
+        return OJ_SE; //system error 缺少测试数据
+    }
     solution.pass_rate = ac_count*1.0/test_count;
     return oi_result; //oi规则结果
 }

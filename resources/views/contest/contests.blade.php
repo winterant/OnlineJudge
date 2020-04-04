@@ -155,7 +155,7 @@
                     'way':way
                 },
                 function (ret) {
-                    Notiflix.Notify.Success('已置顶，请刷新页面！');
+                    location.reload();
                 }
             );
         }
