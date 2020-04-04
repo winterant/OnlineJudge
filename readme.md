@@ -104,7 +104,7 @@ Ludong University Online Judge
       exit;
       ```
    3. 在其他服务器称为从服务器，可以有多台，只负责判题;  
-      故只需要从主服务器克隆judge/、storage/app/data/、.env  
+      故只需要从主服务器**克隆2个文件夹+1个文件**：judge/、storage/app/data/、.env  
       克隆后请保持位置与主服务器一致(即.env仍位于/home/LDUOnlineJudge/.env)  
    4. 编辑.env，将其中数据库连接信息修改为主服务器ip和第2步授权的用户  
    5. 在从服务器上安装判题所需的环境支持：`bash /home/LDUOnlineJudge/judge/install.sh`  
@@ -113,4 +113,4 @@ Ludong University Online Judge
 
 
 # 展示
-   请移步至https://blog.csdn.net/winter2121/article/details/105294224
+   请移步至 https://blog.csdn.net/winter2121/article/details/105294224

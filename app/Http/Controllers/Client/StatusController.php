@@ -67,6 +67,8 @@ class StatusController extends Controller
 
     public function solution($id){
 
+        if(!Auth::check())
+            return redirect('login');
         $solution=DB::table('solutions')
             ->join('users','solutions.user_id','=','users.id')
             ->select(['solutions.id','problem_id','contest_id','user_id','username','result','pass_rate','time','memory',
