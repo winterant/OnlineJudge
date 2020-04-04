@@ -73,13 +73,13 @@
                 <th>结束时间</th>
                 <th>封榜比例
                     <a href="javascript:" style="color: #838383"
-                       onclick="whatisthis('数值范围0~1，比赛时长*封榜比例=比赛封榜时间。如：时长5小时，比例0.2，则第4小时开始榜单不更新。值为0表示不封榜。管理员不受影响')">
+                       onclick="whatisthis('数值范围0~1<br>比赛时长*封榜比例=比赛封榜时间。<br>如：时长5小时，比例0.2，则第4小时开始榜单不更新。<br><br>值为0表示不封榜。<br>管理员不受影响')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                 </th>
                 <th>参赛权限
                     <a href="javascript:" style="color: #838383"
-                       onclick="whatisthis('public：任意用户可参加。password：输入密码正确者可参加。private：后台规定的用户可参加')">
+                       onclick="whatisthis('public：任意用户可参加。<br>password：输入密码正确者可参加。<br>private：后台规定的用户可参加')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                 </th>
@@ -140,7 +140,7 @@
                     'way':way
                 },
                 function (ret) {
-                    Notiflix.Notify.Success('已置顶，请刷新页面！');
+                    Notiflix.Notify.Success((way?'已置顶':'已取消置顶')+'，请刷新页面查看！');
                 }
             );
         }
