@@ -32,8 +32,7 @@ php artisan optimize
 
 echo "You have successfully updated LDU Online Judge! Enjoy it!"
 
-#judge
-#bash ${web_home}/LDUOnlineJudge/judge/install.sh
+#start to judge
 bash ${web_home}/LDUOnlineJudge/judge/startup.sh
 
-rm -rf ${web_home}/update.sh
+cd `dirname $0` && rm -rf ./update.sh
