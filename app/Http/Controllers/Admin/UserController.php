@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
@@ -72,7 +73,12 @@ class UserController extends Controller
                     'class'=>isset($class[$i])?$class[$i]:'',
                 ];
             }
-
+            if (isset($data['check_exist'])){
+                //设置了安全检查，发现已存在用户时，告诉管理员，而不是直接删除
+                $exist_users=DB::table('users')->whereIn('username',$usernames)->pluck('username');
+                if(count($exist_users)>0)
+                    return back()->withInput()->with(['exist_users'=>$exist_users]);
+            }
             DB::table('users')->whereIn('username',$usernames)->delete();
             DB::table('users')->insert($users);
             foreach($users as &$user)$user['password']=$password[$user['username']];
@@ -118,9 +124,16 @@ class UserController extends Controller
             $username=$request->input('username');
             $password=$request->input('password');
             $ret=DB::table('users')->where('username',$username)->update(['password'=>Hash::make($password)]);
-            if($ret==0)
+            if($ret==0){
                 $msg='用户不存在！';
-            else $msg='重置成功！';
+            }else{
+                $msg='重置成功！';
+                $user=Auth::user();
+                Auth::loginUsingId(DB::table('users')->where('username',$username)->value('id'));
+                Auth::logoutOtherDevices($password);
+                Auth::logout();
+                Auth::login($user);
+            }
             return view('admin.user.reset_pwd',compact('msg'));
         }
     }

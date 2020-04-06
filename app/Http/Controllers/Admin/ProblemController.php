@@ -91,13 +91,6 @@ class ProblemController extends Controller
         return null;
     }
 
-    public function upload_image(Request $request){
-        $image=$request->file('upload');
-        $fname=uniqid(date('Ymd_His_')).'.'.$image->getClientOriginalExtension();
-        $image->move(storage_path('app/public/problem/images'),$fname);
-        return json_encode(['uploaded'=>true,'url'=> Storage::url('public/problem/images/'.$fname)]);
-    }
-
     //管理员修改题目状态  0密封 or 1公开
     public function update_hidden(Request $request){
         if($request->ajax()){

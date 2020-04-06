@@ -59,11 +59,19 @@
         </script>
     @else
         <div>
-            <div class="alert alert-info">
-                <p class="m-0">方式1：比赛账号分为前缀与编号。如team1024，前缀为team，编号为1024</p>
-                <p class="m-0">方式2：指定登录名/学号生成账号，每行输入一个学号，不要有空行、空格等多余字符</p>
-                <p class="m-0">注：已存在的同名用户将会被删除！</p>
-            </div>
+            @if(session('exist_users'))
+                <div class="alert alert-danger">
+                    <p class="m-0">生成失败！对于您本次要生成的账号，系统检测到以下用户名已存在，您有两种解决方法：</p>
+                    <p class="m-0">(1)：更改要创建的用户名，不再与已存在用户冲突</p>
+                    <p>(2)：取消本页最后的“检查重名用户”再提交，此方式将删除已存在的重名用户</p>
+                    <p class="m-0">
+                        重名用户：
+                        @foreach(session('exist_users') as $item)
+                            <a href="{{route('user',$item)}}" target="_blank">{{$item}}</a>
+                        @endforeach
+                    </p>
+                </div>
+            @endif
             <form action="" method="post">
                 @csrf
 
@@ -81,26 +89,29 @@
                         <div id="tag_1" class="tab-pane fade show active form-group">
                             <div class="form-inline">
                                 <label>账号前缀：
-                                    <input type="text" name="data[prefix]" value="team"
+                                    <input type="text" name="data[prefix]" value="{{old('data.prefix')?:'team'}}"
                                            onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')" class="ttt form-control">
                                 </label>
                             </div>
                             <div class="form-inline">
                                 <label>编号范围：
-                                    <input type="number" name="data[begin]" value="1" class="ttt form-control">
+                                    <input type="number" name="data[begin]" value="{{old('data.begin')?:1}}" class="ttt form-control">
                                     <font class="px-2">—</font>
-                                    <input type="number" name="data[end]" value="10" class="ttt form-control">
+                                    <input type="number" name="data[end]" value="{{old('data.end')?:10}}" class="ttt form-control">
                                 </label>
                             </div>
                         </div>
                         <div id="tag_2" class="tab-pane fade form-group w-50">
                             <label for="description">用户名/学号列表：</label>
                             <textarea id="description" name="data[stu_id]" class="ttt form-control-plaintext border bg-white"
-                                 rows="6" placeholder="{{"20182209134\n说明：每行一个学号；仅允许英文字母或数字！"}}"></textarea>
+                                 rows="6" placeholder="{{"20182209134\n说明：每行一个学号；仅允许英文字母或数字！"}}">{{old('data.stu_id')?:null}}</textarea>
                         </div>
                     </div>
                     <script type="text/javascript">
                         $(function(){
+                            if($("#description").val()!=''){
+                                $("a[href='#tag_2']").click();
+                            }
                             {{-- 监听code/file的选项卡，选中时为输入框添加required属性 --}}
                             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                                 var activeTab = $(e.target).attr('href'); // 获取已激活的标签页
@@ -120,30 +131,35 @@
                     <div class="col-3">
                         <label for="description">姓名/队名列表：</label>
                         <textarea id="description" name="data[nick]" class="form-control-plaintext border bg-white"
-                                  rows="6" placeholder="{{"Sparks of Fire\nSample Team Name\n说明：每行对应一个账号姓名/队伍名"}}"></textarea>
+                                  rows="6" placeholder="{{"Sparks of Fire\nSample Team Name\n说明：每行对应一个账号姓名/队伍名"}}">{{old('data.nick')?:null}}</textarea>
                     </div>
                     <div class="col-3">
                         <label for="description">学校列表：</label>
                         <textarea id="description" name="data[school]" class="form-control-plaintext border bg-white"
-                            rows="6" placeholder="{{"鲁东大学 5\n烟台大学\n说明：\n校名跟空格n,则连续n个账号为该校。"}}"></textarea>
+                            rows="6" placeholder="{{"鲁东大学 5\n烟台大学\n说明：\n校名跟空格n,则连续n个账号为该校。"}}">{{old('data.school')?:null}}</textarea>
                     </div>
                     <div class="col-3">
                         <label for="description">班级列表：</label>
                         <textarea id="description" name="data[class]" class="form-control-plaintext border bg-white"
-                            rows="6" placeholder="{{"电气1801 65\n软工1801\n说明：\n后跟空格n,则连续n个账号为该班级。"}}"></textarea>
+                            rows="6" placeholder="{{"电气1801 65\n软工1801\n说明：\n后跟空格n,则连续n个账号为该班级。"}}">{{old('data.class')?:null}}</textarea>
                     </div>
                     <div class="col-3">
                         <label for="description">邮箱列表：</label>
                         <textarea id="description" name="data[email]" class="form-control-plaintext border bg-white"
-                            rows="6" placeholder="{{"123@123.com\n456@456.com\n说明：每行对应一个邮箱"}}"></textarea>
+                            rows="6" placeholder="{{"123@123.com\n456@456.com\n说明：每行对应一个邮箱"}}">{{old('data.email')?:null}}</textarea>
                     </div>
                 </div>
 
 
                 <div class="form-inline">
                     <label>允许这些用户修改个人资料的次数：
-                        <input type="number" name="data[revise]" value="0" required class="form-control" min="0">
+                        <input type="number" name="data[revise]" value="{{old('data.revise')?:0}}" required class="form-control" min="0">
                     </label>
+                </div>
+
+                <div class="custom-control custom-checkbox m-2">
+                    <input type="checkbox" name="data[check_exist]" checked class="custom-control-input" id="customCheck">
+                    <label class="custom-control-label pt-1" for="customCheck">检查重名用户；若您不勾选此项，当用户名已存在时，将强制删除已存在用户</label>
                 </div>
 
                 <div class="form-group m-4">

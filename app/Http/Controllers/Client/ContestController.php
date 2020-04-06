@@ -13,7 +13,7 @@ class ContestController extends Controller
 {
     public function contests(){
         $contests=DB::table('contests')
-            ->select(['id','type','judge_type','title','start_time','end_time','access','password','top',
+            ->select(['id','type','judge_type','title','start_time','end_time','access','password','top','hidden',
                 DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
                 DB::raw("case access when 'public'
                     then (select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id)

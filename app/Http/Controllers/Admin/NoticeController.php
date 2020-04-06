@@ -45,13 +45,6 @@ class NoticeController extends Controller
         DB::table('notices')->whereIn('id',$nids)->delete();
     }
 
-    public function upload_image(Request $request){
-        $image=$request->file('upload');
-        $fname=uniqid(date('Ymd_His_')).'.'.$image->getClientOriginalExtension();
-        $image->move(storage_path('app/public/notice/images'),$fname);
-        return json_encode(['uploaded'=>true,'url'=> Storage::url('public/notice/images/'.$fname)]);
-    }
-
     public function update_state(Request $request){
         $nids=$request->input('nids')?:[];
         $state=$request->input('state');

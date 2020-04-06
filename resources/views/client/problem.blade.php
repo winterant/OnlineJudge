@@ -198,9 +198,11 @@
                             </table>
                         </div>
                     @endif
-                    <div class="text-right">
-                        <a href="{{route('status',['pid'=>$problem->id,'username'=>Auth::user()->username])}}">{{trans('main.More')}}>></a>
-                    </div>
+                    @if(count($solutions)>0)
+                        <div class="text-right">
+                            <a href="{{route('status',['pid'=>$problem->id,'username'=>Auth::user()->username])}}">{{trans('main.More')}}>></a>
+                        </div>
+                    @endif
                 </div>
             @endif
 

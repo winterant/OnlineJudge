@@ -16,12 +16,15 @@
         .nav-link, .btn {
             text-transform: none;
         }
+        .nav-tabs .active{
+            border-color: #6599ff !important;
+        }
     </style>
 
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white mb-3">
+<nav class="navbar navbar-expand-lg navbar-light bg-white mb-2">
 
     <a class="navbar-brand">{{config('oj.main.siteName')}}</a>
 
@@ -47,24 +50,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>1])}}">
-                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Course')}}</i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>2])}}">
-                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Training')}}</i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('contests',['type'=>3])}}">
+                <a class="nav-link text-nowrap p-2" href="{{route('contests')}}">
                     <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('contests',['state'=>'ended'])}}">
-                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Ended')}}</i>
                 </a>
             </li>
             <li class="nav-item">

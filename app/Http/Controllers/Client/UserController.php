@@ -48,7 +48,7 @@ class UserController extends Controller
             ->leftJoin('users','user_id','=','users.id')
             ->select('problem_id',
                 //此处查询AC数目，效率较低
-                DB::raw('(select count(*) from solutions join users on user_id=users.id 
+                DB::raw('(select count(*) from solutions join users on user_id=users.id
                     where username=\''.$username.'\' and problem_id=A.problem_id and result=4) as ac'),
                 DB::raw('COUNT(*) as sum'))
             ->where('username',$username)
@@ -114,6 +114,7 @@ class UserController extends Controller
                 ->update(['password'=>Hash::make($user['new_password']),'updated_at'=>date('Y-m-d H:i:s')]);
             if($ret!=1) //失败
                 return view('client.fail',['msg'=>trans('sentence.Operation failed')]);
+            Auth::logoutOtherDevices($user['new_password']); //其他设备全部失效
             return view('client.success',['msg'=>'Password modified successfully']);
         }
     }

@@ -11,6 +11,7 @@ return [
     //home.blade
     "Notice Board"  => "Notice Board",
     "To Top"        => "To Top",
+    "Top"           => "Top",
     "Detail"        => "Detail",
     "This Week Ranking" => "This Week Ranking",
     "Last Week Ranking" => "Last Week Ranking",
@@ -51,6 +52,7 @@ return [
     "Username"      => "Username",
     "E-Mail Address"=> "E-Mail Address",
     "Password"      => "Password",
+    "New Password"  => "New Password",
     "Old Password"  => "Old Password",
     "Confirm Password" => "Confirm Password",
     "Remember Me"   => "Remember Me",
