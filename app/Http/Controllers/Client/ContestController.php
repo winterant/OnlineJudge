@@ -260,6 +260,7 @@ class ContestController extends Controller
                         ->orderByDesc('pass_rate')->first(['submit_time','pass_rate']);
                     if($solu!=null) //存在分数
                     {
+                        $penalty += strtotime($solu->submit_time)-strtotime($contest->start_time);
                         $users[$user->id][$i]['AC_time']=$solu->submit_time;
                         $score=round($solu->pass_rate*100);
                         $users[$user->id][$i]['AC_info']=$score;
@@ -274,7 +275,7 @@ class ContestController extends Controller
             $users[$user->id]['school']=$user->school;
             $users[$user->id]['nick']=$user->nick;
             $users[$user->id]['AC']=$AC_count;   //acm模式下AC数量，oi模式总得分
-            $users[$user->id]['penalty']=$penalty; //仅acm模式
+            $users[$user->id]['penalty']=$penalty; //罚时
         }
 
         uasort($users,function ($x,$y){  //排序
@@ -289,8 +290,7 @@ class ContestController extends Controller
             if($last_user!=null && $last_user['AC']==$user['AC'] && $last_user['penalty']==$user['penalty'])
                 $user['rank'] = $last_user['rank'];
             $user['rank'] = $rank;
-            if($contest->judge_type == 'acm')
-                $user['penalty']=self::seconds_to_clock($user['penalty']);
+            $user['penalty']=self::seconds_to_clock($user['penalty']);
 
             $last_user=$user;
             ++$rank;

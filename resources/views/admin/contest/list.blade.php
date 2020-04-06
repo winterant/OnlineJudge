@@ -115,6 +115,9 @@
                         <a href="javascript:" onclick="delete_contest({{$item->id}})" class="px-1" title="删除">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                         </a>
+                        <a href="javascript:" onclick="clone_contest({{$item->id}})" class="px-1" title="克隆该竞赛">
+                            <i class="fa fa-clone" aria-hidden="true"></i>
+                        </a>
                         <a href="javascript:" onclick="contest_set_top('{{$item->id}}',1)" class="px-1" title="置顶">
                             置顶
                         </a>
@@ -131,6 +134,7 @@
         {{$contests->appends($_GET)->links()}}
     </div>
     <script>
+
         function contest_set_top(cid, way) {
             $.post(
                 '{{route('admin.contest.set_top')}}',
@@ -168,6 +172,35 @@
                             }
                             else Notiflix.Report.Failure('删除失败','只有全局管理员(admin)或创建者可以删除','confirm')
                         }
+                    }
+                );
+            });
+        }
+
+
+        function clone_contest(cid) {
+            Notiflix.Confirm.Show( '克隆竞赛', '您即将克隆这场比赛，是否继续？', '继续', '取消', function(){
+                $.post(
+                    '{{route('admin.contest.clone')}}',
+                    {
+                        '_token':'{{csrf_token()}}',
+                        'cid':cid,
+                    },
+                    function (ret) {
+                        ret=JSON.parse(ret);
+                        setTimeout(function() {
+                            if (ret.cloned) {
+                                Notiflix.Confirm.Init({
+                                    plainText: false, //使<br>可以换行
+                                });
+                                Notiflix.Confirm.Show('克隆成功', '新克隆竞赛：' + ret.cloned_cid + '，是否编辑？' +
+                                    '<br>注意：若参赛权限为private，您需要重新录入参赛账号', '编辑', '取消', function () {
+                                    location.href = ret.url;
+                                });
+                            } else {
+                                Notiflix.Report.Failure("克隆失败", "要克隆的竞赛不存在！", "好的");
+                            }
+                        },450);
                     }
                 );
             });

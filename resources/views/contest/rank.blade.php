@@ -92,10 +92,10 @@
 
                             @if($contest->judge_type == 'acm')
                                 <th>{{trans('main.Solved')}}</th>
-                                <th>{{trans('main.Penalty')}}</th>
                             @else
                                 <th>{{trans('main.Score')}}</th>
                             @endif
+                            <th>{{trans('main.Penalty')}}</th>
 
                             @foreach($index_map as $i=>$pid)
                                 <th><a href="{{route('contest.problem',[$contest->id,$i])}}">{{index2ch($i)}}</a></th>
@@ -128,9 +128,7 @@
                                     @if(config('oj.main.rank_show_nick'))<td nowrap>{{$user['nick']}}</td> @endif
 
                                     <td>{{$user['AC']}}</td>
-                                    @if($contest->judge_type == 'acm')
-                                        <td>{{$user['penalty']}}</td>
-                                    @endif
+                                    <td>{{$user['penalty']}}</td>
                                     @foreach($index_map as $i=>$pid)
                                         @if(isset($user[$i]['AC_clock'])&&$user[$i]['AC_clock']>$contest->end_time)
                                             <td class="border" style="background-color: #99d7ff" nowrap>

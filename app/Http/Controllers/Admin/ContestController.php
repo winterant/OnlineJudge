@@ -23,7 +23,7 @@ class ContestController extends Controller
             ->when(isset($_GET['type'])&&$_GET['type']!=null,function ($q){return $q->where('type',$_GET['type']);})
             ->when(isset($_GET['judge_type'])&&$_GET['judge_type']!=null,function ($q){return $q->where('judge_type',$_GET['judge_type']);})
             ->when(isset($_GET['title']),function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
-            ->orderBy('id')
+            ->orderByDesc('id')
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:10);
         return view('admin.contest.list',compact('contests'));
     }
@@ -78,10 +78,10 @@ class ContestController extends Controller
 
             //数据库
             DB::table('contests')->where('id',$id)->update($contest);
-            DB::table('contest_problems')->where('contest_id',$id)->whereNotIn('problem_id',$pids)->delete();//舍弃的
+            DB::table('contest_problems')->where('contest_id',$id)->delete();//舍弃原来的
             foreach ($pids as $i=>$pid){
                 DB::table('contest_problems')
-                    ->updateOrInsert(['contest_id'=>$id,'problem_id'=>$pid],['index'=>1+$i]);
+                    ->insert(['contest_id'=>$id,'problem_id'=>$pid,'index'=>1+$i]);
             }
             if($contest['access']=='private'){
                 $uids=DB::table('users')->whereIn('username',explode(PHP_EOL,$c_users))->pluck('id');
@@ -99,6 +99,36 @@ class ContestController extends Controller
             $msg=sprintf('成功更新竞赛：<a href="%s">%d</a>',route('contest.home',$id),$id);
             return view('admin.success',compact('msg'));
         }
+    }
+
+
+    public function clone(Request $request){
+        $cid=$request->input('cid');
+        $contest=DB::table('contests')->find($cid);
+        if(isset($contest->id)){
+            unset($contest->id);
+            $contest->title .= "[cloned ".$cid."]";
+            //复制竞赛主体
+            $cloned_cid=DB::table('contests')->insertGetId((array)$contest);
+            //复制题号
+            $con_problems=DB::table('contest_problems')
+                ->distinct()->select('problem_id','index')
+                ->where('contest_id',$cid)
+                ->orderBy('index')->get();
+            $cps=[];
+            foreach ($con_problems as $i=>$item)
+                $cps[]=['contest_id'=>$cloned_cid,'problem_id'=>$item->problem_id,'index'=>$i+1];
+            DB::table('contest_problems')->insert($cps);
+//            复制附件
+            foreach (Storage::allFiles('public/contest/files/'.$cid) as $fp) {
+                $name=pathinfo($fp,PATHINFO_FILENAME);  //文件名
+                $ext=pathinfo($fp,PATHINFO_EXTENSION);    //拓展名
+                Storage::copy($fp, 'public/contest/files/'.$cloned_cid.'/'.$name.$ext );
+            }
+
+            return json_encode(['cloned'=>true,'cloned_cid'=>$cloned_cid,'url'=>route('admin.contest.update',$cloned_cid)]);
+        }
+        return json_encode(['cloned'=>false]);
     }
 
     public function set_top(Request $request){
