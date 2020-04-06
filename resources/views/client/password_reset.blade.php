@@ -36,7 +36,7 @@
 
 
                     <div class="form-group row">
-                        <label for="new_password" class="col-md-4 col-form-label text-md-right">{{ __('main.Password') }}</label>
+                        <label for="new_password" class="col-md-4 col-form-label text-md-right">{{ __('main.New Password') }}</label>
 
                         <div class="col-md-6">
                             <input id="new_password" type="password" class="form-control" name="user[new_password]" required minlength="8">

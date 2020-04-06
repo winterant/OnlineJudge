@@ -101,13 +101,6 @@ class ContestController extends Controller
         }
     }
 
-    public function upload_image(Request $request){
-        $image=$request->file('upload');
-        $fname=uniqid(date('Ymd_His_')).'.'.$image->getClientOriginalExtension();
-        $image->move(storage_path('app/public/contest/images'),$fname);
-        return json_encode(['uploaded'=>true,'url'=> Storage::url('public/contest/images/'.$fname)]);
-    }
-
     public function set_top(Request $request){
         $cid=$request->input('cid');
         $way=$request->input('way');

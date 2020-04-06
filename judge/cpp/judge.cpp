@@ -519,13 +519,13 @@ int judge(char *data_dir, char *spj_path)
         }
         else return OJ_SE;  //system error
     }
-    if(is_acm)return OJ_AC;  //ACM规则走到这说明AC了，后面是oi
     if(test_count==0){
         char error[128]="Missing input file of test data, please contact the administrator to add test data!";
         write_file(error,"error.out","a+");
         return OJ_SE; //system error 缺少测试数据
     }
     solution.pass_rate = ac_count*1.0/test_count;
+    if(is_acm)return OJ_AC;  //ACM规则走到这说明AC了，后面是oi
     return oi_result; //oi规则结果
 }
 

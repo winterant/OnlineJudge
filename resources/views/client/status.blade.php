@@ -27,10 +27,11 @@
             <div class="my-container bg-white table-responsive">
                 <form action="" method="get">
                     @if(!isset($contest))
-                        <div class="float-right">
-                            <input type="checkbox" name="inc_contest" @if(isset($_GET['inc_contest']))checked @endif
-                                onchange="this.form.submit()" style="vertical-align:middle;zoom: 115%">
-                            <font onclick="$(this).prev().click()" style="cursor: pointer">{{__('main.include contest')}}</font>
+                        <div class="custom-control custom-checkbox float-right">
+                            <input type="checkbox" name="inc_contest" class="custom-control-input" id="customCheck"
+                                   @if(isset($_GET['inc_contest']))checked @endif
+                                   onchange="this.form.submit()">
+                            <label class="custom-control-label pt-1" for="customCheck">{{__('main.include contest')}}</label>
                         </div>
                     @endif
 

@@ -14,23 +14,39 @@
             .p-xs-0{padding: 0}
         }
     </style>
+
     <div class="container">
+
+        <div class="my-container bg-white pt-2 pb-1">
+            <ul class="nav nav-tabs nav-justified">
+                @foreach(config('oj.contestType') as $i=>$ctype)
+                    <li class="nav-item">
+                        <a class="nav-link p-2" href="{{route('contests',['type'=>$i])}}">{{ucfirst($ctype)}}</a>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+
+
         <div class="my-container bg-white">
             <div class="overflow-hidden">
                 <h4 class="pull-left">
+                    @if(isset($_GET['state']))
+                        {{__('main.'.ucfirst($_GET['state']))}}
+                    @endif
                     @if(isset($_GET['type']))
                         {{ucfirst(config('oj.contestType.'.$_GET['type']))}}
-                    @elseif(isset($_GET['state'])&&$_GET['state']=='ended')
-                        {{__('main.Ended')}}
+                    @else
+                        {{__('main.All')}}
                     @endif
                 </h4>
-                <form action="" method="get" class="pull-right form-inline">
+                <form action="" method="get" class="mb-2 pull-right form-inline">
                     <input type="number" onchange="this.form.submit();" name="type" value="{{isset($_GET['type'])?$_GET['type']:''}}" hidden>
                     <div class="form-inline mx-3">
                         <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
-                            <option value="10">10</option>
+                            <option value="5" @if(isset($_GET['perPage'])&&$_GET['perPage']==5)selected @endif>5</option>
+                            <option value="10" @if(!isset($_GET['perPage'])||$_GET['perPage']==10)selected @endif>10</option>
                             <option value="20" @if(isset($_GET['perPage'])&&$_GET['perPage']==20)selected @endif>20</option>
-                            <option value="30" @if(isset($_GET['perPage'])&&$_GET['perPage']==30)selected @endif>30</option>
                             <option value="50" @if(isset($_GET['perPage'])&&$_GET['perPage']==50)selected @endif>50</option>
                             <option value="100" @if(isset($_GET['perPage'])&&$_GET['perPage']==100)selected @endif>100</option>
                         </select>
@@ -67,8 +83,11 @@
                         <div class="col-9 col-sm-8 pr-0">
                             <h5>
                                 {{$item->id}}. <a href="{{route('contest.home',$item->id)}}">{{$item->title}}</a>
+                                @if($item->hidden)
+                                    <font class="text-blue" style="font-size: 0.9rem;vertical-align: top;">{{__('main.Hidden')}}</font>
+                                @endif
                                 @if($item->top>0)
-                                    <font class="text-red" style="font-size: 0.9rem;vertical-align: top;">{{__('Top')}}</font>
+                                    <font class="text-red" style="font-size: 0.9rem;vertical-align: top;">{{__('main.Top')}}</font>
                                 @endif
                             </h5>
                             <ul class="d-flex flex-wrap list-unstyled" style="font-size: .9rem;">
@@ -85,7 +104,7 @@
                                         {{round($time_len/3600,1)}} {{trans_choice('main.hours',round($time_len/3600,1))}}
                                     @endif
                                 </li>
-                                @if(isset($_GET['state'])&&$_GET['state']=='ended')
+                                @if(!isset($_GET['type']))
                                     <li class="pr-2">
                                         <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">{{ucfirst(config('oj.contestType.'.$item->type))}}</div>
                                     </li>
@@ -143,7 +162,6 @@
         //对应的导航栏选项设为active状态
         $(function () {
             $("a[href='{{route('contests',isset($_GET['type'])?['type'=>$_GET['type']]:null)}}']").addClass("active");
-            $("a[href='{{route('contests',isset($_GET['state'])?['state'=>$_GET['state']]:null)}}']").addClass("active");
         })
 
         function contest_set_top(cid, way) {

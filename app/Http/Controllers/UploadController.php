@@ -35,4 +35,15 @@ class UploadController extends Controller
         }
         return false;
     }
+
+    /*
+     * CKeditor 上传图片
+     */
+    public function ck_upload_image(Request $request){
+        $image=$request->file('upload'); //ckeditor传过来的文件名upload
+        $fdir='public/ckeditor/images/'.date('Ymd');  //保存文件夹
+        $fname=uniqid(date('His_')).'.'.$image->getClientOriginalExtension();//保存名
+        $image->move(storage_path('app/'.$fdir),$fname);
+        return json_encode(['uploaded'=>true,'url'=> Storage::url($fdir.'/'.$fname)]);
+    }
 }
