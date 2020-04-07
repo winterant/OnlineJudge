@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -123,16 +124,20 @@ class UserController extends Controller
         if($request->isMethod('post')){
             $username=$request->input('username');
             $password=$request->input('password');
-            $ret=DB::table('users')->where('username',$username)->update(['password'=>Hash::make($password)]);
-            if($ret==0){
-                $msg='用户不存在！';
+            $user_id=DB::table('users')->where('username',$username)->value('id');
+            if($user_id){
+                if(DB::table('privileges')->where('user_id',$user_id)->where('authority','admin')->exists()){
+                    $msg="该用户拥有管理员权限(admin)，不能被重置密码。请先取消该账号的权限再尝试！";
+                }else{
+                    DB::table('users')->where('id',$user_id)->update(['password'=>Hash::make($password)]);
+                    $user=Auth::user();
+                    Auth::onceUsingId($user_id);
+                    Auth::logoutOtherDevices($password);
+                    Auth::login($user);
+                    $msg='重置成功！';
+                }
             }else{
-                $msg='重置成功！';
-                $user=Auth::user();
-                Auth::loginUsingId(DB::table('users')->where('username',$username)->value('id'));
-                Auth::logoutOtherDevices($password);
-                Auth::logout();
-                Auth::login($user);
+                $msg='该账号不存在！';
             }
             return view('admin.user.reset_pwd',compact('msg'));
         }
