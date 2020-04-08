@@ -62,11 +62,11 @@
                         比赛时间：
                         <input type="datetime-local" name="contest[start_time]"
                                value="{{isset($contest)?substr(str_replace(' ','T',$contest->start_time),0,16)
-                           :str_replace(' ','T',date('Y-m-d H:00'))}}" class="form-control" required>
+                           :str_replace(' ','T',date('Y-m-d H:00',time()+3600))}}" class="form-control" required>
                         <font class="mx-2">—</font>
                         <input type="datetime-local" name="contest[end_time]"
                                value="{{isset($contest)?substr(str_replace(' ','T',$contest->end_time),0,16)
-                           :str_replace(' ','T',date('Y-m-d H:00'))}}" class="form-control" required>
+                           :str_replace(' ','T',date('Y-m-d H:00',time()+3600*6))}}" class="form-control" required>
                     </label>
                 </div>
 

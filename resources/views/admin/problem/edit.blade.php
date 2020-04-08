@@ -40,6 +40,10 @@
                                required class="form-control">MB
                     </label>
                 </div>
+
+                <div class="form-group mt-3 mb-1">
+                    <p class="alert alert-info mb-0">备注：您可以在下面所有的编辑框里使用Latex公式（tips：$行内公式$，$$单行居中公式$$）</p>
+                </div>
                 <div class="form-group">
                     <label for="description">题目描述：</label>
                     <textarea id="description" name="problem[description]" class="form-control-plaintext border bg-white">{{isset($problem->description)?$problem->description:''}}</textarea>

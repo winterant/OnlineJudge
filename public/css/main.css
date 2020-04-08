@@ -1,4 +1,14 @@
 
+/*去掉mathjax的边框*/
+.MathJax {
+    outline: 0 !important;
+}
+.MathJax_Display {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+}
+
+
 html, body {
     width:100%;
     height:100%;
