@@ -10,7 +10,7 @@
 
 {{--    textarea全屏插件 --}}
     <link rel="stylesheet" href="{{asset('static/textareafullscreen/textareafullscreen.css')}}">
-    <script src="{{asset('static/textareafullscreen/jquery.textareafullscreen.js')}}"></script>
+    <script src="{{asset('static/textareafullscreen/jquery.textareafullscreen.js')}}" defer></script>
     <script>
         $(document).ready(function() {
             $('#code_editor').textareafullscreen({
@@ -36,7 +36,7 @@
                 @if(!isset($contest)&&$problem->hidden==1)
                     [<font class="text-red">{{trans('main.Hidden')}}</font>]
                 @endif
-                <h3 class="text-center">{{isset($contest)?index2ch($problem->index):$problem->id}}. {{$problem->title}}
+                <h4 class="text-center">{{isset($contest)?index2ch($problem->index):$problem->id}}. {{$problem->title}}
 {{--                    管理员编辑题目的连接 --}}
                     @if(Auth::check()&&Auth::user()->privilege('problem'))
                         <font style="font-size: 0.85rem">
@@ -44,7 +44,7 @@
                             [ <a href="{{route('admin.problem.test_data',['pid'=>$problem->id])}}" target="_blank">{{__('main.Test Data')}}</a> ]
                         </font>
                     @endif
-                </h3>
+                </h4>
                 <hr class="mt-0 mb-1">
                 <div class="ck-content">
                     <h4 class="text-sky">Description</h4>
