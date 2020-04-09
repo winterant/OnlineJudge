@@ -55,7 +55,7 @@ class UserController extends Controller
             ->groupBy('problem_id')
             ->get();
 
-        return view('client.user',compact('user','opened','submissions','results','solved','submit'));
+        return view('auth.user',compact('user','opened','submissions','results','solved','submit'));
     }
 
     public function user_edit(Request $request,$username){
@@ -68,7 +68,7 @@ class UserController extends Controller
 
         // 提供修改界面
         if ($request->isMethod('get')){
-            return view('client.user_edit',compact('user'));
+            return view('auth.user_edit',compact('user'));
         }
 
         // 提交修改资料
@@ -92,7 +92,7 @@ class UserController extends Controller
 
         // 提供界面
         if ($request->isMethod('get')){
-            return view('client.password_reset',compact('username'));
+            return view('auth.password_reset',compact('username'));
         }
 
         // 提交修改

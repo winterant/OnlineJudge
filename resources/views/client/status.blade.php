@@ -109,10 +109,14 @@
                                             <a href="{{route('contest.problem',[$contest->id,$sol->index])}}">{{index2ch($sol->index)}}</a>
                                         @else
                                             <a href="{{route('problem',$sol->problem_id)}}">{{$sol->problem_id}}</a>
-                                            @if($sol->contest_id!=-1 && isset($sol->index))
+                                            @if($sol->contest_id!=-1)
                                                 &nbsp;
                                                 <i class="fa fa-trophy" aria-hidden="true">
-                                                </i><a href="{{route('contest.problem',[$sol->contest_id,$sol->index])}}">{{$sol->contest_id}}-{{index2ch($sol->index)}}</a>
+                                                @if(isset($sol->index)&&$sol!=null)
+                                                    </i><a href="{{route('contest.problem',[$sol->contest_id,$sol->index])}}">{{$sol->contest_id}}-{{index2ch($sol->index)}}</a>
+                                                @else
+                                                    <i><a href="{{route('contest.home',$sol->contest_id)}}">{{$sol->contest_id}}</a></i>
+                                                @endif
                                             @endif
                                         @endif
                                     </td>
