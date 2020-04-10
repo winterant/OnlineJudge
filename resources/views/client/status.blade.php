@@ -52,15 +52,14 @@
                                     </div>
                                 @else
                                     <div class="form-group m-0 p-0 bmd-form-group">
-                                        <input type="text" class="form-control text-center" placeholder="{{__('main.Problem')}} {{__('main.Id')}}"
-                                               onfocusout="this.form.submit();"
+                                        <input type="text" class="form-control" placeholder="{{__('main.Problem')}} {{__('main.Id')}}"
                                                name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:''}}">
                                     </div>
                                 @endif
                             </th>
                             <th>
                                 <div class="form-group m-0 p-0 bmd-form-group">
-                                    <input type="text" class="form-control text-center" placeholder="Username"
+                                    <input type="text" class="form-control" placeholder="Username"
                                            name="username" value="{{isset($_GET['username'])?$_GET['username']:''}}">
                                 </div>
                             </th>

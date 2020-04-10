@@ -8,13 +8,15 @@
     overflow-y: hidden !important;
 }
 
-
+/*html*/
 html, body {
     width:100%;
     height:100%;
     background-color: #fafafa;
 }
 
+
+/*自定义容器*/
 .my-container {
     display: block;
     box-shadow: rgba(0, 0, 0, 0.1) 0 0 30px;
@@ -29,15 +31,16 @@ html, body {
 }
 
 
+/*table的全局设置*/
 .table th, .table td{
-    text-align: center;
+    /*text-align: center;*/
 }
 .table td{
     font-size: 0.85rem;
 }
 
 
-
+/*字体颜色*/
 .text-black{
     color: black;
 }
@@ -67,7 +70,7 @@ html, body {
     color: purple;
 }
 
-
+/*背景颜色*/
 .bg-sky{
     background-color: #64ccff;
 }

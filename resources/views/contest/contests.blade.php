@@ -77,12 +77,12 @@
             <ul class="list-unstyled border-top">
                 @foreach($contests as $item)
                     <li class="d-flex flex-wrap border-bottom pt-3 pb-2">
-                        <div class="col-3 col-sm-1 p-xs-0 text-center">
-                            <img height="50px" src="{{$item->state==1?asset('images/trophy/running.png'):asset('images/trophy/gold.png')}}" alt="pic">
+                        <div class="p-xs-0 px-3 text-center align-self-center">
+                            <img height="45px" src="{{$item->state==1?asset('images/trophy/running.png'):asset('images/trophy/gold.png')}}" alt="pic">
                         </div>
                         <div class="col-9 col-sm-8 pr-0">
-                            <h5>
-                                {{$item->id}}. <a href="{{route('contest.home',$item->id)}}">{{$item->title}}</a>
+                            <h5 style="font-size: 1.15rem">
+                                <a href="{{route('contest.home',$item->id)}}" style="color: black">{{$item->title}}</a>
                                 @if($item->hidden)
                                     <font class="text-blue" style="font-size: 0.9rem;vertical-align: top;">{{__('main.Hidden')}}</font>
                                 @endif
@@ -91,9 +91,8 @@
                                 @endif
                             </h5>
                             <ul class="d-flex flex-wrap list-unstyled" style="font-size: .9rem;">
-                                <li class="pr-3"><i class="fa fa-calendar pr-1 text-sky" aria-hidden="true"></i>{{$item->start_time}}</li>
-                                <li class="pr-3"><i class="fa fa-calendar-times-o pr-1 text-sky" aria-hidden="true"></i>{{$item->end_time}}</li>
-                                <li class="pr-2">
+                                <li class="px-2"><i class="fa fa-calendar pr-1 text-sky" aria-hidden="true"></i>{{$item->start_time}}</li>
+                                <li class="px-2">
                                     <i class="fa fa-clock-o text-sky" aria-hidden="true"></i>
                                     {{null,$time_len=strtotime($item->end_time)-strtotime($item->start_time)}}
                                     @if($time_len>3600*24*30)
@@ -105,29 +104,29 @@
                                     @endif
                                 </li>
                                 @if(!isset($_GET['type']))
-                                    <li class="pr-2">
+                                    <li class="px-2">
                                         <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">{{ucfirst(config('oj.contestType.'.$item->type))}}</div>
                                     </li>
                                 @endif
-                                <li class="pr-2">
-                                    <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">{{strtoupper($item->judge_type)}}</div>
+                                <li class="px-2">
+                                    <div class="border bg-light px-1" style="border-radius: 12px">{{strtoupper($item->judge_type)}}</div>
                                 </li>
-                                <li class="pr-2">
-                                    <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">
-                                        <font @if($item->access=='public')style="color: green"
-                                              @else style="color: indianred"@endif>{{ucfirst($item->access)}}</font>
+                                <li class="px-2">
+                                    <div class="border bg-light px-1" style="border-radius: 12px">
+                                        <font @if($item->access=='public')style="color: #00c000"
+                                              @else style="color: #ff573e"@endif>{{ucfirst($item->access)}}</font>
                                     </div>
                                 </li>
                                 @if(strtotime(date('Y-m-d H:i:s'))>strtotime($item->start_time))
-                                    <li>
-                                        <i class="fa fa-user-o pr-1 text-sky" aria-hidden="true"></i>
+                                    <li class="px-2">
+                                        <i class="fa fa-user-o text-sky" aria-hidden="true"></i>
                                         ×{{$item->number}}
                                     </li>
                                 @endif
                             </ul>
                         </div>
                         <div class="col-12 col-sm-3 m-auto">
-                            <a href="{{route('contest.rank',$item->id)}}" class="btn border">
+                            <a href="{{route('contest.rank',$item->id)}}" class="btn border" title="{{__('main.Rank')}}">
                                 @if(strtotime(date('Y-m-d H:i:s'))<strtotime($item->start_time))
                                     <i class="fa fa-circle text-yellow pr-1" aria-hidden="true"></i>{{__('main.Waiting')}}
                                 @elseif(strtotime(date('Y-m-d H:i:s'))>strtotime($item->end_time))
