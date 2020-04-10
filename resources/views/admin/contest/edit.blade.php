@@ -76,7 +76,8 @@
                                value="{{isset($contest)?$contest->lock_rate:0}}" class="form-control">
                         <a href="javascript:" class="ml-1" style="color: #838383"
                             onclick="whatisthis('你可以设置比赛末尾停止更新榜单<br>' +
-                            '比赛结尾封榜时间=比赛时长×封榜比例；<br>数值范围0.0~1.0')">
+                            '比赛结尾封榜时间=比赛时长×封榜比例；<br>数值范围0.0~1.0' +
+                             '<br><br>例如：封榜比例0.2，比赛时长5小时，则比赛最后一小时榜单不更新')">
                             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                         </a>
                     </label>
