@@ -90,7 +90,8 @@
                                     <font class="text-red" style="font-size: 0.9rem;vertical-align: top;">{{__('main.Top')}}</font>
                                 @endif
                             </h5>
-                            <ul class="d-flex flex-wrap list-unstyled" style="font-size: .9rem;">
+                            <ul class="d-flex flex-wrap list-unstyled" style="font-size: .9rem;color: #484f56">
+                                <li>{{$item->id}}</li>
                                 <li class="px-2"><i class="fa fa-calendar pr-1 text-sky" aria-hidden="true"></i>{{$item->start_time}}</li>
                                 <li class="px-2">
                                     <i class="fa fa-clock-o text-sky" aria-hidden="true"></i>
