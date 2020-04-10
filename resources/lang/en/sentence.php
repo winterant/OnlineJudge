@@ -40,6 +40,7 @@ return [
     "pwd wrong"         => "The password is wrong",
 
 //    contest
+    "not_invited"       => "I'm sorry! You are not invited to this contest!",
     "Complete Profile"  => "Please complete your personal information before entering the contest!",
     "Waiting start for" => "Waiting start for",
     "Waiting to start after" => "Waiting to start after",

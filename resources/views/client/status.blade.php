@@ -8,13 +8,6 @@
 
 @section('content')
 
-    <style>
-        select {
-            text-align-last: center;
-        }
-    </style>
-
-
     <div class="container">
         {{-- 竞赛菜单 --}}
         @if(isset($contest))

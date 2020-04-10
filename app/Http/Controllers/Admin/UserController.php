@@ -72,6 +72,7 @@ class UserController extends Controller
                     'email'=>isset($email[$i])?$email[$i]:'',
                     'school'=>isset($school[$i])?$school[$i]:'',
                     'class'=>isset($class[$i])?$class[$i]:'',
+                    'created_at'=>date('Y-m-d H:i:s')
                 ];
             }
             if (isset($data['check_exist'])){

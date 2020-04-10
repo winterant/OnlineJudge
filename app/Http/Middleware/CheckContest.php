@@ -29,7 +29,7 @@ class CheckContest
         if($contest->access=='private'
                 && DB::table('contest_users')->where('contest_id',$contest->id)
                 ->where('user_id',Auth::id())->doesntExist()) //私有竞赛，没有邀请该用户
-            return response()->view('client.fail',['msg'=>'抱歉！您没有被邀请参加这场比赛！']);
+            return response()->view('client.fail',['msg'=>trans('sentence.not_invited')]);
 
         if($contest->access=='password') { //需要密码
             if(DB::table('contest_users')->where('contest_id',$contest->id)

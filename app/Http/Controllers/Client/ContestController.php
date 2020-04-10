@@ -168,7 +168,8 @@ class ContestController extends Controller
             ->where('contest_id',$contest->id)
             ->where('user_id',$user_id)
             ->where('problem_id',$pid)
-            ->where('submit_time','<',self::get_rank_end_time($contest));
+            ->where('submit_time','<',self::get_rank_end_time($contest))
+            ->where('submit_time','>',$contest->start_time);
         return $solutions;
     }
     private static function seconds_to_clock($seconds){
@@ -188,9 +189,6 @@ class ContestController extends Controller
 
         $contest=DB::table('contests')
             ->select(['id','type','judge_type','title','description','access','start_time','end_time','lock_rate'])->find($id);
-
-        if($contest->start_time>date('Y-m-d H:i:s')) //比赛尚未开始
-            return view('client.fail',['msg'=>trans('main.Waiting')]);
 
         //获得榜单要显示的用户
         $submit_user_ids=DB::table('solutions')
