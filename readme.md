@@ -1,23 +1,26 @@
 Ludong University Online Judge
 ===
-  > 鲁东大学程序设计在线测评系统与教学平台
+  > 鲁东大学程序设计在线测评系统与考试平台
 
 
-# 概述
+# 快速了解
 
-  - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
-  - 基于php框架 laravel 6.0 开发，php版本=7.2
-  - web端与判题端分离，judge文件夹为判题端程序，独立于laravel
+  项目演示：http://oj.winterstar.cn  
+  图片展示：https://blog.csdn.net/winter2121/article/details/105294224
   
-  前台概览
+  - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
+  - Web模块基于php框架 laravel 6.0 开发，php版本=7.2
+  - 判题模块基于C/C++和shell编程，存放于judge文件夹
+  
+  前台
   
   + 首页；公告/新闻，本周榜，上周榜
   + 状态；用户提交记录与判题结果
-  + 问题；题库
-  + 竞赛；题目(选择,填空,编程)，排名(ACM,OI,考试)，**赛后补题榜**，公告栏，气球派送；
+  + 问题；题库（编程）
+  + 竞赛；题目(选择,填空,编程)，排名(ACM,OI)，**赛后补题榜**，公告栏，气球派送；
   + 排名；用户解题排行榜，可按年/月/周/日查询
   
-  后台功能概览
+  后台
 
   + 判题机；启动/停止linux判题端进程
   + 公告/新闻；用户访问首页可见
@@ -35,17 +38,17 @@ Ludong University Online Judge
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
   bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
   ```
-  **注意**：安装过程mysql**可能**会提示设置root密码，请输入并谨记。
+  **注意**：安装过程mysql**可能**提示设置root密码，请输入并谨记。
   
-  **[安装成功]**：
-  浏览器访问服务器ip即可打开首页(云服务器请在控制台安全组添加80端口)；  
-  注册用户admin自动成为管理员
+  **[安装成功]**：  
+  1. 浏览器访问服务器ip即可打开首页(防火墙安全组开放80端口)；  
+  2. 注册用户admin自动成为管理员
   
   **[维护须知]**： 
   
-  1. 安装后项目位于/home/LDUOnlieJudge
+  1. 安装后项目位于/home/LDUOnlieJudge，不可移动。
   
-  2. 自动安装mysql5.7，并新建数据库lduoj，新建用户lduoj@localhost(密码123456789)。  
+  2. 自动新建mysql数据库lduoj，自动新建用户lduoj@localhost(密码123456789)。    
   (若修改密码，需修改项目下`.env`，并执行`php /home/LDUOnlineJudge/artisan config:cache`)
   
   3. 配置域名及端口：修改文件`/etc/nginx/conf.d/lduoj.conf`，在`server_name`后面填域名。
@@ -88,7 +91,7 @@ Ludong University Online Judge
     数据库连接信息、判题线程数、判题机名称等配置项均在项目根目录下.env文件  
     默认判题线程数为5，可根据服务器内存及性能适当调节
   
-  + 如何多服务器判题？
+  + 多服务器判题
   
    1. 首先在一台服务器上部署好本项目，称其为主服务器；主服务器将唯一承担mysql数据库、网页  
    2. 授权mysql允许远程访问：  
@@ -100,12 +103,8 @@ Ludong University Online Judge
       ```
    3. 在其他服务器称为从服务器，可以有多台，只负责判题;  
       故只需要从主服务器**克隆2个文件夹+1个文件**：judge/、storage/app/data/、.env  
-      克隆后请保持位置与主服务器一致(即.env仍位于/home/LDUOnlineJudge/.env)  
+      克隆后请保持位置与主服务器一致(例：.env仍位于/home/LDUOnlineJudge/.env)  
    4. 编辑.env，将其中数据库连接信息修改为主服务器ip和第2步授权的用户  
    5. 在从服务器上安装判题所需的环境支持：`bash /home/LDUOnlineJudge/judge/install.sh`  
    6. 在从服务器上启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`  
    7. 在从服务器上停止判题端：`bash /home/LDUOnlineJudge/judge/stop.sh`
-
-
-# 展示
-   请移步至 https://blog.csdn.net/winter2121/article/details/105294224
