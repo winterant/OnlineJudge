@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="form-group mt-3 mb-1">
-                    <p class="alert alert-info mb-0">备注：您可以在下面所有的编辑框里使用Latex公式（tips：$行内公式$，$$单行居中公式$$）</p>
+                    <p class="alert alert-info mb-0">备注：您可以在下面所有的编辑框里使用Latex公式（tips：\$行内公式\$(注意反斜杠)，$$单行居中公式$$）</p>
                 </div>
                 <div class="form-group">
                     <label for="description">题目描述：</label>
