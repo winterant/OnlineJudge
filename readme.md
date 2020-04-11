@@ -9,6 +9,7 @@ Ludong University Online Judge
   图片展示：https://blog.csdn.net/winter2121/article/details/105294224
   
   - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
+  - 支持考试/竞赛，支持选择题、填空题（包括代码填空）、程序设计题（C/C++,Java,Python3）
   - Web模块基于php框架 laravel 6.0 开发，php版本=7.2
   - 判题模块基于C/C++和shell编程，存放于judge文件夹
   
