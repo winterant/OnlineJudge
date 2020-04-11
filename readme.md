@@ -84,7 +84,7 @@ Ludong University Online Judge
   + 启动方式
   
     A. 网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端  
-    B. 通过终端命令启动判题端：bash /home/LDUOnlineJudge/judge/startup.sh
+    B. 通过终端命令启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`
 
   + 判题端配置
   
@@ -94,7 +94,7 @@ Ludong University Online Judge
   + 多服务器判题
   
    1. 首先在一台服务器上部署好本项目，称其为主服务器；主服务器将唯一承担mysql数据库、网页  
-   2. 授权mysql允许远程访问：  
+   2. 在主服务器上授权mysql允许远程访问：  
       登录mysql控制台，并执行命令（请替换中文提示）：
       ```
       GRANT ALL PRIVILEGES ON lduoj.* TO '主服务器mysql用户名'@'%' IDENTIFIED BY '密码' WITH GRANT OPTION;
@@ -104,7 +104,7 @@ Ludong University Online Judge
    3. 在其他服务器称为从服务器，可以有多台，只负责判题;  
       故只需要从主服务器**克隆2个文件夹+1个文件**：judge/、storage/app/data/、.env  
       克隆后请保持位置与主服务器一致(例：.env仍位于/home/LDUOnlineJudge/.env)  
-   4. 编辑.env，将其中数据库连接信息修改为主服务器ip和第2步授权的用户  
+   4. 在从服务器上编辑.env，将其中数据库连接信息修改为主服务器ip和第2步授权的用户  
    5. 在从服务器上安装判题所需的环境支持：`bash /home/LDUOnlineJudge/judge/install.sh`  
    6. 在从服务器上启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`  
    7. 在从服务器上停止判题端：`bash /home/LDUOnlineJudge/judge/stop.sh`
