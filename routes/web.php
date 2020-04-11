@@ -75,7 +75,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::any('/update/{id}','Admin\NoticeController@update')->name('update');
         Route::post('/delete','Admin\NoticeController@delete')->name('delete');
         Route::post('/update/state','Admin\NoticeController@update_state')->name('update_state');
-        Route::post('/upload/image','Admin\NoticeController@upload_image')->name('upload_image');
     });
 
 //   manage user
@@ -96,7 +95,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::any('/add','Admin\ProblemController@add')->name('add');
         Route::get('/update','Admin\ProblemController@update')->name('update');
         Route::any('/update/{id}','Admin\ProblemController@update')->name('update_withId');
-        Route::post('/upload/image','Admin\ProblemController@upload_image')->name('upload_image');
         Route::post('/update/hidden','Admin\ProblemController@update_hidden')->name('update_hidden');
         Route::get('/get_spj/{pid}','Admin\ProblemController@get_spj')->name('get_spj');
 
@@ -117,7 +115,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::get('/list','Admin\ContestController@list')->name('list');
         Route::any('/add','Admin\ContestController@add')->name('add');
         Route::any('/update/{id}','Admin\ContestController@update')->name('update');
-        Route::post('/upload/image','Admin\ContestController@upload_image')->name('upload_image');
         Route::post('/delete','Admin\ContestController@delete')->name('delete');
         Route::post('/delete/file/{id}','Admin\ContestController@delete_file')->name('delete_file');
         Route::post('/update/hidden','Admin\ContestController@update_hidden')->name('update_hidden');

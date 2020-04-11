@@ -17,7 +17,7 @@
                         </select>
                     </div>
                     <div class="form-inline mx-3">
-                        <input type="number" class="form-control text-center" placeholder="{{__('main.Problem')}} ID" onchange="this.form.submit();"
+                        <input type="number" class="form-control text-center" placeholder="{{__('main.Problem')}} {{__('main.Id')}}" onchange="this.form.submit();"
                                name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:''}}">
                     </div>
                     <div class="form-inline mx-3">
@@ -28,7 +28,7 @@
                         <input type="text" class="form-control text-center" placeholder="{{__('main.Source')}}" onchange="this.form.submit();"
                                name="source" value="{{isset($_GET['source'])?$_GET['source']:''}}">
                     </div>
-                    <button class="btn border">{{__('main.Submit')}}</button>
+                    <button class="btn border">{{__('main.Find')}}</button>
                 </form>
             </div>
             {{$problems->appends($_GET)->links()}}

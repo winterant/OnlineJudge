@@ -39,7 +39,7 @@
                         <input type="text" class="form-control text-center" placeholder="Username" onchange="this.form.submit();"
                                name="username" value="{{isset($_GET['username'])?$_GET['username']:''}}">
                     </div>
-                    <button class="btn border">{{__('main.Submit')}}</button>
+                    <button class="btn border">{{__('main.Find')}}</button>
                 </form>
             </div>
 

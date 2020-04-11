@@ -183,6 +183,8 @@ class ContestController extends Controller
     public function rank($id){
 
         //查看Cookie是否保存了全屏显示的标记
+        if(config('oj.main.web_page_display_wide')) //管理员启用了宽屏模式，这里失效
+            $_GET['big']='false';
         if(!isset($_GET['big'])&&Cookie::get('rank_table_lg')!=null) //有cookie
             $_GET['big']=Cookie::get('rank_table_lg');
         else if(isset($_GET['big']))
