@@ -39,6 +39,10 @@ html, body {
     font-size: 0.85rem;
 }
 
+/*不要自动大写*/
+.nav-link, .btn {
+    text-transform: none;
+}
 
 /*字体颜色*/
 .text-black{

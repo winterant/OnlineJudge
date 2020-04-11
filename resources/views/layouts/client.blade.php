@@ -7,14 +7,9 @@
 
     <style type="text/css">
         .container{
-            display: flex;
-            flex-wrap: wrap;
             @if(config('oj.main.web_page_display_wide'))
                 max-width:8000px;
             @endif
-        }
-        .nav-link, .btn {
-            text-transform: none;
         }
         .nav-tabs .active{
             border-color: #6599ff !important;
@@ -24,7 +19,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white mb-2">
+<nav class="navbar navbar-expand-lg navbar-light bg-white mb-3">
 
     <a class="navbar-brand">{{config('oj.main.siteName')}}</a>
 
