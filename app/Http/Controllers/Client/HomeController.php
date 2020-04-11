@@ -17,18 +17,22 @@ class HomeController extends Controller
             ->orderByDesc('id')->paginate(6);
 
         $day=(date("w")+6)%7; //昨天是周几，周日=0
-        $this_week=DB::table('solutions')->join('users','users.id','=','solutions.user_id')
+        $this_week=DB::table('solutions')
+            ->join('users','users.id','=','solutions.user_id')
+            ->select(['user_id','username','school','class','nick',DB::raw('count(distinct problem_id) as solved'),])
             ->where('submit_time','>',date('Y-m-d 00:00:00',time()-3600*24*$day))
             ->where('result',4)
-            ->select(['user_id','username','school','class','nick',DB::raw('count(distinct problem_id) as solved')])
+            ->whereRaw("(select count(*) from privileges P where solutions.user_id=P.user_id and authority='admin')=0")
             ->groupBy(['user_id'])
             ->orderByDesc('solved')
             ->limit(10)->get();
-        $last_week=DB::table('solutions')->join('users','users.id','=','solutions.user_id')
+        $last_week=DB::table('solutions')
+            ->join('users','users.id','=','solutions.user_id')
+            ->select(['user_id','username','school','class','nick',DB::raw('count(distinct problem_id) as solved')])
             ->where('submit_time','>',date('Y-m-d 00:00:00',time()-3600*24*($day+7)))
             ->where('submit_time','<',date('Y-m-d 00:00:00',time()-3600*24*$day))
             ->where('result',4)
-            ->select(['user_id','username','school','class','nick',DB::raw('count(distinct problem_id) as solved')])
+            ->whereRaw("(select count(*) from privileges P where solutions.user_id=P.user_id and authority='admin')=0")
             ->groupBy(['user_id'])
             ->orderByDesc('solved')
             ->limit(10)->get();
