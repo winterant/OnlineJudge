@@ -222,7 +222,7 @@
                         @endif
 
                         <div class="form-inline my-2">
-                            <select name="solution[language]" class="form-control border border-bottom-0 col-4" style="text-align-last: center;">
+                            <select name="solution[language]" class="pl-1 form-control border border-bottom-0 col-4" style="text-align-last: center;">
                                 @foreach(config('oj.lang') as $key=>$res)
                                     @if(!isset($contest) || ( 1<<$key)&$contest->allow_lang) )
                                     <option value="{{$key}}" @if(Cookie::get('submit_language')==$key)selected @endif>{{$res}}</option>
