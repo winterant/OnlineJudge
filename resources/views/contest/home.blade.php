@@ -124,7 +124,12 @@
                                     -
                                 @endif
                             </td>
-                            <td>@if($item->submit>0){{$item->solved}}&nbsp;/&nbsp;{{$item->submit}}@else - / - @endif</td>
+                            <td>
+                                @if($item->submit>0)
+                                    {{$item->accepted}} (<i class="fa fa-user-o text-sky" aria-hidden="true"></i> {{$item->solved}})
+                                    /
+                                    {{$item->submit}}
+                                @else - / - @endif</td>
                             <td></td>
                         </tr>
                     @endforeach
