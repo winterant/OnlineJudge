@@ -44,6 +44,14 @@
                                 [ <a href="{{route('admin.problem.test_data',['pid'=>$problem->id])}}" target="_blank">{{__('main.Test Data')}}</a> ]
                             </font>
                         @endif
+                        @if(isset($contest)&&(Auth::check()&&Auth::user()->privilege('problem')||$contest->end_time<date('Y-m-d H:i:s')))
+                            <font style="font-size: 0.85rem">
+                                [
+                                <a href="{{route('problem',$problem->id)}}">{{__('main.Problem')}} {{$problem->id}}</a>
+                                <i class="fa fa-external-link text-sky" aria-hidden="true"></i>
+                                ]
+                            </font>
+                        @endif
                     </h4>
                     <hr class="mt-0 mb-1">
                     <div class="ck-content">

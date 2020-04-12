@@ -49,7 +49,9 @@ class ContestController extends Controller
             $contest=DB::table('contests')->find($id);
             $unames=DB::table('contest_users')
                 ->leftJoin('users','users.id','=','user_id')
-                ->where('contest_id',$id)->pluck('username');
+                ->where('contest_id',$id)
+                ->orderBy('contest_users.id')
+                ->pluck('username');
             $pids=DB::table('contest_problems')->where('contest_id',$id)
                 ->orderBy('index')->pluck('problem_id');
             $files=[];
@@ -64,32 +66,32 @@ class ContestController extends Controller
             $problem_ids=$request->input('problems');
             $c_users=$request->input('contest_users'); //指定用户
             $files=$request->file('files')?:[];
-
             //数据格式处理
             foreach (explode(PHP_EOL,$problem_ids) as &$item){
                 $line=explode('-',$item);
                 if(count($line)==1) $pids[]=intval($line[0]);
                 else foreach (range(intval($line[0]),intval(($line[1]))) as $i) $pids[]=$i;
             }
-            $pids=array_filter($pids,function ($val){return DB::table('problems')->where('id',$val)->exists();});//过滤
             $contest['start_time']=str_replace('T',' ',$contest['start_time']);
             $contest['end_time']  =str_replace('T',' ',$contest['end_time']);
             if($contest['access']!='password')unset($contest['password']);
 
             //数据库
             DB::table('contests')->where('id',$id)->update($contest);
-            DB::table('contest_problems')->where('contest_id',$id)->delete();//舍弃原来的
+            DB::table('contest_problems')->where('contest_id',$id)->delete();//舍弃原来的题目
             foreach ($pids as $i=>$pid){
-                DB::table('contest_problems')
-                    ->insert(['contest_id'=>$id,'problem_id'=>$pid,'index'=>1+$i]);
+                if(DB::table('problems')->find($pid))
+                    DB::table('contest_problems')->insert(['contest_id'=>$id,'problem_id'=>$pid,'index'=>1+$i]);
             }
+            //可参与用户
+            DB::table('contest_users')->where('contest_id',$id)->delete();
             if($contest['access']=='private'){
-                $uids=DB::table('users')->whereIn('username',explode(PHP_EOL,$c_users))->pluck('id');
-                DB::table('contest_users')->where('contest_id',$id)->whereNotIn('user_id',$uids)->delete();
-                foreach($uids as &$uid)
+                $unames=explode(PHP_EOL,$c_users);
+                foreach ($unames as &$item)$item=trim($item); //去除多余空白符号\r
+                $uids=DB::table('users')->whereIn('username',$unames)->pluck('id');
+                foreach($uids as &$uid){
                     DB::table('contest_users')->insertOrIgnore(['contest_id'=>$id,'user_id'=>$uid]);
-            }else{
-                DB::table('contest_users')->where('contest_id',$id)->delete();
+                }
             }
 
             //附件
