@@ -206,20 +206,20 @@
                 <li class="nav-item">
                     <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
                        data-target="#menu-problem" aria-expanded="false">
-                        <i class="fa fa-file-text-o fa-lg mr-2" aria-hidden="true"></i>题目管理
+                        <i class="fa fa-file-text-o fa-lg mr-2" aria-hidden="true"></i>编程题目管理
                     </a>
                     <ul id="menu-problem" class="collapse">
                         <li class="nav-item">
                             <a class="nav-link border-top" href="{{route('admin.problem.list')}}">
-                                <i class="fa fa-list" aria-hidden="true"></i> 程序设计题</a>
+                                <i class="fa fa-list" aria-hidden="true"></i> 题库</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link border-top" href="{{route('admin.problem.add')}}">
-                                <i class="fa fa-plus" aria-hidden="true"></i> 添加程序设计题</a>
+                                <i class="fa fa-plus" aria-hidden="true"></i> 添加题目</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link border-top" href="{{route('admin.problem.update')}}">
-                                <i class="fa fa-edit" aria-hidden="true"></i> 修改程序设计题</a>
+                                <i class="fa fa-edit" aria-hidden="true"></i> 修改题目</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link border-top" href="{{route('admin.problem.test_data')}}">

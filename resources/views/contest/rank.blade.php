@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <div class="@if(!(isset($_GET['big'])?$_GET['big']=='true':0))container @endif">
+    <div class="container" style="@if(isset($_GET['big'])?$_GET['big']=='true':0)max-width: 100% @endif">
         <div class="row">
             <div class="col-sm-12 col-12">
                 <div class="my-container bg-white">

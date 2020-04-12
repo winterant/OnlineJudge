@@ -81,7 +81,7 @@ class ContestController extends Controller
             DB::table('contest_problems')->where('contest_id',$id)->delete();//舍弃原来的题目
             foreach ($pids as $i=>$pid){
                 if(DB::table('problems')->find($pid))
-                    DB::table('contest_problems')->insert(['contest_id'=>$id,'problem_id'=>$pid,'index'=>1+$i]);
+                    DB::table('contest_problems')->insert(['contest_id'=>$id,'problem_id'=>$pid,'index'=>$i]);
             }
             //可参与用户
             DB::table('contest_users')->where('contest_id',$id)->delete();
