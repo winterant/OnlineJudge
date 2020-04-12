@@ -32,6 +32,9 @@ html, body {
 
 
 /*table的全局设置*/
+.table-responsive{
+    overflow-y: hidden;
+}
 .table th, .table td{
     /*text-align: center;*/
 }

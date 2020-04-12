@@ -205,17 +205,49 @@ char* get_data_out_path(const char* data_dir,const char* test_name) //获取测�
     return path;
 }
 
+bool is_whitespace(char c) {
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+}
 int compare_file(const char* fname1,const char *fname2) //比较两文件是否一致
 {
-    char *text1 = read_file(fname1);
-    char *text2 = read_file(fname2);
-    char *text1_end = text1 + strlen(text1)-1;
-    while(text1!=text1_end && *text1_end == '\n')*text1_end--='\0'; //忽略末尾换行
-    char *text2_end = text2 + strlen(text2)-1;
-    while(text2!=text2_end && *text2_end == '\n')*text2_end--='\0'; //忽略末尾换行
-    if(strcmp(text1,text2)==0)
-        return OJ_AC;
-    return OJ_WA;
+    bool ok1,ok2;
+    int result=OJ_AC;  //顺利的话，Accepted
+    static char buf1[BUFFER_SIZE], buf2[BUFFER_SIZE];
+    FILE *fp1=fopen(fname1,"r"), *fp2=fopen(fname2,"r");
+    while(ok1=(fgets(buf1,BUFFER_SIZE,fp1)!=NULL), ok2=(fgets(buf2,BUFFER_SIZE,fp2)!=NULL), ok1&&ok2)
+    {
+        int rear1=strlen(buf1)-1, rear2=strlen(buf2)-1;
+        while(rear1>=0 && is_whitespace(buf1[rear1]))rear1--; //将rear1指向可见字符的最后一个
+        while(rear2>=0 && is_whitespace(buf2[rear2]))rear2--;
+        if(rear1!=rear2||strncmp(buf1,buf2,rear1+1)!=0) //文本不一致，wrong answer
+        {
+            result=OJ_WA;
+            break;
+        }
+        else if(strcmp(buf1+rear1+1,buf2+rear2+1)!=0) //文本一致，但末尾空白字符不一致
+        {
+            result=OJ_PE;
+            break;
+        }
+    }
+    //没读完的文件内容含有非空白符，则用户wrong answer
+    while( result==OJ_AC && (ok1||fgets(buf1,BUFFER_SIZE,fp1)!=NULL) )
+    {
+        ok1=false;
+        for(char *ch=buf1;*ch;ch++)
+            if(!is_whitespace(*ch))
+                result=OJ_WA;
+    }
+    while( result==OJ_AC && (ok2||fgets(buf2,BUFFER_SIZE,fp2)!=NULL) )
+    {
+        ok2=false;
+        for(char *ch=buf2;*ch;ch++)
+            if(!is_whitespace(*ch))
+                result=OJ_WA;
+    }
+    fclose(fp1);
+    fclose(fp2);
+    return result;
 }
 
 int get_proc_memory(int pid)//读取进程pid的内存使用情况
@@ -581,7 +613,7 @@ int main (int argc, char* argv[])
         printf("solution id: %d, Compiling successfully! start running\n",sid);
         solution.update_result(OJ_RI); //update to running
         char data_dir[256], spj_path[256];
-        sprintf(data_dir,"%s/%d/test",JG_DATA_DIR,solution.problem_id); //测试数据
+        sprintf(data_dir,"%s/%d/test",JG_DATA_DIR,solution.problem_id); //测试数据所在文件夹
         sprintf(spj_path,"%s/%d/spj/spj",JG_DATA_DIR,solution.problem_id); //特判程序spj的路径
 
         //标记允许的系统调用
@@ -597,7 +629,6 @@ int main (int argc, char* argv[])
             allow_sys_call[call_lang[i]]=true; //允许调用
 
         //开始判题
-        system_cmd("rm -rf error.out");  //删除原有error.out，实际上没有
         solution.result = judge(data_dir, spj_path);
         solution.error_info = read_file("error.out");
     }
