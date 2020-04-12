@@ -101,10 +101,10 @@ class UserController extends Controller
             $user=$request->input('user');
 
             if(strlen($user['new_password'])<8) //密码太短
-                return back()->with('message','密码太短');
+                return back()->with('message','新密码太短');
 
             if($user['new_password']!=$user['password_confirmation']) //密码不一致
-                return back()->with('message','密码不一致');
+                return back()->with('message','确认密码不一致');
 
             $old=DB::table('users')->where('username',$username)->value('password');
             if(!Hash::check($user['old_password'],$old))  //原密码错误

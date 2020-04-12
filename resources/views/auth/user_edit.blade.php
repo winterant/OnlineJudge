@@ -3,13 +3,14 @@
 @section('title',$user->username.' | '.config('oj.main.siteName'))
 
 @section('content')
-
-    <div class="container justify-content-center">
-
+<div class="container">
+    <div class="row justify-content-center">
         @if($user->revise <= 2)
-            <div class="my-container alert-danger">
-                <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
-                {{trans('sentence.user_edit_chances',['i'=>$user->revise])}}
+            <div class="col-md-8">
+                <div class="my-container alert-danger">
+                    <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
+                    {{trans('sentence.user_edit_chances',['i'=>$user->revise])}}
+                </div>
             </div>
         @endif
 
@@ -75,5 +76,5 @@
             </div>
         </div>
     </div>
-
+</div>
 @endsection

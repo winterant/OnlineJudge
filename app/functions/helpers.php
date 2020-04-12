@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Storage;
 
 
 /**
- * function: 修改项目.env文件
+ * function: 修改项目.env文件，暂时没有用到该函数
  * args: array(key=>aimValue);
  */
 function modifyEnv(array $data)
@@ -76,7 +76,7 @@ function save_problem_spj($problem_id, $code){
 
 //将一个数字题号（从1开始）转为大写字母
 function index2ch(int $index){
-    if($index<=26)
-        return chr($index+65-1);
-    return $index;
+    if($index<26)
+        return chr($index+65);
+    return $index+1; //Z的下一题是27题
 }

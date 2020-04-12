@@ -29,14 +29,13 @@
             <form action="{{route('admin.problem.export')}}" method="post">
                 @csrf
                 <div class="form-group">
-                    <div class="pull-left">题目列表：</div>
+                    <div class="pull-left">题号列表：</div>
                     <label class="">
-                    <textarea name="problems" class="form-control-plaintext border bg-white"
-                              autoHeight cols="26" placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间"
-                    >@foreach(isset($pids)?$pids:[] as $item){{$item}}&#13;&#10;@endforeach</textarea>
+                        <textarea name="pids" class="form-control-plaintext border bg-white"
+                              autoHeight cols="26" placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间" required></textarea>
                     </label>
                     <a href="javascript:" class="text-gray" style="vertical-align: top"
-                       onclick="whatisthis('填写方法：每行一个题号（如1024），或每行一个区间（如1024-1036）')">
+                       onclick="whatisthis('填写方法：<br>每行一个题号（如1024），或每行一个区间（如1024-1036）')">
                         <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
                     </a>
                     <button type="submit" class="btn btn-success ml-3 border" style="vertical-align: top">下载</button>

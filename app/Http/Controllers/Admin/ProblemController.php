@@ -219,7 +219,7 @@ class ProblemController extends Controller
             //保存图片
             foreach($node->img as $img) {
                 $ext=pathinfo($img->src,PATHINFO_EXTENSION); //后缀
-                $save_path='public/problem/images/'.uniqid(date('Ymd_His_')).'.'.$ext; //路径
+                $save_path='public/ckeditor/images/'.uniqid(date('Ymd/His_')).'.'.$ext; //路径
                 Storage::put($save_path, base64_decode($img->base64)); //保存
                 $problem['description']=str_replace($img->src,Storage::url($save_path),$problem['description']);
                 $problem['input']      =str_replace($img->src,Storage::url($save_path),$problem['input']);
@@ -233,19 +233,18 @@ class ProblemController extends Controller
             $samp_outputs=(array)$node->children()->sample_output;
             $test_inputs =(array)$node->children()->test_input;
             $test_outputs=(array)$node->children()->test_output;
-            save_problem_samples($pid,$samp_inputs,$samp_outputs);
+            save_problem_samples($pid,$samp_inputs,$samp_outputs);//保存样例
             foreach ($test_inputs as $i=>$in){
-                Storage::put(sprintf('data/%d/test/%d.in',$pid,$i),$in);
+                Storage::put(sprintf('data/%d/test/%d.in',$pid,$i),$in);//保存测试数据
             }
             foreach ($test_outputs as $i=>$out){
                 Storage::put(sprintf('data/%d/test/%d.out',$pid,$i),$out);
             }
             if($node->spj){
-                //保存特判
-                save_problem_spj($pid,$node->spj);
+                save_problem_spj($pid,$node->spj);//保存特判
             }
             foreach($node->solution as $solu){
-                $lang=array_search($solu->attributes()->language,include config_path('oj/lang.php'));
+                $lang=array_search($solu->attributes()->language,include config_path('oj/lang.php'));//保存提交记录
                 if($lang!==false){
                     DB::table('solutions')->insert([
                         'problem_id'    => $pid,
@@ -254,7 +253,7 @@ class ProblemController extends Controller
                         'result'        => 0,
                         'language'      => $lang,
                         'submit_time'   => date('Y-m-d H:i:s'),
-                        'judge_type'    => 'acm', //acm,oi,exam
+                        'judge_type'    => 'oi', //acm,oi
                         'ip'            => $request->getClientIp(),
                         'code_length'   => strlen($solu),
                         'code'          => $solu,
@@ -267,6 +266,19 @@ class ProblemController extends Controller
     }
 
     public function export(Request $request){
-        //todo
+        $temp_dir="xml_temp_download";
+        if(!Storage::exists($temp_dir)){
+            Storage::makeDirectory($temp_dir);
+        }
+        $problem_ids=$request->input('pids');
+        $filepath=$temp_dir.'/'.str_replace('\r',',',str_replace('\n',',',
+                str_replace('\r\n',',',$problem_ids))).".xml";
+        foreach (explode(PHP_EOL,$problem_ids) as &$item){
+            $line=explode('-',$item);
+            if(count($line)==1) $pids[]=intval($line[0]);
+            else foreach (range(intval($line[0]),intval(($line[1]))) as $i) $pids[]=$i;
+        }
+        Storage::put($filepath,"正在测试哦~");
+        return Storage::download($filepath);
     }
 }
