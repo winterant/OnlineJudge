@@ -2,10 +2,10 @@
 
 return [
 	"siteName"	=> "Ludong University Online Judge",
-	"web_page_display_wide"	=> true,
+	"web_page_display_wide"	=> false,
 	"allow_register"	=> true,
-	"show_home_notice_marquee"	=> false,
-	"guest_see_problem"	=> false,
+	"show_home_notice_marquee"	=> true,
+	"guest_see_problem"	=> true,
 	"rank_show_school"	=> false,
 	"rank_show_nick"	=> true,
 	"penalty_acm"	=> 1200,

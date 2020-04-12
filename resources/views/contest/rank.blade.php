@@ -16,7 +16,7 @@
     <div class="@if(!(isset($_GET['big'])?$_GET['big']=='true':0))container @endif">
         <div class="row">
             <div class="col-sm-12 col-12">
-                <div class="my-container bg-white table-responsive">
+                <div class="my-container bg-white">
 
                     <h4 class="text-center">{{$contest->id}}. {{$contest->title}}</h4>
                     <hr class="mt-0">
@@ -25,18 +25,18 @@
                         <button class="btn btn-sm" onclick="down_rank()">{{__('main.Download')}}</button>
                     </div>
                     @if($contest->lock_rate>0&&time()>strtotime($lock_time))  {{-- 封榜了 --}}
-                    <div class="float-left">
-                        <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: red"></i>
-                        <span class="py-1">{{trans('sentence.rank_end_time',['time'=>$lock_time])}}</span>
+                        <div class="float-left">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: red"></i>
+                            <span class="py-1">{{trans('sentence.rank_end_time',['time'=>$lock_time])}}</span>
 
-                        @if(Auth::check() && Auth::user()->privilege('contest')) {{-- 管理员可以取消封榜 --}}
-                        <form class="d-inline" action="{{route('contest.cancel_lock',$contest->id)}}" method="post"
-                              onsubmit="return confirm('当前处于封榜状态，确认开放榜单？')" hidden>
-                            @csrf
-                            <button class="btn btn-sm btn-warning">{{trans('main.Cancel')}}</button>
-                        </form>
-                        @endif
-                    </div>
+                            @if(Auth::check() && Auth::user()->privilege('contest')) {{-- 管理员可以取消封榜 --}}
+                            <form class="d-inline" action="{{route('contest.cancel_lock',$contest->id)}}" method="post"
+                                  onsubmit="return confirm('当前处于封榜状态，确认开放榜单？')" hidden>
+                                @csrf
+                                <button class="btn btn-sm btn-warning">{{trans('main.Cancel')}}</button>
+                            </form>
+                            @endif
+                        </div>
                     @endif
 
                     <div class="pull-right">
@@ -77,82 +77,85 @@
                         </form>
                     </div>
 
-                    <table id="table_rank" class="table table-sm table-hover border-bottom">
-                        <thead>
-                        <tr>
-                            <th>{{trans('main.Rank')}}</th>
-                            <th>{{trans('main.User')}}</th>
-                            @if(config('oj.main.rank_show_school'))<th>{{trans('main.School')}}</th> @endif
-                            @if(config('oj.main.rank_show_nick'))<th>{{trans('main.Name')}}</th> @endif
+                    <div class="table-responsive">
+                        <table id="table_rank" class="table table-sm table-hover border-bottom">
+                            <thead>
+                                <tr>
+                                    <th>{{trans('main.Rank')}}</th>
+                                    <th>{{trans('main.User')}}</th>
+                                    @if(config('oj.main.rank_show_school'))<th>{{trans('main.School')}}</th> @endif
+                                    @if(config('oj.main.rank_show_nick'))<th>{{trans('main.Name')}}</th> @endif
 
-                            @if($contest->judge_type == 'acm')
-                                <th>{{trans('main.Solved')}}</th>
-                            @else
-                                <th>{{trans('main.Score')}}</th>
-                            @endif
-                            <th>{{trans('main.Penalty')}}</th>
-
-                            @foreach($index_map as $i=>$pid)
-                                <th><a href="{{route('contest.problem',[$contest->id,$i])}}">{{index2ch($i)}}</a></th>
-                            @endforeach
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($users as $user)
-                            <tr>
-                                <td>
-{{--                                    排名 --}}
-                                    @if($user['rank']==1)
-                                        <font class="text-nowrap" style="background-color: #fff959">
-                                            <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp;WIN
-                                        </font>
-                                    @elseif($user['rank']<=count($users)*0.1)
-                                        <font style="background-color: #fff95a">{{$user['rank']}}</font>
-                                    @elseif($user['rank']<=count($users)*0.3)
-                                        <font style="background-color: #e8e8e8">{{$user['rank']}}</font>
-                                    @elseif($user['rank']<=count($users)*0.6)
-                                        <font style="background-color: #f5ac00">{{$user['rank']}}</font>
+                                    @if($contest->judge_type == 'acm')
+                                        <th>{{trans('main.Solved')}}</th>
                                     @else
-                                        <font>{{$user['rank']}}</font>
+                                        <th>{{trans('main.Score')}}</th>
                                     @endif
-                                </td>
-                                <td nowrap>
-                                    <a href="{{route('user',$user['username'])}}">{{$user['username']}}</a>
-                                </td>
+                                    <th>{{trans('main.Penalty')}}</th>
 
-                                @if(config('oj.main.rank_show_school'))<td>{{$user['school']}}</td> @endif
-                                @if(config('oj.main.rank_show_nick'))<td nowrap>{{$user['nick']}}</td> @endif
+                                    @foreach($index_map as $i=>$pid)
+                                        <th class="text-center"><a href="{{route('contest.problem',[$contest->id,$i])}}">{{index2ch($i)}}</a></th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($users as $user)
+                                    <tr>
+                                        <td>
+                                            {{--                                    排名 --}}
+                                            @if($user['rank']==1)
+                                                <font class="text-nowrap" style="background-color: #fff959">
+                                                    <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp;WIN
+                                                </font>
+                                            @elseif($user['rank']<=count($users)*0.1)
+                                                <font style="background-color: #fff95a">{{$user['rank']}}</font>
+                                            @elseif($user['rank']<=count($users)*0.3)
+                                                <font style="background-color: #e8e8e8">{{$user['rank']}}</font>
+                                            @elseif($user['rank']<=count($users)*0.6)
+                                                <font style="background-color: #f5ac00">{{$user['rank']}}</font>
+                                            @else
+                                                <font>{{$user['rank']}}</font>
+                                            @endif
+                                        </td>
+                                        <td nowrap>
+                                            <a href="{{route('user',$user['username'])}}">{{$user['username']}}</a>
+                                        </td>
 
-                                <td>{{$user['AC']}}</td>
-                                <td>{{$user['penalty']}}</td>
-{{--                                下面是每一道题的情况 --}}
-                                @foreach($index_map as $i=>$pid)
-                                    @if(isset($user[$i]['AC_clock'])&&$user[$i]['AC_clock']>$contest->end_time)
-                                        <td class="border" style="background-color: #99d7ff" nowrap>
-                                            {{$user[$i]['AC_info']}}
-                                            {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
-                                        </td>
-                                    @elseif(isset($user[$i]['first'])) {{--  first AC --}}
-                                    <td class="border" style="background-color: #12d000" nowrap>
-                                        {{$user[$i]['AC_info']}}
-                                        {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
-                                    </td>
-                                    @elseif(isset($user[$i]['AC_info']))
-                                        <td class="border" style="@if($contest->judge_type=='oi'&&$user[$i]['AC_info']<100)background-color:#ffafa7;
-                                        @else background-color:#87ec97;@endif" nowrap>
-                                            {{$user[$i]['AC_info']}}
-                                            {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
-                                        </td>
-                                    @elseif($user[$i]['wrong']>0)
-                                        <td class="border" style="background-color: #ffafa7">(-{{$user[$i]['wrong']}})</td>
-                                    @else
-                                        <td class="border"></td>
-                                    @endif
+                                        @if(config('oj.main.rank_show_school'))<td>{{$user['school']}}</td> @endif
+                                        @if(config('oj.main.rank_show_nick'))<td nowrap>{{$user['nick']}}</td> @endif
+
+                                        <td>{{$user['AC']}}</td>
+                                        <td>{{$user['penalty']}}</td>
+                                        {{--                                下面是每一道题的情况 --}}
+                                        @foreach($index_map as $i=>$pid)
+                                            @if(isset($user[$i]['AC_clock'])&&$user[$i]['AC_clock']>$contest->end_time)
+                                                <td class="border text-center" style="background-color: #99d7ff" nowrap>
+                                                    {{$user[$i]['AC_info']}}
+                                                    {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
+                                                </td>
+                                            @elseif(isset($user[$i]['first'])) {{--  first AC --}}
+                                                <td class="border text-center" style="background-color: #12d000" nowrap>
+                                                    {{$user[$i]['AC_info']}}
+                                                    {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
+                                                </td>
+                                            @elseif(isset($user[$i]['AC_info']))
+                                                <td class="border text-center" style="@if($contest->judge_type=='oi'&&$user[$i]['AC_info']<100)background-color:#ffafa7;
+                                                        @else background-color:#87ec97;@endif" nowrap>
+                                                    {{$user[$i]['AC_info']}}
+                                                    {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
+                                                </td>
+                                            @elseif($user[$i]['wrong']>0)
+                                                <td class="border text-center" style="background-color: #ffafa7">(-{{$user[$i]['wrong']}})</td>
+                                            @else
+                                                <td class="border text-center"></td>
+                                            @endif
+                                        @endforeach
+                                    </tr>
                                 @endforeach
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
+
                     <div>
                         <div><i class="fa fa-square" aria-hidden="true" style="color: #12d000"></i> {{__('sentence.firstAC')}}</div>
                         <div><i class="fa fa-square" aria-hidden="true" style="color: #87ec97"></i> {{__('sentence.normalAC')}}</div>

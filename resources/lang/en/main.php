@@ -42,6 +42,7 @@ return [
     "Notification"  => "Notification",
     "Discussion"    => "Discussion",
 
+//    user
     "Confirm"       => "Confirm",
     "Cancel"        => "Cancel",
     "Delete"        => "Delete",
@@ -69,7 +70,7 @@ return [
     "Accepted"      => "Accepted",
     "Attempting"    => "Attempting",
 
-
+//problem
     "Title"         => "Title",
     "Source"        => "Source",
     "AC/Submit"     => "AC/Submit",
@@ -82,13 +83,14 @@ return [
     "hours"         => "[*,1] hour|[2,*] hours",
     "problems"      => "[*,1] problem|[2,*] problems",
 
+//    standing
     "All"           => "All",
     "Year"          => "Year",
     "Month"         => "Month",
     "Week"          => "Week",
     "Day"           => "Day",
 
-
+//solution
     "include contest"   => "include contest",
     "Time"          => "Time",
     "Memory"        => "Memory",
