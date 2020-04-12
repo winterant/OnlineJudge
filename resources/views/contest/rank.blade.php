@@ -128,7 +128,7 @@
                                         <td>{{$user['penalty']}}</td>
                                         {{--                                下面是每一道题的情况 --}}
                                         @foreach($index_map as $i=>$pid)
-                                            @if(isset($user[$i]['AC_clock'])&&$user[$i]['AC_clock']>$contest->end_time)
+                                            @if(isset($user[$i]['AC_time'])&&$user[$i]['AC_time']>$contest->end_time)
                                                 <td class="border text-center" style="background-color: #99d7ff" nowrap>
                                                     {{$user[$i]['AC_info']}}
                                                     {{$user[$i]['wrong']>0? '(-'.$user[$i]['wrong'].')':null}}
