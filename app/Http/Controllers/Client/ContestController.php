@@ -113,7 +113,7 @@ class ContestController extends Controller
             ->where('contest_id',$id)
             ->where('index',$pid)
             ->first();
-        $samples=read_problem_samples($problem->id);
+        $samples=read_problem_data($problem->id);
 
         $hasSpj=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
         return view('contest.problem',compact('contest','problem','samples','hasSpj'));

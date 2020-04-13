@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Client\StatusController;
 use App\Http\Controllers\Controller;
 use DOMDocument;
 use Illuminate\Http\Request;
@@ -58,7 +59,7 @@ class ProblemController extends Controller
             if($problem==null)
                 return view('admin.fail',['msg'=>'该题目不存在或操作有误!']);
 
-            $samples=read_problem_samples($problem->id);
+            $samples=read_problem_data($problem->id);
             //看看有没有特判文件
             $spj_exist=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
             return view('admin.problem.edit',compact('pageTitle','problem','samples','spj_exist'));
@@ -72,15 +73,14 @@ class ProblemController extends Controller
             ///保存样例、spj
             $samp_ins =$request->input('sample_ins');
             $samp_outs=$request->input('sample_outs');
-            $spjFile=$request->file('spj_file');
-            save_problem_samples($id,(array)$samp_ins,(array)$samp_outs); //保存样例
+            save_problem_data($id,(array)$samp_ins,(array)$samp_outs,true,true); //保存样例
 
             $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功！ <a href="%s">上传测试数据</a>',
                 route('problem',$id),$id,route('admin.problem.test_data','pid='.$id));
 
             $spjFile=$request->file('spj_file');
             if($spjFile!=null && $spjFile->isValid()) {
-                $spj_compile=save_problem_spj($id,file_get_contents($spjFile));
+                $spj_compile=save_problem_spj($id, autoiconv(file_get_contents($spjFile)));
                 if($spj_compile)
                     $msg.='<br>[ spj.cpp compilation ]:<br>'.$spj_compile;
                 else
@@ -91,10 +91,9 @@ class ProblemController extends Controller
     }
 
     public function get_spj($pid){
-        if(Storage::exists('data/'.$pid.'/spj/spj.cpp')){
-            return Storage::download('data/'.$pid.'/spj/spj.cpp');
-        }
-        return null;
+        header('Content-type: text/plain; charset=UTF-8');
+        header("Content-Disposition:attachement;filename=spj".$pid.".cpp");//提示下载
+        return get_spj_code($pid);
     }
 
     //管理员修改题目状态  0密封 or 1公开
@@ -203,7 +202,7 @@ class ProblemController extends Controller
         //读取xml->导入题库
         ini_set('memory_limit','4096M');//php单线程最大内存占用，默认128M不够用
         $xmlDoc=simplexml_load_file(storage_path('app/xml_temp/import_problems.xml'),null,LIBXML_NOCDATA|LIBXML_PARSEHUGE);
-        $searchNodes = $xmlDoc->xpath ( "/fps/item" );
+        $searchNodes = $xmlDoc->xpath ( "/*/item" );
         $first_pid=null;
         foreach ($searchNodes as $node) {
             $problem=[
@@ -234,17 +233,14 @@ class ProblemController extends Controller
             $samp_outputs=(array)$node->children()->sample_output;
             $test_inputs =(array)$node->children()->test_input;
             $test_outputs=(array)$node->children()->test_output;
-            save_problem_samples($pid,$samp_inputs,$samp_outputs);//保存样例
-            foreach ($test_inputs as $i=>$in){
-                Storage::put(sprintf('data/%d/test/%d.in',$pid,$i),$in);//保存测试数据
-            }
-            foreach ($test_outputs as $i=>$out){
-                Storage::put(sprintf('data/%d/test/%d.out',$pid,$i),$out);
-            }
+            save_problem_data($pid,$samp_inputs,$samp_outputs);//保存样例
+            save_problem_data($pid,$test_inputs,$test_outputs,false);//保存测试数据
             if($node->spj){
                 save_problem_spj($pid,$node->spj);//保存特判
             }
             foreach($node->solution as $solu){
+                $language=$solu->attributes()->language;
+                if($language=='Python')$language.='3';  //本oj只支持python3
                 $lang=array_search($solu->attributes()->language,include config_path('oj/lang.php'));//保存提交记录
                 if($lang!==false){
                     DB::table('solutions')->insert([
@@ -267,44 +263,132 @@ class ProblemController extends Controller
     }
 
     public function export(Request $request){
-        //处理题号
+        //处理题号,获取题目
         $problem_ids=$request->input('pids');
         foreach (explode(PHP_EOL,$problem_ids) as &$item){
             $line=explode('-',$item);
             if(count($line)==1) $pids[]=intval($line[0]);
             else foreach (range(intval($line[0]),intval(($line[1]))) as $i) $pids[]=$i;
         }
-        //构造临时xml文件路径，构造xml字符串
-        $temp_dir="xml_temp_download";
-        if(!Storage::exists($temp_dir)){
-            Storage::makeDirectory($temp_dir);
-        }
-        $filepath=$temp_dir.'/'.str_replace('\r',',',str_replace('\n',',',
-                str_replace('\r\n',',',$problem_ids))).".xml";
-
-        $dom=new DOMDocument("1.0","UTF-8");
-        $root=$dom->createElement('fps','1.2');
-        //遍历题目，生成xml字符串
         $problems=DB::table("problems")->whereIn('id',$pids)->orderBy('id')->get();
+
+        // 生成xml
+        $dom=new DOMDocument("1.0","UTF-8");
+        $root=$dom->createElement('fps'); //为了兼容hustoj的fps标签
+        // 作者信息 generator标签
+        $generator=$dom->createElement('generator');
+        $attr=$dom->createAttribute('name');
+        $attr->appendChild($dom->createTextNode('LDUOJ'));
+        $generator->appendChild($attr);
+        $attr=$dom->createAttribute('url');
+        $attr->appendChild($dom->createTextNode('https://github.com/iamwinter/LDUOnlineJudge'));
+        $generator->appendChild($attr);
+        $root->appendChild($generator);
+        //遍历题目，生成xml字符串
         foreach ($problems as $problem){
             $item=$dom->createElement('item');
+            //title
             $title=$dom->createElement('title');
             $title->appendChild($dom->createCDATASection($problem->title));
-
-            $time_limit=$dom->createElement('time_limit');
+            $item->appendChild($title);
+            //time_limit
             $unit=$dom->createAttribute('unit');
             $unit->appendChild($dom->createTextNode('ms'));
+            $time_limit=$dom->createElement('time_limit');
             $time_limit->appendChild($unit);
             $time_limit->appendChild($dom->createCDATASection($problem->time_limit));
-
-            $item->appendChild($title);
             $item->appendChild($time_limit);
+            //memory_limit
+            $unit=$dom->createAttribute('unit');
+            $unit->appendChild($dom->createTextNode('mb'));
+            $memory_limit=$dom->createElement('memory_limit');
+            $memory_limit->appendChild($unit);
+            $memory_limit->appendChild($dom->createCDATASection($problem->memory_limit));
+            $item->appendChild($memory_limit);
+            //description
+            $description=$dom->createElement('description');
+            $description->appendChild($dom->createCDATASection($problem->description));
+            $item->appendChild($description);
+            //input
+            $input=$dom->createElement('input');
+            $input->appendChild($dom->createCDATASection($problem->input));
+            $item->appendChild($input);
+            //output
+            $output=$dom->createElement('output');
+            $output->appendChild($dom->createCDATASection($problem->output));
+            $item->appendChild($output);
+            //hint
+            $hint=$dom->createElement('hint');
+            $hint->appendChild($dom->createCDATASection($problem->hint));
+            $item->appendChild($hint);
+            //source
+            $source=$dom->createElement('source');
+            $source->appendChild($dom->createCDATASection($problem->source));
+            $item->appendChild($source);
+
+            //sample_input & sample_output
+            foreach(read_problem_data($problem->id) as $sample){
+                $sample_input=$dom->createElement('sample_input');
+                $sample_input->appendChild($dom->createCDATASection($sample[0]));
+                $item->appendChild($sample_input);
+                $sample_output=$dom->createElement('sample_output');
+                $sample_output->appendChild($dom->createCDATASection($sample[1]));
+                $item->appendChild($sample_output);
+            }
+            //test_input & test_output
+            foreach(read_problem_data($problem->id,false) as $test){
+                $test_input=$dom->createElement('test_input');
+                $test_input->appendChild($dom->createCDATASection($test[0]));
+                $item->appendChild($test_input);
+                $test_output=$dom->createElement('test_output');
+                $test_output->appendChild($dom->createCDATASection($test[1]));
+                $item->appendChild($test_output);
+            }
+            //spj language
+            if($problem->spj){
+                $cpp=$dom->createElement('spj');
+                $attr=$dom->createAttribute('language');
+                $attr->appendChild($dom->createTextNode('C++'));
+                $cpp->appendChild($attr);
+                $cpp->appendChild($dom->createCDATASection(get_spj_code($problem->id)));
+                $item->appendChild($cpp);
+            }
+            //solution language
+            $solutions=DB::table('solutions')
+                ->select('language','code')
+                ->whereRaw("id in(select min(id) from solutions where problem_id=? and result=4 group by language)",[$problem->id])
+                ->get();
+            foreach($solutions as $sol){
+                $solution=$dom->createElement('solution');
+                $attr=$dom->createAttribute('language');
+                $attr->appendChild($dom->createTextNode(config('oj.lang.'.$sol->language)));
+                $solution->appendChild($attr);
+                $solution->appendChild($dom->createCDATASection($sol->code));
+                $item->appendChild($solution);
+            }
+
+            //img of description,input,output,hint
+            preg_match_all('/<img.*?src=\"(.*?)\".*?>/i',$problem->description.$problem->input.$problem->output.$problem->hint,$matches);
+            foreach($matches[1] as $url){
+                $stor_path=str_replace("storage","public",$url);
+                if(Storage::exists($stor_path)){
+                    $img=$dom->createElement('img');
+                    $src=$dom->createElement('src');
+                    $src->appendChild($dom->createCDATASection($url));
+                    $img->appendChild($src);
+                    $base64=$dom->createElement('base64');
+                    $base64->appendChild($dom->createCDATASection(base64_encode(Storage::get($stor_path))));
+                    $img->appendChild($base64);
+                    $item->appendChild($img);
+                }
+            }
+            //将该题插入root
             $root->appendChild($item);
         }
         $dom->appendChild($root);
-//        dd($dom->saveXML());
-        return $dom->save($filepath);
-        Storage::put($filepath,"正在测试哦~");
-        return Storage::download($filepath);
+        $filename=str_replace("\r",',',str_replace("\n",',',str_replace("\r\n",',',$problem_ids))).".xml";
+        header('Content-type: text/xml; charset=UTF-8');
+        header("Content-Disposition:attachement;filename='".$filename."'");//提示下载
+        return $dom->saveXML();
     }
 }
