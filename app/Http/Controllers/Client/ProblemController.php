@@ -61,7 +61,7 @@ class ProblemController extends Controller
         }
 
         //读取样例文件
-        $samples=read_problem_samples($id);
+        $samples=read_problem_data($id);
 
         //读取历史提交
         $solutions=DB::table('solutions')
