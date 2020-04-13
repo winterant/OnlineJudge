@@ -149,6 +149,8 @@ class ContestController extends Controller
 
     private static function get_rank_end_time($contest){
         //rank的辅助函数，获取榜单的截止时间
+        if(!isset($_GET['buti']))$_GET['buti']="true"; //默认打开补题开关
+
         if(Auth::check()&&Auth::user()->privilege('contest')){
             if(isset($_GET['buti'])?$_GET['buti']=='true':false) //实时榜
                 $end=time();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use DOMDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +23,7 @@ class ProblemController extends Controller
             ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('id',$_GET['pid']);})
             ->when(isset($_GET['title'])&&$_GET['title']!='',function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
             ->when(isset($_GET['source'])&&$_GET['source']!='',function ($q){return $q->where('source','like','%'.$_GET['source'].'%');})
-            ->orderBy('id')
+            ->orderByDesc('id')
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:100);
         return view('admin.problem.list',compact('problems'));
     }
@@ -266,18 +267,43 @@ class ProblemController extends Controller
     }
 
     public function export(Request $request){
-        $temp_dir="xml_temp_download";
-        if(!Storage::exists($temp_dir)){
-            Storage::makeDirectory($temp_dir);
-        }
+        //处理题号
         $problem_ids=$request->input('pids');
-        $filepath=$temp_dir.'/'.str_replace('\r',',',str_replace('\n',',',
-                str_replace('\r\n',',',$problem_ids))).".xml";
         foreach (explode(PHP_EOL,$problem_ids) as &$item){
             $line=explode('-',$item);
             if(count($line)==1) $pids[]=intval($line[0]);
             else foreach (range(intval($line[0]),intval(($line[1]))) as $i) $pids[]=$i;
         }
+        //构造临时xml文件路径，构造xml字符串
+        $temp_dir="xml_temp_download";
+        if(!Storage::exists($temp_dir)){
+            Storage::makeDirectory($temp_dir);
+        }
+        $filepath=$temp_dir.'/'.str_replace('\r',',',str_replace('\n',',',
+                str_replace('\r\n',',',$problem_ids))).".xml";
+
+        $dom=new DOMDocument("1.0","UTF-8");
+        $root=$dom->createElement('fps','1.2');
+        //遍历题目，生成xml字符串
+        $problems=DB::table("problems")->whereIn('id',$pids)->orderBy('id')->get();
+        foreach ($problems as $problem){
+            $item=$dom->createElement('item');
+            $title=$dom->createElement('title');
+            $title->appendChild($dom->createCDATASection($problem->title));
+
+            $time_limit=$dom->createElement('time_limit');
+            $unit=$dom->createAttribute('unit');
+            $unit->appendChild($dom->createTextNode('ms'));
+            $time_limit->appendChild($unit);
+            $time_limit->appendChild($dom->createCDATASection($problem->time_limit));
+
+            $item->appendChild($title);
+            $item->appendChild($time_limit);
+            $root->appendChild($item);
+        }
+        $dom->appendChild($root);
+//        dd($dom->saveXML());
+        return $dom->save($filepath);
         Storage::put($filepath,"正在测试哦~");
         return Storage::download($filepath);
     }
