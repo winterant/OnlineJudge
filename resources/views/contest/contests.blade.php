@@ -82,7 +82,7 @@
                         </div>
                         <div class="col-9 col-sm-8 pr-0">
                             <h5 style="font-size: 1.15rem">
-                                <a href="{{route('contest.home',$item->id)}}" style="color: black">{{$item->title}}</a>
+                                <a href="{{route('contest.home',$item->id)}}" class="text-black">{{$item->title}}</a>
                                 @if($item->hidden)
                                     <font class="text-blue" style="font-size: 0.9rem;vertical-align: top;">{{__('main.Hidden')}}</font>
                                 @endif

@@ -4,13 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class NoticeController extends Controller
 {
     public function list(){
-        $notices=DB::table('notices')->orderByDesc('id')->paginate();
+        $notices=DB::table('notices')
+            ->leftJoin('users','users.id','=','user_id')
+            ->select(['notices.*','username'])
+            ->orderByDesc('id')->paginate();
         return view('admin.notice.list',compact('notices'));
     }
 
@@ -21,6 +25,7 @@ class NoticeController extends Controller
         }
         if($request->isMethod('post')) {
             $notice=$request->input('notice');
+            $notice['user_id']=Auth::id();
             $nid=DB::table('notices')->insertGetId($notice);
             return view('admin.success',['msg'=>'成功发布公告（id='.$nid.'），你可以在首页查看']);
         }
@@ -35,6 +40,7 @@ class NoticeController extends Controller
         if($request->isMethod('post')) {
             $notice=$request->input('notice');
             $notice['updated_at']=date('Y-m-d H:i:s');
+            $notice['user_id']=Auth::id();
             DB::table('notices')->where('id',$id)->update($notice);
             return view('admin.success',['msg'=>'已更新公告（id='.$id.'），你可以在首页查看']);
         }

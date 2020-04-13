@@ -12,6 +12,8 @@ class HomeController extends Controller
     //home page
     public function index(){
         $notices=DB::table('notices')
+            ->leftJoin('users','users.id','=','user_id')
+            ->select(['notices.id','title','state','notices.created_at','username'])
             ->where('state','!=',0)
             ->orderByDesc('state')
             ->orderByDesc('id')->paginate(6);
