@@ -13,11 +13,13 @@ return [
     "Notice Board"  => "Notice Board",
     "To Top"        => "To Top",
     "Top"           => "Top",
+    "By"            => "By",
     "Detail"        => "Detail",
-    "This Week Ranking" => "This Week Ranking",
-    "Last Week Ranking" => "Last Week Ranking",
+    "Top 10"        => "Top 10",
+    "This Week"     => "This Week",
+    "Last Week"     => "Last Week",
 
-
+//    menu
     "Id"            => "Id",
     "Home"          => "Home",
     "Problems"      => "Problems",

@@ -38,18 +38,22 @@
                         <table class="table table-hover border-bottom">
                             @foreach($notices as $item)
                                 <tr>
-                                    <td class="text-left" style="width:3%;vertical-align: center;">
-                                        {{$item->id}}.
-                                    </td>
-                                    <td class="text-left" nowrap>
-                                        <font class="pull-left m-0 @if($item->state==2) font-weight-bold @endif">{{$item->title}}</font>&nbsp;&nbsp;
-                                        <a href="javascript:" onclick="get_notice({{$item->id}})" data-toggle="modal" data-target="#modal_notice">{{__("Detail")}}>> </a>
+                                    <td class="text-left" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                                        <a href="javascript:" onclick="get_notice({{$item->id}})" data-toggle="modal"
+                                           class="pl-1 text-black @if($item->state==2) font-weight-bold @endif"
+                                           data-target="#modal_notice">{{$item->title}}</a>
+                                        @if($item->state==2)
+                                            <font class="text-red px-1" style="font-size: 0.7rem;vertical-align: top">{{__('main.Top')}} </font>
+                                        @endif
                                     </td>
                                     <td class="text-right" nowrap>
-                                        @if($item->state==2)
-                                            <font style="color: red">{{__('main.To Top')}}</font>
-                                        @endif
                                         {{$item->created_at}}
+                                    </td>
+                                    <td nowrap>
+                                        @if($item->username)
+                                            {{__('main.By')}}
+                                            <a href="{{route('user',$item->username)}}">{{$item->username}}</a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -68,7 +72,7 @@
                            onclick="whatisthis('This list is updating in real time. It shows some users who solved most problems this week')">
                             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                         </a>
-                        <h3 class="text-center mb-0">{{__("main.This Week Ranking")}}</h3>
+                        <h3 class="text-center mb-0">{{__("main.Top 10")}} {{__("main.This Week")}}</h3>
                     </div>
                     <div class="card-body table-responsive">
                         <table class="table table-hover border-bottom">
@@ -106,7 +110,7 @@
                            onclick="whatisthis('The list was updating at this Monday 00:00. It shows some users who solved most problems last week')">
                             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                         </a>
-                        <h3 class="text-center mb-0">{{__("main.Last Week Ranking")}}</h3>
+                        <h3 class="text-center mb-0">{{__("main.Top 10")}} {{__("main.Last Week")}}</h3>
                     </div>
                     <div class="card-body table-responsive">
                         <table class="table table-hover border-bottom">

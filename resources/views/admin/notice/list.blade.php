@@ -28,6 +28,7 @@
                 <th>状态</th>
                 <th>创建时间</th>
                 <th>上次修改</th>
+                <th>最后修改者</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -42,6 +43,7 @@
                     <td nowrap><a href="javascript:" onclick="update_state('{{($item->state+1)%3}}',{{$item->id}})">{{['隐藏','公开','首页置顶'][$item->state]}}</a></td>
                     <td nowrap>{{$item->created_at}}</td>
                     <td nowrap>{{$item->updated_at}}</td>
+                    <td nowrap><a href="{{route('user',$item->username?:0)}}">{{$item->username}}</a></td>
                     <td>
                         <a href="{{route('admin.notice.update',$item->id)}}" class="px-1" target="_blank" title="修改">
                             <i class="fa fa-edit" aria-hidden="true"></i>
