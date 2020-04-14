@@ -13,12 +13,9 @@ class ContestController extends Controller
 {
     public function contests(){
         $contests=DB::table('contests')
-            ->select(['id','type','judge_type','title','start_time','end_time','access','password','top','hidden',
+            ->select(['id','type','judge_type','title','start_time','end_time','access','top','hidden',
                 DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
-                DB::raw("case access when 'public'
-                    then (select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id)
-                    else (select count(DISTINCT C.user_id) from contest_users C where C.contest_id=contests.id)
-                    end as number")])
+                DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")])
             ->when(isset($_GET['state'])&&$_GET['state']!='all',function ($q){
                 if($_GET['state']=='ended')return $q->where('end_time','<',date('Y-m-d H:i:s'));
                 else if($_GET['state']=='waiting')return $q->where('start_time','>',date('Y-m-d H:i:s'));
@@ -37,12 +34,13 @@ class ContestController extends Controller
 
     public function password(Request $request,$id){
         // 验证密码
-        $contest=DB::table('contests')->find($id);
         if ($request->isMethod('get')){
+            $contest=DB::table('contests')->select('id','judge_type')->find($id);
             return view('contest.password',compact('contest'));
         }
         if ($request->isMethod('post'))//接收提交的密码
         {
+            $contest=DB::table('contests')->select('id','judge_type','password')->find($id);
             if($request->input('pwd')==$contest->password) //通过验证
             {
                 DB::table('contest_users')->insertOrIgnore(['contest_id'=>$contest->id,'user_id'=>Auth::id()]);//保存
@@ -58,29 +56,25 @@ class ContestController extends Controller
 
     public function home($id){
         $contest=DB::table('contests')
-            ->select(['id','type','judge_type','title','start_time','end_time','access','password','description',
-                DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
-                DB::raw("case access when 'public'
-                    then (select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id)
-                    else (select count(DISTINCT C.user_id) from contest_users C where C.contest_id=contests.id)
-                    end as number")])->find($id);
+            ->select(['id','type','judge_type','title','start_time','end_time','access','description',
+                DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")])->find($id);
         $problems=DB::table('problems')
             ->join('contest_problems','contest_problems.problem_id','=','problems.id')
             ->where('contest_id',$id)
             ->select(['problems.id','problems.title','contest_problems.index',
-                DB::raw("(select count(*) from solutions where contest_id=".$contest->id." and problem_id=problems.id and result=4) as accepted"),
+                DB::raw("(select count(id) from solutions where contest_id=".$contest->id." and problem_id=problems.id and result=4) as accepted"),
                 DB::raw("(select count(distinct user_id) from solutions where contest_id=".$contest->id." and problem_id=problems.id and result=4) as solved"),
-                DB::raw("(select count(*) from solutions where contest_id=".$contest->id." and problem_id=problems.id) as submit"),
+                DB::raw("(select count(id) from solutions where contest_id=".$contest->id." and problem_id=problems.id) as submit"),
 
                 //查询本人是否通过此题；4:Accepted,6:Attempting,0:没做
                 DB::raw("case
                     when
-                    (select count(*) from solutions where contest_id=".$contest->id."
+                    (select count(id) from solutions where contest_id=".$contest->id."
                         and problem_id=problems.id
                         and user_id=".Auth::id()." and result=4)>0
                     then 4
                     when
-                    (select count(*) from solutions where contest_id=".$contest->id."
+                    (select count(id) from solutions where contest_id=".$contest->id."
                         and problem_id=problems.id
                         and user_id=".Auth::id().")>0
                     then 6
@@ -115,7 +109,7 @@ class ContestController extends Controller
             ->first();
         $samples=read_problem_data($problem->id);
 
-        $hasSpj=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
+        $hasSpj=(get_spj_code($problem->id)!=null);
         return view('contest.problem',compact('contest','problem','samples','hasSpj'));
     }
 
@@ -147,7 +141,7 @@ class ContestController extends Controller
 
 
 
-    private static function get_rank_end_time($contest){
+    private static function get_rank_end_date($contest){
         //rank的辅助函数，获取榜单的截止时间
         if(!isset($_GET['buti']))$_GET['buti']="true"; //默认打开补题开关
 
@@ -165,16 +159,6 @@ class ContestController extends Controller
         }
         return date('Y-m-d H:i:s',$end);
     }
-    private static function get_solutions_rank($contest,$user_id,$pid){
-//        rank 的辅助函数, 共用前缀代码，获取solutions
-        $solutions=DB::table('solutions')
-            ->where('contest_id',$contest->id)
-            ->where('user_id',$user_id)
-            ->where('problem_id',$pid)
-            ->where('submit_time','<',self::get_rank_end_time($contest))
-            ->where('submit_time','>',$contest->start_time);
-        return $solutions;
-    }
     private static function seconds_to_clock($seconds){
         //rank的辅助函数，根据秒数转化为HH:mm:ss
         $clock=floor($seconds/3600);                            $seconds%=3600;
@@ -185,125 +169,92 @@ class ContestController extends Controller
     public function rank($id){
 
         //查看Cookie是否保存了全屏显示的标记
-        if(config('oj.main.web_page_display_wide')) //管理员启用了宽屏模式，这里失效
+        if(config('oj.main.web_page_display_wide')) //管理员启用了宽屏模式，这里用户启用全屏无效
             $_GET['big']='false';
         if(!isset($_GET['big'])&&Cookie::get('rank_table_lg')!=null) //有cookie
             $_GET['big']=Cookie::get('rank_table_lg');
         else if(isset($_GET['big']))
             Cookie::queue('rank_table_lg',$_GET['big']); //保存榜单是否全屏
 
-        $contest=DB::table('contests')
-            ->select(['id','type','judge_type','title','description','access','start_time','end_time','lock_rate'])->find($id);
-
-        //获得榜单要显示的用户
-        $submit_user_ids=DB::table('solutions')
-            ->leftJoin('users','solutions.user_id','=','users.id')
-            ->where('contest_id',$id)
-            ->where('submit_time','<',self::get_rank_end_time($contest))
-            ->pluck('users.id');
-        $saved_user_ids=DB::table('contest_users')
-            ->leftJoin('users','users.id','=','user_id')
-            ->where('contest_id',$id)
-            ->pluck('users.id');
-        $users_temp=DB::table('users')
-            ->select(['id','username','nick','school'])
-            ->whereIn('id',$submit_user_ids)
-            ->orWhereIn('id',$saved_user_ids)
+        $contest=DB::table('contests')->select(['id','type','judge_type','title','start_time','end_time','lock_rate'])->find($id);
+        $solutions=DB::table('solutions')
+            ->join('contest_problems','contest_problems.problem_id','=','solutions.problem_id')
+            ->select('user_id','index','result','pass_rate','time','memory','submit_time')
+            ->where('solutions.contest_id',$contest->id)
+            ->whereIn('result',[4,5,6,7,8,9,10])
+            ->where('submit_time','>',$contest->start_time)
+            ->where('submit_time','<',self::get_rank_end_date($contest))
             ->get();
-
-        //获得[index=>真实题号]
-        $index_map=DB::table('contest_problems')->where('contest_id',$id)
-            ->orderBy('index')
-            ->pluck('problem_id','index');
-
-        //构造榜单表格
+        $uids=DB::table('contest_users')->where('contest_id',$contest->id)->pluck('user_id')->toArray();  //用户id
         $users=[];
-        foreach ($users_temp as $user) {
-            $penalty=0; //罚时
-            $AC_count=0; //AC数量
-            foreach ($index_map as $i=>$pid){     //这是一个格子，即某人某题
-                if($contest->judge_type == 'acm') //acm赛制
-                {
-                    // 获取第一次AC记录
-                    $firstAC=self::get_solutions_rank($contest,$user->id,$pid)
-                        ->where('result',4)
-                        ->orderBy('id')
-                        ->first(['id','submit_time']);
-
-                    //计算AC时间与罚时
-                    if($firstAC!=null) //已AC, 设置wrong，AC_info
-                    {
-                        $users[$user->id][$i]['wrong']=self::get_solutions_rank($contest,$user->id,$pid)
-                            ->whereIn('result',[5,6,7,8,9,10])->where('id','<',$firstAC->id)->count();
-                        $AC_count++; //AC数量+1
-                        //计算AC时间
-                        $users[$user->id][$i]['AC_time']=$firstAC->submit_time;
-                        $users[$user->id][$i]['AC_info']=
-                            self::seconds_to_clock(strtotime($firstAC->submit_time)-strtotime($contest->start_time));
-                        //AC罚时+额外罚时!
-                        $penalty += strtotime($firstAC->submit_time)-strtotime($contest->start_time)
-                            + $users[$user->id][$i]['wrong']*config('oj.main.penalty_acm');
-
-                        //标记是不是第一个AC此题
-                        if(DB::table('solutions')->where('contest_id',$id)
-                            ->where('problem_id',$pid)->where('result',4)
-                            ->where('id','<',$firstAC->id)->doesntExist())
-                            $users[$user->id][$i]['first']=true;
-                    }
-                    else  //没有AC, 设置wrong
-                    {
-                        $users[$user->id][$i]['wrong'] = self::get_solutions_rank($contest,$user->id,$pid)
-                            ->whereIn('result', [5, 6, 7, 8, 9, 10])->count(); //获取AC前的错误提交次数
-                    }
-                }
-                else  //oi赛制
-                {
-                    // 获取最高分记录
-                    $solu=self::get_solutions_rank($contest,$user->id,$pid)
-                        ->orderByDesc('pass_rate')->first(['submit_time','pass_rate']);
-                    if($solu!=null) //存在分数
-                    {
-                        $penalty += strtotime($solu->submit_time)-strtotime($contest->start_time);
-                        $users[$user->id][$i]['AC_time']=$solu->submit_time;
-                        $score=round($solu->pass_rate*100);
-                        $users[$user->id][$i]['AC_info']=$score;
-                        $AC_count+=$score; //总得分
-                    }
-                    $users[$user->id][$i]['wrong']=0; //为了兼容acm模式，wrong=0
-                }
-
+        $has_ac=[]; //标记每道题是否已经被AC
+        foreach($solutions as $solution){
+            if(!isset($users[$solution->user_id])) { //用户首次提交
+                $users[$solution->user_id] = ['score' => 0, 'penalty' => 0];
+                $uids[]=$solution->user_id;
             }
-
-            $users[$user->id]['username']=$user->username;
-            $users[$user->id]['school']=$user->school;
-            $users[$user->id]['nick']=$user->nick;
-            $users[$user->id]['AC']=$AC_count;   //acm模式下AC数量，oi模式总得分
-            $users[$user->id]['penalty']=$penalty; //罚时
+            $user=&$users[$solution->user_id];
+            if(!isset($user[$solution->index])) //该用户首次提交该题
+                $user[$solution->index]=['AC'=>false,'AC_time'=>0,'wrong'=>0,'score'=>0,'penalty'=>0];
+            if(!$user[$solution->index]['AC']){  //尚未AC该题
+                if($solution->result==4) {
+                    $solution->pass_rate=1; //若竞赛中途从acm改为oi，会出现oi没分的情况，故AC比满分
+                    $user[$solution->index]['AC']=true;
+                    $user[$solution->index]['AC_time']=$solution->submit_time;
+                    if(!isset($has_ac[$solution->index])) {  //第一滴血
+                        $has_ac[$solution->index] = true;
+                        $user[$solution->index]['first_AC'] = true;
+                    }
+                }else{
+                    $user[$solution->index]['wrong']++;
+                }
+                if($contest->judge_type=='acm'){
+                    $user[$solution->index]['AC_info']=null;
+                    if($solution->result==4){  //ACM模式下只有AC了才计成绩
+                        $user['score']++;
+                        $user['penalty']+=strtotime($solution->submit_time)-strtotime($contest->start_time)+$user[$solution->index]['wrong']*config('oj.main.penalty_acm');
+                        $user[$solution->index]['AC_info']=self::seconds_to_clock(strtotime($solution->submit_time)-strtotime($contest->start_time));
+                    }
+                    if($user[$solution->index]['wrong']>0)
+                        $user[$solution->index]['AC_info'].=sprintf("(-%d)",$user[$solution->index]['wrong']);
+                }else{  //oi
+                    $new_score=max($user[$solution->index]['score'],round($solution->pass_rate*100));
+                    if($user[$solution->index]['score']<$new_score){  //获得了更高分
+                        //score
+                        $user['score']+=$new_score-$user[$solution->index]['score'];
+                        $user[$solution->index]['score']=$new_score;
+                        //penalty
+                        $new_penalty=strtotime($solution->submit_time)-strtotime($contest->start_time);
+                        $user['penalty']+=$new_penalty-$user[$solution->index]['penalty'];
+                        $user[$solution->index]['penalty']=$new_penalty;
+                    }
+                    $user[$solution->index]['AC_info']=$user[$solution->index]['score'];
+                }
+            }
         }
-
-        uasort($users,function ($x,$y){  //排序
-            if($x['AC']==$y['AC']){
+        //追加用户名、学校、昵称
+        $user_infos=DB::table('users')->whereIn('id',array_unique($uids))->get(['id','username','school','nick']);
+        foreach($user_infos as $u_info){
+            if(!isset($users[$u_info->id]))$users[$u_info->id]=['score' => 0, 'penalty' => 0];
+            $users[$u_info->id]['username']=$u_info->username;
+            if(config('oj.main.rank_show_school'))$users[$u_info->id]['school']=$u_info->school;
+            if(config('oj.main.rank_show_nick'))$users[$u_info->id]['nick']=$u_info->nick;
+        }
+        //排序
+        uasort($users,function ($x,$y){
+            if($x['score']==$y['score']){
                 return $x['penalty']>$y['penalty'];
             }
-            return $x['AC']<$y['AC'];
+            return $x['score']<$y['score'];
         });
-
-        $rank=1; $last_user=null;
-        foreach ($users as &$user){  //填写名次和罚时
-            if($last_user!=null && $last_user['AC']==$user['AC'] && $last_user['penalty']==$user['penalty'])
-                $user['rank'] = $last_user['rank'];
-            $user['rank'] = $rank;
+        //罚时由秒转为H:i:s
+        foreach ($users as $uid=>&$user)
             $user['penalty']=self::seconds_to_clock($user['penalty']);
-
-            $last_user=$user;
-            ++$rank;
-        }
-
+        //题目总数
+        $problem_count=DB::table('contest_problems')->where('contest_id',$contest->id)->count('id');
         //封榜时间
-        $end=strtotime($contest->end_time)
-            -( strtotime($contest->end_time)-strtotime($contest->start_time) )*$contest->lock_rate;
-        $lock_time=date('Y-m-d H:i:s',$end);
-        return view('contest.rank',compact('contest','lock_time','users','index_map'));
+        $end_time=strtotime($contest->end_time) -( strtotime($contest->end_time)-strtotime($contest->start_time) )*$contest->lock_rate;
+        return view('contest.rank',compact('contest','end_time','users','problem_count'));
     }
 
     public function cancel_lock($id){

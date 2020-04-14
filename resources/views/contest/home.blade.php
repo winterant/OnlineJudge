@@ -125,7 +125,8 @@
                                 </td>
                                 <td>
                                     @if($item->submit>0)
-                                        {{$item->accepted}} (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>{{$item->solved}})
+                                        {{$item->accepted}}
+                                        (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>{{$item->solved}})
                                         /
                                         {{$item->submit}}
                                     @else - / - @endif</td>
