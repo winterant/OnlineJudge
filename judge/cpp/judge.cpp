@@ -156,22 +156,18 @@ struct Solution{
 }solution;
 
 
-int get_file_size(const char *filename)//获取文件内容长度
+int file_size(const char* filename)//文件大小
 {
-    FILE *fp=fopen(filename,"r");
-    if(fp==NULL)return -1; //文件打开失败
-    fseek(fp,0L,SEEK_END);
-    int size=ftell(fp);  //获得内容长度
-    fclose(fp);
-    return size;
+    struct stat statbuf;
+    stat(filename,&statbuf);
+    return statbuf.st_size;
 }
 
 char *read_file(const char *filename)//从文件读取内容，返回字符串指针
 {
-    int file_size=get_file_size(filename);
     FILE *fp=fopen(filename,"r");
     if(fp==NULL) return NULL; //文件打开失败
-    char ch, *p, *str = new char[file_size+3];
+    char ch, *p, *str = new char[file_size(filename)+3];
     for (p=str;(ch=fgetc(fp))!=EOF;*p++=ch);
     *p='\0';
     fclose(fp);
@@ -330,12 +326,6 @@ void running()
     ptrace(PTRACE_TRACEME, 0, NULL, NULL); //让父进程跟踪自己
 
     struct rlimit LIM;
-    //time limit
-    LIM.rlim_max=LIM.rlim_cur = solution.time_limit/1000.0+1; //S,增加1秒额外损耗
-    setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit
-    alarm(0);
-    alarm((int)LIM.rlim_cur);
-
     if(solution.language!=2) //非java语言，memory limit
     {
         LIM.rlim_max=LIM.rlim_cur = solution.memory_limit*(1<<20); //Byte
@@ -353,6 +343,12 @@ void running()
     //程序所使用的的堆栈最大空间
     LIM.rlim_cur = LIM.rlim_max = 128<<20;  //128MB
     setrlimit(RLIMIT_STACK, &LIM);
+
+    //time limit
+    LIM.rlim_max=LIM.rlim_cur = solution.time_limit/1000.0+1; //S,增加1秒额外损耗
+    setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit
+    alarm(0);
+    alarm((int)LIM.rlim_cur+60); //定时自杀
 
     switch(solution.language)
     {
@@ -406,10 +402,11 @@ int running_spj(const char *in,const char *out,const char *user_out)
 }
 
 //监视子进程running
-int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_size)
+int watch_running(int child_pid, int max_out_size)
 {
     int status=0, result=OJ_TC; //初始result=测试通过
     struct rusage ruse;    //保存用户子进程的内存时间等
+    float memory_MB=0;   //本次内存消耗
     while(1)
     {
         wait4(child_pid, &status, __WALL, &ruse); //跟踪子进程，子进程可能并未结束
@@ -425,12 +422,12 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_siz
 
         if(WIFEXITED(status)) break; //仅代表子进程正常运行完成
 
-        if(get_file_size("error.out")>0) {
+        if(file_size("error.out")>0) {
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             result = OJ_RE; break; //运行错误
         }
 
-        if (!solution.spj && get_file_size("user.out") > max_out_size ){
+        if (!solution.spj && file_size("user.out") > max_out_size ){
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             result = OJ_OL; break; //输出超限
         }
@@ -447,6 +444,7 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_siz
                 default :
                     result = OJ_RE;     //默认运行错误
             }
+            printf("[son-process exit]: runtime error! exit code = %d\n",exit_code);
             if(exit_code==11){
                 char error[128];
                 sprintf(error,"[ERROR] Illegal segment error (invalid memory reference)\n");
@@ -468,7 +466,7 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_siz
                 default :
                     result = OJ_RE;     //默认运行错误
             }
-            printf("runtime error! signal = %d\n",sig);
+            printf("[son-process signal]: runtime error! signal value = %d\n",sig);
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             break;
         }
@@ -489,16 +487,14 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_siz
     }
     int used_time = (ruse.ru_utime.tv_sec * 1000 + ruse.ru_utime.tv_usec / 1000); //用户态时间
     used_time += (ruse.ru_stime.tv_sec * 1000 + ruse.ru_stime.tv_usec / 1000); //内核时间
-    time_MS = max(time_MS,used_time);
-    if(used_time>solution.time_limit)
+    if(result!=OJ_TL && used_time>solution.time_limit)
         result = OJ_TL; //超时
-    printf("running used time: %dMS,  limit is %dMS\n",time_MS,solution.time_limit);
-    printf("running used memory: %f MB, limit is %fMB\n",memory_MB,solution.memory_limit);
-    if(result == OJ_TL)
-        solution.time = solution.time_limit;
+    printf("running used time:   %5dMS, limit is %dMS\n",used_time,solution.time_limit);
+    printf("running used memory: %5.2fMB, limit is %.2fMB\n",memory_MB,solution.memory_limit);
+    solution.time = max(solution.time, min(solution.time_limit, used_time) );
+    solution.memory = max(solution.memory,memory_MB);
     return result;
 }
-
 
 //运行可执行文件
 int judge(char *data_dir, char *spj_path)
@@ -533,14 +529,14 @@ int judge(char *data_dir, char *spj_path)
         int pid=fork();
         if(pid==0)//child
         {
-            printf("running on test %d\n",test_count);
+            printf("running on test %d, %s.in=>%s.out\n",test_count,test_name,test_name);
             running();
             exit(0);
         }
         else if(pid>0)
         {
             char *data_out_path = get_data_out_path(data_dir,test_name);
-            int result = watch_running(pid, solution.memory, solution.time, get_file_size(data_out_path)*2+1024);
+            int result = watch_running(pid, file_size(data_out_path)*2+1024);
             if(result == OJ_TC)  //运行完成，需要判断用户的答案是否正确
             {
                 if(solution.spj)  //special judge
@@ -548,7 +544,7 @@ int judge(char *data_dir, char *spj_path)
                 else  //比较文件
                     result = compare_file(data_out_path,"user.out");  //非spj直接比较文件
             }
-            printf("test %d result: %d\n",test_count,result);
+            printf("test %d result: %d\n\n",test_count,result);
             if(result==OJ_AC)ac_count++;
             if(is_acm && result!=OJ_AC)   //acm规则遇到WA直接返回，判题结束
                 return result;

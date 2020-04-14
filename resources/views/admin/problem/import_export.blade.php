@@ -4,9 +4,6 @@
 
 @section('content')
 
-    <div class="alert alert-info">
-        完全兼容 <a href="https://github.com/zhblue/hustoj">HUSTOJ</a> 导出的题目文件；后缀必须为.xml；导入后题号依本站题库递增
-    </div>
     <div class="row">
 
         <div class="col-12 col-md-6">
@@ -21,12 +18,17 @@
                     <button type="submit" class="btn btn-success ml-3 border">导入</button>
                 </div>
             </form>
+            <div class="alert alert-info">
+                （1）请不要上传大小超过4GB的文件<br>
+                （2）完全兼容 <a href="https://github.com/zhblue/hustoj">HUSTOJ</a> 导出的题目文件；后缀必须为.xml；<br>
+                （3）导入后题号依本站题库递增
+            </div>
         </div>
 
         <div class="col-12 col-md-6 border-left">
             <h2>导出题目</h2>
             <hr>
-            <form action="{{route('admin.problem.export')}}" method="POST">
+            <form action="{{route('admin.problem.export')}}" method="post" onsubmit="Notiflix.Notify.Success('正在生成文件，请稍等~');">
                 @csrf
                 <div class="form-group">
                     <div class="pull-left">题号列表：</div>
@@ -42,7 +44,8 @@
                 </div>
             </form>
             <div class="alert alert-info">
-                备注：若无法完成下载，请尝试使用谷歌内核的浏览器。
+                提示：若点击下载后无法连接，可能是文件过大，请适当减少题数。<br>
+                    下载文件不超过2GB
             </div>
         </div>
 

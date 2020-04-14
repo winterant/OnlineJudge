@@ -17,12 +17,11 @@ if [ "$1" == "debug" ];then
   ./polling ${DB_HOST} ${DB_PORT} ${DB_USERNAME} ${DB_PASSWORD} ${DB_DATABASE} ${JG_MAX_RUNNING} ${JG_DATA_DIR} ${JG_NAME}
 else
   ./polling ${DB_HOST} ${DB_PORT} ${DB_USERNAME} ${DB_PASSWORD} ${DB_DATABASE} ${JG_MAX_RUNNING} ${JG_DATA_DIR} ${JG_NAME} > /dev/null &
-fi
-
-sleep 1;
-polling_name=`ps -e | grep polling | awk '{print $4}'`
-if [ "${polling_name}" == "polling" ];then
-  echo "[Judge is OK] Server has started to judge!"
-else
-  echo "[Judge starting Failed] Please check config in LDUOnlineJudge/.env"
+    sleep 1;
+    polling_name=`ps -e | grep polling | awk '{print $4}'`
+    if [ "${polling_name}" == "polling" ];then
+      echo "[Judge is OK] Server has started to judge!"
+    else
+      echo "[Judge starting Failed] Please check config in LDUOnlineJudge/.env"
+    fi
 fi
