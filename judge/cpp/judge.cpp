@@ -447,6 +447,11 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_siz
                 default :
                     result = OJ_RE;     //默认运行错误
             }
+            if(exit_code==11){
+                char error[128];
+                sprintf(error,"[ERROR] Illegal segment error (invalid memory reference)\n");
+                write_file(error,"error.out","a+");
+            }
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             break;
 		}
@@ -463,6 +468,7 @@ int watch_running(int child_pid, float &memory_MB, int &time_MS, int max_out_siz
                 default :
                     result = OJ_RE;     //默认运行错误
             }
+            printf("runtime error! signal = %d\n",sig);
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             break;
         }

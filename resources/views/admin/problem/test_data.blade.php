@@ -159,8 +159,8 @@
                 },
                 uploading: function (file_count,index,up_size,fsize) {
                     Notiflix.Loading.Change('上传中'+index+'/'+file_count+' : '+
-                        (up_size/1024).toFixed(1)+'MB/'+(fsize/1024).toFixed(1) +'MB ('+
-                        Math.round(up_size/fsize)+'%) 请勿刷新/关闭页面!');
+                        (up_size/1024).toFixed(2)+'MB/'+(fsize/1024).toFixed(2) +'MB ('+
+                        Math.round(up_size*100/fsize)+'%)');
                 },
                 success:function (file_count,ret) {
                     Notiflix.Loading.Remove();

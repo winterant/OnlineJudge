@@ -26,7 +26,7 @@
         <div class="col-12 col-md-6 border-left">
             <h2>导出题目</h2>
             <hr>
-            <form action="{{route('admin.problem.export')}}" method="post">
+            <form action="{{route('admin.problem.export')}}" method="POST">
                 @csrf
                 <div class="form-group">
                     <div class="pull-left">题号列表：</div>
@@ -41,12 +41,14 @@
                     <button type="submit" class="btn btn-success ml-3 border" style="vertical-align: top">下载</button>
                 </div>
             </form>
+            <div class="alert alert-info">
+                备注：若无法完成下载，请尝试使用谷歌内核的浏览器。
+            </div>
         </div>
 
     </div>
 
     <script src="{{asset('js/uploadBig.js')}}" type="text/javascript"></script>
-
     <script type="text/javascript">
 
         function do_upload() {

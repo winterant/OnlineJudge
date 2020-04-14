@@ -120,8 +120,8 @@ function autoiconv($text,$type = "gb2312//ignore"){
         $encodType = 'UTF-16LE';
     //下面的判断主要还是判断ANSI编码的·
     if ($encodType == '') { //即默认创建的txt文本-ANSI编码的
-        $content = mb_convert_encoding($text,"UTF-8","auto");
-//            $content = iconv("GBK", "UTF-8//ignore", $text);
+//        $content = mb_convert_encoding($text,"UTF-8","auto");
+            $content = iconv("GBK", "UTF-8//ignore", $text);
     } else if ($encodType == 'UTF-8 BOM') {//本来就是UTF-8不用转换
         $content = $text;
     } else {//其他的格式都转化为UTF-8就可以了

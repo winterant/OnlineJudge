@@ -194,6 +194,9 @@ class ProblemController extends Controller
     }
 
     public function import(Request $request){
+        if(!$request->isMethod('post')){
+            return redirect(route('admin.problem.import_export'));
+        }
 
         $uc=new UploadController;
         $isUploaded=$uc->upload($request,'xml_temp','import_problems.xml');
@@ -263,6 +266,9 @@ class ProblemController extends Controller
     }
 
     public function export(Request $request){
+        if(!$request->isMethod('post')){
+            return redirect(route('admin.problem.import_export'));
+        }
         //处理题号,获取题目
         $problem_ids=$request->input('pids');
         foreach (explode(PHP_EOL,$problem_ids) as &$item){
