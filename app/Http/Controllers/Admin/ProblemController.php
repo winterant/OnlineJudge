@@ -269,6 +269,7 @@ class ProblemController extends Controller
         if(!$request->isMethod('post')){
             return redirect(route('admin.problem.import_export'));
         }
+        ini_set('memory_limit','2G');//php单线程最大内存占用，默认128M不够用
         //处理题号,获取题目
         $problem_ids=$request->input('pids');
         foreach (explode(PHP_EOL,$problem_ids) as &$item){
