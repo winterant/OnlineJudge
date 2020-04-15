@@ -333,8 +333,8 @@ void running()
     }
 
     //程序可创建的文件最大长度
-    LIM.rlim_max=LIM.rlim_cur = 32<<20;
-    setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 32MB
+    LIM.rlim_max=LIM.rlim_cur = 64<<20;
+    setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 64MB
 
     //程序可创建的最大进程数;
     LIM.rlim_cur = LIM.rlim_max = solution.language>1 ? 200 : 1; // java,python扩大
@@ -345,10 +345,10 @@ void running()
     setrlimit(RLIMIT_STACK, &LIM);
 
     //time limit
-    LIM.rlim_max=LIM.rlim_cur = solution.time_limit/1000.0+1; //S,增加1秒额外损耗
+    LIM.rlim_max=LIM.rlim_cur = solution.time_limit/1000+1; //S,增加1秒额外损耗
     setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit
     alarm(0);
-    alarm((int)LIM.rlim_cur+60); //定时自杀，额外等待60s损耗时间
+    alarm((int)LIM.rlim_cur); //定时自杀，额外双倍损耗时间
 
     switch(solution.language)
     {
@@ -385,8 +385,8 @@ int running_spj(const char *in,const char *out,const char *user_out)
     setrlimit(RLIMIT_AS, &LIM);
 
     //程序可创建的文件最大长度
-    LIM.rlim_max=LIM.rlim_cur = 16<<20;
-    setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 16MB
+    LIM.rlim_max=LIM.rlim_cur = 64<<20;
+    setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 64MB
 
     //程序可创建的最大进程数;
     LIM.rlim_cur = LIM.rlim_max = 1;
@@ -402,7 +402,7 @@ int running_spj(const char *in,const char *out,const char *user_out)
 }
 
 //监视子进程running
-int watch_running(int child_pid, int max_out_size)
+int watch_running(int child_pid, char *test_name, int max_out_size)
 {
     int status=0, result=OJ_TC; //初始result=测试通过
     struct rusage ruse;    //保存用户子进程的内存时间等
@@ -490,12 +490,12 @@ int watch_running(int child_pid, int max_out_size)
 
         ptrace(PTRACE_SYSCALL, child_pid, NULL, NULL); //唤醒暂停的子进程，继续执行
     }
-    int used_time = (ruse.ru_utime.tv_sec * 1000 + ruse.ru_utime.tv_usec / 1000); //用户态时间
-    used_time += (ruse.ru_stime.tv_sec * 1000 + ruse.ru_stime.tv_usec / 1000); //内核时间
+    int used_time = (ruse.ru_utime.tv_sec*1000+ruse.ru_utime.tv_usec/1000); //用户态时间
+                  + (ruse.ru_stime.tv_sec*1000+ruse.ru_stime.tv_usec/1000); //内核时间
     if(result!=OJ_TL && used_time>solution.time_limit)
         result = OJ_TL; //超时
-    printf("running used time:   %5dMS, limit is %dMS\n",used_time,solution.time_limit);
-    printf("running used memory: %5.2fMB, limit is %.2fMB\n",memory_MB,solution.memory_limit);
+    printf("%s | used time:   %5dMS, limit is %dMS\n", test_name, used_time, solution.time_limit);
+    printf("%s | used memory: %5.2fMB, limit is %.2fMB\n", test_name, memory_MB, solution.memory_limit);
     solution.time   = max(solution.time,   min(solution.time_limit,   used_time) );
     solution.memory = max(solution.memory, min(solution.memory_limit, memory_MB) );
     return result;
@@ -530,18 +530,19 @@ int judge(char *data_dir, char *spj_path)
         char *test_name = isInFile(dirfile->d_name);
         if(test_name==NULL)continue; //不是输入数据，跳过
         system_cmd("/bin/cp %s/%s.in  ./data.in",data_dir,test_name); //复制输入数据到当前目录
+        char *data_out_path = get_data_out_path(data_dir,test_name);  //输出文件路径
         test_count++;
         int pid=fork();
         if(pid==0)//child
         {
-            printf("running on test %d, %s.in=>%s.out\n",test_count,test_name,test_name);
+            printf("%s | running on test %d  ===================  %s.in(%dB)=>%s.out(%dB)\n",
+            test_name, test_count,test_name,file_size("data.in"),test_name,file_size(data_out_path));
             running();
             exit(0);
         }
         else if(pid>0)
         {
-            char *data_out_path = get_data_out_path(data_dir,test_name);
-            int result = watch_running(pid, file_size(data_out_path)*2+1024);
+            int result = watch_running(pid, test_name, file_size(data_out_path)*2+1024);
             if(result == OJ_TC)  //运行完成，需要判断用户的答案是否正确
             {
                 if(solution.spj)  //special judge
@@ -549,7 +550,7 @@ int judge(char *data_dir, char *spj_path)
                 else  //比较文件
                     result = compare_file(data_out_path,"user.out");  //非spj直接比较文件
             }
-            printf("test %d result: %d\n\n",test_count,result);
+            printf("%s | judge result: %d\n\n",test_name,result);
             if(result==OJ_AC)ac_count++;
             if(is_acm && result!=OJ_AC)   //acm规则遇到WA直接返回，判题结束
                 return result;
