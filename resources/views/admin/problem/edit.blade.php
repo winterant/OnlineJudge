@@ -18,7 +18,7 @@
                 </div>
             </form>
         @else
-            <form class="p-4 col-12 col-md-9" action="" method="post" enctype="multipart/form-data">
+            <form id="form_problem" class="p-4 col-12 col-md-9" action="" method="post" onsubmit="return check_ckeditor_data();" enctype="multipart/form-data">
                 @csrf
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -141,35 +141,53 @@
                 uploadUrl:'{{route('ck_upload_image',['_token'=>csrf_token()])}}'
             }
         };
+
         //各个编辑框ckeditor
+        var ck_description,ck_input,ck_output,ck_hint;
         ClassicEditor.create(document.querySelector('#description'), config).then(editor => {
-            window.editor = editor;
-            console.log(editor.getData());
+            ck_description=editor;
+            // console.log(editor.getData());
         } ).catch(error => {
-            console.log(error);
+            // console.log(error);
         } );
 
         ClassicEditor.create(document.querySelector('#input'), config).then(editor => {
-            window.editor = editor;
-            console.log(editor.getData());
+            ck_input = editor;
         } ).catch(error => {
-            console.log(error);
         } );
 
         ClassicEditor.create(document.querySelector('#output'), config).then(editor => {
-            window.editor = editor;
-            console.log(editor.getData());
+            ck_output = editor;
         } ).catch(error => {
-            console.log(error);
         } );
 
         ClassicEditor.create(document.querySelector('#hint'),config).then(editor => {
-            window.editor = editor;
-            console.log(editor.getData());
+            ck_hint = editor;
         } ).catch(error => {
-            console.log(error);
         } );
 
+        function check_ckeditor_data(){
+            function has_special_char(str) {
+                var ret=str.match(/[\x00-\x08\x0B\x0E-\x1f]+/);
+                if(ret===null)return false;
+                return ret; //有非法字符
+            }
+            var wrong=null,wrong_char;
+            if((wrong_char=has_special_char(ck_description.getData())))wrong="问题描述";
+            else if((wrong_char=has_special_char(ck_input.getData())))wrong="输入描述";
+            else if((wrong_char=has_special_char(ck_output.getData())))wrong="输出描述";
+            else if((wrong_char=has_special_char(ck_hint.getData())))wrong="提示";
+            if(wrong!=null){
+                Notiflix.Report.Init({plainText: false});
+                Notiflix.Report.Failure("编辑器中含有无法解析的字符",
+                    "["+wrong+"]中含有无法解析的字符:<br>" +
+                    "第"+wrong_char['index'] + "个字符，" +
+                    "ASCII值为"+wrong_char[0].charCodeAt() +
+                    "<br>可能从pdf复制而来，您必须修改后再提交！",'好的');
+                return false;
+            }
+            return true;
+        }
 
         //添加样例编辑框
         function add_input_samples(that) {
