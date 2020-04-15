@@ -29,8 +29,9 @@ class StatusController extends Controller
             ->when(isset($_GET['inc_contest']),function ($q){
                 if(Auth::check()&&Auth::user()->privilege('solution'))
                     return $q;
-                return $q->where('solutions.contest_id',-1)
-                    ->orWhere('end_time','<',date('Y-m-d H:i:s'));//普通用户只能查看结束比赛的solution
+                return $q->where(function ($q){
+                    return $q->where('solutions.contest_id',-1)->orWhere('end_time','<',date('Y-m-d H:i:s'));
+                });//普通用户只能查看已结束比赛的solution
             })
             ->when(!isset($_GET['inc_contest']),function ($q){return $q->where('solutions.contest_id',-1);})
             ->when(isset($_GET['sid'])&&$_GET['sid']!='',function ($q){return $q->where('solutions.id',$_GET['sid']);})
