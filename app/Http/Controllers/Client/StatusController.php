@@ -33,6 +33,7 @@ class StatusController extends Controller
                     ->orWhere('end_time','<',date('Y-m-d H:i:s'));//普通用户只能查看结束比赛的solution
             })
             ->when(!isset($_GET['inc_contest']),function ($q){return $q->where('solutions.contest_id',-1);})
+            ->when(isset($_GET['sid'])&&$_GET['sid']!='',function ($q){return $q->where('solutions.id',$_GET['sid']);})
             ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('solutions.problem_id',$_GET['pid']);})
             ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username','like',$_GET['username'].'%');})
             ->when(isset($_GET['result'])&&$_GET['result']!='-1',function ($q){return $q->where('result',$_GET['result']);})

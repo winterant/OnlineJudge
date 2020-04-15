@@ -326,9 +326,9 @@ void running()
     ptrace(PTRACE_TRACEME, 0, NULL, NULL); //让父进程跟踪自己
 
     struct rlimit LIM;
-    if(solution.language!=2) //非java语言，memory limit
+    if(solution.language!=2) //memory limit，Java可以在执行命令中限制
     {
-        LIM.rlim_max=LIM.rlim_cur = solution.memory_limit*(1<<20); //Byte
+        LIM.rlim_max=LIM.rlim_cur = solution.memory_limit*(1<<20) + (1<<30); //Byte + 额外1GB
         setrlimit(RLIMIT_AS, &LIM); //memory limit;
     }
 
@@ -348,7 +348,7 @@ void running()
     LIM.rlim_max=LIM.rlim_cur = solution.time_limit/1000.0+1; //S,增加1秒额外损耗
     setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit
     alarm(0);
-    alarm((int)LIM.rlim_cur+60); //定时自杀
+    alarm((int)LIM.rlim_cur+60); //定时自杀，额外等待60s损耗时间
 
     switch(solution.language)
     {
@@ -412,25 +412,30 @@ int watch_running(int child_pid, int max_out_size)
         wait4(child_pid, &status, __WALL, &ruse); //跟踪子进程，子进程可能并未结束
 
         //内存使用情况
-        if(solution.language==2) memory_MB = max(memory_MB, (ruse.ru_minflt * getpagesize())*1.0/(1<<20) ); //MB  java
-        else  memory_MB = max(memory_MB, get_proc_memory(child_pid)*1.0/(1<<10) ); //MB   c/c++,python
-        if(memory_MB > solution.memory_limit) //内存超限
-        {
+        if(solution.language==2)
+            memory_MB = max(memory_MB, (ruse.ru_minflt * getpagesize())*1.0/(1<<20) ); //MB  java
+        else
+            memory_MB = max(memory_MB, get_proc_memory(child_pid)*1.0/(1<<10) ); //MB   c/c++,python
+
+        if(memory_MB > solution.memory_limit){
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);//杀死子进程，停止执行
             result = OJ_ML; break; //memory limit exceeded
         }
 
-        if(WIFEXITED(status)) break; //仅代表子进程正常运行完成
-
         if(file_size("error.out")>0) {
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
-            result = OJ_RE; break; //运行错误
+            if(solution.language==2 && strstr(read_file("error.out"),"OutOfMemoryError")!=NULL)
+                result=OJ_ML;  //java超内存而被捕获异常OutOfMemoryError
+            else result = OJ_RE;
+            break; //运行错误
         }
 
         if (!solution.spj && file_size("user.out") > max_out_size ){
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             result = OJ_OL; break; //输出超限
         }
+
+        if(WIFEXITED(status)) break; //仅代表子进程正常运行完成，不排除时间超限
 
         int exit_code = WEXITSTATUS(status);  //子进程退出码, 注意子进程可能并未真正结束，只是一个断点
 		if (!((solution.language>1&&exit_code==17) || exit_code==0 || exit_code==133 || exit_code==5) ){
@@ -491,8 +496,8 @@ int watch_running(int child_pid, int max_out_size)
         result = OJ_TL; //超时
     printf("running used time:   %5dMS, limit is %dMS\n",used_time,solution.time_limit);
     printf("running used memory: %5.2fMB, limit is %.2fMB\n",memory_MB,solution.memory_limit);
-    solution.time = max(solution.time, min(solution.time_limit, used_time) );
-    solution.memory = max(solution.memory,memory_MB);
+    solution.time   = max(solution.time,   min(solution.time_limit,   used_time) );
+    solution.memory = max(solution.memory, min(solution.memory_limit, memory_MB) );
     return result;
 }
 

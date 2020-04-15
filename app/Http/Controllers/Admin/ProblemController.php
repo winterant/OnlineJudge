@@ -184,7 +184,12 @@ class ProblemController extends Controller
                         })
                     ->update(['result'=>0]);
             }
-            return view('admin.success',['msg'=>sprintf('已重判%d条提交记录，可前往状态查看',isset($count)?$count:0)]);
+            $query=['inc_contest'=>'on'];
+            if($pid)$query['pid']=$pid;
+            if($cid)$query['cid']=$cid;
+            if($sid)$query['sid']=$sid;
+            return redirect(route("status",$query));
+//            return view('admin.success',['msg'=>sprintf('已重判%d条提交记录，可前往状态查看',isset($count)?$count:0)]);
         }
     }
 
