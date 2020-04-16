@@ -398,9 +398,15 @@ class ProblemController extends Controller
             $root->appendChild($item);
         }
         $dom->appendChild($root);
+        $dir="problem_export_temp/";
+        if(!Storage::exists($dir.Auth::id()))
+            Storage::makeDirectory($dir.Auth::id());
+        foreach (Storage::allFiles($dir) as $fpath){  //删除24小时以上的文件
+            if (time() - filemtime(storage_path('app/'.$fpath)) > 3600*24)
+                Storage::delete($fpath);
+        }
         $filename=str_replace("\r",',',str_replace("\n",',',str_replace("\r\n",',',$problem_ids))).".xml";
-        header('Content-type: text/xml; charset=UTF-8');
-        header("Content-Disposition:attachement;filename='".$filename."'");//提示下载
-        return $dom->saveXML();
+        $dom->save(storage_path("app/".$dir.Auth::id().'/'.$filename));
+        return Storage::download($dir.Auth::id().'/'.$filename);
     }
 }
