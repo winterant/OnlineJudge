@@ -97,18 +97,18 @@
                             <tbody>
                                 @foreach($users as $user)
                                     <tr>
-                                        <td class="text-center">
+                                        <td class="text-center" nowrap>
                                             {{-- 排名 --}}
                                             @if($loop->first)
-                                                <font class="text-nowrap" style="background-color: #fff959">
-                                                    <i class="fa fa-thumbs-o-up px-1" aria-hidden="true"></i>WIN
+                                                <font class="px-1" style="background-color: #fff959">
+                                                    <i class="fa fa-thumbs-o-up pr-1" aria-hidden="true"></i>WIN
                                                 </font>
-                                            @elseif($loop->iteration < count($users)*0.1)
-                                                <font style="background-color: #fff95a">{{$loop->iteration}}</font>
-                                            @elseif($loop->iteration < count($users)*0.3)
-                                                <font style="background-color: #e8e8e8">{{$loop->iteration}}</font>
-                                            @elseif($loop->iteration < count($users)*0.6)
-                                                <font style="background-color: #f5ac00">{{$loop->iteration}}</font>
+                                            @elseif($loop->iteration <= count($users)*0.1)
+                                                <font class="px-1" style="background-color: #fff95a">{{$loop->iteration}}</font>
+                                            @elseif($loop->iteration <= count($users)*0.3)
+                                                <font class="px-1" style="background-color: #e8e8e8">{{$loop->iteration}}</font>
+                                            @elseif($loop->iteration <= count($users)*0.6)
+                                                <font class="px-1" style="background-color: #f5ac00">{{$loop->iteration}}</font>
                                             @else
                                                 <font>{{$loop->iteration}}</font>
                                             @endif

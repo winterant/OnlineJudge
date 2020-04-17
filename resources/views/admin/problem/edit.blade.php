@@ -137,6 +137,7 @@
         //编辑框配置
         var config={
             language: "zh-cn",
+            removePlugins:['Autoformat'],  //取消markdown自动排版
             ckfinder: {
                 uploadUrl:'{{route('ck_upload_image',['_token'=>csrf_token()])}}'
             }
@@ -146,6 +147,7 @@
         var ck_description,ck_input,ck_output,ck_hint;
         ClassicEditor.create(document.querySelector('#description'), config).then(editor => {
             ck_description=editor;
+            editor.plugins.get( 'TextTransformation' ).isEnabled = false;
             // console.log(editor.getData());
         } ).catch(error => {
             // console.log(error);
