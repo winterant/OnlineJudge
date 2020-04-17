@@ -236,6 +236,7 @@
         //编辑框配置
         var config={
             language: "zh-cn",
+            removePlugins:['Autoformat'],  //取消markdown自动排版
             ckfinder: {
                 uploadUrl:'{{route('ck_upload_image',['_token'=>csrf_token()])}}'
             }
