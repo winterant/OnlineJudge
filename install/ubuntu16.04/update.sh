@@ -9,8 +9,8 @@ if [ ! -d ${web_home}/lduoj_temp ];then
   exit 1;
 fi;
 
+# transfer files
 rm -rf ${web_home}/lduoj_temp/storage
-
 mv -f ${web_home}/LDUOnlineJudge/storage ${web_home}/lduoj_temp/
 mv -f ${web_home}/LDUOnlineJudge/vendor  ${web_home}/lduoj_temp/
 mv -f ${web_home}/LDUOnlineJudge/.env    ${web_home}/lduoj_temp/
@@ -22,7 +22,7 @@ cd ${web_home}/LDUOnlineJudge || exit 2;
 chmod -R 777 storage bootstrap/cache
 chown -R www-data:www-data ${web_home}/LDUOnlineJudge/config/oj/main.php
 
-# composer
+# update packages
 composer install --ignore-platform-reqs
 
 # laravel artisan
@@ -35,4 +35,5 @@ echo "You have successfully updated LDU Online Judge! Enjoy it!"
 #start to judge
 bash ${web_home}/LDUOnlineJudge/judge/startup.sh
 
+# delete shell file
 cd `dirname $0` && rm -rf ./update.sh
