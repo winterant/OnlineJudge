@@ -34,8 +34,6 @@ char *JG_DATA_DIR;   //测试数据所在目录
 int  max_running;    //最大同时判题数
 char *JG_NAME;
 
-bool GO_ON=true;
-
 MYSQL *mysql;    //数据库连接对象
 MYSQL_RES *mysql_res;   //sql查询结果
 MYSQL_ROW mysql_row;    //sql查询到的单行数据
@@ -75,7 +73,7 @@ void polling()  //轮询数据库收集待判提交
     int *solution_queue=new int[max_running];  //判题队列
     int pid,did;
     char sid_str[12];
-    while(GO_ON)
+    while(true)
     {
         get_wating_solution(solution_queue,queueing_cnt);  //获取判题队列
         if(queueing_cnt==0)
@@ -117,14 +115,8 @@ void polling()  //轮询数据库收集待判提交
         printf("Process %d was recycled\n",pid);
 }
 
-void stop_polling(int p)
-{
-    GO_ON=false;
-}
-
 int main (int argc, char* argv[])
 {
-    signal(SIGINT, stop_polling); //收到SIGINT(ctrl+c)信号时，结束轮询
     if(argc!=8+1){
         printf("Polling Error: argv error!\n%d\n",argc);
         exit(1);
