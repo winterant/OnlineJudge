@@ -75,12 +75,6 @@ int LANG_PY[] = {3,4,5,6,8,9,10,11,12,13,14,16,21,32,59,72,78,79,89,97,99,102,10
 
 bool allow_sys_call[512]={0}; //系统调用标记
 
-char *db_host;
-char *db_port;
-char *db_user;
-char *db_pass;
-char *db_name;
-
 MYSQL *mysql;    //数据库连接对象
 MYSQL_RES *mysql_res;   //sql查询结果
 MYSQL_ROW mysql_row;    //sql查询到的单行数据
@@ -124,7 +118,7 @@ struct Solution{
 
         mysql_free_result(mysql_res); //必须释放结果集
 
-        if(this->language>1){
+        if(this->language>1){    //非C/C++双倍资源
             this->time_limit*=2;
             this->memory_limit*=2;
         }
@@ -148,7 +142,7 @@ struct Solution{
             char *p=new_sql;
             p+=sprintf(p,"UPDATE solutions SET error_info=\'");
             p+=mysql_real_escape_string(mysql,p,this->error_info,strlen(this->error_info));
-            p+=sprintf(p,"\' where id=%d",this->id);
+            p+=sprintf(p,"\' where id=%d;",this->id);
             mysql_real_query(mysql,new_sql,strlen(new_sql));
             delete new_sql;
         }
@@ -163,13 +157,26 @@ int file_size(const char* filename)//文件大小
     return statbuf.st_size;
 }
 
-char *read_file(const char *filename)//从文件读取内容，返回字符串指针
+char *read_file1(const char *filename)//从文件读取内容，返回字符串指针
 {
     FILE *fp=fopen(filename,"r");
     if(fp==NULL) return NULL; //文件打开失败
     char ch, *p, *str = new char[file_size(filename)+3];
     for (p=str;(ch=fgetc(fp))!=EOF;*p++=ch);
     *p='\0';
+    fclose(fp);
+    return str;
+}
+
+char *read_file(const char *filename)//从文件读取内容，返回字符串指针
+{
+    FILE *fp=fopen(filename,"r");
+    if(fp==NULL) return NULL; //文件打开失败
+    static char buf[BUFFER_SIZE];
+    char *str = new char[file_size(filename)+3];
+    str[0]='\0';
+    while(fgets(buf,BUFFER_SIZE,fp)!=NULL)
+        strcat(str,buf);
     fclose(fp);
     return str;
 }
@@ -207,12 +214,12 @@ bool is_whitespace(char c) {
 int compare_file(const char* fname1,const char *fname2) //比较两文件是否一致
 {
     bool ok1,ok2;
-    int result=OJ_AC;  //顺利的话，Accepted
+    int rear1, rear2, result=OJ_AC;  //顺利的话，Accepted
     static char buf1[BUFFER_SIZE], buf2[BUFFER_SIZE];
     FILE *fp1=fopen(fname1,"r"), *fp2=fopen(fname2,"r");
     while(ok1=(fgets(buf1,BUFFER_SIZE,fp1)!=NULL), ok2=(fgets(buf2,BUFFER_SIZE,fp2)!=NULL), ok1&&ok2)
     {
-        int rear1=strlen(buf1)-1, rear2=strlen(buf2)-1;
+        rear1=strlen(buf1)-1, rear2=strlen(buf2)-1;
         while(rear1>=0 && is_whitespace(buf1[rear1]))rear1--; //将rear1指向可见字符的最后一个
         while(rear2>=0 && is_whitespace(buf2[rear2]))rear2--;
         if(rear1!=rear2||strncmp(buf1,buf2,rear1+1)!=0) //文本不一致，wrong answer
@@ -241,6 +248,10 @@ int compare_file(const char* fname1,const char *fname2) //比较两文件是否�
             if(!is_whitespace(*ch))
                 result=OJ_WA;
     }
+    ok1=(fgets(buf1,BUFFER_SIZE,fp1)!=NULL);
+    ok2=(fgets(buf2,BUFFER_SIZE,fp2)!=NULL);
+    if(!(ok1&&ok2) && result==OJ_PE && rear1==rear2 && strncmp(buf1,buf2,rear1+1)==0) //最后一行空白字符不匹配不认为PE
+        result=OJ_AC;
     fclose(fp1);
     fclose(fp2);
     return result;
@@ -576,16 +587,17 @@ int main (int argc, char* argv[])
         printf("Judge arg number error!\n%d\n",argc);
         exit(1);
     }
-    db_host=argv[1];
-    db_port=argv[2];
-    db_user=argv[3];
-    db_pass=argv[4];
-    db_name=argv[5];
-    int sid=atoi(argv[6]); //solution id
+    char *db_host=argv[1];
+    char *db_port=argv[2];
+    char *db_user=argv[3];
+    char *db_pass=argv[4];
+    char *db_name=argv[5];
+    char *sid    =argv[6]; //solution id
     char *JG_DATA_DIR=argv[7];
 
     // 2. 连接数据库
     mysql = mysql_init(NULL);   //初始化数据库连接变量
+    mysql_options(mysql,MYSQL_SET_CHARSET_NAME,"utf8mb4");
     mysql = mysql_real_connect(mysql,db_host,db_user,db_pass,db_name,atoi(db_port),NULL,0); //连接
     if(!mysql){
         printf("Judge Error: Can't connect to database!\n\n");
@@ -596,29 +608,29 @@ int main (int argc, char* argv[])
     if(access("../run",F_OK)==-1)
         mkdir("../run",0777);
     chdir("../run"); //进入工作目录
-    mkdir(argv[6],0777);
-    chdir(argv[6]); //进入sid临时文件夹
+    mkdir(sid,0777);
+    chdir(sid); //进入sid临时文件夹
 
     // 4.读取+编译+判题
-    solution.load_solution(sid);   //从数据库读取提交记录
+    solution.load_solution(atoi(sid));   //从数据库读取提交记录
     write_file(solution.code,LANG[solution.language],"w"); //创建代码文件
     solution.update_result(OJ_CI); //update to compiling
 
     int CP_result=compile();
     if(CP_result==-1)//系统错误，正常情况下没有
     {
-        printf("solution id: %d, compiling: System Error on fork();\n",sid);
+        printf("solution id: %s, compiling: System Error on fork();\n",sid);
         solution.result=OJ_SE;
     }
     else if(CP_result>0) //编译错误
     {
-        printf("solution id: %d, compiling: Compile Error!\n",sid);
+        printf("solution id: %s, compiling: Compile Error!\n",sid);
         solution.result=OJ_CE;
         solution.error_info = read_file("ce.txt");//将编译信息读到solution结构体变量
     }
     else    //编译成功，运行
     {
-        printf("solution id: %d, Compiling successfully! start running\n",sid);
+        printf("solution id: %s, Compiling successfully! start running\n",sid);
         solution.update_result(OJ_RI); //update to running
         char data_dir[256], spj_path[256];
         sprintf(data_dir,"%s/%d/test",JG_DATA_DIR,solution.problem_id); //测试数据所在文件夹
