@@ -55,23 +55,30 @@ class UserController extends Controller
         }
         if($request->isMethod('post')){
             $data=$request->input('data');
+
             if($data['stu_id']!=null){
                 $usernames=explode(PHP_EOL,$data['stu_id']); //将要注册的账号名收集到$usernames中
             }else{
-                $format="%s%0".strlen($data['end'])."d";
                 for ($i=intval($data['begin']);$i<=intval($data['end']);$i++)
-                    $usernames[]=sprintf($format,$data['prefix'],$i);
+                    $usernames[]=sprintf("%s%0".strlen($data['end'])."d", $data['prefix'],$i);
             }
-            $number=count($usernames);
+
+            if (isset($data['check_exist'])){
+                //设置了安全检查，发现已存在用户时，告诉管理员，而不是直接删除
+                $exist_users=DB::table('users')->whereIn('username',$usernames)->pluck('username');
+                if(count($exist_users)>0)
+                    return back()->withInput()->with(['exist_users'=>$exist_users]);
+            }
+
             $nick=$this->trans_data($data['nick']);
             $email=$this->trans_data($data['email']);
             $school=$this->trans_data($data['school'],true);
             $class=$this->trans_data($data['class'],true);
             foreach($usernames as $i=>$username){
-                $password[$username]=$this->make_passwd(8);
-                $users[]=[
+                $password = $this->make_passwd(8);
+                $user=[
                     'username'=>$username,
-                    'password'=>Hash::make($password[$username]),
+                    'password'=>Hash::make($password),
                     'revise'=>$data['revise'],
                     'nick'=>isset($nick[$i])?$nick[$i]:'',
                     'email'=>isset($email[$i])?$email[$i]:'',
@@ -79,16 +86,10 @@ class UserController extends Controller
                     'class'=>isset($class[$i])?$class[$i]:'',
                     'created_at'=>date('Y-m-d H:i:s')
                 ];
+                DB::table('users')->updateOrInsert(['username'=>$username],$user);
+                $user['password']=$password;
+                $users[]=$user;
             }
-            if (isset($data['check_exist'])){
-                //设置了安全检查，发现已存在用户时，告诉管理员，而不是直接删除
-                $exist_users=DB::table('users')->whereIn('username',$usernames)->pluck('username');
-                if(count($exist_users)>0)
-                    return back()->withInput()->with(['exist_users'=>$exist_users]);
-            }
-            DB::table('users')->whereIn('username',$usernames)->delete();
-            DB::table('users')->insert($users);
-            foreach($users as &$user)$user['password']=$password[$user['username']];
             return view('admin.user.create',compact('users'));
         }
     }
@@ -136,10 +137,6 @@ class UserController extends Controller
                     $msg="该用户拥有管理员权限(admin)，不能被重置密码。请先取消该账号的权限再尝试！";
                 }else{
                     DB::table('users')->where('id',$user_id)->update(['password'=>Hash::make($password)]);
-                    $user=Auth::user();
-                    Auth::onceUsingId($user_id);
-                    Auth::logoutOtherDevices($password);
-                    Auth::login($user);
                     $msg='重置成功！';
                 }
             }else{
