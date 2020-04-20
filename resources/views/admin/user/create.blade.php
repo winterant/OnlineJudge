@@ -61,9 +61,10 @@
         <div>
             @if(session('exist_users'))
                 <div class="alert alert-danger">
-                    <p class="m-0">生成失败！对于您本次要生成的账号，系统检测到以下用户名已存在，您有两种解决方法：</p>
+                    <p class="m-0">生成失败！</p>
+                    <p class="m-0">对于您本次要生成的账号，系统检测到以下用户名已存在，您有两种解决方法：</p>
                     <p class="m-0">(1)：更改要创建的用户名，不再与已存在用户冲突</p>
-                    <p>(2)：取消本页最后的“检查重名用户”再提交，此方式将删除已存在的重名用户</p>
+                    <p>(2)：取消本页最后的“检查重名用户”再提交，此方式将覆盖已存在的重名用户</p>
                     <p class="m-0">
                         重名用户：
                         @foreach(session('exist_users') as $item)
@@ -159,7 +160,9 @@
 
                 <div class="custom-control custom-checkbox m-2">
                     <input type="checkbox" name="data[check_exist]" checked class="custom-control-input" id="customCheck">
-                    <label class="custom-control-label pt-1" for="customCheck">检查重名用户；若您不勾选此项，当用户名已存在时，将强制删除已存在用户</label>
+                    <label class="custom-control-label pt-1" for="customCheck">
+                        检查重名用户； 若您不勾选此项，当生成的账号已存在时，将直接覆盖已存在用户
+                    </label>
                 </div>
 
                 <div class="form-group m-4">

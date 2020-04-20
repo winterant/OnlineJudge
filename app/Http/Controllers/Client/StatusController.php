@@ -77,9 +77,10 @@ class StatusController extends Controller
             ->select(['solutions.id','problem_id','contest_id','user_id','username','result','pass_rate','time','memory',
                 'judge_type','submit_time','judge_time','code','code_length','language','error_info'])
             ->where('solutions.id',$id)->first();
-        if(!Auth::user()->privilege('solution')&&Auth::id()!=$solution->user_id)
-            return view('client.fail',['msg'=>trans('sentence.Permission denied')]);
-        return view('client.solution',compact('solution'));
+        if(Auth::user()->privilege('solution')||
+            (Auth::id()==$solution->user_id && $solution->submit_time>Auth::user()->created_at))
+            return view('client.solution',compact('solution'));
+        return view('client.fail',['msg'=>trans('sentence.Permission denied')]);
     }
 
     /*
