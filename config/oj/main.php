@@ -2,7 +2,7 @@
 
 return [
 	"siteName"	=> "Ludong University Online Judge",
-	"beian"	=> "无备案",
+	"beian"	=> "",
 	"web_page_display_wide"	=> false,
 	"allow_register"	=> true,
 	"show_home_notice_marquee"	=> true,
