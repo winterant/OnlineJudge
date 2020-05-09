@@ -76,6 +76,7 @@ Ludong University Online Judge
   cp /home/lduoj_temp/install/ubuntu16.04/update.sh /home/
   bash /home/update.sh
   ```
+
 # 项目迁移（更换服务器）
   1. 在原服务器执行一次**项目备份**，并将备份好的文件夹拷贝到新服务器相同文件夹！  
   2. 在新服务器执行一次**项目安装**  
@@ -116,3 +117,20 @@ Ludong University Online Judge
    5. 在从服务器上安装判题所需的环境支持：`bash /home/LDUOnlineJudge/judge/install.sh`  
    6. 在从服务器上启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`  
    7. 在从服务器上停止判题端：`bash /home/LDUOnlineJudge/judge/stop.sh`
+
+# 鸣谢
+
+  [zhblue/hustoj](https://github.com/zhblue/hustoj)  
+  [laravel-6.0](https://laravel.com/)
+  [bootstrap-material-design](https://fezvrasta.github.io/bootstrap-material-design/)  
+  [jquery-3.4.1](https://jquery.com/)  
+  [font-awesome](http://www.fontawesome.com.cn/)  
+  [ckeditor-5](https://ckeditor.com/ckeditor-5/)  
+  [MathJax](https://www.mathjax.org/)  
+  [zhiyul/switch](https://github.com/notiflix/Notiflix)  
+  
+
+# 版本信息
+  
+  iamwinter/LDUOnlineJudge is licensed under the 
+  **[GNU General Public License v3.0](https://github.com/iamwinter/LDUOnlineJudge/blob/master/LICENSE)**
