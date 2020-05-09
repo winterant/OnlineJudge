@@ -2,7 +2,8 @@
 <div id="footer" class="text-center mb-2">
     <hr>
     <div>Server Time：<font id="localtime">{{date('Y-m-d H:i:s')}}</font></div>
-    © 2020 <a target="_blank" href="https://github.com/iamwinter">LDU Online Judge</a>.
+    <a href="http://www.beian.miit.gov.cn" target="_blank">{{config('oj.main.beian')}}</a><br>
+    © 2020 <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">LDU Online Judge</a>.
     All Rights Reserved.
 </div>
 
