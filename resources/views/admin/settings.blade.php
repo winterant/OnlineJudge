@@ -15,8 +15,14 @@
                         <span class="input-group-text">网站名称：</span>
                     </div>
                     <input type="text" name="siteName" value="{{$settings['siteName']}}" required class="form-control" autocomplete="off">
-                    <button class="btn text-white ml-4 bg-success">保存</button>
                 </div>
+                <div class="input-group mt-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">备案信息：</span>
+                    </div>
+                    <input type="text" name="beian" value="{{$settings['beian']}}" required class="form-control" autocomplete="off">
+                </div>
+                <button class="btn text-white mt-4 bg-success">保存</button>
             </form>
         </div>
         <div class="my-container">

@@ -121,7 +121,7 @@ Ludong University Online Judge
 # 鸣谢
 
   [zhblue/hustoj](https://github.com/zhblue/hustoj)  
-  [laravel-6.0](https://laravel.com/)
+  [laravel-6.0](https://laravel.com/)  
   [bootstrap-material-design](https://fezvrasta.github.io/bootstrap-material-design/)  
   [jquery-3.4.1](https://jquery.com/)  
   [font-awesome](http://www.fontawesome.com.cn/)  
