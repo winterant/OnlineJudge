@@ -11,7 +11,7 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 26/03/2020 18:36:46
+ Date: 14/05/2020 11:56:18
 */
 
 SET NAMES utf8mb4;
@@ -55,7 +55,7 @@ CREATE TABLE `contest_problems`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `cid`(`contest_id`) USING BTREE,
   INDEX `pid`(`problem_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Table structure for contest_users
@@ -75,7 +75,8 @@ CREATE TABLE `contest_users`  (
 DROP TABLE IF EXISTS `contests`;
 CREATE TABLE `contests`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'acm' COMMENT 'acm,oi,exam',
+  `type` tinyint(4) NULL DEFAULT NULL COMMENT '竞赛分类',
+  `judge_type` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'acm' COMMENT 'acm,oi',
   `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `allow_lang` int(11) NULL DEFAULT 0 COMMENT '按位标记允许的提交语言',
@@ -86,6 +87,7 @@ CREATE TABLE `contests`  (
   `password` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `user_id` int(11) NULL DEFAULT NULL,
   `hidden` tinyint(4) NULL DEFAULT 0,
+  `top` int(11) NULL DEFAULT 0 COMMENT '置顶级别',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `stime`(`start_time`) USING BTREE,
   INDEX `etime`(`end_time`) USING BTREE
@@ -100,6 +102,7 @@ CREATE TABLE `notices`  (
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `state` tinyint(4) NULL DEFAULT 1 COMMENT '0:hidden,1:normal,2:置顶',
+  `user_id` int(11) NULL DEFAULT NULL,
   `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
@@ -131,11 +134,11 @@ CREATE TABLE `problems`  (
   `hint` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `source` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `spj` tinyint(4) NULL DEFAULT 0,
-  `time_limit` int(11) NULL DEFAULT 0 COMMENT 'ms',
+  `time_limit` int(11) NULL DEFAULT 0 COMMENT 'MS',
   `memory_limit` int(11) NULL DEFAULT 0 COMMENT 'MB',
+  `hidden` tinyint(4) NULL DEFAULT 1,
   `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
-  `hidden` tinyint(4) NULL DEFAULT 1,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -166,7 +169,7 @@ CREATE TABLE `solutions`  (
   INDEX `pid`(`problem_id`) USING BTREE,
   INDEX `res`(`result`) USING BTREE,
   INDEX `cid`(`contest_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for users
