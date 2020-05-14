@@ -2,7 +2,7 @@
 <project version="4">
   <component name="PublishConfigData" serverName="阿里云">
     <serverData>
-      <paths name="vultr8G">
+      <paths name="vultr">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
