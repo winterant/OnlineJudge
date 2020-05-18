@@ -109,33 +109,33 @@ Ludong University Online Judge
     若比赛人数较多，判题对机器的压力远没有超多人次访问网页所带来的压力大。
     另外超多人次比赛，不仅仅要求web服务器承压，还要足够的带宽支持。
    
-    1. 首先在一台服务器上部署好本项目，称其为主服务器；主服务器将唯一承担mysql数据库、网页  
+  1. 首先在一台服务器上部署好本项目，称其为主服务器；主服务器将唯一承担mysql数据库、网页  
     
-    2. 在主服务器上授权mysql允许远程访问：  
+  2. 在主服务器上授权mysql允许远程访问：  
     
-      修改mysql配置，使其允许远程访问：  
-      ```
-      vim /etc/mysql/mysql.conf.d/mysqld.cnf
-      # 找到 bind-address = 127.0.0.1 这一行，注释掉(行首加#)
-      ```  
+     修改mysql配置，使其允许远程访问：  
+     ```
+     vim /etc/mysql/mysql.conf.d/mysqld.cnf
+     # 找到 bind-address = 127.0.0.1 这一行，注释掉(行首加#)
+     ```  
       
-      然后登录mysql控制台，并执行命令（请替换中文提示）：
-      ```
-      GRANT ALL PRIVILEGES ON lduoj.* TO '主服务器mysql用户名'@'%' IDENTIFIED BY '密码' WITH GRANT OPTION;  
-      FLUSH PRIVILEGES;
-      ```
+     然后登录mysql控制台，并执行命令（请替换中文提示）：
+     ```
+     GRANT ALL PRIVILEGES ON lduoj.* TO '主服务器mysql用户名'@'%' IDENTIFIED BY '密码' WITH GRANT OPTION;  
+     FLUSH PRIVILEGES;
+     ```
     
-    3. 在其他服务器称为从服务器，可以有多台，只负责判题;  
+  3. 在其他服务器称为从服务器，可以有多台，只负责判题;  
       故只需要从主服务器**克隆2个文件夹+1个文件**：judge/、storage/app/data/、.env  
       克隆后请保持位置与主服务器一致(例：.env仍位于/home/LDUOnlineJudge/.env)  
     
-    4. 在从服务器上编辑.env，将其中数据库连接信息修改为主服务器ip和第2步授权的用户  
+  4. 在从服务器上编辑.env，将其中数据库连接信息修改为主服务器ip和第2步授权的用户  
     
-    5. 在从服务器上安装判题所需的环境支持：`bash /home/LDUOnlineJudge/judge/install.sh`  
+  5. 在从服务器上安装判题所需的环境支持：`bash /home/LDUOnlineJudge/judge/install.sh`  
     
-    6. 在从服务器上启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`  
+  6. 在从服务器上启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`  
     
-    7. 在从服务器上停止判题端：`bash /home/LDUOnlineJudge/judge/stop.sh`
+  7. 在从服务器上停止判题端：`bash /home/LDUOnlineJudge/judge/stop.sh`
 
 # 鸣谢
 
