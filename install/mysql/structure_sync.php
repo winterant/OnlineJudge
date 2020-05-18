@@ -1,9 +1,10 @@
 <?php
+if($argc<3)return;
 
 $db = [
     'host'  => 'localhost',
-    'user'  => 'root',
-    'pwd'   => 'rootroot',
+    'user'  => $argv[1],
+    'pwd'   => $argv[2],
     'db1'   => 'lduoj_upgrade', //源表
     'db2'   => 'lduoj', //目标表，即要改动的表
 ];
