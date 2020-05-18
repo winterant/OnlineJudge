@@ -13,3 +13,13 @@ function get_top_notice(){
         ->orderByDesc('id')
         ->first();
 }
+
+function get_setting($key,$default=null){
+    $val=DB::table('settings')->where('key',$key)->value('value');
+    if($val==null){
+        $sys_conf = config('oj.main.'.$key, $default);
+        DB::table('settings')->updateOrInsert(['key'=>$key,'value'=>$sys_conf]);
+        return $sys_conf;
+    }
+    return $val;
+}

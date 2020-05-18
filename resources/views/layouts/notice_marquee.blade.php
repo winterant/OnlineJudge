@@ -1,6 +1,6 @@
 
 {{null,$has_marq_notice=($notice_marquee=get_top_notice())?true:false}}
-@if($has_marq_notice && config('oj.main.show_home_notice_marquee')==true)
+@if($has_marq_notice && get_setting('show_home_notice_marquee')==true)
 
     <marquee id="notice_marquee" align="left" behavior="scroll" class="mx-0 mt-0 mb-2"
              direction="left" height="" width="" hspace="50" vspace="20" loop="-1" scrollamount="10" scrolldelay="100"

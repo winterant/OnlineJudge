@@ -39,7 +39,7 @@ class ProblemController extends Controller
             )->find($id);
         if($problem==null)
             abort(404);
-        if(!Auth::check() && !config('oj.main.guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
+        if(!Auth::check() && !get_setting('guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
             return view('client.fail',['msg'=>trans('sentence.Please login first')]);
 
         //查询引入这道题的竞赛

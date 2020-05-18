@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title',config('oj.main.siteName'))
+@section('title',get_setting('siteName'))
 
 @section('content')
 

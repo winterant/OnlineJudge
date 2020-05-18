@@ -1,9 +1,9 @@
 @extends('layouts.client')
 
 @if(isset($contest))
-    @section('title',trans('main.Status').' | '.trans('main.Contest').' '.$contest->id.' | '.config('oj.main.siteName'))
+    @section('title',trans('main.Status').' | '.trans('main.Contest').' '.$contest->id.' | '.get_setting('siteName'))
 @else
-    @section('title',trans('main.Status').' | '.config('oj.main.siteName'))
+    @section('title',trans('main.Status').' | '.get_setting('siteName'))
 @endif
 
 @section('content')

@@ -169,7 +169,7 @@ class ContestController extends Controller
     public function rank($id){
 
         //查看Cookie是否保存了全屏显示的标记
-        if(config('oj.main.web_page_display_wide')) //管理员启用了宽屏模式，这里用户启用全屏无效
+        if(get_setting('web_page_display_wide')) //管理员启用了宽屏模式，这里用户启用全屏无效
             $_GET['big']='false';
         if(!isset($_GET['big'])&&Cookie::get('rank_table_lg')!=null) //有cookie
             $_GET['big']=Cookie::get('rank_table_lg');
@@ -212,7 +212,7 @@ class ContestController extends Controller
                     $user[$solution->index]['AC_info']=null;
                     if($solution->result==4){  //ACM模式下只有AC了才计成绩
                         $user['score']++;
-                        $user['penalty']+=strtotime($solution->submit_time)-strtotime($contest->start_time)+$user[$solution->index]['wrong']*config('oj.main.penalty_acm');
+                        $user['penalty']+=strtotime($solution->submit_time)-strtotime($contest->start_time)+$user[$solution->index]['wrong']*intval(get_setting('penalty_acm'));
                         $user[$solution->index]['AC_info']=self::seconds_to_clock(strtotime($solution->submit_time)-strtotime($contest->start_time));
                     }
                     if($user[$solution->index]['wrong']>0)
@@ -237,8 +237,8 @@ class ContestController extends Controller
         foreach($user_infos as $u_info){
             if(!isset($users[$u_info->id]))$users[$u_info->id]=['score' => 0, 'penalty' => 0];
             $users[$u_info->id]['username']=$u_info->username;
-            if(config('oj.main.rank_show_school'))$users[$u_info->id]['school']=$u_info->school;
-            if(config('oj.main.rank_show_nick'))$users[$u_info->id]['nick']=$u_info->nick;
+            if(get_setting('rank_show_school'))$users[$u_info->id]['school']=$u_info->school;
+            if(get_setting('rank_show_nick'))$users[$u_info->id]['nick']=$u_info->nick;
         }
         //排序
         uasort($users,function ($x,$y){

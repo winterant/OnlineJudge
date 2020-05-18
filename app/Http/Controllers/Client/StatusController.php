@@ -100,8 +100,8 @@ class StatusController extends Controller
             ->orderByDesc('submit_time')
             ->value('submit_time');
         //不要拦截管理员
-        if(!Auth::user()->privilege('admin') && time()-strtotime($last_submit_time)<intval(config('oj.main.submit_interval')))
-            return view('client.fail',['msg'=>trans('sentence.submit_frequently',['sec'=>config('oj.main.submit_interval')])]);
+        if(!Auth::user()->privilege('admin') && time()-strtotime($last_submit_time)<intval(get_setting('submit_interval')))
+            return view('client.fail',['msg'=>trans('sentence.submit_frequently',['sec'=>get_setting('submit_interval')])]);
 
         if(!isset($data['cid'])) //通过题库提交
         {

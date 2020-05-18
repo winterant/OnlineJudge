@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title',trans('sentence.Reset Password').' | '.config('oj.main.siteName'))
+@section('title',trans('sentence.Reset Password').' | '.get_setting('siteName'))
 
 @section('content')
 <div class="container justify-content-center">

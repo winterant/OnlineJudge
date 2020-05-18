@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title',trans('main.Rank').' | '.trans('main.Contest').$contest->id.' | '.config('oj.main.siteName'))
+@section('title',trans('main.Rank').' | '.trans('main.Contest').$contest->id.' | '.get_setting('siteName'))
 
 @section('content')
 
@@ -53,7 +53,7 @@
                                 <input id="switch_buti" type="checkbox">
                                 <input type="text" name="buti" value="{{isset($_GET['buti'])?$_GET['buti']:'false'}}" hidden>
                             @endif
-                            @if(!config('oj.main.web_page_display_wide'))
+                            @if(!get_setting('web_page_display_wide'))
                                 {{trans('main.Full screen')}}：<input id="switch_big" type="checkbox">
                                 <input type="text" name="big" value="{{isset($_GET['big'])?$_GET['big']:'false'}}" hidden>
                             @endif
@@ -85,8 +85,8 @@
                                 <tr>
                                     <th class="text-center">{{trans('main.Rank')}}</th>
                                     <th>{{trans('main.User')}}</th>
-                                    @if(config('oj.main.rank_show_school'))<th>{{trans('main.School')}}</th> @endif
-                                    @if(config('oj.main.rank_show_nick'))<th>{{trans('main.Name')}}</th> @endif
+                                    @if(get_setting('rank_show_school'))<th>{{trans('main.School')}}</th> @endif
+                                    @if(get_setting('rank_show_nick'))<th>{{trans('main.Name')}}</th> @endif
                                     <th>{{$contest->judge_type == 'acm'?trans('main.Solved'):trans('main.Score')}}</th>
                                     <th>{{trans('main.Penalty')}}</th>
                                     @for($i=0;$i<$problem_count;$i++)
@@ -114,8 +114,8 @@
                                             @endif
                                         </td>
                                         <td nowrap><a href="{{route('user',$user['username'])}}">{{$user['username']}}</a></td>
-                                        @if(config('oj.main.rank_show_school'))<td nowrap>{{$user['school']}}</td> @endif
-                                        @if(config('oj.main.rank_show_nick'))<td nowrap>{{$user['nick']}}</td> @endif
+                                        @if(get_setting('rank_show_school'))<td nowrap>{{$user['school']}}</td> @endif
+                                        @if(get_setting('rank_show_nick'))<td nowrap>{{$user['nick']}}</td> @endif
                                         <td>{{$user['score']}}</td>
                                         <td>{{$user['penalty']}}</td>
                                         {{-- 下面是每一道题的情况 --}}
