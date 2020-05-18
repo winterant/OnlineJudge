@@ -3,20 +3,20 @@
 set -x
 web_home=/home    #项目存放位置
 
-if [ ! -d ${web_home}/lduoj_temp ];then
-  echo "No such project: ${web_home}/lduoj_temp"
-  echo "Please first: git clone https://github.com/iamwinter/LDUOnlineJudge.git ${web_home}/lduoj_temp"
+if [ ! -d ${web_home}/lduoj_upgrade ];then
+  echo "No such project: ${web_home}/lduoj_upgrade"
+  echo "Please first: git clone https://github.com/iamwinter/LDUOnlineJudge.git ${web_home}/lduoj_upgrade"
   exit 1;
 fi;
 
 # transfer files
-rm -rf ${web_home}/lduoj_temp/storage
-mv -f ${web_home}/LDUOnlineJudge/storage ${web_home}/lduoj_temp/
-mv -f ${web_home}/LDUOnlineJudge/vendor  ${web_home}/lduoj_temp/
-mv -f ${web_home}/LDUOnlineJudge/.env    ${web_home}/lduoj_temp/
-mv -f ${web_home}/LDUOnlineJudge/public/favicon.ico  ${web_home}/lduoj_temp/public/
+rm -rf ${web_home}/lduoj_upgrade/storage
+mv -f ${web_home}/LDUOnlineJudge/storage ${web_home}/lduoj_upgrade/
+mv -f ${web_home}/LDUOnlineJudge/vendor  ${web_home}/lduoj_upgrade/
+mv -f ${web_home}/LDUOnlineJudge/.env    ${web_home}/lduoj_upgrade/
+mv -f ${web_home}/LDUOnlineJudge/public/favicon.ico  ${web_home}/lduoj_upgrade/public/
 rm -rf ${web_home}/LDUOnlineJudge
-mv ${web_home}/lduoj_temp  ${web_home}/LDUOnlineJudge
+mv ${web_home}/lduoj_upgrade  ${web_home}/LDUOnlineJudge
 
 cd ${web_home}/LDUOnlineJudge || exit 2;
 chmod -R 777 storage bootstrap/cache
