@@ -12,7 +12,6 @@ cd ${web_home}/LDUOnlineJudge
 # 文件权限
 cp -rf .env.example .env
 chmod -R 777 storage bootstrap/cache
-chown -R www-data:www-data ${web_home}/LDUOnlineJudge/config/oj/main.php
 
 # php
 apt -y update && apt -y upgrade
