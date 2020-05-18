@@ -33,9 +33,9 @@ Ludong University Online Judge
 
 # 项目安装
   
-+ 使用脚本自动安装
++ 使用脚本自动安装（适合新装系统）
 
-  1. Linux Ubuntu 16.04  
+  1. **Linux Ubuntu 16.04**
   
      在终端执行以下命令，安装过程约10分钟。
      若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。  
@@ -45,7 +45,7 @@ Ludong University Online Judge
      bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
      ```
 
-  2. Linux CentOS 7.x  
+  2. **Linux CentOS 7.x**
   
      正在开发中
 
