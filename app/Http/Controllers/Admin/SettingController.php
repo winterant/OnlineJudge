@@ -23,7 +23,6 @@ class SettingController extends Controller
 
                 DB::table('settings')->updateOrInsert(['key'=>$key],['value'=>$val]);
             }
-            system('php '.base_path('artisan').' config:cache');
             return "OK";
         }
     }

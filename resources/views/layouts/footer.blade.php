@@ -3,7 +3,7 @@
     <hr>
     <div>
         <font id="localtime">{{date('Y-m-d H:i:s')}}</font>
-        @if(get_setting('beian')!==null)
+        @if(get_setting('beian')!=null)
             &nbsp;&nbsp;|&nbsp;&nbsp;
             <a href="http://www.beian.miit.gov.cn" target="_blank">{{get_setting('beian')}}</a>
         @endif

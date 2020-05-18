@@ -42,5 +42,5 @@ echo "You have successfully updated LDU Online Judge! Enjoy it!\n"
 #start to judge
 bash ${web_home}/LDUOnlineJudge/judge/startup.sh
 
-# delete shell file
+# delete self
 cd `dirname $0` && rm -rf ./update.sh
