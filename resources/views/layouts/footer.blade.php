@@ -1,8 +1,14 @@
 
 <div id="footer" class="text-center mb-2">
     <hr>
-    <div>Server Time：<font id="localtime">{{date('Y-m-d H:i:s')}}</font></div>
-    <a href="http://www.beian.miit.gov.cn" target="_blank">{{config('oj.main.beian')}}</a><br>
+    <div>
+        <font id="localtime">{{date('Y-m-d H:i:s')}}</font>
+        @if(get_setting('beian')!==null)
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+            <a href="http://www.beian.miit.gov.cn" target="_blank">{{get_setting('beian')}}</a>
+        @endif
+    </div>
+
     © 2020 <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">LDU Online Judge</a>.
     All Rights Reserved.
 </div>

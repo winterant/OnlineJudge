@@ -7,7 +7,7 @@
 
     <style type="text/css">
         .container{
-            @if(config('oj.main.web_page_display_wide'))
+            @if(get_setting('web_page_display_wide'))
                 max-width:8000px;
             @endif
         }
@@ -21,7 +21,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white mb-3">
 
-    <a class="navbar-brand">{{config('oj.main.siteName')}}</a>
+    <a class="navbar-brand">{{get_setting('siteName')}}</a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
         <span class="navbar-toggler-icon"></span>

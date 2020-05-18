@@ -1,9 +1,9 @@
 @extends('layouts.client')
 
 @if(isset($contest))
-    @section('title',trans('main.Problem').' '.index2ch($problem->index).' | '.trans('main.Contest').' '.$contest->id.' | '.config('oj.main.siteName'))
+    @section('title',trans('main.Problem').' '.index2ch($problem->index).' | '.trans('main.Contest').' '.$contest->id.' | '.get_setting('siteName'))
 @else
-    @section('title',trans('main.Problem').' '.$problem->id.' | '.config('oj.main.siteName'))
+    @section('title',trans('main.Problem').' '.$problem->id.' | '.get_setting('siteName'))
 @endif
 
 @section('content')

@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('main.Register') }}</div>
 
                 <div class="card-body">
-                    @if(config('oj.main.allow_register'))
+                    @if(get_setting('allow_register'))
                         <form method="POST" action="{{ route('register') }}">
                             @csrf
 

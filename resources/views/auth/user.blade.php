@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title',$user->username.' | '.config('oj.main.siteName'))
+@section('title',$user->username.' | '.get_setting('siteName'))
 
 @section('content')
 

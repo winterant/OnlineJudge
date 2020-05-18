@@ -33,7 +33,7 @@ Ludong University Online Judge
 
 # 项目安装
   
-+ 使用脚本自动安装（适合新装系统）
++ 快速安装
 
   1. **Linux Ubuntu 16.04**
   
