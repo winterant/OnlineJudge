@@ -20,7 +20,6 @@ mv ${web_home}/lduoj_upgrade  ${web_home}/LDUOnlineJudge
 
 cd ${web_home}/LDUOnlineJudge || exit 2;
 chmod -R 777 storage bootstrap/cache
-chown -R www-data:www-data ./config/oj/main.php   # 系统设置功能改写后放弃该句
 
 # update packages
 composer install --ignore-platform-reqs
