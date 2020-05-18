@@ -20,7 +20,7 @@ mv ${web_home}/lduoj_upgrade  ${web_home}/LDUOnlineJudge
 
 cd ${web_home}/LDUOnlineJudge || exit 2;
 chmod -R 777 storage bootstrap/cache
-chown -R www-data:www-data ${web_home}/LDUOnlineJudge/config/oj/main.php
+chown -R www-data:www-data ./config/oj/main.php   # 系统设置功能改写后放弃该句
 
 # update packages
 composer install --ignore-platform-reqs
@@ -30,7 +30,15 @@ php artisan storage:link
 php artisan key:generate
 php artisan optimize
 
-echo "You have successfully updated LDU Online Judge! Enjoy it!"
+# update mysql table schema
+USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
+PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
+mysql -u${USER} -p${PASSWORD} -e"CREATE DATABASE IF NOT EXISTS lduoj_upgrade;"
+mysql -u${USER} -p${PASSWORD} -Dlduoj_upgrade < ${web_home}/LDUOnlineJudge/install/mysql/lduoj.sql
+php ${web_home}/LDUOnlineJudge/install/mysql/structure_sync.php | mysql -u${USER} -p${PASSWORD} -Dlduoj
+mysql -u${USER} -p${PASSWORD} -e"DROP DATABASE IF EXISTS lduoj_upgrade;"
+
+echo "You have successfully updated LDU Online Judge! Enjoy it!\n"
 
 #start to judge
 bash ${web_home}/LDUOnlineJudge/judge/startup.sh

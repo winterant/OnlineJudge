@@ -112,11 +112,17 @@ Ludong University Online Judge
     1. 首先在一台服务器上部署好本项目，称其为主服务器；主服务器将唯一承担mysql数据库、网页  
     
     2. 在主服务器上授权mysql允许远程访问：  
-      登录mysql控制台，并执行命令（请替换中文提示）：
+    
+      修改mysql配置，使其允许远程访问：  
       ```
-      GRANT ALL PRIVILEGES ON lduoj.* TO '主服务器mysql用户名'@'%' IDENTIFIED BY '密码' WITH GRANT OPTION;
+      vim /etc/mysql/mysql.conf.d/mysqld.cnf
+      # 找到 bind-address = 127.0.0.1 这一行，注释掉(行首加#)
+      ```  
+      
+      然后登录mysql控制台，并执行命令（请替换中文提示）：
+      ```
+      GRANT ALL PRIVILEGES ON lduoj.* TO '主服务器mysql用户名'@'%' IDENTIFIED BY '密码' WITH GRANT OPTION;  
       FLUSH PRIVILEGES;
-      exit;
       ```
     
     3. 在其他服务器称为从服务器，可以有多台，只负责判题;  
