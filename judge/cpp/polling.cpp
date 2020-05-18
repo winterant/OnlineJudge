@@ -73,6 +73,8 @@ void polling()  //轮询数据库收集待判提交
     int *solution_queue=new int[max_running];  //判题队列
     int pid,did;
     char sid_str[12];
+    sprintf(sql,"UPDATE solutions SET result=0 where result<=%d and judger='%s'",OJ_RI,JG_NAME); //将上次停机未判完的记录重判
+    mysql_real_query(mysql,sql,strlen(sql));
     while(true)
     {
         get_wating_solution(solution_queue,queueing_cnt);  //获取判题队列

@@ -47,7 +47,8 @@ mysql -u${USER} -p${PASSWORD} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'loc
 mysql -u${USER} -p${PASSWORD} -Dlduoj < ${web_home}/LDUOnlineJudge/install/mysql/lduoj.sql
 
 
-# allow php user www-data to use 'sudo' to get privilege of root, for sudo polling
+# Allow php user www-data to use 'sudo' to get privilege of root
+# If you don't grant the right to user www-data, then you will not be able to start or stop the judge in administration.
 echo 'www-data ALL = NOPASSWD: ALL' >> /etc/sudoers
 
 echo -e "You have successfully installed LDU Online Judge!"

@@ -20,7 +20,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">备案信息：</span>
                     </div>
-                    <input type="text" name="beian" value="{{get_setting('beian')}}" required class="form-control" autocomplete="off">
+                    <input type="text" name="beian" value="{{get_setting('beian')}}" class="form-control" autocomplete="off">
                 </div>
                 <button class="btn text-white mt-4 bg-success">保存</button>
             </form>
