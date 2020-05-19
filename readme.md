@@ -33,21 +33,35 @@ Ludong University Online Judge
 
 # 项目安装
   
-+ 快速安装
++ **快速安装**
 
   1. **Linux Ubuntu 16.04**
   
-     在终端执行以下命令，安装过程约10分钟。
-     若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。  
-     注意：安装过程mysql**可能**提示设置root密码，请输入并谨记。  
-     ```
-     git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
-     bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
-     ```
+      在终端执行以下命令，安装过程约10分钟。
+      若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。  
+      注意：安装过程mysql**可能**提示设置root密码，请输入并谨记。  
+      ```
+      git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
+      bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
+      ```
 
   2. **Linux CentOS 7.x**
   
-     正在开发中
+      正在研究中
+
+  3. **基于docker安装**
+  
+      在docker中运行可能会遇到无法预知的问题，该方式仅供体验，千万不可用于生产环境！  
+      若您的docker环境未更换过镜像源，建议先
+      [更换镜像源](https://blog.csdn.net/Funny_Ma/article/details/96478395)
+      以提高搭建速度。
+      ```
+      未完成
+      wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
+      docker build -t lduoj:1.0 .
+      docker run -d --cap-add=SYS_PTRACE -p 8080:80 --name lduoj lduoj:1.0
+      ```
+      部署后使用浏览器访问http://localhost:8080
 
 + **安装成功**  
   1. 浏览器访问服务器ip即可打开首页(防火墙安全组开放80端口)；  
