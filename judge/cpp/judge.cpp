@@ -157,26 +157,13 @@ int file_size(const char* filename)//文件大小
     return statbuf.st_size;
 }
 
-char *read_file1(const char *filename)//从文件读取内容，返回字符串指针
+char *read_file(const char *filename)//从文件读取内容，返回字符串指针
 {
     FILE *fp=fopen(filename,"r");
     if(fp==NULL) return NULL; //文件打开失败
     char ch, *p, *str = new char[file_size(filename)+3];
     for (p=str;(ch=fgetc(fp))!=EOF;*p++=ch);
     *p='\0';
-    fclose(fp);
-    return str;
-}
-
-char *read_file(const char *filename)//从文件读取内容，返回字符串指针
-{
-    FILE *fp=fopen(filename,"r");
-    if(fp==NULL) return NULL; //文件打开失败
-    static char buf[BUFFER_SIZE];
-    char *str = new char[file_size(filename)+3];
-    str[0]='\0';
-    while(fgets(buf,BUFFER_SIZE,fp)!=NULL)
-        strcat(str,buf);
     fclose(fp);
     return str;
 }
@@ -288,16 +275,16 @@ int system_cmd(const char *fmt, ...) //执行一条linux命令
 }
 
 
-//编译用户提交的代码
-const char *CP_C[]  ={"gcc","Main.c",  "-o","Main","-Wall","-lm","--static","-std=c99",  "-fmax-errors=5","-DONLINE_JUDGE","-O2",NULL};
-const char *CP_CPP[]={"g++","Main.cpp","-o","Main","-Wall","-lm","--static","-std=c++11","-fmax-errors=5","-DONLINE_JUDGE","-O2","-fno-asm", NULL};
-const char *CP_JAVA[]={"javac","-J-Xms64m","-J-Xmx128m","-encoding","UTF-8","Main.java",NULL};
+
 int compile()
 {
     if(solution.language==3)//python不需要编译
         return 0;
+    //编译用户提交的代码
+    const char *CP_C[]  ={"gcc","Main.c",  "-o","Main","-Wall","-lm","--static","-std=c99",  "-fmax-errors=5","-DONLINE_JUDGE","-O2",NULL};
+    const char *CP_CPP[]={"g++","Main.cpp","-o","Main","-Wall","-lm","--static","-std=c++11","-fmax-errors=5","-DONLINE_JUDGE","-O2","-fno-asm", NULL};
+    const char *CP_JAVA[]={"javac","-J-Xms64m","-J-Xmx128m","-encoding","UTF-8","Main.java",NULL};
     int pid;
-
     if( (pid=fork()) == 0 ) //子进程编译
     {
         struct rlimit LIM;
@@ -359,12 +346,13 @@ void running()
     LIM.rlim_max=LIM.rlim_cur = solution.time_limit/1000+1; //S,增加1秒额外损耗
     setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit
     alarm(0);
-    alarm((int)LIM.rlim_cur); //定时自杀，额外双倍损耗时间
+    alarm((int)LIM.rlim_cur); //定时自杀
 
     switch(solution.language)
     {
         case 0: //c
         case 1: //c++
+            chroot("./");
             execl("./Main", "./Main", (char *) NULL);
             break;
         case 2: //java
