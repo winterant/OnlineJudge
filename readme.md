@@ -44,7 +44,7 @@ Ludong University Online Judge
       git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
       bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
       ```
-      若不想使用以上自动安装脚本，手动安装请看[这里]()。
+      
 
   2. **Linux CentOS 7.x**
   
