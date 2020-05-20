@@ -44,6 +44,7 @@ Ludong University Online Judge
       git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
       bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
       ```
+      若不想使用以上自动安装脚本，手动安装请看[这里]()。
 
   2. **Linux CentOS 7.x**
   
@@ -56,8 +57,8 @@ Ludong University Online Judge
       [更换镜像源](https://blog.csdn.net/Funny_Ma/article/details/96478395)
       以提高搭建速度。
       ```
-      未完成
-      wget https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
+      尚未调试成功
+      wget -e robots=off https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
       docker build -t lduoj:1.0 .
       docker run -d --cap-add=SYS_PTRACE -p 8080:80 --name lduoj lduoj:1.0
       ```

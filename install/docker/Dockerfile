@@ -1,20 +1,34 @@
 FROM ubuntu:16.04
 
 RUN echo "start to install LDUOnlineJudge..."\
-    && apt -y update && apt -y upgrade\
-    && apt -y purge git\
-    && apt -y install git\
+    && set -x\
+    && cp /etc/apt/sources.list /etc/apt/sources.list.bak\
+    && echo "deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
+        deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
+        deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse\
+        deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse\
+        deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse\
+        deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse\
+        deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse\
+        deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse\
+        deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse\
+        deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse" > /etc/apt/sources.list\
+    && apt-get update && apt-get -y upgrade\
+    && apt-get -y purge git\
+    && apt-get -y install git\
     && git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge\
     && cd /home/LDUOnlineJudge\
     && cp -rf .env.example .env\
     && chmod -R 777 storage bootstrap/cache\
-    && apt -y update && apt -y upgrade\
-    && apt -y install software-properties-common python-software-properties\
+    && apt-get update && apt-get -y upgrade\
+    && apt-get -y install software-properties-common\
+    && apt-get update && apt-get -y upgrade\
+    && apt-get -y install python-software-properties\
     && echo -e "\n" | apt-add-repository ppa:ondrej/php\
-    && apt -y update\
-    && apt -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml\
+    && apt-get update\
+    && apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml\
     && service php7.2-fpm start\
-    && apt -y install composer zip unzip\
+    && apt-get -y install composer zip unzip\
     && composer install --ignore-platform-reqs\
     && php artisan storage:link\
     && php artisan key:generate\
@@ -23,7 +37,7 @@ RUN echo "start to install LDUOnlineJudge..."\
     && rm -rf /etc/nginx/sites-enabled/default\
     && cp -f /home/LDUOnlineJudge/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf\
     && service nginx restart\
-    && apt -y install mysql-server\
+    && apt-get -y install mysql-server\
     && service mysql restart\
     && USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`\
     && PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`\
