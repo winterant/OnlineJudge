@@ -37,10 +37,10 @@ mysql -u${USER} -p${PASSWORD} -Dlduoj_upgrade < ${web_home}/LDUOnlineJudge/insta
 php ${web_home}/LDUOnlineJudge/install/mysql/structure_sync.php ${USER} ${PASSWORD} | mysql -u${USER} -p${PASSWORD} -Dlduoj
 mysql -u${USER} -p${PASSWORD} -e"DROP DATABASE IF EXISTS lduoj_upgrade;"
 
-echo "You have successfully updated LDU Online Judge! Enjoy it!\n"
-
 #start to judge
 bash ${web_home}/LDUOnlineJudge/judge/startup.sh
+
+echo "You have successfully updated LDU Online Judge! Enjoy it!\n"
 
 # delete self
 cd `dirname $0` && rm -rf ./update.sh
