@@ -117,7 +117,7 @@
                     <font>验证方式：</font>
                     <div class="custom-control custom-radio mx-3">
                         <input type="radio" name="contest[access]" value="public" class="custom-control-input" id="Public" checked
-                        onchange="access_has_change('public')">
+                            onchange="access_has_change('public')">
                         <label class="custom-control-label pt-1" for="Public">Public</label>
                     </div>
                     <div class="custom-control custom-radio mx-3">
