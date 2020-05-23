@@ -39,4 +39,13 @@
             ×{{$contest->number}}
         </li>
     </ul>
+
+    @if($start_to_judge)
+        <form method="post" action="{{route('contest.start_to_judge',$contest->id)}}">
+            @csrf
+            <button class="btn text-white bg-success w-100"
+                    title="You should click me to start to judge solutions after contest!"
+                    @if(time()<strtotime($contest->end_time))disabled @endif>{{trans('sentence.Start to judge')}}</button>
+        </form>
+    @endif
 </div>
