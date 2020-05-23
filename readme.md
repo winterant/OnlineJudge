@@ -44,7 +44,7 @@ Ludong University Online Judge
      git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
      bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
      ```
-     如需手动部署，请移步[我的博客](https://blog.csdn.net/winter2121/article/details/106257563)
+     [如何手动部署？](https://blog.csdn.net/winter2121/article/details/106257563)
 
   2. **Linux CentOS 7.x**
   
@@ -60,7 +60,7 @@ Ludong University Online Judge
      太菜了，测试尚未通过，mysql无法启动，望大佬驻足指点！感谢。
      wget -e robots=off https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
      docker build -t lduoj:1.0 .
-     docker run -d --cap-add=SYS_PTRACE -p 8080:80 -v /opt:/data --name lduoj lduoj:1.0
+     docker run -d --cap-add=SYS_PTRACE -p 8080:80 -v /opt:/home --name lduoj lduoj:1.0
      ```
      部署后使用浏览器访问http://localhost:8080 （需要开放8080端口）
 
