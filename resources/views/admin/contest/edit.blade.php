@@ -7,16 +7,41 @@
     <h2>{{$pageTitle}}</h2>
     <hr>
     <div>
-        <form class="p-4 col-12 col-md-9" action="" method="post" enctype="multipart/form-data">
+        <form class="p-4 col-12 col-md-9" action="" method="post" enctype="multipart/form-data" onsubmit="presubmit()">
             @csrf
-            <div class="form-group">
-                <label class="form-inline">竞赛类别：
-                    <select name="contest[type]" class="form-control">
-                        @foreach(config('oj.contestType') as $key=>$name)
-                            <option value="{{$key}}" @if(isset($contest->type)&&$contest->type==$key)selected @endif>&nbsp;{{$name}}&nbsp;</option>
-                        @endforeach
-                    </select>
-                </label>
+{{--            <div class="form-group">--}}
+{{--                <label class="form-inline">竞赛类别：--}}
+{{--                    <select name="contest[type]" class="form-control">--}}
+{{--                        @foreach(config('oj.contestType') as $key=>$name)--}}
+{{--                            <option value="{{$key}}" @if(isset($contest->type)&&$contest->type==$key)selected @endif>&nbsp;{{$name}}&nbsp;</option>--}}
+{{--                        @endforeach--}}
+{{--                    </select>--}}
+{{--                </label>--}}
+{{--            </div>--}}
+
+            <div class="form-inline mb-3">
+                <font>竞赛类别：</font>
+
+                @foreach(config('oj.contestType') as $key=>$name)
+                    <div class="custom-control custom-radio ml-3">
+                        <input type="radio" name="contest[type]" value="{{$key}}" class="custom-control-input" id="type{{$key}}"
+                               @if(!isset($contest->type)||$contest->type==$key)checked @endif>
+                        <label class="custom-control-label pt-1" for="type{{$key}}">{{$name}}</label>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="form-inline mb-3">
+                <font>判题时机：</font>
+                <div class="custom-control custom-radio ml-3">
+                    <input type="radio" name="contest[judge_instantly]" value="1" class="custom-control-input" id="shishi" checked>
+                    <label class="custom-control-label pt-1" for="shishi">实时判题</label>
+                </div>
+                <div class="custom-control custom-radio ml-3">
+                    <input type="radio" name="contest[judge_instantly]" value="0" class="custom-control-input" id="saihou"
+                           @if(isset($contest->judge_instantly)&&$contest->judge_instantly==0)checked @endif>
+                    <label class="custom-control-label pt-1" for="saihou">赛后判题（适合考试,用户多次提交一题只判最后一次,但考试结束后创建者须点击开始判题）</label>
+                </div>
             </div>
 
             <div class="input-group">
@@ -26,8 +51,8 @@
                 <input type="text" name="contest[title]" value="{{isset($contest->title)?$contest->title:''}}" required class="form-control">
             </div>
 
-            <div class="form-group mt-3">
-                <label for="description">竞赛描述/考试说明：</label>
+            <div class="mt-4 p-2 bg-sky">竞赛描述/考试说明：</div>
+            <div class="form-group">
                 <textarea id="description" name="contest[description]" class="form-control-plaintext border bg-white">{{isset($contest->description)?$contest->description:''}}</textarea>
             </div>
 
@@ -88,15 +113,36 @@
             <div class="mt-4 p-2 bg-sky">哪些用户可以参加本次竞赛/考试？</div>
             <div class="border p-2">
 
-                <div class="form-group">
-                    <label class="form-inline">验证方式：
-                        <select name="contest[access]" class="form-control" onchange="type_has_change($(this).val())">
-                            <option value="public">public：任意用户可以参与</option>
-                            <option value="password" {{isset($contest)&&$contest->access=='password'?'selected':''}}>password：需要输入密码进入</option>
-                            <option value="private" {{isset($contest)&&$contest->access=='private'?'selected':''}}>private：指定用户可参与</option>
-                        </select>
-                    </label>
+                <div class="form-inline my-2">
+                    <font>验证方式：</font>
+                    <div class="custom-control custom-radio mx-3">
+                        <input type="radio" name="contest[access]" value="public" class="custom-control-input" id="Public" checked
+                        onchange="access_has_change('public')">
+                        <label class="custom-control-label pt-1" for="Public">Public</label>
+                    </div>
+                    <div class="custom-control custom-radio mx-3">
+                        <input type="radio" name="contest[access]" value="password" class="custom-control-input" id="Password"
+                               onchange="access_has_change('password')"
+                               @if(isset($contest)&&$contest->access=='password')checked @endif>
+                        <label class="custom-control-label pt-1" for="Password">Password</label>
+                    </div>
+                    <div class="custom-control custom-radio mx-3">
+                        <input type="radio" name="contest[access]" value="private" class="custom-control-input" id="Private"
+                               onchange="access_has_change('private')"
+                               @if(isset($contest)&&$contest->access=='private')checked @endif>
+                        <label class="custom-control-label pt-1" for="Private">Private</label>
+                    </div>
                 </div>
+
+{{--                <div class="form-group">--}}
+{{--                    <label class="form-inline">验证方式：--}}
+{{--                        <select name="contest[access]" class="form-control" onchange="type_has_change($(this).val())">--}}
+{{--                            <option value="public">public：任意用户可以参与</option>--}}
+{{--                            <option value="password" {{isset($contest)&&$contest->access=='password'?'selected':''}}>password：需要输入密码进入</option>--}}
+{{--                            <option value="private" {{isset($contest)&&$contest->access=='private'?'selected':''}}>private：指定用户可参与</option>--}}
+{{--                        </select>--}}
+{{--                    </label>--}}
+{{--                </div>--}}
 
                 <div id="type_password" class="form-inline my-3">
                     <label>
@@ -115,33 +161,8 @@
                 </div>
             </div>
 
-
-            <div class="mt-4 p-2 bg-sky">1.选择题</div>
+            <div class="mt-4 p-2 bg-sky">为竞赛添加题目</div>
             <div class="border p-2">
-                请等待完善
-            </div>
-
-
-            <div class="mt-4 p-2 bg-sky">2.填空题</div>
-            <div class="border p-2">
-                请等待完善
-            </div>
-
-            <div class="mt-4 p-2 bg-sky">3.程序设计</div>
-            <div class="border p-2">
-                <div class="form-group">
-                    <label class="form-inline">赛制规则：
-                        <select name="contest[judge_type]" class="form-control">
-                            <option value="acm" {{isset($contest)&&$contest->judge_type=='acm'?'selected':''}}>&nbsp;ACM赛制&nbsp;</option>
-                            <option value="oi" {{isset($contest)&&$contest->judge_type=='oi'?'selected':''}}>&nbsp;OI赛制&nbsp;</option>
-                        </select>
-                        <a href="javascript:" class="ml-1" style="color: #838383"
-                           onclick="whatisthis('ACM赛制：<br>对于每题，通过时间累加为罚时，通过前的每次错误提交罚时20分钟；<br><br>' +
-                            'oi赛制：<br>对于每题，满分100分，错误提交没有惩罚；<br>你也可以自定义每题的分数')">
-                            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-                        </a>
-                    </label>
-                </div>
 
                 <div class="form-group">
                     <div class="pull-left">题号列表：</div>
@@ -159,21 +180,41 @@
                     </a>
                 </div>
 
-                <div class="form-group">
+                <div class="form-inline mb-3">
                     <div class="pull-left">允许语言：</div>
-                    <label>
-                        <input id="input_allow_lang" type="number" name="contest[allow_lang]" hidden>
-                        <select name="allow_lang" class="form-control border" multiple onchange="allow_lang_changed()">
-                            @foreach(config('oj.lang') as $key=>$res)
-                                <option value="{{$key}}" @if(!isset($contest)||($contest->allow_lang&(1<<$key)))selected @endif>{{$res}}</option>
-                            @endforeach
-                        </select>
-                    </label>
-                    <a href="javascript:" class="text-gray" style="vertical-align: top"
-                       onclick="whatisthis('允许考生提交的代码语言，默认全选。<br>请按住Ctrl键，点击鼠标左键以选择多项。')">
-                        <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
+                    <input id="input_allow_lang" type="number" name="contest[allow_lang]" hidden>
+                    @foreach(config('oj.lang') as $lang=>$name)
+                        <div class="custom-control custom-checkbox mx-2">
+                            <input type="checkbox" name="allow_lang" value="{{$lang}}" class="custom-control-input" id="allow_lang{{$lang}}"
+                                   @if(!isset($contest)||($contest->allow_lang&(1<<$lang)))checked @endif>
+                            <label class="custom-control-label pt-1" for="allow_lang{{$lang}}">{{$name}}</label>
+                        </div>
+                    @endforeach
+                    <a href="javascript:" class="text-gray"
+                       onclick="whatisthis('允许考生提交的代码语言，请选择至少一个！')">
+                        <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                 </div>
+
+
+                <div class="form-inline">
+                    <font>榜单规则：</font>
+                    <div class="custom-control custom-radio ml-3">
+                        <input type="radio" name="contest[judge_type]" value="acm" class="custom-control-input" id="acmicpc" checked>
+                        <label class="custom-control-label pt-1" for="acmicpc">ACM-ICPC程序设计竞赛</label>
+                    </div>
+                    <div class="custom-control custom-radio mx-3">
+                        <input type="radio" name="contest[judge_type]" value="oi" class="custom-control-input" id="oixinxi"
+                               @if(isset($contest)&&$contest->judge_type=='oi')checked @endif>
+                        <label class="custom-control-label pt-1" for="oixinxi">OI信息学竞赛</label>
+                    </div>
+                    <a href="javascript:" style="color: #838383"
+                       onclick="whatisthis('ACM赛制：<br>对于每题，通过时间累加为罚时，通过前的每次错误提交罚时20分钟；<br><br>' +
+                            'oi赛制：<br>对于每题，满分100分，错误提交没有惩罚；<br>你也可以自定义每题的分数')">
+                        <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                    </a>
+                </div>
+
             </div>
 
 
@@ -187,9 +228,16 @@
     <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script>
     <script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
     <script type="text/javascript">
+        function presubmit() {
+            //将允许语言的标记以二进制形式状态压缩为一个整数
+            var ret=0;
+            $("input[type=checkbox]:checked").each(function() {ret|=1<<this.value;});
+            $("#input_allow_lang").val(ret);
+        }
 
-        //监听竞赛类型改变
-        function type_has_change(type) {
+
+        //监听竞赛权限改变
+        function access_has_change(type) {
             if(type==='public'){
                 $("#type_password").hide();
                 $("#type_users").hide();
@@ -201,16 +249,7 @@
                 $("#type_users").show();
             }
         }
-        type_has_change('{{isset($contest)?$contest->access:'public'}}');  //初始执行一次
-
-
-        //监听提交语言的多选框
-        function allow_lang_changed() {
-            var ret=0;
-            $("select[name=allow_lang]").find('option:selected').each(function() {ret|=1<<this.value;});
-            $("#input_allow_lang").val(ret);
-        }
-        allow_lang_changed(); //初始执行一次
+        access_has_change('{{isset($contest)?$contest->access:'public'}}');  //初始执行一次
 
 
         //删除附件

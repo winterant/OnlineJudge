@@ -90,21 +90,31 @@ class StatusController extends Controller
     {
         if(!Auth::check()) //未登录 => 请先登录
             return view('client.fail',['msg'=>trans('sentence.Please login first')]);
+        //拦截非管理员的频繁提交
+        if(!Auth::user()->privilege('admin')){
+            $last_submit_time = DB::table('solutions')
+                ->where('user_id',Auth::id())
+                ->orderByDesc('submit_time')
+                ->value('submit_time');
+            if(time()-strtotime($last_submit_time)<intval(get_setting('submit_interval')))
+                return view('client.fail',['msg'=>trans('sentence.submit_frequently',['sec'=>get_setting('submit_interval')])]);
+        }
 
         //获取前台提交的solution信息
         $data = $request->input('solution');
-
-        //拦截频繁提交
-        $last_submit_time = DB::table('solutions')
-            ->where('user_id',Auth::id())
-            ->orderByDesc('submit_time')
-            ->value('submit_time');
-        //不要拦截管理员
-        if(!Auth::user()->privilege('admin') && time()-strtotime($last_submit_time)<intval(get_setting('submit_interval')))
-            return view('client.fail',['msg'=>trans('sentence.submit_frequently',['sec'=>get_setting('submit_interval')])]);
-
-        if(!isset($data['cid'])) //通过题库提交
-        {
+        $submitted_result=0; //提交后的默认结果Waiting
+        if(isset($data['cid'])){
+            $contest=DB::table("contests")->select('judge_instantly','judge_type','allow_lang','end_time')->find($data['cid']);
+            if( !( (1<<$data['language'])&$contest->allow_lang ) )//使用了不允许的代码语言
+                return view('client.fail',['msg'=>'A not allowed language!']);
+            if($contest->judge_instantly==0&&time()<strtotime($contest->end_time)){ //赛后判题，之前的提交都作废=>Skipped
+                DB::table('solutions')->where('contest_id',$data['cid'])
+                    ->where('problem_id',$data['pid'])
+                    ->where('user_id',Auth::id())
+                    ->update(['result'=>13]);
+                $submitted_result=15; //Submitted
+            }
+        }else{ //通过题库提交，需要判断一下用户权限
             $hidden=DB::table('problems')->where('id',$data['pid'])->value('hidden');
             if(!Auth::user()->privilege('problem') && $hidden==1) //不是管理员&&问题隐藏 => 不允许提交
                 return view('client.fail',['msg'=>trans('main.Problem').$data['pid'].'：'.trans('main.Hidden')]);
@@ -112,20 +122,15 @@ class StatusController extends Controller
 
         if(null!=($file=$request->file('code_file')))//用户提交了文件,从临时文件中直接提取文本
             $data['code']=autoiconv(file_get_contents($file->getRealPath()));
-
-        //竞赛提交&&不允许提交的代码语言
-        if(isset($data['cid']) && !((1<<$data['language'])&DB::table('contests')->find($data['cid'])->allow_lang) )
-            return view('client.fail',['msg'=>'A not allowed language!']);
-
         DB::table('solutions')->insert([
             'problem_id'    => $data['pid'],
             'contest_id'    => isset($data['cid'])?$data['cid']:-1,
             'user_id'       => Auth::id(),
-            'result'        => 0,
+            'result'        => $submitted_result,
             'language'      => ($data['language']!=null)?$data['language']:0,
             'submit_time'   => date('Y-m-d H:i:s'),
 
-            'judge_type'    => isset($data['judge_type'])?$data['judge_type']:'acm', //acm,oi
+            'judge_type'    => isset($contest->judge_type)?$contest->judge_type:'acm', //acm,oi
 
             'ip'            => $request->getClientIp(),
             'code_length'   => strlen($data['code']),
@@ -133,7 +138,7 @@ class StatusController extends Controller
             ]);
 
         Cookie::queue('submit_language',$data['language']);
-        if(isset($data['cid'])) //竞赛提交
+        if(isset($contest)) //竞赛提交
             return redirect(route('contest.status',[$data['cid'],'index'=>$data['index'],'username'=>Auth::user()->username]));
 
         return redirect(route('status',['pid'=>$data['pid'],'username'=>Auth::user()->username]));

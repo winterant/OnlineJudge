@@ -226,7 +226,6 @@
                         @if(isset($contest))
                             <input name="solution[index]" value="{{$problem->index}}" hidden>
                             <input name="solution[cid]" value="{{$contest->id}}" hidden>
-                            <input name="solution[judge_type]" value="{{$contest->judge_type}}" hidden>
                         @endif
 
                         <div class="form-inline my-2">

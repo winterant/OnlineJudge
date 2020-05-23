@@ -97,13 +97,14 @@
 
                     <table class="table table-sm table-hover">
                         <thead>
-                        <tr>
-                            <th width="5"></th>
-                            <th width="10">#</th>
-                            <th>{{trans('main.Title')}}</th>
-                            <th>{{trans('main.AC/Submit')}}</th>
-                            <th></th>
-                        </tr>
+                            <tr>
+                                <th width="5"></th>
+                                <th width="10">#</th>
+                                <th>{{trans('main.Title')}}</th>
+                                <th>{{trans('main.Type')}}</th>
+                                <th>{{trans('main.AC/Submit')}}</th>
+                                <th></th>
+                            </tr>
                         </thead>
                         <tbody>
                         @foreach($problems as $item)
@@ -112,7 +113,7 @@
                                     @if($item->status==4)
                                         <i class="fa fa-check text-green" aria-hidden="true"></i>
                                     @elseif($item->status==6)
-                                        <i class="fa fa-times text-red" aria-hidden="true"></i>
+                                        <i class="fa fa-pencil text-red" aria-hidden="true"></i>
                                     @endif
                                 </td>
                                 <td>{{index2ch($item->index)}}</td>
@@ -123,6 +124,7 @@
                                         -
                                     @endif
                                 </td>
+                                <td>{{config('oj.problemType.'.$item->type)}}</td>
                                 <td>
                                     @if($item->submit>0)
                                         {{$item->accepted}}

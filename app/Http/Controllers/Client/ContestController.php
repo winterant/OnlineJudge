@@ -56,12 +56,12 @@ class ContestController extends Controller
 
     public function home($id){
         $contest=DB::table('contests')
-            ->select(['id','type','judge_type','title','start_time','end_time','access','description',
+            ->select(['id','type','judge_instantly','judge_type','title','start_time','end_time','access','description',
                 DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")])->find($id);
         $problems=DB::table('problems')
             ->join('contest_problems','contest_problems.problem_id','=','problems.id')
             ->where('contest_id',$id)
-            ->select(['problems.id','problems.title','contest_problems.index',
+            ->select(['problems.id','problems.type','problems.title','contest_problems.index',
                 DB::raw("(select count(id) from solutions where contest_id=".$contest->id." and problem_id=problems.id and result=4) as accepted"),
                 DB::raw("(select count(distinct user_id) from solutions where contest_id=".$contest->id." and problem_id=problems.id and result=4) as solved"),
                 DB::raw("(select count(id) from solutions where contest_id=".$contest->id." and problem_id=problems.id) as submit"),
@@ -93,9 +93,23 @@ class ContestController extends Controller
                 Storage::url($item),   //url
             ];
         }
-        return view('contest.home',compact('contest','problems','files'));
+
+        //是否需要显示开始判题的按钮，仅用于赛后判题模式
+        $start_to_judge=false;
+        if(Auth::user()->privilege('contest')&&$contest->judge_instantly==0){
+            $start_to_judge=DB::table('solutions')->where('contest_id',$id)
+                ->where('result',15)
+                ->exists();
+        }
+        return view('contest.home',compact('contest','problems','files','start_to_judge'));
     }
 
+    public function start_to_judge($id){
+        DB::table('solutions')->where('contest_id',$id)
+            ->where('result',15)
+            ->update(['result'=>0]);
+        return redirect(route('contest.status',$id));
+    }
     public function problem($id,$pid){
         $contest=DB::table('contests')->find($id);
         $problem=DB::table('problems')

@@ -56,6 +56,9 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id'=>'[0-9]+'])->where(
             Route::get('/balloons', 'Client\ContestController@balloons')->name('balloons');
             Route::post('/deliver_ball/{bid}', 'Client\ContestController@deliver_ball')->name('deliver_ball');
         });
+        Route::middleware(['Privilege:contest,client'])->group(function (){
+            Route::post('/start_to_judge', 'Client\ContestController@start_to_judge')->name('start_to_judge');
+        });
     });
     Route::any('/password', 'Client\ContestController@password')->middleware(['auth'])->name('password');
     Route::get('/rank', 'Client\ContestController@rank')->name('rank');
