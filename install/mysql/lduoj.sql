@@ -11,7 +11,7 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 18/05/2020 14:55:38
+ Date: 23/05/2020 15:53:23
 */
 
 SET NAMES utf8mb4;
@@ -55,7 +55,7 @@ CREATE TABLE `contest_problems`  (
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `cid`(`contest_id`) USING BTREE,
     INDEX `pid`(`problem_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Table structure for contest_users
@@ -75,7 +75,8 @@ CREATE TABLE `contest_users`  (
 DROP TABLE IF EXISTS `contests`;
 CREATE TABLE `contests`  (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `type` tinyint(4) NULL DEFAULT NULL COMMENT '竞赛分类',
+    `type` tinyint(4) NOT NULL DEFAULT 0 COMMENT '竞赛分类',
+    `judge_instantly` tinyint(4) NOT NULL DEFAULT 1 COMMENT '是否即时判题，否则赛后只判最后一次提交',
     `judge_type` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'acm' COMMENT 'acm,oi',
     `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
     `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
@@ -127,9 +128,10 @@ CREATE TABLE `privileges`  (
 DROP TABLE IF EXISTS `problems`;
 CREATE TABLE `problems`  (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `type` tinyint(4) NOT NULL DEFAULT 0 COMMENT '0:编程,1:代码填空',
     `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
     `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-    `input` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+    `input` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '编程的输入/代码填空的代码',
     `output` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
     `hint` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
     `source` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
@@ -141,6 +143,17 @@ CREATE TABLE `problems`  (
     `updated_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for settings
+-- ----------------------------
+DROP TABLE IF EXISTS `settings`;
+CREATE TABLE `settings`  (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for solutions
@@ -190,17 +203,5 @@ CREATE TABLE `users`  (
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `uname`(`username`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for settings
--- ----------------------------
-DROP TABLE IF EXISTS `settings`;
-CREATE TABLE `settings`  (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-    `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-    `comment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
