@@ -20,6 +20,21 @@
         @else
             <form id="form_problem" class="p-4 col-12 col-md-9" action="" method="post" onsubmit="return check_ckeditor_data();" enctype="multipart/form-data">
                 @csrf
+                <div class="form-inline mb-3">
+                    <font>题目类型：</font>
+                    <div class="custom-control custom-radio mx-3">
+                        <input type="radio" name="problem[type]" value="0" class="custom-control-input" id="type0" checked
+                               onchange="type_has_change(0)">
+                        <label class="custom-control-label pt-1" for="type0">编程设计</label>
+                    </div>
+                    <div class="custom-control custom-radio mx-3">
+                        <input type="radio" name="problem[type]" value="1" class="custom-control-input" id="type1"
+                               onchange="type_has_change(1)"
+                               @if($problem->type==1)checked @endif>
+                        <label class="custom-control-label pt-1" for="type1">代码填空</label>
+                    </div>
+                </div>
+
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">题目：</span>
@@ -57,6 +72,17 @@
                 <div class="form-group">
                     <label for="output">输出描述：</label>
                     <textarea id="output" name="problem[output]" class="form-control-plaintext border bg-white">{{isset($problem->output)?$problem->output:''}}</textarea>
+                </div>
+
+                <div id="text_fill_in_blank" class="form-group">
+                    <label>
+                        <p class="mb-1">待填代码：</p>
+                        <div class="alert alert-info mb-0">
+                            备注：请将要填写的代码替换为英文输入的双问号！
+                        </div>
+                        <textarea name="problem[fill_in_blank]" class="w-100 border bg-white"
+                            rows="10" cols="500">{{isset($problem)?$problem->fill_in_blank:''}}</textarea>
+                    </label>
                 </div>
 
                 <div class="form-group">
@@ -133,6 +159,13 @@
     <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script>
     <script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
     <script type="text/javascript">
+        function type_has_change(number) {
+            if(number===1)
+                $('#text_fill_in_blank').show();
+            else
+                $('#text_fill_in_blank').hide();
+        }
+        type_has_change(parseInt('{{$problem->type}}')); //初始执行一次
 
         //编辑框配置
         var config={
