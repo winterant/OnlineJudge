@@ -57,8 +57,7 @@ Ludong University Online Judge
      以提高速度。
      ```
      太菜了，测试尚未通过，mysql无法启动，望大佬驻足指点！感谢。
-     git clone https://github.com/iamwinter/LDUOnlineJudge.git /opt/lduoj_home/LDUOnlineJudge
-     cd /opt/lduoj_home/LDUOnlineJudge/install/docker
+     wget -e robots=off https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
      docker build -t lduoj:1.0 .
      docker run -d --cap-add=SYS_PTRACE -p 8080:80 -v /opt/lduoj_home:/home -v /opt/lduoj_home/mysql:/var/lib/mysql --name lduoj lduoj:1.0
      ```
