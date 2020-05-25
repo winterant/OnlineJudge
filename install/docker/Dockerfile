@@ -13,9 +13,19 @@ RUN set -ex\
         deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse\
         deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse" > /etc/apt/sources.list\
     && apt-get update && apt-get -y upgrade\
-#    && apt-get -y purge git\
-#    && apt-get -y install git\
-#    && git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge\
+
+    && apt-get -y install dnsutils network-manager\
+    && GIT_IP1=`nslookup github.global.ssl.fastly.net |grep Address:|tail -1|awk '{print $2}'`\
+    && GIT_IP2=`nslookup github.com |grep Address:|tail -1|awk '{print $2}'`\
+    && echo "$GIT_IP1 github.global.ssl.fastly.net" >> /etc/hosts\
+    && echo "$GIT_IP2 github.com" >> /etc/hosts\
+    && service network-manager restart\
+
+    && apt-get -y purge git\
+    && apt-get -y install git\
+    && git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge\
+    && apt-get -y autoremove git\
+
     && cd /home/LDUOnlineJudge\
     && cp -rf .env.example .env\
     && chmod -R 777 storage bootstrap/cache\
@@ -48,18 +58,19 @@ RUN set -ex\
 
     && apt -y install sudo\
     && echo "root ALL=(ALL) ALL" >> /etc/sudoers\
-    && echo 'www-data ALL=(ALL) ALL' >> /etc/sudoers\
+    && echo "www-data ALL=(ALL) ALL" >> /etc/sudoers\
 
     && apt update && apt -y upgrade\
     && apt -y install libmysqlclient-dev g++\
     && apt -y install openjdk-8-jdk\
     && apt -y install python3.6
 
-CMD nginx -g "daemon off;"
-    && service nginx start\
+CMD service nginx start\
     && service php7.2-fpm start\
     && service mysql start\
-    && bash /home/LDUOnlineJudge/judge/startup.sh
+    && bash /home/LDUOnlineJudge/judge/startup.sh\
+    && nginx -g "daemon off;"
+
+VOLUME ["/home","/var/lib/mysql"]
 
 EXPOSE 80
-VOLUME ["/home","/var/lib/mysql"]
