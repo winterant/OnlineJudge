@@ -56,7 +56,7 @@ Ludong University Online Judge
      [更换docker镜像源](https://blog.csdn.net/Funny_Ma/article/details/96478395)
      以提高速度。
      ```
-     太菜了，测试尚未通过，mysql无法启动，望大佬驻足指点！感谢。
+     太菜了，测试尚未通过，mysql无法启动,尝试多种方法仍不行，望大佬驻足指点！感谢。
      wget -e robots=off https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
      docker build -t lduoj:1.0 .
      docker run -d --cap-add=SYS_PTRACE -p 8080:80 -v /opt/lduoj_home:/home -v /opt/lduoj_home/mysql:/var/lib/mysql --name lduoj lduoj:1.0
