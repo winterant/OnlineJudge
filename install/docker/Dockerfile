@@ -1,7 +1,6 @@
 FROM ubuntu:16.04
 
-RUN echo "start to install LDUOnlineJudge..."\
-    && set -ex\
+RUN set -ex\
     && cp /etc/apt/sources.list /etc/apt/sources.list.bak\
     && echo "deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
         deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
@@ -14,9 +13,9 @@ RUN echo "start to install LDUOnlineJudge..."\
         deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse\
         deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse" > /etc/apt/sources.list\
     && apt-get update && apt-get -y upgrade\
-    && apt-get -y purge git\
-    && apt-get -y install git\
-    && git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge\
+#    && apt-get -y purge git\
+#    && apt-get -y install git\
+#    && git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge\
     && cd /home/LDUOnlineJudge\
     && cp -rf .env.example .env\
     && chmod -R 777 storage bootstrap/cache\
@@ -56,11 +55,11 @@ RUN echo "start to install LDUOnlineJudge..."\
     && apt -y install openjdk-8-jdk\
     && apt -y install python3.6
 
-CMD service nginx start\
+CMD nginx -g "daemon off;"
+    && service nginx start\
     && service php7.2-fpm start\
     && service mysql start\
-    && bash /home/LDUOnlineJudge/judge/startup.sh\
-    && while true; do echo do not quit; sleep 1; done
+    && bash /home/LDUOnlineJudge/judge/startup.sh
 
 EXPOSE 80
-VOLUME /home
+VOLUME ["/home","/var/lib/mysql"]
