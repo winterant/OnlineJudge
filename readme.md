@@ -51,18 +51,18 @@ Ludong University Online Judge
      正在研究中
 
   3. **基于docker安装**
-  
-     在docker中运行可能会遇到无法预知的问题，该方式仅供体验，千万不可用于生产环境！  
-     若您的docker环境未更换过镜像源，建议先
-     [更换镜像源](https://blog.csdn.net/Funny_Ma/article/details/96478395)
-     以提高搭建速度。
+    
+     若docker build缓慢，建议先
+     [更换docker镜像源](https://blog.csdn.net/Funny_Ma/article/details/96478395)
+     以提高速度。
      ```
      太菜了，测试尚未通过，mysql无法启动，望大佬驻足指点！感谢。
-     wget -e robots=off https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
+     git clone https://github.com/iamwinter/LDUOnlineJudge.git /opt/lduoj_home/LDUOnlineJudge
+     cd /opt/lduoj_home/LDUOnlineJudge/install/docker
      docker build -t lduoj:1.0 .
-     docker run -d --cap-add=SYS_PTRACE -p 8080:80 -v /opt:/home --name lduoj lduoj:1.0
+     docker run -d --cap-add=SYS_PTRACE -p 8080:80 -v /opt/lduoj_home:/home -v /opt/lduoj_home/mysql:/var/lib/mysql --name lduoj lduoj:1.0
      ```
-     部署后使用浏览器访问http://localhost:8080 （需要开放8080端口）
+     部署后使用浏览器访问http://localhost:8080
 
 + **安装成功**  
   1. 浏览器访问服务器ip即可打开首页(防火墙安全组开放80端口)；  
