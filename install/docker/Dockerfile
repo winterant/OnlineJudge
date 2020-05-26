@@ -71,7 +71,6 @@ RUN set -ex\
         ln -s /volume/LDUOnlinejudge /home/LDUOnlinejudge\n\
         mv /var/lib/mysql /volume/\n\
         ln -s /volume/mysql /var/lib/mysql\n\
-        chmod -R /volme\n\
         service nginx start\n\
         service php7.2-fpm start\n\
         service mysql start\n\
