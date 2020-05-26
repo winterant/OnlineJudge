@@ -162,10 +162,10 @@
         function type_has_change(number) {
             if(number===1)
                 $('#text_fill_in_blank').show();
-            else
+            else if(number===0)
                 $('#text_fill_in_blank').hide();
         }
-        type_has_change(parseInt('{{$problem->type}}')); //初始执行一次
+        type_has_change(parseInt('{{isset($problem)?$problem->type:-1}}')); //初始执行一次
 
         //编辑框配置
         var config={

@@ -47,9 +47,11 @@ RUN set -ex\
     && cp -f /home/LDUOnlineJudge/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf\
 
     && apt-get -y install mysql-server\
-    && service mysql restart\
     && usermod -d /var/lib/mysql/ mysql\
-    && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\
+#    && rm -rf /var/lib/mysql/*\
+#    && mysqld --initialize --explicit_defaults_for_timestamp=true\
+    && service mysql restart\
+#    && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\
     && USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`\
     && PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`\
     && mysql -u${USER} -p${PASSWORD} -e"CREATE DATABASE lduoj;"\
@@ -61,16 +63,27 @@ RUN set -ex\
     && echo "root ALL=(ALL) ALL" >> /etc/sudoers\
     && echo "www-data ALL=(ALL) ALL" >> /etc/sudoers\
 
-    && apt update && apt -y upgrade\
-    && apt -y install libmysqlclient-dev g++\
-    && apt -y install openjdk-8-jdk\
-    && apt -y install python3.6
+    && apt update\
+    && apt -y install libmysqlclient-dev g++ openjdk-8-jdk python3.6\
 
-CMD service nginx start\
-    && service php7.2-fpm start\
-    && service mysql start\
-    && bash /home/LDUOnlineJudge/judge/startup.sh\
-    && top
+    && echo "#!/bin/bash\n\
+        service nginx start\n\
+        service php7.2-fpm start\n\
+        service mysql start\n\
+        bash /home/LDUOnlineJudge/judge/startup.sh\n\
+        while true; do echo do not quit; sleep 1; done\n\
+        exit 0\n" > /startup.sh\
+    && chmod +x /startup.sh
+
+ENTRYPOINT ["/startup.sh"]
+
+#CMD while true; do echo do not quit; sleep 1; done\
+#    | service nginx start\
+#    | service php7.2-fpm start\
+#    | service mysql start\
+#    | bash /home/LDUOnlineJudge/judge/startup.sh
+
+#CMD while true; do echo do not quit; sleep 1; done
 
 VOLUME ["/home","/var/lib/mysql"]
 

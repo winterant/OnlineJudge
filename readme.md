@@ -35,7 +35,7 @@ Ludong University Online Judge
   
 + **快速安装**
 
-  1. **Linux Ubuntu 16.04**
+  1. **基于Linux Ubuntu 16.04**
   
      在终端执行以下命令，安装过程约10分钟。
      若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。  
@@ -46,20 +46,21 @@ Ludong University Online Judge
      ```
      [如何手动部署？](https://blog.csdn.net/winter2121/article/details/106257563)
 
-  2. **Linux CentOS 7.x**
+  2. **基于Linux CentOS 7.x**
   
      正在研究中
 
-  3. **基于docker安装**
+  3. **基于docker**
     
      若docker build缓慢，建议先
      [更换docker镜像源](https://blog.csdn.net/Funny_Ma/article/details/96478395)
      以提高速度。
      ```
-     太菜了，测试尚未通过，mysql无法启动,尝试多种方法仍不行，望大佬驻足指点！感谢。
-     wget -e robots=off https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
-     docker build -t lduoj:1.0 .
-     docker run -d --cap-add=SYS_PTRACE -p 8080:80 -v /opt/lduoj_home:/home -v /opt/lduoj_home/mysql:/var/lib/mysql --name lduoj lduoj:1.0
+     本次测试未通过，判题端无法启动，请稍等。
+     docker build -t lduoj:1.0 https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
+     docker run -d --restart always --cap-add=SYS_PTRACE -p 8080:80\
+         -v ~/lduoj_home:/home -v ~/lduoj_home/mysql:/var/lib/mysql\
+         --name lduoj lduoj:1.0
      ```
      部署后使用浏览器访问http://localhost:8080
 
