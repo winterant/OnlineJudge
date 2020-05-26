@@ -66,29 +66,27 @@ Ludong University Online Judge
 
 + **安装成功**  
   1. 浏览器访问服务器ip即可打开首页(防火墙安全组开放80端口)；  
-  2. 注册用户admin自动成为管理员
-  
-+ **维护须知**  
-  1. 安装后项目位于/home/LDUOnlieJudge，不可移动。  
-  2. 自动新建mysql数据库lduoj，自动新建用户lduoj@localhost(密码123456789)。    
+  2. **注册用户admin自动成为管理员**
+  3. 安装后项目位于/home/LDUOnlieJudge，请勿移动。  
+  4. 自动新建mysql数据库lduoj，自动新建用户lduoj@localhost(密码123456789)。    
   (若修改密码，需修改项目下`.env`，
   并执行`php /home/LDUOnlineJudge/artisan config:cache`)  
-  3. 配置域名及端口：修改文件`/etc/nginx/conf.d/lduoj.conf`，在`server_name`后面填域名。
+  5. 配置域名及端口：修改文件`/etc/nginx/conf.d/lduoj.conf`，在`server_name`后面填域名。
 
 # 项目备份与恢复
 - 备份
   
     产生备份`/home/lduoj_backup/lduoj_{日期}`，
     包含项目文件夹（含测试数据、图片、文件）、数据库备份lduoj.sql、nginx配置文件lduoj.conf
-    - Ubuntu16.04
+    - Ubuntu16.04 或 docker容器内
     ```
-    sh /home/LDUOnlineJudge/install/ubuntu16.04/backup.sh
+    bash /home/LDUOnlineJudge/install/ubuntu16.04/backup.sh
     ```
   
 - 恢复
   
     从备份中恢复整个系统；执行前请替换命令中的中文。
-    - Ubuntu16.04
+    - Ubuntu16.04 或 docker容器内
     ```
     bash /home/LDUOnlineJudge/install/ubuntu16.04/recover.sh  /home/lduoj_backup/备份名
     ```
@@ -102,11 +100,6 @@ Ludong University Online Judge
   cp /home/lduoj_upgrade/install/ubuntu16.04/update.sh /home/
   bash /home/update.sh
   ```
-
-# 项目迁移（更换服务器）
-  1. 在原服务器执行一次**项目备份**，并将备份好的文件夹拷贝到新服务器相同文件夹！  
-  2. 在新服务器执行一次**项目安装**  
-  3. 在新服务器执行一次**项目恢复**  
 
 # 判题端使用说明
 
