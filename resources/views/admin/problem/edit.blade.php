@@ -30,7 +30,7 @@
                     <div class="custom-control custom-radio mx-3">
                         <input type="radio" name="problem[type]" value="1" class="custom-control-input" id="type1"
                                onchange="type_has_change(1)"
-                               @if($problem->type==1)checked @endif>
+                               @if(isset($problem)&&$problem->type==1)checked @endif>
                         <label class="custom-control-label pt-1" for="type1">代码填空</label>
                     </div>
                 </div>
