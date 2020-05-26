@@ -56,9 +56,9 @@ Ludong University Online Judge
      [更换docker镜像源](https://blog.csdn.net/Funny_Ma/article/details/96478395)
      以提高速度。
      ```
-     本次测试未通过，判题端无法启动，请稍等。
+     正在测试
      docker build -t lduoj:1.0 https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
-     docker run -d --restart always --cap-add=SYS_PTRACE -p 8080:80\
+     docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80\
          -v ~/lduoj_home:/home -v ~/lduoj_home/mysql:/var/lib/mysql\
          --name lduoj lduoj:1.0
      ```
@@ -80,20 +80,23 @@ Ludong University Online Judge
   
     产生备份`/home/lduoj_backup/lduoj_{日期}`，
     包含项目文件夹（含测试数据、图片、文件）、数据库备份lduoj.sql、nginx配置文件lduoj.conf
-  ```
-  bash /home/LDUOnlineJudge/install/ubuntu16.04/backup.sh
-  ```
-
+    - Ubuntu16.04
+    ```
+    sh /home/LDUOnlineJudge/install/ubuntu16.04/backup.sh
+    ```
+  
 - 恢复
   
     从备份中恢复整个系统；执行前请替换命令中的中文。
-  ```
-  bash /home/LDUOnlineJudge/install/ubuntu16.04/recover.sh  /home/lduoj_backup/备份名
-  ```
+    - Ubuntu16.04
+    ```
+    bash /home/LDUOnlineJudge/install/ubuntu16.04/recover.sh  /home/lduoj_backup/备份名
+    ```
 
 # 项目升级
 
   建议升级前进行一次备份，若升级出错，可恢复系统。
+  - Ubuntu16.04和docker容器内
   ```
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
   cp /home/lduoj_upgrade/install/ubuntu16.04/update.sh /home/

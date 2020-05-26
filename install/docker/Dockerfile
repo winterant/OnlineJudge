@@ -61,7 +61,7 @@ RUN set -ex\
 
     && apt -y install sudo\
     && echo "root ALL=(ALL) ALL" >> /etc/sudoers\
-    && echo "www-data ALL=(ALL) ALL" >> /etc/sudoers\
+    && echo "www-data ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers\
 
     && apt update\
     && apt -y install libmysqlclient-dev g++ openjdk-8-jdk python3.6\
@@ -76,14 +76,6 @@ RUN set -ex\
     && chmod +x /startup.sh
 
 ENTRYPOINT ["/startup.sh"]
-
-#CMD while true; do echo do not quit; sleep 1; done\
-#    | service nginx start\
-#    | service php7.2-fpm start\
-#    | service mysql start\
-#    | bash /home/LDUOnlineJudge/judge/startup.sh
-
-#CMD while true; do echo do not quit; sleep 1; done
 
 VOLUME ["/home","/var/lib/mysql"]
 
