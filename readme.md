@@ -56,10 +56,10 @@ Ludong University Online Judge
      [更换docker镜像源](https://blog.csdn.net/Funny_Ma/article/details/96478395)
      以提高速度。
      ```
-     正在测试
-     docker build -t lduoj:1.0 https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
-     docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80\
-         -v ~/lduoj_home:/home -v ~/lduoj_home/mysql:/var/lib/mysql\
+     docker build -t lduoj:1.0\
+         https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
+     docker run -d --restart=always --cap-add=SYS_PTRACE\
+         -p 8080:80 -v ~/lduoj_docker:/volume\
          --name lduoj lduoj:1.0
      ```
      部署后使用浏览器访问http://localhost:8080
