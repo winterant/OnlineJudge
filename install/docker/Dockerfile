@@ -67,12 +67,16 @@ RUN set -ex\
     && apt -y install libmysqlclient-dev g++ openjdk-8-jdk python3.6\
 
     && echo "#!/bin/bash\n\
+        mv /home/LDUOnlinejudge /volume/\n\
+        ln -s /volume/LDUOnlinejudge /home/LDUOnlinejudge\n\
+        mv /var/lib/mysql /volume/\n\
+        ln -s /volume/mysql /var/lib/mysql\n\
+        chmod -R /volme\n\
         service nginx start\n\
         service php7.2-fpm start\n\
         service mysql start\n\
         bash /home/LDUOnlineJudge/judge/startup.sh\n\
-        while true; do echo do not quit; sleep 1; done\n\
-        exit 0\n" > /startup.sh\
+        while true; do echo do not quit; sleep 1; done\n" > /startup.sh\
     && chmod +x /startup.sh
 
 ENTRYPOINT ["/startup.sh"]
