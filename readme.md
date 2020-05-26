@@ -96,7 +96,7 @@ Ludong University Online Judge
 # 项目升级
 
   建议升级前进行一次备份，若升级出错，可恢复系统。
-  - Ubuntu16.04和docker容器内
+  - Ubuntu16.04 或 docker容器内
   ```
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
   cp /home/lduoj_upgrade/install/ubuntu16.04/update.sh /home/

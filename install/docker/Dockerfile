@@ -81,6 +81,6 @@ RUN set -ex\
 
 ENTRYPOINT ["/startup.sh"]
 
-VOLUME ["/home","/var/lib/mysql"]
+VOLUME ["/volume"]
 
 EXPOSE 80
