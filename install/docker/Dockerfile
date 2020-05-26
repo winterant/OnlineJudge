@@ -67,10 +67,19 @@ RUN set -ex\
     && apt -y install libmysqlclient-dev g++ openjdk-8-jdk python3.6\
 
     && echo "#!/bin/bash\n\
-        mv /home/LDUOnlinejudge /volume/\n\
-        ln -s /volume/LDUOnlinejudge /home/LDUOnlinejudge\n\
-        mv /var/lib/mysql /volume/\n\
+        if [ ! -d /volume/LDUOnlineJudge ]; then\n\
+            mv /home/LDUOnlineJudge /volume/\n\
+        else\n\
+            rm -rf /home/LDUOnlineJudge\n\
+        fi\n\
+        ln -s /volume/LDUOnlineJudge /home/LDUOnlineJudge\n\
+        if [ ! -d /volume/mysql ]; then\n\
+            mv /var/lib/mysql /volume/\n\
+        else\n\
+            rm -rf /var/lib/mysql\n\
+        fi\n\
         ln -s /volume/mysql /var/lib/mysql\n\
+        chown -R mysql:mysql /volume/mysql\n\
         service nginx start\n\
         service php7.2-fpm start\n\
         service mysql start\n\
