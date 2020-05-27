@@ -73,6 +73,12 @@ RUN set -ex\
             rm -rf /home/LDUOnlineJudge\n\
         fi\n\
         ln -s /volume/LDUOnlineJudge /home/LDUOnlineJudge\n\
+        if [ ! -d /volume/nginx ]; then\n\
+            mv /etc/nginx/conf.d /volume/nginx\n\
+        else\n\
+            rm -rf /etc/nginx/conf.d\n\
+        fi\n\
+        ln -s /volume/nginx /etc/nginx/conf.d\n\
         if [ ! -d /volume/mysql ]; then\n\
             mv /var/lib/mysql /volume/\n\
         else\n\
