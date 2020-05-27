@@ -38,13 +38,12 @@ Ludong University Online Judge
   1. **基于Linux Ubuntu 16.04**
   
      在终端执行以下命令，安装过程约10分钟。
-     若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。  
-     注意：安装过程mysql**可能**提示设置root密码，请输入并谨记。  
+     若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。 
+     如何[手动部署](https://blog.csdn.net/winter2121/article/details/106257563)？
      ```
      git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
      bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
      ```
-     [如何手动部署？](https://blog.csdn.net/winter2121/article/details/106257563)
 
   2. **基于Linux CentOS 7.x**
   
@@ -52,9 +51,8 @@ Ludong University Online Judge
 
   3. **基于docker**
     
-     若docker build缓慢，建议先
+     若docker build缓慢，请先
      [更换docker镜像源](https://blog.csdn.net/Funny_Ma/article/details/96478395)
-     以提高速度。
      ```
      docker build -t lduoj:1.0\
          https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
@@ -62,39 +60,38 @@ Ludong University Online Judge
          -p 8080:80 -v ~/lduoj_docker:/volume\
          --name lduoj lduoj:1.0
      ```
-     部署后使用浏览器访问http://localhost:8080
+     部署后使用浏览器访问http://localhost:8080  
+     进入容器进行管理： `dockder exec -it container_id /bin/bash`
 
 + **安装成功**  
-  1. 浏览器访问服务器ip即可打开首页(防火墙安全组开放80端口)；  
+  1. 浏览器输入服务器ip即可访问首页(防火墙安全组须开放80端口)  
   2. **注册用户admin自动成为管理员**
-  3. 安装后项目位于/home/LDUOnlieJudge，请勿移动。  
-  4. 自动新建mysql数据库lduoj，自动新建用户lduoj@localhost(密码123456789)。    
-  (若修改密码，需修改项目下`.env`，
-  并执行`php /home/LDUOnlineJudge/artisan config:cache`)  
-  5. 配置域名及端口：修改文件`/etc/nginx/conf.d/lduoj.conf`，在`server_name`后面填域名。
+  3. 安装后项目位于/home/LDUOnlieJudge，请勿移动  
+  4. mysql数据库lduoj，用户lduoj@localhost(密码123456789)  
+  (项目配置文件:`.env`，配置生效:`php /home/LDUOnlineJudge/artisan config:cache`)  
+  5. 域名&端口：配置文件`/etc/nginx/conf.d/lduoj.conf`，配置生效:`service nginx restart`
 
 # 项目备份与恢复
 - 备份
   
     产生备份`/home/lduoj_backup/lduoj_{日期}`，
-    包含项目文件夹（含测试数据、图片、文件）、数据库备份lduoj.sql、nginx配置文件lduoj.conf
-    - Ubuntu16.04 或 docker容器内
+    包含项目(所有文件)、数据库备份lduoj.sql、nginx配置文件lduoj.conf
+    - Ubuntu16.04 & docker容器内
     ```
     bash /home/LDUOnlineJudge/install/ubuntu16.04/backup.sh
     ```
   
 - 恢复
   
-    从备份中恢复整个系统；执行前请替换命令中的中文。
-    - Ubuntu16.04 或 docker容器内
+    - Ubuntu16.04 & docker容器内
     ```
     bash /home/LDUOnlineJudge/install/ubuntu16.04/recover.sh  /home/lduoj_backup/备份名
     ```
 
 # 项目升级
 
-  建议升级前进行一次备份，若升级出错，可恢复系统。
-  - Ubuntu16.04 或 docker容器内
+  建议升级前进行一次备份，若升级失败，可恢复系统。
+  - Ubuntu16.04 & docker容器内
   ```
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
   cp /home/lduoj_upgrade/install/ubuntu16.04/update.sh /home/
