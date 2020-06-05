@@ -48,10 +48,10 @@ RUN set -ex\
 
     && apt-get -y install mysql-server\
     && usermod -d /var/lib/mysql/ mysql\
+    && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\
 #    && rm -rf /var/lib/mysql/*\
 #    && mysqld --initialize --explicit_defaults_for_timestamp=true\
     && service mysql restart\
-#    && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\
     && USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`\
     && PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`\
     && mysql -u${USER} -p${PASSWORD} -e"CREATE DATABASE lduoj;"\
@@ -86,6 +86,7 @@ RUN set -ex\
         fi\n\
         ln -s /volume/mysql /var/lib/mysql\n\
         chown -R mysql:mysql /volume/mysql\n\
+        rm -rf /var/run/mysqld/mysqld.sock.lock\n\
         service nginx start\n\
         service php7.2-fpm start\n\
         service mysql start\n\
