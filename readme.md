@@ -54,11 +54,11 @@ Ludong University Online Judge
      若docker build缓慢，请先
      [更换docker镜像源](https://blog.csdn.net/Funny_Ma/article/details/96478395)
      ```
-     docker build -t lduoj:1.0\
+     docker build -t lduoj\
          https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
      docker run -d --restart=always --cap-add=SYS_PTRACE\
          -p 8080:80 -v ~/lduoj_docker:/volume\
-         --name lduoj lduoj:1.0
+         --name lduoj lduoj:latest
      ```
      部署后使用浏览器访问http://localhost:8080  
      进入容器进行管理： `dockder exec -it container_id /bin/bash`
