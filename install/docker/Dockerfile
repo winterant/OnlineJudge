@@ -1,6 +1,9 @@
 FROM ubuntu:16.04
 
 RUN set -ex\
+    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+    && echo 'Asia/Shanghai' > /etc/timezone
+
     && cp /etc/apt/sources.list /etc/apt/sources.list.bak\
     && echo "deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
         deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
@@ -49,8 +52,6 @@ RUN set -ex\
     && apt-get -y install mysql-server\
     && usermod -d /var/lib/mysql/ mysql\
     && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\
-#    && rm -rf /var/lib/mysql/*\
-#    && mysqld --initialize --explicit_defaults_for_timestamp=true\
     && service mysql restart\
     && USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`\
     && PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`\
