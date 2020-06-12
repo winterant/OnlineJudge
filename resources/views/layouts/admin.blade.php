@@ -156,7 +156,7 @@
                     <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
                        data-target="#menu-notice" aria-expanded="false">
                         <i class="fa fa-sticky-note-o mr-1" aria-hidden="true"></i>
-                        首页公告/新闻
+                        公告管理
                     </a>
                     <ul id="menu-notice" class="collapse">
 
@@ -206,7 +206,7 @@
                 <li class="nav-item">
                     <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
                        data-target="#menu-problem" aria-expanded="false">
-                        <i class="fa fa-file-text-o fa-lg mr-2" aria-hidden="true"></i>编程题目管理
+                        <i class="fa fa-file-text-o fa-lg mr-2" aria-hidden="true"></i>题库管理
                     </a>
                     <ul id="menu-problem" class="collapse">
                         <li class="nav-item">

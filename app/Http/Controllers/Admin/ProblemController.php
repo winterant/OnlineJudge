@@ -17,7 +17,7 @@ class ProblemController extends Controller
 {
     //管理员显示题目列表
     public function list(){
-        $problems=DB::table('problems')->select('id','title','source','spj','created_at','hidden',
+        $problems=DB::table('problems')->select('id','title','type','source','spj','created_at','hidden',
             DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
             DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as  solved")
             )
