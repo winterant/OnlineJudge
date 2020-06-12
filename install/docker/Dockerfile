@@ -1,8 +1,8 @@
 FROM ubuntu:16.04
 
 RUN set -ex\
-    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-    && echo 'Asia/Shanghai' > /etc/timezone
+    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime\
+    && echo 'Asia/Shanghai' > /etc/timezone\
 
     && cp /etc/apt/sources.list /etc/apt/sources.list.bak\
     && echo "deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
