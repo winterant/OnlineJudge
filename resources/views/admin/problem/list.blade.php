@@ -52,6 +52,7 @@
                 <th></th>
                 <th>题号</th>
                 <th>题目</th>
+                <th>类型</th>
                 <th>出处</th>
                 <th>特判</th>
                 <th>解决/提交</th>
@@ -68,6 +69,7 @@
                     </td>
                     <td nowrap>{{$item->id}}</td>
                     <td nowrap><a href="{{route('problem',$item->id)}}" target="_blank">{{$item->title}}</a></td>
+                    <td nowrap>{{$item->type?'代码填空':'编程'}}</td>
                     <td nowrap>{{$item->source}}</td>
                     <td nowrap>{{$item->spj?'特判':'否'}}</td>
                     <td nowrap>{{$item->solved}} / {{$item->submit}}</td>
