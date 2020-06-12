@@ -51,7 +51,7 @@ RUN set -ex\
 
     && apt-get -y install mysql-server\
     && usermod -d /var/lib/mysql/ mysql\
-    && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\
+#    && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\
     && service mysql restart\
     && USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`\
     && PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`\
