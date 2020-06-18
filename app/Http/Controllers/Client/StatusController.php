@@ -25,7 +25,7 @@ class StatusController extends Controller
                 $q->on('solutions.contest_id','=','contest_problems.contest_id')->on('solutions.problem_id','=','contest_problems.problem_id');
             })
             ->select('solutions.id','solutions.contest_id','contest_problems.index','solutions.problem_id','solutions.user_id','nick','username',
-                'result','time','memory','language', 'submit_time', 'solutions.judge_type', 'pass_rate','judger')
+                'result','time','memory','language', 'submit_time', 'solutions.judge_type', 'pass_rate','judger', 'sim_rate', 'sim_sid')
             ->when(isset($_GET['inc_contest']),function ($q){
                 if(Auth::check()&&Auth::user()->privilege('solution'))
                     return $q;
