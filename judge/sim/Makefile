@@ -61,23 +61,23 @@ NULLFILE =	/dev/null
 ################################################################
 # For MSDOS + MinGW
 
-SYSTEM =	MSDOS
-SUBSYSTEM =	MinGW
+#SYSTEM =	MSDOS
+#SUBSYSTEM =	MinGW
 
 # Locations
-DIR =		C:/BIN
-BINDIR =	C:/BIN
-MAN1DIR =	C:/BIN
+#DIR =		C:/BIN
+#BINDIR =	C:/BIN
+#MAN1DIR =	C:/BIN
 
 # File names
-NULLFILE =	nul
+#NULLFILE =	nul
 
 # Commands (cp required, since xcopy cannot handle forward slashes)
-COPY =		cp -p
-EXE =		.exe
-LEX =		flex
-LN =		ln
-ZIP =		zip -o
+#COPY =		cp -p
+#EXE =		.exe
+#LEX =		flex
+#LN =		ln
+#ZIP =		zip -o
 
 ################################################################
 # General, C compilation:
