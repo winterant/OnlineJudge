@@ -67,6 +67,10 @@ RUN set -ex\
     && apt update\
     && apt -y install libmysqlclient-dev g++ openjdk-8-jdk python3.6\
 
+    && apt -y install make flex\
+    && cp -p /home/LDUOnlineJudge/install/judge/sim/sim.1 /usr/share/man/man1/\
+    && cd /home/LDUOnlineJudge/install/judge/sim/ && make install\
+
     && echo "#!/bin/bash\n\
         if [ ! -d /volume/LDUOnlineJudge ]; then\n\
             mv /home/LDUOnlineJudge /volume/\n\
