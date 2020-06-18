@@ -10,6 +10,13 @@ if [ ! -d ${web_home}/lduoj_upgrade ];then
 fi;
 
 # transfer files
+rm -rf ${web_home}/LDUOnlineJudge/app
+rm -rf ${web_home}/LDUOnlineJudge/config
+rm -rf ${web_home}/LDUOnlineJudge/install
+rm -rf ${web_home}/LDUOnlineJudge/judge
+rm -rf ${web_home}/LDUOnlineJudge/public
+rm -rf ${web_home}/LDUOnlineJudge/resources
+rm -rf ${web_home}/LDUOnlineJudge/routes
 mv -f ${web_home}/lduoj_upgrade/app        ${web_home}/LDUOnlineJudge/
 mv -f ${web_home}/lduoj_upgrade/config     ${web_home}/LDUOnlineJudge/
 mv -f ${web_home}/lduoj_upgrade/install    ${web_home}/LDUOnlineJudge/
