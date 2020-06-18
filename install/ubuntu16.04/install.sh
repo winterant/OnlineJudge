@@ -48,16 +48,16 @@ mysql -u${USER} -p${PASSWORD} -Dlduoj < ./install/mysql/lduoj.sql
 # If you don't grant the right to user www-data, then you will not be able to start or stop the judge in administration.
 echo 'www-data ALL = NOPASSWD: ALL' >> /etc/sudoers
 
+# sim config
+apt -y install make flex
+cp -p ./judge/sim/sim.1 /usr/share/man/man1/
+cd ./judge/sim/ && make install && cd ../../
+
 #install judge environment & start to judge
 apt update && apt -y upgrade
 apt -y install libmysqlclient-dev g++
 apt -y install openjdk-8-jdk
 apt -y install python3.6
 bash ./judge/startup.sh
-
-# sim config
-apt -y install make flex
-cp -p ./judge/sim/sim.1 /usr/share/man/man1/
-cd ./judge/sim/ && make install
 
 echo -e "You have successfully installed LDU Online Judge!"

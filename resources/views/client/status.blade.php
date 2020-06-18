@@ -120,16 +120,16 @@
                                         <td nowrap>
                                             <font hidden>{{$sol->id}}</font>
                                             <font hidden>{{$sol->result}}</font>
-                                            <div id="result_{{$sol->id}}" class="{{config('oj.resColor.'.$sol->result)}} result_td">
+                                            <font id="result_{{$sol->id}}" class="{{config('oj.resColor.'.$sol->result)}} result_td">
                                                 {{config('oj.result.'.$sol->result)}}
                                                 @if($sol->judge_type=='oi')
                                                     ({{round($sol->pass_rate*100)}})
                                                 @endif
-                                            </div>
+                                            </font>
                                             @if($sol->sim_rate>=50)
-                                                <div class="bg-sky">
-                                                    {{$sol->sim_sid}} ({{$sol->sim_rate}}%)
-                                                </div>
+                                                <a class="bg-sky px-1" style="border-radius: 3px" title="Your code is {{$sol->sim_rate}}% similar to solution {{$sol->sim_sid}}">
+                                                    *{{$sol->sim_sid}} ({{$sol->sim_rate}}%)
+                                                </a>
                                             @endif
                                         </td>
                                         <td>{{$sol->time}}MS</td>
