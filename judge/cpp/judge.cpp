@@ -582,7 +582,7 @@ void sim(char *ac_dir)
             continue;
         system_cmd("../../sim/%s -p %s %s/%s |grep consists|head -1|awk '{print $4}' > sim_rate.out",
             SIM_LANG[solution.language], LANG[solution.language], ac_dir, dirfile->d_name);
-        int sim_rate = read_file("sim_rate.out");
+        int sim_rate = atoi(read_file("sim_rate.out"));
         if(sim_rate>=50)
         {
             char *fname = dirfile->d_name;

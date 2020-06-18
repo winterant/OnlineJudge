@@ -127,7 +127,9 @@
                                                 @endif
                                             </font>
                                             @if($sol->sim_rate>=50)
-                                                <a class="bg-sky px-1" style="border-radius: 3px" title="Your code is {{$sol->sim_rate}}% similar to solution {{$sol->sim_sid}}">
+                                                <a class="bg-sky px-1" style="border-radius: 3px"
+                                                   href="{{route('solution',$sol->sim_sid)}}"
+                                                   title="Your code is {{$sol->sim_rate}}% similar to solution {{$sol->sim_sid}}">
                                                     *{{$sol->sim_sid}} ({{$sol->sim_rate}}%)
                                                 </a>
                                             @endif
