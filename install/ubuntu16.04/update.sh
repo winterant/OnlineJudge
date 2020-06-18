@@ -30,17 +30,12 @@ php artisan key:generate
 php artisan optimize
 
 # update mysql table schema
-USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
-PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
-mysql -u${USER} -p${PASSWORD} -e"CREATE DATABASE IF NOT EXISTS lduoj_upgrade;"
-mysql -u${USER} -p${PASSWORD} -Dlduoj_upgrade < ${web_home}/LDUOnlineJudge/install/mysql/lduoj.sql
-php ${web_home}/LDUOnlineJudge/install/mysql/structure_sync.php ${USER} ${PASSWORD} | mysql -u${USER} -p${PASSWORD} -Dlduoj
-mysql -u${USER} -p${PASSWORD} -e"DROP DATABASE IF EXISTS lduoj_upgrade;"
+cd `dirname $0` && bash update_mysql.sh
 
 #start to judge
 bash ${web_home}/LDUOnlineJudge/judge/startup.sh
 
 echo "You have successfully updated LDU Online Judge! Enjoy it!\n"
 
-# delete self
-cd `dirname $0` && rm -rf ./update.sh
+## delete self
+#cd `dirname $0` && rm -rf ./update.sh

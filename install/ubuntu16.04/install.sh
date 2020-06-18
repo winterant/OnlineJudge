@@ -55,4 +55,9 @@ apt -y install openjdk-8-jdk
 apt -y install python3.6
 bash ./judge/startup.sh
 
+# sim config
+apt -y install make flex
+cp -p ./judge/sim/sim.1 /usr/share/man/man1/
+cd ./judge/sim/ && make install
+
 echo -e "You have successfully installed LDU Online Judge!"
