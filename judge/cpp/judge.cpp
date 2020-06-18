@@ -44,7 +44,7 @@
 #define COMPILE_MEM (512<<20)  //512MB,compile memory
 
 const char *LANG[]={"Main.c","Main.cpp","Main.java","Main.py"}; //判题文件名
-const char *SIM_LANG={"sim_c","sim_c++","sim_java","sim_text"}; //代码查重所使用的sim程序名
+const char *SIM_LANG[]={"sim_c","sim_c++","sim_java","sim_text"}; //代码查重所使用的sim程序名
 
 //x64
 //允许用户的系统调用c/c++
