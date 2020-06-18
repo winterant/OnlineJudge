@@ -19,14 +19,23 @@
             <div class="col-12">
                 <div class="my-container bg-white">
                     <form action="" method="get">
-                        @if(!isset($contest))
-                            <div class="custom-control custom-checkbox float-right">
-                                <input type="checkbox" name="inc_contest" class="custom-control-input" id="customCheck"
-                                       @if(isset($_GET['inc_contest']))checked @endif
-                                       onchange="this.form.submit()">
-                                <label class="custom-control-label pt-1" for="customCheck">{{__('main.include contest')}}</label>
-                            </div>
-                        @endif
+                        <div class="form-inline float-right ">
+                            <select name="sim_rate" class="form-control px-2 mr-3" onchange="this.form.submit();">
+                                <option class="form-control" value="0">{{__('main.Similarity Check')}}</option>
+                                @for($i=50;$i<=100;$i+=10)
+                                    <option class="form-control" value="{{$i}}"
+                                            @if(isset($_GET['sim_rate']) && $i==$_GET['sim_rate'])selected @endif> ≥{{$i}}% </option>
+                                @endfor
+                            </select>
+                            @if(!isset($contest))
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" name="inc_contest" class="custom-control-input" id="customCheck"
+                                           @if(isset($_GET['inc_contest']))checked @endif
+                                           onchange="this.form.submit()">
+                                    <label class="custom-control-label pt-1" for="customCheck">{{__('main.include contest')}}</label>
+                                </div>
+                            @endif
+                        </div>
 
                         <div class="table-responsive">
                             <table class="table table-hover">
