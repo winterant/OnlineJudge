@@ -20,7 +20,7 @@ mv -f ${web_home}/lduoj_upgrade/routes     ${web_home}/LDUOnlineJudge/
 mv -f ${web_home}/lduoj_upgrade/.env.example     ${web_home}/LDUOnlineJudge/
 mv -f ${web_home}/lduoj_upgrade/composer.json    ${web_home}/LDUOnlineJudge/
 mv -f ${web_home}/lduoj_upgrade/composer.lock    ${web_home}/LDUOnlineJudge/
-m -rf ${web_home}/lduoj_upgrade
+rm -rf ${web_home}/lduoj_upgrade
 
 cd ${web_home}/LDUOnlineJudge || exit 2;
 
