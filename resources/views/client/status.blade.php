@@ -126,6 +126,11 @@
                                                     ({{round($sol->pass_rate*100)}})
                                                 @endif
                                             </div>
+                                            @if($sol->sim_rate>=50)
+                                                <div class="bg-sky">
+                                                    {{$sol->sim_sid}} ({{$sol->sim_rate}}%)
+                                                </div>
+                                            @endif
                                         </td>
                                         <td>{{$sol->time}}MS</td>
                                         <td>{{round($sol->memory,2)}}MB</td>
