@@ -44,6 +44,7 @@
 #define COMPILE_MEM (512<<20)  //512MB,compile memory
 
 const char *LANG[]={"Main.c","Main.cpp","Main.java","Main.py"}; //判题文件名
+const char *SIM_LANG={"sim_c","sim_c++","sim_java","sim_text"}; //代码查重所使用的sim程序名
 
 //x64
 //允许用户的系统调用c/c++
@@ -97,6 +98,8 @@ struct Solution{
     float memory=0; //MB 实际内存
     float pass_rate=0;
     char *error_info=NULL;
+    int sim_rate=0;
+    int sim_sid=-1;
 
     void load_solution(int sid) //从数据库读取提交记录，注：用到了全局mysql
     {
@@ -134,8 +137,8 @@ struct Solution{
 
     void update_solution()  //数据库，更新solution
     {
-        sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,judge_time=now(),error_info=NULL WHERE id=%d",
-            this->result,this->time,this->memory,this->pass_rate,this->id); //更新
+        sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,judge_time=now(),error_info=NULL,sim_rate=%d,sim_sid=%d WHERE id=%d",
+            this->result,this->time,this->memory,this->pass_rate,this->sim_rate,this->sim_sid, this->id); //更新
         mysql_real_query(mysql,sql,strlen(sql));
         if(this->error_info!=NULL){    //更新出错信息
             char *new_sql = new char[2*strlen(this->error_info)+64];
@@ -568,6 +571,30 @@ int judge(char *data_dir, char *spj_path)
     return oi_result; //oi规则结果
 }
 
+//对本次所判代码进行查重
+void sim(char *ac_dir)
+{
+    char cmd[256];
+    DIR *dir=opendir(ac_dir);  //已AC代码文件夹
+    dirent *dirfile;
+    freopen("sim.out", "w", stdout);
+    while((dirfile=readdir(dir))!=NULL)
+    {
+        if(strcmp(strstr(LANG[solution.language],"."),strstr(dirfile->d_name,"."))!=0)
+            continue;
+        int ret = system_cmd(cmd, "../../sim/%s -p %s %s |grep consists|head -1|awk '{print $4}'",
+            SIM_LANG[solution.language], LANG[solution.language], dirfile->d_name);
+        if(ret>=50)
+        {
+            char *fname = dirfile->d_name;
+            *strstr(fname,".")='\0';
+            solution.sim_sid=atoi(fname);
+            solution.sim_rate=ret;
+            break;
+        }
+    }
+}
+
 int main (int argc, char* argv[])
 {
     // 1. 读取参数
@@ -620,9 +647,10 @@ int main (int argc, char* argv[])
     {
         printf("solution id: %s, Compiling successfully! start running\n",sid);
         solution.update_result(OJ_RI); //update to running
-        char data_dir[256], spj_path[256];
+        char data_dir[256], spj_path[256], ac_path[256];
         sprintf(data_dir,"%s/%d/test",JG_DATA_DIR,solution.problem_id); //测试数据所在文件夹
         sprintf(spj_path,"%s/%d/spj/spj",JG_DATA_DIR,solution.problem_id); //特判程序spj的路径
+        sprintf(ac_path,"%s/%d/ac",JG_DATA_DIR,solution.problem_id); //已AC代码的文件夹
 
         //标记允许的系统调用
         int *call_lang=NULL;
@@ -639,7 +667,15 @@ int main (int argc, char* argv[])
         //开始判题
         solution.result = judge(data_dir, spj_path);
         solution.error_info = read_file("error.out");
+
+        //代码查重
+        if(solution.result==OJ_AC)
+        {
+            sim(ac_path);
+            system_cmd("/bin/cp %s %s/%d.%s", LANG[solution.language], ac_path, solution.id, LANG[solution.language]+4);
+        }
     }
+
 
     // 5. 判题结果写回数据库
     solution.update_solution();    // update all of data
