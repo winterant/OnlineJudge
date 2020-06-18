@@ -15,8 +15,9 @@ mv -f ${web_home}/LDUOnlineJudge/storage ${web_home}/lduoj_upgrade/
 mv -f ${web_home}/LDUOnlineJudge/vendor  ${web_home}/lduoj_upgrade/
 mv -f ${web_home}/LDUOnlineJudge/.env    ${web_home}/lduoj_upgrade/
 mv -f ${web_home}/LDUOnlineJudge/public/favicon.ico  ${web_home}/lduoj_upgrade/public/
-rm -rf ${web_home}/LDUOnlineJudge
-mv ${web_home}/lduoj_upgrade  ${web_home}/LDUOnlineJudge
+rm -rf ${web_home}/LDUOnlineJudge/*
+mv ${web_home}/lduoj_upgrade/*  ${web_home}/LDUOnlineJudge/
+rm -rf ${web_home}/lduoj_upgrade
 
 cd ${web_home}/LDUOnlineJudge || exit 2;
 chmod -R 777 storage bootstrap/cache
@@ -30,7 +31,7 @@ php artisan key:generate
 php artisan optimize
 
 # update mysql table schema
-cd `dirname $0` && bash update_mysql.sh
+bash ${web_home}/LDUOnlineJudge/install/ubuntu16.04/update_mysql.sh
 
 #start to judge
 bash ${web_home}/LDUOnlineJudge/judge/startup.sh
