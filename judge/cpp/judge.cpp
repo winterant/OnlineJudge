@@ -667,6 +667,7 @@ int main (int argc, char* argv[])
         //开始判题
         solution.result = judge(data_dir, spj_path);
         solution.error_info = read_file("error.out");
+        solution.update_result(solution.result);
 
         //代码查重
         if(solution.result==OJ_AC)
