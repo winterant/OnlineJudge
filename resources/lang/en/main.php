@@ -111,6 +111,7 @@ return [
     "File"          => "File",
     "MySolution"    => "My history solutions",
     "More"          => "More",
+    "Similarity Check" => "Similarity Check",
 
 
 //    contest
