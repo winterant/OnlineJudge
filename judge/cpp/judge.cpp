@@ -496,8 +496,8 @@ int watch_running(int child_pid, char *test_name, int max_out_size)
                   + (ruse.ru_stime.tv_sec*1000+ruse.ru_stime.tv_usec/1000); //内核时间
     if(result!=OJ_TL && used_time>solution.time_limit)
         result = OJ_TL; //超时
-    printf("%s | used time:   %5dMS, limit is %dMS\n", test_name, used_time, solution.time_limit);
-    printf("%s | used memory: %5.2fMB, limit is %.2fMB\n", test_name, memory_MB, solution.memory_limit);
+    printf("test%3s | used time:   %5dMS, limit is %dMS\n", test_name, used_time, solution.time_limit);
+    printf("test%3s | used memory: %5.2fMB, limit is %.2fMB\n", test_name, memory_MB, solution.memory_limit);
     solution.time   = max(solution.time,   min(solution.time_limit,   used_time) );
     solution.memory = max(solution.memory, min(solution.memory_limit, memory_MB) );
     return result;
@@ -574,25 +574,25 @@ int judge(char *data_dir, char *spj_path)
 //对本次所判代码进行查重
 void sim(char *ac_dir)
 {
-    char cmd[256];
     DIR *dir=opendir(ac_dir);  //已AC代码文件夹
     dirent *dirfile;
-    freopen("sim.out", "w", stdout);
-    while((dirfile=readdir(dir))!=NULL)
+    while(dir!=NULL && (dirfile=readdir(dir))!=NULL)
     {
         if(strcmp(strstr(LANG[solution.language],"."),strstr(dirfile->d_name,"."))!=0)
             continue;
-        int ret = system_cmd(cmd, "../../sim/%s -p %s %s |grep consists|head -1|awk '{print $4}'",
-            SIM_LANG[solution.language], LANG[solution.language], dirfile->d_name);
-        if(ret>=50)
+        system_cmd("../../sim/%s -p %s %s/%s |grep consists|head -1|awk '{print $4}' > sim_rate.out",
+            SIM_LANG[solution.language], LANG[solution.language], ac_dir, dirfile->d_name);
+        int sim_rate = read_file("sim_rate.out");
+        if(sim_rate>=50)
         {
             char *fname = dirfile->d_name;
             *strstr(fname,".")='\0';
             solution.sim_sid=atoi(fname);
-            solution.sim_rate=ret;
+            solution.sim_rate=sim_rate;
             break;
         }
     }
+    printf("Duplicate checking: %d%% with sid=%d\n",solution.sim_rate,solution.sim_sid);
 }
 
 int main (int argc, char* argv[])
@@ -672,7 +672,9 @@ int main (int argc, char* argv[])
         if(solution.result==OJ_AC)
         {
             sim(ac_path);
-            system_cmd("/bin/cp %s %s/%d.%s", LANG[solution.language], ac_path, solution.id, LANG[solution.language]+4);
+            if(access(ac_path,F_OK)==-1)
+                    mkdir(ac_path,0777);
+            system_cmd("/bin/cp -p %s %s/%d.%s", LANG[solution.language], ac_path, solution.id, LANG[solution.language]+5);
         }
     }
 
