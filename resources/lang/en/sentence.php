@@ -52,4 +52,5 @@ return [
     "normalWA"          => "Failed to solve the problem",
     "noSubmit"          => "No solutions submitted",
     "endedAC"           => "Accepted after the end of contest",
+    "hidden"            => "No contest found!"
 ];
