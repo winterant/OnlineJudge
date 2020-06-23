@@ -79,7 +79,11 @@
                         <select id="privi" class="form-control border border-bottom-0 px-3 bg-white" name="privilege[authority]">
                             <option value="admin">admin</option>
                             <option value="solution">solution</option>
-                            <option value="problem">problem</option>
+                            <option value="problem_list">problem_list</option>
+                            <option value="edit_problem">edit_problem</option>
+                            <option value="problem_data">problem_data</option>
+                            <option value="problem_rejudge">problem_rejudge</option>
+                            <option value="import_export_problem">import_export_problem</option>
                             <option value="contest">contest</option>
                             <option value="balloon">balloon</option>
                         </select>
@@ -106,7 +110,19 @@
                             <td nowrap>solution</td><td nowrap>查看所有用户提交的代码</td>
                         </tr>
                         <tr>
-                            <td nowrap>problem</td><td nowrap>管理题目，增删改查</td>
+                            <td nowrap>problem_list</td><td nowrap>查看题目列表</td>
+                        </tr>
+                        <tr>
+                            <td nowrap>edit_problem</td><td nowrap>添加、修改题目内容（包括spj）</td>
+                        </tr>
+                        <tr>
+                            <td nowrap>problem_data</td><td nowrap>管理题目测试数据</td>
+                        </tr>
+                        <tr>
+                            <td nowrap>problem_rejudge</td><td nowrap>重判提交记录</td>
+                        </tr>
+                        <tr>
+                            <td nowrap>import_export_problem</td><td nowrap>导入与导出题目</td>
                         </tr>
                         <tr>
                             <td nowrap>contest</td><td nowrap>管理竞赛，增删改查</td>

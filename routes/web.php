@@ -92,22 +92,32 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::any('/reset_pwd','Admin\UserController@reset_pwd')->name('reset_pwd');
     });
 
-//   manage problem
-    Route::middleware(['Privilege:problem'])->prefix('problem')->name('problem.')->group(function (){
+//   manage problem list
+    Route::middleware(['Privilege:problem_list'])->prefix('problem')->name('problem.')->group(function (){
         Route::get('/list', 'Admin\ProblemController@list')->name('list');
+    });
+//   manage problem editor
+    Route::middleware(['Privilege:edit_problem'])->prefix('problem')->name('problem.')->group(function (){
         Route::any('/add','Admin\ProblemController@add')->name('add');
         Route::get('/update','Admin\ProblemController@update')->name('update');
         Route::any('/update/{id}','Admin\ProblemController@update')->name('update_withId');
         Route::post('/update/hidden','Admin\ProblemController@update_hidden')->name('update_hidden');
         Route::get('/get_spj/{pid}','Admin\ProblemController@get_spj')->name('get_spj');
-
+    });
+//   manage problem data
+    Route::middleware(['Privilege:problem_data'])->prefix('problem')->name('problem.')->group(function (){
         Route::get('/test_data','Admin\ProblemController@test_data')->name('test_data');
         Route::post('/upload/data','Admin\ProblemController@upload_data')->name('upload_data');
         Route::post('/get_data','Admin\ProblemController@get_data')->name('get_data');
         Route::post('/update/data','Admin\ProblemController@update_data')->name('update_data');
         Route::post('/delete/data','Admin\ProblemController@delete_data')->name('delete_data');
-
+    });
+//   manage problem rejudge
+    Route::middleware(['Privilege:problem_rejudge'])->prefix('problem')->name('problem.')->group(function (){
         Route::any('/rejudge','Admin\ProblemController@rejudge')->name('rejudge');
+    });
+//   manage problem import export
+    Route::middleware(['Privilege:import_export_problem'])->prefix('problem')->name('problem.')->group(function (){
         Route::get('/import_export','Admin\ProblemController@import_export')->name('import_export');
         Route::any('/import','Admin\ProblemController@import')->name('import');
         Route::any('/export','Admin\ProblemController@export')->name('export');
