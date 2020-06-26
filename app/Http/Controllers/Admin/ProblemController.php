@@ -33,7 +33,7 @@ class ProblemController extends Controller
     public function add(Request $request){
         //提供加题界面
         if($request->isMethod('get')){
-            $pageTitle='添加题目 - 程序设计';
+            $pageTitle='添加题目';
             return view('admin.problem.edit',compact('pageTitle'));
         }
         //提交一条新题目
@@ -49,7 +49,7 @@ class ProblemController extends Controller
         //get提供修改界面
         if ($request->isMethod('get')) {
 
-            $pageTitle='修改题目 - 程序设计';
+            $pageTitle='修改题目';
             if($id==-1) {
                 if(isset($_GET['id']))//用户手动输入了题号
                     return redirect(route('admin.problem.update_withId',$_GET['id']));
