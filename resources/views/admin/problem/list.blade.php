@@ -36,15 +36,36 @@
         <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
         <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
 
-        <a href="javascript:update_hidden(0);" class="ml-3">题目状态公开</a>
+        <a href="javascript:update_hidden(0);" class="ml-3">公开</a>
         <a href="javascript:" class="text-gray" onclick="whatisthis('选中的题目将被公开，允许普通用户在题库中查看和提交!')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
 
-        <a href="javascript:update_hidden(1);" class="ml-3">状态设为隐藏</a>
+        <a href="javascript:update_hidden(1);" class="ml-3">隐藏</a>
         <a href="javascript:" class="text-gray" onclick="whatisthis('选中的题目将被隐藏，普通用户无法在题库中查看和提交，但不会影响竞赛!')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
+
+{{--        <a href="javascript:" class="ml-3">删除</a>--}}
+{{--        <a href="javascript:" class="text-gray" onclick="whatisthis('删除选中的题目，删除后对应题号将空缺！')">--}}
+{{--            <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
+{{--        </a>--}}
+
+{{--        <a href="javascript:" class="ml-3">删除并补位</a>--}}
+{{--        <a href="javascript:" class="text-gray" onclick="whatisthis('删除选中的题目，后面的题目将自动向前移动以填充空缺的题号！')">--}}
+{{--            <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
+{{--        </a>--}}
+
+{{--        <a href="javascript:" class="ml-3">自动补位</a>--}}
+{{--        <a href="javascript:" class="text-gray" onclick="whatisthis('若有空缺题号，则自动将后面的题号向前移动以填充空缺题号。<br>' +--}}
+{{--            '如1001题被删除，则1002将变为1001题，1003题将变为1002题...以此类推！')">--}}
+{{--            <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
+{{--        </a>--}}
+
+{{--        <a href="javascript:" class="ml-3">转移至___之后</a>--}}
+{{--        <a href="javascript:" class="text-gray" onclick="whatisthis('选中的题目将被插入到对应题号之后！')">--}}
+{{--            <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
+{{--        </a>--}}
 
         <table class="table table-striped table-hover table-sm">
             <thead>
