@@ -27,7 +27,7 @@ class UserController extends Controller
         $privileges=DB::table('privileges')
             ->leftJoin('users','users.id','=','user_id')
             ->select(['privileges.id','username','nick','authority','privileges.created_at'])
-            ->orderBy('authority')->get();
+            ->orderBy('username')->get();
         return view('admin.user.privilege',compact('privileges'));
     }
 
