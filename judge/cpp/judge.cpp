@@ -537,7 +537,7 @@ int judge(char *data_dir, char *spj_path)
         int pid=fork();
         if(pid==0)//child
         {
-            printf("%s | running on test %d  ===================  %s.in(%dB)=>%s.out(%dB)\n",
+            printf("test%3s | running on test %d  ===================  %s.in(%dB)=>%s.out(%dB)\n",
             test_name, test_count,test_name,file_size("data.in"),test_name,file_size(data_out_path));
             running();
             exit(0);
@@ -552,7 +552,7 @@ int judge(char *data_dir, char *spj_path)
                 else  //比较文件
                     result = compare_file(data_out_path,"user.out");  //非spj直接比较文件
             }
-            printf("%s | judge result: %d\n\n",test_name,result);
+            printf("test%3s | judge result: %d\n\n",test_name,result);
             if(result==OJ_AC)ac_count++;
             if(is_acm && result!=OJ_AC)   //acm规则遇到WA直接返回，判题结束
                 return result;
