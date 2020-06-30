@@ -500,6 +500,7 @@ int watch_running(int child_pid, char *test_name, int max_out_size)
     printf("test%3s | used memory: %5.2fMB, limit is %.2fMB\n", test_name, memory_MB, solution.memory_limit);
     solution.time   = max(solution.time,   min(solution.time_limit,   used_time) );
     solution.memory = max(solution.memory, min(solution.memory_limit, memory_MB) );
+    if(result==OJ_TL)solution.time=solution.time_limit;
     return result;
 }
 
