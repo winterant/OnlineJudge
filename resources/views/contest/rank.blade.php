@@ -80,13 +80,26 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table id="table_rank" class="table table-sm table-hover border-bottom">
+                        <form action="" method="get">
+                            <table id="table_rank" class="table table-sm table-hover border-bottom">
                             <thead>
                                 <tr>
                                     <th class="text-center">{{trans('main.Rank')}}</th>
-                                    <th>{{trans('main.User')}}</th>
-                                    @if(get_setting('rank_show_school'))<th>{{trans('main.School')}}</th> @endif
-                                    @if(get_setting('rank_show_nick'))<th>{{trans('main.Name')}}</th> @endif
+                                    <th width="10%"><input type="text" class="form-control" placeholder="{{trans('main.Username')}}"
+                                               name="username" value="{{isset($_GET['username'])?$_GET['username']:''}}">
+                                    </th>
+                                    @if(get_setting('rank_show_school'))
+                                        <th width="10%">
+                                            <input type="text" class="form-control" placeholder="{{trans('main.School')}}"
+                                                   name="school" value="{{isset($_GET['school'])?$_GET['school']:''}}">
+                                        </th>
+                                    @endif
+                                    @if(get_setting('rank_show_nick'))
+                                        <th width="10%">
+                                            <input type="text" class="form-control" placeholder="{{trans('main.Name')}}"
+                                                   name="nick" value="{{isset($_GET['nick'])?$_GET['nick']:''}}">
+                                        </th>
+                                    @endif
                                     <th>{{$contest->judge_type == 'acm'?trans('main.Solved'):trans('main.Score')}}</th>
                                     <th>{{trans('main.Penalty')}}</th>
                                     @for($i=0;$i<$problem_count;$i++)
@@ -141,6 +154,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        </form>
                     </div>
 
                     <div>

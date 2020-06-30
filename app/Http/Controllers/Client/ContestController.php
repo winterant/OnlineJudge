@@ -202,6 +202,9 @@ class ContestController extends Controller
             ->whereIn('result',[4,5,6,7,8,9,10])
             ->where('submit_time','>',$contest->start_time)
             ->where('submit_time','<',self::get_rank_end_date($contest))
+            ->when(isset($_GET['school'])&&$_GET['school']!='',function ($q){return $q->where('school','like','%'.$_GET['school'].'%');})
+            ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username','like','%'.$_GET['username'].'%');})
+            ->when(isset($_GET['nick'])&&$_GET['nick']!='',function ($q){return $q->where('nick','like','%'.$_GET['nick'].'%');})
             ->get();
         $uids=DB::table('contest_users')->where('contest_id',$contest->id)->pluck('user_id')->toArray();  //用户id
         $users=[];
