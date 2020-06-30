@@ -197,7 +197,8 @@ class ContestController extends Controller
                 $join->on('contest_problems.contest_id','=','solutions.contest_id')
                     ->on('contest_problems.problem_id','=','solutions.problem_id');
             })
-            ->select('user_id','index','result','pass_rate','time','memory','submit_time')
+            ->join('users','solutions.user_id','=','users.id')
+            ->select('user_id','index','result','pass_rate','time','memory','submit_time','school','username','nick')
             ->where('solutions.contest_id',$contest->id)
             ->whereIn('result',[4,5,6,7,8,9,10])
             ->where('submit_time','>',$contest->start_time)
@@ -206,7 +207,8 @@ class ContestController extends Controller
             ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username','like','%'.$_GET['username'].'%');})
             ->when(isset($_GET['nick'])&&$_GET['nick']!='',function ($q){return $q->where('nick','like','%'.$_GET['nick'].'%');})
             ->get();
-        $uids=DB::table('contest_users')->where('contest_id',$contest->id)->pluck('user_id')->toArray();  //用户id
+        $uids=isset($_GET['school'])?[]:
+            DB::table('contest_users')->where('contest_id',$contest->id)->pluck('user_id')->toArray();  //用户id
         $users=[];
         $has_ac=[]; //标记每道题是否已经被AC
         foreach($solutions as $solution){
