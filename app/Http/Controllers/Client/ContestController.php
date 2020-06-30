@@ -193,7 +193,10 @@ class ContestController extends Controller
 
         $contest=DB::table('contests')->select(['id','type','judge_type','title','start_time','end_time','lock_rate'])->find($id);
         $solutions=DB::table('solutions')
-            ->join('contest_problems','contest_problems.problem_id','=','solutions.problem_id')
+            ->join('contest_problems',function ($join){
+                $join->on('contest_problems.contest_id','=','solutions.contest_id')
+                    ->on('contest_problems.problem_id','=','solutions.problem_id');
+            })
             ->select('user_id','index','result','pass_rate','time','memory','submit_time')
             ->where('solutions.contest_id',$contest->id)
             ->whereIn('result',[4,5,6,7,8,9,10])
