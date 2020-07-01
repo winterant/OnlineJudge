@@ -34,6 +34,9 @@ return [
     "Choose Language"   => "----Choose Language----",
     "Input Code"        => "Input your code to solve this problem...",
     "submit_frequently" => "Submit frequently! You are not allowed to submit twice in :sec seconds",
+    "Congratulations"   => "Congratulations! You have solved the problem, so we invite you to mark the problem! Attention,you cannot modify it after you submitted.",
+    "tag_marked"        => "You have successfully marked tag of the problem",
+    "tag_marked_exceed" => "You cannot add more than 5 Tags",
 
 
 //    contest.password

@@ -129,6 +129,16 @@
                                 <td nowrap>{{__("main.AC/Submit")}}:</td>
                                 <td nowrap>{{$problem->solved}} / {{$problem->submit}}</td>
                             </tr>
+                            @if(!isset($contest)||time()>strtotime($contest->end_time))
+                                <tr>
+                                    <td nowrap>{{__("main.Tags")}}:</td>
+                                    <td>
+                                        @foreach($tags as $item)
+                                            <font class="px-1 text-nowrap">{{$item->name}}(<i class="fa fa-user-o" aria-hidden="true" style="padding:0 1px"></i>{{$item->count}})</font>
+                                        @endforeach
+                                    </td>
+                                </tr>
+                            @endif
                             </tbody>
                         </table>
                     </div>
@@ -156,6 +166,40 @@
                                 </tbody>
                             </table>
                         </div>
+
+                    </div>
+                @endif
+
+                {{-- 已经AC的用户进行标签标记 --}}
+                @if($tag_mark_enable)
+                    <div class="my-container bg-white">
+
+                        <h5>{{trans('main.Tag Marking')}}</h5>
+                        <hr class="mt-0">
+
+                        <form action="{{route('tag_mark')}}" method="post">
+                            @csrf
+                            <input name="problem_id" value="{{$problem->id}}" hidden>
+
+                            <div class="alert alert-success">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                {{__('sentence.Congratulations')}}
+                            </div>
+                            <div class="form-inline mb-2">
+                                <font>{{__('main.Tag')}}：</font>
+                                <div class="form-inline">
+                                    <input type="text" class="form-control mr-2" oninput="input_auto_width($(this))" required name="tag_names[]" style="width: 50px">
+                                </div>
+                                <a class="btn btn-sm border mb-0" onclick="add_tag_input($(this))">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                    {{__('main.Add').' '.__('main.Tag')}}
+                                </a>
+                            </div>
+{{--                            <div class="form-group">--}}
+{{--                                <font>推荐</font>--}}
+{{--                            </div>--}}
+                            <button type="submit" class="btn bg-light" @guest disabled @endguest>{{trans('main.Submit')}}</button>
+                        </form>
 
                     </div>
                 @endif
@@ -206,11 +250,9 @@
                                 </table>
                             </div>
                         @endif
-                        @if(count($solutions)>0)
-                            <div class="text-right">
-                                <a href="{{route('status',['pid'=>$problem->id,'username'=>Auth::user()->username])}}">{{trans('main.More')}}>></a>
-                            </div>
-                        @endif
+                        <div class="text-right">
+                            <a href="{{route('status',['pid'=>$problem->id,'username'=>Auth::user()->username])}}">{{trans('main.More')}}>></a>
+                        </div>
                     </div>
                 @endif
 
@@ -249,7 +291,6 @@
 
                         <div class="form-group">
                         <textarea id="code_editor" class="form-control-plaintext border p-2" rows="7" name="solution[code]"
-                                  onkeydown="if(event.keyCode===9){this.value=this.value+'    ';event.returnValue = false;}"
                                   placeholder="{{trans('sentence.Input Code')}}" required></textarea>
                         </div>
 
@@ -292,5 +333,37 @@
         window.MathJax.Hub.Queue(["Typeset", MathJax.Hub,document.getElementsByClassName("ck-content")]);
     </script>
     <script type="text/javascript" src="{{asset('static/MathJax-2.7.7/MathJax.js?config=TeX-AMS_HTML')}}"></script>
+
+    <script>
+        @if(session('tag_marked'))
+            $(function () {
+                Notiflix.Notify.Success("{{__('sentence.tag_marked')}}");
+            })
+        @endif
+        var tag_input_count=1;
+        function add_tag_input(that) {
+            if(tag_input_count>=5){
+                Notiflix.Notify.Failure("{{__('sentence.tag_marked_exceed')}}")
+                return;
+            }
+            var dom="<div class=\"form-inline\">\n" +
+                "    <input type=\"text\" class=\"form-control mr-2\" oninput=\"input_auto_width($(this))\" required name=\"tag_names[]\" style=\"width: 50px\">\n" +
+                "    <a style=\"margin-left: -25px;cursor: pointer\" onclick=\"delete_tag_input($(this))\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></a>\n" +
+                "</div>";
+            $(that).before(dom);
+            tag_input_count++;
+        }
+        function delete_tag_input(that){
+            tag_input_count--;
+            $(that).parent().remove();
+        }
+        function input_auto_width(that) {
+            var sensor = $('<font>'+ $(that).val() +'</font>').css({display: 'none'});
+            $('body').append(sensor);
+            var width = sensor.width();
+            sensor.remove();
+            $(that).css('width',(width+30)+'px');
+        }
+    </script>
 @endsection
 
