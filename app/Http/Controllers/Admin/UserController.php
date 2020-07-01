@@ -96,7 +96,7 @@ class UserController extends Controller
 
     public function delete(Request $request){
         $uids=$request->input('uids')?:[];
-        DB::table('users')->whereIn('id',$uids)->delete();
+        DB::table('users')->whereIn('id',$uids)->where('id','!=',1000)->delete();
     }
 
     public function update_revise(Request $request){
