@@ -94,14 +94,17 @@ class ContestController extends Controller
             ];
         }
 
-        //是否需要显示开始判题的按钮，仅用于赛后判题模式
-        $start_to_judge=false;
+        //是否需要显示开始判题的按钮, 是否允许点击，仅用于赛后判题模式
+        $show_judge_button = false;
+        $judge_enable = false;
         if(Auth::user()->privilege('contest')&&$contest->judge_instantly==0){
-            $start_to_judge=DB::table('solutions')->where('contest_id',$id)
+            $show_judge_button = true;
+            $judge_enable = DB::table('solutions')->where('contest_id',$id)
                 ->where('result',15)
-                ->exists();
+                ->exists()
+                &&time()>strtotime($contest->end_time);
         }
-        return view('contest.home',compact('contest','problems','files','start_to_judge'));
+        return view('contest.home',compact('contest','problems','files','show_judge_button','judge_enable'));
     }
 
     public function start_to_judge($id){
