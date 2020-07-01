@@ -71,8 +71,44 @@ class ProblemController extends Controller
             ->orderByDesc('id')
             ->limit(8)->get();
 
-        $hasSpj=Storage::exists('data/'.$problem->id.'/spj/spj.cpp');
-        return view('client.problem',compact('problem','contests','samples','solutions','hasSpj'));
+        $hasSpj=(get_spj_code($problem->id)!=null);
+
+        $tags = DB::table('tag_marks')
+            ->join('tag_pool','tag_pool.id','=','tag_id')
+            ->groupBy('name')
+            ->where('problem_id',$problem->id)
+            ->select('name',DB::raw('count(name) as count'))
+            ->orderByDesc('count')
+            ->limit(3)
+            ->get();
+
+        //是否显示窗口：对题目进行打标签
+//        $tag_mark_enable = (!isset($contest)||time()>strtotime($contest->end_time))
+        $tag_mark_enable = Auth::check()
+            && !DB::table('tag_marks')
+                ->where('user_id','=',Auth::id())
+                ->where('problem_id','=',$problem->id)
+                ->exists()
+            && DB::table('solutions')
+            ->where('user_id','=',Auth::id())
+            ->where('problem_id','=',$problem->id)
+            ->exists();
+        return view('client.problem',compact('problem','contests','samples','solutions','hasSpj','tags','tag_mark_enable'));
+    }
+
+    function tag_mark(Request $request){
+        $problem_id = $request->input('problem_id');
+        $tag_names = $request->input('tag_names');
+        $tag_marks = [];
+        foreach ($tag_names as $tag_name) {
+            if(!DB::table('tag_pool')->where('name',$tag_name)->exists())
+                $tid = DB::table('tag_pool')->insertGetId(['name'=>$tag_name]);
+            else
+                $tid = DB::table('tag_pool')->where('name',$tag_name)->first()->id;
+            $tag_marks[]=['problem_id'=>$problem_id,'user_id'=>Auth::id(),'tag_id'=>$tid];
+        }
+        DB::table('tag_marks')->insert($tag_marks);
+        return back()->with('tag_marked',true);
     }
 
 }

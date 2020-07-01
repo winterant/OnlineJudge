@@ -35,6 +35,9 @@ Route::middleware(['auth'])->group(function (){
     Route::post('/status/submit_solution','Client\StatusController@create')->name('submit_solution');
 //    CK editor upload image
     Route::post('/ck_upload_image','UploadController@ck_upload_image')->name('ck_upload_image');
+
+    //tag marking
+    Route::post('/tag_mark','Client\ProblemController@tag_mark')->name('tag_mark');
 });
 
 

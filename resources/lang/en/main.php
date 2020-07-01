@@ -86,6 +86,10 @@ return [
     "days"          => "[*,1] day|[2,*] days",
     "hours"         => "[*,1] hour|[2,*] hours",
     "problems"      => "[*,1] problem|[2,*] problems",
+    "Tag Marking"   => "Tag Marking",
+    "Tag"           => "Tag",
+    "Tags"          => "Tags",
+    "Add"           => "Add",
 
 //    standing
     "All"           => "All",

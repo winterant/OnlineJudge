@@ -127,7 +127,26 @@ class ContestController extends Controller
         $samples=read_problem_data($problem->id);
 
         $hasSpj=(get_spj_code($problem->id)!=null);
-        return view('contest.problem',compact('contest','problem','samples','hasSpj'));
+        $tags = DB::table('tag_marks')
+            ->join('tag_pool','tag_pool.id','=','tag_id')
+            ->groupBy('name')
+            ->where('problem_id',$pid)
+            ->select('name',DB::raw('count(name) as count'))
+            ->orderByDesc('count')
+            ->limit(3)
+            ->get();
+
+        //是否显示窗口：对题目进行打标签
+        $tag_mark_enable = Auth::check()
+            && !DB::table('tag_marks')
+                ->where('user_id','=',Auth::id())
+                ->where('problem_id','=',$problem->id)
+                ->exists()
+            && DB::table('solutions')
+                ->where('user_id','=',Auth::id())
+                ->where('problem_id','=',$problem->id)
+                ->exists();
+        return view('contest.problem',compact('contest','problem','samples','hasSpj','tags','tag_mark_enable'));
     }
 
     public function status($id){
