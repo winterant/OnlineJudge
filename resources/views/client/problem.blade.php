@@ -251,7 +251,7 @@
                             </div>
                         @endif
                         <div class="text-right">
-                            <a href="{{route('status',['pid'=>$problem->id,'username'=>Auth::user()->username])}}">{{trans('main.More')}}>></a>
+                            <a href="{{route('status',['pid'=>$problem->id,'username'=>Auth::check()?Auth::user()->username:null])}}">{{trans('main.More')}}>></a>
                         </div>
                     </div>
                 @endif
