@@ -201,50 +201,36 @@ char* get_data_out_path(const char* data_dir,const char* test_name) //获取测�
 bool is_whitespace(char c) {
     return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
+int rm_whitespace(char *str)//删除字符串中的空白符
+{
+    int i=0,j=0;
+    while(str[j]!='\0')
+    {
+        while(is_whitespace(str[j]))j++;
+        if(str[j]!='\0')
+            str[i++]=str[j++];
+    }
+    str[i]='\0';
+    return i; //返回长度
+}
+int rm_end_whitespace(char *str)//删除字符串末尾空白字符
+{
+    int len=strlen(str);
+    while(is_whitespace(str[len-1]))str[--len]='\0';
+    return len;
+}
 int compare_file(const char* fname1,const char *fname2) //比较两文件是否一致
 {
-    bool ok1,ok2;
-    int rear1, rear2, result=OJ_AC;  //顺利的话，Accepted
-    static char buf1[BUFFER_SIZE], buf2[BUFFER_SIZE];
-    FILE *fp1=fopen(fname1,"r"), *fp2=fopen(fname2,"r");
-    while(ok1=(fgets(buf1,BUFFER_SIZE,fp1)!=NULL), ok2=(fgets(buf2,BUFFER_SIZE,fp2)!=NULL), ok1&&ok2)
-    {
-        rear1=strlen(buf1)-1, rear2=strlen(buf2)-1;
-        while(rear1>=0 && is_whitespace(buf1[rear1]))rear1--; //将rear1指向可见字符的最后一个
-        while(rear2>=0 && is_whitespace(buf2[rear2]))rear2--;
-        if(rear1!=rear2||strncmp(buf1,buf2,rear1+1)!=0) //文本不一致，wrong answer
-        {
-            result=OJ_WA;
-            break;
-        }
-        else if(strcmp(buf1+rear1+1,buf2+rear2+1)!=0) //文本一致，但末尾空白字符不一致
-        {
-            result=OJ_PE;
-            break;
-        }
-    }
-    //没读完的文件内容含有非空白符，则用户wrong answer
-    while( result==OJ_AC && (ok1||fgets(buf1,BUFFER_SIZE,fp1)!=NULL) )
-    {
-        ok1=false;
-        for(char *ch=buf1;*ch;ch++)
-            if(!is_whitespace(*ch))
-                result=OJ_WA;
-    }
-    while( result==OJ_AC && (ok2||fgets(buf2,BUFFER_SIZE,fp2)!=NULL) )
-    {
-        ok2=false;
-        for(char *ch=buf2;*ch;ch++)
-            if(!is_whitespace(*ch))
-                result=OJ_WA;
-    }
-    ok1=(fgets(buf1,BUFFER_SIZE,fp1)!=NULL);
-    ok2=(fgets(buf2,BUFFER_SIZE,fp2)!=NULL);
-    if(!(ok1&&ok2) && result==OJ_PE && rear1==rear2 && strncmp(buf1,buf2,rear1+1)==0) //最后一行空白字符不匹配不认为PE
-        result=OJ_AC;
-    fclose(fp1);
-    fclose(fp2);
-    return result;
+    char *buf1=read_file(fname1), *buf2=read_file(fname2);
+    rm_end_whitespace(buf1);
+    rm_end_whitespace(buf2);
+    if(strcmp(buf1,buf2)==0)
+        return OJ_AC;
+    rm_whitespace(buf1);
+    rm_whitespace(buf2);
+    if(strcmp(buf1,buf2)==0)
+        return OJ_PE;
+    return OJ_WA;
 }
 
 int get_proc_memory(int pid)//读取进程pid的内存使用情况
