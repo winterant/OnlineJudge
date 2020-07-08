@@ -172,6 +172,46 @@
 
                 {{-- 已经AC的用户进行标签标记 --}}
                 @if($tag_mark_enable)
+
+{{--                    模态框选择标签 --}}
+                    <div class="modal fade" id="modal_tag_pool">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+
+                                <!-- 模态框头部 -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">{{__('main.Tag Pool')}}</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+
+                                <!-- 模态框主体 -->
+                                <div class="modal-body ck-content">
+                                    <div class="alert alert-success">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                        {{__('sentence.tag_pool_select')}}
+                                    </div>
+                                    @foreach($tag_pool as $tag)
+                                        <div class="d-inline text-nowrap mr-1">
+                                            <i class="fa fa-tag" aria-hidden="true"></i>
+                                            <a href="javascript:"
+                                               onclick="add_tag_input($('#add_tag_btn'),'{{$tag->name}}');
+                                                    // $('#modal_tag_pool').modal('hide')"
+                                                >{{$tag->name}}</a>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <!-- 模态框底部 -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
                     <div class="my-container bg-white">
 
                         <h5>{{trans('main.Tag Marking')}}</h5>
@@ -190,14 +230,23 @@
 {{--                                <div class="form-inline">--}}
 {{--                                    <input type="text" class="form-control mr-2" oninput="input_auto_width($(this))" required name="tag_names[]" style="width: 50px">--}}
 {{--                                </div>--}}
-                                <a class="btn btn-sm border mb-0" onclick="add_tag_input($(this))">
+                                <a id="add_tag_btn" class="btn btn-sm border mb-0" onclick="add_tag_input($(this))">
                                     <i class="fa fa-plus" aria-hidden="true"></i>
-                                    {{__('main.Add').' '.__('main.Tag')}}
+                                    {{__('main.Input').' '.__('main.Tag')}}
+                                </a>
+                                <a class="btn btn-sm border mb-0 ml-1" data-toggle="modal" data-target="#modal_tag_pool">
+                                    <i class="fa fa-list" aria-hidden="true"></i>
+                                    {{__('main.Tag Pool')}}
                                 </a>
                             </div>
-{{--                            <div class="form-group">--}}
-{{--                                <font>推荐</font>--}}
-{{--                            </div>--}}
+                            <div class="form-group">
+                                <font>{{__('main.Most Tagged')}}：</font>
+                                @foreach($tags as $item)
+                                    <div class="d-inline text-nowrap">
+                                        <a href="javascript:" onclick="add_tag_input($('#add_tag_btn'),'{{$item->name}}')">{{$item->name}}</a>
+                                    </div>
+                                @endforeach
+                            </div>
                             <button type="submit" class="btn bg-light" @guest disabled @endguest>{{trans('main.Submit')}}</button>
                         </form>
 

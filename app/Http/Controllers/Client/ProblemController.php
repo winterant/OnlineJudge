@@ -116,12 +116,21 @@ class ProblemController extends Controller
             ->where('user_id','=',Auth::id())
             ->where('problem_id','=',$problem->id)
             ->exists();
-        return view('client.problem',compact('problem','contests','samples','solutions','hasSpj','tags','tag_mark_enable'));
+        if($tag_mark_enable)
+            $tag_pool=DB::table('tag_pool')
+                ->select('id','name')
+                ->where('hidden',0)
+                ->orderBy('id')
+                ->get();
+        else
+            $tag_pool=[];
+        return view('client.problem',compact('problem','contests','samples','solutions','hasSpj','tags','tag_mark_enable','tag_pool'));
     }
 
     function tag_mark(Request $request){
         $problem_id = $request->input('problem_id');
         $tag_names = $request->input('tag_names');
+        $tag_names=array_unique($tag_names);
         $tag_marks = [];
         foreach ($tag_names as $tag_name) {
             if(!DB::table('tag_pool')->where('name',$tag_name)->exists())
