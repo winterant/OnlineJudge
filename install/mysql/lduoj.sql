@@ -196,6 +196,7 @@ CREATE TABLE `tag_marks`  (
     `problem_id` int(11) NOT NULL,
     `user_id` int(11) NOT NULL,
     `tag_id` int(11) NOT NULL,
+    `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Fixed;
 
@@ -208,6 +209,7 @@ CREATE TABLE `tag_pool`  (
     `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     `parent_id` int(11) NULL DEFAULT -1,
     `hidden` tinyint(4) NULL DEFAULT 0,
+    `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 

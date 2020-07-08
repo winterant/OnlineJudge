@@ -29,6 +29,25 @@ class ProblemController extends Controller
         return view('admin.problem.list',compact('problems'));
     }
 
+    //管理标签
+    public function tags(){
+        $tags=DB::table('tag_marks')
+            ->join('users','user_id','=','users.id')
+            ->join('tag_pool','tag_id','=','tag_pool.id')
+            ->join('problems','problem_id','=','problems.id')
+            ->select('tag_marks.id','problem_id','title','username','nick','name','tag_marks.created_at')
+            ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('problem_id',$_GET['pid']);})
+            ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username',$_GET['username']);})
+            ->when(isset($_GET['tag_name'])&&$_GET['tag_name']!='',function ($q){return $q->where('name','like','%'.$_GET['tag_name'].'%');})
+            ->orderBy('id')
+            ->paginate(isset($_GET['perPage'])?$_GET['perPage']:20);
+        return view('admin.problem.tags',compact('tags'));
+    }
+    public function tag_delete(Request $request){
+        $tids=$request->input('tids');
+        return DB::table('tag_marks')->whereIn('id',$tids)->delete();
+    }
+
     //管理员添加题目
     public function add(Request $request){
         //提供加题界面

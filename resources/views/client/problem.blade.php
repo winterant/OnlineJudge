@@ -177,7 +177,7 @@
                         <h5>{{trans('main.Tag Marking')}}</h5>
                         <hr class="mt-0">
 
-                        <form action="{{route('tag_mark')}}" method="post">
+                        <form action="{{route('tag_mark')}}" method="post" onsubmit="return check_tag_count();">
                             @csrf
                             <input name="problem_id" value="{{$problem->id}}" hidden>
 
@@ -187,9 +187,9 @@
                             </div>
                             <div class="form-inline mb-2">
                                 <font>{{__('main.Tag')}}：</font>
-                                <div class="form-inline">
-                                    <input type="text" class="form-control mr-2" oninput="input_auto_width($(this))" required name="tag_names[]" style="width: 50px">
-                                </div>
+{{--                                <div class="form-inline">--}}
+{{--                                    <input type="text" class="form-control mr-2" oninput="input_auto_width($(this))" required name="tag_names[]" style="width: 50px">--}}
+{{--                                </div>--}}
                                 <a class="btn btn-sm border mb-0" onclick="add_tag_input($(this))">
                                     <i class="fa fa-plus" aria-hidden="true"></i>
                                     {{__('main.Add').' '.__('main.Tag')}}
@@ -340,14 +340,14 @@
                 Notiflix.Notify.Success("{{__('sentence.tag_marked')}}");
             })
         @endif
-        var tag_input_count=1;
-        function add_tag_input(that) {
+        var tag_input_count=0;
+        function add_tag_input(that,defa='') {
             if(tag_input_count>=5){
                 Notiflix.Notify.Failure("{{__('sentence.tag_marked_exceed')}}")
                 return;
             }
             var dom="<div class=\"form-inline\">\n" +
-                "    <input type=\"text\" class=\"form-control mr-2\" oninput=\"input_auto_width($(this))\" required name=\"tag_names[]\" style=\"width: 50px\">\n" +
+                "    <input type=\"text\" class=\"form-control mr-2\" value=\""+defa+"\" oninput=\"input_auto_width($(this))\" required name=\"tag_names[]\" style=\"width: 50px\">\n" +
                 "    <a style=\"margin-left: -25px;cursor: pointer\" onclick=\"delete_tag_input($(this))\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></a>\n" +
                 "</div>";
             $(that).before(dom);
@@ -357,6 +357,14 @@
             tag_input_count--;
             $(that).parent().remove();
         }
+        function check_tag_count(){
+            if(tag_input_count > 0)
+                return true;
+            Notiflix.Notify.Failure("{{__('sentence.tag_marked_zero')}}");
+            return false;
+        }
+
+
         function input_auto_width(that) {
             var sensor = $('<font>'+ $(that).val() +'</font>').css({display: 'none'});
             $('body').append(sensor);
