@@ -47,6 +47,23 @@ class ProblemController extends Controller
         $tids=$request->input('tids');
         return DB::table('tag_marks')->whereIn('id',$tids)->delete();
     }
+    public function tag_pool(){
+        $tag_pool=DB::table('tag_pool')
+            ->select('id','name','hidden','created_at')
+            ->when(isset($_GET['tag_name'])&&$_GET['tag_name']!='',function ($q){return $q->where('name','like','%'.$_GET['tag_name'].'%');})
+            ->orderBy('id')
+            ->paginate(isset($_GET['perPage'])?$_GET['perPage']:20);
+        return view('admin.problem.tag_pool',compact('tag_pool'));
+    }
+    public function tag_pool_delete(Request $request){
+        $tids=$request->input('tids');
+        return DB::table('tag_pool')->whereIn('id',$tids)->delete();
+    }
+    public function tag_pool_hidden(Request $request){
+        $tids=$request->input('tids');
+        $hidden=$request->input('hidden');
+        return DB::table('tag_pool')->whereIn('id',$tids)->update(['hidden'=>$hidden]);
+    }
 
     //管理员添加题目
     public function add(Request $request){

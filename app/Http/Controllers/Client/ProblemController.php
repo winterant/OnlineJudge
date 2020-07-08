@@ -77,6 +77,7 @@ class ProblemController extends Controller
             ->join('tag_pool','tag_pool.id','=','tag_id')
             ->groupBy('name')
             ->where('problem_id',$problem->id)
+            ->where('hidden',0)
             ->select('name',DB::raw('count(name) as count'))
             ->orderByDesc('count')
             ->limit(3)
