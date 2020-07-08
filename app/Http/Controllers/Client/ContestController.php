@@ -146,7 +146,15 @@ class ContestController extends Controller
                 ->where('user_id','=',Auth::id())
                 ->where('problem_id','=',$problem->id)
                 ->exists();
-        return view('contest.problem',compact('contest','problem','samples','hasSpj','tags','tag_mark_enable'));
+        if($tag_mark_enable)
+            $tag_pool=DB::table('tag_pool')
+                ->select('id','name')
+                ->where('hidden',0)
+                ->orderBy('id')
+                ->get();
+        else
+            $tag_pool=[];
+        return view('contest.problem',compact('contest','problem','samples','hasSpj','tags','tag_mark_enable','tag_pool'));
     }
 
     public function status($id){
