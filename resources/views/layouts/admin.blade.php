@@ -218,6 +218,10 @@
                                 <i class="fa fa-list" aria-hidden="true"></i> 标签管理</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link border-top" href="{{route('admin.problem.tag_pool')}}">
+                                <i class="fa fa-list" aria-hidden="true"></i> 标签库</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link border-top" href="{{route('admin.problem.add')}}">
                                 <i class="fa fa-plus" aria-hidden="true"></i> 添加题目</a>
                         </li>

@@ -103,6 +103,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
     Route::middleware(['Privilege:problem_tag'])->prefix('problem')->name('problem.')->group(function (){
         Route::get('/tags', 'Admin\ProblemController@tags')->name('tags');
         Route::post('/tag_delete', 'Admin\ProblemController@tag_delete')->name('tag_delete');
+        Route::get('/tag_pool', 'Admin\ProblemController@tag_pool')->name('tag_pool');
+        Route::post('/tag_pool_delete', 'Admin\ProblemController@tag_pool_delete')->name('tag_pool_delete');
+        Route::post('/tag_pool_hidden', 'Admin\ProblemController@tag_pool_hidden')->name('tag_pool_hidden');
     });
 //   manage problem editor
     Route::middleware(['Privilege:edit_problem'])->prefix('problem')->name('problem.')->group(function (){
