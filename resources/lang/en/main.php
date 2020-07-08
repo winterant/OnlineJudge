@@ -21,6 +21,7 @@ return [
     "Last Week"     => "Last Week",
 
 //    menu
+    "ID"            => "ID",
     "Id"            => "Id",
     "Home"          => "Home",
     "Problems"      => "Problems",
@@ -79,7 +80,7 @@ return [
     "Source"        => "Source",
     "AC/Submit"     => "AC/Submit",
     "ACRate"        => "ACRate",
-    "Hidden"        => "Hidden ☆ before use",
+    "Hidden"        => "Hidden",
     "Private"       => "Private",
 
     "months"        => "[*,1] month|[2,*] months",

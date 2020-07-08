@@ -11,7 +11,7 @@
                 @include('contest.menu')
             </div>
             <div class="col-md-8 col-sm-12 col-12">
-                <div class="my-container bg-white">
+                <div class="my-container bg-white table-responsive">
 
                     <h3 class="text-center">{{$contest->id}}. {{$contest->title}}
                         @if(Auth::check()&&Auth::user()->privilege('problem'))

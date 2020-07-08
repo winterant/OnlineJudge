@@ -17,8 +17,12 @@ class ProblemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function problems(){
-        $list=DB::table('problems')
-            ->select('problems.id','title','source','hidden',
+
+        $problems=DB::table('problems');
+        if(isset($_GET['tag_id'])&&$_GET['tag_id']!='')
+            $problems=$problems->join('tag_marks','problem_id','=','problems.id')
+                ->where('tag_id',$_GET['tag_id']);
+        $problems=$problems->select('problems.id','title','source','hidden',
                 DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
                 DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as solved"))
             ->when(!Auth::check()||!Auth::user()->privilege('problem'),function ($q){return $q->where('hidden',0);})
@@ -26,8 +30,26 @@ class ProblemController extends Controller
             ->when(isset($_GET['title'])&&$_GET['title']!='',function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
             ->when(isset($_GET['source'])&&$_GET['source']!='',function ($q){return $q->where('source','like','%'.$_GET['source'].'%');})
             ->orderBy('id')
+            ->distinct()
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:100);
-        return view('client.problems',['problems' => $list,]);
+        foreach ($problems as $problem) {
+            $tag = DB::table('tag_marks')
+                ->join('tag_pool','tag_pool.id','=','tag_id')
+                ->groupBy('tag_pool.id','name')
+                ->where('problem_id',$problem->id)
+                ->where('hidden',0)
+                ->select('tag_pool.id','name',DB::raw('count(name) as count'))
+                ->orderByDesc('count')
+                ->limit(2)
+                ->get();
+            $problems->tags=$tag;
+        }
+        $tag_pool=DB::table('tag_pool')
+            ->select('id','name')
+            ->where('hidden',0)
+            ->orderBy('id')
+            ->get();
+        return view('client.problems',compact('problems','tag_pool'));
     }
 
     public function problem($id)
