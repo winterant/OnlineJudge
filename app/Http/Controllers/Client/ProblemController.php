@@ -32,7 +32,7 @@ class ProblemController extends Controller
             ->orderBy('id')
             ->distinct()
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:100);
-        foreach ($problems as $problem) {
+        foreach ($problems as &$problem) {
             $tag = DB::table('tag_marks')
                 ->join('tag_pool','tag_pool.id','=','tag_id')
                 ->groupBy('tag_pool.id','name')
@@ -42,7 +42,7 @@ class ProblemController extends Controller
                 ->orderByDesc('count')
                 ->limit(2)
                 ->get();
-            $problems->tags=$tag;
+            $problem->tags=$tag;
         }
         $tag_pool=DB::table('tag_pool')
             ->select('id','name')
