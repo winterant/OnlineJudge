@@ -90,7 +90,9 @@ return [
     "Tag Marking"   => "Tag Marking",
     "Tag"           => "Tag",
     "Tags"          => "Tags",
-    "Add"           => "Add",
+    "Input"         => "Input",
+    "Tag Pool"      => "Tag Pool",
+    "Most Tagged"   => "Most Tagged",
 
 //    standing
     "All"           => "All",

@@ -56,11 +56,11 @@ class ProblemController extends Controller
         return view('admin.problem.tag_pool',compact('tag_pool'));
     }
     public function tag_pool_delete(Request $request){
-        $tids=$request->input('tids');
+        $tids=$request->input('tids')?:[];
         return DB::table('tag_pool')->whereIn('id',$tids)->delete();
     }
     public function tag_pool_hidden(Request $request){
-        $tids=$request->input('tids');
+        $tids=$request->input('tids')?:[];
         $hidden=$request->input('hidden');
         return DB::table('tag_pool')->whereIn('id',$tids)->update(['hidden'=>$hidden]);
     }
