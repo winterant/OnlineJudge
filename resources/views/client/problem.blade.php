@@ -243,6 +243,7 @@
                                 <font>{{__('main.Most Tagged')}}：</font>
                                 @foreach($tags as $item)
                                     <div class="d-inline text-nowrap">
+                                        <i class="fa fa-tag" aria-hidden="true"></i>
                                         <a href="javascript:" onclick="add_tag_input($('#add_tag_btn'),'{{$item->name}}')">{{$item->name}}</a>
                                     </div>
                                 @endforeach
