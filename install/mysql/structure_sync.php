@@ -76,7 +76,8 @@ foreach($data1 as $key1 => $val1)
                     }
                     if($col_info['COLUMN_DEFAULT'] !== null)
                     {
-                        if($col_info['DATA_TYPE'] == 'bit' || $col_info['COLUMN_DEFAULT']=='CURRENT_TIMESTAMP')
+                        if(in_array($col_info['DATA_TYPE'],['bit'])
+                            || in_array($col_info['COLUMN_DEFAULT'],['NULL','CURRENT_TIMESTAMP']))
                         {
                             $alter_sql .= " default ".$col_info['COLUMN_DEFAULT'];
                         }
@@ -122,7 +123,8 @@ foreach($data1 as $key1 => $val1)
                             }
                             if($info1['COLUMN_DEFAULT'] !== null)
                             {
-                                if($info1['DATA_TYPE'] == 'bit' || $col_info['COLUMN_DEFAULT']=='CURRENT_TIMESTAMP')
+                                if(in_array($info1['DATA_TYPE'],['bit'])
+                                    || in_array($info1['COLUMN_DEFAULT'],['NULL','CURRENT_TIMESTAMP']))
                                 {
                                     $modify .= " default ".$info1['COLUMN_DEFAULT'];
                                 }

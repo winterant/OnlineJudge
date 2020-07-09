@@ -40,7 +40,7 @@ php artisan key:generate
 php artisan optimize
 
 # update mysql table schema
-bash ${web_home}/LDUOnlineJudge/install/ubuntu16.04/update_mysql.sh
+bash ${web_home}/LDUOnlineJudge/install/mysql/update_mysql.sh
 
 #start to judge
 bash ${web_home}/LDUOnlineJudge/judge/startup.sh
