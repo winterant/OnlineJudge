@@ -29,7 +29,7 @@ class ProblemController extends Controller
             ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('problems.id',$_GET['pid']);})
             ->when(isset($_GET['title'])&&$_GET['title']!='',function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
             ->when(isset($_GET['source'])&&$_GET['source']!='',function ($q){return $q->where('source','like','%'.$_GET['source'].'%');})
-            ->orderBy('id')
+            ->orderBy('problems.id')
             ->distinct()
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:100);
         foreach ($problems as &$problem) {
