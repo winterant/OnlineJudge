@@ -77,15 +77,16 @@
                     <label class="form-inline">
                         权限：
                         <select id="privi" class="form-control border border-bottom-0 px-3 bg-white" name="privilege[authority]">
-                            <option value="admin">admin</option>
-                            <option value="solution">solution</option>
-                            <option value="problem_list">problem_list</option>
-                            <option value="edit_problem">edit_problem</option>
-                            <option value="problem_data">problem_data</option>
-                            <option value="problem_rejudge">problem_rejudge</option>
-                            <option value="import_export_problem">import_export_problem</option>
-                            <option value="contest">contest</option>
-                            <option value="balloon">balloon</option>
+                            <option value="admin">admin（全部权限）</option>
+                            <option value="solution">solution（查看代码）</option>
+                            <option value="problem_list">problem_list（查看问题列表）</option>
+                            <option value="problem_tag">problem_tag（管理问题标签）</option>
+                            <option value="edit_problem">edit_problem（编辑/添加题目）</option>
+                            <option value="problem_data">problem_data（管理测试数据）</option>
+                            <option value="problem_rejudge">problem_rejudge（重判提交记录）</option>
+                            <option value="import_export_problem">import_export_problem（导入/导出题目）</option>
+                            <option value="contest">contest（管理竞赛）</option>
+                            <option value="balloon">balloon（派送气球）</option>
                         </select>
                     </label>
                 </div>
@@ -111,6 +112,9 @@
                         </tr>
                         <tr>
                             <td nowrap>problem_list</td><td nowrap>查看题目列表</td>
+                        </tr>
+                        <tr>
+                            <td nowrap>problem_tag</td><td nowrap>管理问题标签</td>
                         </tr>
                         <tr>
                             <td nowrap>edit_problem</td><td nowrap>添加、修改题目内容（包括spj）</td>
