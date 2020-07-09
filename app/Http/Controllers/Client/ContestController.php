@@ -84,6 +84,20 @@ class ContestController extends Controller
                 ])
             ->orderBy('contest_problems.index')
             ->get();
+//读取标签
+        foreach ($problems as &$problem) {
+            $tag = DB::table('tag_marks')
+                ->join('tag_pool','tag_pool.id','=','tag_id')
+                ->groupBy('tag_pool.id','name')
+                ->where('problem_id',$problem->id)
+                ->where('hidden',0)
+                ->select('tag_pool.id','name',DB::raw('count(name) as count'))
+                ->orderByDesc('count')
+                ->limit(2)
+                ->get();
+            $problem->tags=$tag;
+        }
+
 
         //读取附件，位于storage/app/public/contest/files/$cid/*
         $files=[];
@@ -145,6 +159,7 @@ class ContestController extends Controller
             && DB::table('solutions')
                 ->where('user_id','=',Auth::id())
                 ->where('problem_id','=',$problem->id)
+                ->where('result',4)
                 ->exists();
         if($tag_mark_enable)
             $tag_pool=DB::table('tag_pool')
