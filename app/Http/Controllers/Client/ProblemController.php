@@ -26,7 +26,7 @@ class ProblemController extends Controller
                 DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
                 DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as solved"))
             ->when(!Auth::check()||!Auth::user()->privilege('problem'),function ($q){return $q->where('hidden',0);})
-            ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('id',$_GET['pid']);})
+            ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('problems.id',$_GET['pid']);})
             ->when(isset($_GET['title'])&&$_GET['title']!='',function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
             ->when(isset($_GET['source'])&&$_GET['source']!='',function ($q){return $q->where('source','like','%'.$_GET['source'].'%');})
             ->orderBy('id')
@@ -115,6 +115,7 @@ class ProblemController extends Controller
             && DB::table('solutions')
             ->where('user_id','=',Auth::id())
             ->where('problem_id','=',$problem->id)
+            ->where('result',4)
             ->exists();
         if($tag_mark_enable)
             $tag_pool=DB::table('tag_pool')

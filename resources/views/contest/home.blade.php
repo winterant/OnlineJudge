@@ -11,7 +11,7 @@
                 @include('contest.menu')
             </div>
             <div class="col-md-8 col-sm-12 col-12">
-                <div class="my-container bg-white table-responsive">
+                <div class="my-container bg-white">
 
                     <h3 class="text-center">{{$contest->id}}. {{$contest->title}}
                         @if(Auth::check()&&Auth::user()->privilege('problem'))
@@ -95,49 +95,61 @@
                         </div>
                     @endif
 
-                    <table class="table table-sm table-hover">
-                        <thead>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
                             <tr>
                                 <th width="5"></th>
                                 <th width="10">#</th>
                                 <th>{{trans('main.Title')}}</th>
                                 <th>{{trans('main.Type')}}</th>
                                 <th>{{trans('main.AC/Submit')}}</th>
-                                <th></th>
+                                @if(time()>strtotime($contest->end_time))
+                                    <th>{{__('main.Tag')}}</th>
+                                @endif
                             </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($problems as $item)
-                            <tr>
-                                <td>
-                                    @if($item->status==4)
-                                        <i class="fa fa-check text-green" aria-hidden="true"></i>
-                                    @elseif($item->status==6)
-                                        <i class="fa fa-pencil text-red" aria-hidden="true"></i>
+                            </thead>
+                            <tbody>
+                            @foreach($problems as $item)
+                                <tr>
+                                    <td>
+                                        @if($item->status==4)
+                                            <i class="fa fa-check text-green" aria-hidden="true"></i>
+                                        @elseif($item->status==6)
+                                            <i class="fa fa-pencil text-red" aria-hidden="true"></i>
+                                        @endif
+                                    </td>
+                                    <td>{{index2ch($item->index)}}</td>
+                                    <td nowrap>
+                                        @if(Auth::user()->privilege('contest')||time()>strtotime($contest->start_time))
+                                            <a href="{{route('contest.problem',[$contest->id,$item->index])}}">{{$item->title}}</a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td>{{config('oj.problemType.'.$item->type)}}</td>
+                                    <td nowrap>
+                                        @if($item->submit>0)
+                                            {{$item->accepted}}
+                                            (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>{{$item->solved}})
+                                            /
+                                            {{$item->submit}}
+                                        @else - / - @endif
+                                    </td>
+                                    @if(time()>strtotime($contest->end_time))
+                                        <td nowrap>
+                                            @foreach($item->tags as $tag)
+                                                <div class="d-inline text-nowrap mr-1">
+                                                    <i class="fa fa-tag" aria-hidden="true"></i><a href="javascript:findByTagId({{$tag->id}})">{{$tag->name}}</a>
+                                                </div>
+                                            @endforeach
+                                        </td>
                                     @endif
-                                </td>
-                                <td>{{index2ch($item->index)}}</td>
-                                <td nowrap>
-                                    @if(Auth::user()->privilege('contest')||time()>strtotime($contest->start_time))
-                                        <a href="{{route('contest.problem',[$contest->id,$item->index])}}">{{$item->title}}</a>
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td>{{config('oj.problemType.'.$item->type)}}</td>
-                                <td>
-                                    @if($item->submit>0)
-                                        {{$item->accepted}}
-                                        (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>{{$item->solved}})
-                                        /
-                                        {{$item->submit}}
-                                    @else - / - @endif</td>
-                                <td></td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
