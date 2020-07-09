@@ -42,6 +42,10 @@ php artisan optimize
 # update mysql table schema
 bash ${web_home}/LDUOnlineJudge/install/mysql/update_mysql.sh
 
+# sim config
+cd ${web_home}/LDUOnlineJudge/judge/sim/
+make install
+
 #start to judge
 bash ${web_home}/LDUOnlineJudge/judge/startup.sh
 
