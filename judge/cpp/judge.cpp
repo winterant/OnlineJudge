@@ -152,6 +152,19 @@ struct Solution{
     }
 }solution;
 
+int solution_result(char *sid) //从数据库查询提交记录的结果，注：用到了全局mysql
+{
+    sprintf(sql,"select `result` from solutions where id=%s",sid);
+    if(mysql_real_query(mysql,sql,strlen(sql))!=0){
+        printf("select failed!!\n");
+        exit(2);
+    }
+    mysql_res=mysql_store_result(mysql); //保存查询结果
+    mysql_row=mysql_fetch_row(mysql_res); //读取
+    int result  = atoi(mysql_row[0]);
+    mysql_free_result(mysql_res); //必须释放结果集
+    return result;
+}
 
 int file_size(const char* filename)//文件大小
 {
@@ -565,8 +578,16 @@ void sim(char *ac_dir)
     dirent *dirfile;
     while(dir!=NULL && (dirfile=readdir(dir))!=NULL)
     {
-        if(strcmp(strstr(LANG[solution.language],"."),strstr(dirfile->d_name,"."))!=0)
+        if(strcmp(strstr(LANG[solution.language],"."),strstr(dirfile->d_name,"."))!=0) //后缀不相等
             continue;
+        char sid[11]={0};
+        strncpy(sid, dirfile->d_name, strstr(dirfile->d_name,".")-dirfile->d_name);
+        if(solution_result(sid)!=OJ_AC)  //该代码曾被重判，且没有AC，不能作为查重依据
+        {
+            system_cmd("rm -rf %s/%s",ac_dir,dirfile->d_name); //删除
+            continue;
+        }
+
         system_cmd("../../sim/%s -p %s %s/%s |grep consists|head -1|awk '{print $4}' > sim_rate.out",
             SIM_LANG[solution.language], LANG[solution.language], ac_dir, dirfile->d_name);
         int sim_rate = atoi(read_file("sim_rate.out"));
@@ -661,7 +682,7 @@ int main (int argc, char* argv[])
         {
             sim(ac_path);
             if(access(ac_path,F_OK)==-1)
-                    mkdir(ac_path,0777);
+                mkdir(ac_path,0777);
             system_cmd("/bin/cp -p %s %s/%d.%s", LANG[solution.language], ac_path, solution.id, LANG[solution.language]+5);
         }
     }
