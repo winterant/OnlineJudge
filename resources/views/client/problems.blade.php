@@ -41,7 +41,7 @@
                             <th>#</th>
                             <th>{{trans('main.Title')}}</th>
                             <th>{{trans('main.Source')}}</th>
-                            <th>{{trans('main.AC/Submit')}}({{trans('main.ACRate')}})</th>
+                            <th>{{trans('main.AC/Submit')}}</th>
                             <th>{{__('main.Tag')}}</th>
                         </tr>
                         </thead>
