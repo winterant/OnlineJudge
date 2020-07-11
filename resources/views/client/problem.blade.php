@@ -391,16 +391,22 @@
             })
         @endif
         var tag_input_count=0;
-        function add_tag_input(that,defa='') {
+        function add_tag_input(that,defa=null) {
             if(tag_input_count>=5){
                 Notiflix.Notify.Failure("{{__('sentence.tag_marked_exceed')}}")
                 return;
             }
             var dom="<div class=\"form-inline\">\n" +
-                "    <input type=\"text\" class=\"form-control mr-2\" value=\""+defa+"\" oninput=\"input_auto_width($(this))\" required name=\"tag_names[]\" style=\"width: 50px\">\n" +
+                "    <input type=\"text\" class=\"form-control mr-2\" oninput=\"input_auto_width($(this))\" required name=\"tag_names[]\" style=\"width: 50px\">\n" +
                 "    <a style=\"margin-left: -25px;cursor: pointer\" onclick=\"delete_tag_input($(this))\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></a>\n" +
                 "</div>";
             $(that).before(dom);
+            var input = $(that).prev().children("input");
+            input.focus();
+            if(defa!=null){
+                input.val(defa);
+                input_auto_width(input);
+            }
             tag_input_count++;
         }
         function delete_tag_input(that){
@@ -416,6 +422,7 @@
 
 
         function input_auto_width(that) {
+            $(that).val($(that).val().replace(/\s+/g,'')); //禁止输入空格
             var sensor = $('<font>'+ $(that).val() +'</font>').css({display: 'none'});
             $('body').append(sensor);
             var width = sensor.width();
