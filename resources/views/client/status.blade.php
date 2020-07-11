@@ -49,7 +49,7 @@
                                                 <select name="index" class="pl-1 form-control" onchange="this.form.submit();">
                                                     <option class="form-control" value="">{{__('main.Problems')}}</option>
                                                     @foreach($index_map as $i=>$pid)
-                                                        <option value="{{$i}}" {{isset($_GET['index'])&&$_GET['index']==$i?'selected':null}}>{{index2ch($i)}}</option>
+                                                        <option value="{{$i}}" {{isset($_GET['index'])&&$_GET['index']===$i?'selected':null}}>{{index2ch($i)}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
