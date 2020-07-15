@@ -19,8 +19,6 @@
 #define max(a,b) ((a)>(b) ? (a) : (b))
 #define min(a,b) ((a)<(b) ? (a) : (b))
 
-
-
 #define OJ_WT  0    //waiting
 #define OJ_QI  1    //queueing
 #define OJ_CI  2    //compiling
@@ -348,7 +346,7 @@ void running()
     LIM.rlim_max=LIM.rlim_cur = solution.time_limit/1000+1; //S,增加1秒额外损耗
     setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit
     alarm(0);
-    alarm((int)LIM.rlim_cur); //定时自杀
+    alarm((int)(LIM.rlim_cur<<1)+10); //定时自杀
 
     switch(solution.language)
     {
@@ -408,9 +406,20 @@ int watch_running(int child_pid, char *test_name, int max_out_size)
     int status=0, result=OJ_TC; //初始result=测试通过
     struct rusage ruse;    //保存用户子进程的内存时间等
     float memory_MB=0;   //本次内存消耗
+    bool first=true;
     while(1)
     {
         wait4(child_pid, &status, __WALL, &ruse); //跟踪子进程，子进程可能并未结束
+        if (first)
+        {
+            ptrace(PTRACE_SETOPTIONS, child_pid, NULL, PTRACE_O_TRACESYSGOOD | PTRACE_O_TRACEEXIT
+                   //	|PTRACE_O_EXITKILL
+                   //	|PTRACE_O_TRACECLONE
+                   //	|PTRACE_O_TRACEFORK
+                   //	|PTRACE_O_TRACEVFORK
+            );
+            first=false;
+        }
 
         //内存使用情况
         if(solution.language==2)
@@ -440,21 +449,23 @@ int watch_running(int child_pid, char *test_name, int max_out_size)
 
         int exit_code = WEXITSTATUS(status);  //子进程退出码, 注意子进程可能并未真正结束，只是一个断点
 		if (!((solution.language>1&&exit_code==17) || exit_code==0 || exit_code==133 || exit_code==5) ){
-            switch (exit_code) {
-                case SIGCHLD : case SIGALRM :
-                    alarm(0);
-                case SIGKILL : case SIGXCPU :
-                    result = OJ_TL; break;  //超时
-                case SIGXFSZ :
-                    result = OJ_OL; break;  //输出超限
-                default :
-                    result = OJ_RE;     //默认运行错误
-            }
             printf("[son-process exit]: runtime error! exit code = %d\n",exit_code);
             if(exit_code==11){
                 char error[128];
                 sprintf(error,"[ERROR] Illegal segment error (invalid memory reference)\n");
                 write_file(error,"error.out","a+");
+            }
+            switch (exit_code) {
+                case SIGCHLD : case SIGALRM :
+                    alarm(0);
+                    printf("[son-process exit]: alarm exceeded\n");
+                case SIGKILL : case SIGXCPU :
+                    printf("[son-process exit]: Time Limit Exceeded: %dMS\n", (int)solution.time_limit);
+                    result = OJ_TL; break;  //超时
+                case SIGXFSZ :
+                    result = OJ_OL; break;  //输出超限
+                default :
+                    result = OJ_RE;     //默认运行错误
             }
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             break;
@@ -462,6 +473,10 @@ int watch_running(int child_pid, char *test_name, int max_out_size)
         if(WIFSIGNALED(status)) //子进程异常终止
         {
             int sig = WTERMSIG(status); //信号
+            char error[128];
+            sprintf(error,"[ERROR] The process terminated abnormally! signal value = %d\n",sig);
+            write_file(error,"error.out","a+");
+            printf("[son-process signal]: runtime error! signal value = %d\n",sig);
             switch (sig) {
                 case SIGCHLD : case SIGALRM :
                     alarm(0);
@@ -472,7 +487,6 @@ int watch_running(int child_pid, char *test_name, int max_out_size)
                 default :
                     result = OJ_RE;     //默认运行错误
             }
-            printf("[son-process signal]: runtime error! signal value = %d\n",sig);
             ptrace(PTRACE_KILL, child_pid, NULL, NULL);
             break;
         }
@@ -499,7 +513,7 @@ int watch_running(int child_pid, char *test_name, int max_out_size)
     printf("test%3s | used memory: %5.2fMB, limit is %.2fMB\n", test_name, memory_MB, solution.memory_limit);
     solution.time   = max(solution.time,   min(solution.time_limit,   used_time) );
     solution.memory = max(solution.memory, min(solution.memory_limit, memory_MB) );
-    if(result==OJ_TL)solution.time=solution.time_limit;
+//    if(result==OJ_TL)solution.time=solution.time_limit;
     return result;
 }
 
