@@ -39,7 +39,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">题目：</span>
                     </div>
-                    <input type="text" name="problem[title]" value="{{isset($problem->title)?$problem->title:''}}" required class="form-control">
+                    <input type="text" name="problem[title]" value="{{isset($problem->title)?$problem->title:''}}" required maxlength="255" class="form-control">
                 </div>
                 <div class="form-inline">
                     <label>时间限制：
@@ -78,7 +78,7 @@
                     <label>
                         <p class="mb-1">待填代码：</p>
                         <div class="alert alert-info mb-0">
-                            备注：请将要填写的代码替换为英文输入的双问号！
+                            备注：请将需要填空的代码替换为英文输入双问号（即??）
                         </div>
                         <textarea name="problem[fill_in_blank]" class="w-100 border bg-white"
                             rows="10" cols="500">{{isset($problem)?$problem->fill_in_blank:''}}</textarea>
@@ -165,7 +165,7 @@
             else if(number===0)
                 $('#text_fill_in_blank').hide();
         }
-        type_has_change(parseInt('{{isset($problem)?$problem->type:-1}}')); //初始执行一次
+        type_has_change(parseInt('{{isset($problem)?$problem->type:0}}')); //初始执行一次
 
         //编辑框配置
         var config={
