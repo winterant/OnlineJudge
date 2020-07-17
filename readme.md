@@ -52,7 +52,7 @@ Ludong University Online Judge
   3. **基于docker**
     
      若docker build缓慢，请先
-     [更换docker镜像源](https://blog.csdn.net/Funny_Ma/article/details/96478395)
+     [更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
      ```
      docker build -t lduoj\
          https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
