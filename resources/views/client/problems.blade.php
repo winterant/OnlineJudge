@@ -7,7 +7,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-10">
-                <div class="my-container bg-white table-responsive">
+                <div class="my-container bg-white">
                     <div class="overflow-hidden">
                         <h4 class="pull-left">{{__('main.Problems')}}</h4>
                         <form id="find_form" action="" method="get" class="pull-right form-inline">
@@ -35,49 +35,54 @@
                         </form>
                     </div>
                     {{$problems->appends($_GET)->links()}}
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>{{trans('main.Title')}}</th>
-                            <th>{{trans('main.Source')}}</th>
-                            <th>{{trans('main.AC/Submit')}}</th>
-                            <th>{{__('main.Tag')}}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($problems as $item)
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
                             <tr>
-                                <td>{{$item->id}}</td>
-                                @if($item->hidden==0 || Auth::check()&&Auth::user()->privilege('problem'))
-                                    <td nowrap>
-                                        <a href="{{route('problem',$item->id)}}">{{$item->title}}</a>
-                                        @if($item->hidden==1)
-                                            (<font class="text-red">{{trans('main.Hidden')}}</font>)
-                                        @endif
-                                    </td>
-                                    <td nowrap>{{$item->source}}</td>
-                                    <td nowrap>
-                                        {{$item->solved}}&nbsp;/&nbsp;{{$item->submit}}
-                                        ({{round($item->solved/max(1.0,$item->submit)*100)}}%)
-                                    </td>
-                                    <td nowrap>
-                                        @foreach($item->tags as $tag)
-                                            <div class="d-inline text-nowrap mr-1">
-                                                <i class="fa fa-tag" aria-hidden="true"></i><a href="javascript:findByTagId({{$tag->id}})">{{$tag->name}}</a>
-                                            </div>
-                                        @endforeach
-                                    </td>
-                                @else
-                                    <td>--- {{trans('main.Hidden')}} ---</td>
-                                    <td>-</td>
-                                    <td>-&nbsp;/&nbsp;-</td>
-                                    <td>-</td>
-                                @endif
+                                <th>#</th>
+                                <th>{{trans('main.Title')}}</th>
+                                <th>{{trans('main.Source')}}</th>
+                                <th>{{trans('main.AC/Submit')}}</th>
+                                <th>{{__('main.Tag')}}</th>
                             </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            @foreach($problems as $item)
+                                <tr>
+                                    <td>{{$item->id}}</td>
+                                    @if($item->hidden==0 || Auth::check()&&Auth::user()->privilege('problem'))
+                                        <td nowrap>
+                                            <a href="{{route('problem',$item->id)}}">{{$item->title}}</a>
+                                            @if($item->hidden==1)
+                                                (<font class="text-red">{{trans('main.Hidden')}}</font>)
+                                            @endif
+                                        </td>
+                                        <td nowrap>
+                                            <a title="{{$item->source}}">{{$item->source}}</a>
+                                        </td>
+                                        <td nowrap>
+                                            {{$item->solved}} / {{$item->submit}}
+                                            ({{round($item->solved/max(1.0,$item->submit)*100)}}%)
+                                        </td>
+                                        <td nowrap>
+                                            @foreach($item->tags as $tag)
+                                                <div class="d-inline text-nowrap mr-1">
+                                                    <i class="fa fa-tag" aria-hidden="true"></i><a href="javascript:findByTagId({{$tag->id}})">{{$tag->name}}</a>
+                                                </div>
+                                            @endforeach
+                                        </td>
+                                    @else
+                                        <td>--- {{trans('main.Hidden')}} ---</td>
+                                        <td>-</td>
+                                        <td>-&nbsp;/&nbsp;-</td>
+                                        <td>-</td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
                     {{$problems->appends($_GET)->links()}}
                     @if(count($problems)==0)
                         <p class="text-center">{{__('sentence.No data')}}</p>
