@@ -12,4 +12,5 @@ return [
 	"rank_show_nick"	        => true,    //榜单显示昵称（姓名）
 	"penalty_acm"	            => 1200,    //竞赛acm模式错误一次的罚时，1200秒=20分钟
 	"submit_interval"	        => 20,      //同一用户两次提交最小间隔，20秒
+    "APP_LOCALE"                => "en"     //网站前台语言
 ];
