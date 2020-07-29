@@ -22,6 +22,15 @@
                     </div>
                     <input type="text" name="beian" value="{{get_setting('beian')}}" class="form-control" autocomplete="off">
                 </div>
+                <div class="form-inline">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">前台语言：</span>
+                    </div>
+                    <select name="APP_LOCALE" class="form-control px-3">
+                        <option value="en">英文</option>
+                        <option value="zh-CN" @if(get_setting('APP_LOCALE')=='zh-CN')selected @endif>中文</option>
+                    </select>
+                </div>
                 <button class="btn text-white mt-4 bg-success">保存</button>
             </form>
         </div>
