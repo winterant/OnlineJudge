@@ -146,4 +146,41 @@ class UserController extends Controller
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    public function blacklist(){
+        $blacklist=DB::table('blacklist')
+            ->leftJoin('users','users.id','=','user_id')
+            ->select(['blacklist.id','username','nick','blacklist.created_at'])
+            ->orderBy('username')->get();
+        return view('admin.user.blacklist',compact('blacklist'));
+    }
+
+    public function blacklist_create(Request $request){
+        $username = $request->input('username');
+        $reason = $request->input('reason');
+        $user_id=DB::table('users')->where('username',$username)->value('id');
+        if($user_id==null)
+            $msg='该用户不存在！请先至用户列表确认用户的登录名！';
+        else{
+            DB::table('blacklist')->updateOrInsert(['user_id'=>$user_id],['reason'=>$reason]);
+            $msg='成功将用户'.$username.'加入黑名单！';
+        }
+        return back()->with('msg',$msg);
+    }
+
+    public function blacklist_delete(Request $request){
+        return DB::table('blacklist')->delete($request->input('id'));
+    }
+
 }

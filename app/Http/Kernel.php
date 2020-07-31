@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CheckBlacklist;
 use App\Http\Middleware\Privilege;
 use App\Http\Middleware\CheckContest;
 use App\Http\Middleware\SetTimeZone;
@@ -67,6 +68,7 @@ class Kernel extends HttpKernel
 
         'Privilege' => Privilege::class,
         'CheckContest' => CheckContest::class,
+        'CheckBlacklist' => CheckBlacklist::class
     ];
 
     /**

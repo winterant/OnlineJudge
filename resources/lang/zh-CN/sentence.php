@@ -21,6 +21,7 @@ return [
 
 //    user
     "User not found"    => "用户 :un 不存在!",
+    "in_blacklist"      => "由于您的账号已被加入黑名单，无法显示该页面！",
 
 //    client/password_reset
     "Reset Password"    => "重置密码",

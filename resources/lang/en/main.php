@@ -9,6 +9,7 @@ return [
     "Judger"        => "Judger",
     "Failed"        => "Failed",
     "Type"          => "Type",
+    "Reason"        => "Reason",
 
     //home.blade
     "Notice Board"  => "Notice Board",
