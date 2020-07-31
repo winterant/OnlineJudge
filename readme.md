@@ -26,10 +26,10 @@ Ludong University Online Judge
 
   + 判题机；启动/停止linux判题端进程
   + 公告/新闻；用户访问首页可见
-  + 用户管理；权限授权，批量生成账号
+  + 用户管理；权限授权，批量生成账号，黑名单
   + 题目管理；增改查，公开/隐藏，重判结果，导入与导出(兼容hustoj)
   + 竞赛管理；增删查改，公开/隐藏
-  + 系统配置；修改网站名称，打开/关闭一些全局功能
+  + 系统配置；修改网站名称，打开/关闭一些全局功能，中英文切换等。
 
 # 项目安装
   
@@ -37,22 +37,15 @@ Ludong University Online Judge
 
   1. **基于Linux Ubuntu 16.04**
   
-     在终端执行以下命令，安装过程约10分钟。
-     若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。 
-     如何[手动部署](https://blog.csdn.net/winter2121/article/details/106257563)？
+     若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
      ```
      git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
      bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
      ```
 
-  2. **基于Linux CentOS 7.x**
-  
-     正在研究中
-
-  3. **基于docker**
+  2. **基于docker**
     
-     若docker build缓慢，请先
-     [更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
+     若docker build缓慢，请先[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
      ```
      docker build -t lduoj\
          https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
@@ -61,7 +54,7 @@ Ludong University Online Judge
          --name lduoj lduoj:latest
      ```
      部署后使用浏览器访问http://localhost:8080  
-     进入容器进行管理： `dockder exec -it container_id /bin/bash`
+     进入容器进行管理： `dockder exec -it 容器id /bin/bash`
 
 + **安装成功**  
   1. 浏览器输入服务器ip即可访问首页(防火墙安全组须开放80端口)  
@@ -71,27 +64,26 @@ Ludong University Online Judge
   (项目配置文件:`.env`，配置生效:`php /home/LDUOnlineJudge/artisan config:cache`)  
   5. 域名&端口：配置文件`/etc/nginx/conf.d/lduoj.conf`，配置生效:`service nginx restart`
 
-# 项目备份与恢复
-- 备份
-  
-    产生备份`/home/lduoj_backup/lduoj_{日期}`，
-    包含项目(所有文件)、数据库备份lduoj.sql、nginx配置文件lduoj.conf
-    - Ubuntu16.04 & docker容器内
+# 项目备份
+
+  产生系统备份`/home/lduoj_backup/lduoj_{日期}`。
+  - Ubuntu16.04 或 docker容器内
     ```
     bash /home/LDUOnlineJudge/install/ubuntu16.04/backup.sh
     ```
   
-- 恢复
+# 项目恢复
   
-    - Ubuntu16.04 & docker容器内
-    ```
-    bash /home/LDUOnlineJudge/install/ubuntu16.04/recover.sh  /home/lduoj_backup/备份名
-    ```
+  从已有备份中恢复系统。
+   - Ubuntu16.04 或 docker容器内
+   ```
+   bash /home/LDUOnlineJudge/install/ubuntu16.04/recover.sh  /home/lduoj_backup/备份名
+   ```
 
 # 项目升级
 
   建议升级前进行一次备份，若升级失败，可恢复系统。
-  - Ubuntu16.04 & docker容器内
+  - Ubuntu16.04 或 docker容器内
   ```
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
   cp /home/lduoj_upgrade/install/ubuntu16.04/update.sh /home/
@@ -156,9 +148,8 @@ Ludong University Online Judge
   [ckeditor-5](https://ckeditor.com/ckeditor-5/)  
   [MathJax](https://www.mathjax.org/)  
   [zhiyul/switch](https://github.com/notiflix/Notiflix)  
-  
 
 # 版本信息
-  
+
   iamwinter/LDUOnlineJudge is licensed under the 
   **[GNU General Public License v3.0](https://github.com/iamwinter/LDUOnlineJudge/blob/master/LICENSE)**
