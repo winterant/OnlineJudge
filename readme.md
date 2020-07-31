@@ -75,20 +75,20 @@ Ludong University Online Judge
 # 项目恢复
   
   从已有备份中恢复系统。
-   - Ubuntu16.04 或 docker容器内
-   ```
-   bash /home/LDUOnlineJudge/install/ubuntu16.04/recover.sh  /home/lduoj_backup/备份名
-   ```
+  - Ubuntu16.04 或 docker容器内
+    ```
+    bash /home/LDUOnlineJudge/install/ubuntu16.04/recover.sh  /home/lduoj_backup/备份名
+    ```
 
 # 项目升级
 
   建议升级前进行一次备份，若升级失败，可恢复系统。
   - Ubuntu16.04 或 docker容器内
-  ```
-  git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
-  cp /home/lduoj_upgrade/install/ubuntu16.04/update.sh /home/
-  bash /home/update.sh
-  ```
+    ```
+    git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
+    cp /home/lduoj_upgrade/install/ubuntu16.04/update.sh /home/
+    bash /home/update.sh
+    ```
 
 # 判题端使用说明
 
