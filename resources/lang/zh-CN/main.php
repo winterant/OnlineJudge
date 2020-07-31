@@ -9,6 +9,7 @@ return [
     "Judger"        => "判题机",
     "Failed"        => "失败",
     "Type"          => "类型",
+    "Reason"        => "原因",
 
     //home.blade
     "Notice Board"  => "公告板",

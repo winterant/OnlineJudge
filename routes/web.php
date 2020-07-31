@@ -25,11 +25,11 @@ Route::get('/status','Client\StatusController@index')->name('status');
 Route::post('/ajax_get_status','Client\StatusController@ajax_get_status')->name('ajax_get_status');
 Route::get('/solution/{id}','Client\StatusController@solution')->where(['id'=>'[0-9]+'])->name('solution');
 Route::get('/problems','Client\ProblemController@problems')->name('problems');
-Route::get('/problem/{id}','Client\ProblemController@problem')->where(['id'=>'[0-9]+'])->name('problem');
+Route::get('/problem/{id}','Client\ProblemController@problem')->middleware('CheckBlacklist')->where(['id'=>'[0-9]+'])->name('problem');
 Route::get('/contests','Client\ContestController@contests')->name('contests');
 Route::get('/standings','Client\UserController@standings')->name('standings');
 Route::get('/user/{username}','Client\UserController@user')->name('user');
-Route::middleware(['auth'])->group(function (){
+Route::middleware(['auth','CheckBlacklist'])->group(function (){
     Route::any('/user/{username}/edit','Client\UserController@user_edit')->name('user_edit');
     Route::any('/user/{username}/password_reset','Client\UserController@password_reset')->name('password_reset');
     Route::post('/status/submit_solution','Client\StatusController@create')->name('submit_solution');
@@ -45,7 +45,7 @@ Route::middleware(['auth'])->group(function (){
 // Contest
 Route::prefix('contest/{id}')->name('contest.')->where(['id'=>'[0-9]+'])->where(['pid'=>'[0-9]+'])->group(function () {
 
-    Route::middleware(['auth','CheckContest'])->group(function (){
+    Route::middleware(['auth','CheckContest','CheckBlacklist'])->group(function (){
         Route::get('/', 'Client\ContestController@home')->name('home');
         Route::get('/problem/{pid}', 'Client\ContestController@problem')->name('problem');
         Route::get('/status', 'Client\ContestController@status')->name('status');
@@ -69,7 +69,7 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id'=>'[0-9]+'])->where(
 
 
 // Administration
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9]+'])->group(function () {
+Route::middleware(['auth','CheckBlacklist'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9]+'])->group(function () {
     Route::get('/', 'Admin\HomeController@index')->name('home');
 //    判题端指令
     Route::post('/cmd_polling', 'Admin\HomeController@cmd_polling')->middleware(['Privilege:admin'])->name('cmd_polling');
@@ -93,6 +93,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9
         Route::post('/privilege/create','Admin\UserController@privilege_create')->name('privilege_create');
         Route::post('/privilege/delete','Admin\UserController@privilege_delete')->name('privilege_delete');
         Route::any('/reset_pwd','Admin\UserController@reset_pwd')->name('reset_pwd');
+        Route::get('/blacklist', 'Admin\UserController@blacklist')->name('blacklist');
+        Route::post('/blacklist/create','Admin\UserController@blacklist_create')->name('blacklist_create');
+        Route::post('/blacklist/delete','Admin\UserController@blacklist_delete')->name('blacklist_delete');
     });
 
 //   manage problem list

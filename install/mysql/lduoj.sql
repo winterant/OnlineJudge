@@ -11,11 +11,23 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 23/05/2020 15:53:23
+ Date: 2020/07/31
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for blacklist
+-- ----------------------------
+DROP TABLE IF EXISTS `blacklist`;
+CREATE TABLE `blacklist`  (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NULL DEFAULT NULL,
+    `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+    `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Table structure for contest_balloons

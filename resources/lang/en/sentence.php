@@ -21,6 +21,7 @@ return [
 
 //    user
     "User not found"    => "The user :un is not exist!",
+    "in_blacklist"      => "You can't open this page because you are in blacklist!",
 
 //    client/password_reset
     "Reset Password"    => "Reset Password",
