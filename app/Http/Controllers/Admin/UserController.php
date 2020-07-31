@@ -161,7 +161,7 @@ class UserController extends Controller
     public function blacklist(){
         $blacklist=DB::table('blacklist')
             ->leftJoin('users','users.id','=','user_id')
-            ->select(['blacklist.id','username','nick','blacklist.created_at'])
+            ->select(['blacklist.id','username','nick','reason','blacklist.created_at'])
             ->orderBy('username')->get();
         return view('admin.user.blacklist',compact('blacklist'));
     }

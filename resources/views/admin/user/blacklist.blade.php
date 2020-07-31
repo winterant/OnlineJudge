@@ -34,7 +34,8 @@
                         <td onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
                             <input type="checkbox" value="{{$item->id}}" onclick="window.event.stopPropagation();" style="vertical-align:middle;zoom: 140%">
                         </td>
-                        <td nowrap><a href="{{route('user',$item->username)}}" target="_blank">{{$item->username}}</a></td>
+                        <td nowrap><a href="{{route('user',$item->username)}}" data-toggle="tooltip" data-placement="bottom"
+                                      title="拉黑原因：{{$item->reason}}" target="_blank">{{$item->username}}</a></td>
                         <td nowrap>{{$item->nick}}</td>
                         <td nowrap>{{$item->created_at}}</td>
                         <td>
@@ -119,5 +120,9 @@
             }
             $('textarea[autoHeight]').autoHeight();
         })
+
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
     </script>
 @endsection
