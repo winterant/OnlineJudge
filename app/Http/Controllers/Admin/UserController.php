@@ -14,11 +14,11 @@ class UserController extends Controller
 {
     public function list(Request $request){
         $users=DB::table('users')->select(['id','username','email','nick','school','class','revise','created_at'])
-            ->when(isset($_GET['username']),function ($q){return $q->where('username','like',$_GET['username'].'%');})
-            ->when(isset($_GET['email']),function ($q){return $q->where('email','like',$_GET['email'].'%');})
-            ->when(isset($_GET['nick']),function ($q){return $q->where('nick','like',$_GET['nick'].'%');})
-            ->when(isset($_GET['school']),function ($q){return $q->where('school','like',$_GET['school'].'%');})
-            ->when(isset($_GET['class']),function ($q){return $q->where('class','like',$_GET['class'].'%');})
+            ->when(isset($_GET['username'])&&$_GET['username'],function ($q){return $q->where('username','like',$_GET['username'].'%');})
+            ->when(isset($_GET['email'])&&$_GET['email'],function ($q){return $q->where('email','like',$_GET['email'].'%');})
+            ->when(isset($_GET['nick'])&&$_GET['nick'],function ($q){return $q->where('nick','like',$_GET['nick'].'%');})
+            ->when(isset($_GET['school'])&&$_GET['school'],function ($q){return $q->where('school','like',$_GET['school'].'%');})
+            ->when(isset($_GET['class'])&&$_GET['class'],function ($q){return $q->where('class','like',$_GET['class'].'%');})
             ->orderBy('id')->paginate(isset($_GET['perPage'])?$_GET['perPage']:10);
         return view('admin.user.list',compact('users'));
     }
