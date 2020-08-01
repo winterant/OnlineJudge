@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 class ContestController extends Controller
 {
     public function contests(){
+        if(!isset($_GET['type']))
+            $_GET['type'] = 3;  // 默认contest类别
         $contests=DB::table('contests')
             ->select(['id','type','judge_type','title','start_time','end_time','access','top','hidden',
                 DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
