@@ -52,14 +52,16 @@
                                 ]
                             </font>
                         @endif
-                        <font style="font-size: 0.85rem">
-                            [
-                            <a href="javascript:" onclick="$('html,body').animate({scrollTop:$('#discussion_block').offset().top-20}, 400);"
-                               data-toggle="modal" data-target="#modal-discussion">
-                                {{__('main.Discussion')}}
-                            </a>
-                            ]
-                        </font>
+                        @if(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time))
+                            <font style="font-size: 0.85rem">
+                                [
+                                <a href="javascript:" onclick="$('html,body').animate({scrollTop:$('#discussion_block').offset().top-20}, 400);"
+                                   data-toggle="modal" data-target="#modal-discussion">
+                                    {{__('main.Discussion')}}
+                                </a>
+                                ]
+                            </font>
+                        @endif
                     </h4>
                     <hr class="mt-0 mb-1">
                     <div>
@@ -102,18 +104,20 @@
                     </div>
                 </div>
 
-                <div id="discussion_block" class="my-container bg-white ck-content">
-                    <div class="d-flex">
-                        <h4 class="flex-row">{{__('main.Discussions')}}</h4>
-                        @if(Auth::check())
-                            <button class="btn btn-info flex-row ml-2" data-toggle="modal" data-target="#edit-discussion"
-                                    onclick="$('#form_edit_discussion')[0].reset()">{{__('main.New Discussion')}}</button>
-                        @endif
+                @if(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time))
+                    <div id="discussion_block" class="my-container bg-white ck-content">
+                        <div class="d-flex">
+                            <h4 class="flex-row">{{__('main.Discussions')}}</h4>
+                            @if(Auth::check())
+                                <button class="btn btn-info flex-row ml-2" data-toggle="modal" data-target="#edit-discussion"
+                                        onclick="$('#form_edit_discussion')[0].reset()">{{__('main.New Discussion')}}</button>
+                            @endif
+                        </div>
+    {{--                    <hr class="mt-0 mb-1">--}}
+                        <ul id="discussion-content" class="border-bottom list-unstyled"></ul>
+                        <a href="javascript:" onclick="load_discussion()">{{__('main.More')}}>></a>
                     </div>
-{{--                    <hr class="mt-0 mb-1">--}}
-                    <ul id="discussion-content" class="border-bottom list-unstyled"></ul>
-                    <a href="javascript:" onclick="load_discussion()">{{__('main.More')}}>></a>
-                </div>
+                @endif
             </div>
 
             <div class="col-md-4 col-sm-12 col-12">
@@ -193,7 +197,6 @@
 
                 {{-- 已经AC的用户进行标签标记 --}}
                 @if($tag_mark_enable)
-
 {{--                    模态框选择标签 --}}
                     <div class="modal fade" id="modal_tag_pool">
                         <div class="modal-dialog modal-lg">
@@ -230,8 +233,6 @@
                             </div>
                         </div>
                     </div>
-
-
 
                     <div class="my-container bg-white">
 
@@ -379,7 +380,7 @@
 
 
 {{--     模态框  编辑讨论内容 --}}
-    @if(Auth::check())
+    @if(Auth::check()&&(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time)))
         {{--                模态框，管理员编辑公告 --}}
         <div class="modal fade" id="edit-discussion">
             <div class="modal-dialog modal-lg">

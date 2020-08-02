@@ -9,16 +9,6 @@
     <div>
         <form class="p-4 col-12 col-md-9" action="" method="post" enctype="multipart/form-data" onsubmit="presubmit()">
             @csrf
-{{--            <div class="form-group">--}}
-{{--                <label class="form-inline">竞赛类别：--}}
-{{--                    <select name="contest[type]" class="form-control">--}}
-{{--                        @foreach(config('oj.contestType') as $key=>$name)--}}
-{{--                            <option value="{{$key}}" @if(isset($contest->type)&&$contest->type==$key)selected @endif>&nbsp;{{$name}}&nbsp;</option>--}}
-{{--                        @endforeach--}}
-{{--                    </select>--}}
-{{--                </label>--}}
-{{--            </div>--}}
-
             <div class="form-inline mb-3">
                 <font>竞赛类别：</font>
 
@@ -41,6 +31,19 @@
                     <input type="radio" name="contest[judge_instantly]" value="0" class="custom-control-input" id="saihou"
                            @if(isset($contest->judge_instantly)&&$contest->judge_instantly==0)checked @endif>
                     <label class="custom-control-label pt-1" for="saihou">赛后判题（适合考试,用户多次提交一题只判最后一次,但考试结束后创建者须点击开始判题）</label>
+                </div>
+            </div>
+
+            <div class="form-inline mb-3">
+                <font>题目讨论：</font>
+                <div class="custom-control custom-radio ml-3">
+                    <input type="radio" name="contest[open_discussion]" value="1" class="custom-control-input" id="kaifang" checked>
+                    <label class="custom-control-label pt-1" for="kaifang">开放</label>
+                </div>
+                <div class="custom-control custom-radio ml-3">
+                    <input type="radio" name="contest[open_discussion]" value="0" class="custom-control-input" id="guanbi"
+                           @if(!isset($contest)||$contest->open_discussion==0)checked @endif>
+                    <label class="custom-control-label pt-1" for="guanbi">禁用（赛后可用）</label>
                 </div>
             </div>
 
