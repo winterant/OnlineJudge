@@ -38,8 +38,19 @@ Route::middleware(['auth','CheckBlacklist'])->group(function (){
 
     //tag marking
     Route::post('/tag_mark','Client\ProblemController@tag_mark')->name('tag_mark');
+
 });
 
+//    讨论
+Route::post('/load_discussion', 'Client\ProblemController@load_discussion')->name('load_discussion');
+Route::middleware(['auth','CheckBlacklist'])->group(function () {
+    Route::post('/edit_discussion/{pid}', 'Client\ProblemController@edit_discussion')->name('edit_discussion');
+});
+Route::middleware(['auth','CheckBlacklist','Privilege:problem_tag'])->group(function () {
+    Route::post('/delete_discussion', 'Client\ProblemController@delete_discussion')->name('delete_discussion');
+    Route::post('/top_discussion', 'Client\ProblemController@top_discussion')->name('top_discussion');
+    Route::post('/hidden_discussion', 'Client\ProblemController@hidden_discussion')->name('hidden_discussion');
+});
 
 
 // Contest

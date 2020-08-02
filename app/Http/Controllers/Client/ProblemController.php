@@ -144,4 +144,75 @@ class ProblemController extends Controller
         return back()->with('tag_marked',true);
     }
 
+
+
+    public function load_discussion(Request $request){
+        $problem_id = $request->input('problem_id');
+        $page = $request->input('page');
+        $discussions = DB::table('discussions')
+            ->select('id','username','content','top','hidden','created_at')
+            ->where('problem_id',$problem_id)
+            ->where('discussion_id',-1)
+            ->when(!Auth::check()||!Auth::user()->privilege('problem_tag'),function ($q){return $q->where('hidden',0);})
+            ->orderByDesc('top')
+            ->orderByDesc('created_at')
+            ->forPage($page,3)
+            ->get();
+
+        $ids=[];
+        foreach ($discussions as &$item) {
+            if($item->username)
+            $item->username=sprintf("<a href='%s'>%s</a>",route('user',$item->username),$item->username);
+            $ids[]=$item->id;
+        }
+
+        $son_disc = DB::table('discussions')
+            ->select('id','discussion_id','username','reply_username','content','top','hidden','created_at')
+            ->whereIn('discussion_id',$ids)
+            ->when(!Auth::check()||!Auth::user()->privilege('problem_tag'),function ($q){return $q->where('hidden',0);})
+            ->orderBy('created_at')
+            ->get();
+        $replies = [];
+        foreach ($son_disc as &$item){
+            if($item->username)
+                $item->username=sprintf("<a href='%s'>%s</a>",route('user',$item->username),$item->username);
+            if($item->reply_username)
+                $item->reply_username=sprintf("<a href='%s'>%s</a>",route('user',$item->reply_username),$item->reply_username);
+            $replies[$item->discussion_id][] = $item;
+        }
+
+        return json_encode([$discussions,$replies]);
+    }
+
+    public function edit_discussion(Request $request,$pid){
+        $disc = [];
+        if($request->input('discussion_id'))
+            $disc['discussion_id'] = $request->input('discussion_id');
+        if($request->input('reply_username'))
+            $disc['reply_username'] = $request->input('reply_username');
+        $disc['problem_id'] = $pid;
+        $disc['username'] = Auth::user()->username;
+        $disc['content'] = $request->input('content');
+        DB::table('discussions')->insert($disc);
+        return back()->with("discussion_added",true);
+    }
+
+    public function delete_discussion(Request $request){
+        return DB::table('discussions')->delete($request->input('id'));
+    }
+
+    public function top_discussion(Request $request){
+        if($request->input('way')==0)
+            $new_top=0;
+        else
+            $new_top=DB::table('discussions')->max('top')+1;
+        DB::table('discussions')->where('id',$request->input('id'))->update(['top'=>$new_top]);
+        return 1;
+    }
+
+    public function hidden_discussion(Request $request){
+        return DB::table('discussions')
+            ->where('id',$request->input('id'))
+            ->update(['hidden'=>$request->input('value')]);
+    }
 }

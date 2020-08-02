@@ -29,6 +29,8 @@ return [
 //    client/problem.blade.php
     "noSolutions"       => "You didn't submit any solution!",
     "Submit"            => "Submit your solution",
+    "No more discussions" => "No more discussions",
+    "discussion_added"  => "You have successfully published a discussion!",
 
 //   problem
     "Wrong spj"=> "Wrong spj",

@@ -31,7 +31,7 @@
             @endif
 
             <div class="col-md-8 col-sm-12 col-12">
-                <div class="my-container bg-white d-inline-block">
+                <div class="my-container bg-white d-inline-block ck-content">
                     {{--                非竞赛&&题目未公开，则提示 --}}
                     @if(!isset($contest)&&$problem->hidden==1)
                         [<font class="text-red">{{trans('main.Hidden')}}</font>]
@@ -52,9 +52,17 @@
                                 ]
                             </font>
                         @endif
+                        <font style="font-size: 0.85rem">
+                            [
+                            <a href="javascript:" onclick="$('html,body').animate({scrollTop:$('#discussion_block').offset().top-20}, 400);"
+                               data-toggle="modal" data-target="#modal-discussion">
+                                {{__('main.Discussion')}}
+                            </a>
+                            ]
+                        </font>
                     </h4>
                     <hr class="mt-0 mb-1">
-                    <div class="ck-content">
+                    <div>
                         <h4 class="text-sky">Description</h4>
                         {!! $problem->description !!}
 
@@ -92,6 +100,19 @@
                             {{$problem->source}}
                         @endif
                     </div>
+                </div>
+
+                <div id="discussion_block" class="my-container bg-white ck-content">
+                    <div class="d-flex">
+                        <h4 class="flex-row">{{__('main.Discussions')}}</h4>
+                        @if(Auth::check())
+                            <button class="btn btn-info flex-row ml-2" data-toggle="modal" data-target="#edit-discussion"
+                                    onclick="$('#form_edit_discussion')[0].reset()">{{__('main.New Discussion')}}</button>
+                        @endif
+                    </div>
+{{--                    <hr class="mt-0 mb-1">--}}
+                    <ul id="discussion-content" class="border-bottom list-unstyled"></ul>
+                    <a href="javascript:" onclick="load_discussion()">{{__('main.More')}}>></a>
                 </div>
             </div>
 
@@ -355,7 +376,73 @@
         </div>
     </div>
 
-    <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script> {{-- ckeditor样式 --}}
+
+
+{{--     模态框  编辑讨论内容 --}}
+    @if(Auth::check())
+        {{--                模态框，管理员编辑公告 --}}
+        <div class="modal fade" id="edit-discussion">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 id="notice-title" class="modal-title">{{__('main.New Discussion')}}</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <form id="form_edit_discussion" action="{{route('edit_discussion',$problem->id)}}" method="post">
+                        <!-- 模态框主体 -->
+                        <div class="modal-body">
+                            @csrf
+                            <input name="discussion_id" hidden>
+                            <input name="reply_username" hidden>
+                            <tips class="alert alert-info mb-0">备注：编辑框支持Latex公式
+                                （tips：\$行内公式\$(注意反斜杠)，$$单行居中公式$$）</tips>
+                            <div class="form-group mt-2">
+                                <textarea id="content" name="content" class="form-control-plaintext border bg-white"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- 模态框底部 -->
+                        <div class="modal-footer p-4">
+                            <button type="submit" class="btn btn-success">{{__('main.Submit')}}</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('main.Cancel')}}</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    @endif
+
+    {{-- ckeditor样式 --}}
+    @if(Auth::check())
+        <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script>
+        <script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
+        <script type="text/javascript">
+
+            //编辑框配置
+            var config={
+                language: "zh-cn",
+                removePlugins:['Autoformat'],  //取消markdown自动排版
+                ckfinder: {
+                    uploadUrl:'{{route('ck_upload_image',['_token'=>csrf_token()])}}'
+                }
+            };
+            //各个编辑框ckeditor
+            var editor=ClassicEditor.create(document.querySelector('#content'), config).then(editor => {
+                window.editor = editor;
+                console.log(editor.getData());
+            } ).catch(error => {
+                console.log(error);
+            } );
+        </script>
+    @endif
+
+
+{{--copy--}}
     <script type="text/javascript">
         function copy(tag_id) {
             $("body").append('<textarea id="copy_temp">'+$('#'+tag_id).html()+'</textarea>');
@@ -365,6 +452,9 @@
             Notiflix.Notify.Success('{{__('sentence.copy')}}');
         }
     </script>
+
+
+{{--mathjax公式--}}
     <script type="text/x-mathjax-config">
         window.MathJax.Hub.Config({
             showProcessingMessages: false, //关闭js加载过程信息
@@ -373,7 +463,7 @@
             tex2jax: {
                 inlineMath: [["\\$", "\\$"], ["\\(", "\\)"]], //行内公式选择符
                 displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
-                skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+                skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a", "tips"] //避开某些标签
             },
             "HTML-CSS": {
                 availableFonts: ["STIX", "TeX"], //可选字体
@@ -384,7 +474,7 @@
     </script>
     <script type="text/javascript" src="{{asset('static/MathJax-2.7.7/MathJax.js?config=TeX-AMS_HTML')}}"></script>
 
-    <script>
+    <script type="text/javascript">
         @if(session('tag_marked'))
             $(function () {
                 Notiflix.Notify.Success("{{__('sentence.tag_marked')}}");
@@ -420,7 +510,7 @@
             return false;
         }
 
-
+        //输入框根据字数自动调整宽度
         function input_auto_width(that) {
             $(that).val($(that).val().replace(/\s+/g,'')); //禁止输入空格
             var sensor = $('<font>'+ $(that).val() +'</font>').css({display: 'none'});
@@ -430,5 +520,140 @@
             $(that).css('width',(width+30)+'px');
         }
     </script>
-@endsection
 
+    <script type="text/javascript">
+        @if(session('discussion_added'))
+        $(function () {
+            Notiflix.Notify.Success("{{__('sentence.discussion_added')}}");
+        })
+        @endif
+        // 加载discussion
+        let discussion_page = 0;
+        function load_discussion() {
+            discussion_page++;
+            $.post(
+                '{{route('load_discussion')}}',
+                {
+                    '_token':'{{csrf_token()}}',
+                    'problem_id':'{{$problem->id}}',
+                    'page':discussion_page
+                },
+                function (ret) {
+                    ret=JSON.parse(ret);
+                    console.log(ret);
+                    let discussions = ret[0];
+                    let replies = ret[1];
+                    for(let i=0,len=discussions.length; i<len; i++)
+                    {
+                        const dis = discussions[i];
+                        //主评论
+                        let dis_div =
+                            "<div class=\"overflow-hidden border-top pt-1\">\n" +
+                            "   <p class=\"mb-0\">" + dis.username +"："+ "</p>\n" +
+                            "   <div class=\"pl-1\">" + dis.content + "</div>" +
+                            "   <div class=\"float-right\" style=\"font-size: 0.85rem\">\n" +
+                            (dis.top?"[<font class=\"text-red px-1\">{{trans('main.Top')}}</font>]":'') +
+                            (dis.hidden?"[<font class=\"text-red px-1\">{{trans('main.Hidden')}}</font>]":'') +
+                            @if(Auth::check()&&Auth::user()->privilege('problem_tag'))
+                                (dis.top?
+                                "    <a href=\"javascript:top_discussion("+dis.id+",0)\" class=\"px-1\">{{__('main.Cancel Top')}}</a>\n":
+                                "    <a href=\"javascript:top_discussion("+dis.id+",1)\" class=\"px-1\">{{__('main.To Top')}}</a>\n") +
+                                (dis.hidden?
+                                "    <a href=\"javascript:hidden_discussion("+dis.id+",0)\" class=\"px-1\">{{__('main.Public')}}</a>\n":
+                                "    <a href=\"javascript:hidden_discussion("+dis.id+",1)\" class=\"px-1\">{{__('main.Hidden')}}</a>\n") +
+                                "    <a href=\"javascript:\" onclick=\"delete_discussion("+dis.id+",$(this))\" class=\"px-1\">{{__('main.Delete')}}</a>\n" +
+                            @endif
+                            @if(Auth::check())
+                                "    <a href=\"javascript:reply("+dis.id+")\" class=\"px-1\">{{__('main.Reply')}}</a>\n" +
+                            @endif
+                            "        <span>"+ dis.created_at +"</span>\n" +
+                            "    </div>\n" +
+                            "</div>";
+                        //子评论
+                        let son_ul = "";
+                        if(replies.hasOwnProperty(dis.id)) //有子评论
+                        {
+                            son_ul = "<ul>";
+                            for(let j=0,lenj=replies[dis.id].length; j<lenj; j++)
+                            {
+                                const son_dis =replies[dis.id][j];
+                                let reply_name=(son_dis.reply_username==null?"":" <font class='bg-light'>@"+son_dis.reply_username+"</font>");
+                                let son_li =
+                                    "<li class=\"overflow-hidden border-top pt-1\">\n" +
+                                    "    <font>" + son_dis.username + reply_name + "：</font>\n" +
+                                    "    <div class=\"pl-1\">" + son_dis.content+"</div>\n" +
+                                    "    <div class=\"float-right\" style=\"font-size: 0.85rem\">\n" +
+                                    (son_dis.hidden?"[<font class=\"text-red px-1\">{{trans('main.Hidden')}}</font>]":'') +
+                                    @if(Auth::check()&&Auth::user()->privilege('problem_tag'))
+                                        (son_dis.hidden?
+                                        "   <a href=\"javascript:hidden_discussion("+son_dis.id+",0)\" class=\"px-1\">{{__('main.Public')}}</a>\n":
+                                        "   <a href=\"javascript:hidden_discussion("+son_dis.id+",1)\" class=\"px-1\">{{__('main.Hidden')}}</a>\n") +
+                                        "   <a href=\"javascript:\" onclick=\"delete_discussion("+dis.id+",$(this))\" class=\"px-1\">{{__('main.Delete')}}</a>\n" +
+                                    @endif
+                                    @if(Auth::check())
+                                        "   <a href=\"javascript:reply("+dis.id+",\'"+$(son_dis.username).html()+"\')\" class=\"px-1\">{{__('main.Reply')}}</a>\n" +
+                                    @endif
+                                    "       <span>"+ son_dis.created_at +"</span>\n" +
+                                    "   </div>\n" +
+                                    "</li>";
+                                son_ul += son_li;
+                            }
+                            son_ul += "</ul>";
+                        }
+                        $("<li>" + dis_div + son_ul + "</li>").hide(0).slideDown(200).appendTo("#discussion-content");
+                    }
+                    if(discussions.length<1)
+                        $("#discussion-content").append("<p>{{__('sentence.No more discussions')}}</p>");
+                }
+            );
+        }
+        load_discussion()
+
+
+        function delete_discussion(id,that) {
+            $.post(
+                '{{route('delete_discussion')}}',
+                {
+                    '_token':'{{csrf_token()}}',
+                    'id':id,
+                },
+                function (ret) {
+                    Notiflix.Notify.Success("删除成功！");
+                    $(that).parent().parent().slideUp(200)
+                }
+            );
+        }
+        function top_discussion(id,way) {
+            $.post(
+                '{{route('top_discussion')}}',
+                {
+                    '_token':'{{csrf_token()}}',
+                    'id':id,
+                    'way':way
+                },
+                function (ret) {
+                    Notiflix.Notify.Success(way?"已置顶显示！":"已取消置顶！");
+                }
+            );
+        }
+        function hidden_discussion(id,value) {
+            $.post(
+                '{{route('hidden_discussion')}}',
+                {
+                    '_token':'{{csrf_token()}}',
+                    'id':id,
+                    'value':value
+                },
+                function (ret) {
+                    Notiflix.Notify.Success(value?"已隐藏，仅管理员可见！":"已公开，所有用户可见！");
+                }
+            );
+        }
+        function reply(id,username='') {
+            $("#edit-discussion").modal('show');
+            $("input[name=discussion_id]").val(id);
+            $("input[name=reply_username]").val(username);
+            $("#content").val();
+        }
+    </script>
+@endsection
