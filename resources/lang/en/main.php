@@ -14,6 +14,7 @@ return [
     //home.blade
     "Notice Board"  => "Notice Board",
     "To Top"        => "To Top",
+    "Cancel Top"    => "Cancel Top",
     "Top"           => "Top",
     "By"            => "By",
     "Detail"        => "Detail",
@@ -47,6 +48,7 @@ return [
     "Information"   => "Information",
     "Notification"  => "Notification",
     "Discussion"    => "Discussion",
+    "Discussions"    => "Discussions",
 
 //    user
     "Confirm"       => "Confirm",
@@ -81,6 +83,7 @@ return [
     "Source"        => "Source",
     "AC/Submit"     => "AC/Submit",
     "ACRate"        => "ACRate",
+    "Public"        => "Public",
     "Hidden"        => "Hidden",
     "Private"       => "Private",
 
@@ -94,6 +97,10 @@ return [
     "Input"         => "Input",
     "Tag Pool"      => "Tag Pool",
     "Most Tagged"   => "Most Tagged",
+    "replies"       => "replies",
+    "Reply"         => "Reply",
+    "reply to"      => "reply to",
+    "New Discussion"=> "New Discussion",
 
 //    standing
     "All"           => "All",

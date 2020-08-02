@@ -14,6 +14,7 @@ return [
     //home.blade
     "Notice Board"  => "公告板",
     "To Top"        => "置顶",
+    "Cancel Top"    => "取消置顶",
     "Top"           => "顶部",
     "By"            => "通过",
     "Detail"        => "详情",
@@ -47,6 +48,7 @@ return [
     "Information"   => "信息",
     "Notification"  => "告示",
     "Discussion"    => "讨论",
+    "Discussions"    => "讨论板",
 
 //    user
     "Confirm"       => "确认",
@@ -81,6 +83,7 @@ return [
     "Source"        => "来源",
     "AC/Submit"     => "接受/提交",
     "ACRate"        => "接受率",
+    "Public"        => "公开",
     "Hidden"        => "隐藏",
     "Private"       => "私有",
 
@@ -94,6 +97,10 @@ return [
     "Input"         => "输入",
     "Tag Pool"      => "标签库",
     "Most Tagged"   => "标记最多",
+    "replies"       => "回复",
+    "Reply"         => "回复",
+    "reply to"      => "回复",
+    "New Discussion"=> "我想说",
 
 //    standing
     "All"           => "所有",

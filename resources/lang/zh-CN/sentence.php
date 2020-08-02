@@ -29,6 +29,8 @@ return [
 //    client/problem.blade.php
     "noSolutions"       => "你没有提交任何代码!",
     "Submit"            => "提交你的解决方案",
+    "No more discussions" => "已加载全部内容！",
+    "discussion_added"  => "成功发表了一条讨论！",
 
 //   problem
     "Wrong spj"=> "spj.cpp错误",
