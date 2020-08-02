@@ -90,6 +90,7 @@ CREATE TABLE `contests`  (
     `type` tinyint(4) NOT NULL DEFAULT 0 COMMENT '竞赛分类',
     `judge_instantly` tinyint(4) NOT NULL DEFAULT 1 COMMENT '是否即时判题，否则赛后只判最后一次提交',
     `judge_type` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'acm' COMMENT 'acm,oi',
+    `open_discussion` tinyint(4) NULL DEFAULT 1,
     `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
     `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
     `allow_lang` int(11) NULL DEFAULT 0 COMMENT '按位标记允许的提交语言',
@@ -105,6 +106,23 @@ CREATE TABLE `contests`  (
     INDEX `stime`(`start_time`) USING BTREE,
     INDEX `etime`(`end_time`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for discussions
+-- ----------------------------
+DROP TABLE IF EXISTS `discussions`;
+CREATE TABLE `discussions`  (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+    `problem_id` int(11) NULL DEFAULT -1,
+    `discussion_id` int(11) NULL DEFAULT -1,
+    `reply_username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+    `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+    `top` int(11) NULL DEFAULT 0,
+    `hidden` tinyint(4) NULL DEFAULT 0,
+    `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for notices
