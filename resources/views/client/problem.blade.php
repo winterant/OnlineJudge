@@ -523,9 +523,14 @@
 
     <script type="text/javascript">
         @if(session('discussion_added'))
-        $(function () {
-            Notiflix.Notify.Success("{{__('sentence.discussion_added')}}");
-        })
+            $(function () {
+                Notiflix.Notify.Success("{{__('sentence.discussion_added')}}");
+            })
+        @endif
+        @if(session('discussion_add_failed'))
+            $(function () {
+                Notiflix.Notify.Failure("五分钟内只允许发起一次讨论！");
+            })
         @endif
         // 加载discussion
         let discussion_page = 0;

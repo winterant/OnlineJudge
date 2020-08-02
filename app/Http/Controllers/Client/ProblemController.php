@@ -185,6 +185,14 @@ class ProblemController extends Controller
     }
 
     public function edit_discussion(Request $request,$pid){
+        if(!Auth::user()->privilege('problem_tag')){
+            $last_time=DB::table('discussions')
+                ->where('username',Auth::user()->username)
+                ->where('discussion_id',-1)
+                ->max('created_at');
+            if(time()-strtotime($last_time)<300) //少于5分钟，不能再次提交
+                return back()->with("discussion_add_failed",true);
+        }
         $disc = [];
         if($request->input('discussion_id'))
             $disc['discussion_id'] = $request->input('discussion_id');
