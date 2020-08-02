@@ -56,7 +56,7 @@ Ludong University Online Judge
      进入容器进行管理： `dockder exec -it 容器id /bin/bash`
 
 + **安装成功**  
-  1. 浏览器访问http://ip:端口,端口默认80，docker安装占用宿主机8080端口  
+  1. 浏览器访问http://ip:端口,端口默认80，docker安装则占用宿主机8080端口 
   2. **注册用户admin自动成为管理员**
   3. 安装后项目位于/home/LDUOnlieJudge，请勿移动  
   4. mysql数据库lduoj，用户lduoj@localhost(密码123456789)  
