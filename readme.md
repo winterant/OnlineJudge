@@ -32,8 +32,6 @@ Ludong University Online Judge
   + 系统配置；修改网站名称，打开/关闭一些全局功能，中英文切换等。
 
 # 项目安装
-  
-+ **快速安装**
 
 + **基于Linux Ubuntu 16.04**
   
@@ -48,9 +46,7 @@ Ludong University Online Judge
     若docker build缓慢，请先[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
     ```
     docker build -t lduoj https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
-    docker run -d --restart=always --cap-add=SYS_PTRACE\
-     -p 8080:80 -v ~/lduoj_docker:/volume\
-     --name lduoj lduoj:latest
+    docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
     ```
     进入容器进行管理： `dockder exec -it 容器id /bin/bash`
 
