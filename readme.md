@@ -112,6 +112,7 @@ Ludong University Online Judge
   [ckeditor-5](https://ckeditor.com/ckeditor-5/)  
   [MathJax](https://www.mathjax.org/)  
   [zhiyul/switch](https://github.com/notiflix/Notiflix)  
+  [wow.js](https://www.delac.io/wow/)
 
 # 版本信息
 
