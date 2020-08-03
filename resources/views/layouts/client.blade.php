@@ -122,7 +122,7 @@
     </div>
 </nav>
 
-<div class="wow slideInRight container">@include('layouts.notice_marquee')</div>
+<div class="wow slideInLeft container">@include('layouts.notice_marquee')</div>
 <div class="wow bounceInUp">
     @yield('content')
 </div>
