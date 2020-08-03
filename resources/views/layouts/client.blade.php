@@ -14,12 +14,15 @@
         .nav-tabs .active{
             border-color: #6599ff !important;
         }
+        .wow{
+            visibility: hidden;
+        }
     </style>
 
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white mb-3">
+<nav class="wow bounceInDown navbar navbar-expand-lg navbar-light bg-white mb-3">
 
     <a class="navbar-brand">{{get_setting('siteName')}}</a>
 
@@ -119,9 +122,10 @@
     </div>
 </nav>
 
-<div class="container">@include('layouts.notice_marquee')</div>
-
-@yield('content')
+<div class="wow slideInRight container">@include('layouts.notice_marquee')</div>
+<div class="wow bounceInUp">
+    @yield('content')
+</div>
 
 @include('layouts.footer')
 
