@@ -40,6 +40,13 @@ Ludong University Online Judge
     git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
     bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
      ```
+    - 浏览器访问服务器ip进入首页  
+    - 安装后项目位于/home/LDUOnlieJudge，请勿移动  
+    - **注册用户admin自动成为管理员**
+    - mysql数据库lduoj，用户lduoj@localhost(密码123456789)  
+      (配置文件:`.env`，配置生效:`php /home/LDUOnlineJudge/artisan config:cache`)  
+    - 域名&端口：配置文件`/etc/nginx/conf.d/lduoj.conf`，配置生效:`service nginx restart`  
+
 
 + **基于docker**
 
@@ -48,15 +55,8 @@ Ludong University Online Judge
     docker build -t lduoj https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
     docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
     ```
-    进入容器进行管理： `dockder exec -it 容器id /bin/bash`
-
-+ **安装成功**  
-  1. 浏览器访问服务器ip即可（docker版ip:8080，可配置nginx将80转发到8080）
-  2. **注册用户admin自动成为管理员**
-  3. 安装后项目位于/home/LDUOnlieJudge，请勿移动  
-  4. mysql数据库lduoj，用户lduoj@localhost(密码123456789)  
-    (配置文件:`.env`，配置生效:`php /home/LDUOnlineJudge/artisan config:cache`)  
-  5. 域名&端口：配置文件`/etc/nginx/conf.d/lduoj.conf`，配置生效:`service nginx restart`  
+    - 浏览器访问服务器ip:8080进入首页，可自行配置nginx将80转发到8080  
+    - 进入容器进行管理： `dockder exec -it 容器id /bin/bash`  
 
 # 项目备份
 
