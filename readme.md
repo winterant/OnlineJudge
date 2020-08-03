@@ -35,33 +35,32 @@ Ludong University Online Judge
   
 + **快速安装**
 
-  1. **基于Linux Ubuntu 16.04**
++ **基于Linux Ubuntu 16.04**
   
-     若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
-     ```
-     git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
-     bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
+    若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
+    ```
+    git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
+    bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
      ```
 
-  2. **基于docker**
-    
-     若docker build缓慢，请先[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
-     ```
-     docker build -t lduoj\
-         https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
-     docker run -d --restart=always --cap-add=SYS_PTRACE\
-         -p 8080:80 -v ~/lduoj_docker:/volume\
-         --name lduoj lduoj:latest
-     ```
-     进入容器进行管理： `dockder exec -it 容器id /bin/bash`
++ **基于docker**
+
+    若docker build缓慢，请先[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
+    ```
+    docker build -t lduoj https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
+    docker run -d --restart=always --cap-add=SYS_PTRACE\
+     -p 8080:80 -v ~/lduoj_docker:/volume\
+     --name lduoj lduoj:latest
+    ```
+    进入容器进行管理： `dockder exec -it 容器id /bin/bash`
 
 + **安装成功**  
-  1. 浏览器访问http://ip:端口,端口默认80，docker安装则占用宿主机8080端口 
+  1. 浏览器访问服务器ip即可（docker版ip:8080，可配置nginx将80转发到8080）
   2. **注册用户admin自动成为管理员**
   3. 安装后项目位于/home/LDUOnlieJudge，请勿移动  
   4. mysql数据库lduoj，用户lduoj@localhost(密码123456789)  
-  (项目配置文件:`.env`，配置生效:`php /home/LDUOnlineJudge/artisan config:cache`)  
-  5. 域名&端口：配置文件`/etc/nginx/conf.d/lduoj.conf`，配置生效:`service nginx restart`
+    (配置文件:`.env`，配置生效:`php /home/LDUOnlineJudge/artisan config:cache`)  
+  5. 域名&端口：配置文件`/etc/nginx/conf.d/lduoj.conf`，配置生效:`service nginx restart`  
 
 # 项目备份
 
