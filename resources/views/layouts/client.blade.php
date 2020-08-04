@@ -22,7 +22,7 @@
 </head>
 <body>
 
-<nav class="wow bounceInDown navbar navbar-expand-lg navbar-light bg-white mb-3">
+<nav class="navbar navbar-expand-lg navbar-light bg-white mb-3">
 
     <a class="navbar-brand">{{get_setting('siteName')}}</a>
 
@@ -122,7 +122,7 @@
     </div>
 </nav>
 
-<div class="wow slideInLeft container">@include('layouts.notice_marquee')</div>
+<div class="container">@include('layouts.notice_marquee')</div>
 <div class="wow bounceInUp">
     @yield('content')
 </div>
