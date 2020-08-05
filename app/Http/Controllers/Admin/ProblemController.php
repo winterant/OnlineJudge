@@ -57,6 +57,7 @@ class ProblemController extends Controller
     }
     public function tag_pool_delete(Request $request){
         $tids=$request->input('tids')?:[];
+        DB::table('tag_marks')->whereIn('tag_id',$tids)->delete(); //先删除用户提交的标记
         return DB::table('tag_pool')->whereIn('id',$tids)->delete();
     }
     public function tag_pool_hidden(Request $request){

@@ -103,30 +103,32 @@
         }
 
         function tag_pool_delete(id=-1) {
-            if(id!==-1){  ///单独修改一个
-                $('td input[type=checkbox]').prop('checked',false)
-                $('td input[value='+id+']').prop('checked',true)
-            }
-            // 删除标签
-            var tids=[];
-            $('td input[type=checkbox]:checked').each(function () { tids.push($(this).val()); });
-            $.post(
-                '{{route('admin.problem.tag_pool_delete')}}',
-                {
-                    '_token':'{{csrf_token()}}',
-                    'tids':tids,
-                },
-                function (ret) {
-                    if(id===-1){
-                        Notiflix.Report.Init();
-                        Notiflix.Report.Success('操作成功','已删除'+ret+'条数据!','confirm',function () {
-                            location.reload();
-                        })
-                    }else{
-                        location.reload();
-                    }
+            Notiflix.Confirm.Show('删除确认','标签被删除的同时，用户对题目标记的该标签也将被删除？','确认删除','取消',function () {
+                if(id!==-1){  ///单独修改一个
+                    $('td input[type=checkbox]').prop('checked',false)
+                    $('td input[value='+id+']').prop('checked',true)
                 }
-            );
+                // 删除标签
+                var tids=[];
+                $('td input[type=checkbox]:checked').each(function () { tids.push($(this).val()); });
+                $.post(
+                    '{{route('admin.problem.tag_pool_delete')}}',
+                    {
+                        '_token':'{{csrf_token()}}',
+                        'tids':tids,
+                    },
+                    function (ret) {
+                        if(id===-1){
+                            Notiflix.Report.Init();
+                            Notiflix.Report.Success('操作成功','已删除'+ret+'条数据!','confirm',function () {
+                                location.reload();
+                            })
+                        }else{
+                            location.reload();
+                        }
+                    }
+                );
+            });
         }
     </script>
 @endsection
