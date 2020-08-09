@@ -107,7 +107,13 @@ Ludong University Online Judge
   php artisan key:generate
   php artisan optimize
   ```
-  使用`LDUOnlineJudge/install/mysql/lduoj.sql`创建数据库,在`.env`中配置mysql
+  - `LDUOnlineJudge/install/mysql/lduoj.sql`创建数据库，`.env`配置mysql  
+  - 若使用nginx，配置文件中需添加：
+    ```shell script
+    location / {
+      try_files $uri $uri/ /index.php?$query_string;
+    }
+    ```
 
 # 鸣谢
 
