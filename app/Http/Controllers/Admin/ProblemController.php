@@ -183,7 +183,7 @@ class ProblemController extends Controller
         $pid=$request->input('pid');
         $filename=$request->input('filename');
         $content=$request->input('content');
-        Storage::put('data/'.$pid.'/test/'.$filename,$content);
+        Storage::put('data/'.$pid.'/test/'.$filename,str_replace(["\r\n","\r","\n"],PHP_EOL, $content));
         return back();
     }
 
