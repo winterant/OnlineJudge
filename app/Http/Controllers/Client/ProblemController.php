@@ -54,13 +54,14 @@ class ProblemController extends Controller
 
     public function problem($id)
     {
-        //在网页展示一个问题
+        // 在网页展示一个问题
         $problem=DB::table('problems')->select('*',
             DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
             DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as solved")
-            )->find($id);
+            )->where('hidden',0)
+            ->find($id);
         if($problem==null)
-            abort(404);
+            return view('client.fail',['msg'=>trans('sentence.problem_not_found')]);
         if(!Auth::check() && !get_setting('guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
             return view('client.fail',['msg'=>trans('sentence.Please login first')]);
 
