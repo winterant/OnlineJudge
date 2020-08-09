@@ -2,9 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Support\Facades\App;
 use Closure;
 
-class SetTimeZone
+class SetGlobalVariable
 {
     /**
      * Handle an incoming request.

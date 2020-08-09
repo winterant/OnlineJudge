@@ -23,7 +23,7 @@ service php7.2-fpm start
 apt -y install composer zip unzip
 composer install --ignore-platform-reqs
 
-# laravel artisan; 必须在composer之后
+# laravel artisan; 依赖composer
 php artisan storage:link
 php artisan key:generate
 php artisan optimize

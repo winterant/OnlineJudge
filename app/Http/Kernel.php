@@ -5,7 +5,7 @@ namespace App\Http;
 use App\Http\Middleware\CheckBlacklist;
 use App\Http\Middleware\Privilege;
 use App\Http\Middleware\CheckContest;
-use App\Http\Middleware\SetTimeZone;
+use App\Http\Middleware\SetGlobalVariable;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -23,7 +23,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        SetTimeZone::class,
+        SetGlobalVariable::class,
     ];
 
     /**
