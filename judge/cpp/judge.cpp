@@ -602,7 +602,11 @@ void sim(char *ac_dir)
             continue;
         char sid[11]={0};
         strncpy(sid, dirfile->d_name, strstr(dirfile->d_name,".")-dirfile->d_name);
-        if(solution.id>atoi(sid) && solution_result(sid)!=OJ_AC)  //该代码曾被重判，且没有AC，不能作为查重依据
+        if(solution.id<=atoi(sid))  //自身以及后来提交的不查
+        {
+            continue;
+        }
+        if(solution_result(sid)!=OJ_AC)  //该代码曾被重判，且没有AC，不能作为查重依据
         {
             system_cmd("rm -rf %s/%s",ac_dir,dirfile->d_name); //删除
             continue;
