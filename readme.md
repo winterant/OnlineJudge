@@ -96,6 +96,19 @@ Ludong University Online Judge
     数据库连接信息、判题线程数、判题机名称等配置项均在项目根目录下.env文件  
     默认判题线程数为5，可根据服务器内存及性能适当调节
 
+# 本地开发
+
+  ```
+  git clone https://github.com/iamwinter/LDUOnlineJudge.git
+  cd LDUOnlineJudge
+  cp .env.example .env
+  composer install
+  php artisan storage:link
+  php artisan key:generate
+  php artisan optimize
+  ```
+  使用`LDUOnlineJudge/install/mysql/lduoj.sql`创建数据库,在`.env`中配置mysql
+
 # 鸣谢
 
   [zhblue/hustoj](https://github.com/zhblue/hustoj)  
