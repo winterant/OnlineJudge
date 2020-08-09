@@ -54,16 +54,16 @@ class ProblemController extends Controller
 
     public function problem($id)
     {
+        if(!Auth::check() && !get_setting('guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
+            return view('client.fail',['msg'=>trans('sentence.Please login first')]);
         // 在网页展示一个问题
         $problem=DB::table('problems')->select('*',
             DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
             DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as solved")
-            )->where('hidden',0)
+            )->when(!(Auth::check()&&Auth::user()->privilege('problem_list')),function ($q){return $q->where('hidden',0);})
             ->find($id);
         if($problem==null)
             return view('client.fail',['msg'=>trans('sentence.problem_not_found')]);
-        if(!Auth::check() && !get_setting('guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
-            return view('client.fail',['msg'=>trans('sentence.Please login first')]);
 
         //查询引入这道题的竞赛
         $contests=DB::table('contest_problems')
