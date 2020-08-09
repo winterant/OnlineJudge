@@ -212,12 +212,16 @@ char* get_data_out_path(const char* data_dir,const char* test_name) //获取测�
 bool is_whitespace(char c) {
     return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
-int rm_whitespace(char *str)//删除字符串中的空白符
+
+int rm_whitespace(char *str,bool only_r)//删除字符串中的空白符，true:只过滤\r
 {
     int i=0,j=0;
     while(str[j]!='\0')
     {
-        while(is_whitespace(str[j]))j++;
+        if(only_r)
+            while(str[j]=='\r')j++;
+        else
+            while(is_whitespace(str[j]))j++;
         if(str[j]!='\0')
             str[i++]=str[j++];
     }
@@ -233,12 +237,14 @@ int rm_end_whitespace(char *str)//删除字符串末尾空白字符
 int compare_file(const char* fname1,const char *fname2) //比较两文件是否一致
 {
     char *buf1=read_file(fname1), *buf2=read_file(fname2);
+    rm_whitespace(buf1,true); //过滤\r
+    rm_whitespace(buf2,true);
     rm_end_whitespace(buf1);
     rm_end_whitespace(buf2);
     if(strcmp(buf1,buf2)==0)
         return OJ_AC;
-    rm_whitespace(buf1);
-    rm_whitespace(buf2);
+    rm_whitespace(buf1,false);
+    rm_whitespace(buf2,false);
     if(strcmp(buf1,buf2)==0)
         return OJ_PE;
     return OJ_WA;
