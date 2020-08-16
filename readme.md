@@ -59,22 +59,6 @@ Ludong University Online Judge
     - 浏览器访问服务器ip:8080进入首页。[如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  
     - 进入容器进行管理： `dockder exec -it 容器id /bin/bash`  
 
-# 项目备份
-
-  生成备份`/home/lduoj_backup/lduoj_{日期}`。
-  - Ubuntu16.04 或 docker容器内
-    ```
-    bash /home/LDUOnlineJudge/install/ubuntu16.04/backup.sh
-    ```
-  
-# 项目恢复
-
-  从备份中恢复系统。
-  - Ubuntu16.04 或 docker容器内
-    ```
-    bash /home/LDUOnlineJudge/install/ubuntu16.04/recover.sh  /home/lduoj_backup/备份名
-    ```
-
 # 项目升级
 
   - Ubuntu16.04 或 docker容器内
