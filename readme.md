@@ -52,7 +52,8 @@ Ludong University Online Judge
 
     若docker build缓慢，请先[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
     ```
-    docker build -t lduoj https://raw.githubusercontent.com/iamwinter/LDUOnlineJudge/master/install/docker/Dockerfile
+    git clone https://github.com/iamwinter/LDUOnlineJudge.git
+    docker build  -t lduoj -f ./LDUOnlineJudge/install/docker/Dockerfile .
     docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
     ```
     - 浏览器访问服务器ip:8080进入首页。[如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  

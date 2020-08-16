@@ -7,16 +7,17 @@ RUN set -ex &&\
     echo 'Asia/Shanghai' > /etc/timezone &&\
 
     cp /etc/apt/sources.list /etc/apt/sources.list.bak &&\
-    echo "deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
-        deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
-        deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse\
-        deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse\
-        deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse\
-        deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse\
-        deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse\
-        deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse\
-        deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse\
-        deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse"\
+
+    echo "deb http://mirrors.163.com/ubuntu/ bionic main restricted universe multiverse\
+        deb http://mirrors.163.com/ubuntu/ bionic-security main restricted universe multiverse\
+        deb http://mirrors.163.com/ubuntu/ bionic-updates main restricted universe multiverse\
+        deb http://mirrors.163.com/ubuntu/ bionic-proposed main restricted universe multiverse\
+        deb http://mirrors.163.com/ubuntu/ bionic-backports main restricted universe multiverse\
+        deb-src http://mirrors.163.com/ubuntu/ bionic main restricted universe multiverse\
+        deb-src http://mirrors.163.com/ubuntu/ bionic-security main restricted universe multiverse\
+        deb-src http://mirrors.163.com/ubuntu/ bionic-updates main restricted universe multiverse\
+        deb-src http://mirrors.163.com/ubuntu/ bionic-proposed main restricted universe multiverse\
+        deb-src http://mirrors.163.com/ubuntu/ bionic-backports main restricted universe multiverse"\
          > /etc/apt/sources.list &&\
     apt-get update && apt-get -y upgrade &&\
     apt-get -y install software-properties-common &&\
@@ -28,9 +29,7 @@ RUN set -ex &&\
     cd /home/LDUOnlineJudge &&\
     cp -rf .env.example .env &&\
     chmod -R 777 storage bootstrap/cache &&\
-    if [ ! -d ${root}/storage/app/public ]; then &&\
-        mkdir -p ${root}/storage/app/public &&\
-    fi &&\
+    mkdir -p /home/LDUOnlineJudge/storage/app/public &&\
     php artisan storage:link &&\
     php artisan key:generate &&\
     php artisan optimize &&\
