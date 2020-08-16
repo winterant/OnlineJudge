@@ -1,11 +1,13 @@
 FROM ubuntu:16.04
 
-RUN set -ex\
-    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime\
-    && echo 'Asia/Shanghai' > /etc/timezone\
+COPY LDUOnlineJudge/ /home/LDUOnlineJudge/
 
-    && cp /etc/apt/sources.list /etc/apt/sources.list.bak\
-    && echo "deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
+RUN set -ex &&\
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
+    echo 'Asia/Shanghai' > /etc/timezone &&\
+
+    cp /etc/apt/sources.list /etc/apt/sources.list.bak &&\
+    echo "deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
         deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse\
         deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse\
         deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse\
@@ -14,92 +16,50 @@ RUN set -ex\
         deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse\
         deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse\
         deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse\
-        deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse" > /etc/apt/sources.list\
-    && apt-get update && apt-get -y upgrade\
+        deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse"\
+         > /etc/apt/sources.list &&\
+    apt-get update && apt-get -y upgrade &&\
+    apt-get -y install software-properties-common &&\
+    echo -e "\n" | apt-add-repository ppa:ondrej/php &&\
+    apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml &&\
 
-    && apt-get -y install dnsutils network-manager\
-    && GIT_IP1=`nslookup github.global.ssl.fastly.net |grep Address:|tail -1|awk '{print $2}'`\
-    && GIT_IP2=`nslookup github.com |grep Address:|tail -1|awk '{print $2}'`\
-    && echo "$GIT_IP1 github.global.ssl.fastly.net" >> /etc/hosts\
-    && echo "$GIT_IP2 github.com" >> /etc/hosts\
-    && service network-manager restart\
+    apt-get -y install composer zip unzip &&\
+    composer install --ignore-platform-reqs &&\
+    cd /home/LDUOnlineJudge &&\
+    cp -rf .env.example .env &&\
+    chmod -R 777 storage bootstrap/cache &&\
+    if [ ! -d ${root}/storage/app/public ]; then &&\
+        mkdir -p ${root}/storage/app/public &&\
+    fi &&\
+    php artisan storage:link &&\
+    php artisan key:generate &&\
+    php artisan optimize &&\
 
-    && apt-get -y purge git\
-    && apt-get -y install git\
-    && git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge\
-    && apt-get -y autoremove git\
+    apt -y install nginx &&\
+    rm -rf /etc/nginx/sites-enabled/default &&\
+    cp -f /home/LDUOnlineJudge/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
 
-    && cd /home/LDUOnlineJudge\
-    && cp -rf .env.example .env\
-    && chmod -R 777 storage bootstrap/cache\
+    apt-get -y install mysql-server &&\
+    usermod -d /var/lib/mysql/ mysql &&\
+#    chown -R mysql:mysql /var/lib/mysql /var/run/mysqld &&\
+    service mysql restart &&\
+    USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'` &&\
+    PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'` &&\
+    mysql -u${USER} -p${PASSWORD} -e"CREATE DATABASE lduoj;" &&\
+    mysql -u${USER} -p${PASSWORD} -e"CREATE USER 'lduoj'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456789';" &&\
+    mysql -u${USER} -p${PASSWORD} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost' identified by '123456789';flush privileges;" &&\
+    mysql -u${USER} -p${PASSWORD} -Dlduoj < /home/LDUOnlineJudge/install/mysql/lduoj.sql &&\
 
-    && apt-get update && apt-get -y upgrade\
-    && apt-get -y install software-properties-common\
-    && echo -e "\n" | apt-add-repository ppa:ondrej/php\
-    && apt-get update\
-    && apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml\
+    apt -y install sudo &&\
+    echo "root ALL=(ALL) ALL" >> /etc/sudoers &&\
+    echo "www-data ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers &&\
 
-    && apt-get -y install composer zip unzip\
-    && composer install --ignore-platform-reqs\
-    && php artisan storage:link\
-    && php artisan key:generate\
-    && php artisan optimize\
+    apt update &&\
+    apt -y install g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex &&\
+    cp -p /home/LDUOnlineJudge/judge/sim/sim.1 /usr/share/man/man1/ &&\
+    cd /home/LDUOnlineJudge/judge/sim/ && make install
 
-    && apt -y install nginx\
-    && rm -rf /etc/nginx/sites-enabled/default\
-    && cp -f /home/LDUOnlineJudge/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf\
-
-    && apt-get -y install mysql-server\
-    && usermod -d /var/lib/mysql/ mysql\
-#    && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\
-    && service mysql restart\
-    && USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`\
-    && PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`\
-    && mysql -u${USER} -p${PASSWORD} -e"CREATE DATABASE lduoj;"\
-    && mysql -u${USER} -p${PASSWORD} -e"CREATE USER 'lduoj'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456789';"\
-    && mysql -u${USER} -p${PASSWORD} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost' identified by '123456789';flush privileges;"\
-    && mysql -u${USER} -p${PASSWORD} -Dlduoj < /home/LDUOnlineJudge/install/mysql/lduoj.sql\
-
-    && apt -y install sudo\
-    && echo "root ALL=(ALL) ALL" >> /etc/sudoers\
-    && echo "www-data ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers\
-
-    && apt update\
-    && apt -y install libmysqlclient-dev g++ openjdk-8-jdk python3.6\
-
-    && apt -y install make flex\
-    && cp -p /home/LDUOnlineJudge/judge/sim/sim.1 /usr/share/man/man1/\
-    && cd /home/LDUOnlineJudge/judge/sim/ && make install\
-
-    && echo "#!/bin/bash\n\
-        if [ ! -d /volume/LDUOnlineJudge ]; then\n\
-            mv /home/LDUOnlineJudge /volume/\n\
-        else\n\
-            rm -rf /home/LDUOnlineJudge\n\
-        fi\n\
-        ln -s /volume/LDUOnlineJudge /home/LDUOnlineJudge\n\
-        if [ ! -d /volume/nginx ]; then\n\
-            mv /etc/nginx/conf.d /volume/nginx\n\
-        else\n\
-            rm -rf /etc/nginx/conf.d\n\
-        fi\n\
-        ln -s /volume/nginx /etc/nginx/conf.d\n\
-        if [ ! -d /volume/mysql ]; then\n\
-            mv /var/lib/mysql /volume/\n\
-        else\n\
-            rm -rf /var/lib/mysql\n\
-        fi\n\
-        ln -s /volume/mysql /var/lib/mysql\n\
-        chown -R mysql:mysql /volume/mysql\n\
-        rm -rf /var/run/mysqld/mysqld.sock.lock\n\
-        service nginx start\n\
-        service php7.2-fpm start\n\
-        service mysql start\n\
-        bash /home/LDUOnlineJudge/judge/startup.sh\n\
-        while true; do echo do not quit; sleep 1; done\n" > /startup.sh\
-    && chmod +x /startup.sh
-
-ENTRYPOINT ["/startup.sh"]
+ENTRYPOINT ["/bin/bash /home/LDUOnlineJudge/install/docker/startup.sh"]
 
 VOLUME ["/volume"]
 
