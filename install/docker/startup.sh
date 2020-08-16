@@ -7,13 +7,6 @@ else
 fi
 ln -s /volume/LDUOnlineJudge /home/LDUOnlineJudge
 
-if [ ! -d /volume/nginx ]; then
-    mv /etc/nginx/conf.d /volume/nginx
-else
-    rm -rf /etc/nginx/conf.d
-fi
-ln -s /volume/nginx /etc/nginx/conf.d
-
 if [ ! -d /volume/mysql ]; then
     mv /var/lib/mysql /volume/
 else
