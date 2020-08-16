@@ -81,7 +81,7 @@ Ludong University Online Judge
     ```shell script
     bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
     ```
-  - 基于docker
+  - 基于docker  
     1.在docker容器内备份数据库
       ```shell script
       bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
