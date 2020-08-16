@@ -44,8 +44,8 @@ RUN set -ex &&\
     service mysql restart &&\
     USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'` &&\
     PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'` &&\
-    mysql -u${USER} -p${PASSWORD} -e"CREATE DATABASE lduoj;" &&\
-    mysql -u${USER} -p${PASSWORD} -e"CREATE USER 'lduoj'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456789';" &&\
+    mysql -u${USER} -p${PASSWORD} -e"CREATE DATABASE If Not Exists lduoj;" &&\
+    mysql -u${USER} -p${PASSWORD} -e"CREATE USER If Not Exists 'lduoj'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456789';" &&\
     mysql -u${USER} -p${PASSWORD} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost' identified by '123456789';flush privileges;" &&\
     mysql -u${USER} -p${PASSWORD} -Dlduoj < /home/LDUOnlineJudge/install/mysql/lduoj.sql &&\
 
