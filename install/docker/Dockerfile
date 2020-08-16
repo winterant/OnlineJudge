@@ -57,7 +57,8 @@ RUN set -ex &&\
     cp -p /home/LDUOnlineJudge/judge/sim/sim.1 /usr/share/man/man1/ &&\
     cd /home/LDUOnlineJudge/judge/sim/ && make install &&\
 
-    cp /home/LDUOnlineJudge/install/docker/startup.sh /
+    cp /home/LDUOnlineJudge/install/docker/startup.sh / &&\
+    chmod +x /startup.sh
 
 ENTRYPOINT ["/startup.sh"]
 
