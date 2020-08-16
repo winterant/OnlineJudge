@@ -25,8 +25,8 @@ RUN set -ex &&\
     apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml &&\
 
     apt-get -y install composer zip unzip &&\
-    composer install --ignore-platform-reqs &&\
     cd /home/LDUOnlineJudge &&\
+    composer install --ignore-platform-reqs &&\
     cp -rf .env.example .env &&\
     chmod -R 777 storage bootstrap/cache &&\
     mkdir -p /home/LDUOnlineJudge/storage/app/public &&\
@@ -53,7 +53,6 @@ RUN set -ex &&\
     echo "root ALL=(ALL) ALL" >> /etc/sudoers &&\
     echo "www-data ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers &&\
 
-    apt update &&\
     apt -y install g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex &&\
     cp -p /home/LDUOnlineJudge/judge/sim/sim.1 /usr/share/man/man1/ &&\
     cd /home/LDUOnlineJudge/judge/sim/ && make install
