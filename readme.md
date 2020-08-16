@@ -71,12 +71,12 @@ Ludong University Online Judge
 # 项目迁移
 
   请先进行项目升级以确保脚本是最新的！
-  - Ubuntu16.04 或 docker容器内
+  - Ubuntu16.04 或 docker容器内  
     1.在原主机备份数据库
     ```shell script
     bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
     ```
-    2.拷贝原主机`/home/LDUOnlineJudge`到新主机相同路径。
+    2.拷贝原主机`/home/LDUOnlineJudge`到新主机相同路径。  
     3.在新主机上安装。
     ```shell script
     bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
