@@ -1,21 +1,17 @@
 #!/bin/sh
 
-set -ex
-if [ ! -d /home/LDUOnlineJudge ];then
-  echo No such project: /home/LDUOnlineJudge
-  exit 1;
-fi;
-cd /home/LDUOnlineJudge
+set -x
+cd /home/LDUOnlineJudge || { echo No such project: /home/LDUOnlineJudge;exit 1; }
 
 # 文件权限
 cp -rf .env.example .env
 chmod -R 777 storage bootstrap/cache
 
 # php
-apt -y update && apt -y upgrade
+apt-get update && apt-get -y upgrade
 apt -y install software-properties-common
 echo -e "\n" | apt-add-repository ppa:ondrej/php
-apt -y update
+apt-get update
 apt -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml
 service php7.2-fpm start
 
@@ -60,4 +56,4 @@ apt -y install openjdk-8-jdk
 apt -y install python3.6
 bash ./judge/startup.sh
 
-echo -e "You have successfully installed LDU Online Judge!"
+echo "You have successfully installed LDU Online Judge!"
