@@ -16,11 +16,9 @@ apt -y install composer zip unzip
 composer install --ignore-platform-reqs
 
 # laravel initialization
-chmod -R 777 ${root}/storage ${root}/bootstrap/cache
-cp -rf ${root}/.env.example ${root}/.env
-if [ ! -d ${root}/storage/app/public ]; then
-    mkdir -p ${root}/storage/app/public
-fi
+chmod -R 777 storage bootstrap/cache
+cp -rf .env.example .env
+mkdir -p storage/app/public
 php artisan storage:link
 php artisan key:generate
 php artisan optimize
