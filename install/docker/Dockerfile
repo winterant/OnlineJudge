@@ -7,7 +7,6 @@ RUN set -ex &&\
     echo 'Asia/Shanghai' > /etc/timezone &&\
 
     cp /etc/apt/sources.list /etc/apt/sources.list.bak &&\
-
     echo "deb http://mirrors.163.com/ubuntu/ bionic main restricted universe multiverse\
         deb http://mirrors.163.com/ubuntu/ bionic-security main restricted universe multiverse\
         deb http://mirrors.163.com/ubuntu/ bionic-updates main restricted universe multiverse\
@@ -24,12 +23,12 @@ RUN set -ex &&\
     echo -e "\n" | apt-add-repository ppa:ondrej/php &&\
     apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml &&\
 
-    apt-get -y install composer zip unzip &&\
     cd /home/LDUOnlineJudge &&\
-    composer install --ignore-platform-reqs &&\
     cp -rf .env.example .env &&\
     chmod -R 777 storage bootstrap/cache &&\
     mkdir -p /home/LDUOnlineJudge/storage/app/public &&\
+    apt-get -y install composer zip unzip &&\
+    composer install --ignore-platform-reqs &&\
     php artisan storage:link &&\
     php artisan key:generate &&\
     php artisan optimize &&\
