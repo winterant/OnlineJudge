@@ -54,9 +54,11 @@ RUN set -ex &&\
 
     apt -y install g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex &&\
     cp -p /home/LDUOnlineJudge/judge/sim/sim.1 /usr/share/man/man1/ &&\
-    cd /home/LDUOnlineJudge/judge/sim/ && make install
+    cd /home/LDUOnlineJudge/judge/sim/ && make install &&\
 
-ENTRYPOINT ["/bin/bash /home/LDUOnlineJudge/install/docker/startup.sh"]
+    cp /home/LDUOnlineJudge/install/docker/startup.sh /
+
+ENTRYPOINT ["/startup.sh"]
 
 VOLUME ["/volume"]
 
