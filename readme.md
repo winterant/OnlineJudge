@@ -5,7 +5,7 @@ Ludong University Online Judge
 
 # 快速了解
 
-  项目演示：http://test.winterstar.cn  
+  项目演示：http://114.116.243.156  
   截屏展示：https://blog.csdn.net/winter2121/article/details/105294224
   
   - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
