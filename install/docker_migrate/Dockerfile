@@ -22,12 +22,10 @@ RUN set -ex &&\
     apt-get -y install software-properties-common &&\
     echo -e "\n" | apt-add-repository ppa:ondrej/php &&\
     apt-get update &&\
-    apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml
+    apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml composer &&\
 
-RUN set -ex &&\
     cd /home/LDUOnlineJudge &&\
-    chmod -R 777 storage bootstrap/cache &&\
-    apt-get -y install composer
+    chmod -R 777 storage bootstrap/cache
 
 RUN set -ex &&\
     apt -y install nginx &&\
