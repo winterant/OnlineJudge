@@ -24,7 +24,8 @@ RUN set -ex &&\
     apt-get update &&\
     apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml
 
-RUN cd /home/LDUOnlineJudge &&\
+RUN set -ex &&\
+    cd /home/LDUOnlineJudge &&\
     cp -rf .env.example .env &&\
     chmod -R 777 storage bootstrap/cache &&\
     mkdir -p /home/LDUOnlineJudge/storage/app/public &&\
@@ -34,11 +35,13 @@ RUN cd /home/LDUOnlineJudge &&\
     php artisan key:generate &&\
     php artisan optimize
 
-RUN apt -y install nginx &&\
+RUN set -ex &&\
+    apt -y install nginx &&\
     rm -rf /etc/nginx/sites-enabled/default &&\
     cp -f /home/LDUOnlineJudge/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf
 
-RUN apt-get -y install mysql-server &&\
+RUN set -ex &&\
+    apt-get -y install mysql-server &&\
     usermod -d /var/lib/mysql/ mysql &&\
 #    chown -R mysql:mysql /var/lib/mysql /var/run/mysqld &&\
     service mysql restart &&\
@@ -49,7 +52,8 @@ RUN apt-get -y install mysql-server &&\
     mysql -u${USER} -p${PASSWORD} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost' identified by '123456789';flush privileges;" &&\
     mysql -u${USER} -p${PASSWORD} -Dlduoj < /home/LDUOnlineJudge/install/mysql/lduoj.sql
 
-RUN apt -y install sudo &&\
+RUN set -ex &&\
+    apt -y install sudo &&\
     echo "root ALL=(ALL) ALL" >> /etc/sudoers &&\
     echo "www-data ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers &&\
 
