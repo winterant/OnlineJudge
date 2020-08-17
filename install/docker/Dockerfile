@@ -22,9 +22,8 @@ RUN set -ex &&\
     apt-get -y install software-properties-common &&\
     echo -e "\n" | apt-add-repository ppa:ondrej/php &&\
     apt-get update &&\
-    apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml
+    apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml &&\
 
-RUN set -ex &&\
     cd /home/LDUOnlineJudge &&\
     cp -rf .env.example .env &&\
     chmod -R 777 storage bootstrap/cache &&\
