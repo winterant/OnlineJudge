@@ -7,6 +7,10 @@
             &nbsp;&nbsp;|&nbsp;&nbsp;
             <a href="http://www.beian.miit.gov.cn" target="_blank">{{get_setting('beian')}}</a>
         @endif
+        @if(get_setting('owner')!=null)
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+            <a href="{{get_setting('owner_link')}}" target="_blank">{{get_setting('owner')}}</a>
+        @endif
     </div>
 
     © 2020 <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">LDU Online Judge</a>.
