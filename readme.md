@@ -86,8 +86,13 @@ Ludong University Online Judge
       ```shell script
       bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
       ```
-    2.在新主机上基于docker安装本项目。  
-    3.从原宿主机拷贝`~/lduoj_docker/LDUOnlineJudge`到新宿主机相同路径。    
+    2.从原宿主机拷贝`~/lduoj_docker/LDUOnlineJudge`到新宿主机相同路径。    
+    3.在新主机上基于docker安装本项目。  
+      ```shell script
+      cd ~/lduoj_docker
+      docker build  -t lduoj -f ./LDUOnlineJudge/install/docker_migrate/Dockerfile .
+      docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
+      ```
     4.在新主机docker容器内恢复数据库
       ```shell script
       bash /home/LDUOnlineJudge/install/mysql/database_recover.sh
