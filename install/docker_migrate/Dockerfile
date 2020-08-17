@@ -29,10 +29,6 @@ RUN cd /home/LDUOnlineJudge &&\
     chmod -R 777 storage bootstrap/cache &&\
     mkdir -p /home/LDUOnlineJudge/storage/app/public &&\
     apt-get -y install composer zip unzip &&\
-    composer install --ignore-platform-reqs &&\
-    php artisan storage:link &&\
-    php artisan key:generate &&\
-    php artisan optimize
 
 RUN apt -y install nginx &&\
     rm -rf /etc/nginx/sites-enabled/default &&\
