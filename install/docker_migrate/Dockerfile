@@ -27,7 +27,7 @@ RUN set -ex &&\
 RUN set -ex &&\
     cd /home/LDUOnlineJudge &&\
     chmod -R 777 storage bootstrap/cache &&\
-    apt-get -y install composer &&\
+    apt-get -y install composer
 
 RUN set -ex &&\
     apt -y install nginx &&\
