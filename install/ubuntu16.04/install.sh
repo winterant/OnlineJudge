@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -x
 root=/home/LDUOnlineJudge
 cd ${root} || { echo No such project: ${root};exit 1; }
 
