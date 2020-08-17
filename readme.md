@@ -59,7 +59,7 @@ Ludong University Online Judge
     docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
     ```
     - 浏览器访问服务器ip:8080进入首页。[如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  
-    - 进入容器进行管理： `dockder exec -it 容器id /bin/bash`  
+    - 进入容器进行管理： `docker exec -it 容器id /bin/bash`  
 
 # 项目升级
 
