@@ -147,5 +147,6 @@ Ludong University Online Judge
 
 # 版本信息
  
-  iamwinter/LDUOnlineJudge developed by **iamwinter@foxmail.com** is licensed under the 
+  iamwinter/LDUOnlineJudge is licensed under the 
   **[GNU General Public License v3.0](https://github.com/iamwinter/LDUOnlineJudge/blob/master/LICENSE)**  
+  联系作者：iamwinter@foxmail.com  
