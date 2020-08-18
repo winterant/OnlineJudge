@@ -5,8 +5,7 @@ Ludong University Online Judge
 
 # 快速了解
 
-  项目演示：http://114.116.243.156  
-  截屏展示：https://blog.csdn.net/winter2121/article/details/105294224
+  [截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)
   
   - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
   - 支持考试/竞赛，支持选择题、填空题（含代码填空）、编程题（C/C++/Java/Python3）
@@ -35,35 +34,36 @@ Ludong University Online Judge
 
 + **基于Linux Ubuntu 16.04**
   
-    若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
-    ```
-    git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
-    bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
-     ```
-    - 浏览器访问服务器ip进入首页  
-    - 安装后项目位于/home/LDUOnlieJudge，请勿移动  
-    - **注册用户admin自动成为管理员**
-    - mysql数据库lduoj，用户lduoj@localhost(密码123456789)  
-      (配置文件:`.env`，配置生效:`php /home/LDUOnlineJudge/artisan config:cache`)  
-    - 域名&端口：配置文件`/etc/nginx/conf.d/lduoj.conf`，配置生效:`service nginx restart`  
+  若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
+  ```shell script
+  git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
+  bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
+  ```
+  - 浏览器访问服务器ip进入首页  
+  - 安装后项目位于/home/LDUOnlieJudge，请勿移动  
+  - **注册用户admin自动成为管理员**
+  - mysql数据库lduoj，用户lduoj@localhost(密码123456789)  
+    (配置文件:`.env`，配置生效:`php /home/LDUOnlineJudge/artisan config:cache`)  
+  - 域名&端口：配置文件`/etc/nginx/conf.d/lduoj.conf`，配置生效:`service nginx restart`  
 
 
 + **基于docker**
 
-    若docker build缓慢，请先[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
-    ```shell script
-    git clone https://github.com/iamwinter/LDUOnlineJudge.git
-    cp LDUOnlineJudge/install/docker/{Dockerfile,.dockerignore} ./
-    docker build  -t lduoj .
-    rm -rf ./{LDUOnlineJudge,Dockerfile,.dockerignore}
-    docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
-    ```
-    - 浏览器访问服务器ip:8080进入首页。[如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  
-    - 进入容器进行管理： `docker exec -it 容器id /bin/bash`  
+  若docker build缓慢，请先[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
+  ```shell script
+  git clone https://github.com/iamwinter/LDUOnlineJudge.git
+  cp LDUOnlineJudge/install/docker/{Dockerfile,.dockerignore} ./
+  docker build  -t lduoj .
+  rm -rf ./{LDUOnlineJudge,Dockerfile,.dockerignore}
+  docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
+  ```
+  - 浏览器访问服务器ip:8080进入首页。[如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  
+  - 进入容器进行管理： `docker exec -it 容器id /bin/bash`  
 
 # 项目升级
 
   - Ubuntu16.04 或 docker容器内
+
     ```shell script
     git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
     cp /home/lduoj_upgrade/install/ubuntu16.04/update.sh /home/
@@ -79,57 +79,58 @@ Ludong University Online Judge
     bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
     ```
     2.拷贝原主机`/home/LDUOnlineJudge`到新主机相同路径。  
-    3.在新主机上安装。
+    3.在新主机上执行安装。
     ```shell script
     bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
     ```
   - 基于docker  
     1.在原宿主机docker容器内备份数据库
-      ```shell script
-      bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
-      ```
+    ```shell script
+    bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
+    ```
     2.从原宿主机拷贝`~/lduoj_docker/LDUOnlineJudge`到新宿主机相同路径。    
-    3.在新宿主机基于docker安装本项目。  
-      ```shell script
-      cd ~/lduoj_docker
-      docker build  -t lduoj -f ./LDUOnlineJudge/install/docker_migrate/Dockerfile .
-      docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
-      ```
+    3.在新宿主机基于docker执行安装。  
+    ```shell script
+    cd ~/lduoj_docker
+    docker build  -t lduoj -f ./LDUOnlineJudge/install/docker_migrate/Dockerfile .
+    docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
+    ```
     4.在新宿主机docker容器内恢复数据库
-      ```shell script
-      bash /home/LDUOnlineJudge/install/mysql/database_recover.sh
-      ```
+    ```shell script
+    bash /home/LDUOnlineJudge/install/mysql/database_recover.sh
+    ```
 
 # 判题端使用说明
 
-  + 启动方式
++ 启动方式
   
-    A. 网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端  
-    B. 通过终端命令启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`
+  A. 网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端  
+  B. 通过终端命令启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`
 
-  + 判题端配置
++ 判题端配置
   
-    数据库连接信息、判题线程数、判题机名称等配置项均在项目根目录下.env文件  
-    默认判题线程数为5，可根据服务器内存及性能适当调节
+  数据库连接信息、判题线程数、判题机名称等配置项均在项目根目录下.env文件  
+  默认判题线程数为5，可根据服务器内存及性能适当调节
 
 # 本地开发
 
-  ```
-  git clone https://github.com/iamwinter/LDUOnlineJudge.git
-  cd LDUOnlineJudge
-  cp .env.example .env
++ 1.下载本项目，复制文件`.env.example`为`.env`，并编辑数据库连接信息。  
++ 2.安装依赖。  
+  ```shell script
   composer install
   php artisan storage:link
   php artisan key:generate
   php artisan optimize
   ```
-  - `LDUOnlineJudge/install/mysql/lduoj.sql`创建数据库，`.env`配置mysql  
-  - 若使用nginx，配置文件中需添加：
-    ```shell script
-    location / {
++ 3.使用脚本`LDUOnlineJudge/install/mysql/lduoj.sql`创建数据库。  
+
++ 4.启用Apache服务器或使用nginx代理指定网页根目录`LDUOnlineJudge/public`  
+  若使用nginx，请在`server`中增加：
+  ```shell script
+  location / {
       try_files $uri $uri/ /index.php?$query_string;
-    }
-    ```
+  }
+  ```
 
 # 鸣谢
 
@@ -145,6 +146,6 @@ Ludong University Online Judge
   [wow.js](https://www.delac.io/wow/)
 
 # 版本信息
-
-  iamwinter/LDUOnlineJudge is licensed under the 
-  **[GNU General Public License v3.0](https://github.com/iamwinter/LDUOnlineJudge/blob/master/LICENSE)**
+ 
+  iamwinter/LDUOnlineJudge developed by **iamwinter@foxmail.com** is licensed under the 
+  **[GNU General Public License v3.0](https://github.com/iamwinter/LDUOnlineJudge/blob/master/LICENSE)**  
