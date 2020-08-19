@@ -1,55 +1,53 @@
 #!/bin/sh
 
 set -x
-web_home=/home    #项目存放位置
+root=/home/LDUOnlineJudge    #项目
+upgrade=/home/lduoj_upgrade  #新版本
 
-if [ ! -d ${web_home}/lduoj_upgrade ];then
-  echo "No such project: ${web_home}/lduoj_upgrade"
-  echo "Please first: git clone https://github.com/iamwinter/LDUOnlineJudge.git ${web_home}/lduoj_upgrade"
+if [ ! -d ${upgrade} ];then
+  echo "No such project: ${upgrade}"
+  echo "Please first: git clone https://github.com/iamwinter/LDUOnlineJudge.git ${upgrade}"
   exit 1;
 fi;
 
 # transfer files
-rm -rf ${web_home}/LDUOnlineJudge/app
-rm -rf ${web_home}/LDUOnlineJudge/config
-rm -rf ${web_home}/LDUOnlineJudge/install
-rm -rf ${web_home}/LDUOnlineJudge/judge
-rm -rf ${web_home}/LDUOnlineJudge/public
-rm -rf ${web_home}/LDUOnlineJudge/resources
-rm -rf ${web_home}/LDUOnlineJudge/routes
-mv -f ${web_home}/lduoj_upgrade/app        ${web_home}/LDUOnlineJudge/
-mv -f ${web_home}/lduoj_upgrade/config     ${web_home}/LDUOnlineJudge/
-mv -f ${web_home}/lduoj_upgrade/install    ${web_home}/LDUOnlineJudge/
-mv -f ${web_home}/lduoj_upgrade/judge      ${web_home}/LDUOnlineJudge/
-mv -f ${web_home}/lduoj_upgrade/public     ${web_home}/LDUOnlineJudge/
-mv -f ${web_home}/lduoj_upgrade/resources  ${web_home}/LDUOnlineJudge/
-mv -f ${web_home}/lduoj_upgrade/routes     ${web_home}/LDUOnlineJudge/
-mv -f ${web_home}/lduoj_upgrade/.env.example     ${web_home}/LDUOnlineJudge/
-mv -f ${web_home}/lduoj_upgrade/composer.json    ${web_home}/LDUOnlineJudge/
-mv -f ${web_home}/lduoj_upgrade/composer.lock    ${web_home}/LDUOnlineJudge/
-rm -rf ${web_home}/lduoj_upgrade
+rm -rf ${root}/app
+rm -rf ${root}/config
+rm -rf ${root}/install
+rm -rf ${root}/judge
+rm -rf ${root}/public
+rm -rf ${root}/resources
+rm -rf ${root}/routes
+mv -f ${upgrade}/app        ${root}/
+mv -f ${upgrade}/config     ${root}/
+mv -f ${upgrade}/install    ${root}/
+mv -f ${upgrade}/judge      ${root}/
+mv -f ${upgrade}/public     ${root}/
+mv -f ${upgrade}/resources  ${root}/
+mv -f ${upgrade}/routes     ${root}/
+mv -f ${upgrade}/.env.example     ${root}/
+mv -f ${upgrade}/composer.json    ${root}/
+mv -f ${upgrade}/composer.lock    ${root}/
 
-cd ${web_home}/LDUOnlineJudge || exit 2;
+cd ${root} || exit 2
 
-# update packages
+# update laravel packages
 composer install --ignore-platform-reqs
-
-# laravel artisan
 php artisan storage:link
 php artisan key:generate
 php artisan optimize
 
 # update mysql table schema
-bash ${web_home}/LDUOnlineJudge/install/mysql/update_mysql.sh
+bash ${root}/install/mysql/update_mysql.sh
 
 # sim config
-cd ${web_home}/LDUOnlineJudge/judge/sim/
+cd ${root}/judge/sim/ || exit 3
 make install
 
 #start to judge
-bash ${web_home}/LDUOnlineJudge/judge/startup.sh
+bash ${root}/judge/startup.sh
 
 echo "You have successfully updated LDU Online Judge! Enjoy it!\n"
 
-## delete self
-#cd `dirname $0` && rm -rf ./update.sh
+# delete upgrade
+rm -rf ${upgrade} &
