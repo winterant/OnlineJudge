@@ -40,11 +40,10 @@ Ludong University Online Judge
   bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
   ```
   - 浏览器访问服务器ip进入首页  
-  - 安装后项目位于/home/LDUOnlieJudge，请勿移动  
-  - **注册用户admin自动成为管理员**
+  - **注册用户admin自动成为管理员**  
   - mysql数据库lduoj，用户lduoj@localhost(密码123456789)  
-    (配置文件:`.env`，配置生效:`php /home/LDUOnlineJudge/artisan config:cache`)  
-  - 域名&端口：配置文件`/etc/nginx/conf.d/lduoj.conf`，配置生效:`service nginx restart`  
+    (配置文件:`.env`，配置生效:`cd /home/LDUOnlineJudge && php artisan config:cache`)  
+  - nginx配置文件`/etc/nginx/conf.d/lduoj.conf`  
 
 
 + **基于docker**
@@ -58,7 +57,7 @@ Ludong University Online Judge
   docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
   ```
   - 浏览器访问服务器ip:8080进入首页。[如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  
-  - 进入容器进行管理： `docker exec -it 容器id /bin/bash`  
+  - 进入容器进行管理： `docker exec -it lduoj /bin/bash`  
 
 # 项目升级
 
@@ -84,18 +83,18 @@ Ludong University Online Judge
     bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
     ```
   - 基于docker  
-    1.在原宿主机docker容器内备份数据库
+    1.在原宿主机docker**容器内**备份数据库
     ```shell script
     bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
     ```
     2.从原宿主机拷贝`~/lduoj_docker/LDUOnlineJudge`到新宿主机相同路径。    
-    3.在新宿主机基于docker执行安装。  
+    3.在新宿主机执行安装(基于docker)。  
     ```shell script
     cd ~/lduoj_docker
     docker build  -t lduoj -f ./LDUOnlineJudge/install/docker_migrate/Dockerfile .
     docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
     ```
-    4.在新宿主机docker容器内恢复数据库
+    4.在新宿主机docker**容器内**恢复数据库
     ```shell script
     bash /home/LDUOnlineJudge/install/mysql/database_recover.sh
     ```
