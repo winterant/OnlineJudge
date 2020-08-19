@@ -25,9 +25,10 @@ mv -f ${upgrade}/judge      ${root}/
 mv -f ${upgrade}/public     ${root}/
 mv -f ${upgrade}/resources  ${root}/
 mv -f ${upgrade}/routes     ${root}/
-mv -f ${upgrade}/.env.example     ${root}/
-mv -f ${upgrade}/composer.json    ${root}/
-mv -f ${upgrade}/composer.lock    ${root}/
+mv -f ${upgrade}/composer.json ${root}/
+mv -f ${upgrade}/composer.lock ${root}/
+mv -f ${upgrade}/.env.example  ${root}/
+mv -f ${upgrade}/readme.md     ${root}/
 
 cd ${root} || exit 2
 
