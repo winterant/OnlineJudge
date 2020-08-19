@@ -65,8 +65,7 @@ Ludong University Online Judge
 
     ```shell script
     git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
-    cp /home/lduoj_upgrade/install/ubuntu16.04/update.sh /home/
-    bash /home/update.sh
+    bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh
     ```
 
 # 项目迁移
