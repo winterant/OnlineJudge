@@ -4,12 +4,6 @@ set -x
 root=/home/LDUOnlineJudge    #项目
 upgrade=/home/lduoj_upgrade  #新版本
 
-if [ ! -d ${upgrade} ];then
-  echo "No such project: ${upgrade}"
-  echo "Please first: git clone https://github.com/iamwinter/LDUOnlineJudge.git ${upgrade}"
-  exit 1;
-fi;
-
 # transfer files
 rm -rf ${root}/app
 rm -rf ${root}/config
