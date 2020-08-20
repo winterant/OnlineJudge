@@ -70,7 +70,7 @@ foreach($data1 as $key1 => $val1)
                 foreach($column1 as $col_info)
                 {
                     $alter_sql = "alter table {$col_info['TABLE_NAME']} add column {$col_info['COLUMN_NAME']} {$col_info['COLUMN_TYPE']}";
-                    if($col_info['IS_NULLABLE'] = 'NO')
+                    if($col_info['IS_NULLABLE'] == 'NO')
                     {
                         $alter_sql .= " not null ";
                     }

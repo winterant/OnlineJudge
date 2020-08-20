@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    @if($solution->wrong_data!==null)  {{-- 出错的测试文件 --}}
+    @if(strlen($solution->wrong_data))  {{-- 出错的测试文件 --}}
         <div class="container">
             <div class="my-container bg-white">
                 <div class="d-inline">
