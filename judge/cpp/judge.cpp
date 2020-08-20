@@ -575,7 +575,7 @@ int judge(char *data_dir, char *spj_path)
             }
             printf("test%3s | judge result: %d\n\n",test_name,result);
             if(result==OJ_AC)ac_count++;
-            else if(this->wrong_data==NULL)this->wrong_data=test_name;  //记下第一个未通过测试文件名
+            else if(solution.wrong_data==NULL)solution.wrong_data=test_name;  //记下第一个未通过测试文件名
 
             if(is_acm && result!=OJ_AC)   //acm规则遇到WA直接返回，判题结束
                 return result;
