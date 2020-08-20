@@ -136,16 +136,19 @@ struct Solution{
 
     void update_solution()  //数据库，更新solution
     {
-        char *p=sql;
-        p+=sprintf(p,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,judge_time=now(),error_info=NULL,sim_rate=%d,sim_sid=%d WHERE id=%d;",
+        sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,judge_time=now(),error_info=NULL,sim_rate=%d,sim_sid=%d WHERE id=%d;",
             this->result,this->time,this->memory,this->pass_rate,this->sim_rate,this->sim_sid, this->id); //更新
+        mysql_real_query(mysql,sql,strlen(sql));
         if(this->error_info!=NULL){    //更新出错信息
+            char *p=sql;
             p+=sprintf(p,"UPDATE solutions SET error_info=\'");
             p+=mysql_real_escape_string(mysql,p,this->error_info,strlen(this->error_info));
             p+=sprintf(p,"\' where id=%d;",this->id);
+            mysql_real_query(mysql,sql,strlen(sql));
         }
         if(this->wrong_data!=NULL){    //记录未通过的测试文件名字
-            p+=sprintf(p,"UPDATE solutions SET wrong_data=\'%s\' where id=%d;",this->wrong_data,this->id);
+            sprintf(sql,"UPDATE solutions SET wrong_data=\'%s\' where id=%d;",this->wrong_data,this->id);
+            mysql_real_query(mysql,sql,strlen(sql));
         }
         mysql_real_query(mysql,sql,strlen(sql));
     }
