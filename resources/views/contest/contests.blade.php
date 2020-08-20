@@ -34,8 +34,8 @@
                     @if(isset($_GET['state']))
                         {{__('main.'.ucfirst($_GET['state']))}}
                     @endif
-                    @if(isset($_GET['type']))
-                        {{ucfirst(config('oj.contestType.'.$_GET['type']))}}
+                    @if($type_id)
+                        {{__('main.'.config('oj.contestType.'.$type_id))}}
                     @else
                         {{__('main.All')}}
                     @endif
@@ -104,9 +104,11 @@
                                         {{round($time_len/3600,1)}} {{trans_choice('main.hours',round($time_len/3600,1))}}
                                     @endif
                                 </li>
-                                @if(!isset($_GET['type']))
+                                @if(!$type_id)
                                     <li class="px-2">
-                                        <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">{{ucfirst(config('oj.contestType.'.$item->type))}}</div>
+                                        <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">
+                                            {{__('main.'.config('oj.contestType.'.$item->type))}}
+                                        </div>
                                     </li>
                                 @endif
                                 <li class="px-2">

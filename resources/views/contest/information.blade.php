@@ -25,7 +25,7 @@
         <li>
             <i class="fa fa-tags pr-2 text-sky" aria-hidden="true"></i>
             <div class="d-inline border bg-light pl-2 pr-2" style="border-radius: 12px">
-                {{ucfirst(config('oj.contestType.'.$contest->type))}}
+                {{trans('main.'.config('oj.contestType.'.$contest->type))}}
             </div>
             <div class="d-inline border bg-light pl-2 pr-2 ml-2" style="border-radius: 12px">
                 {{strtoupper($contest->judge_type)}}
