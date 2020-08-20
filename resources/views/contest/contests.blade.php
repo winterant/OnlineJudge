@@ -17,15 +17,15 @@
 
     <div class="container">
 
-        <div class="my-container bg-white pt-2 pb-1">
-            <ul class="nav nav-tabs nav-justified">
-                @foreach(config('oj.contestType') as $i=>$ctype)
-                    <li class="nav-item">
-                        <a class="nav-link p-2" href="{{route('contests',['type'=>$i])}}">{{ucfirst($ctype)}}</a>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
+{{--        <div class="my-container bg-white pt-2 pb-1">--}}
+{{--            <ul class="nav nav-tabs nav-justified">--}}
+{{--                @foreach(config('oj.contestType') as $i=>$ctype)--}}
+{{--                    <li class="nav-item">--}}
+{{--                        <a class="nav-link p-2" href="{{route('contests',['type'=>$i])}}">{{ucfirst($ctype)}}</a>--}}
+{{--                    </li>--}}
+{{--                @endforeach--}}
+{{--            </ul>--}}
+{{--        </div>--}}
 
 
         <div class="my-container bg-white">

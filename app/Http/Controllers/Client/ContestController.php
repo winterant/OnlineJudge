@@ -11,9 +11,8 @@ use Illuminate\Support\Facades\Storage;
 
 class ContestController extends Controller
 {
-    public function contests(){
-        if(!isset($_GET['type']))
-            $_GET['type'] = 3;  // 默认contest类别
+    public function contests($type){
+        $type_id = array_search($type,config('oj.contestType'));
         $contests=DB::table('contests')
             ->select(['id','type','judge_type','title','start_time','end_time','access','top','hidden',
                 DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
@@ -23,7 +22,7 @@ class ContestController extends Controller
                 else if($_GET['state']=='waiting')return $q->where('start_time','>',date('Y-m-d H:i:s'));
                 else return $q->where('start_time','<',date('Y-m-d H:i:s'))->where('end_time','>',date('Y-m-d H:i:s'));
             })
-            ->when(isset($_GET['type'])&&$_GET['type']!=null,function ($q){return $q->where('type',$_GET['type']);})
+            ->when($type_id,function ($q)use($type_id){return $q->where('type',$type_id);})
             ->when(isset($_GET['judge_type'])&&$_GET['judge_type']!=null,function ($q){return $q->where('judge_type',$_GET['judge_type']);})
             ->when(isset($_GET['title']),function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
             ->when(!Auth::check()||!Auth::user()->privilege('contest'),function ($q){return $q->where('hidden',0);})
@@ -31,7 +30,7 @@ class ContestController extends Controller
             ->orderBy('state')
             ->orderByDesc('id')
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:10);
-        return view('contest.contests',compact('contests'));
+        return view('contest.contests',compact('contests','type_id'));
     }
 
     public function password(Request $request,$id){
