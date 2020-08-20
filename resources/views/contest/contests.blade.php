@@ -158,11 +158,6 @@
     </div>
 
     <script>
-        //由于该页面三个导航项共用
-        //对应的导航栏选项设为active状态
-        $(function () {
-            $("a[href='{{route('contests',isset($_GET['type'])?['type'=>$_GET['type']]:null)}}']").addClass("active");
-        })
 
         function contest_set_top(cid, way) {
             $.post(
