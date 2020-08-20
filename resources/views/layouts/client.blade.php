@@ -9,10 +9,11 @@
         .container{
             @if(get_setting('web_page_display_wide'))
                 max-width:8000px;
-            @endif
-        }
+        @endif
+}
         .nav-tabs .active{
-            border-color: #6599ff !important;
+            /*border-color: #6599ff !important;*/
+            border-bottom: .214rem solid #6599ff !important;
         }
         .wow{
             visibility: hidden;
@@ -47,26 +48,26 @@
                     <i class="fa fa-list" aria-hidden="true">&nbsp;{{trans('main.Problems')}}</i>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('contests')}}">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-nowrap p-2" href="#" id="contestDropdown" data-toggle="dropdown">
                     <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
                 </a>
+                <div class="dropdown-menu" aria-labelledby="contestDropdown">
+                    @foreach(config('oj.contestType') as $i=>$ctype)
+                        <a class="dropdown-item text-nowrap" id="link_{{$ctype}}" href="{{route('contests',$ctype)}}">
+                            <i class="fa fa-book px-1" aria-hidden="true"></i>
+                            {{ucfirst($ctype)}}
+                        </a>
+                    @endforeach
+                    {{--                    <div class="dropdown-divider"></div>--}}
+                    {{--                    <a class="dropdown-item" href="#">Separated link</a>--}}
+                </div>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-nowrap p-2" href="{{route('standings')}}">
                     <i class="fa fa-sort-amount-desc" aria-hidden="true">&nbsp;{{trans('main.Standings')}}</i>
                 </a>
             </li>
-
-            {{--            <li class="nav-item dropdown">--}}
-            {{--                <a class="nav-link dropdown-toggle" href="#"--}}
-            {{--                   id="navbarDropdownMenuLink" data-toggle="dropdown">下拉菜单</a>--}}
-            {{--                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">--}}
-            {{--                    <a class="dropdown-item" href="#">Action</a> <a class="dropdown-item" href="#">Another action</a> <a class="dropdown-item" href="#">Something else here</a>--}}
-            {{--                    <div class="dropdown-divider">--}}
-            {{--                    </div> <a class="dropdown-item" href="#">Separated link</a>--}}
-            {{--                </div>--}}
-            {{--            </li>--}}
         </ul>
 
 
@@ -133,16 +134,24 @@
 
     // 遍历导航栏按钮，如果href与当前位置相等，就active
     $(function () {
-        $("ul li").find("a").each(function () {
-            var href = $(this).attr("href")
-            var url=location.href.split('?')[0];
-            if(url[url.length-1]=='/')href+='/'; //特判home
-            if (url===href) {
-                $(this).addClass("active");
-            } else {
-                // $(this).removeClass("active");
-            }
-        });
+        var url=location.href.split('?')[0];
+        if(url[url.length-1]==='/')href+='/'; //特判home
+        if(url.indexOf('/contests/')){
+            $('#contestDropdown').addClass('active')
+            $('ul li .dropdown-menu').find("a").each(function (){
+                if (url===$(this).attr("href")) {
+                    $(this).addClass("text-blue");
+                    $(this).prepend("<i class=\"fa fa-angle-double-right pr-1\" aria-hidden=\"true\"></i>")
+                }
+            })
+        }else{
+            $("ul li").find("a").each(function () {
+                if (url===$(this).attr("href")) {
+                    $(this).addClass("active");
+                }
+            });
+        }
+
     })
 
 </script>
