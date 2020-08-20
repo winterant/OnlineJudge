@@ -56,11 +56,11 @@
                     @foreach(config('oj.contestType') as $i=>$ctype)
                         <a class="dropdown-item text-nowrap" id="link_{{$ctype}}" href="{{route('contests',$ctype)}}">
                             <i class="fa fa-book px-1" aria-hidden="true"></i>
-                            {{ucfirst($ctype)}}
+                            {{__('main.'.$ctype)}}
                         </a>
                     @endforeach
-                    {{--                    <div class="dropdown-divider"></div>--}}
-                    {{--                    <a class="dropdown-item" href="#">Separated link</a>--}}
+{{--                    <div class="dropdown-divider"></div>--}}
+{{--                    <a class="dropdown-item" href="#">Separated link</a>--}}
                 </div>
             </li>
             <li class="nav-item">
@@ -71,12 +71,12 @@
         </ul>
 
 
-        {{--        <form class="form-inline">--}}
-        {{--            <input class="form-control mr-sm-2" type="text" />--}}
-        {{--            <button class="btn btn-primary my-2 my-sm-0" type="submit">--}}
-        {{--                Search--}}
-        {{--            </button>--}}
-        {{--        </form>--}}
+{{--        <form class="form-inline">--}}
+{{--            <input class="form-control mr-sm-2" type="text" />--}}
+{{--            <button class="btn btn-primary my-2 my-sm-0" type="submit">--}}
+{{--                Search--}}
+{{--            </button>--}}
+{{--        </form>--}}
 
 
         <ul class="navbar-nav ml-auto">
