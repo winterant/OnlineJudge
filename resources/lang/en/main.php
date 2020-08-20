@@ -128,6 +128,7 @@ return [
     "MySolution"    => "My history solutions",
     "More"          => "More",
     "Similarity Check" => "Similarity Check",
+    "Wrong Data"    => "Wrong Data",
 
 
 //    contest

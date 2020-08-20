@@ -51,6 +51,7 @@ return [
 //    contest
     "Start to judge"    => "开始判题",
     "not_invited"       => "抱歉，您没有被邀请参加本次竞赛！",
+    "not_end"           => "比赛尚未结束，不能查看数据！",
     "Complete Profile"  => "请在开始比赛前，完善你的个人信息！",
     "Waiting start for" => "等待开始",
     "Waiting to start after" => "等待开始",

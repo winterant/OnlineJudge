@@ -42,7 +42,7 @@ make install
 #start to judge
 bash ${root}/judge/startup.sh
 
-echo "You have successfully updated LDU Online Judge! Enjoy it!\n"
-
 # delete upgrade
 rm -rf ${upgrade} &
+
+echo "You have successfully updated LDU Online Judge! Enjoy it!\n"

@@ -23,14 +23,16 @@ Route::get('/home', 'Client\HomeController@index');
 Route::post('/get_notice','Client\HomeController@get_notice')->name('get_notice');
 Route::get('/status','Client\StatusController@index')->name('status');
 Route::post('/ajax_get_status','Client\StatusController@ajax_get_status')->name('ajax_get_status');
-Route::get('/solution/{id}','Client\StatusController@solution')->where(['id'=>'[0-9]+'])->name('solution');
 Route::get('/problems','Client\ProblemController@problems')->name('problems');
 Route::get('/problem/{id}','Client\ProblemController@problem')->middleware('CheckBlacklist')->where(['id'=>'[0-9]+'])->name('problem');
 Route::get('/contests','Client\ContestController@contests')->name('contests');
 Route::get('/contests/{type}','Client\ContestController@contests')->name('contests');
 Route::get('/standings','Client\UserController@standings')->name('standings');
 Route::get('/user/{username}','Client\UserController@user')->name('user');
-Route::middleware(['auth','CheckBlacklist'])->group(function (){
+Route::middleware(['auth','CheckBlacklist'])->where(['id'=>'[0-9]+'])->group(function (){
+    Route::get('/solution/{id}','Client\StatusController@solution')->name('solution');
+    Route::get('/solution/{id}/wrong_data/{type}','Client\StatusController@solution_wrong_data')
+        ->where(['type'=>'(in|out)'])->name('solution_wrong_data');
     Route::any('/user/{username}/edit','Client\UserController@user_edit')->name('user_edit');
     Route::any('/user/{username}/password_reset','Client\UserController@password_reset')->name('password_reset');
     Route::post('/status/submit_solution','Client\StatusController@create')->name('submit_solution');

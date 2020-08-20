@@ -96,6 +96,7 @@ struct Solution{
     float memory=0; //MB 实际内存
     float pass_rate=0;
     char *error_info=NULL;
+    char *wrong_data=NULL;
     int sim_rate=0;
     int sim_sid=-1;
 
@@ -135,18 +136,18 @@ struct Solution{
 
     void update_solution()  //数据库，更新solution
     {
-        sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,judge_time=now(),error_info=NULL,sim_rate=%d,sim_sid=%d WHERE id=%d",
+        char *p=sql;
+        p+=sprintf(p,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,judge_time=now(),error_info=NULL,sim_rate=%d,sim_sid=%d WHERE id=%d;",
             this->result,this->time,this->memory,this->pass_rate,this->sim_rate,this->sim_sid, this->id); //更新
-        mysql_real_query(mysql,sql,strlen(sql));
         if(this->error_info!=NULL){    //更新出错信息
-            char *new_sql = new char[2*strlen(this->error_info)+64];
-            char *p=new_sql;
             p+=sprintf(p,"UPDATE solutions SET error_info=\'");
             p+=mysql_real_escape_string(mysql,p,this->error_info,strlen(this->error_info));
             p+=sprintf(p,"\' where id=%d;",this->id);
-            mysql_real_query(mysql,new_sql,strlen(new_sql));
-            delete new_sql;
         }
+        if(this->wrong_data!=NULL){    //记录未通过的测试文件名字
+            p+=sprintf(p,"UPDATE solutions SET wrong_data=\'%s\' where id=%d;",this->wrong_data,this->id);
+        }
+        mysql_real_query(mysql,sql,strlen(sql));
     }
 }solution;
 
@@ -523,7 +524,7 @@ int watch_running(int child_pid, char *test_name, int max_out_size)
     return result;
 }
 
-//运行可执行文件
+//判题
 int judge(char *data_dir, char *spj_path)
 {
     DIR *dir=opendir(data_dir);  //数据文件夹
@@ -574,6 +575,8 @@ int judge(char *data_dir, char *spj_path)
             }
             printf("test%3s | judge result: %d\n\n",test_name,result);
             if(result==OJ_AC)ac_count++;
+            else if(this->wrong_data==NULL)this->wrong_data=test_name;  //记下第一个未通过测试文件名
+
             if(is_acm && result!=OJ_AC)   //acm规则遇到WA直接返回，判题结束
                 return result;
             if(!is_acm && result!=OJ_AC)   //oi规则遇到错误记下来

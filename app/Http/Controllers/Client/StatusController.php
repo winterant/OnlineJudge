@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class StatusController extends Controller
 {
@@ -70,17 +71,33 @@ class StatusController extends Controller
     }
 
     public function solution($id){
-
-        if(!Auth::check())
-            return redirect('login');
         $solution=DB::table('solutions')
             ->join('users','solutions.user_id','=','users.id')
-            ->select(['solutions.id','problem_id','contest_id','user_id','username','result','pass_rate','time','memory',
-                'judge_type','submit_time','judge_time','code','code_length','language','error_info'])
+            ->leftJoin('contest_problems',function ($q){
+                $q->on('solutions.contest_id','=','contest_problems.contest_id')->on('solutions.problem_id','=','contest_problems.problem_id');
+            })
+            ->select(['solutions.id','solutions.problem_id','index','solutions.contest_id','user_id','username',
+                'result','pass_rate','time','memory','judge_type','submit_time','judge_time',
+                'code','code_length','language','error_info','wrong_data'])
             ->where('solutions.id',$id)->first();
         if(Auth::user()->privilege('solution')||
             (Auth::id()==$solution->user_id && $solution->submit_time>Auth::user()->created_at))
             return view('client.solution',compact('solution'));
+        return view('client.fail',['msg'=>trans('sentence.Permission denied')]);
+    }
+
+    public function solution_wrong_data($id,$type){
+        $solution = DB::table('solutions')
+            ->leftJoin('contests','solutions.contest_id','=','contests.id')  //非必须，left
+            ->select('solutions.problem_id','solutions.user_id','contests.end_time','solutions.wrong_data')
+            ->where('solutions.id',$id)
+            ->first();
+        if(($solution && Auth::id()==$solution->user_id && $solution->wrong_data!==null)
+            ||Auth::user()->privilege('solution')){
+            if(date('Y-m-d H:i:s') < $solution->end_time) //比赛未结束
+                return view('client.fail',['msg'=>trans('sentence.not_end')]);
+            return Storage::Download("data/".$solution->problem_id."/test/".$solution->wrong_data.'.'.$type);
+        }
         return view('client.fail',['msg'=>trans('sentence.Permission denied')]);
     }
 

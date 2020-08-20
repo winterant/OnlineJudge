@@ -145,7 +145,13 @@
                                         </td>
                                         <td>{{$sol->time}}MS</td>
                                         <td>{{round($sol->memory,2)}}MB</td>
-                                        <td>{{config('oj.lang.'.$sol->language)}}</td>
+                                        <td>
+                                            @if(Auth::check() && (Auth::user()->privilege('solution') || Auth::id()==$sol->user_id) )
+                                                <a href="{{route('solution',$sol->id)}}" target="_blank">{{config('oj.lang.'.$sol->language)}}</a>
+                                            @else
+                                                {{config('oj.lang.'.$sol->language)}}
+                                            @endif
+                                        </td>
                                         <td nowrap>{{$sol->submit_time}}</td>
                                         <td nowrap>{{$sol->judger}}</td>
                                     </tr>
