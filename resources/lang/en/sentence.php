@@ -51,6 +51,7 @@ return [
 //    contest
     "Start to judge"    => "Start to judge",
     "not_invited"       => "I'm sorry! You are not invited to this contest!",
+    "not_end"           => "The contest is not end yet",
     "Complete Profile"  => "Please complete your personal information before entering the contest!",
     "Waiting start for" => "Waiting start for",
     "Waiting to start after" => "Waiting to start after",

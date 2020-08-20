@@ -25,7 +25,13 @@
             <div class="row mt-2">
                 <div class="col-6 col-sm-2">{{__('main.Solution').': '.$solution->id}}</div>
                 <div class="col-6 col-sm-2">{{__('main.Problem').': '}}
-                    <a href="{{route('problem',$solution->problem_id)}}">{{$solution->problem_id}}</a>
+                    @if($solution->contest_id==-1)
+                        <a href="{{route('problem',$solution->problem_id)}}">{{$solution->problem_id}}</a>
+                    @else
+                        <a href="{{route('contest.problem',[$solution->contest_id,$solution->index])}}">
+                            {{__('main.Contest').$solution->contest_id}}:{{index2ch($solution->index)}}
+                        </a>
+                    @endif
                 </div>
                 <div class="col-6 col-sm-2">{{__('main.User').': '}}<a href="{{route('user',$solution->username)}}">{{$solution->username}}</a></div>
                 <div class="col-6 col-sm-2">{{__('main.Judge Type').': '.$solution->judge_type}}</div>
@@ -39,6 +45,18 @@
             </div>
         </div>
     </div>
+
+    @if($solution->wrong_data!==null)  {{-- 出错的测试文件 --}}
+        <div class="container">
+            <div class="my-container bg-white">
+                <div class="d-inline">
+                    {{__('main.Wrong Data')}}:
+                    <a class="px-2" href="{{route('solution_wrong_data',[$solution->id,'in'])}}">{{$solution->wrong_data}}.in</a>
+                    <a href="{{route('solution_wrong_data',[$solution->id,'out'])}}">{{$solution->wrong_data}}.out</a>
+                </div>
+            </div>
+        </div>
+    @endif
 
     @if($solution->error_info!=null)  {{-- 错误信息 --}}
         <div class="container">

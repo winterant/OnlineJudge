@@ -128,6 +128,7 @@ return [
     "MySolution"    => "我的历史提交",
     "More"          => "更多",
     "Similarity Check" => "相似度",
+    "Wrong Data"    => "出错数据",
 
 
 //    contest
