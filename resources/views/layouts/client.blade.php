@@ -34,7 +34,7 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="navbar-nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('home')}}">
+                <a id="link_home" class="nav-link text-nowrap p-2" href="{{route('home')}}">
                     <i class="fa fa-home" aria-hidden="true">&nbsp;{{trans('main.Home')}}</i>
                 </a>
             </li>
@@ -135,8 +135,9 @@
     // 遍历导航栏按钮，如果href与当前位置相等，就active
     $(function () {
         var url=location.href.split('?')[0];
-        if(url[url.length-1]==='/')href+='/'; //特判home
-        if(url.indexOf('/contests/')!==-1){
+        if(url==="{{route('home')}}/"){ //特判home
+            $("#link_home").addClass('active')
+        }else if(url.indexOf('/contests/')!==-1){
             $('#contestDropdown').addClass('active')
             $('ul li .dropdown-menu').find("a").each(function (){
                 if (url===$(this).attr("href")) {
