@@ -136,7 +136,7 @@
     $(function () {
         var url=location.href.split('?')[0];
         if(url[url.length-1]==='/')href+='/'; //特判home
-        if(url.indexOf('/contests/')){
+        if(url.indexOf('/contests/')!==-1){
             $('#contestDropdown').addClass('active')
             $('ul li .dropdown-menu').find("a").each(function (){
                 if (url===$(this).attr("href")) {
