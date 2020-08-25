@@ -34,7 +34,7 @@ Ludong University Online Judge
 
 + **基于Linux Ubuntu 16.04**
   
-  若下载缓慢请先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再重新安装。
+  建议您先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再执行安装
   ```shell script
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
   bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
@@ -42,7 +42,6 @@ Ludong University Online Judge
   - 浏览器访问服务器ip进入首页  
   - **注册用户admin自动成为管理员**  
   - mysql数据库lduoj，用户lduoj@localhost(密码123456789)  
-    (配置文件:`.env`，配置生效:`cd /home/LDUOnlineJudge && php artisan config:cache`)  
   - nginx配置文件`/etc/nginx/conf.d/lduoj.conf`  
 
 
@@ -107,7 +106,7 @@ Ludong University Online Judge
 
 + 判题端配置
   
-  数据库连接信息、判题线程数、判题机名称等配置项均在项目根目录下.env文件  
+  数据库连接信息、判题线程数、判题机名称等配置项均在项目根目录下文件`.env`  
   默认判题线程数为5，可根据服务器内存及性能适当调节
 
 # 鸣谢
@@ -123,8 +122,11 @@ Ludong University Online Judge
   [zhiyul/switch](https://github.com/notiflix/Notiflix)  
   [wow.js](https://www.delac.io/wow/)
 
-# 版本信息
+# 联系作者
+  邮箱：iamwinter@foxmail.com  
+  博客：http://blog.csdn.net/winter2121  
+
+# 开源许可
  
   iamwinter/LDUOnlineJudge is licensed under the 
   **[GNU General Public License v3.0](https://github.com/iamwinter/LDUOnlineJudge/blob/master/LICENSE)**  
-  联系作者：iamwinter@foxmail.com  
