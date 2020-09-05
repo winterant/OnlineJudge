@@ -106,8 +106,6 @@ class StatusController extends Controller
      */
     public function create(Request $request)
     {
-        if(!Auth::check()) //未登录 => 请先登录
-            return view('client.fail',['msg'=>trans('sentence.Please login first')]);
         //拦截非管理员的频繁提交
         if(!Auth::user()->privilege('admin')){
             $last_submit_time = DB::table('solutions')
@@ -118,8 +116,10 @@ class StatusController extends Controller
                 return view('client.fail',['msg'=>trans('sentence.submit_frequently',['sec'=>get_setting('submit_interval')])]);
         }
 
+
         //获取前台提交的solution信息
         $data = $request->input('solution');
+        $problem = DB::table('problems')->find($data['pid']); //找到题目
         $submitted_result=0; //提交后的默认结果Waiting
         if(isset($data['cid'])){
             $contest=DB::table("contests")->select('judge_instantly','judge_type','allow_lang','end_time')->find($data['cid']);
@@ -133,13 +133,20 @@ class StatusController extends Controller
                 $submitted_result=15; //Submitted
             }
         }else{ //通过题库提交，需要判断一下用户权限
-            $hidden=DB::table('problems')->where('id',$data['pid'])->value('hidden');
+            $hidden=$problem->hidden;
             if(!Auth::user()->privilege('problem') && $hidden==1) //不是管理员&&问题隐藏 => 不允许提交
                 return view('client.fail',['msg'=>trans('main.Problem').$data['pid'].'：'.trans('main.Hidden')]);
         }
 
         if(null!=($file=$request->file('code_file')))//用户提交了文件,从临时文件中直接提取文本
             $data['code']=autoiconv(file_get_contents($file->getRealPath()));
+        else if($problem->type==1)//填空题，填充用户的答案
+        {
+            $data['code']=$problem->fill_in_blank;
+            foreach ($request->input('filled') as $ans) {
+                $data['code'] = preg_replace("/\?\?/",$ans,$data['code'],1);
+            }
+        }
         DB::table('solutions')->insert([
             'problem_id'    => $data['pid'],
             'contest_id'    => isset($data['cid'])?$data['cid']:-1,
