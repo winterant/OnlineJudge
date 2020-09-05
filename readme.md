@@ -8,7 +8,7 @@ Ludong University Online Judge
   [截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)
   
   - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
-  - 支持考试/竞赛，支持选择题、填空题（含代码填空）、编程题（C/C++/Java/Python3）
+  - 支持考试/竞赛，支持编程题、代码填空（C/C++/Java/Python3）
   - Web后端基于php框架 laravel 6.0 开发，php版本=7.2
   - Web前端使用bootstrap4、jquery，适配移动端和PC端
   - 判题端基于C/C++和shell编程，存放于judge文件夹
@@ -60,7 +60,7 @@ Ludong University Online Judge
 
 # 项目升级
 
-  - Ubuntu16.04 或 docker容器内
+  - Ubuntu16.04 或 进入docker容器内
 
     ```shell script
     git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade

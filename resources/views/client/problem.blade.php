@@ -104,6 +104,37 @@
                     </div>
                 </div>
 
+                @if($problem->type==1)
+                    <div class="my-container bg-white ck-content">
+                        <h5>{{trans('sentence.Submit')}}</h5>
+                        <hr class="mt-0">
+                        <form action="{{route('submit_solution')}}" method="post">
+                            <div class="border p-1">
+                                <pre id="blank_code">{{$problem->fill_in_blank}}</pre>
+                            </div>
+                            @csrf
+                            <input name="solution[pid]" value="{{$problem->id}}" hidden>
+
+                            @if(isset($contest))
+                                <input name="solution[index]" value="{{$problem->index}}" hidden>
+                                <input name="solution[cid]" value="{{$contest->id}}" hidden>
+                            @endif
+
+                            <div class="form-inline my-2">
+                                <select name="solution[language]" class="form-control border border-bottom-0 px-4" style="text-align-last: center;">
+                                    @foreach(config('oj.lang') as $key=>$res)
+                                        @if(!isset($contest) || ( 1<<$key)&$contest->allow_lang) )
+                                        <option value="{{$key}}" @if(Cookie::get('submit_language')==$key)selected @endif>{{$res}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn bg-light" @guest disabled @endguest>{{trans('main.Submit')}}</button>
+                        </form>
+                    </div>
+                @endif
+
                 @if(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time))
                     <div id="discussion_block" class="my-container bg-white ck-content">
                         <div class="d-flex">
@@ -328,51 +359,53 @@
                     </div>
                 @endif
 
-                {{-- 提交窗口 --}}
-                <div class="my-container bg-white">
+                {{-- 提交窗口  type==1代码填空--}}
+                @if($problem->type==0)
+                    <div class="my-container bg-white">
 
-                    <h5>{{trans('sentence.Submit')}}</h5>
-                    <hr class="m-0">
-                    <form action="{{route('submit_solution')}}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <input name="solution[pid]" value="{{$problem->id}}" hidden>
+                        <h5>{{trans('sentence.Submit')}}</h5>
+                        <hr class="m-0">
+                        <form action="{{route('submit_solution')}}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <input name="solution[pid]" value="{{$problem->id}}" hidden>
 
-                        @if(isset($contest))
-                            <input name="solution[index]" value="{{$problem->index}}" hidden>
-                            <input name="solution[cid]" value="{{$contest->id}}" hidden>
-                        @endif
+                            @if(isset($contest))
+                                <input name="solution[index]" value="{{$problem->index}}" hidden>
+                                <input name="solution[cid]" value="{{$contest->id}}" hidden>
+                            @endif
 
-                        <div class="form-inline my-2">
-                            <select name="solution[language]" class="pl-1 form-control border border-bottom-0 col-4" style="text-align-last: center;">
-                                @foreach(config('oj.lang') as $key=>$res)
-                                    @if(!isset($contest) || ( 1<<$key)&$contest->allow_lang) )
-                                    <option value="{{$key}}" @if(Cookie::get('submit_language')==$key)selected @endif>{{$res}}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                            <div class="px-1">
-                                <a href="javascript:" class="btn m-0" onclick="$('[name=code_file]').click()" title="{{__('main.File')}}">
-                                    <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
-                                </a>
+                            <div class="form-inline my-2">
+                                <select name="solution[language]" class="pl-1 form-control border border-bottom-0 col-4" style="text-align-last: center;">
+                                    @foreach(config('oj.lang') as $key=>$res)
+                                        @if(!isset($contest) || ( 1<<$key)&$contest->allow_lang) )
+                                        <option value="{{$key}}" @if(Cookie::get('submit_language')==$key)selected @endif>{{$res}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                <div class="px-1">
+                                    <a href="javascript:" class="btn m-0" onclick="$('[name=code_file]').click()" title="{{__('main.File')}}">
+                                        <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                                <input type="file" class="form-control-file" name="code_file"
+                                       onchange="$('#selected_fname').html(this.files[0].name);$('#code_editor').attr('required',false)"
+                                       accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
+                                <div id="selected_fname" style="font-size: 0.8rem"></div>
                             </div>
-                            <input type="file" class="form-control-file" name="code_file"
-                                   onchange="$('#selected_fname').html(this.files[0].name);$('#code_editor').attr('required',false)"
-                                   accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
-                            <div id="selected_fname" style="font-size: 0.8rem"></div>
-                        </div>
 
-                        <div class="form-group">
-                        <textarea id="code_editor" class="form-control-plaintext border p-2" rows="7" name="solution[code]"
-                                  placeholder="{{trans('sentence.Input Code')}}" required></textarea>
-                        </div>
+                            <div class="form-group">
+                            <textarea id="code_editor" class="form-control-plaintext border p-2" rows="7" name="solution[code]"
+                                      placeholder="{{trans('sentence.Input Code')}}" required></textarea>
+                            </div>
 
-                        <button type="submit" class="btn bg-light" @guest disabled @endguest>{{trans('main.Submit')}}</button>
-                        @guest
-                            <a href="{{route('login')}}">{{trans('Login')}}</a>
-                            <a href="{{route('register')}}">{{trans('Register')}}</a>
-                        @endguest
-                    </form>
-                </div>
+                            <button type="submit" class="btn bg-light" @guest disabled @endguest>{{trans('main.Submit')}}</button>
+                            @guest
+                                <a href="{{route('login')}}">{{trans('Login')}}</a>
+                                <a href="{{route('register')}}">{{trans('Register')}}</a>
+                            @endguest
+                        </form>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -475,6 +508,7 @@
     </script>
     <script type="text/javascript" src="{{asset('static/MathJax-2.7.7/MathJax.js?config=TeX-AMS_HTML')}}"></script>
 
+{{-- 问题标签的操作 --}}
     <script type="text/javascript">
         @if(session('tag_marked'))
             $(function () {
@@ -514,7 +548,7 @@
         //输入框根据字数自动调整宽度
         function input_auto_width(that) {
             $(that).val($(that).val().replace(/\s+/g,'')); //禁止输入空格
-            var sensor = $('<font>'+ $(that).val() +'</font>').css({display: 'none'});
+            var sensor = $('<pre>'+ $(that).val() +'</pre>').css({display: 'none'});
             $('body').append(sensor);
             var width = sensor.width();
             sensor.remove();
@@ -522,6 +556,7 @@
         }
     </script>
 
+{{-- 讨论板的操作 --}}
     <script type="text/javascript">
         @if(session('discussion_added'))
             $(function () {
@@ -660,6 +695,23 @@
             $("input[name=discussion_id]").val(id);
             $("input[name=reply_username]").val(username);
             $("#content").val();
+        }
+    </script>
+
+{{--    代码填空的处理 --}}
+    <script type="text/javascript">
+        $(function () {
+            var reg = new RegExp(/\?\?/,"g");//g,表示全部替换。
+            $code = $("#blank_code").html().replace(reg,"<input name='filled[]' oninput='input_extend_width($(this))' autocomplete='off' required>")
+            $("#blank_code").html($code)
+        });
+
+        function input_extend_width(that) {
+            var sensor = $('<pre>'+ $(that).val() +'</pre>').css({display: 'none'});
+            $('body').append(sensor);
+            var width = sensor.width();
+            sensor.remove();
+            $(that).css('width',Math.max(171,width+30)+'px');
         }
     </script>
 @endsection
