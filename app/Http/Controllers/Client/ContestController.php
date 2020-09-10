@@ -133,7 +133,7 @@ class ContestController extends Controller
         $problem=DB::table('problems')
             ->join('contest_problems','contest_problems.problem_id','=','problems.id')
             ->select('index','hidden','problem_id as id','title','description','input','output','hint','source',
-                'time_limit','memory_limit','spj',
+                'time_limit','memory_limit','spj','type','fill_in_blank',
                 DB::raw("(select count(id) from solutions where problem_id=problems.id and contest_id=".$id.") as submit"),
                 DB::raw("(select count(id) from solutions where problem_id=problems.id and contest_id=".$id." and result=4) as solved"))
             ->where('contest_id',$id)
