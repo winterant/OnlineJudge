@@ -145,7 +145,7 @@ class ContestController extends Controller
         $tags = DB::table('tag_marks')
             ->join('tag_pool','tag_pool.id','=','tag_id')
             ->groupBy('name')
-            ->where('problem_id',$pid)
+            ->where('problem_id',$problem->id)
             ->select('name',DB::raw('count(name) as count'))
             ->orderByDesc('count')
             ->limit(3)
