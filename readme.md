@@ -36,7 +36,7 @@ Ludong University Online Judge
   
   建议您先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再执行安装
   ```shell script
-  git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
+  git clone https://github.com/zhaojinglong/LDUOnlineJudge.git /home/LDUOnlineJudge
   bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
   ```
   - 浏览器访问服务器ip进入首页  
@@ -49,7 +49,7 @@ Ludong University Online Judge
 
   若docker build缓慢，请先[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
   ```shell script
-  git clone https://github.com/iamwinter/LDUOnlineJudge.git
+  git clone https://github.com/zhaojinglong/LDUOnlineJudge.git
   cp LDUOnlineJudge/install/docker/{Dockerfile,.dockerignore} ./
   docker build  -t lduoj .
   rm -rf ./{LDUOnlineJudge,Dockerfile,.dockerignore}
@@ -63,7 +63,7 @@ Ludong University Online Judge
   - Ubuntu16.04 或 进入docker容器内
 
     ```shell script
-    git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
+    git clone https://github.com/zhaojinglong/LDUOnlineJudge.git /home/lduoj_upgrade
     bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh
     ```
 
@@ -128,5 +128,5 @@ Ludong University Online Judge
 
 # 开源许可
  
-  iamwinter/LDUOnlineJudge is licensed under the 
-  **[GNU General Public License v3.0](https://github.com/iamwinter/LDUOnlineJudge/blob/master/LICENSE)**  
+  zhaojinglong/LDUOnlineJudge is licensed under the 
+  **[GNU General Public License v3.0](https://github.com/zhaojinglong/LDUOnlineJudge/blob/master/LICENSE)**  
