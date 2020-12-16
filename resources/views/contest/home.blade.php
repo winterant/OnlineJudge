@@ -89,7 +89,11 @@
                             @foreach($files as $i=>$file)
                                 <div class="mr-4">
                                     {{$i+1}}.
-                                    <a href="{{$file[1]}}" class="mr-1" target="_blank">{{$file[0]}}</a>
+                                    @if(Auth::user()->privilege('contest')||time()>strtotime($contest->start_time))
+                                        <a href="{{$file[1]}}" class="mr-1" target="_blank">{{$file[0]}}</a>
+                                    @else
+                                        <a href="#" class="mr-1" target="_blank" disabled>{{$file[0]}}</a>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
