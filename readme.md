@@ -2,6 +2,7 @@ Ludong University Online Judge
 ===
   > 鲁东大学程序设计在线测评系统与考试平台
 
+点击:star:star，给我一颗小星星鼓励一下我吧:blush:
 
 # 快速了解
 
@@ -121,10 +122,6 @@ Ludong University Online Judge
   [MathJax](https://www.mathjax.org/)  
   [zhiyul/switch](https://github.com/notiflix/Notiflix)  
   [wow.js](https://www.delac.io/wow/)
-
-# 联系作者
-  邮箱：iamwinter@foxmail.com  
-  博客：http://blog.csdn.net/winter2121  
 
 # 开源许可
  
