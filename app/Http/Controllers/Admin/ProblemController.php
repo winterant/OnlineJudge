@@ -442,7 +442,8 @@ class ProblemController extends Controller
             if (time() - filemtime(storage_path('app/'.$fpath)) > 3600*24)
                 Storage::delete($fpath);
         }
-        $filename=str_replace("\r",',',str_replace("\n",',',str_replace("\r\n",',',$problem_ids))).".xml";
+//        $filename=str_replace("\r",',',str_replace("\n",',',str_replace("\r\n",',',$problem_ids))).".xml";
+        $filename=str_replace(["\r\n","\r","\n"],',',$problem_ids).".xml";
         $dom->save(storage_path("app/".$dir.Auth::id().'/'.$filename));
         return Storage::download($dir.Auth::id().'/'.$filename);
     }
