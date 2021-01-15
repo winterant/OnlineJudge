@@ -1,7 +1,8 @@
 #!/bin/sh
 
-set -x
 root=/home/LDUOnlineJudge
+
+set -ex
 cd ${root} || { echo No such project: ${root};exit 1; }
 
 # php environment
@@ -17,9 +18,9 @@ apt -y install composer zip unzip
 composer install --ignore-platform-reqs
 
 # laravel initialization
-chmod -R 777 storage bootstrap/cache
 cp -rf .env.example .env
 mkdir -p storage/app/public
+chmod -R 777 storage bootstrap/cache
 php artisan storage:link
 php artisan key:generate
 php artisan optimize

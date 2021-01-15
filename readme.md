@@ -33,7 +33,7 @@ Ludong University Online Judge
 
 # 项目安装
 
-+ **基于Linux Ubuntu 16.04**
++ **基于Linux Ubuntu 16.04 / 18.04**
   
   建议您先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再执行安装
   ```shell script
@@ -46,7 +46,7 @@ Ludong University Online Judge
   - nginx配置文件`/etc/nginx/conf.d/lduoj.conf`  
 
 
-+ **基于docker**
++ **基于docker（推荐）**
 
   若docker build缓慢，请先[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
   ```shell script
@@ -54,49 +54,51 @@ Ludong University Online Judge
   cp LDUOnlineJudge/install/docker/{Dockerfile,.dockerignore} ./
   docker build  -t lduoj .
   rm -rf ./{LDUOnlineJudge,Dockerfile,.dockerignore}
-  docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
+  docker run -dit --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
   ```
   - 浏览器访问服务器ip:8080进入首页。[如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  
   - 进入容器进行管理： `docker exec -it lduoj /bin/bash`  
 
 # 项目升级
 
-  - Ubuntu16.04 或 进入docker容器内
++ Ubuntu16.04 / 18.04 或 进入docker容器内
 
-    ```shell script
-    git clone https://github.com/zhaojinglong/LDUOnlineJudge.git /home/lduoj_upgrade
-    bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh
-    ```
+  ```shell script
+  git clone https://github.com/zhaojinglong/LDUOnlineJudge.git /home/lduoj_upgrade
+  bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh
+  ```
 
 # 项目迁移
 
-  请先进行项目升级以确保脚本是最新的！
-  - 基于Ubuntu16.04  
-    1.在原主机备份数据库
-    ```shell script
-    bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
-    ```
-    2.拷贝原主机`/home/LDUOnlineJudge`到新主机相同路径。  
-    3.在新主机上执行安装。
-    ```shell script
-    bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
-    ```
-  - 基于docker  
-    1.在原宿主机docker**容器内**备份数据库
-    ```shell script
-    bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
-    ```
-    2.从原宿主机拷贝`~/lduoj_docker/LDUOnlineJudge`到新宿主机相同路径。    
-    3.在新宿主机执行安装(基于docker)。  
-    ```shell script
-    cd ~/lduoj_docker
-    docker build  -t lduoj -f ./LDUOnlineJudge/install/docker_migrate/Dockerfile .
-    docker run -d --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
-    ```
-    4.在新宿主机docker**容器内**恢复数据库
-    ```shell script
-    bash /home/LDUOnlineJudge/install/mysql/database_recover.sh
-    ```
+请先进行项目升级以确保脚本是最新的！
++ 基于Ubuntu16.04 / 18.04
+
+  1.在原主机备份数据库
+  ```shell script
+  bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
+  ```
+  2.拷贝原主机`/home/LDUOnlineJudge`到新主机相同路径。  
+  3.在新主机上执行安装。
+  ```shell script
+  bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
+  ```
++ 基于docker  
+
+  1.在原宿主机docker**容器内**备份数据库
+  ```shell script
+  bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
+  ```
+  2.从原宿主机拷贝`~/lduoj_docker/LDUOnlineJudge`到新宿主机相同路径。    
+  3.在新宿主机执行安装(基于docker)。  
+  ```shell script
+  cd ~/lduoj_docker
+  docker build -t lduoj -f ./LDUOnlineJudge/install/docker_migrate/Dockerfile .
+  docker run -dit --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
+  ```
+  4.在新宿主机docker**容器内**恢复数据库
+  ```shell script
+  bash /home/LDUOnlineJudge/install/mysql/database_recover.sh
+  ```
 
 # 判题端使用说明
 
@@ -124,6 +126,6 @@ Ludong University Online Judge
   [wow.js](https://www.delac.io/wow/)
 
 # 开源许可
- 
-  zhaojinglong/LDUOnlineJudge is licensed under the 
+
+  iamwinter/LDUOnlineJudge is licensed under the 
   **[GNU General Public License v3.0](https://github.com/zhaojinglong/LDUOnlineJudge/blob/master/LICENSE)**  
