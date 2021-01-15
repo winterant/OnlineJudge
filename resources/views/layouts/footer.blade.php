@@ -13,7 +13,7 @@
         @endif
     </div>
 
-    © 2020 <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">LDU Online Judge</a>.
+    © 2020-{{date('Y')}} <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">LDU Online Judge</a>.
     All Rights Reserved.
 </div>
 
