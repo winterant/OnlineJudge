@@ -9,7 +9,7 @@
             <div class="form-inline">
                 <h2 class="mr-3">测试数据</h2>
                 <label>题号：</label>
-                <input type="number" step="1" name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:''}}" class="form-control ml-3">
+                <input type="number" step="1" name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:''}}" required class="form-control ml-3">
                 <button class="btn btn-light bg-success ml-1">转到</button>
             </div>
         </form>

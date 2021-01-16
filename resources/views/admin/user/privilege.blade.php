@@ -77,15 +77,16 @@
                     <label class="form-inline">
                         权限：
                         <select id="privi" class="form-control border border-bottom-0 px-3 bg-white" name="privilege[authority]">
-                            <option value="admin">admin（全部权限）</option>
+                            <option value="admin">admin（超级管理员）</option>
+                            <option value="teacher">teacher（教师）</option>
                             <option value="solution">solution（查看代码）</option>
-                            <option value="problem_list">problem_list（查看问题列表）</option>
-                            <option value="problem_tag">problem_tag（管理问题标签与讨论板）</option>
-                            <option value="edit_problem">edit_problem（编辑/添加题目）</option>
-                            <option value="problem_data">problem_data（管理测试数据）</option>
-                            <option value="problem_rejudge">problem_rejudge（重判提交记录）</option>
-                            <option value="import_export_problem">import_export_problem（导入/导出题目）</option>
-                            <option value="contest">contest（管理竞赛）</option>
+{{--                            <option value="problem_list">problem_list（查看问题列表）</option>--}}
+{{--                            <option value="problem_tag">problem_tag（管理问题标签与讨论板）</option>--}}
+{{--                            <option value="edit_problem">edit_problem（编辑/添加题目）</option>--}}
+{{--                            <option value="problem_data">problem_data（管理测试数据）</option>--}}
+{{--                            <option value="problem_rejudge">problem_rejudge（重判提交记录）</option>--}}
+{{--                            <option value="import_export_problem">import_export_problem（导入/导出题目）</option>--}}
+{{--                            <option value="contest">contest（管理竞赛）</option>--}}
                             <option value="balloon">balloon（派送气球）</option>
                         </select>
                     </label>
@@ -94,7 +95,7 @@
                     <button class="btn border">提交</button>
                 </div>
             </form>
-            <div class="table-responsive border-top pt-5">
+            <div class="table-responsive border-top pt-3">
                 <h5>权限说明</h5>
                 <table id="table-overview" class="table table-sm"><style type="text/css">
                         #table-overview th,#table-overview td{border: 0;text-align: left}
@@ -105,32 +106,44 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td nowrap>admin</td><td nowrap>超级管理员，涵盖以下所有权限</td>
+                            <td nowrap>admin</td><td nowrap>超级管理员：所有权限</td>
+                        </tr>
+                        <tr>
+                            <td nowrap>teacher</td>
+                            <td nowrap>
+                                <p class="mb-0">教师：</p>
+                                <p class="mb-0" style="text-indent:2em;">添加/修改题目</p>
+                                <p class="mb-0" style="text-indent:2em;">问题标签</p>
+                                <p class="mb-0" style="text-indent:2em;">问题讨论版</p>
+                                <p class="mb-0" style="text-indent:2em;">管理测试数据</p>
+                                <p class="mb-0" style="text-indent:2em;">管理竞赛</p>
+                                <p class="mb-0" style="text-indent:2em;">重判学生代码</p>
+                            </td>
                         </tr>
                         <tr>
                             <td nowrap>solution</td><td nowrap>查看所有用户提交的代码</td>
                         </tr>
-                        <tr>
-                            <td nowrap>problem_list</td><td nowrap>查看题目列表</td>
-                        </tr>
-                        <tr>
-                            <td nowrap>problem_tag</td><td nowrap>管理问题标签、讨论板</td>
-                        </tr>
-                        <tr>
-                            <td nowrap>edit_problem</td><td nowrap>添加、修改题目内容（包括spj）</td>
-                        </tr>
-                        <tr>
-                            <td nowrap>problem_data</td><td nowrap>管理题目测试数据</td>
-                        </tr>
-                        <tr>
-                            <td nowrap>problem_rejudge</td><td nowrap>重判提交记录</td>
-                        </tr>
-                        <tr>
-                            <td nowrap>import_export_problem</td><td nowrap>导入与导出题目</td>
-                        </tr>
-                        <tr>
-                            <td nowrap>contest</td><td nowrap>管理竞赛，增删改查</td>
-                        </tr>
+{{--                        <tr>--}}
+{{--                            <td nowrap>problem_list</td><td nowrap>查看题目列表</td>--}}
+{{--                        </tr>--}}
+{{--                        <tr>--}}
+{{--                            <td nowrap>problem_tag</td><td nowrap>管理问题标签、讨论板</td>--}}
+{{--                        </tr>--}}
+{{--                        <tr>--}}
+{{--                            <td nowrap>edit_problem</td><td nowrap>添加、修改题目内容（包括spj）</td>--}}
+{{--                        </tr>--}}
+{{--                        <tr>--}}
+{{--                            <td nowrap>problem_data</td><td nowrap>管理题目测试数据</td>--}}
+{{--                        </tr>--}}
+{{--                        <tr>--}}
+{{--                            <td nowrap>problem_rejudge</td><td nowrap>重判提交记录</td>--}}
+{{--                        </tr>--}}
+{{--                        <tr>--}}
+{{--                            <td nowrap>import_export_problem</td><td nowrap>导入与导出题目</td>--}}
+{{--                        </tr>--}}
+{{--                        <tr>--}}
+{{--                            <td nowrap>contest</td><td nowrap>管理竞赛，增删改查</td>--}}
+{{--                        </tr>--}}
                         <tr>
                             <td nowrap>balloon</td><td nowrap>在竞赛中查看气球派送信息</td>
                         </tr>
