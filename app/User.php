@@ -40,6 +40,12 @@ class User extends Authenticatable
     ];
 
     public function privilege($power){
+        //如果查询的$power是以下之一，则视为老师，只查询数据库中当前账户是不是老师
+        //这样做的原因是后续开发要求增加teacher这个权限，并涵盖题目的增改、竞赛管理等。
+        //为了兼容以前的版本，尽量少改动原来的代码，在这里统一把这些权限视为teacher
+        if(in_array($power, ['problem_list','edit_problem','problem_data','problem_tag','problem_rejudge','contest']))
+            $power=array_merge((array)$power,['teacher']);
+
         //判断用户是否具有某项权限, admin一定有权
         if(DB::table('privileges')->where('user_id',$this->id)
             ->whereIn('authority',array_merge((array)$power,['admin']))->exists()){

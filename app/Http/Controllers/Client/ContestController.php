@@ -237,7 +237,12 @@ class ContestController extends Controller
         else if(isset($_GET['big']))
             Cookie::queue('rank_table_lg',$_GET['big']); //保存榜单是否全屏
 
-        $contest=DB::table('contests')->select(['id','type','judge_type','title','start_time','end_time','lock_rate'])->find($id);
+        $contest=DB::table('contests')->select(['id','type','judge_type','title','start_time','end_time','lock_rate','hidden'])->find($id);
+        //对于隐藏的竞赛，普通用户不能查看榜单
+        if($contest->hidden && (!Auth::check()||!Auth::user()->privilege('contest')))
+        {
+            return view('client.fail',['msg'=>'竞赛不存在或权限不足！']);
+        }
         $solutions=DB::table('solutions')
             ->join('contest_problems',function ($join){
                 $join->on('contest_problems.contest_id','=','solutions.contest_id')
