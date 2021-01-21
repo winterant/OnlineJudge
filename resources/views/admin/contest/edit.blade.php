@@ -30,7 +30,7 @@
                 <div class="custom-control custom-radio ml-3">
                     <input type="radio" name="contest[judge_instantly]" value="0" class="custom-control-input" id="saihou"
                            @if(isset($contest->judge_instantly)&&$contest->judge_instantly==0)checked @endif>
-                    <label class="custom-control-label pt-1" for="saihou">赛后判题（适合考试,用户多次提交一题只判最后一次,但考试结束后创建者须点击开始判题）</label>
+                    <label class="custom-control-label pt-1" for="saihou">赛后判题（同一用户同一题只判最后一次提交，赛后管理员必须手动点击开始判题）</label>
                 </div>
             </div>
 
@@ -82,7 +82,7 @@
                 @endif
             </div>
 
-            <div class="mt-4 p-2 bg-sky">设置比赛时间、榜单停止更新的时间</div>
+            <div class="mt-4 p-2 bg-sky">设置比赛时间、封榜比例</div>
             <div class="border p-2">
 
                 <div class="form-inline">
@@ -103,9 +103,10 @@
                         <input type="number" step="0.01" max="1" min="0" name="contest[lock_rate]"
                                value="{{isset($contest)?$contest->lock_rate:0}}" class="form-control">
                         <a href="javascript:" class="ml-1" style="color: #838383"
-                            onclick="whatisthis('你可以设置比赛末尾停止更新榜单<br>' +
-                            '比赛结尾封榜时间=比赛时长×封榜比例；<br>数值范围0.0~1.0' +
-                             '<br><br>例如：封榜比例0.2，比赛时长5小时，则比赛最后一小时榜单不更新')">
+                            onclick="whatisthis('封榜时长=比赛时长×封榜比例；<br>数值范围0.0~1.0' +
+                             '<br><br>例如：封榜比例0.2，比赛总时长5小时，则比赛达到4小时后榜单停止更新' +
+                              '（管理员依旧可以看到实时榜单）' +
+                               '<br><br>若封榜比例为1.0，则全程不更新榜单，适合考试。')">
                             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                         </a>
                     </label>
@@ -184,7 +185,7 @@
                 </div>
 
                 <div class="form-inline mb-3">
-                    <div class="pull-left">允许语言：</div>
+                    <div class="pull-left">编程语言：</div>
                     <input id="input_allow_lang" type="number" name="contest[allow_lang]" hidden>
                     @foreach(config('oj.lang') as $lang=>$name)
                         <div class="custom-control custom-checkbox mx-2">
