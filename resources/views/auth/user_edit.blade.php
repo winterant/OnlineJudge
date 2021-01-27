@@ -26,7 +26,7 @@
                                 {{trans('main.E-Mail Address')}}：
                             </label>
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="user[email]" value="{{$user->email}}">
+                                <input id="email" type="email" class="form-control" name="user[email]" value="{{$user->email}}" placeholder="可选">
                             </div>
                         </div>
 
