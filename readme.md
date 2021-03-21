@@ -48,13 +48,24 @@ Ludong University Online Judge
 
 + **基于docker（推荐）**
 
+  - 方式1（推荐）
+
+  ```shell script
+  docker pull iamwinter/lduoj:21.03
+  docker run -dit --restart=always --cap-add=SYS_PTRACE -p 8080:80 \
+      -v ~/lduoj_docker:/volume --name lduoj iamwinter/lduoj:21.03
+  ```
+
+  - 方式2（手动创建镜像）
+
   若docker build缓慢，请先[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
   ```shell script
   git clone https://github.com/iamwinter/LDUOnlineJudge.git
   cp LDUOnlineJudge/install/docker/{Dockerfile,.dockerignore} ./
-  docker build  -t lduoj .
+  docker build  -t lduoj:local .
   rm -rf ./{LDUOnlineJudge,Dockerfile,.dockerignore}
-  docker run -dit --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
+  docker run -dit --restart=always --cap-add=SYS_PTRACE -p 8080:80 \
+      -v ~/lduoj_docker:/volume --name lduoj lduoj:local
   ```
   - 浏览器访问服务器ip:8080进入首页。[如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  
   - 进入容器进行管理： `docker exec -it lduoj /bin/bash`  
@@ -84,20 +95,20 @@ Ludong University Online Judge
   ```
 + 基于docker  
 
-  1.在原宿主机docker**容器内**备份数据库
+  1.**原宿主机**生成镜像文件`lduoj.mig`。
   ```shell script
-  bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
+  docker commit --message 'migration' lduoj lduoj:migration
+  docker save -o lduoj.mig lduoj:migration 
   ```
-  2.从原宿主机拷贝`~/lduoj_docker/LDUOnlineJudge`到新宿主机相同路径。    
-  3.在新宿主机执行安装(基于docker)。  
+
+  2.将【镜像文件`lduoj.mig`】和【文件夹`~/lduoj_docker`】拷贝到新服务器上；
+  **或者**使用`scp`命令发送到新主机。
+
+  3.**新宿主机**载入镜像文件，并启动容器。
   ```shell script
-  cd ~/lduoj_docker
-  docker build -t lduoj -f ./LDUOnlineJudge/install/docker_migrate/Dockerfile .
-  docker run -dit --restart=always --cap-add=SYS_PTRACE -p 8080:80 -v ~/lduoj_docker:/volume --name lduoj lduoj:latest
-  ```
-  4.在新宿主机docker**容器内**恢复数据库
-  ```shell script
-  bash /home/LDUOnlineJudge/install/mysql/database_recover.sh
+  docker load -i lduoj.mig
+  docker run -dit --restart=always --cap-add=SYS_PTRACE -p 8080:80 \
+        -v ~/lduoj_docker:/volume --name lduoj lduoj:migration
   ```
 
 # 判题端使用说明
