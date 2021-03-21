@@ -137,7 +137,7 @@
                                             </font>
                                             @if($sol->sim_rate>=50)
                                                 <a class="bg-sky px-1 text-black" style="border-radius: 3px"
-                                                   href="{{route('solution',$sol->sim_sid)}}"
+                                                   href="{{route('solution',$sol->sim_sid)}}" target="_blank"
                                                    title="Your code is {{$sol->sim_rate}}% similar to solution {{$sol->sim_sid}}">
                                                     *{{$sol->sim_sid}} ({{$sol->sim_rate}}%)
                                                 </a>
