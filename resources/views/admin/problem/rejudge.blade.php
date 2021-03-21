@@ -8,7 +8,7 @@
     <hr>
     <div class="p-4 col-12 col-sm-8">
 
-        <form action="" method="post">
+        <form action="" method="post" target="_blank">
             @csrf
             <div class="form-inline">
                 <label for="">
@@ -19,7 +19,7 @@
             </div>
         </form>
 
-        <form action="" method="post">
+        <form action="" method="post" target="_blank">
             @csrf
             <div class="form-inline">
                 <label for="">
@@ -30,7 +30,7 @@
             </div>
         </form>
 
-        <form action="" method="post">
+        <form action="" method="post" target="_blank">
             @csrf
             <div class="form-inline">
                 <label for="">
@@ -41,7 +41,7 @@
             </div>
         </form>
 
-        <form action="" method="post">
+        <form action="" method="post" target="_blank">
             @csrf
             <div class="form-inline">
                 <label for="">
