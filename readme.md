@@ -83,7 +83,6 @@ Ludong University Online Judge
 
 # 项目迁移
 
-请先进行项目升级以确保脚本是最新的！
 + 基于Ubuntu16.04 / 18.04
 
   1.在原主机备份数据库
