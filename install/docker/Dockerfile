@@ -63,13 +63,6 @@ RUN set -ex &&\
     cp /home/LDUOnlineJudge/install/docker/startup.sh / &&\
     chmod +x /startup.sh
 
-RUN set -ex &&\
-    mv /home/LDUOnlineJudge /volume/ &&\
-    ln -s /volume/LDUOnlineJudge /home/LDUOnlineJudge &&\
-    mv /var/lib/mysql /volume/ &&\
-    ln -s /volume/mysql /var/lib/mysql &&\
-    chown -R mysql:mysql /volume/mysql
-
 ENTRYPOINT ["/startup.sh"]
 
 VOLUME ["/volume"]
