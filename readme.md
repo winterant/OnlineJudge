@@ -2,17 +2,15 @@ Ludong University Online Judge
 ===
   > 鲁东大学程序设计在线测评系统与考试平台
 
-点击:star:star，给我一颗小星星鼓励一下我吧:blush:
-
 # 快速了解
 
   [截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)
   
   - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
-  - 支持考试/竞赛，支持编程题、代码填空（C/C++/Java/Python3）
+  - 支持**考试/竞赛**，支持**编程题、代码填空**（C/C++/Java/Python3）
   - Web后端基于php框架 laravel 6.0 开发，php版本=7.2
   - Web前端使用bootstrap4、jquery，适配移动端和PC端
-  - 判题端基于C/C++和shell编程，存放于judge文件夹
+  - 判题端基于C/C++和shell编程，存放于`judge`文件夹
   
   前台
   
@@ -21,21 +19,20 @@ Ludong University Online Judge
   + 问题；题库（编程、代码填空）
   + 竞赛；题目(选自题库)，排名(ACM,OI)可封榜，**赛后补题榜**，公告栏，气球派送
   + 排名；用户解题排行榜，可按年/月/周/日查询
-  
+
   后台
 
   + 判题机；启动/停止linux判题端进程
   + 公告/新闻；用户访问首页可见
-  + 用户管理；权限授权，批量生成账号，黑名单
-  + 题目管理；增改查，公开/隐藏，重判结果，导入与导出(兼容hustoj)
+  + 用户管理；**账号权限分配**，批量生成账号，**黑名单**
+  + 题目管理；增改查，公开/隐藏，重判结果，**导入与导出(兼容hustoj)**
   + 竞赛管理；增删查改，公开/隐藏
-  + 系统配置；修改网站名称，打开/关闭一些全局功能，中英文切换等。
+  + 系统配置；修改网站名称，打开/关闭一些全局功能，**中英文切换**等。
 
 # 项目安装
 
 + **基于Linux Ubuntu 16.04 / 18.04**
-  
-  建议您先[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)再执行安装
+[帮助:[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)]
   ```shell script
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
   bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
@@ -47,25 +44,30 @@ Ludong University Online Judge
 
 
 + **基于docker（推荐）**
+[帮助:[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)]
 
   - 方式1（推荐）
 
   ```shell script
-  docker pull iamwinter/lduoj:21.03
-  docker run -dit --restart=always --cap-add=SYS_PTRACE -p 8080:80 \
-      -v ~/lduoj_docker:/volume --name lduoj iamwinter/lduoj:21.03
+  docker run -dit --restart=always --cap-add=SYS_PTRACE \
+      -p 8080:80 \
+      -v ~/lduoj_docker:/volume \
+      --name lduoj \
+      iamwinter/lduoj:latest
   ```
 
   - 方式2（手动创建镜像）
 
-  若docker build缓慢，请先[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)
   ```shell script
   git clone https://github.com/iamwinter/LDUOnlineJudge.git
   cp LDUOnlineJudge/install/docker/{Dockerfile,.dockerignore} ./
   docker build  -t lduoj:local .
   rm -rf ./{LDUOnlineJudge,Dockerfile,.dockerignore}
-  docker run -dit --restart=always --cap-add=SYS_PTRACE -p 8080:80 \
-      -v ~/lduoj_docker:/volume --name lduoj lduoj:local
+  docker run -dit --restart=always --cap-add=SYS_PTRACE \
+      -p 8080:80 \
+      -v ~/lduoj_docker:/volume \
+      --name lduoj \
+      lduoj:local
   ```
   - 浏览器访问服务器ip:8080进入首页。[如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  
   - 进入容器进行管理： `docker exec -it lduoj /bin/bash`  
@@ -95,20 +97,15 @@ Ludong University Online Judge
   ```
 + 基于docker  
 
-  1.**原宿主机**生成镜像文件`lduoj.mig`。
-  ```shell script
-  docker commit --message 'migration' lduoj lduoj:migration
-  docker save -o lduoj.mig lduoj:migration 
-  ```
+  1.从**原主机**拷贝文件夹`~/lduoj_docker`到**新主机**相同位置。
 
-  2.将【镜像文件`lduoj.mig`】和【文件夹`~/lduoj_docker`】拷贝到新服务器上；
-  **或者**使用`scp`命令发送到新主机。
-
-  3.**新宿主机**载入镜像文件，并启动容器。
+  2.在**新主机**基于docker安装即可。
   ```shell script
-  docker load -i lduoj.mig
-  docker run -dit --restart=always --cap-add=SYS_PTRACE -p 8080:80 \
-        -v ~/lduoj_docker:/volume --name lduoj lduoj:migration
+  docker run -dit --restart=always --cap-add=SYS_PTRACE \
+      -p 8080:80 \
+      -v ~/lduoj_docker:/volume \
+      --name lduoj \
+      iamwinter/lduoj:latest
   ```
 
 # 判题端使用说明
