@@ -2,6 +2,10 @@ Ludong University Online Judge
 ===
   > 鲁东大学程序设计在线测评系统与考试平台
 
+# 开发者笔记
+
+[developer.md](developer.md)
+
 # 快速了解
 
   [截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)
@@ -11,7 +15,7 @@ Ludong University Online Judge
   - Web后端基于php框架 laravel 6.0 开发，php版本=7.2
   - Web前端使用bootstrap4、jquery，适配移动端和PC端
   - 判题端基于C/C++和shell编程，存放于`judge`文件夹
-  
+
   前台
   
   + 首页；公告/新闻，本周榜，上周榜
