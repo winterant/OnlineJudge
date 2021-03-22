@@ -46,8 +46,6 @@ Ludong University Online Judge
 + **基于docker（推荐）**
 [帮助:[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)]
 
-  - 方式1（推荐）
-
   ```shell script
   docker run -dit --restart=always --cap-add=SYS_PTRACE \
       -p 8080:80 \
@@ -56,26 +54,21 @@ Ludong University Online Judge
       iamwinter/lduoj:latest
   ```
 
-  - 方式2（手动创建镜像）
-
-  ```shell script
-  git clone https://github.com/iamwinter/LDUOnlineJudge.git
-  cp LDUOnlineJudge/install/docker/{Dockerfile,.dockerignore} ./
-  docker build  -t lduoj:local .
-  rm -rf ./{LDUOnlineJudge,Dockerfile,.dockerignore}
-  docker run -dit --restart=always --cap-add=SYS_PTRACE \
-      -p 8080:80 \
-      -v ~/lduoj_docker:/volume \
-      --name lduoj \
-      lduoj:local
-  ```
-  - 浏览器访问服务器ip:8080进入首页。[如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  
+  - `-p`参数后的`8080`是主机端口，可自定义。
+    浏览器访问`服务器ip:8080`进入首页。
+    [如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  
+  - `-v`参数后的`~/lduoj_docker`是用于保存数据的主机目录，可自定义。
+    如需备份系统，只需将此文件夹打包备份。
   - 进入容器进行管理： `docker exec -it lduoj /bin/bash`  
 
 # 项目升级
 
-+ Ubuntu16.04 / 18.04 或 进入docker容器内
++ 基于Linux Ubuntu安装请执行后两行；
+  基于docker安装请执行全部命令。
 
+  ```shell script
+  docker exec -it lduoj /bin/bash   # 进入docker容器
+  ```
   ```shell script
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
   bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh
@@ -85,27 +78,24 @@ Ludong University Online Judge
 
 + 基于Ubuntu16.04 / 18.04
 
-  1.在原主机备份数据库
+  1.在**原主机**备份数据库、nginx配置
   ```shell script
   bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
+  cp -f /etc/nginx/conf.d/lduoj.conf /home/LDUOnlineJudge/install/nginx/lduoj.conf
   ```
-  2.拷贝原主机`/home/LDUOnlineJudge`到新主机相同路径。  
-  3.在新主机上执行安装。
+  2.拷贝**原主机**文件夹`/home/LDUOnlineJudge`到**新主机**相同路径。  
+  3.在**新主机**上执行安装。
   ```shell script
   bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
   ```
 + 基于docker  
 
-  1.从**原主机**拷贝文件夹`~/lduoj_docker`到**新主机**相同位置。
+  1.将**原主机**文件夹`~/lduoj_docker`拷贝到**新主机**相同位置。
 
-  2.在**新主机**基于docker安装即可。
-  ```shell script
-  docker run -dit --restart=always --cap-add=SYS_PTRACE \
-      -p 8080:80 \
-      -v ~/lduoj_docker:/volume \
-      --name lduoj \
-      iamwinter/lduoj:latest
-  ```
+  2.在**新主机**基于docker安装(见[项目安装](#项目安装))。
+
+  3.若**原主机**自定义了nginx配置文件，可自行复制到**新主机**。
+    或参考[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)
 
 # 判题端使用说明
 
