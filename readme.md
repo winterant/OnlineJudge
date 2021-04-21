@@ -106,7 +106,7 @@ Ludong University Online Judge
       ```shell
       docker exec -it lduoj /bin/bash
       tar -zcvf volume.tar.gz /volume
-      scp -P 22 volume.tar.gz root@104.224.179.57:~/
+      scp -P 22 volume.tar.gz root@your_new_server_ip:~/
       ```
 
 # 判题端使用说明
