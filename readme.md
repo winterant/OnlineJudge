@@ -8,7 +8,7 @@ Ludong University Online Judge
 
 # 快速了解
 
-  **[预览网站](http://104.224.179.57:8080)**
+  <a href="http://104.224.179.57:8080" target="_blank"><b>预览网站</b></a>
 
   **[截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)**
   
