@@ -8,9 +8,9 @@ Ludong University Online Judge
 
 # 快速了解
 
-  **[预览网站](http://10.170.14.60:8080)**
+  **[预览网站](http://104.224.179.57:8080)**
 
-  [截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)
+  **[截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)**
   
   - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
   - 支持**考试/竞赛**，支持**编程题、代码填空**（C/C++/Java/Python3）
