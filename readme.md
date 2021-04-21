@@ -8,7 +8,7 @@ Ludong University Online Judge
 
 # 快速了解
 
-  <a href="http://104.224.179.57:8080" target="_blank"><b>预览网站</b></a>
+  **[预览网站](http://104.224.179.57:8080)**
 
   **[截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)**
   
@@ -103,13 +103,12 @@ Ludong University Online Judge
   3.若**原主机**自定义了nginx配置文件，可自行复制到**新主机**。
     或参考[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)
 
-  + 可能会遇到的问题
-    - 步骤1，拷贝文件夹时，可能会遇到当前用户权限不足的情况，可直接进入容器内使用`tar`打包文件夹`/volume`，并直接使用`scp`发送到新主机。随后去新主机解压并更名为`lduoj_docker`即可。
-      ```shell
-      docker exec -it lduoj /bin/bash
-      tar -zcvf volume.tar.gz /volume
-      scp -P 22 volume.tar.gz root@your_new_server_ip:~/
-      ```
+  - 可能会遇到的问题：步骤1，拷贝文件夹时，可能会遇到当前用户权限不足的情况，可直接进入容器内使用`tar`打包文件夹`/volume`，并直接使用`scp`发送到新主机。随后去新主机解压并更名为`lduoj_docker`即可。
+    ```shell
+    docker exec -it lduoj /bin/bash
+    tar -zcvf volume.tar.gz /volume
+    scp -P 22 volume.tar.gz root@your_new_server_ip:~/
+    ```
 
 # 判题端使用说明
 
