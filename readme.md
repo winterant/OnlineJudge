@@ -2,15 +2,11 @@ Ludong University Online Judge
 ===
   > 鲁东大学程序设计在线测评系统与考试平台
 
-# 开发者笔记
-
-[developer.md](developer.md)
-
 # 快速了解
 
-  **[预览网站](http://104.224.179.57:8080)**
-
-  **[截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)**
+  【 **[二次开发：developer.md](developer.md)** 】
+  【 **[预览网站：http://oj.01fun.top](http://oj.01fun.top/)** 】
+  【 **[截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)** 】
   
   - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
   - 支持**考试/竞赛**，支持**编程题、代码填空**（C/C++/Java/Python3）
@@ -45,7 +41,7 @@ Ludong University Online Judge
   ```
   - 浏览器访问服务器ip进入首页  
   - **注册用户admin自动成为管理员**  
-  - mysql数据库lduoj，用户lduoj@localhost(密码123456789)  
+  - mysql数据库名lduoj，默认用户lduoj@localhost(密码123456789)  
   - nginx配置文件`/etc/nginx/conf.d/lduoj.conf`  
 
 
@@ -62,7 +58,7 @@ Ludong University Online Judge
 
   - `-p`参数后的`8080`是主机端口，可自定义。
     浏览器访问`服务器ip:8080`进入首页。
-    [如何配置域名与端口?](https://blog.csdn.net/winter2121/article/details/107783085)  
+    [配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)  
   - `-v`参数后的`~/lduoj_docker`是用于保存数据的主机目录，可自定义。
     如需备份系统，只需将此文件夹打包备份。
   - 进入容器进行管理： `docker exec -it lduoj /bin/bash`  
@@ -73,7 +69,7 @@ Ludong University Online Judge
   基于docker安装请执行全部命令。
 
   ```shell script
-  docker exec -it lduoj /bin/bash   # 进入docker容器
+  docker exec -it lduoj /bin/bash   # 进入docker容器，直接基于ubuntu安装的请忽略
   ```
   ```shell script
   git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
@@ -96,19 +92,25 @@ Ludong University Online Judge
   ```
 + 基于docker  
 
-  1.将**原主机**文件夹`~/lduoj_docker`拷贝到**新主机**相同位置。
+  1.在**原主机**将文件夹`~/lduoj_docker`（或docker容器内的`/volume`）打包， 
+  然后将其发送到**新主机**相同位置并解包。  
+  原主机 [ 进入容器 -> 打包压缩 -> 发送到新主机(用户名`root`；ssh端口号`22`；实际ip`ip`) ]：
+  ```shell
+  docker exec -it lduoj /bin/bash
+  tar -zcvf volume.tar.gz /volume
+  scp -P 22 volume.tar.gz root@ip:~/
+  ```
+  新主机 [ 解压 -> 重命名 ]：
+  ```shell
+  cd ~/
+  tar -zxvf volume.tar.gz
+  mv volume lduoj_docker
+  ```
 
   2.在**新主机**基于docker安装(见[项目安装](#项目安装))。
 
   3.若**原主机**自定义了nginx配置文件，可自行复制到**新主机**。
     或参考[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)
-
-  - 可能会遇到的问题：步骤1，拷贝文件夹时，可能会遇到当前用户权限不足的情况，可直接进入容器内使用`tar`打包文件夹`/volume`，并直接使用`scp`发送到新主机。随后去新主机解压并更名为`lduoj_docker`即可。
-    ```shell
-    docker exec -it lduoj /bin/bash
-    tar -zcvf volume.tar.gz /volume
-    scp -P 22 volume.tar.gz root@your_new_server_ip:~/
-    ```
 
 # 判题端使用说明
 
