@@ -5,9 +5,9 @@ Ludong University Online Judge
 # 快速了解
 
   【 **[预览网站：http://oj.01fun.top](http://oj.01fun.top/)** 】
-  【 **[二次开发](developer.md)** 】
   【 **[截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)** 】
-  
+  【 **[二次开发](developer.md)** 】
+
   - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
   - 支持**考试/竞赛**，支持**编程题、代码填空**（C/C++/Java/Python3）
   - Web后端基于php框架 laravel 6.0 开发，php版本=7.2
