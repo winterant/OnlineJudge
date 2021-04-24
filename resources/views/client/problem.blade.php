@@ -647,6 +647,7 @@
                         $("#discussion-content").append("<p>{{__('sentence.No more discussions')}}</p>");
                 }
             );
+            window.MathJax.Hub.Queue(["Typeset", MathJax.Hub,document.getElementsByClassName("ck-content")]);
         }
         load_discussion()
 
