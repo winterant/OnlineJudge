@@ -12,7 +12,7 @@
         }
     </style>
     <div class="container">
-        <div class="my-container bg-white table-responsive">
+        <div class="my-container bg-white">
             <div class="overflow-hidden">
                 <h4 class="pull-left">{{__('main.Standings')}}</h4>
                 <form action="" method="get" class="pull-right form-inline">
@@ -44,8 +44,10 @@
             </div>
 
             {{$users->appends($_GET)->links()}}
-            <table class="table table-hover">
-                <thead>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
                     <tr>
                         <th>{{__('main.Rank')}}</th>
                         <th>{{__('main.User')}}</th>
@@ -53,19 +55,21 @@
                         <th>{{__('main.AC/Submit')}}</th>
                         <th>{{__('main.ACRate')}}</th>
                     </tr>
-                </thead>
-                <tbody>
-                @foreach($users as $i=>$item)
-                    <tr>
-                        <td>{{isset($_GET['page']) ? ($_GET['page']-1)*$users->perPage()+$i : $i}}</td>
-                        <td nowrap><a href="{{route('user',$item->username)}}" target="_blank">{{$item->username}}</a></td>
-                        <td nowrap>{{$item->nick}}</td>
-                        <td>{{$item->solved}} / {{$item->submit}}</td>
-                        <td>{{round($item->solved*100/max(1,$item->submit),2)}}%</td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach($users as $i=>$item)
+                        <tr>
+                            <td>{{isset($_GET['page']) ? ($_GET['page']-1)*$users->perPage()+$i : $i}}</td>
+                            <td nowrap><a href="{{route('user',$item->username)}}" target="_blank">{{$item->username}}</a></td>
+                            <td nowrap>{{$item->nick}}</td>
+                            <td>{{$item->solved}} / {{$item->submit}}</td>
+                            <td>{{round($item->solved*100/max(1,$item->submit),2)}}%</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+
             {{$users->appends($_GET)->links()}}
         </div>
     </div>
