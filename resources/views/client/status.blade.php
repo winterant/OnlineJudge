@@ -91,7 +91,7 @@
                                         </div>
                                     </th>
                                     <th nowrap>{{__('main.Submit Time')}}</th>
-                                    <th>{{__('main.Judger')}}</th>
+                                    <th nowrap>{{__('main.Judger')}}</th>
                                     <button type="submit" hidden></button>
 
                                 </tr>

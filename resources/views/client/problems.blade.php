@@ -42,7 +42,7 @@
                                 <th>#</th>
                                 <th>{{trans('main.Title')}}</th>
                                 <th>{{trans('main.Source')}}</th>
-                                <th>{{trans('main.AC/Submit')}}</th>
+                                <th>{{trans('main.AC/Submitted')}}</th>
                                 <th>{{__('main.Tag')}}</th>
                             </tr>
                             </thead>
@@ -61,8 +61,8 @@
                                             <a title="{{$item->source}}">{{$item->source}}</a>
                                         </td>
                                         <td nowrap>
-                                            {{$item->solved}} / {{$item->submit}}
-                                            ({{round($item->solved/max(1.0,$item->submit)*100)}}%)
+                                            {{$item->accepted}} / {{$item->submit}}
+                                            ({{round($item->accepted/max(1.0,$item->submit)*100)}}%)
                                         </td>
                                         <td nowrap>
                                             @foreach($item->tags as $tag)

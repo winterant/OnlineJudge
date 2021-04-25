@@ -24,7 +24,7 @@ class ProblemController extends Controller
                 ->where('tag_id',$_GET['tag_id']);
         $problems=$problems->select('problems.id','title','source','hidden',
                 DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
-                DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as solved"))
+                DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as accepted"))
             ->when(!Auth::check()||!Auth::user()->privilege('problem'),function ($q){return $q->where('hidden',0);})
             ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('problems.id',$_GET['pid']);})
             ->when(isset($_GET['title'])&&$_GET['title']!='',function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
@@ -59,7 +59,8 @@ class ProblemController extends Controller
         // 在网页展示一个问题
         $problem=DB::table('problems')->select('*',
             DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
-            DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as solved")
+            DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as accepted"),
+            DB::raw("(select count(distinct user_id) from solutions where problem_id=problems.id and result=4) as solved")
             )->when(!(Auth::check()&&Auth::user()->privilege('problem_list')),function ($q){return $q->where('hidden',0);})
             ->find($id);
         if($problem==null)
