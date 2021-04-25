@@ -182,8 +182,8 @@
                                 @endif
                             </tr>
                             <tr>
-                                <td nowrap>{{__("main.AC/Submit")}}:</td>
-                                <td nowrap>{{$problem->solved}} / {{$problem->submit}}</td>
+                                <td nowrap>{{__("main.AC/Solved/Submitted")}}:</td>
+                                <td nowrap>{{$problem->accepted}} / {{$problem->solved}} / {{$problem->submit}}</td>
                             </tr>
                             @if(!isset($contest)||time()>strtotime($contest->end_time))
                                 <tr>

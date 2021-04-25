@@ -107,7 +107,7 @@
                                 <th width="10">#</th>
                                 <th>{{trans('main.Title')}}</th>
                                 <th>{{trans('main.Type')}}</th>
-                                <th>{{trans('main.AC/Submit')}}</th>
+                                <th>{{trans('main.AC/Submitted')}}</th>
                                 @if(time()>strtotime($contest->end_time))
                                     <th>{{__('main.Tag')}}</th>
                                 @endif

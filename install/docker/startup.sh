@@ -24,6 +24,6 @@ service mysql start
 bash /home/LDUOnlineJudge/judge/startup.sh
 
 while true; do
-    echo "Keep docker container running in the background!";
-    sleep 1;
+#    echo "Keep docker container running in the background!";
+    sleep 10;
 done
