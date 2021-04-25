@@ -124,8 +124,9 @@ class UserController extends Controller
         $timediff=isset($_GET['range'])&&$_GET['range']!='0'
             ?sprintf(' and TIMESTAMPDIFF(%s,submit_time,now())=0',$_GET['range']):'';
         $users=DB::table('users')->select('username','nick',
-                DB::raw("(select count(id) from solutions where user_id=users.id".$timediff.") as submit"),
-                DB::raw("(select count(distinct problem_id) from solutions where user_id=users.id and result=4".$timediff.") as solved")
+                DB::raw("(select count(id) from solutions where user_id=users.id and result=4".$timediff.") as accepted"),
+                DB::raw("(select count(distinct problem_id) from solutions where user_id=users.id and result=4".$timediff.") as solved"),
+                DB::raw("(select count(id) from solutions where user_id=users.id".$timediff.") as submit")
             )
             ->when(isset($_GET['username']),function ($q){return $q->where('username','like',$_GET['username'].'%');})
             ->orderByDesc('solved')

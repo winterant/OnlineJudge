@@ -82,8 +82,10 @@ return [
 //problem
     "Title"         => "标题",
     "Source"        => "来源",
-    "AC/Submit"     => "接受/提交",
+    "AC/Submitted"     => "接受/提交",
+    "AC/Solved/Submitted"  => "接受/解决/提交",
     "ACRate"        => "接受率",
+    "SolvedRate"    => "解决率",
     "Public"        => "公开",
     "Hidden"        => "隐藏",
     "Private"       => "私有",
