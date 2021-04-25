@@ -35,15 +35,15 @@ Ludong University Online Judge
 开发计划
 
 + 讨论板增加审核功能，以及总开关。
-+ 增加版本号标识，以及通过网页端升级系统。
 + 题号重排。目前题号在数据库作为主键，不支持题号重排。
-+ 考试模式。考试期间只允许考试账号登录，限制登录ip等。
-+ 查重代码左右对比。
 + 代码高亮。
-+ 后台题面编辑增加markdown编辑器
-+ 美化UI，首页增加竞赛、新闻、照片等信息的展示。
++ 查重代码左右对比。
 + 增加`About`专栏，向用户解释判题命令等。
++ 美化UI，首页增加竞赛、新闻、照片等信息的展示。
 + 代码提交框增大，以及使用网页代码编辑器。
++ 后台题面编辑增加markdown编辑器
++ 考试模式。考试期间只允许考试账号登录，限制登录ip等。
++ 增加版本号标识，以及通过网页端升级系统。
 
 # 项目安装
 
@@ -106,8 +106,8 @@ Ludong University Online Judge
   ```
 + 基于docker  
 
-  1.在**原主机**将文件夹`~/lduoj_docker`（或docker容器内的`/volume`）打包， 
-  然后将其发送到**新主机**相同位置并解包。  
+  1.在**原主机**将文件夹`~/lduoj_docker`（或docker容器内`/volume`）打包，发送到**新主机**相同位置。
+  
   原主机 [ 进入容器 -> 打包压缩 -> 发送到新主机(用户名`root`；ssh端口号`22`；实际ip`ip`) ]：
   ```shell
   docker exec -it lduoj /bin/bash
@@ -213,13 +213,12 @@ Ludong University Online Judge
 
 # Docker操作笔记
 
-+ 将本项目构建为docker镜像
++ 将本项目构建为docker镜像，**务必**在一个新建文件夹内操作（如`./lduoj_build`，结束后删除即可）
 
   ```shell script
+  mkdir lduoj_build && cd lduoj_build
   git clone https://github.com/iamwinter/LDUOnlineJudge.git
-  cp LDUOnlineJudge/install/docker/{Dockerfile,.dockerignore} ./
-  docker build  -t lduoj:local .
-  rm -rf ./{LDUOnlineJudge,Dockerfile,.dockerignore}
+  docker build -f ./LDUOnlineJudge/install/docker/Dockerfile -t lduoj:local .
   ```
 
 + 使用构建好的镜像启动容器
