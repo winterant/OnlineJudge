@@ -82,8 +82,10 @@ return [
 //problem
     "Title"         => "Title",
     "Source"        => "Source",
-    "AC/Submit"     => "AC/Submit",
-    "ACRate"        => "ACRate",
+    "AC/Submitted"     => "Accepted / Submitted",
+    "AC/Solved/Submitted"     => "Accepted / Solved / Submitted",
+    "ACRate"        => "Accepted Rate",
+    "SolvedRate"    => "Solved Rate",
     "Public"        => "Public",
     "Hidden"        => "Hidden",
     "Private"       => "Private",
