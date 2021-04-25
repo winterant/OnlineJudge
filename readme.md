@@ -50,7 +50,8 @@ Ludong University Online Judge
 + **基于Linux Ubuntu 16.04 / 18.04**
 [帮助:[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)]
   ```shell script
-  git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
+  git clone https://gitee.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
+  # git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
   bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
   ```
   - 浏览器访问服务器ip进入首页  
@@ -86,7 +87,8 @@ Ludong University Online Judge
   docker exec -it lduoj /bin/bash   # 进入docker容器，直接基于ubuntu安装的请忽略
   ```
   ```shell script
-  git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
+  git clone https://gitee.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
+  # git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
   bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh
   ```
 
@@ -172,7 +174,8 @@ Ludong University Online Judge
 
 1. 下载源码
     ```shell script
-    git clone https://github.com/iamwinter/LDUOnlineJudge.git
+    git clone https://gitee.com/iamwinter/LDUOnlineJudge.git
+    # git clone https://github.com/iamwinter/LDUOnlineJudge.git
     cd LUDOnlineJudge
     ```
 
@@ -217,7 +220,8 @@ Ludong University Online Judge
 
   ```shell script
   mkdir lduoj_build && cd lduoj_build
-  git clone https://github.com/iamwinter/LDUOnlineJudge.git
+  git clone https://gitee.com/iamwinter/LDUOnlineJudge.git
+  # git clone https://github.com/iamwinter/LDUOnlineJudge.git
   docker build -f ./LDUOnlineJudge/install/docker/Dockerfile -t lduoj:local .
   ```
 
