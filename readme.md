@@ -32,18 +32,19 @@ Ludong University Online Judge
 + 竞赛管理；增删查改，公开/隐藏
 + 系统配置；修改网站名称，打开/关闭一些全局功能，**中英文切换**等。
 
-开发计划
+开发计划（欢迎在issue区提出建议）
 
-+ 讨论板增加审核功能，以及总开关。
-+ 题号重排。目前题号在数据库作为主键，不支持题号重排。
-+ 代码高亮。
-+ 查重代码左右对比。
-+ 增加`About`专栏，向用户解释判题命令等。
-+ 美化UI，首页增加竞赛、新闻、照片等信息的展示。
-+ 代码提交框增大，以及使用网页代码编辑器。
-+ 后台题面编辑增加markdown编辑器
-+ 考试模式。考试期间只允许考试账号登录，限制登录ip等。
-+ 增加版本号标识，以及通过网页端升级系统。
++ [ ] 讨论板增加审核功能，以及总开关。
++ [ ] 题号重排。目前题号在数据库作为主键，不支持题号重排。
++ [ ] 代码高亮。
++ [ ] 查重代码左右对比。
++ [ ] 增加`About`专栏，向用户解释判题命令等。
++ [ ] 增加echarts工具进行数据分析
++ [ ] 美化UI，首页增加竞赛、新闻、照片等信息的展示。
++ [ ] 代码提交框增大，以及使用网页代码编辑器。
++ [ ] 后台题面编辑增加markdown编辑器
++ [ ] 考试模式。考试期间只允许考试账号登录，限制登录ip等。
++ [ ] 增加版本号标识，以及通过网页端升级系统。
 
 # 项目安装
 
@@ -80,11 +81,11 @@ Ludong University Online Judge
 
 # 项目升级
 
-+ 基于Linux Ubuntu安装请执行后两行；
-  基于docker安装请执行全部命令。
++ 基于Linux Ubuntu安装的用户请执行后两行；
+  基于docker安装的用户请执行全部命令。
 
   ```shell script
-  docker exec -it lduoj /bin/bash   # 进入docker容器，直接基于ubuntu安装的请忽略
+  docker exec -it lduoj /bin/bash
   ```
   ```shell script
   git clone https://gitee.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
@@ -109,14 +110,14 @@ Ludong University Online Judge
 + 基于docker  
 
   1.在**原主机**将文件夹`~/lduoj_docker`（或docker容器内`/volume`）打包，发送到**新主机**相同位置。
-  
-  原主机 [ 进入容器 -> 打包压缩 -> 发送到新主机(用户名`root`；ssh端口号`22`；实际ip`ip`) ]：
+
+  - 原主机 [ 进入容器 -> 打包压缩 -> 发送到新主机(用户名`root`；ssh端口号`22`；实际ip`ip`) ]：
   ```shell
   docker exec -it lduoj /bin/bash
   tar -zcvf volume.tar.gz /volume
   scp -P 22 volume.tar.gz root@ip:~/
   ```
-  新主机 [ 解压 -> 重命名 ]：
+  - 新主机 [ 解压 -> 重命名 ]：
   ```shell
   cd ~/
   tar -zxvf volume.tar.gz
@@ -214,7 +215,7 @@ Ludong University Online Judge
 6. 开始愉快的编程。
 
 
-# Docker操作笔记
+# Docker镜像发布
 
 + 将本项目构建为docker镜像，**务必**在一个新建文件夹内操作（如`./lduoj_build`，结束后删除即可）
 
@@ -223,16 +224,6 @@ Ludong University Online Judge
   git clone https://gitee.com/iamwinter/LDUOnlineJudge.git
   # git clone https://github.com/iamwinter/LDUOnlineJudge.git
   docker build -f ./LDUOnlineJudge/install/docker/Dockerfile -t lduoj:local .
-  ```
-
-+ 使用构建好的镜像启动容器
-
-  ```shell script
-  docker run -dit --restart=always --cap-add=SYS_PTRACE \
-        -p 8080:80 \
-        -v ~/lduoj_docker:/volume \
-        --name lduoj \
-        lduoj:local
   ```
 
 + 为镜像重命名（相当于复制了一份，请将用户名`iamwinter`替换）
