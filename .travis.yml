@@ -1,7 +1,0 @@
-sudo: false
-language: php
-php:
-  - 7.2
-
-script:
-  - bash install/ubuntu16.04/install.sh
