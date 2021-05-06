@@ -2,13 +2,12 @@ Ludong University Online Judge
 ===
   > 鲁东大学程序设计在线测评系统与考试平台
 
-# 快速了解
-
-  【 **[预览网站](http://oj.01fun.top/)** 】
-  【 **[截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)** 】
+# :bulb: 快速了解
 
 概览
 
+- [预览网站](http://oj.01fun.top/)
+- [截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)
 - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
 - 支持**考试/竞赛**，支持**编程题、代码填空**（C/C++/Java/Python3）
 - Web后端基于php框架 laravel 6.0 开发，php版本=7.2
@@ -45,7 +44,7 @@ Ludong University Online Judge
 + [ ] 考试模式。考试期间只允许考试账号登录，限制登录ip等。
 + [ ] 增加版本号标识，以及通过网页端升级系统。
 
-# 项目安装
+# :wrench: 项目安装
 
 + **基于Linux Ubuntu 16.04 / 18.04**
 [帮助:[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)]
@@ -78,7 +77,7 @@ Ludong University Online Judge
     如需备份系统，只需将此文件夹打包备份。
   - 进入容器进行管理： `docker exec -it lduoj /bin/bash`  
 
-# 项目升级
+# :hammer: 项目升级
 
 + 基于Linux Ubuntu安装的用户请执行后两行；
   基于docker安装的用户请执行全部命令。
@@ -92,7 +91,7 @@ Ludong University Online Judge
   bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh
   ```
 
-# 项目迁移
+# :cd: 项目迁移
 
 + 基于Ubuntu16.04 / 18.04
 
@@ -128,7 +127,7 @@ Ludong University Online Judge
   3.若**原主机**自定义了nginx配置文件，可自行复制到**新主机**。
     或参考[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)
 
-# 判题端使用说明
+# :mega: 判题端使用说明
 
 + 启动方式
   
@@ -140,7 +139,7 @@ Ludong University Online Judge
   数据库连接信息、判题线程数、判题机名称等配置项均在项目根目录下文件`.env`  
   默认判题线程数为5，可根据服务器内存及性能适当调节
 
-# 整体架构
+# :page_facing_up: 整体架构
 
 + 主要文件
 
@@ -170,7 +169,7 @@ Ludong University Online Judge
   对于每一个判题进程，主要步骤是：从数据库读取代码、编译、输入数据运行、
   输出结果与正确结果对比（或者特判）、将判题结论写入数据库。
 
-# 本地二次开发
+# :computer: 本地二次开发
 
 1. 下载源码
     ```shell script
@@ -214,7 +213,7 @@ Ludong University Online Judge
 6. 开始愉快的编程。
 
 
-# Docker镜像发布
+# :earth_asia: Docker镜像发布
 
 + 将本项目构建为docker镜像，**务必**在一个新建文件夹内操作（如`./lduoj_build`，结束后删除即可）
 
@@ -238,7 +237,7 @@ Ludong University Online Judge
   docker push iamwinter/lduoj:latest
   ```
 
-# 鸣谢
+# :gift_heart: 鸣谢
 
   [zhblue/hustoj](https://github.com/zhblue/hustoj)  
   [sim](https://dickgrune.com/Programs/similarity_tester/)  
@@ -251,7 +250,7 @@ Ludong University Online Judge
   [zhiyul/switch](https://github.com/notiflix/Notiflix)  
   [wow.js](https://www.delac.io/wow/)
 
-# 开源许可
+# :scroll: 开源许可
 
   iamwinter/LDUOnlineJudge is licensed under the 
   **[GNU General Public License v3.0](https://github.com/iamwinter/LDUOnlineJudge/blob/master/LICENSE)**  
