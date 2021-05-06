@@ -1,6 +1,6 @@
 Ludong University Online Judge
 ===
-  > 鲁东大学程序设计在线测评系统与考试平台
+> 鲁东大学程序设计在线测评系统与考试平台
 
 # :bulb: 快速了解
 
