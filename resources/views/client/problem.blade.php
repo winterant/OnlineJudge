@@ -520,7 +520,7 @@
                 "</div>";
             $(that).before(dom);
             var input = $(that).prev().children("input");
-            input.focus();
+            // input.focus();
             if (defa != null) {
                 input.val(defa);
                 input_auto_width(input);
