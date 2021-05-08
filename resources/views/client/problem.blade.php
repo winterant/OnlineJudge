@@ -167,11 +167,11 @@
                             </style>
                             <tr>
                                 <td nowrap>{{__('main.Time Limit')}}:</td>
-                                <td nowrap>{{$problem->time_limit}}MS (C/C++,Others×2)</td>
+                                <td nowrap>{{$problem->time_limit}}MS</td>
                             </tr>
                             <tr>
                                 <td nowrap>{{__("main.Memory Limit")}}:</td>
-                                <td nowrap>{{$problem->memory_limit}}MB (C/C++,Others×2)</td>
+                                <td nowrap>{{$problem->memory_limit}}MB</td>
                             </tr>
                             <tr>
                                 <td nowrap>{{__('main.Special Judge')}}:</td>
@@ -182,10 +182,18 @@
                                 @endif
                             </tr>
                             <tr>
-                                <td nowrap>{{__("main.AC/Solved/Submitted")}}:</td>
-                                <td nowrap>{{$problem->accepted}} / {{$problem->solved}} / {{$problem->submit}}</td>
+                                <td nowrap>{{__("main.Accepted")}}:</td>
+                                <td nowrap>{{$problem->accepted}}</td>
                             </tr>
-                            @if(!isset($contest)||time()>strtotime($contest->end_time))
+                            <tr>
+                                <td nowrap>{{__("main.Solved")}}:</td>
+                                <td nowrap>{{$problem->solved}}</td>
+                            </tr>
+                            <tr>
+                                <td nowrap>{{__("main.Submitted")}}:</td>
+                                <td nowrap>{{$problem->submit}}</td>
+                            </tr>
+                            @if(count($tags)>0 && (!isset($contest)||time()>strtotime($contest->end_time)))
                                 <tr>
                                     <td nowrap>{{__("main.Tags")}}:</td>
                                     <td>

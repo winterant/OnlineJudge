@@ -9,14 +9,14 @@
         .container{
             @if(get_setting('web_page_display_wide'))
                 max-width:8000px;
-        @endif
-}
+            @endif
+        }
         .nav-tabs .active{
             /*border-color: #6599ff !important;*/
             border-bottom: .214rem solid #6599ff !important;
         }
         .wow{
-            visibility: hidden;
+            /*visibility: hidden;*/
         }
     </style>
 
