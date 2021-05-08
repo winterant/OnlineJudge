@@ -59,13 +59,17 @@ class ProblemController extends Controller
         // 在网页展示一个问题
         $problem=DB::table('problems')->select('*',
             DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
-            DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as accepted"),
             DB::raw("(select count(distinct user_id) from solutions where problem_id=problems.id and result=4) as solved")
             )->when(!(Auth::check()&&Auth::user()->privilege('problem_list')),function ($q){return $q->where('hidden',0);})
             ->find($id);
         if($problem==null)
             return view('client.fail',['msg'=>trans('sentence.problem_not_found')]);
 
+        //读取所有的提交结果的数量统计
+        $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
+            ->where('problem_id', $id)
+            ->groupBy('result')
+            ->get();
         //查询引入这道题的竞赛
         $contests=DB::table('contest_problems')
             ->join('contests','contests.id','=','contest_id')
@@ -127,7 +131,7 @@ class ProblemController extends Controller
                 ->get();
         else
             $tag_pool=[];
-        return view('client.problem',compact('problem','contests','samples','solutions','hasSpj','tags','tag_mark_enable','tag_pool'));
+        return view('client.problem',compact('problem','results','contests','samples','solutions','hasSpj','tags','tag_mark_enable','tag_pool'));
     }
 
     function tag_mark(Request $request){

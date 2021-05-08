@@ -10,7 +10,7 @@
                 {{-- 菜单 --}}
                 @include('contest.menu')
             </div>
-            <div class="col-md-8 col-sm-12 col-12">
+            <div class="col-lg-9 col-md-8 col-sm-12 col-12">
                 <div class="my-container bg-white">
 
                     <h3 class="text-center">{{$contest->id}}. {{$contest->title}}
@@ -157,7 +157,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4 col-sm-12 col-12">
+            <div class="col-lg-3 col-md-4 col-sm-12 col-12">
 
                 {{--  竞赛信息 --}}
                 @include('contest.information')

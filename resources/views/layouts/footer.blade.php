@@ -13,16 +13,11 @@
         @endif
     </div>
 
-    © 2020-{{date('Y')}} <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">Online Judge</a>.
+    © 2020-{{date('Y')}} <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">Winter</a>.
     All Rights Reserved.
 </div>
 
 <script type="text/javascript">
-    // 启动wow动画
-    $(function () {
-        // new WOW().init();
-    });
-
     //自动更新页脚时间
     $(function () {
         let now = new Date("{{date('Y-m-d H:i:s')}}");

@@ -35,10 +35,10 @@ Ludong University Online Judge
 
 + [ ] 讨论板增加审核功能，以及总开关。
 + [ ] 题号重排。目前题号在数据库作为主键，不支持题号重排。
-+ [ ] 代码高亮。以及使用网页代码编辑器。
++ [x] 代码高亮。以及使用网页代码编辑器。
 + [ ] 查重代码左右对比。
 + [ ] 增加`About`专栏，向用户解释判题命令等。
-+ [ ] 增加echarts工具进行数据分析，包括榜单、题目通过率等的图表展示。
++ [x] 增加echarts工具进行数据分析，包括榜单、题目通过率等的图表展示。
 + [ ] 美化UI，首页增加竞赛、新闻、照片等信息的展示。
 + [ ] 后台题面编辑增加markdown编辑器。
 + [ ] 考试模式。考试期间只允许考试账号登录，限制登录ip等。
@@ -248,7 +248,8 @@ Ludong University Online Judge
   [ckeditor-5](https://ckeditor.com/ckeditor-5/)  
   [MathJax](https://www.mathjax.org/)  
   [zhiyul/switch](https://github.com/notiflix/Notiflix)  
-  [wow.js](https://www.delac.io/wow/)
+  [codemirror](https://codemirror.net/)  
+  [highlight.js](https://highlightjs.org/)  
 
 # :scroll: 开源许可
 

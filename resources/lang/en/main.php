@@ -91,6 +91,8 @@ return [
     "Hidden"        => "Hidden",
     "Private"       => "Private",
 
+    "Analysis"      => "Analysis",
+
     "months"        => "[*,1] month|[2,*] months",
     "days"          => "[*,1] day|[2,*] days",
     "hours"         => "[*,1] hour|[2,*] hours",
@@ -128,6 +130,7 @@ return [
     "Code Length"   => "Code Length",
     "Code"          => "Code",
     "File"          => "File",
+    "Upload File"   => "Upload File",
     "MySolution"    => "My history solutions",
     "More"          => "More",
     "Similarity Check" => "Similarity Check",
