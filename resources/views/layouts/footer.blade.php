@@ -20,7 +20,7 @@
 <script type="text/javascript">
     // 启动wow动画
     $(function () {
-        new WOW().init();
+        // new WOW().init();
     });
 
     //自动更新页脚时间

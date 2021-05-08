@@ -52,8 +52,8 @@
                         <th>{{__('main.Rank')}}</th>
                         <th>{{__('main.User')}}</th>
                         <th>{{__('main.Name')}}</th>
-                        <th>{{__('main.AC/Solved/Submitted')}}</th>
-                        <th>{{__('main.ACRate')}} / {{__('main.SolvedRate')}}</th>
+                        <th nowrap>{{__('main.AC/Solved/Submitted')}}</th>
+                        <th nowrap>{{__('main.ACRate')}} / {{__('main.SolvedRate')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -62,8 +62,8 @@
                             <td>{{isset($_GET['page']) ? ($_GET['page']-1)*$users->perPage()+$i : $i}}</td>
                             <td nowrap><a href="{{route('user',$item->username)}}" target="_blank">{{$item->username}}</a></td>
                             <td nowrap>{{$item->nick}}</td>
-                            <td>{{$item->accepted}} / {{$item->solved}} / {{$item->submit}}</td>
-                            <td>{{round($item->accepted*100/max(1,$item->submit),2)}}% / {{round($item->solved*100/max(1,$item->submit),2)}}%</td>
+                            <td nowrap>{{$item->accepted}} / {{$item->solved}} / {{$item->submit}}</td>
+                            <td nowrap>{{round($item->accepted*100/max(1,$item->submit),2)}}% / {{round($item->solved*100/max(1,$item->submit),2)}}%</td>
                         </tr>
                     @endforeach
                     </tbody>
