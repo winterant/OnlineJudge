@@ -135,12 +135,19 @@ class ContestController extends Controller
             ->select('index','hidden','problem_id as id','title','description','input','output','hint','source',
                 'time_limit','memory_limit','spj','type','fill_in_blank',
                 DB::raw("(select count(id) from solutions where problem_id=problems.id and contest_id=".$id.") as submit"),
-                DB::raw("(select count(id) from solutions where problem_id=problems.id and contest_id=".$id." and result=4) as accepted"),
                 DB::raw("(select count(distinct user_id) from solutions where problem_id=problems.id and contest_id=".$id." and result=4) as solved")
             )
             ->where('contest_id',$id)
             ->where('index',$pid)
             ->first();
+
+        //读取所有的提交结果的数量统计
+        $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
+            ->where('problem_id', $id)
+            ->groupBy('result')
+            ->get();
+
+        //读取这道题的样例数据
         $samples=read_problem_data($problem->id);
 
         $hasSpj=(get_spj_code($problem->id)!=null);
@@ -172,7 +179,7 @@ class ContestController extends Controller
                 ->get();
         else
             $tag_pool=[];
-        return view('contest.problem',compact('contest','problem','samples','hasSpj','tags','tag_mark_enable','tag_pool'));
+        return view('contest.problem',compact('contest','problem','results','samples','hasSpj','tags','tag_mark_enable','tag_pool'));
     }
 
     public function status($id){

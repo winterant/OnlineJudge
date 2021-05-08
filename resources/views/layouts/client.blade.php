@@ -6,17 +6,24 @@
     <title>@yield('title')</title>
 
     <style type="text/css">
-        .container{
-            @if(get_setting('web_page_display_wide'))
-                max-width:8000px;
-            @endif
+        @media screen and (max-width: 1200px) {
+            .container{
+                @if(get_setting('web_page_display_wide'))
+                    max-width:1200px;
+                @endif
+            }
         }
+        @media screen and (min-width: 1201px) {
+            .container{
+                @if(get_setting('web_page_display_wide'))
+                    max-width:96%;
+                @endif
+            }
+        }
+
         .nav-tabs .active{
             /*border-color: #6599ff !important;*/
             border-bottom: .214rem solid #6599ff !important;
-        }
-        .wow{
-            /*visibility: hidden;*/
         }
     </style>
 
@@ -124,7 +131,7 @@
 </nav>
 
 <div class="container">@include('layouts.notice_marquee')</div>
-<div class="wow bounceInUp">
+<div>
     @yield('content')
 </div>
 

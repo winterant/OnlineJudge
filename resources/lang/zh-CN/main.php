@@ -91,6 +91,8 @@ return [
     "Hidden"        => "隐藏",
     "Private"       => "私有",
 
+    "Analysis"      => "分析",
+
     "months"        => "[*]个月",
     "days"          => "[*]天",
     "hours"         => "[*]小时",
@@ -128,6 +130,7 @@ return [
     "Code Length"   => "代码长度",
     "Code"          => "代码",
     "File"          => "文件",
+    "Upload File"   => "上传文件",
     "MySolution"    => "我的历史提交",
     "More"          => "更多",
     "Similarity Check" => "相似度",
