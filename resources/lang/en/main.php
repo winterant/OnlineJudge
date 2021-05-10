@@ -91,6 +91,8 @@ return [
     "Hidden"        => "Hidden",
     "Private"       => "Private",
 
+    "Theme"         => "Theme",
+
     "Analysis"      => "Analysis",
 
     "months"        => "[*,1] month|[2,*] months",
