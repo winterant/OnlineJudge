@@ -77,8 +77,8 @@
                                             </select>
                                         </div>
                                     </th>
-                                    <th>{{__('main.Time')}}</th>
-                                    <th>{{__('main.Memory')}}</th>
+                                    <th nowrap>{{__('main.Time')}}</th>
+                                    <th nowrap>{{__('main.Memory')}}</th>
                                     <th>
                                         <div class="form-group m-0 p-0 bmd-form-group">
                                             <select name="language" class="pl-1 form-control" onchange="this.form.submit();">

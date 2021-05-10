@@ -77,10 +77,10 @@
                     <div class="card-body table-responsive">
                         <table class="table table-hover border-bottom">
                             <thead>
-                            <th class="border-top-0">{{__('main.Rank')}}</th>
-                            <th class="border-top-0">{{__('main.User')}}</th>
-                            <th class="border-top-0">{{__('main.From')}}</th>
-                            <th class="border-top-0">{{__('main.Solved')}}</th>
+                            <th nowrap class="border-top-0">{{__('main.Rank')}}</th>
+                            <th nowrap class="border-top-0">{{__('main.User')}}</th>
+                            <th nowrap class="border-top-0">{{__('main.From')}}</th>
+                            <th nowrap class="border-top-0">{{__('main.Solved')}}</th>
                             </thead>
                             @foreach($this_week as $item)
                                 <tr>
@@ -115,10 +115,10 @@
                     <div class="card-body table-responsive">
                         <table class="table table-hover border-bottom">
                             <thead>
-                            <th class="border-top-0">{{__('main.Rank')}}</th>
-                            <th class="border-top-0">{{__('main.User')}}</th>
-                            <th class="border-top-0">{{__('main.From')}}</th>
-                            <th class="border-top-0">{{__('main.Solved')}}</th>
+                            <th nowrap class="border-top-0">{{__('main.Rank')}}</th>
+                            <th nowrap class="border-top-0">{{__('main.User')}}</th>
+                            <th nowrap class="border-top-0">{{__('main.From')}}</th>
+                            <th nowrap class="border-top-0">{{__('main.Solved')}}</th>
                             </thead>
                             @foreach($last_week as $item)
                                 <tr>

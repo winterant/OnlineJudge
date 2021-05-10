@@ -82,7 +82,7 @@ return [
 //problem
     "Title"         => "标题",
     "Source"        => "来源",
-    "Submitted"     => "已解决",
+    "Submitted"     => "已提交",
     "AC/Submitted"     => "接受/提交",
     "AC/Solved/Submitted"  => "接受/解决/提交",
     "ACRate"        => "接受率",
@@ -91,6 +91,7 @@ return [
     "Hidden"        => "隐藏",
     "Private"       => "私有",
 
+    "Theme"         => "主题",
     "Analysis"      => "分析",
 
     "months"        => "[*]个月",
