@@ -68,8 +68,23 @@
     @endif
 
     <link rel="stylesheet" href="{{asset("static/highlight/styles/github-gist.css")}}">
+    <style>
+        .hljs ol li {
+            list-style: decimal-leading-zero;
+            border-left: 1px solid #ddd !important;
+            padding-left: 5px !important;
+        }
+    </style>
     <script src="{{asset("static/highlight/highlight.pack.js")}}"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
+    <script>
+        $(function (){
+            // hljs.initHighlightingOnLoad();
+            hljs.highlightAll();
+            $("code").each(function(){
+                $(this).html("<ol><li>" + $(this).html().replace(/\n/g,"\n</li><li>") +"\n</li></ol>");
+            })
+        });
+    </script>
     <div class="container">
         <div class="my-container bg-white">
             <pre class="border p-1"><code>{{$solution->code}}</code></pre>
