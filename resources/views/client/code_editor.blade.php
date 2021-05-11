@@ -32,7 +32,7 @@
         @endif
 
         <div class="form-inline my-2">
-            <div class="flex-nowrap mr-3">
+            <div class="flex-nowrap mr-3 mb-1">
                 <span class="mr-2">{{__('main.Language')}}:</span>
                 <select id="lang_select" name="solution[language]" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
                     @foreach(config('oj.lang') as $key=>$res)
@@ -45,24 +45,24 @@
             </div>
             @if($problem->type==0)
                 {{-- 编程题可以提交文件--}}
-                <div class="flex-nowrap mr-3">
+                <div class="flex-nowrap mr-3 mb-1">
                     <span class="mr-2">{{__('main.Upload File')}}:</span>
-                    <a href="javascript:" class="btn m-0" onclick="$('[name=code_file]').click()"
+                    <a id="selected_fname" href="javascript:" class="m-0 px-0" onclick="$('[name=code_file]').click()"
                        title="{{__('main.Upload File')}}">
                         <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
                     </a>
+                    <input type="file" class="form-control-file" name="code_file"
+                           onchange="$('#selected_fname').html(this.files[0].name);$('#code_editor').attr('required',false)"
+                           accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
+{{--                    <span id="selected_fname" style="font-size: 0.8rem"></span>--}}
                 </div>
-                <input type="file" class="form-control-file" name="code_file"
-                       onchange="$('#selected_fname').html(this.files[0].name);$('#code_editor').attr('required',false)"
-                       accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
-                <div id="selected_fname" style="font-size: 0.8rem"></div>
             @endif
 
             {{--   编辑框主题 --}}
-            <div class="flex-nowrap">
+            <div class="flex-nowrap mr-3 mb-1">
                 <span class="mr-2">{{__('main.Theme')}}:</span>
-                <select id="theme_select" class="px-3 border pull-right" style="text-align-last: center;border-radius: 4px;">
-                    <option value="mbo" selected>mbo</option>
+                <select id="theme_select" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
+                    <option value="mbo">mbo</option>
                     <option value="idea">idea</option>
                 </select>
             </div>

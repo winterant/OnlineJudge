@@ -100,8 +100,8 @@
                                                    name="nick" value="{{isset($_GET['nick'])?$_GET['nick']:''}}">
                                         </th>
                                     @endif
-                                    <th>{{$contest->judge_type == 'acm'?trans('main.Solved'):trans('main.Score')}}</th>
-                                    <th>{{trans('main.Penalty')}}</th>
+                                    <th nowrap>{{$contest->judge_type == 'acm'?trans('main.Solved'):trans('main.Score')}}</th>
+                                    <th nowrap>{{trans('main.Penalty')}}</th>
                                     @for($i=0;$i<$problem_count;$i++)
                                         <th class="text-center"><a href="{{route('contest.problem',[$contest->id,$i])}}">{{index2ch($i)}}</a></th>
                                     @endfor
