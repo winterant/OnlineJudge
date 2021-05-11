@@ -54,18 +54,17 @@
                     <input type="file" class="form-control-file" name="code_file"
                            onchange="$('#selected_fname').html(this.files[0].name);$('#code_editor').attr('required',false)"
                            accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
-{{--                    <span id="selected_fname" style="font-size: 0.8rem"></span>--}}
+                </div>
+
+                {{--   编辑框主题 --}}
+                <div class="flex-nowrap mr-3 mb-1">
+                    <span class="mr-2">{{__('main.Theme')}}:</span>
+                    <select id="theme_select" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
+                        <option value="mbo">mbo</option>
+                        <option value="idea">idea</option>
+                    </select>
                 </div>
             @endif
-
-            {{--   编辑框主题 --}}
-            <div class="flex-nowrap mr-3 mb-1">
-                <span class="mr-2">{{__('main.Theme')}}:</span>
-                <select id="theme_select" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
-                    <option value="mbo">mbo</option>
-                    <option value="idea">idea</option>
-                </select>
-            </div>
         </div>
 
         @if($problem->type==0)
@@ -77,8 +76,23 @@
             {{--            填空题 --}}
             <div class="border p-1 mb-3">
                 <link rel="stylesheet" href="{{asset("static/highlight/styles/github-gist.css")}}">
+                <style>
+                    .hljs ol li {
+                        list-style: decimal-leading-zero;
+                        border-left: 1px solid #ddd !important;
+                        padding-left: 5px !important;
+                    }
+                </style>
                 <script src="{{asset("static/highlight/highlight.pack.js")}}"></script>
-                <script>hljs.initHighlightingOnLoad();</script>
+                <script>
+                    $(function (){
+                        // hljs.initHighlightingOnLoad();
+                        hljs.highlightAll();
+                        $("code").each(function(){
+                            $(this).html("<ol><li>" + $(this).html().replace(/\n/g,"\n</li><li>") +"\n</li></ol>");
+                        })
+                    });
+                </script>
                 <pre id="blank_code"><code>{{$problem->fill_in_blank}}</code></pre>
             </div>
         @endif
