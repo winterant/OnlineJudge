@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title',trans('main.Failed').' | '.get_setting('siteName'))
+@section('title',trans('main.Success').' | '.get_setting('siteName'))
 
 @section('content')
 

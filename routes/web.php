@@ -87,6 +87,7 @@ Route::middleware(['auth','CheckBlacklist'])->prefix('admin')->name('admin.')->w
     Route::get('/', 'Admin\HomeController@index')->name('home');
 //    判题端指令
     Route::post('/cmd_polling', 'Admin\HomeController@cmd_polling')->middleware(['Privilege:admin'])->name('cmd_polling');
+    Route::post('/upgrade_oj', 'Admin\HomeController@upgrade_oj')->middleware(['Privilege:admin'])->name('upgrade_oj');
 
 //    manage notice
     Route::middleware(['Privilege:admin'])->prefix('notice')->name('notice.')->group(function (){
