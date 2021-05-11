@@ -42,7 +42,9 @@ fi
 bash ${root}/install/mysql/update_mysql.sh
 
 #start to judge
-bash ${root}/judge/startup.sh
+if [ ! -f /startup.sh ]; then
+    bash ${root}/judge/startup.sh
+fi
 
 # delete upgrade
 rm -rf ${upgrade} &
