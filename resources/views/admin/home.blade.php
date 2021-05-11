@@ -71,16 +71,20 @@
                     data: $('#form_upgrade').serialize(),
                     success: function (result) {
                         console.log(result);//打印服务端返回的数据(调试用)
-                        if (result.resultCode == 200) {
-                            alert("SUCCESS");
-                            window.location.href="{{route('home')}}";
-                        }
+                        Notiflix.Report.Init({
+                            plainText: false, //使<br>可以换行
+                        });
+                        Notiflix.Report.Info('升级成功','您已成功升级Online Judge到最新版本！快去体验吧!','转到主页',function (){window.location.href="{{route('home')}}"});
                     },
                     error : function() {
                         Notiflix.Report.Init({
                             plainText: false, //使<br>可以换行
                         });
-                        Notiflix.Report.Info( '升级成功','您已成功升级Online Judge到最新版本！快去体验吧!','转到主页',function (){window.location.href="{{route('home')}}"});
+                        Notiflix.Report.Info('升级中断','升级过程中异常中断了与服务器的连接!有以下2种可能：<br><br>' +
+                            '【1】升级未成功，可以尝试重新升级。<br>' +
+                            '【2】已升级成功，但当前页面没有接收到服务器的反馈。<br><br>' +
+                            '如果导致网站无法访问，请尝试重启容器(docker restart lduoj)或服务器(reboot)',
+                            '转到主页',function (){window.location.href="{{route('home')}}"});
                     }
                 });
             })
