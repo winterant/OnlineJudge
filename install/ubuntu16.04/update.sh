@@ -33,7 +33,7 @@ php artisan key:generate
 php artisan optimize
 
 # docker startup
-if [ -d /startup.sh ]; then
+if [ -f /startup.sh ]; then
     cp ${root}/install/docker/startup.sh /
     bash ${root}/install/docker/startup.sh
 fi
