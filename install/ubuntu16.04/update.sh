@@ -36,6 +36,7 @@ php artisan optimize
 if [ -f /startup.sh ]; then
     cp ${root}/install/docker/startup.sh /
     nohup bash ${root}/install/docker/startup.sh > /startup_nohup.txt 2>&1 &
+    sleep 1  # nohup后台执行，防止他执行的顺序比后面的语句晚
 fi
 
 # update mysql table schema
