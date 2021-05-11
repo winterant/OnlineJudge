@@ -32,6 +32,12 @@ php artisan storage:link
 php artisan key:generate
 php artisan optimize
 
+# docker startup
+if [ -d /startup.sh ]; then
+    cp ${root}/install/docker/startup.sh /
+    bash ${root}/install/docker/startup.sh
+fi
+
 # update mysql table schema
 bash ${root}/install/mysql/update_mysql.sh
 

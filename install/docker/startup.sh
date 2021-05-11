@@ -7,6 +7,13 @@ else
 fi
 ln -s /volume/LDUOnlineJudge /home/LDUOnlineJudge
 
+if [ ! -d /volume/etc ]; then
+    mv /etc/mysql /volume/etc/
+else
+    rm -rf /etc/mysql
+fi
+ln -s /volume/etc/mysql /etc/mysql
+
 if [ ! -d /volume/mysql ]; then
     mv /var/lib/mysql /volume/
 else
