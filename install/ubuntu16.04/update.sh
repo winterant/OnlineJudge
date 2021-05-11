@@ -35,7 +35,7 @@ php artisan optimize
 # docker startup
 if [ -f /startup.sh ]; then
     cp ${root}/install/docker/startup.sh /
-    bash ${root}/install/docker/startup.sh
+    nohup bash ${root}/install/docker/startup.sh > /startup_nohup.txt 2>&1 &
 fi
 
 # update mysql table schema
