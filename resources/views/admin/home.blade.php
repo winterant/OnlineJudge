@@ -80,10 +80,10 @@
                         Notiflix.Report.Init({
                             plainText: false, //使<br>可以换行
                         });
-                        Notiflix.Report.Info('升级中断','升级过程中异常中断了与服务器的连接!有以下2种可能：<br><br>' +
-                            '【1】升级未成功，可以尝试重新升级。<br>' +
-                            '【2】已升级成功，但当前页面没有接收到服务器的反馈。<br><br>' +
-                            '如果导致网站无法访问，请尝试重启容器(docker restart lduoj)或服务器(reboot)',
+                        Notiflix.Report.Info('连接中断','升级过程中与服务器与服务器失去了连接！可能的原因：<br><br>' +
+                            '【1】升级成功！由于服务端的重启导致该页面失去连接。<br><br>' +
+                            '【1】升级失败，这种情况发生的几率很小。' +
+                            '如果造成网站无法访问，请尝试重启容器(docker restart lduoj)或服务器(reboot)',
                             '转到主页',function (){window.location.href="{{route('home')}}"});
                     }
                 });
