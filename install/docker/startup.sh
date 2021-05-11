@@ -8,6 +8,8 @@ fi
 ln -s /volume/LDUOnlineJudge /home/LDUOnlineJudge
 
 if [ ! -f /volume/etc/mysql/debian.cnf ]; then
+    cp /etc/mysql/debian.cnf /etc/mysql/debian.cnf.backup
+    mkdir -p /volume/etc/mysql
     mv /etc/mysql/debian.cnf /volume/etc/mysql/
 else
     rm -rf /etc/mysql/debian.cnf
