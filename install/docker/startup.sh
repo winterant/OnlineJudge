@@ -7,12 +7,12 @@ else
 fi
 ln -s /volume/LDUOnlineJudge /home/LDUOnlineJudge
 
-if [ ! -d /volume/etc/mysql ]; then
-    mv /etc/mysql /volume/etc/
+if [ ! -f /volume/etc/mysql/debian.cnf ]; then
+    mv /etc/mysql/debian.cnf /volume/etc/mysql/
 else
-    rm -rf /etc/mysql
+    rm -rf /etc/mysql/debian.cnf
 fi
-ln -s /volume/etc/mysql /etc/mysql
+ln -s /volume/etc/mysql/debian.cnf /etc/mysql/debian.cnf
 
 if [ ! -d /volume/mysql ]; then
     mv /var/lib/mysql /volume/
