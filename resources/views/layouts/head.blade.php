@@ -19,6 +19,3 @@
 
 <link href="{{asset('static/notiflix/minified/notiflix-2.0.0.min.css')}}" rel="stylesheet">
 <script src="{{asset('static/notiflix/minified/notiflix-2.0.0.min.js')}}" defer></script>
-
-<link href="{{asset('static/wow/animate.min.css')}}" rel="stylesheet">
-<script src="{{asset('static/wow/wow.min.js')}}" defer></script>
