@@ -31,4 +31,15 @@ class HomeController extends Controller
             exec('sudo bash '.base_path('judge/stop.sh'),$out,$status);
         return back()->with('ret',implode('<br>',$out));
     }
+
+    //升级系统
+    public function upgrade_oj(Request $request){
+        $source = $request->input('upgrade_source');
+        $cmd_git = 'sudo git clone https://'.$source.'.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade 2>&1';
+        $cmd_bash = 'sudo bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh 2>&1';
+        exec('sudo rm -rf /home/lduoj_upgrade 2>&1',$out,$status);
+        exec($cmd_git,$out,$status);
+        exec($cmd_bash,$out,$status);
+        return view('client.success',['msg'=>implode('<br>',$out)]);
+    }
 }

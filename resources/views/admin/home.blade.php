@@ -28,6 +28,45 @@
             </div>
             <hr>
         </div>
+
+        <div class="my-container bg-white">
+            <h4>系统升级</h4>
+            <hr>
+            <div class="overflow-auto px-2">
+                <span id="pre_upgrade_info"></span>
+                <span>当前版本：null</span>
+                <div class="float-right">
+                    <form id="form_upgrade" action="{{route('admin.upgrade_oj')}}" method="post" class="mb-0">
+                        @csrf
+                        <span>升级来源：</span>
+                        <select name="upgrade_source" class="px-3" style="border-radius: 4px">
+                            <option class="form-control" value="gitee">gitee(推荐；国内访问快)</option>
+                            <option class="form-control" value="github">github(国外访问较快)</option>
+                        </select>
+                        <button type="button" id="upgrade_btn" class="btn bg-info text-white">开始升级</button>
+                    </form>
+                </div>
+            </div>
+            <hr>
+        </div>
     </div>
 
+    <script type="text/javascript">
+        $("#upgrade_btn").click(function (){
+            Notiflix.Confirm.Init({
+                plainText: false, //使<br>可以换行
+            });
+            Notiflix.Confirm.Show('操作确认','执行升级将从指定来源获取源码并覆盖当前本地代码。' +
+                '如果您修改了本地源码，请提前备份。<br><br>' +
+                '点击"开始升级"后，请不要关闭当前页面！升级成功后将弹出成功页面！<br>','确认升级','取消',function () {
+                $('#upgrade_btn').html('正在升级...');
+                $('#upgrade_btn').attr('disabled',true);
+                $('#pre_upgrade_info').html('正在升级中(约1分钟)...   请不要关闭此页面！<br>')
+
+                $("#form_upgrade").submit()
+                Notiflix.Loading.Init({clickToClose:false});
+                Notiflix.Loading.Standard('正在升级中(约1分钟)...   请不要关闭此页面！');
+            })
+        })
+    </script>
 @endsection

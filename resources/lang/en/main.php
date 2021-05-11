@@ -7,6 +7,7 @@ return [
     "Edit"          => "Edit",
     "Test Data"     => "Test Data",
     "Judger"        => "Judger",
+    "Succeeded"     => "Succeeded",
     "Failed"        => "Failed",
     "Type"          => "Type",
     "Reason"        => "Reason",
