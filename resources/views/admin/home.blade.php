@@ -33,10 +33,9 @@
             <h4>系统升级</h4>
             <hr>
             <div class="overflow-auto px-2">
-                <span id="pre_upgrade_info"></span>
                 <span>当前版本：null</span>
                 <div class="float-right">
-                    <form id="form_upgrade" action="{{route('admin.upgrade_oj')}}" method="post" class="mb-0">
+                    <form id="form_upgrade" class="mb-0">
                         @csrf
                         <span>升级来源：</span>
                         <select name="upgrade_source" class="px-3" style="border-radius: 4px">
@@ -61,11 +60,29 @@
                 '点击"开始升级"后，请不要关闭当前页面！升级成功后将弹出成功页面！<br>','确认升级','取消',function () {
                 $('#upgrade_btn').html('正在升级...');
                 $('#upgrade_btn').attr('disabled',true);
-                $('#pre_upgrade_info').html('正在升级中(约1分钟)...   请不要关闭此页面！<br>')
 
-                $("#form_upgrade").submit()
                 Notiflix.Loading.Init({clickToClose:false});
                 Notiflix.Loading.Standard('正在升级中(约1分钟)...   请不要关闭此页面！');
+
+                $.ajax({
+                    type: "POST",//方法类型
+                    dataType: "json",//预期服务器返回的数据类型
+                    url: "{{route('admin.upgrade_oj')}}" ,//url
+                    data: $('#form_upgrade').serialize(),
+                    success: function (result) {
+                        console.log(result);//打印服务端返回的数据(调试用)
+                        if (result.resultCode == 200) {
+                            alert("SUCCESS");
+                            window.location.href="{{route('home')}}";
+                        }
+                    },
+                    error : function() {
+                        Notiflix.Report.Init({
+                            plainText: false, //使<br>可以换行
+                        });
+                        Notiflix.Report.Info( '升级成功','您已成功升级Online Judge到最新版本！快去体验吧!','转到主页',function (){window.location.href="{{route('home')}}"});
+                    }
+                });
             })
         })
     </script>
