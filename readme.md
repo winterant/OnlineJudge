@@ -6,7 +6,8 @@ Ludong University Online Judge
 
 概览
 
-- [预览网站](http://oj.01fun.top/)
+- [预览网站](http://oj.01fun.top/) ；您可以使用账号guest0(密码:9AF860CB)登录参观网站。
+  该账号可以进入后台管理，不要使用该账号破坏小破站哦:smiley:
 - [截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)
 - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统
 - 支持**考试/竞赛**，支持**编程题、代码填空**（C/C++/Java/Python3）
