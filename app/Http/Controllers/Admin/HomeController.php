@@ -9,6 +9,23 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
+    private function get_code_version($current){
+        exec('cd '.base_path(),$_,$status);
+        if($current){
+            exec('git log | head -5 2>&1',$version,$status);
+        }else{
+            exec('git fetch 2>&1',$_,$status);
+            exec('git log remotes/origin/master | head -5 2>&1',$version,$status);
+        }
+        if(count($version)>=5){
+            $date = strtotime(substr($version[2], 6));
+            $date = date('Y-m-d H:i:s', $date);
+            $version[2] = 'Date: '.$date;
+            unset($version[3]);
+        }
+        return implode('<br>', $version);
+    }
+
     public function index(Request $request){
         if (!DB::table('privileges')->where('user_id',Auth::id())->exists())
             abort(404);
@@ -21,14 +38,9 @@ class HomeController extends Controller
             $info='[ 停止运行 ]';
         }
 
-        exec('git log | head -5 2>&1',$git_commit,$status);
-        $date = strtotime(substr($git_commit[2], 6));
-        $date = date('Y-m-d H:i:s', $date);
-        $git_commit[2] = 'Date: '.$date;
-        $git_commit[3] = '【版本日志】';
-
-        $git_commit = implode('<br>', $git_commit);
-        return view('admin.home',compact('run','info', 'git_commit'));
+        $old_version = $this->get_code_version(true);
+        $new_version = $this->get_code_version(false);
+        return view('admin.home',compact('run','info', 'old_version', 'new_version'));
     }
 
     public function cmd_polling(Request $request){

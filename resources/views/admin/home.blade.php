@@ -33,7 +33,24 @@
             <h4>系统升级</h4>
             <hr>
             <div class="overflow-auto px-2">
-                <span>当前版本：<br>{!! $git_commit !!}<br></span>
+                <span>【当前系统版本】</span>
+                @if($old_version==$new_version)
+                    <span>(已是最新版本)</span>
+                    <script type="text/javascript">
+                        $(function (){
+                            $('#upgrade_btn').attr('disabled',true)
+                            $('#upgrade_btn').html('无需升级')
+                        })
+                    </script>
+                @else
+                    <span class="text-red">(可升级)</span>
+                @endif
+                <br>
+                <span>{!! $old_version !!}</span>
+                <br>
+                <br>
+                <span>【<a href="https://github.com/iamwinter/LDUOnlineJudge" target="_blank">官方最新版本</a>】<br>{!! $new_version !!}</span>
+                <br>
                 <div class="float-right">
                     <form id="form_upgrade" class="mb-0">
                         @csrf
