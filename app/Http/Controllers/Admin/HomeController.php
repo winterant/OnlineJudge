@@ -20,7 +20,15 @@ class HomeController extends Controller
             $run=false;
             $info='[ 停止运行 ]';
         }
-        return view('admin.home',compact('run','info'));
+
+        exec('git log | head -5 2>&1',$git_commit,$status);
+        $date = strtotime(substr($git_commit[2], 6));
+        $date = date('Y-m-d H:i:s', $date);
+        $git_commit[2] = 'Date: '.$date;
+        $git_commit[3] = '【版本日志】';
+
+        $git_commit = implode('<br>', $git_commit);
+        return view('admin.home',compact('run','info', 'git_commit'));
     }
 
     public function cmd_polling(Request $request){

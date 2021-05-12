@@ -33,7 +33,7 @@
             <h4>系统升级</h4>
             <hr>
             <div class="overflow-auto px-2">
-                <span>当前版本：null</span>
+                <span>当前版本：<br>{!! $git_commit !!}<br></span>
                 <div class="float-right">
                     <form id="form_upgrade" class="mb-0">
                         @csrf
