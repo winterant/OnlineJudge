@@ -14,7 +14,7 @@ class HomeController extends Controller
         if($current){
             exec('git log | head -5 2>&1',$version,$status);
         }else{
-            exec('git fetch 2>&1',$_,$status);
+            exec('sudo git fetch 2>&1',$_,$status);
             exec('git log remotes/origin/master | head -5 2>&1',$version,$status);
         }
         if(count($version)>=5){
