@@ -35,7 +35,7 @@
             <div class="overflow-auto px-2">
                 <span>【当前系统版本】</span>
                 @if($old_version==$new_version)
-                    <span>(已是最新版本)</span>
+                    <span class="text-green">(已是最新版本)</span>
                     <script type="text/javascript">
                         $(function (){
                             $('#upgrade_btn').attr('disabled',true)
