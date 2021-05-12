@@ -143,7 +143,8 @@ class ContestController extends Controller
 
         //读取所有的提交结果的数量统计
         $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
-            ->where('problem_id', $id)
+            ->where('contest_id', $id)
+            ->where('problem_id', $problem->id)
             ->groupBy('result')
             ->get();
 
