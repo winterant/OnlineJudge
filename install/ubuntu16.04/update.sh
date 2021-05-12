@@ -5,6 +5,7 @@ root=/home/LDUOnlineJudge    #项目
 upgrade=/home/lduoj_upgrade  #新版本
 
 # transfer files
+rm -rf ${root}/.git
 rm -rf ${root}/app
 rm -rf ${root}/config
 rm -rf ${root}/install
@@ -12,6 +13,8 @@ rm -rf ${root}/judge/{cpp,java.policy,startup.sh,stop.sh}
 rm -rf ${root}/public
 rm -rf ${root}/resources
 rm -rf ${root}/routes
+
+mv -f ${upgrade}/.git       ${root}/
 mv -f ${upgrade}/app        ${root}/
 mv -f ${upgrade}/config     ${root}/
 mv -f ${upgrade}/install    ${root}/
