@@ -38,8 +38,7 @@
                     <span class="text-green">(已是最新版本)</span>
                     <script type="text/javascript">
                         $(function (){
-                            $('#upgrade_btn').attr('disabled',true)
-                            $('#upgrade_btn').html('无需升级')
+                            $('#upgrade_btn').html('强制升级')
                         })
                     </script>
                 @else
