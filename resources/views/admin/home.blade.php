@@ -49,7 +49,7 @@
                 <span>{!! $old_version !!}</span>
                 <br>
                 <br>
-                <span>【<a href="https://github.com/iamwinter/LDUOnlineJudge" target="_blank">官方最新版本</a>】<br>{!! $new_version !!}</span>
+                <span>【<a href="https://github.com/iamwinter/LDUOnlineJudge/commits/master" target="_blank">官方最新版本</a>】<br>{!! $new_version !!}</span>
                 <br>
                 <div class="float-right">
                     <form id="form_upgrade" class="mb-0">
