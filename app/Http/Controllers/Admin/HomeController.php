@@ -40,7 +40,8 @@ class HomeController extends Controller
         exec('sudo rm -rf /home/lduoj_upgrade 2>&1',$out,$status);
         exec($cmd_git,$out,$status);
         exec($cmd_bash,$out,$status);
-        return '<h1>升级成功！</h1><br>'.implode('<br>',$out);
+        return 1;
+//        return '<h1>升级成功！</h1><br>'.implode('<br>',$out);
 //        return view('client.success',['msg'=>implode('<br>',$out)]);
     }
 }
