@@ -29,7 +29,7 @@ class ContestController extends Controller
             ->orderByDesc('top')
             ->orderBy('state')
             ->orderByDesc('id')
-            ->paginate(isset($_GET['perPage'])?$_GET['perPage']:10);
+            ->paginate(isset($_GET['perPage'])?$_GET['perPage']:50);
         return view('contest.contests',compact('contests','type_id'));
     }
 
