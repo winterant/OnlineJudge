@@ -85,17 +85,18 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">{{trans('main.Rank')}}</th>
-                                    <th width="10%"><input type="text" class="form-control" placeholder="{{trans('main.Username')}}"
+                                    <th width="5%"><input type="text" class="form-control" placeholder="{{trans('main.Username')}}"
+                                                           style="height: auto;font-size: 0.9rem"
                                                name="username" value="{{isset($_GET['username'])?$_GET['username']:''}}">
                                     </th>
                                     @if(get_setting('rank_show_school'))
-                                        <th width="10%">
+                                        <th width="4%">
                                             <input type="text" class="form-control" placeholder="{{trans('main.School')}}"
                                                    name="school" value="{{isset($_GET['school'])?$_GET['school']:''}}">
                                         </th>
                                     @endif
                                     @if(get_setting('rank_show_nick'))
-                                        <th width="10%">
+                                        <th width="3%">
                                             <input type="text" class="form-control" placeholder="{{trans('main.Name')}}"
                                                    name="nick" value="{{isset($_GET['nick'])?$_GET['nick']:''}}">
                                         </th>
