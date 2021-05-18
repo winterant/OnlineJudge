@@ -25,6 +25,11 @@
             /*border-color: #6599ff !important;*/
             border-bottom: .214rem solid #6599ff !important;
         }
+
+        /*所有table的表头不换行*/
+        th{
+            white-space: nowrap
+        }
     </style>
 
 </head>

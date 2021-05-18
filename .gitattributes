@@ -1,8 +1,5 @@
 * text=auto
-*.blade.php linguist-vendored
-*.css linguist-vendored
-*.scss linguist-vendored
-*.js linguist-vendored
+*.blade.php linguist-language=html
 CHANGELOG.md export-ignore
 
-resources/* linguist-vendored
+public/static/* linguist-vendored

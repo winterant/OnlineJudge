@@ -56,10 +56,8 @@
                 </div>
 
                 <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">题目：</span>
-                    </div>
-                    <input type="text" name="problem[title]" value="{{isset($problem->title)?$problem->title:''}}" required maxlength="255" class="form-control">
+                    <span style="margin: auto">题目名称：</span>
+                    <input type="text" name="problem[title]" value="{{isset($problem->title)?$problem->title:''}}" required maxlength="255" class="form-control" style="color: black">
                 </div>
                 <div class="form-inline">
                     <label>时间限制：
