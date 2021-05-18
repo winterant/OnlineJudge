@@ -30,6 +30,8 @@ mv -f ${upgrade}/readme.md     ${root}/
 
 # update laravel packages
 cd ${root} || exit 2
+chmod -R 755 storage bootstrap/cache
+chown www-data:www-data -R storage bootstrap/cache
 composer install --ignore-platform-reqs
 php artisan storage:link
 php artisan key:generate

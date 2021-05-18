@@ -27,7 +27,8 @@ RUN set -ex &&\
     cd /home/LDUOnlineJudge &&\
     cp -rf .env.example .env &&\
     mkdir -p /home/LDUOnlineJudge/storage/app/public &&\
-    chmod -R 777 storage bootstrap/cache &&\
+    chmod -R 755 storage bootstrap/cache &&\
+    chown www-data:www-data -R storage bootstrap/cache &&\
     apt-get -y install composer zip unzip &&\
     composer install --ignore-platform-reqs &&\
     php artisan storage:link &&\

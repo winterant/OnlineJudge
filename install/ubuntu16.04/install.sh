@@ -20,7 +20,8 @@ composer install --ignore-platform-reqs
 # laravel initialization
 cp -rf .env.example .env
 mkdir -p storage/app/public
-chmod -R 777 storage bootstrap/cache
+chmod -R 755 storage bootstrap/cache
+chown www-data:www-data -R storage bootstrap/cache
 php artisan storage:link
 php artisan key:generate
 php artisan optimize
