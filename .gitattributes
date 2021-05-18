@@ -2,4 +2,4 @@
 *.blade.php linguist-language=html
 CHANGELOG.md export-ignore
 
-public/static/* linguist-vendored
+public/static/* linguist-vendored=false
