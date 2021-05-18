@@ -48,10 +48,8 @@
             </div>
 
             <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">竞赛标题：</span>
-                </div>
-                <input type="text" name="contest[title]" value="{{isset($contest->title)?$contest->title:''}}" required class="form-control">
+                <span style="margin: auto">竞赛标题：</span>
+                <input type="text" name="contest[title]" value="{{isset($contest->title)?$contest->title:''}}" required class="form-control" style="color: black">
             </div>
 
             <div class="mt-4 p-2 bg-sky">竞赛描述/考试说明：</div>

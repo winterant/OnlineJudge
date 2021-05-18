@@ -84,6 +84,12 @@
                 display: none;
             }
         }
+
+
+        /*所有table的表头不换行*/
+        th{
+            white-space: nowrap
+        }
     </style>
 </head>
 <body>
