@@ -118,11 +118,11 @@
                         <a href="javascript:" onclick="clone_contest({{$item->id}})" class="px-1" title="克隆该竞赛">
                             <i class="fa fa-clone" aria-hidden="true"></i>
                         </a>
-                        <a href="javascript:" onclick="contest_set_top('{{$item->id}}',1)" class="px-1" title="置顶">
+                        <a href="javascript:" onclick="contest_set_top('{{$item->id}}',1)" class="px-1" title="置顶" style="white-space: nowrap">
                             置顶
                         </a>
                         @if($item->top>0)
-                            <a href="javascript:" onclick="contest_set_top('{{$item->id}}',0)" class="px-1" title="置顶">
+                            <a href="javascript:" onclick="contest_set_top('{{$item->id}}',0)" class="px-1" title="取消置顶" style="white-space: nowrap">
                                 取消置顶
                             </a>
                         @endif
