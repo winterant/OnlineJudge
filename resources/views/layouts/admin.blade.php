@@ -13,7 +13,7 @@
         /*侧边菜单*/
         .sidebar{
             position: fixed;  /*相对于窗口定位*/
-            top: 45px;
+            top: 56px;
             bottom: 0;
             left: 0;
             padding:0;
@@ -94,13 +94,12 @@
 </head>
 <body>
 
-<div class="h-100" style="padding-top: 54px;">
+<div class="h-100" style="padding-top: 60px;">
 
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="max-height:45px;z-index: 5">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="z-index: 5">
 
         <button id="btn-left-menu" class="btn border m-0"
-            onclick="if(screen.width<768)$('#left-menu').css('display')=='none'?$('#left-menu').slideLeftShow():$('#left-menu').slideLeftHide()">
+            onclick="$('#left-menu').css('display')=='none'?$('#left-menu').slideLeftShow():$('#left-menu').slideLeftHide()">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -112,9 +111,9 @@
 
         <div class="collapse navbar-collapse bg-white" id="bs-example-navbar-collapse-1">
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link text-nowrap mb-0" href="{{route('home')}}">
+                <li class="nav-item" style="text-align:right"><a class="nav-link text-nowrap mb-0" href="{{route('home')}}">
                         <i class="fa fa-home" aria-hidden="true"></i> 返回前台</a></li>
-                <li class="nav-item"><a class="nav-link text-nowrap mb-0" href="{{route('status')}}">
+                <li class="nav-item" style="text-align:right"><a class="nav-link text-nowrap mb-0" href="{{route('status')}}">
                         <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;</i>{{trans('main.Status')}}</a></li>
 
             </ul>
@@ -122,19 +121,19 @@
 
             <ul class="navbar-nav ml-auto">
                 <!-- Authentication Links -->
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" style="text-align:right">
                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                         {{ Auth::user()->username }} <span class="caret"></span>
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 
-                        <a class="dropdown-item" href="{{route('user',Auth::user()->username)}}">{{trans('main.Profile')}}</a>
-                        <a class="dropdown-item" href="{{route('password_reset',Auth::user()->username)}}">{{trans('sentence.Reset Password')}}</a>
+                        <a class="dropdown-item" style="margin-left: auto" href="{{route('user',Auth::user()->username)}}">{{trans('main.Profile')}}</a>
+                        <a class="dropdown-item" style="margin-left: auto" href="{{route('password_reset',Auth::user()->username)}}">{{trans('sentence.Reset Password')}}</a>
 
                         <div class="dropdown-divider"></div>
 
-                        <a class="dropdown-item" href="{{ route('logout') }}"
+                        <a class="dropdown-item" style="margin-left: auto" href="{{ route('logout') }}"
                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                             {{ __('main.Logout') }}
                         </a>
