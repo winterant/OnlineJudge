@@ -1,5 +1,4 @@
 * text=auto
-*.blade.php linguist-language=html
 *.scss linguist-vendored
 *.js linguist-vendored
 CHANGELOG.md export-ignore
