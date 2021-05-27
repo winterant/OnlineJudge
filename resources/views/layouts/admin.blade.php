@@ -94,7 +94,7 @@
 </head>
 <body>
 
-<div class="h-100" style="padding-top: 60px;">
+<div class="h-100" style="padding-top: 70px;">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="z-index: 5">
 
