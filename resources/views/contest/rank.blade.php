@@ -84,27 +84,27 @@
                             <table id="table_rank" class="table table-sm table-hover border-bottom">
                             <thead>
                                 <tr>
-                                    <th class="text-center">{{trans('main.Rank')}}</th>
+                                    <th width="5%" class="text-center">{{trans('main.Rank')}}</th>
                                     <th width="5%"><input type="text" class="form-control" placeholder="{{trans('main.Username')}}"
                                                style="height: auto;font-size: 0.9rem"
                                                name="username" value="{{isset($_GET['username'])?$_GET['username']:''}}">
                                     </th>
                                     @if(get_setting('rank_show_school'))
-                                        <th width="4%">
+                                        <th width="5%" class="text-center">
                                             <input type="text" class="form-control" placeholder="{{trans('main.School')}}"
                                                    style="height: auto;font-size: 0.9rem"
                                                    name="school" value="{{isset($_GET['school'])?$_GET['school']:''}}">
                                         </th>
                                     @endif
                                     @if(get_setting('rank_show_nick'))
-                                        <th width="3%">
+                                        <th width="5%" class="text-center">
                                             <input type="text" class="form-control" placeholder="{{trans('main.Name')}}"
                                                    style="height: auto;font-size: 0.9rem"
                                                    name="nick" value="{{isset($_GET['nick'])?$_GET['nick']:''}}">
                                         </th>
                                     @endif
-                                    <th nowrap>{{$contest->judge_type == 'acm'?trans('main.Solved'):trans('main.Score')}}</th>
-                                    <th nowrap>{{trans('main.Penalty')}}</th>
+                                    <th width="5%" class="text-center">{{$contest->judge_type == 'acm'?trans('main.Solved'):trans('main.Score')}}</th>
+                                    <th width="5%" class="text-center">{{trans('main.Penalty')}}</th>
                                     @for($i=0;$i<$problem_count;$i++)
                                         <th class="text-center"><a href="{{route('contest.problem',[$contest->id,$i])}}">{{index2ch($i)}}</a></th>
                                     @endfor
@@ -132,8 +132,8 @@
                                         <td nowrap><a href="{{route('user',$user['username'])}}">{{$user['username']}}</a></td>
                                         @if(get_setting('rank_show_school'))<td nowrap>{{$user['school']}}</td> @endif
                                         @if(get_setting('rank_show_nick'))<td nowrap>{{$user['nick']}}</td> @endif
-                                        <td>{{$user['score']}}</td>
-                                        <td>{{$user['penalty']}}</td>
+                                        <td class="text-center">{{$user['score']}}</td>
+                                        <td class="text-center">{{$user['penalty']}}</td>
                                         {{-- 下面是每一道题的情况 --}}
                                         @for($i=0;$i<$problem_count;$i++)
                                             <td @if(isset($user[$i]))
