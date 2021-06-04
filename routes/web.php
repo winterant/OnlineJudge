@@ -87,7 +87,6 @@ Route::middleware(['auth','CheckBlacklist'])->prefix('admin')->name('admin.')->w
     Route::get('/', 'Admin\HomeController@index')->name('home');
 //    判题端指令
     Route::post('/cmd_polling', 'Admin\HomeController@cmd_polling')->middleware(['Privilege:admin'])->name('cmd_polling');
-    Route::post('/upgrade_oj', 'Admin\HomeController@upgrade_oj')->middleware(['Privilege:admin'])->name('upgrade_oj');
 
 //    manage notice
     Route::middleware(['Privilege:admin'])->prefix('notice')->name('notice.')->group(function (){
@@ -166,4 +165,5 @@ Route::middleware(['auth','CheckBlacklist'])->prefix('admin')->name('admin.')->w
 
 //    setting
     Route::any('/settings','Admin\SettingController@settings')->middleware(['Privilege:admin'])->name('settings');
+    Route::post('/upgrade_oj', 'Admin\SettingController@upgrade_oj')->middleware(['Privilege:admin'])->name('upgrade_oj');
 });
