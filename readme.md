@@ -4,7 +4,28 @@ Ludong University Online Judge
 
 # :bulb: 快速了解
 
-概览
+**问题求助**【置顶】
+
+由于本人能力有限，以下bug仍未解决，如有大佬光顾，恳请指导。
+
++ [ ] 判题端误判超时；当题目标程运行时间接近时间限制时（以时限1秒，标程本地运行时间为700ms为例），
+    使用判题端进行评判会被误判为超时（`Time Limit Exceeded`）。目前的妥协方案是在`judge/cpp/judge.cpp`
+    的`running`函数中，将时间限制增加10秒（ [代码](https://github.com/iamwinter/LDUOnlineJudge/blob/master/judge/cpp/judge.cpp#L359) ）.
+    但该妥协方案并不能根治问题。是否跟linux系统有关？
+  
++ [ ] 判题端误判编译错误；这是一个非常少见的情况，两三个月会遇到一次，重启系统后恢复正常，偶尔重判大量提交时也会发生。
+    即提交一个正确的代码会被误判为【编译错误】。直接原因是`judge/cpp/judge.cpp`
+    的`compile`函数中，`waitpid`接收到子进程状态`status`为非零
+    （ [代码](https://github.com/iamwinter/LDUOnlineJudge/blob/master/judge/cpp/judge.cpp#L320) ），
+    从而被判题端判为【编译错误】。这是什么原因导致子进程返回状态`status`非零？如何修复？
+  
++ [ ] mysql服务频繁重启；查看mysql日志发现，`mysqld`服务频繁被系统killed，并频繁报告诸如
+    `[ERROR] /usr/sbin/mysqld: Table './lduoj/solutions' is marked as crashed and should be repaired`
+    此类错误，然后`mysql_safe`服务自动修复了对应的`table`。同时，`mysql_safe`日志中也显示其频繁被killed，然后重连。
+    这是什么原因？是否是造成判题端误判编译错误的元凶？
+    
+
+**概览**
 
 - [预览网站](http://oj.01fun.top/) ；您可以使用账号guest0(密码:9AF860CB)登录参观网站。
   该账号可以进入后台管理，不要使用该账号破坏小破站哦:smiley:
@@ -15,7 +36,7 @@ Ludong University Online Judge
 - Web前端使用bootstrap4、jquery，适配移动端和PC端
 - 判题端基于C/C++和shell编程，存放于`judge`文件夹
 
-前台
+**前台**
 
 + 首页；公告/新闻，本周榜，上周榜
 + 状态；用户提交记录与判题结果
@@ -23,7 +44,7 @@ Ludong University Online Judge
 + 竞赛；题目(选自题库)，排名(ACM,OI)可封榜，**赛后补题榜**，公告栏，气球派送
 + 排名；用户解题排行榜，可按年/月/周/日查询
 
-后台
+**后台**
 
 + 判题机；启动/停止linux判题端进程
 + 公告/新闻；用户访问首页可见
@@ -32,14 +53,14 @@ Ludong University Online Judge
 + 竞赛管理；增删查改，公开/隐藏
 + 系统配置；修改网站名称，打开/关闭一些全局功能，**中英文切换**等。
 
-开发计划（欢迎在issue区提出建议）
+开发计划
 
++ [x] 代码高亮。以及使用网页代码编辑器。
++ [x] 增加echarts工具进行数据分析，包括榜单、题目通过率等的图表展示。
 + [ ] 讨论板增加审核功能，以及总开关。
 + [ ] 题号重排。目前题号在数据库作为主键，不支持题号重排。
-+ [x] 代码高亮。以及使用网页代码编辑器。
 + [ ] 查重代码左右对比。
 + [ ] 增加`About`专栏，向用户解释判题命令等。
-+ [x] 增加echarts工具进行数据分析，包括榜单、题目通过率等的图表展示。
 + [ ] 美化UI，首页增加竞赛、新闻、照片等信息的展示。
 + [ ] 后台题面编辑增加markdown编辑器。
 + [ ] 考试模式。考试期间只允许考试账号登录，限制登录ip等。
