@@ -4,27 +4,6 @@ Ludong University Online Judge
 
 # :bulb: 快速了解
 
-**问题求助**【置顶】
-
-由于本人能力有限，以下bug仍未解决，如有大佬光顾，恳请指导。
-
-+ [ ] 判题端误判超时；当题目标程运行时间接近时间限制时（以时限1秒，标程本地运行时间为700ms为例），
-    使用判题端进行评判会被误判为超时（`Time Limit Exceeded`）。目前的妥协方案是在`judge/cpp/judge.cpp`
-    的`running`函数中，将时间限制增加10秒（ [代码](https://github.com/iamwinter/LDUOnlineJudge/blob/master/judge/cpp/judge.cpp#L359) ）.
-    但该妥协方案并不能根治问题。是否跟linux系统有关？
-  
-+ [ ] 判题端误判编译错误；这是一个非常少见的情况，两三个月会遇到一次，重启系统后恢复正常，偶尔重判大量提交时也会发生。
-    即提交一个正确的代码会被误判为【编译错误】。直接原因是`judge/cpp/judge.cpp`
-    的`compile`函数中，`waitpid`接收到子进程状态`status`为非零
-    （ [代码](https://github.com/iamwinter/LDUOnlineJudge/blob/master/judge/cpp/judge.cpp#L320) ），
-    从而被判题端判为【编译错误】。这是什么原因导致子进程返回状态`status`非零？如何修复？
-  
-+ [ ] mysql服务频繁重启；查看mysql日志发现，`mysqld`服务频繁被系统killed，并频繁报告诸如
-    `[ERROR] /usr/sbin/mysqld: Table './lduoj/solutions' is marked as crashed and should be repaired`
-    此类错误，然后`mysql_safe`服务自动修复了对应的`table`。同时，`mysql_safe`日志中也显示其频繁被killed，然后重连。
-    这是什么原因？是否是造成判题端误判编译错误的元凶？
-    
-
 **概览**
 
 - [预览网站](http://oj.01fun.top/) ；您可以使用账号guest0(密码:9AF860CB)登录参观网站。
@@ -157,9 +136,27 @@ Ludong University Online Judge
   B. 通过终端命令启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`
 
 + 判题端配置
-  
-  数据库连接信息、判题线程数、判题机名称等配置项均在项目根目录下文件`.env`  
-  默认判题线程数为5，可根据服务器内存及性能适当调节
+
+  详见`.env`：
+  ```shell
+  #判题端配置
+  JG_MAX_RUNNING=1  # 并行判题进程数
+  JG_DATA_DIR=/home/LDUOnlineJudge/storage/app/data  # 测试数据所在目录
+  JG_NAME="Master"  # 判题机名称
+  ```
+  其中，`JG_MAX_RUNNING`默认值为1，请在安装后自行修改`.env`，参考值：
+
+<div align="center">
+
+| 服务器核心数 | 服务器内存 | `JG_MAX_RUNNING`建议值 |
+| --- | --- | --- |
+| ≤2 | ≤1GB | 1 |
+| ≤4 | ≤4GB | 2 |
+| ≤8 | ≤8GB | 4 |
+| ≤16 | ≤16GB | 8 |
+| \>16 | \>16GB | ≥8 |
+
+</div>
 
 # :page_facing_up: 整体架构
 
