@@ -323,7 +323,7 @@ int compile()
         if(status!=0)
         {
             char error[128];
-            sprintf(error,"[ERROR]: compile error. exit code is %d(0x%08x)\n",cpu_time,status,status);
+            sprintf(error,"[ERROR]: compile error. exit code is %d(0x%08x)\n",status,status);
             write_file(error,"ce.txt","a+");
             printf("%s",error);
         }
