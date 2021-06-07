@@ -37,10 +37,6 @@
 
 #define BUFFER_SIZE 5<<10    //about 5KB
 
-#define COMPILE_TIME 10     //10s, compile time limit
-#define COMPILE_FSIZE (10<<20)  //10MB,compile file size limit
-#define COMPILE_MEM (512<<20)  //512MB,compile memory
-
 const char *LANG[]={"Main.c","Main.cpp","Main.java","Main.py"}; //判题文件名
 const char *SIM_LANG[]={"sim_c","sim_c++","sim_java","sim_text"}; //代码查重所使用的sim程序名
 
@@ -298,13 +294,19 @@ int compile()
     if( (pid=fork()) == 0 ) //子进程编译
     {
         struct rlimit LIM;
-        LIM.rlim_max=LIM.rlim_cur=COMPILE_TIME;
-        setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit; 10s
-        LIM.rlim_max=LIM.rlim_cur=COMPILE_FSIZE;
-        setrlimit(RLIMIT_FSIZE, &LIM); //file size limit; 10MB
-        LIM.rlim_max=LIM.rlim_cur= solution.language>1 ? COMPILE_MEM<<2 : COMPILE_MEM; //java,python要扩大
-        setrlimit(RLIMIT_AS, &LIM); //memory limit; c/c++ 512MB, java 2048MB
-        alarm(COMPILE_TIME);  //定时
+        int cpu_time = 60;     //10s, compile time limit
+
+        LIM.rlim_max=LIM.rlim_cur=cpu_time;
+        setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit; 60s
+
+        LIM.rlim_max=LIM.rlim_cur=(10<<20);//file size limit: 10MB,compile file size limit
+        setrlimit(RLIMIT_FSIZE, &LIM);
+
+        LIM.rlim_max=LIM.rlim_cur= solution.language<=1 ? (512<<20) : (1024<<20); //memory limit; c/c++ 512MB, java 1024MB
+        setrlimit(RLIMIT_AS, &LIM);
+
+        alarm(0);
+        alarm(cpu_time);  //定时
 
         freopen("ce.txt","w",stderr);
         switch(solution.language){
@@ -318,6 +320,13 @@ int compile()
     {
         int status;
         waitpid(pid, &status, 0);
+        if(status!=0)
+        {
+            char error[128];
+            sprintf(error,"[ERROR]: compile error. exit code is %d(0x%08x)\n",cpu_time,status,status);
+            write_file(error,"ce.txt","a+");
+            printf("%s",error);
+        }
         return status;   //+:compile error
     }
 
