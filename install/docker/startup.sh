@@ -1,11 +1,14 @@
 #!/bin/bash
 
+APP_HOME=/home/LDUOnlineJudge
+echo "Project location: ${APP_HOME}"
+
 if [ ! -d /volume/LDUOnlineJudge ]; then
-    mv /home/LDUOnlineJudge /volume/
+    mv -f "${APP_HOME}" /volume/
 else
-    rm -rf /home/LDUOnlineJudge
+    rm -rf "${APP_HOME}"
 fi
-ln -s /volume/LDUOnlineJudge /home/LDUOnlineJudge
+ln -s /volume/LDUOnlineJudge "${APP_HOME}"
 
 if [ ! -f /volume/etc/mysql/debian.cnf ]; then
     cp /etc/mysql/debian.cnf /etc/mysql/debian.cnf.backup
@@ -25,12 +28,12 @@ ln -s /volume/mysql /var/lib/mysql
 chown -R mysql:mysql /volume/mysql
 rm -rf /var/run/mysqld/mysqld.sock.lock
 
-chmod -R 777 /home/LDUOnlineJudge/storage /home/LDUOnlineJudge/bootstrap/cache
-
+chmod -R 755 "${APP_HOME}"/storage "${APP_HOME}"/bootstrap/cache
+chown www-data:www-data -R "${APP_HOME}"/storage "${APP_HOME}"/bootstrap/cache
 service nginx start
 service php7.2-fpm start
 service mysql start
-bash /home/LDUOnlineJudge/judge/startup.sh
+bash "${APP_HOME}"/judge/startup.sh
 
 while true; do
 #    echo "Keep docker container running in the background!";

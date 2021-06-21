@@ -91,17 +91,17 @@ Ludong University Online Judge
   ```shell script
   git clone https://gitee.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
   # git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
-  bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh
+  bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh /home/LDUOnlineJudge
   ```
+  注：最后一条命令最后的参数是项目安装路径，请填写您的安装路径。
 
 # :cd: 项目迁移
 
-+ 基于Ubuntu16.04 / 18.04
++ 基于Ubuntu16.04 / 18.04（以安装路径`/home/LDUOnlineJudge`为例）
 
-  1.在**原主机**备份数据库、nginx配置
+  1.在**原主机**备份数据库
   ```shell script
   bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
-  cp -f /etc/nginx/conf.d/lduoj.conf /home/LDUOnlineJudge/install/nginx/lduoj.conf
   ```
   2.拷贝**原主机**文件夹`/home/LDUOnlineJudge`到**新主机**相同路径。  
   3.在**新主机**上执行安装。
@@ -126,9 +126,6 @@ Ludong University Online Judge
   ```
 
   2.在**新主机**基于docker安装(见[项目安装](#项目安装))。
-
-  3.若**原主机**自定义了nginx配置文件，可自行复制到**新主机**。
-    或参考[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)
 
 # :mega: 判题端使用说明
 
@@ -159,6 +156,7 @@ Ludong University Online Judge
 | \>16 | \>16GB | ≥8 |
 
 </div>
+注：修改`.env`后，执行`php artisan optimize`生效。
 
 # :page_facing_up: 整体架构
 
@@ -192,6 +190,23 @@ Ludong University Online Judge
 
 # :computer: 本地二次开发
 
+方式一：基于docker
+
+1. 启动容器
+    ```shell
+    docker run -dit --restart=always --cap-add=SYS_PTRACE \
+          -p 8080:80 \
+          -p 8036:3306 \
+          -v /d/myproject:/volume \
+          --name lduoj \
+          iamwinter/lduoj:latest
+    ```
+    其中`-v`指定了项目映射到`D:\myproject\LDUOnlineJudge`。  
+    `-p`指定了8036端口作为宿主机mysql端口，8080端口作为网页入口。  
+
+2. 打开项目`D:\myproject\LDUOnlineJudge`编辑即可。
+
+方式二：基于本地环境
 1. 下载源码
     ```shell script
     git clone https://gitee.com/iamwinter/LDUOnlineJudge.git
