@@ -17,7 +17,7 @@ RUN set -ex &&\
         deb-src http://mirrors.163.com/ubuntu/ bionic-updates main restricted universe multiverse\
         deb-src http://mirrors.163.com/ubuntu/ bionic-proposed main restricted universe multiverse\
         deb-src http://mirrors.163.com/ubuntu/ bionic-backports main restricted universe multiverse"\
-         > /etc/apt/sources.list &&\
+         > /etc/apt/sources.list
 
 RUN set -ex &&\
     apt -y install sudo &&\
