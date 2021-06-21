@@ -1,9 +1,18 @@
 #!/bin/bash
 
-cd `dirname $0`
+APP_HOME=$(dirname $(pwd))
+
+cd "${APP_HOME}"/judge || exit
 
 bash ./stop.sh
-source ../.env
+source "${APP_HOME}"/.env
+
+# 获取测试数据路径; 如果是相对路径，则视为当前项目的相对路径
+DATA_DIR=${JG_DATA_DIR}
+if [[ ${DATA_DIR:0:1} != "/" ]]; then
+    DATA_DIR="${APP_HOME}/${DATA_DIR}"
+fi
+echo "Test data folder location: ${DATA_DIR}"
 
 if [ ! -d ./program ]; then
     mkdir ./program
@@ -12,16 +21,17 @@ fi
 g++ ./cpp/polling.cpp -o ./program/polling -std=c++11 -lmysqlclient
 g++ ./cpp/judge.cpp  -o  ./program/judge -std=c++11 -lmysqlclient
 
-cd ./program
-if [ "$1" == "debug" ];then
-    ./polling ${DB_HOST} ${DB_PORT} ${DB_USERNAME} ${DB_PASSWORD} ${DB_DATABASE} ${JG_MAX_RUNNING} ${JG_DATA_DIR} ${JG_NAME}
+cd ./program || exit
+
+if [[ "$1" == "debug" ]];then
+    ./polling ${DB_HOST} ${DB_PORT} ${DB_USERNAME} ${DB_PASSWORD} ${DB_DATABASE} ${JG_MAX_RUNNING} ${DATA_DIR} ${JG_NAME}
 else
-    ./polling ${DB_HOST} ${DB_PORT} ${DB_USERNAME} ${DB_PASSWORD} ${DB_DATABASE} ${JG_MAX_RUNNING} ${JG_DATA_DIR} ${JG_NAME} > /dev/null &
+    ./polling ${DB_HOST} ${DB_PORT} ${DB_USERNAME} ${DB_PASSWORD} ${DB_DATABASE} ${JG_MAX_RUNNING} ${DATA_DIR} ${JG_NAME} > /dev/null &
     sleep 1;
-    polling_name=`ps -e | grep polling | awk '{print $4}'`
+    polling_name=$(ps -e | grep polling | awk '{print $4}')
     if [ "${polling_name}" == "polling" ];then
         echo "[Judge is OK] Server has started to judge!"
     else
-        echo "[Judge starting Failed] Please check config in LDUOnlineJudge/.env"
+        echo "[Judge starting Failed] Please check config in ${APP_HOME}/.env"
     fi
 fi
