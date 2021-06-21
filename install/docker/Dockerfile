@@ -20,6 +20,7 @@ RUN set -ex &&\
          > /etc/apt/sources.list
 
 RUN set -ex &&\
+    apt-get update && apt-get -y upgrade &&\
     apt -y install sudo &&\
     echo "root ALL=(ALL) ALL" >> /etc/sudoers &&\
     echo "www-data ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers &&\
