@@ -1,9 +1,10 @@
 #!/bin/sh
 
-root=/home/LDUOnlineJudge
+APP_HOME=$(dirname $(dirname $(readlink -f "$0")))
+echo "Project location: ${APP_HOME}"
 
 set -ex
-cd ${root} || { echo No such project: ${root};exit 1; }
+cd "${APP_HOME}" || { echo No such project: ${APP_HOME};exit 1; }
 
 # php environment
 apt-get update && apt-get -y upgrade
@@ -29,11 +30,15 @@ php artisan optimize
 # nignx
 apt -y install nginx
 rm -rf /etc/nginx/sites-enabled/default
-cp -f ${root}/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf
+rm -rf /etc/nginx/conf.d/lduoj.conf
+ln -s "${APP_HOME}"/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf
 service nginx restart
 
 # mysql
 apt -y install mysql-server
+if [ -f /.dockerenv ]; then
+    usermod -d /var/lib/mysql/ mysql
+fi
 service mysql restart
 USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
 PASSWORD=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
@@ -42,14 +47,21 @@ mysql -u${USER} -p${PASSWORD} -e"CREATE USER If Not Exists 'lduoj'@'localhost' I
 mysql -u${USER} -p${PASSWORD} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost' identified by '123456789';flush privileges;"
 mysql -u${USER} -p${PASSWORD} -Dlduoj < ./install/mysql/lduoj.sql
 
-# Allow php user www-data to use 'sudo' to get privilege of root
+# Allow php user www-data to use 'sudo' to get privilege of APP_HOME
 # If you don't grant the right to user www-data, then you will not be able to start or stop the judge in administration.
 echo 'www-data ALL = NOPASSWD: ALL' >> /etc/sudoers
 
 # install judge environment & sim config & start to judge
 apt -y install g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex
-cp -p ${root}/judge/sim/sim.1 /usr/share/man/man1/
-cd ${root}/judge/sim/ && make install
-bash ${root}/judge/startup.sh
+cp -p "${APP_HOME}"/judge/sim/sim.1 /usr/share/man/man1/
+cd "${APP_HOME}"/judge/sim/ && make install
+bash "${APP_HOME}"/judge/startup.sh
 
-echo "You have successfully installed LDU Online Judge!"
+# If in docker, initialize startup.sh used to start LDUOnlineJudge in docker container
+if [ -f /.dockerenv ]; then
+    rm -rf /startup.sh
+    chmod +x "${APP_HOME}"/install/docker/startup.sh
+    ln -s "${APP_HOME}"/install/docker/startup.sh /startup.sh
+fi
+
+echo "You have successfully installed LDU Online Judge! Location: ${APP_HOME}"
