@@ -10,13 +10,24 @@
         <form class="p-4 col-12 col-md-9" action="" method="post" enctype="multipart/form-data" onsubmit="presubmit()">
             @csrf
             <div class="form-inline mb-3">
-                <font>竞赛类别：</font>
+                <span>竞赛类别：</span>
 
                 @foreach(config('oj.contestType') as $key=>$name)
                     <div class="custom-control custom-radio ml-3">
                         <input type="radio" name="contest[type]" value="{{$key}}" class="custom-control-input" id="type{{$key}}"
                                @if(!isset($contest->type)||$contest->type==$key)checked @endif>
-                        <label class="custom-control-label pt-1" for="type{{$key}}">{{$name}}</label>
+                        <label class="custom-control-label pt-1" for="type{{$key}}">
+                            {{$name}}
+                            @if($name=='course')
+                                (课程)
+                            @elseif($name=='training')
+                                (训练)
+                            @elseif($name=='contest')
+                                (竞赛)
+                            @elseif($name=='exam')
+                                (考试)
+                            @endif
+                        </label>
                     </div>
                 @endforeach
             </div>

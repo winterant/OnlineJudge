@@ -37,6 +37,7 @@ return [
     "Contests"      => "Contests",
     "course"        => "Course",
     "training"      => "Training",
+    "exam"          => "Exam",
     "Exam"          => "Exam",
     "Exams"         => "Exams",
     "Experiment"    => "Experiment",

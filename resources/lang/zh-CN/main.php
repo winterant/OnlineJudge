@@ -37,6 +37,7 @@ return [
     "Contests"      => "竞赛",
     "course"        => "课程",
     "training"      => "训练",
+    "exam"          => "考试",
     "Exam"          => "考试",
     "Exams"         => "考试",
     "Experiment"    => "实验",
