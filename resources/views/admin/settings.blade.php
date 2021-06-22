@@ -152,9 +152,19 @@
             <h4>系统升级</h4>
             <hr>
             <div class="overflow-auto px-2">
+                @if(isset($_GET['check_update']))
+                    <span>【<a href="https://github.com/iamwinter/LDUOnlineJudge/commits/master" target="_blank">官方最新版本</a>】</span>
+                    <br>
+                    <span>{!! $new_version !!}</span>
+                    <br>
+                    <br>
+                @endif
+
                 <span>【当前系统版本】</span>
                 @if($old_version==$new_version)
-                    <span class="text-green">(已是最新版本)</span>
+                    @if(isset($_GET['check_update']))
+                        <span class="text-green">(最新版本)</span>
+                    @endif
                     <script type="text/javascript">
                         $(function (){
                             $('#upgrade_btn').html('强制升级')
@@ -163,12 +173,14 @@
                 @else
                     <span class="text-red">(可升级)</span>
                 @endif
+                @if(!isset($_GET['check_update']))
+                    &ensp;
+                    <a href="?check_update=1" class="text-sky">检查更新</a>
+                @endif
                 <br>
                 <span>{!! $old_version !!}</span>
                 <br>
-                <br>
-                <span>【<a href="https://github.com/iamwinter/LDUOnlineJudge/commits/master" target="_blank">官方最新版本</a>】<br>{!! $new_version !!}</span>
-                <br>
+
                 <div class="float-right">
                     <form id="form_upgrade" class="mb-0">
                         @csrf
