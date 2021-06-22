@@ -2,7 +2,7 @@
 
 set -x
 APP_HOME=$1    # 原项目位置
-upgrade=$(dirname $(dirname $(readlink -f "$0")))  # 新版本位置
+upgrade=$(dirname $(dirname $(dirname $(readlink -f "$0"))))  # 新版本位置
 
 if [[ "${APP_HOME}" == "" ]]; then
     read -p "Please input old project location (such as /home/LDUOnlineJudge):" APP_HOME
