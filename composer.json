@@ -39,8 +39,6 @@
             "App\\": "app/"
         },
         "classmap": [
-            "database/seeds",
-            "database/factories"
         ],
         "files": [
             "app/functions/DB_helpers.php",
