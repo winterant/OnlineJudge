@@ -35,8 +35,8 @@ return [
     "Contest"       => "竞赛",
     "contest"       => "竞赛",
     "Contests"      => "竞赛",
-    "course"        => "课程",
-    "training"      => "训练",
+    "Course"        => "课程",
+    "Training"      => "训练",
     "exam"          => "考试",
     "Exam"          => "考试",
     "Exams"         => "考试",
@@ -51,7 +51,7 @@ return [
     "Information"   => "信息",
     "Notification"  => "告示",
     "Discussion"    => "讨论",
-    "Discussions"    => "讨论板",
+    "Discussions"   => "讨论板",
 
 //    user
     "Confirm"       => "确认",

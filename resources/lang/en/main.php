@@ -35,8 +35,8 @@ return [
     "Contest"       => "Contest",
     "contest"       => "Contest",
     "Contests"      => "Contests",
-    "course"        => "Course",
-    "training"      => "Training",
+    "Course"        => "Course",
+    "Training"      => "Training",
     "exam"          => "Exam",
     "Exam"          => "Exam",
     "Exams"         => "Exams",
@@ -51,7 +51,7 @@ return [
     "Information"   => "Information",
     "Notification"  => "Notification",
     "Discussion"    => "Discussion",
-    "Discussions"    => "Discussions",
+    "Discussions"   => "Discussions",
 
 //    user
     "Confirm"       => "Confirm",

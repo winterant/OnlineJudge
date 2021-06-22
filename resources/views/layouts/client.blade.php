@@ -60,20 +60,25 @@
                     <i class="fa fa-list" aria-hidden="true">&nbsp;{{trans('main.Problems')}}</i>
                 </a>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle text-nowrap p-2" href="#" id="contestDropdown" data-toggle="dropdown">
-                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="contestDropdown">
-                    @foreach(config('oj.contestType') as $i=>$ctype)
-                        <a class="dropdown-item text-nowrap" id="link_{{$ctype}}" href="{{route('contests',$ctype)}}">
-                            <i class="fa fa-book px-1" aria-hidden="true"></i>
-                            {{__('main.'.$ctype)}}
-                        </a>
-                    @endforeach
+{{--            <li class="nav-item dropdown">--}}
+{{--                <a class="nav-link dropdown-toggle text-nowrap p-2" href="#" id="contestDropdown" data-toggle="dropdown">--}}
+{{--                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>--}}
+{{--                </a>--}}
+{{--                <div class="dropdown-menu" aria-labelledby="contestDropdown">--}}
+{{--                    @foreach(config('oj.contestType') as $i=>$ctype)--}}
+{{--                        <a class="dropdown-item text-nowrap" href="{{route('contests',$ctype)}}">--}}
+{{--                            <i class="fa fa-book px-1" aria-hidden="true"></i>--}}
+{{--                            {{__('main.'.$ctype)}}--}}
+{{--                        </a>--}}
+{{--                    @endforeach--}}
 {{--                    <div class="dropdown-divider"></div>--}}
 {{--                    <a class="dropdown-item" href="#">Separated link</a>--}}
-                </div>
+{{--                </div>--}}
+{{--            </li>--}}
+            <li class="nav-item">
+                <a class="nav-link text-nowrap p-2" id="link_contests" href="{{route('contests','all')}}">
+                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
+                </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-nowrap p-2" href="{{route('standings')}}">
@@ -151,11 +156,11 @@
         if(url==="{{route('home')}}/"){ //特判home
             $("#link_home").addClass('active')
         }else if(url.indexOf('/contests/')!==-1){
-            $('#contestDropdown').addClass('active')
-            $('ul li .dropdown-menu').find("a").each(function (){
+            $('#link_contests').addClass('active')
+            $('ul li').find("a").each(function (){
                 if (url===$(this).attr("href")) {
-                    $(this).addClass("text-blue");
-                    $(this).prepend("<i class=\"fa fa-angle-double-right pr-1\" aria-hidden=\"true\"></i>")
+                    $(this).addClass("active");
+                    // $(this).prepend("<i class=\"fa fa-angle-double-right pr-1\" aria-hidden=\"true\"></i>")
                 }
             })
         }else{
