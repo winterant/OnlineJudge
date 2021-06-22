@@ -18,12 +18,7 @@ RUN set -ex &&\
         deb-src http://mirrors.163.com/ubuntu/ bionic-proposed main restricted universe multiverse\
         deb-src http://mirrors.163.com/ubuntu/ bionic-backports main restricted universe multiverse"\
         > /etc/apt/sources.list &&\
-        apt-get update && apt-get -y upgrade
-
-RUN set -ex &&\
-    apt -y install sudo &&\
-    echo "root ALL=(ALL) ALL" >> /etc/sudoers &&\
-    echo "www-data ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+    apt-get update && apt-get -y upgrade
 
 RUN bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
 
