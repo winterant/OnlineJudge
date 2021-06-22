@@ -30,6 +30,7 @@ php artisan optimize
 apt -y install nginx
 rm -rf /etc/nginx/sites-enabled/default
 rm -rf /etc/nginx/conf.d/lduoj.conf
+sed -i "s/\/home\/LDUOnlineJudge/${APP_HOME}/" "${APP_HOME}"/install/nginx/lduoj.conf
 ln -s "${APP_HOME}"/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf
 service nginx restart
 
