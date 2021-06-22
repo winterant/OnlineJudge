@@ -29,17 +29,30 @@
 
 
         <div class="my-container bg-white">
+
+            <div class="tabbable" id="tabs-905460">
+                <ul class="nav nav-tabs">
+                    @foreach([0=>'all']+config('oj.contestType') as $i=>$ctype)
+                        <li class="nav-item border-bottom">
+                            <a class="nav-link text-center py-2" href="{{route('contests',$ctype)}}" style="min-width: 98px">
+                                {{__('main.'.ucfirst($ctype))}}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
             <div class="overflow-hidden">
-                <h4 class="pull-left">
-                    @if(isset($_GET['state']))
-                        {{__('main.'.ucfirst($_GET['state']))}}
-                    @endif
-                    @if($type_id)
-                        {{__('main.'.config('oj.contestType.'.$type_id))}}
-                    @else
-                        {{__('main.All')}}
-                    @endif
-                </h4>
+{{--                <h4 class="pull-left">--}}
+{{--                    @if(isset($_GET['state']))--}}
+{{--                        {{__('main.'.ucfirst($_GET['state']))}}--}}
+{{--                    @endif--}}
+{{--                    @if($type_id)--}}
+{{--                        {{__('main.'.config('oj.contestType.'.$type_id))}}--}}
+{{--                    @else--}}
+{{--                        {{__('main.All')}}--}}
+{{--                    @endif--}}
+{{--                </h4>--}}
                 <form action="" method="get" class="mb-2 pull-right form-inline">
                     <input type="number" onchange="this.form.submit();" name="type" value="{{isset($_GET['type'])?$_GET['type']:''}}" hidden>
                     <div class="form-inline mx-3">
