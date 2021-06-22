@@ -1,7 +1,6 @@
 #!/bin/sh
 
-APP_HOME=$(dirname $(dirname $(readlink -f "$0")))
-echo "Project location: ${APP_HOME}"
+APP_HOME=$(dirname $(dirname $(dirname $(readlink -f "$0"))))
 
 set -ex
 cd "${APP_HOME}" || { echo No such project: ${APP_HOME};exit 1; }
