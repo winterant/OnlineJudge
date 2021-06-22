@@ -32,7 +32,7 @@
         }
 
         .nav-link{
-            min-width: 80px !important;
+            min-width: 90px !important;
             text-align: center;
         }
     </style>
