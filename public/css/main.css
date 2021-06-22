@@ -19,7 +19,7 @@ html, body {
 /*自定义容器*/
 .my-container {
     display: block;
-    box-shadow: rgba(0, 0, 0, 0.1) 0 0 30px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0 0 10px;
     border-radius: 4px;
     transition: .2s ease-out .0s;
     /*background: #fff;*/
