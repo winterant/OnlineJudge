@@ -31,7 +31,7 @@
             <ul class="nav nav-tabs">
                 @foreach([0=>'all']+config('oj.contestType') as $i=>$ctype)
                     <li class="nav-item">
-                        <a class="nav-link text-center py-3" href="{{route('contests',$ctype)}}" style="min-width: 98px">
+                        <a class="nav-link text-center py-3" href="{{route('contests',$ctype)}}">
                             {{__('main.'.ucfirst($ctype))}}
                         </a>
                     </li>
@@ -40,8 +40,6 @@
         </div>
 
         <div class="my-container bg-white">
-
-
             <div class="overflow-hidden">
 {{--                <h4 class="pull-left">--}}
 {{--                    @if(isset($_GET['state']))--}}
@@ -120,7 +118,7 @@
                                 @if(!$type_id)
                                     <li class="px-2">
                                         <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">
-                                            {{__('main.'.config('oj.contestType.'.$item->type))}}
+                                            {{__('main.'.ucfirst(config('oj.contestType.'.$item->type)))}}
                                         </div>
                                     </li>
                                 @endif
