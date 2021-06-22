@@ -27,20 +27,20 @@
 {{--            </ul>--}}
 {{--        </div>--}}
 
+        <div class="tabbable border-bottom mb-3">
+            <ul class="nav nav-tabs">
+                @foreach([0=>'all']+config('oj.contestType') as $i=>$ctype)
+                    <li class="nav-item">
+                        <a class="nav-link text-center py-3" href="{{route('contests',$ctype)}}" style="min-width: 98px">
+                            {{__('main.'.ucfirst($ctype))}}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
 
         <div class="my-container bg-white">
 
-            <div class="tabbable" id="tabs-905460">
-                <ul class="nav nav-tabs">
-                    @foreach([0=>'all']+config('oj.contestType') as $i=>$ctype)
-                        <li class="nav-item border-bottom">
-                            <a class="nav-link text-center py-2" href="{{route('contests',$ctype)}}" style="min-width: 98px">
-                                {{__('main.'.ucfirst($ctype))}}
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
 
             <div class="overflow-hidden">
 {{--                <h4 class="pull-left">--}}
