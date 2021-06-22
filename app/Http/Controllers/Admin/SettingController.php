@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\DB;
 
 class SettingController extends Controller
 {
-    private function get_code_version($current){
+    private function get_code_version($local){
         exec('cd '.base_path(),$_,$status);
-        if($current){
+        if($local){
             exec('git log | head -5 2>&1',$version,$status);
         }else{
-            exec('sudo git fetch 2>&1',$_,$status);
+            if(isset($_GET['check_update']))
+                exec('sudo git fetch 2>&1',$_,$status);
             exec('git log remotes/origin/master | head -5 2>&1',$version,$status);
         }
         if(count($version)>=5){
