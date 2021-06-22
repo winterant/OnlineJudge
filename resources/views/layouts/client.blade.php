@@ -30,6 +30,11 @@
         th{
             white-space: nowrap
         }
+
+        .nav-link{
+            min-width: 80px !important;
+            text-align: center;
+        }
     </style>
 
 </head>
@@ -37,7 +42,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white mb-3">
 
-    <a class="navbar-brand">{{get_setting('siteName')}}</a>
+    <a class="navbar-brand text-center" style="min-width: 200px">{{get_setting('siteName')}}</a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
         <span class="navbar-toggler-icon"></span>
