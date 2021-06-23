@@ -414,7 +414,7 @@ int running_spj(const char *in,const char *out,const char *user_out)
     LIM.rlim_cur = LIM.rlim_max = 256<<20;  //256MB
     setrlimit(RLIMIT_STACK, &LIM);
 
-    int ret = system_cmd("./spj %s %s %s",in,out,user_out);
+    int ret = system_cmd("./spj %s %s %s >> error.out",in,out,user_out);
     if(ret==0) return OJ_AC;
     return OJ_WA;
 }
@@ -532,7 +532,6 @@ int watch_running(int child_pid, char *test_name, int max_out_size)
     printf("test%3s | used memory: %5.2fMB, limit is %.2fMB\n", test_name, memory_MB, solution.memory_limit);
     solution.time   = max(solution.time,   min(solution.time_limit,   used_time) );
     solution.memory = max(solution.memory, min(solution.memory_limit, memory_MB) );
-//    if(result==OJ_TL)solution.time=solution.time_limit;
     return result;
 }
 
@@ -596,13 +595,16 @@ int judge(char *data_dir, char *spj_path)
         }
         else return OJ_SE;  //system error
     }
+
+    if(is_acm)
+        return OJ_AC;  //ACM规则走到这说明AC了所有测试数据，后面是oi
+
     if(test_count==0){
         char error[128]="Missing input file of test data, please contact the administrator to add test data!";
         write_file(error,"error.out","a+");
         return OJ_SE; //system error 缺少测试数据
     }
     solution.pass_rate = ac_count*1.0/test_count;
-    if(is_acm)return OJ_AC;  //ACM规则走到这说明AC了，后面是oi
     return oi_result; //oi规则结果
 }
 
