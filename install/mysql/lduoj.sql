@@ -25,6 +25,7 @@ CREATE TABLE `blacklist`  (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NULL DEFAULT NULL,
     `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+    `creator` int(11) NULL DEFAULT NULL,
     `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Fixed;
@@ -50,6 +51,7 @@ CREATE TABLE `contest_notices`  (
     `contest_id` int(11) NULL DEFAULT NULL,
     `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
     `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+    `creator` int(11) NULL DEFAULT NULL,
     `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `cid`(`contest_id`) USING BTREE
@@ -147,6 +149,7 @@ CREATE TABLE `privileges`  (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,
     `authority` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+    `creator` int(11) NULL DEFAULT NULL,
     `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `uid`(`user_id`) USING BTREE
@@ -170,6 +173,7 @@ CREATE TABLE `problems`  (
     `time_limit` int(11) NULL DEFAULT 0 COMMENT 'MS',
     `memory_limit` int(11) NULL DEFAULT 0 COMMENT 'MB',
     `hidden` tinyint(4) NULL DEFAULT 1,
+    `creator` int(11) NULL DEFAULT NULL,
     `created_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
