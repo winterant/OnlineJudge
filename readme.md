@@ -210,17 +210,18 @@ Ludong University Online Judge
     ```shell
     # 进入docker容器内
     docker exec -it lduoj /bin/bash
-   
+
     # 修改mysql配置，允许任意主机访问
     sed -i 's/^bind-address.*$/bind-address=0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
     service mysql restart
+
     # 新建允许外部登录的mysql用户：'lduoj'@'%'，密码123456789
     USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
     PW=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
     mysql -u${USER} -p${PW} -e"CREATE USER If Not Exists 'lduoj'@'%' IDENTIFIED WITH mysql_native_password BY '123456789';"
     mysql -u${USER} -p${PW} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'%' identified by '123456789';flush privileges;"
     ```
-    然后远程连接【**宿主机ip**:8036】，使用上一步新建的用户lduoj登录mysql即可。
+    然后远程连接【**宿主机ip**:8036】，使用新建的用户lduoj登录mysql即可。
 
 3. 修改远程关联仓库。前提：先fork本项目到你自己的github账户下。
     ```shell
