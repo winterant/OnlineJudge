@@ -39,6 +39,7 @@ Ludong University Online Judge
 + [x] 增加版本号标识，以及通过网页端升级系统。
 + [ ] 增加【班级/团队】模块，可对班级布置作业；学生可在【我的作业】中查看作业。
 + [ ] 后台权限需要整顿；每个题目/竞赛，应当保存创建人，只有创建人可修改。
++ [ ] 新增竞赛类别；管理员可以自由管理竞赛的类别，含二级分类。
 + [ ] 讨论板增加审核功能，以及总开关。
 + [ ] 题号重排。目前题号在数据库作为主键，不支持题号重排。
 + [ ] 查重代码左右对比。
@@ -50,20 +51,20 @@ Ludong University Online Judge
 # :wrench: 项目安装
 
 + **基于Linux Ubuntu 16.04 / 18.04**
-[帮助:[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)]
+  [帮助:[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)]
   ```shell script
-  git clone https://gitee.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
-  # git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/LDUOnlineJudge
-  bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
+  git clone https://gitee.com/iamwinter/LDUOnlineJudge.git
+  # git clone https://github.com/iamwinter/LDUOnlineJudge.git
+  bash LDUOnlineJudge/install/ubuntu16.04/install.sh
   ```
-  - 浏览器访问服务器ip进入首页  
-  - **注册用户admin自动成为管理员**  
-  - mysql数据库名lduoj，默认用户lduoj@localhost(密码123456789)  
-  - nginx配置文件`/etc/nginx/conf.d/lduoj.conf`  
+    - 浏览器访问服务器ip进入首页
+    - **注册用户admin自动成为管理员**
+    - mysql数据库名lduoj，默认用户lduoj@localhost(密码123456789)
+    - nginx配置文件`/etc/nginx/conf.d/lduoj.conf`
 
 
 + **基于docker（推荐）**
-[帮助:[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)]
+  [帮助:[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)]
 
   ```shell script
   docker run -dit --restart=always --cap-add=SYS_PTRACE \
@@ -73,12 +74,12 @@ Ludong University Online Judge
       iamwinter/lduoj:latest
   ```
 
-  - `-p`参数后的`8080`是主机端口，可自定义。
-    浏览器访问`服务器ip:8080`进入首页。
-    [配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)  
-  - `-v`参数后的`~/lduoj_docker`是用于保存数据的主机目录，可自定义。
-    如需备份系统，只需将此文件夹打包备份。
-  - 进入容器进行管理： `docker exec -it lduoj /bin/bash`  
+    - `-p`参数后的`8080`是主机端口，可自定义。
+      浏览器访问`服务器ip:8080`进入首页。
+      [配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)
+    - `-v`参数后的`~/lduoj_docker`是用于保存数据的主机目录，可自定义。
+      如需备份系统，只需将此文件夹打包备份。
+    - 进入容器进行管理： `docker exec -it lduoj /bin/bash`
 
 # :hammer: 项目升级
 
@@ -108,17 +109,17 @@ Ludong University Online Judge
   ```shell script
   bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
   ```
-+ 基于docker  
++ 基于docker
 
   1.在**原主机**将文件夹`~/lduoj_docker`（或docker容器内`/volume`）打包，发送到**新主机**相同位置。
 
-  - 原主机 [ 进入容器 -> 打包压缩 -> 发送到新主机(用户名`root`；ssh端口号`22`；实际ip`ip`) ]：
+    - 原主机 [ 进入容器 -> 打包压缩 -> 发送到新主机(用户名`root`；ssh端口号`22`；实际ip`ip`) ]：
   ```shell
   docker exec -it lduoj /bin/bash
   tar -zcvf volume.tar.gz /volume
   scp -P 22 volume.tar.gz root@ip:~/
   ```
-  - 新主机 [ 解压 -> 重命名 ]：
+    - 新主机 [ 解压 -> 重命名 ]：
   ```shell
   cd ~/
   tar -zxvf volume.tar.gz
@@ -130,7 +131,7 @@ Ludong University Online Judge
 # :mega: 判题端使用说明
 
 + 启动方式
-  
+
   A. 网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端  
   B. 通过终端命令启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`
 
@@ -201,10 +202,33 @@ Ludong University Online Judge
           --name lduoj \
           iamwinter/lduoj:latest
     ```
-    其中`-v`指定了项目映射到`D:\myproject\LDUOnlineJudge`。  
-    `-p`指定了8036端口作为宿主机mysql端口，8080端口作为网页入口。  
+   `-p`指定了8036端口作为宿主机mysql端口，8080端口作为网页入口。  
+   其中`-v`指定了项目映射到`D:\myproject\LDUOnlineJudge`，在本地编辑该项目即可。
 
-2. 打开项目`D:\myproject\LDUOnlineJudge`编辑即可。
+2. 远程连接mysql
+
+    ```shell
+    # 进入docker容器内
+    docker exec -it lduoj /bin/bash
+   
+    # 修改mysql配置，允许任意主机访问
+    sed -i 's/^bind-address.*$/bind-address=0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
+   
+    # 新建允许外部登录的mysql用户：'lduoj'@'%'，密码123456789
+    USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
+    PW=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
+    mysql -u${USER} -p${PW} -e"CREATE USER If Not Exists 'lduoj'@'%' IDENTIFIED WITH mysql_native_password BY '123456789';"
+    mysql -u${USER} -p${PW} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'%' identified by '123456789';flush privileges;"
+    ```
+    然后远程连接【**宿主机ip**:8036】，使用上一步新建的用户lduoj登录mysql即可。
+
+3. 修改远程关联仓库。前提：先fork本项目到你自己的github账户下。
+    ```shell
+    cd LDUOnlineJudge
+    git remote rm origin
+    git remote add origin https://github.com/Your_GitHub_Username/LDUOnlineJudge.git
+    git remote -v
+    ```
 
 方式二：基于本地环境
 1. 下载源码
@@ -275,19 +299,19 @@ Ludong University Online Judge
 
 # :gift_heart: 鸣谢
 
-  [zhblue/hustoj](https://github.com/zhblue/hustoj)  
-  [sim](https://dickgrune.com/Programs/similarity_tester/)  
-  [laravel-6.0](https://laravel.com/)  
-  [bootstrap-material-design](https://fezvrasta.github.io/bootstrap-material-design/)  
-  [jquery-3.4.1](https://jquery.com/)  
-  [font-awesome](http://www.fontawesome.com.cn/)  
-  [ckeditor-5](https://ckeditor.com/ckeditor-5/)  
-  [MathJax](https://www.mathjax.org/)  
-  [zhiyul/switch](https://github.com/notiflix/Notiflix)  
-  [codemirror](https://codemirror.net/)  
-  [highlight.js](https://highlightjs.org/)  
+[zhblue/hustoj](https://github.com/zhblue/hustoj)  
+[sim](https://dickgrune.com/Programs/similarity_tester/)  
+[laravel-6.0](https://laravel.com/)  
+[bootstrap-material-design](https://fezvrasta.github.io/bootstrap-material-design/)  
+[jquery-3.4.1](https://jquery.com/)  
+[font-awesome](http://www.fontawesome.com.cn/)  
+[ckeditor-5](https://ckeditor.com/ckeditor-5/)  
+[MathJax](https://www.mathjax.org/)  
+[zhiyul/switch](https://github.com/notiflix/Notiflix)  
+[codemirror](https://codemirror.net/)  
+[highlight.js](https://highlightjs.org/)
 
 # :scroll: 开源许可
 
-  iamwinter/LDUOnlineJudge is licensed under the 
-  **[GNU General Public License v3.0](https://github.com/iamwinter/LDUOnlineJudge/blob/master/LICENSE)**  
+iamwinter/LDUOnlineJudge is licensed under the
+**[GNU General Public License v3.0](https://github.com/iamwinter/LDUOnlineJudge/blob/master/LICENSE)**  
