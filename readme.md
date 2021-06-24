@@ -227,6 +227,8 @@ Ludong University Online Judge
     git remote rm origin
     git remote add origin https://github.com/Your_GitHub_Username/LDUOnlineJudge.git
     git remote -v
+    git fetch --all  # 从远程拉取最新的代码 不merge
+    git reset --hard origin/master  # 使用指定分支的代码（此处master）强制覆盖本地代码
     ```
 
 方式二：基于本地环境
