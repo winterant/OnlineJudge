@@ -204,7 +204,30 @@ Ludong University Online Judge
     其中`-v`指定了项目映射到`D:\myproject\LDUOnlineJudge`。  
     `-p`指定了8036端口作为宿主机mysql端口，8080端口作为网页入口。  
 
-2. 打开项目`D:\myproject\LDUOnlineJudge`编辑即可。
+2. 远程连接mysql
+
+    ```shell
+    # 进入docker容器内
+    docker exec -it lduoj /bin/bash
+   
+    # 修改mysql配置，允许任意主机访问
+    sed -i 's/^bind-address.*$/bind-address=0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
+    service mysql restart
+    # 新建允许外部登录的mysql用户：'lduoj'@'%'，密码123456789
+    USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
+    PW=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
+    mysql -u${USER} -p${PW} -e"CREATE USER If Not Exists 'lduoj'@'%' IDENTIFIED WITH mysql_native_password BY '123456789';"
+    mysql -u${USER} -p${PW} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'%' identified by '123456789';flush privileges;"
+    ```
+    然后远程连接【**宿主机ip**:8036】，使用上一步新建的用户lduoj登录mysql即可。
+
+3. 修改远程关联仓库。前提：先fork本项目到你自己的github账户下。
+    ```shell
+    cd LDUOnlineJudge
+    git remote rm origin
+    git remote add origin https://github.com/Your_GitHub_Username/LDUOnlineJudge.git
+    git remote -v
+    ```
 
 方式二：基于本地环境
 1. 下载源码
