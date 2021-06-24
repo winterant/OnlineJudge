@@ -213,7 +213,7 @@ Ludong University Online Judge
    
     # 修改mysql配置，允许任意主机访问
     sed -i 's/^bind-address.*$/bind-address=0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
-   
+    service mysql restart
     # 新建允许外部登录的mysql用户：'lduoj'@'%'，密码123456789
     USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
     PW=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
