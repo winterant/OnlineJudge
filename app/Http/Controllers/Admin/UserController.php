@@ -23,17 +23,36 @@ class UserController extends Controller
         return view('admin.user.list',compact('users'));
     }
 
+    //权限管理
     public function privileges(){
         $privileges=DB::table('privileges')
-            ->leftJoin('users','users.id','=','user_id')
-            ->select(['privileges.id','username','nick','authority','privileges.created_at'])
-            ->orderBy('username')->get();
+            ->leftJoin('users as u1','u1.id','=','user_id')
+            ->leftJoin('users as u2','u2.id','=','creator')
+            ->select(['privileges.id','u1.username','u1.nick','authority','u2.username as creator','privileges.created_at'])
+            ->orderBy('u1.username')->get();
         return view('admin.user.privilege',compact('privileges'));
     }
 
+    public function privilege_create(Request $request){
+        if($request->isMethod('post')) {
+            $privilege = $request->input('privilege');
+            $privilege['user_id'] = DB::table('users')->where('username', $request->input('username'))->value('id');
+            if ($privilege['user_id'] == null)
+                $msg = '该用户不存在！请先至用户列表确认用户的登录名！';
+            else {
+                $privilege['creator'] = Auth::id();
+                $msg = '成功添加' . DB::table('privileges')->insert($privilege) . '个权限用户';
+            }
+            return back()->with('msg', $msg);
+        }
+        return view('admin.fail',['msg'=>'请求有误！']);
+    }
 
+    public function privilege_delete(Request $request){
+        return DB::table('privileges')->delete($request->input('id'));
+    }
 
-
+    //批量生成账号
     private function trans_data($list_str,$use_end_num=false){
         $list=explode(PHP_EOL,$list_str); //按行分割
         foreach ($list as &$item) {
@@ -108,22 +127,7 @@ class UserController extends Controller
         return 0;
     }
 
-    public function privilege_create(Request $request){
-        if(!$request->isMethod('post'))return view('admin.fail',['msg'=>'请求有误！']);
-        $privilege=$request->input('privilege');
-        $privilege['user_id']=DB::table('users')->where('username',$request->input('username'))->value('id');
-        if($privilege['user_id']==null)
-            $msg='该用户不存在！请先至用户列表确认用户的登录名！';
-        else{
-            $msg='成功添加'.DB::table('privileges')->insert($privilege).'个权限用户';
-        }
-        return back()->with('msg',$msg);
-    }
-
-    public function privilege_delete(Request $request){
-        return DB::table('privileges')->delete($request->input('id'));
-    }
-
+    //重置密码
     public function reset_pwd(Request $request){
         if($request->isMethod('get')){
             return view('admin.user.reset_pwd');
@@ -147,22 +151,12 @@ class UserController extends Controller
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
     public function blacklist(){
         $blacklist=DB::table('blacklist')
-            ->leftJoin('users','users.id','=','user_id')
-            ->select(['blacklist.id','username','nick','reason','blacklist.created_at'])
-            ->orderBy('username')->get();
+            ->leftJoin('users as u1','u1.id','=','user_id')
+            ->leftJoin('users as u2','u2.id','=','creator')
+            ->select(['blacklist.id','u1.username','u1.nick','reason','u2.username as creator','blacklist.created_at'])
+            ->orderBy('u1.username')->get();
         return view('admin.user.blacklist',compact('blacklist'));
     }
 
@@ -173,7 +167,7 @@ class UserController extends Controller
         if($user_id==null)
             $msg='该用户不存在！请先至用户列表确认用户的登录名！';
         else{
-            DB::table('blacklist')->updateOrInsert(['user_id'=>$user_id],['reason'=>$reason]);
+            DB::table('blacklist')->updateOrInsert(['user_id'=>$user_id],['reason'=>$reason, 'creator' => Auth::id()]);
             $msg='成功将用户'.$username.'加入黑名单！';
         }
         return back()->with('msg',$msg);
