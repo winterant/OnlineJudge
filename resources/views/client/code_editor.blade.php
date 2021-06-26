@@ -37,8 +37,7 @@
                 <select id="lang_select" name="solution[language]" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
                     @foreach(config('oj.lang') as $key=>$res)
                         @if(!isset($contest) || ( 1<<$key)&$contest->allow_lang)
-                            <option value="{{$key}}"
-                                @if(Cookie::get('submit_language')==$key)selected @endif>{{$res}}</option>
+                            <option value="{{$key}}" @if(Cookie::get('submit_language')==$key)selected @endif>{{$res}}</option>
                         @endif
                     @endforeach
                 </select>
@@ -60,8 +59,8 @@
                 <div class="flex-nowrap mr-3 mb-1">
                     <span class="mr-2">{{__('main.Theme')}}:</span>
                     <select id="theme_select" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
-                        <option value="mbo">mbo</option>
                         <option value="idea">idea</option>
+                        <option value="mbo">mbo</option>
                     </select>
                 </div>
             @endif
@@ -138,7 +137,7 @@
             lineNumbers: true,	//显示行号
             matchBrackets: true,	//括号匹配
             autoCloseBrackets: true,  //自动补全括号
-            theme: 'mbo',         // 编辑器主题
+            theme: 'idea',         // 编辑器主题
         });
 
         //监听用户选中的主题
