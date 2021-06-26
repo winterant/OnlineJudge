@@ -25,19 +25,20 @@
                     <th>登录名</th>
                     <th>姓名</th>
                     <th>创建时间</th>
+                    <th>添加人</th>
                     <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($blacklist as $item)
-                    <tr>
+                    <tr data-toggle="tooltip" data-placement="bottom" title="拉黑原因：{{$item->reason}}">
                         <td onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
                             <input type="checkbox" value="{{$item->id}}" onclick="window.event.stopPropagation();" style="vertical-align:middle;zoom: 140%">
                         </td>
-                        <td nowrap><a href="{{route('user',$item->username)}}" data-toggle="tooltip" data-placement="bottom"
-                                      title="拉黑原因：{{$item->reason}}" target="_blank">{{$item->username}}</a></td>
+                        <td nowrap><a href="{{route('user',$item->username)}}" target="_blank">{{$item->username}}</a></td>
                         <td nowrap>{{$item->nick}}</td>
                         <td nowrap>{{$item->created_at}}</td>
+                        <td><a @if($item->creator)href="{{route('user',$item->creator)}}"@endif>{{$item->creator}}</a></td>
                         <td>
                             <a href="javascript:delete_black({{$item->id}})" class="px-1" title="删除">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
