@@ -24,8 +24,6 @@
                                 (训练)
                             @elseif($name=='contest')
                                 (竞赛)
-                            @elseif($name=='exam')
-                                (考试)
                             @endif
                         </label>
                     </div>
