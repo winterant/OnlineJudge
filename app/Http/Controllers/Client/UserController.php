@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -133,5 +135,10 @@ class UserController extends Controller
             ->orderBy('submit')
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:30);
         return view('client.standings',compact('users'));
+    }
+
+    public function change_language(Request $request,$user_lang){
+        Cookie::queue('client_language', $user_lang);
+        return back();
     }
 }

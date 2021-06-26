@@ -32,6 +32,7 @@
         }
 
         .nav-link{
+            /*导航栏菜单项的最小宽度*/
             min-width: 90px !important;
             text-align: center;
         }
@@ -102,6 +103,22 @@
 
 
         <ul class="navbar-nav ml-auto">
+{{--            语言切换 --}}
+            <li class="nav-item dropdown mr-3">
+                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                    <i class="fa fa-language" aria-hidden="true"></i>
+                    @php($langs=['en'=>'English','zh-CN'=>'简体中文'])
+                    {{$langs[App::getLocale()]??null}}
+                    <span class="caret"></span>
+                </a>
+
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    @foreach($langs as $k=>$item)
+                        <a class="dropdown-item" href="{{ route('change_language',$k) }}">{{$item}}</a>
+                    @endforeach
+                </div>
+            </li>
+
             <!-- Authentication Links -->
             @guest
                 <li class="nav-item">
@@ -116,6 +133,7 @@
 
                 <li class="nav-item dropdown">
                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <i class="fa fa-user" aria-hidden="true"></i>
                         {{ Auth::user()->username }} <span class="caret"></span>
                     </a>
 

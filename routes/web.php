@@ -29,6 +29,7 @@ Route::get('/contests','Client\ContestController@contests')->name('contests');
 Route::get('/contests/{type}','Client\ContestController@contests')->name('contests');
 Route::get('/standings','Client\UserController@standings')->name('standings');
 Route::get('/user/{username}','Client\UserController@user')->name('user');
+Route::get('/change_language/{lang}','Client\UserController@change_language')->name('change_language');
 Route::middleware(['auth','CheckBlacklist'])->where(['id'=>'[0-9]+'])->group(function (){
     Route::get('/solution/{id}','Client\StatusController@solution')->name('solution');
     Route::get('/solution/{id}/wrong_data/{type}','Client\StatusController@solution_wrong_data')
