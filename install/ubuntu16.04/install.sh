@@ -51,9 +51,8 @@ mysql -u${USER} -p${PASSWORD} -Dlduoj < ./install/mysql/lduoj.sql
 # If you don't grant the right to user www-data, then you will not be able to start or stop the judge in administration.
 if [ -f /.dockerenv ]; then
     apt -y install sudo
-    echo "root ALL=(ALL) ALL" >> /etc/sudoers
 fi
-echo 'www-data ALL=(ALL) NOPASSWD: /bin/ps,/bin/bash,/usr/bin/git,/usr/bin/php' >> /etc/sudoers
+echo 'www-data ALL=(ALL) NOPASSWD: /bin/ps,/bin/bash,/usr/bin/git,/usr/bin/php,/usr/bin/g++,/bin/sed' >> /etc/sudoers
 # 用户名 主机名(ALL所有主机)=(用户名,以该用户运行命令,ALL表示任意用户) NOPASSWD不需要输入密码: 命令的绝对路径(逗号分隔)ALL表示所有命令
 
 # install judge environment & sim config & start to judge
