@@ -199,11 +199,11 @@ Ludong University Online Judge
     sed -i 's/^bind-address.*$/bind-address=0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
     service mysql restart
 
-    # 新建允许外部登录的mysql用户：'lduoj'@'%'，密码123456789
+    # 新建允许外部登录的mysql用户：'ldu'@'%'，密码123456。 **切勿与我相同或过于简单！**
     USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
     PW=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
-    mysql -u${USER} -p${PW} -e"CREATE USER If Not Exists 'lduoj'@'%' IDENTIFIED WITH mysql_native_password BY '123456789';"
-    mysql -u${USER} -p${PW} -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'%' identified by '123456789';flush privileges;"
+    mysql -u${USER} -p${PW} -e"CREATE USER If Not Exists 'ldu'@'%' IDENTIFIED WITH mysql_native_password BY '123456';"
+    mysql -u${USER} -p${PW} -e"GRANT all privileges ON lduoj.* TO 'ldu'@'%' identified by '123456';flush privileges;"
     ```
     然后远程连接【**宿主机ip**:8036】，使用新建的用户lduoj登录mysql即可。
 
