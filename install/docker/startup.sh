@@ -1,7 +1,6 @@
 #!/bin/bash
 
 APP_HOME=/home/LDUOnlineJudge
-echo "Project location: ${APP_HOME}"
 
 if [ ! -d /volume/LDUOnlineJudge ]; then
     mv -f "${APP_HOME}" /volume/
@@ -10,21 +9,12 @@ else
 fi
 ln -s /volume/LDUOnlineJudge "${APP_HOME}"
 
-if [ ! -f /volume/etc/mysql/debian.cnf ]; then
-    cp /etc/mysql/debian.cnf /etc/mysql/debian.cnf.backup
-    mkdir -p /volume/etc/mysql
-    mv /etc/mysql/debian.cnf /volume/etc/mysql/
+if [ ! -d /volume/mysql/lduoj ]; then
+    mv /var/lib/mysql/lduoj /volume/mysql/lduoj
 else
-    rm -rf /etc/mysql/debian.cnf
+    rm -rf /var/lib/mysql/lduoj
 fi
-ln -s /volume/etc/mysql/debian.cnf /etc/mysql/debian.cnf
-
-if [ ! -d /volume/mysql ]; then
-    mv /var/lib/mysql /volume/
-else
-    rm -rf /var/lib/mysql
-fi
-ln -s /volume/mysql /var/lib/mysql
+ln -s /volume/mysql/lduoj /var/lib/mysql/lduoj
 chown -R mysql:mysql /volume/mysql
 rm -rf /var/run/mysqld/mysqld.sock.lock
 
