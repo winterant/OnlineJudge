@@ -12,10 +12,10 @@ ln -s /volume/LDUOnlineJudge "${APP_HOME}"
 
 ################################################################################
 # 2021.06.29取消了除lduoj表以外的表映射到/volume，所以此处兼容以前的版本，把映射出去的表移回原位
-if [ ! -d /var/lib/mysql ]; then
+if [ -h /var/lib/mysql ]; then
     mv -f /volume/mysql /var/lib/mysql
 fi
-if [ ! -f /etc/mysql/debian.cnf ]; then
+if [ -h /etc/mysql/debian.cnf ]; then
     mv -f /volume/etc/mysql/debian.cnf /etc/mysql/debian.cnf
     rm -rf /volume/etc
 fi
