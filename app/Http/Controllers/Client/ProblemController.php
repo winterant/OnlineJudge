@@ -3,21 +3,13 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Problem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class ProblemController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function problems(){
-
         $problems=DB::table('problems');
         if(isset($_GET['tag_id'])&&$_GET['tag_id']!='')
             $problems=$problems->join('tag_marks','problem_id','=','problems.id')
@@ -60,9 +52,8 @@ class ProblemController extends Controller
         $problem=DB::table('problems')->select('*',
             DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
             DB::raw("(select count(distinct user_id) from solutions where problem_id=problems.id and result=4) as solved")
-            )->when(!(Auth::check()&&Auth::user()->privilege('problem_list')),function ($q){return $q->where('hidden',0);})
-            ->find($id);
-        if($problem==null)
+        )->find($id);
+        if($problem==null) //问题不存在
             return view('client.fail',['msg'=>trans('sentence.problem_not_found')]);
 
         //读取所有的提交结果的数量统计
@@ -77,13 +68,14 @@ class ProblemController extends Controller
             ->distinct()
             ->where('problem_id',$id)
             ->get();
-        if (Auth::check() && !Auth::user()->privilege('problem') && $problem->hidden==1) //已登录&&不是管理员&&问题隐藏 => 不允许查看
+
+        if(Auth::check()&&!Auth::user()->privilege('problem_list')&&$problem->hidden) //已登录&&不是管理员&& 问题隐藏
         {
-            $msg=trans('main.Problem').$problem->id.'：'.trans('main.Hidden').'<br>';
+            $msg=trans('main.Problem').$id.': '.trans('main.Hidden').'; ';
             if($contests){
-                $msg.=trans('main.Contests involved').":<br>";
+                $msg.=trans('main.Contests involved').": ";
                 foreach ($contests as $item)
-                    $msg.=sprintf('<a href="%s">%s. %s</a><br>',route('contest.home',$item->id),$item->id,$item->title);
+                    $msg.=sprintf('[%s. %s]; ',$item->id,$item->title);
             }
             return view('client.fail',compact('msg'));
         }

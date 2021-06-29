@@ -11,9 +11,9 @@
                     <h5>
                         <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
                         @if(isset($msg))
-                            {!! $msg !!}
+                            {{ $msg }}
                         @else
-                            权限不足！
+                            {{trans('sentence.Permission denied')}}
                         @endif
                     </h5>
                 </div>

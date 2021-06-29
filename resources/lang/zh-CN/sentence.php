@@ -42,7 +42,7 @@ return [
     "tag_marked_exceed" => "最多添加5个标签!",
     "tag_marked_zero"   => "请至少添加一个标签!",
     "tag_pool_select"   => "请点击你认为符合本题的标签!",
-    "problem_not_found" => "该题目不存在或改题目未公开!",
+    "problem_not_found" => "该题目不存在!",
 
 
 //    contest.password
