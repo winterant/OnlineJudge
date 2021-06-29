@@ -58,10 +58,10 @@ Ludong University Online Judge
       iamwinter/lduoj:latest
   ```
 
-    - `-p`参数后的`8080`是主机端口，可自定义。
+    - `-p`指定`8080`为主机端口，可自定义。
       浏览器访问`服务器ip:8080`进入首页。
       [配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)
-    - `-v`参数后的`~/lduoj_docker`是用于保存数据的主机目录，可自定义。
+    - `-v`指定`~/lduoj_docker`为保存数据的宿主机目录，可自定义。
       如需备份系统，只需将此文件夹打包备份。
     - 进入容器进行管理： `docker exec -it lduoj /bin/bash`
 
@@ -78,21 +78,22 @@ Ludong University Online Judge
   # git clone https://github.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade
   bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh /home/LDUOnlineJudge
   ```
-  注：最后一条命令最后的参数是项目安装路径，请填写您的安装路径。
+  注：最后一条命令最后的参数是您的项目安装路径。
 
 # :cd: 项目迁移
 
-+ 基于Ubuntu16.04 / 18.04（以安装路径`/home/LDUOnlineJudge`为例）
++ 基于Ubuntu16.04 / 18.04
 
   1.在**原主机**备份数据库
   ```shell script
-  bash /home/LDUOnlineJudge/install/mysql/database_backup.sh
+  bash install/mysql/database_backup.sh
   ```
-  2.拷贝**原主机**文件夹`/home/LDUOnlineJudge`到**新主机**相同路径。  
+  2.拷贝**原主机**项目文件夹（即`LDUOnlineJudge/`）到**新主机**。  
   3.在**新主机**上执行安装。
   ```shell script
-  bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
+  bash install/ubuntu16.04/install.sh
   ```
+
 + 基于docker
 
   1.在**原主机**将文件夹`~/lduoj_docker`（或docker容器内`/volume`）打包，发送到**新主机**相同位置。
@@ -117,18 +118,16 @@ Ludong University Online Judge
 + 启动方式
 
   A. 网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端  
-  B. 通过终端命令启动判题端：`bash /home/LDUOnlineJudge/judge/startup.sh`
+  B. 通过终端命令启动判题端：`bash judge/startup.sh`
 
 + 判题端配置
 
   详见`.env`：
   ```shell
-  #判题端配置
-  JG_MAX_RUNNING=1  # 并行判题进程数
-  JG_DATA_DIR=/home/LDUOnlineJudge/storage/app/data  # 测试数据所在目录
-  JG_NAME="Master"  # 判题机名称
+  JG_MAX_RUNNING=1              # 并行判题进程数，请根据服务器配置进行修改
+  JG_DATA_DIR=storage/app/data  # 测试数据所在目录，请勿修改
+  JG_NAME="Master"              # 判题机名称，可修改
   ```
-  其中，`JG_MAX_RUNNING`默认值为1，请在安装后自行修改`.env`，参考值：
 
 <div align="center">
 
@@ -186,10 +185,11 @@ Ludong University Online Judge
           --name lduoj \
           iamwinter/lduoj:latest
     ```
-   `-p`指定了8036端口作为宿主机mysql端口，8080端口作为网页入口。  
-   其中`-v`指定了项目映射到`D:\myproject\LDUOnlineJudge`，在本地编辑该项目即可。
+    - `-p`指定8036端口作为宿主机mysql端口，8080端口作为网页入口。  
+    - `-v`指定项目映射到`D:\myproject\LDUOnlineJudge`，本地编辑项目即可。
+    - 浏览器访问`http://localhost:8080`显示主页则表示部署成功。
 
-2. 远程连接mysql
+2. 远程连接mysql（非必需）
 
     ```shell
     # 进入docker容器内
@@ -207,32 +207,20 @@ Ludong University Online Judge
     ```
     然后远程连接【**宿主机ip**:8036】，使用新建的用户lduoj登录mysql即可。
 
-3. 修改远程关联仓库。前提：先fork本项目到你自己的github账户下。
-    ```shell
-    cd LDUOnlineJudge
-    git remote rm origin
-    git remote add origin https://github.com/Your_GitHub_Username/LDUOnlineJudge.git
-    git remote -v
-    git fetch --all  # 从远程拉取最新的代码 不merge
-    git reset --hard origin/master  # 使用指定分支的代码（此处master）强制覆盖本地代码
-    ```
-
 方式二：基于本地环境
 1. 下载源码
     ```shell script
     git clone https://gitee.com/iamwinter/LDUOnlineJudge.git
     # git clone https://github.com/iamwinter/LDUOnlineJudge.git
-    cd LUDOnlineJudge
     ```
 
 2. 准备环境
 
     + 推荐`phpstudy`（含php、mysql、nginx等环境）。推荐IDE是`PhpStorm`。
 
-    + 数据库创建：`LDUOnlineJudge/install/mysql/lduoj.sql`。
+    + 数据库脚本：`install/mysql/lduoj.sql`。
 
-    + nginx配置：`LDUOnlineJudge/install/nginx/lduoj.conf`。
-      也可以自行配置apache服务器。
+    + nginx配置：`install/nginx/lduoj.conf`；也可以自行配置apache服务器。
 
 3. 填写配置文件
 
@@ -254,11 +242,7 @@ Ludong University Online Judge
 
 5. 预览主页。
 
-   打开浏览器访问`http://localhost:port`显示主页则表示部署成功，
-   其中`port`请替换为nginx配置的端口号。
-
-6. 开始愉快的编程。
-
+   浏览器访问`http://localhost:port`显示主页则表示部署成功，`port`为nginx配置的端口号。
 
 # :earth_asia: Docker镜像发布
 
