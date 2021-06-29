@@ -25,6 +25,7 @@ fi
 
 
 if [ ! -d /volume/mysql/lduoj ]; then
+    mkdir /volume/mysql
     mv /var/lib/mysql/lduoj /volume/mysql/lduoj
 else
     rm -rf /var/lib/mysql/lduoj
