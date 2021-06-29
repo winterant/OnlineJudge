@@ -42,7 +42,7 @@ return [
     "tag_marked_exceed" => "You cannot add more than 5 Tags!",
     "tag_marked_zero"   => "Please add at least 1 tag!",
     "tag_pool_select"   => "Please click several tags that you think the problem should be tagged!",
-    "problem_not_found" => "The problem is not exist or not public!",
+    "problem_not_found" => "The problem is not exist!",
 
 
 //    contest.password
