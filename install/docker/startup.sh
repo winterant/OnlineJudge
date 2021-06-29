@@ -9,9 +9,9 @@ else
 fi
 ln -s /volume/LDUOnlineJudge "${APP_HOME}"
 
-
 ################################################################################
-# 2021.06.29取消了除lduoj表以外的表映射到/volume，所以此处兼容以前的版本，把映射出去的表移回原位
+# 2021.06.29版本兼容处理
+# 新版本取消了除lduoj表以外的表映射到/volume，所以此处把旧版本映射出去的表移回原位
 if [ -h /var/lib/mysql ]; then
     rm -rf /var/lib/mysql
     mv -f /volume/mysql /var/lib/mysql
@@ -23,7 +23,7 @@ if [ -h /etc/mysql/debian.cnf ]; then
 fi
 ################################################################################
 
-
+# 数据库转移与赋权
 if [ ! -d /volume/mysql/lduoj ]; then
     mkdir /volume/mysql
     mv /var/lib/mysql/lduoj /volume/mysql/lduoj
@@ -34,11 +34,14 @@ ln -s /volume/mysql/lduoj /var/lib/mysql/lduoj
 chown -R mysql:mysql /volume/mysql
 rm -rf /var/run/mysqld/mysqld.sock.lock
 
+# 目录权限
 chmod -R 755 "${APP_HOME}"/storage "${APP_HOME}"/bootstrap/cache
 chown www-data:www-data -R "${APP_HOME}"/storage "${APP_HOME}"/bootstrap/cache
+
+# 启动或重启服务
 service nginx start
 service php7.2-fpm start
-service mysql start
+service mysql restart
 bash "${APP_HOME}"/judge/startup.sh
 
 while true; do
