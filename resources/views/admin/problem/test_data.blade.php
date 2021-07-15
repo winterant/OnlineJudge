@@ -4,12 +4,12 @@
 
 @section('content')
 
-    <div class="d-flex">
-        <form class="p-3" action="" method="get">
-            <div class="form-inline">
-                <h2 class="mr-3">测试数据</h2>
-                <label>题号：</label>
-                <input type="number" step="1" name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:''}}" required class="form-control ml-3">
+    <h2 class="text-nowrap float-left">测试数据</h2>
+    <div class="form-inline">
+        <form class="text-nowrap p-3" action="" method="get">
+            <div>
+                题号：
+                <input type="number" step="1" name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:''}}" required class="form-control" style="width: 7rem">
                 <button class="btn btn-light bg-success mx-1">查看数据</button>
                 @if(isset($_GET['pid']))
                     <a href="{{route('problem',$_GET['pid'])}}" type="button" target="_blank" class="btn btn-light bg-success mx-1">查看题目</a>
@@ -19,9 +19,9 @@
         @if(isset($_GET['pid']))
             <form class="p-3" method="post" enctype="multipart/form-data" onsubmit="return do_upload()">
                 @csrf
-                <div class="form-inline">
-                    <label>上传文件：</label>
-                    <input type="file" id="test_data" required multiple class="form-control">
+                <div>
+                    上传文件：
+                    <input type="file" id="test_data" required multiple class="form-control" style="width: 13rem">
                     <button class="btn btn-light bg-success ml-1">上传文件</button>
                 </div>
             </form>
