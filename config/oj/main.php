@@ -4,8 +4,6 @@
 return [
 	"siteName"	                => "Ludong University Online Judge",  //网站名称
 	"beian"                     => "",      //备案信息
-    "owner"                     => "About Author",
-    "owner_link"                => "http://demo.techaction.cn:8014/rg/details/11/369/889",
 	"web_page_display_wide" 	=> true,    //宽屏模式
 	"allow_register"	        => true,    //允许访客注册账号
 	"show_home_notice_marquee"  => true,    //首页顶部滚动显示一条公告

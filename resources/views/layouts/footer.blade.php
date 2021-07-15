@@ -9,7 +9,7 @@
         @endif
         @if(get_setting('owner')!=null)
             &nbsp;&nbsp;|&nbsp;&nbsp;
-            <a href="{{get_setting('owner_link')}}" target="_blank">{{get_setting('owner')}}</a>
+            <a href="https://iamwinter.github.io" target="_blank">关于作者</a>
         @endif
     </div>
 
