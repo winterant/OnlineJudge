@@ -15,13 +15,12 @@ function uploadBig(obj) {
         var formData = new FormData();
         formData.append('filename',args.files[index].name);     //文件原始名
         formData.append('block_id',Math.round(start/args.blockSize));  //块号
-        formData.append('block_tot',Math.max(1,Math.ceil(args.files[index].size)/args.blockSize));//块数
+        formData.append('block_tot',Math.max(1,Math.ceil(args.files[index].size/args.blockSize)));//块数
         formData.append('block',args.files[index].slice(start,start+args.blockSize)); //文件块
-        if(args.data!==undefined && start+args.blockSize>=args.files[index].size)//要上传最后一块了
-        {
-            for(let key of Object.keys(args.data))
-                formData.append(key,args.data[key]); //除文件外的附加数据
-        }
+
+        for(let key of Object.keys(args.data)) //除文件外的附加数据
+            formData.append(key,args.data[key]);
+
         $.ajax({
             headers: {'X-CSRF-TOKEN': args._token},
             url: args.url ,
