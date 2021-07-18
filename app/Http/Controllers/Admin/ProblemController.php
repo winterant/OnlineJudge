@@ -77,6 +77,7 @@ class ProblemController extends Controller
             if(!isset($problem['spj'])) // 默认不特判
                 $problem['spj']=0;
 
+            $problem['updated_at']=date('Y-m-d H:i:s');
             $update_ret = DB::table('problems')
                 ->where('id',$id)
                 ->when(!Auth::user()->privilege('admin'), function ($q){return $q->where('creator', Auth::id());})
