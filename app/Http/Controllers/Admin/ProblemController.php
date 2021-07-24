@@ -96,10 +96,7 @@ class ProblemController extends Controller
             $spjFile=$request->file('spj_file');
             if($spjFile!=null && $spjFile->isValid()) {
                 $spj_compile=save_problem_spj($id, autoiconv(file_get_contents($spjFile)));
-                if($spj_compile)
-                    $msg.='<br>[ spj.cpp compilation ]:<br>'.$spj_compile;
-                else
-                    $msg.='<br>[ spj.cpp compiled successfully ]';
+                $msg.='<br><br>[ 特判程序编译信息 ]:<br>'.$spj_compile;
             } //保存spj
             return view('admin.success',['msg'=>$msg]);
         }

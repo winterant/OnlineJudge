@@ -53,7 +53,13 @@ function save_problem_data($problem_id, $ins,$outs, $from_sample=true, $del_old=
 function save_problem_spj($problem_id, $code){
     Storage::put(sprintf('data/%d/spj/spj.cpp',$problem_id),$code);
     $dir=storage_path('app/data/'.$problem_id.'/spj');
-    exec("sudo g++ ".$dir."/spj.cpp -o ".$dir."/spj -lm -std=c++11 2>&1", $out);
+    $cmd="sudo g++ ".$dir."/spj.cpp -o ".$dir."/spj -lm -std=c++17 2>&1";
+    $out[]=$cmd;
+    exec($cmd, $out);
+    if(count($out)==1)
+        $out[]="特判程序编译成功！";
+    else
+        $out[]="特判程序编译出错，请根据报错信息修正后重新上传！";
     return implode('<br>',$out);
 }
 
