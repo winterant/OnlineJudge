@@ -347,6 +347,12 @@ class ProblemController extends Controller
         return $first_pid.($first_pid<$pid?'-'.$pid:'');
     }
 
+
+    // 导出题目时，描述、题目数据等可能含有xml不支持的特殊字符，过滤掉
+    private function filter_export_characters($str)
+    {
+        return preg_replace('/[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]/','', $str);
+    }
     public function export(Request $request){
         if(!$request->isMethod('post')){
             return redirect(route('admin.problem.import_export'));
@@ -378,7 +384,7 @@ class ProblemController extends Controller
             $item=$dom->createElement('item');
             //title
             $title=$dom->createElement('title');
-            $title->appendChild($dom->createCDATASection($problem->title));
+            $title->appendChild($dom->createCDATASection($this->filter_export_characters($problem->title)));
             $item->appendChild($title);
             //time_limit
             $unit=$dom->createAttribute('unit');
@@ -396,41 +402,41 @@ class ProblemController extends Controller
             $item->appendChild($memory_limit);
             //description
             $description=$dom->createElement('description');
-            $description->appendChild($dom->createCDATASection($problem->description));
+            $description->appendChild($dom->createCDATASection($this->filter_export_characters($problem->description)));
             $item->appendChild($description);
             //input
             $input=$dom->createElement('input');
-            $input->appendChild($dom->createCDATASection($problem->input));
+            $input->appendChild($dom->createCDATASection($this->filter_export_characters($problem->input)));
             $item->appendChild($input);
             //output
             $output=$dom->createElement('output');
-            $output->appendChild($dom->createCDATASection($problem->output));
+            $output->appendChild($dom->createCDATASection($this->filter_export_characters($problem->output)));
             $item->appendChild($output);
             //hint
             $hint=$dom->createElement('hint');
-            $hint->appendChild($dom->createCDATASection($problem->hint));
+            $hint->appendChild($dom->createCDATASection($this->filter_export_characters($problem->hint)));
             $item->appendChild($hint);
             //source
             $source=$dom->createElement('source');
-            $source->appendChild($dom->createCDATASection($problem->source));
+            $source->appendChild($dom->createCDATASection($this->filter_export_characters($problem->source)));
             $item->appendChild($source);
 
             //sample_input & sample_output
             foreach(read_problem_data($problem->id) as $sample){
                 $sample_input=$dom->createElement('sample_input');
-                $sample_input->appendChild($dom->createCDATASection($sample[0]));
+                $sample_input->appendChild($dom->createCDATASection($this->filter_export_characters($sample[0])));
                 $item->appendChild($sample_input);
                 $sample_output=$dom->createElement('sample_output');
-                $sample_output->appendChild($dom->createCDATASection($sample[1]));
+                $sample_output->appendChild($dom->createCDATASection($this->filter_export_characters($sample[1])));
                 $item->appendChild($sample_output);
             }
             //test_input & test_output
             foreach(read_problem_data($problem->id,false) as $test){
                 $test_input=$dom->createElement('test_input');
-                $test_input->appendChild($dom->createCDATASection($test[0]));
+                $test_input->appendChild($dom->createCDATASection($this->filter_export_characters($test[0])));
                 $item->appendChild($test_input);
                 $test_output=$dom->createElement('test_output');
-                $test_output->appendChild($dom->createCDATASection($test[1]));
+                $test_output->appendChild($dom->createCDATASection($this->filter_export_characters($test[1])));
                 $item->appendChild($test_output);
             }
             //spj language
