@@ -126,7 +126,7 @@
         </div>
     </div>
 
-    <script src="{{asset('js/uploadBig.js')}}?v=07.17"></script>
+    <script src="{{asset('js/uploadBig.js')}}?v=08.02"></script>
     <script>
         function do_upload() {
             uploadBig({

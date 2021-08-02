@@ -9,7 +9,7 @@
         <div class="col-12 col-md-6">
             <h2>导入题目</h2>
             <hr>
-            <form method="post" onsubmit="return do_upload()">
+            <form onsubmit="do_upload();return false">
                 @csrf
                 <div class="form-inline">
                     <label>导入xml文件：
@@ -51,7 +51,7 @@
 
     </div>
 
-    <script src="{{asset('js/uploadBig.js')}}" type="text/javascript"></script>
+    <script src="{{asset('js/uploadBig.js')}}?v=08.02" type="text/javascript"></script>
     <script type="text/javascript">
 
         function do_upload() {
@@ -79,7 +79,9 @@
                 },
                 error:function (xhr,status,err) {
                     Notiflix.Loading.Remove();
-                    Notiflix.Report.Failure('文件导入失败','您上传的文件不完整！建议您检查文件内容是否符合xml格式：'+xhr,'好的');
+                    Notiflix.Report.Failure('题目导入失败',
+                        '上传到服务器的xml文件已损坏！建议您检查xml文件格式是否正确，或尝试重新上传。&emsp;'
+                        +'服务器反馈信息：'+xhr.responseJSON.message,'好的');
                 }
             });
             return false;
