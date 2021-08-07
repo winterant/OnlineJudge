@@ -11,7 +11,7 @@ fi
 # update files
 cp -rf "${APP_HOME}"/install/nginx/lduoj.conf "${upgrade}"/install/nginx/
 cp -rf "${APP_HOME}"/public/favicon.ico       "${upgrade}"/public/
-cp -rf "${upgrade}"/*                         "${APP_HOME}"/
+cp -rf "${upgrade}"/.                         "${APP_HOME}"/
 
 # update laravel packages
 cd "${APP_HOME}" || exit 2
