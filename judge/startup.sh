@@ -1,7 +1,8 @@
 #!/bin/bash
 
-APP_HOME=$(dirname $(dirname $(readlink -f "$0")))
+set -ex
 
+APP_HOME=$(dirname $(dirname $(readlink -f "$0")))
 cd "${APP_HOME}"/judge || exit
 
 bash ./stop.sh
@@ -12,14 +13,14 @@ DATA_DIR=${JG_DATA_DIR}
 if [[ ${DATA_DIR:0:1} != "/" ]]; then
     DATA_DIR="${APP_HOME}/${DATA_DIR}"
 fi
-echo "Test data folder location: ${DATA_DIR}"
+echo "[Test data location] ${DATA_DIR}"
 
 if [ ! -d ./program ]; then
     mkdir ./program
 fi
 
-g++ ./cpp/polling.cpp -o ./program/polling -std=c++11 -lmysqlclient
-g++ ./cpp/judge.cpp  -o  ./program/judge -std=c++11 -lmysqlclient
+g++ ./cpp/polling.cpp -o ./program/polling -std=c++11 -lmysqlclient 2>&1
+g++ ./cpp/judge.cpp  -o  ./program/judge -std=c++11 -lmysqlclient 2>&1
 
 cd ./program || exit
 
@@ -30,8 +31,8 @@ else
     sleep 1;
     polling_name=$(ps -e | grep polling | awk '{print $4}')
     if [ "${polling_name}" == "polling" ];then
-        echo "[Judge is OK] Server has started to judge!"
+        echo "[Starting judging processes]: OK."
     else
-        echo "[Judge starting Failed] Please check config in ${APP_HOME}/.env"
+        echo "[Starting judging processes]: Failed."
     fi
 fi

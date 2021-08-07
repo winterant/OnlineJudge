@@ -150,7 +150,7 @@ struct Solution{
     }
 }solution;
 
-int solution_result(char *sid) //从数据库查询提交记录的结果，注：用到了全局mysql
+int solution_result(const char sid[]) //从数据库查询提交记录的结果，注：用到了全局mysql
 {
     sprintf(sql,"select `result` from solutions where id=%s",sid);
     if(mysql_real_query(mysql,sql,strlen(sql))!=0){
@@ -164,14 +164,14 @@ int solution_result(char *sid) //从数据库查询提交记录的结果，注�
     return result;
 }
 
-int file_size(const char* filename)//文件大小
+int file_size(const char filename[])//文件大小
 {
     struct stat statbuf;
     stat(filename,&statbuf);
     return statbuf.st_size;
 }
 
-char *read_file(const char *filename)//从文件读取内容，返回字符串指针
+char *read_file(const char filename[])//从文件读取内容，返回字符串指针
 {
     FILE *fp=fopen(filename,"r");
     if(fp==NULL) return NULL; //文件打开失败
@@ -182,7 +182,7 @@ char *read_file(const char *filename)//从文件读取内容，返回字符串�
     return str;
 }
 
-void write_file(const char *str, const char *filename,const char* mode)//将字符串写入文件
+void write_file(const char str[], const char filename[], const char mode[])//将字符串写入文件
 {
     FILE *fp=fopen(filename,mode);
     fprintf(fp,"%s",str);
@@ -202,7 +202,7 @@ char* isInFile(const char fname[])  //检查文件名后缀是否为.in
 	return NULL;
 }
 
-char* get_data_out_path(const char* data_dir,const char* test_name) //获取测试答案的路径
+char* get_data_out_path(const char data_dir[], const char test_name[]) //获取标准答案的文件路径
 {
     char *path = new char[256];
     sprintf(path,"%s/%s.out",data_dir,test_name);
@@ -211,11 +211,7 @@ char* get_data_out_path(const char* data_dir,const char* test_name) //获取测�
     return path;
 }
 
-bool is_whitespace(char c) {
-    return c == ' ' || c == '\t' || c == '\n' || c == '\r';
-}
-
-int rm_whitespace(char *str,bool only_r)//删除字符串中的空白符，true:只过滤\r
+int rm_whitespace(char str[], bool only_r) //删除字符串中的空白符，only_r=true:只过滤\r
 {
     int i=0,j=0;
     while(str[j]!='\0')
@@ -223,33 +219,26 @@ int rm_whitespace(char *str,bool only_r)//删除字符串中的空白符，true:
         if(only_r)
             while(str[j]=='\r')j++;
         else
-            while(is_whitespace(str[j]))j++;
+            while(str[j] == ' ' || str[j] == '\t' || str[j] == '\n' || str[j] == '\r')j++;
         if(str[j]!='\0')
             str[i++]=str[j++];
     }
     str[i]='\0';
     return i; //返回长度
 }
-int rm_end_whitespace(char *str)//删除字符串末尾空白字符
+
+int compare_file(const char std_file[], const char user_file[]) //对比标准答案与用户输出
 {
-    int len=strlen(str);
-    while(is_whitespace(str[len-1]))str[--len]='\0';
-    return len;
-}
-int compare_file(const char* fname1,const char *fname2) //比较两文件是否一致
-{
-    char *buf1=read_file(fname1), *buf2=read_file(fname2);
-    rm_whitespace(buf1,true); //过滤\r
+    char *buf1=read_file(std_file), *buf2=read_file(user_file);
+    rm_whitespace(buf1,true);   // 由于windows生产的数据集含有\r，过滤掉
     rm_whitespace(buf2,true);
-    rm_end_whitespace(buf1);
-    rm_end_whitespace(buf2);
-    if(strcmp(buf1,buf2)==0)
+    if(strcmp(buf1, buf2) == 0) // 文件内容完全一致，Accepted
         return OJ_AC;
-    rm_whitespace(buf1,false);
+    rm_whitespace(buf1,false);  // 过滤所有空白字符
     rm_whitespace(buf2,false);
-    if(strcmp(buf1,buf2)==0)
+    if(strcmp(buf1,buf2)==0)    // 可见字符是完全一致的，说明空白字符输出有误，presentation error
         return OJ_PE;
-    return OJ_WA;
+    return OJ_WA; //可见字符不一致，只能是答案错误
 }
 
 int get_proc_memory(int pid)//读取进程pid的内存使用情况
@@ -281,7 +270,6 @@ int system_cmd(const char *fmt, ...) //执行一条linux命令
 	va_end(ap);
 	return ret;
 }
-
 
 
 int compile()
