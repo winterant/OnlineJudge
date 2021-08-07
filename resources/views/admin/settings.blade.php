@@ -153,7 +153,12 @@
             <hr>
             <div class="overflow-auto px-2">
                 @if(isset($_GET['check_update']))
-                    <span>【<a href="https://github.com/iamwinter/LDUOnlineJudge/commits/master" target="_blank">官方最新版本</a>】</span>
+                    <span>
+                        【最新版本：
+                        <a href="https://github.com/iamwinter/LDUOnlineJudge/commits/master" target="_blank">官方站</a>
+                        <a href="https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge/commits/master" target="_blank">镜像站</a>
+                        】
+                    </span>
                     <br>
                     <span>{!! $new_version !!}</span>
                     <br>
@@ -185,9 +190,10 @@
                     <form id="form_upgrade" class="mb-0">
                         @csrf
                         <span>升级来源：</span>
-                        <select name="upgrade_source" class="px-3" style="border-radius: 4px">
-                            <option class="form-control" value="gitee">gitee(推荐；国内访问快)</option>
-                            <option class="form-control" value="github">github(国外访问较快)</option>
+                        <select id="upgrade_source" name="upgrade_source" class="px-3" style="border-radius: 4px">
+                            <option class="form-control" value="github.com.cnpmjs.org">github.com.cnpmjs.org（境内速度快）</option>
+                            <option class="form-control" value="github.com">github.com（服务器在境外请选此项）</option>
+                            <option class="form-control" value="gitee.com">gitee.com（码云镜像；可能版本较老）</option>
                         </select>
                         <button type="button" id="upgrade_btn" class="btn bg-info text-white">开始升级</button>
                     </form>
@@ -197,7 +203,11 @@
         </div>
     </div>
 
-    <script>
+    <script type="text/javascript">
+        $(function () {
+            $("#upgrade_source option[value='{{$remote_domain}}']").attr("selected",true);
+        })
+
         function submit_settings(form) {
             $.ajax({
                 type: "POST",//方法类型

@@ -29,7 +29,7 @@ class SettingController extends Controller
     //升级系统
     public function upgrade_oj(Request $request){
         $source = $request->input('upgrade_source');
-        $cmd_git = 'sudo git clone https://'.$source.'.com/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade 2>&1';
+        $cmd_git = 'sudo git clone https://'.$source.'/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade 2>&1';
         $cmd_bash = 'sudo bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh '.base_path().' 2>&1';
         exec($cmd_git,$out,$status);
         exec($cmd_bash,$out,$status);
@@ -42,7 +42,9 @@ class SettingController extends Controller
         if ($request->isMethod('get')){
             $old_version = $this->get_code_version(true);
             $new_version = $this->get_code_version(false);
-            return view('admin.settings', compact('old_version', 'new_version'));
+            exec('git remote -v |head -1|cut -d / -f 3', $remote_domain, $status);
+            $remote_domain = $remote_domain[0];
+            return view('admin.settings', compact('old_version', 'new_version', 'remote_domain'));
         }
 
 
