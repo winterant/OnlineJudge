@@ -211,6 +211,11 @@ char* get_data_out_path(const char data_dir[], const char test_name[]) //获取�
     return path;
 }
 
+bool is_whitespace(char c)
+{
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+}
+
 int rm_whitespace(char str[], bool only_r) //删除字符串中的空白符，only_r=true:只过滤\r
 {
     int i=0,j=0;
@@ -219,7 +224,7 @@ int rm_whitespace(char str[], bool only_r) //删除字符串中的空白符，on
         if(only_r)
             while(str[j]=='\r')j++;
         else
-            while(str[j] == ' ' || str[j] == '\t' || str[j] == '\n' || str[j] == '\r')j++;
+            while(is_whitespace(str[j]))j++;
         if(str[j]!='\0')
             str[i++]=str[j++];
     }
@@ -227,9 +232,18 @@ int rm_whitespace(char str[], bool only_r) //删除字符串中的空白符，on
     return i; //返回长度
 }
 
+int rm_end_whitespace(char str[])//删除字符串末尾空白字符
+{
+    int len=strlen(str);
+    while(is_whitespace(str[len-1]))str[--len]='\0';
+    return len;
+}
+
 int compare_file(const char std_file[], const char user_file[]) //对比标准答案与用户输出
 {
     char *buf1=read_file(std_file), *buf2=read_file(user_file);
+    rm_end_whitespace(buf1);    // 末尾空白字符不考虑在答案内；因为有的标准答案不明确末尾是否有换行
+    rm_end_whitespace(buf2);
     rm_whitespace(buf1,true);   // 由于windows生产的数据集含有\r，过滤掉
     rm_whitespace(buf2,true);
     if(strcmp(buf1, buf2) == 0) // 文件内容完全一致，Accepted
