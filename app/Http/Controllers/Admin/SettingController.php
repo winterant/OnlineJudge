@@ -30,7 +30,7 @@ class SettingController extends Controller
     public function upgrade_oj(Request $request){
         $source = $request->input('upgrade_source');
         $cmd_git = 'sudo git clone https://'.$source.'/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade 2>&1';
-        $cmd_bash = 'sudo bash /home/lduoj_upgrade/install/ubuntu16.04/update.sh '.base_path().' 2>&1';
+        $cmd_bash = 'sudo bash /home/lduoj_upgrade/install/ubuntu/update.sh '.base_path().' 2>&1';
         exec($cmd_git,$out,$status);
         exec($cmd_bash,$out,$status);
         return 1;

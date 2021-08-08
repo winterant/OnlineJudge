@@ -1,42 +1,42 @@
 #!/bin/sh
 
-APP_HOME=$(dirname $(dirname $(dirname $(readlink -f "$0"))))
-
 set -ex
-cd "${APP_HOME}" || { echo No such project: ${APP_HOME};exit 1; }
+APP_HOME=$(dirname $(dirname $(dirname $(readlink -f "$0"))))
+cd "${APP_HOME}" || { echo No such project: "${APP_HOME}";exit 1; }
 
-# php environment
+# 更新/添加软件源
 apt-get update && apt-get -y upgrade
-apt-get -y install language-pack-en-base software-properties-common
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
+apt-get -y install software-properties-common
+apt-get -y install language-pack-en-base
+echo -e "\n" | add-apt-repository ppa:deadsnakes/ppa
 echo -e "\n" | apt-add-repository ppa:ondrej/php
 apt-get update
-apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml php7.2-mbstring
-service php7.2-fpm start
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 
-# composer
+# 安装php环境，使用composer安装依赖
+apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml php7.2-mbstring
 apt-get -y install composer zip unzip
 composer install --ignore-platform-reqs
+service php7.2-fpm start
 
-# laravel initialization
+# 初始化laravel项目
 cp -rf .env.example .env
 mkdir -p storage/app/public
-chmod -R 755 storage bootstrap/cache
 chown www-data:www-data -R storage bootstrap/cache
 php artisan storage:link
 php artisan key:generate
 php artisan optimize
 
-# nignx
+# 安装nignx并配置
 apt-get -y install nginx
 rm -rf /etc/nginx/sites-enabled/default
 rm -rf /etc/nginx/conf.d/lduoj.conf
 sed -i "s/\/home\/LDUOnlineJudge/${APP_HOME//\//\\\/}/" "${APP_HOME}"/install/nginx/lduoj.conf
-ln -s "${APP_HOME}"/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf
+ln -sf "${APP_HOME}"/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf
 service nginx restart
 
-# mysql
+# 安装mysql并配置
 apt-get -y install mysql-server
 if [ -f /.dockerenv ]; then
     usermod -d /var/lib/mysql/ mysql
@@ -46,24 +46,22 @@ USER=$(cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}')
 PASSWORD=$(cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}')
 mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE DATABASE If Not Exists lduoj;"
 mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE USER If Not Exists 'lduoj'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456789';"
-mysql -u"${USER}" -p"${PASSWORD}" -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost' identified by '123456789';flush privileges;"
+mysql -u"${USER}" -p"${PASSWORD}" -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost';flush privileges;"
 mysql -u"${USER}" -p"${PASSWORD}" -Dlduoj < ./install/mysql/lduoj.sql
 
-# install judge environment & sim config & start to judge
+# 安装judge环境，编译sim插件（代码查重），启动判题进程
 apt-get -y install g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex
 cp -p "${APP_HOME}"/judge/sim/sim.1 /usr/share/man/man1/
 cd "${APP_HOME}"/judge/sim/ && make install
 bash "${APP_HOME}"/judge/startup.sh
 
-# If in docker, initialize startup.sh used to start LDUOnlineJudge in docker container
+# 在docker中，初始化容器启动脚本
 if [ -f /.dockerenv ]; then
-    rm -rf /startup.sh
     chmod +x "${APP_HOME}"/install/docker/startup.sh
-    ln -s "${APP_HOME}"/install/docker/startup.sh /startup.sh
+    ln -sf "${APP_HOME}"/install/docker/startup.sh /startup.sh
 fi
 
-# Allow php user www-data to use 'sudo' to get privilege of APP_HOME
-# If you don't grant the right to user www-data, then you will not be able to start or stop the judge in administration.
+# 对于一些必要命令，为php用户www-data赋予sudo权限
 if [ -f /.dockerenv ]; then
     apt-get -y install sudo
 fi

@@ -34,11 +34,11 @@ Ludong University Online Judge
 
 # :wrench: 项目安装
 
-+ **基于Linux Ubuntu 16.04 / 18.04**
++ **基于Linux Ubuntu 18.04/20.04**
   [帮助:[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)]
   ```shell script
   git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
-  bash LDUOnlineJudge/install/ubuntu16.04/install.sh
+  bash LDUOnlineJudge/install/ubuntu/install.sh
   ```
   - 浏览器访问服务器ip进入首页。
   - **注册用户admin自动成为管理员**。
@@ -73,7 +73,7 @@ Ludong University Online Judge
   ```
   ```shell script
   git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git oj_upgrade
-  bash oj_upgrade/install/ubuntu16.04/update.sh /home/LDUOnlineJudge
+  bash oj_upgrade/install/ubuntu/update.sh /home/LDUOnlineJudge
   ```
 
 # :cd: 项目迁移
@@ -87,7 +87,7 @@ Ludong University Online Judge
   2.拷贝**原主机**项目文件夹（即`LDUOnlineJudge/`）到**新主机**。  
   3.在**新主机**上执行安装。
   ```shell script
-  bash install/ubuntu16.04/install.sh
+  bash install/ubuntu/install.sh
   ```
 
 + 基于docker
