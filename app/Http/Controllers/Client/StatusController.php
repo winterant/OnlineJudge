@@ -149,7 +149,7 @@ class StatusController extends Controller
         }
 
         if(strlen($data['code'])<3)
-            return view('client.fail',['msg'=>'代码长度过程！']);
+            return view('client.fail',['msg'=>'代码长度过短！']);
 
         DB::table('solutions')->insert([
             'problem_id'    => $data['pid'],
