@@ -57,7 +57,9 @@ int LANG_JAVA[] = { 0,39,157,257,302,3,4,5,9,10,11,12,13,14,21,56,59,89,97,104,1
 		SYS_getuid, SYS_getgid, SYS_geteuid, SYS_getegid, SYS_set_thread_area,
 		SYS_set_tid_address, SYS_set_robust_list, SYS_exit_group, 158, EOF};
 //python
-int LANG_PY[] = {3,4,5,6,8,9,10,11,12,13,14,16,21,32,59,72,78,79,89,97,99,102,104,107,108,
+int LANG_PY[] = {3,4,5,6,8,9,10,11,12,13,14,16,
+        17,  // 2021.08.08 在ubuntu20.04上需要调用17
+        21,32,59,72,78,79,89,97,99,102,104,107,108,
         131,158,217,218,228,231,272,273,318,39,99,302,99,32,72,131,202,257,41, 42, 146,
         SYS_mremap, 158, 117, 60, 39, 102, 191,
 		SYS_access, SYS_arch_prctl, SYS_brk, SYS_close, SYS_execve,
@@ -518,7 +520,7 @@ int watch_running(int child_pid, char *test_name, int max_out_size)
             break;
         }
 
-        //检查系统调用
+        //检查系统调用，系统调用号保存在第ORIG_RAX个寄存器（64位），乘8即为其地址
 		int sysCall = ptrace(PTRACE_PEEKUSER, child_pid, ORIG_RAX<<3, NULL);
 		if(!allow_sys_call[sysCall]) //没有被许可的系统调用
 		{
