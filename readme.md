@@ -54,7 +54,7 @@ Ludong University Online Judge
       -p 8080:80 \
       -v ~/lduoj_docker:/volume \
       --name lduoj \
-      iamwinter/lduoj:latest
+      iamwinter/lduoj
   ```
 
   - `-p`指定`8080`为主机端口，可自定义。
@@ -161,7 +161,7 @@ Ludong University Online Judge
           -p 8036:3306 \
           -v /d/myproject:/volume \
           --name lduoj \
-          iamwinter/lduoj:latest
+          iamwinter/lduoj
     ```
     - `-p`指定8036端口作为宿主机mysql端口，8080端口作为网页入口。  
     - `-v`指定项目映射到`D:\myproject\LDUOnlineJudge`，本地编辑项目即可。
@@ -181,7 +181,7 @@ Ludong University Online Judge
     USER=`cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}'`
     PW=`cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}'`
     mysql -u${USER} -p${PW} -e"CREATE USER If Not Exists 'ldu'@'%' IDENTIFIED WITH mysql_native_password BY '123456';"
-    mysql -u${USER} -p${PW} -e"GRANT all privileges ON lduoj.* TO 'ldu'@'%' identified by '123456';flush privileges;"
+    mysql -u${USER} -p${PW} -e"GRANT all privileges ON lduoj.* TO 'ldu'@'%';flush privileges;"
     ```
     然后远程连接【**宿主机ip**:8036】，使用新建的用户ldu登录mysql即可。
 
@@ -234,14 +234,14 @@ Ludong University Online Judge
 + 为镜像重命名（相当于复制了一份，请将用户名`iamwinter`替换）
 
   ```shell script
-  docker tag lduoj:local iamwinter/lduoj:latest
+  docker tag lduoj:local iamwinter/lduoj
   ```
 
 + 将镜像上传到`dockerhub`
 
   ```shell script
   docker login
-  docker push iamwinter/lduoj:latest
+  docker push iamwinter/lduoj
   ```
 
 # :memo: 开发日志
