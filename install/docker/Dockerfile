@@ -5,20 +5,9 @@ COPY LDUOnlineJudge/ /home/LDUOnlineJudge/
 RUN set -ex &&\
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     echo 'Asia/Shanghai' > /etc/timezone &&\
-
-    cp /etc/apt/sources.list /etc/apt/sources.list.bak &&\
-    echo "deb http://mirrors.163.com/ubuntu/ bionic main restricted universe multiverse\
-        deb http://mirrors.163.com/ubuntu/ bionic-security main restricted universe multiverse\
-        deb http://mirrors.163.com/ubuntu/ bionic-updates main restricted universe multiverse\
-        deb http://mirrors.163.com/ubuntu/ bionic-proposed main restricted universe multiverse\
-        deb http://mirrors.163.com/ubuntu/ bionic-backports main restricted universe multiverse\
-        deb-src http://mirrors.163.com/ubuntu/ bionic main restricted universe multiverse\
-        deb-src http://mirrors.163.com/ubuntu/ bionic-security main restricted universe multiverse\
-        deb-src http://mirrors.163.com/ubuntu/ bionic-updates main restricted universe multiverse\
-        deb-src http://mirrors.163.com/ubuntu/ bionic-proposed main restricted universe multiverse\
-        deb-src http://mirrors.163.com/ubuntu/ bionic-backports main restricted universe multiverse"\
-        > /etc/apt/sources.list &&\
-    apt-get update && apt-get -y upgrade
+    apt-get update &&\
+    apt-get install -y apt-transport-https apt-utils &&\
+    cat /home/LDUOnlineJudge/install/docker/sources.list > /etc/apt/sources.list
 
 RUN bash /home/LDUOnlineJudge/install/ubuntu16.04/install.sh
 
