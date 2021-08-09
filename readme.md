@@ -25,8 +25,8 @@ Ludong University Online Judge
 
 **后台**
 
-+ 判题机；启动/停止linux判题端进程。
-+ 公告/新闻；用户访问首页可见。
++ 判题进程；启动/停止linux判题端进程。
++ 公告新闻；用户访问首页可见。
 + 用户管理；**账号权限分配**，批量生成账号，**黑名单**。
 + 题目管理；增改查，公开/隐藏，重判结果，**导入与导出(兼容hustoj)**。
 + 竞赛管理；增删查改，公开/隐藏。
@@ -35,7 +35,7 @@ Ludong University Online Judge
 # :wrench: 项目安装
 
 + **基于Linux Ubuntu 18.04/20.04**
-  [帮助:[更换软件源](https://blog.csdn.net/winter2121/article/details/103335319)]
+  [帮助:[更换中科大软件源](https://mirrors.ustc.edu.cn/help/ubuntu.html#id7)]
   ```shell script
   git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
   bash LDUOnlineJudge/install/ubuntu/install.sh
@@ -57,12 +57,11 @@ Ludong University Online Judge
       iamwinter/lduoj
   ```
 
-  - `-p`指定`8080`为主机端口，可自定义。
+  - `-p`指定`8080`作为web端口，
     浏览器访问`服务器ip:8080`进入首页。
-    [配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)
-  - `-v`指定`~/lduoj_docker`为保存数据的宿主机目录，可自定义。
-    如需备份系统，只需将此文件夹打包备份。
-  - 进入容器进行管理： `docker exec -it lduoj /bin/bash`
+    [帮助:[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)]
+  - `-v`指定`~/lduoj_docker`作为保存项目的宿主机目录。如需备份系统，只需将此文件夹备份。
+  - 进入容器进行管理： `docker exec -it lduoj /bin/bash`。
 
 # :hammer: 项目升级
 
@@ -78,7 +77,7 @@ Ludong University Online Judge
 
 # :cd: 项目迁移
 
-+ 基于Ubuntu16.04 / 18.04
++ 基于Ubuntu
 
   1.在**原主机**备份数据库
   ```shell script
@@ -250,6 +249,7 @@ Ludong University Online Judge
 
 | 提出日期 | 开发计划 | 备注 | 完成日期 | 开发者 |
 |---|---|---|---|---|
+|2021.08.08|将样例改为数据库保存，不再以文件方式保存在磁盘中|要考虑旧版本升级后样例如何转移到数据库| | |
 |2021.07.28|将管理员编辑题目页面的编辑框分为两栏，左侧编辑，右侧实时预览|类似于markdown编辑器| | |
 |2021.06.25|将中英文切换功能放到主页导航栏，用户自由切换。|cookie记住用户选择|2021.06.26|[iamwinter](https://github.com/iamwinter)|
 |2021.06.23|增加【班级/团队】模块，可对班级布置作业；学生可在【我的作业】中查看作业。| | | |
