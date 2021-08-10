@@ -166,7 +166,7 @@ Ludong University Online Judge
     - `-v`指定项目映射到`D:\myproject\LDUOnlineJudge`，本地编辑项目即可。
     - 浏览器访问`http://localhost:8080`显示主页则表示部署成功。
 
-2. 远程连接mysql（非必需）
+2. 连接docker内的mysql数据库（非必需）（等同于远程连接mysql）
 
     ```shell
     # 进入docker容器内
