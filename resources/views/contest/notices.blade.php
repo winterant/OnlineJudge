@@ -131,8 +131,6 @@
         </div>
     </div>
 
-    <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script> {{-- ckeditor样式 --}}
-    <script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
     <script type="text/javascript">
 
         @if(Auth::user()->privilege('contest'))

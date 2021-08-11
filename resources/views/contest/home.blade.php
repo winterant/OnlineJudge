@@ -165,6 +165,5 @@
             </div>
         </div>
     </div>
-    <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script> {{-- ckeditor样式 --}}
 @endsection
 

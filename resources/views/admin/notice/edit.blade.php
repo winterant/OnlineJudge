@@ -37,8 +37,6 @@
         </form>
     </div>
 
-    <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script>
-    <script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
     <script type="text/javascript">
 
         //编辑框配置

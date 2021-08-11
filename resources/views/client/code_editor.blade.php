@@ -1,23 +1,3 @@
-{{-- 代码编辑器 codemirror  --}}
-
-<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/lib/codemirror.css")}}"/>
-<script src="{{asset("static/codemirror-5.61.0/lib/codemirror.js")}}"></script>
-
-{{-- 主题 --}}
-<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/theme/mbo.css")}}"/>
-<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/theme/idea.css")}}"/>
-
-{{-- 编辑器的功能 --}}
-<script src="{{asset("static/codemirror-5.61.0/addon/edit/matchbrackets.js")}}"></script>
-<script src="{{asset("static/codemirror-5.61.0/addon/edit/closebrackets.js")}}"></script>
-<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/addon/hint/show-hint.css")}}"/>
-<script src="{{asset("static/codemirror-5.61.0/addon/hint/show-hint.js")}}"></script>
-
-{{-- 需要高亮的语言 --}}
-<script src="{{asset("static/codemirror-5.61.0/mode/cmake/cmake.js")}}"></script>
-<script src="{{asset("static/codemirror-5.61.0/mode/clike/clike.js")}}"></script>
-<script src="{{asset("static/codemirror-5.61.0/mode/python/python.js")}}"></script>
-
 <div class="my-container bg-white ck-content">
     <h5>{{trans('sentence.Submit')}}</h5>
     <hr class="mt-0">
@@ -74,7 +54,6 @@
         @elseif($problem->type==1)
             {{--            填空题 --}}
             <div class="border p-1 mb-3">
-                <link rel="stylesheet" href="{{asset("static/highlight/styles/github-gist.css")}}">
                 <style>
                     .hljs ol li {
                         list-style: decimal-leading-zero;
@@ -82,8 +61,7 @@
                         padding-left: 5px !important;
                     }
                 </style>
-                <script src="{{asset("static/highlight/highlight.pack.js")}}"></script>
-                <script>
+                <script type="text/javascript">
                     $(function (){
                         // hljs.initHighlightingOnLoad();
                         hljs.highlightAll();

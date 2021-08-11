@@ -403,8 +403,6 @@
 
     {{-- ckeditor样式 --}}
     @if(Auth::check())
-        <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script>
-        <script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
         <script type="text/javascript">
 
             //编辑框配置
@@ -456,10 +454,7 @@
 
 
     </script>
-    <script type="text/javascript" src="{{asset('static/MathJax-2.7.7/MathJax.js?config=TeX-AMS_HTML')}}"></script>
 
-    {{-- 饼状图 --}}
-    <script src="{{asset('static/echarts/echarts.min.js')}}"></script>
     <script type="text/javascript">
         var myChart = echarts.init(document.getElementById('pieChart'));
         myChart.setOption({

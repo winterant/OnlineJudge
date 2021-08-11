@@ -44,9 +44,6 @@
                     <div class="pull-right">
                         <form id="form_switch" action="" method="get">
 
-                            <link href="{{asset('static/switch-dist/switch.css')}}" rel="stylesheet"/>
-                            <script src="{{asset('static/switch-dist/switch.js')}}"></script>
-
                             @if(strtotime($contest->end_time)<time() &&
                                 (Auth::check() && Auth::user()->privilege('contest') || $contest->lock_rate==0) )
                                 <font title="{{__('sentence.Up to now')}}">{{trans('main.Up to now')}}：</font>
@@ -174,7 +171,6 @@
         </div>
     </div>
 
-    <script src="{{asset('static/jquery-table2excel/jquery.table2excel.min.js')}}"></script>
     <script>
 {{--        下载表格 --}}
         function down_rank(){

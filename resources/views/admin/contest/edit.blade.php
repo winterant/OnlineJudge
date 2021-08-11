@@ -236,8 +236,6 @@
         </form>
     </div>
 
-    <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script>
-    <script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
     <script type="text/javascript">
         function presubmit() {
             //将允许语言的标记以二进制形式状态压缩为一个整数

@@ -51,9 +51,7 @@
 
     </div>
 
-    <script src="{{asset('js/uploadBig.js')}}?v=08.02" type="text/javascript"></script>
     <script type="text/javascript">
-
         function do_upload() {
             uploadBig({
                 url:"{{route('admin.problem.import')}}",

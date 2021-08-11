@@ -4,26 +4,6 @@
 
 @section('content')
 
-    {{-- 代码编辑器 codemirror  --}}
-    <link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/lib/codemirror.css")}}"/>
-    <script src="{{asset("static/codemirror-5.61.0/lib/codemirror.js")}}"></script>
-
-    {{-- 主题 --}}
-    <link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/theme/monokai.css")}}"/>
-    <link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/theme/idea.css")}}"/>
-
-    {{-- 编辑器的功能 --}}
-    <script src="{{asset("static/codemirror-5.61.0/addon/edit/matchbrackets.js")}}"></script>
-    <script src="{{asset("static/codemirror-5.61.0/addon/edit/closebrackets.js")}}"></script>
-    <link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/addon/hint/show-hint.css")}}"/>
-    <script src="{{asset("static/codemirror-5.61.0/addon/hint/show-hint.js")}}"></script>
-
-    {{-- 需要高亮的语言 --}}
-    <script src="{{asset("static/codemirror-5.61.0/mode/cmake/cmake.js")}}"></script>
-    <script src="{{asset("static/codemirror-5.61.0/mode/clike/clike.js")}}"></script>
-    <script src="{{asset("static/codemirror-5.61.0/mode/python/python.js")}}"></script>
-
-
     <h2>{{$pageTitle}}</h2>
     <hr>
     <div>
@@ -222,8 +202,6 @@
 
     </script>
 
-    <script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script>
-    <script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
     <script type="text/javascript">
         function type_has_change(number) {
             if(number===1)

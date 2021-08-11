@@ -7,16 +7,20 @@
 <!-- CSRF Token -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
+{{-- styles--}}
 <link href="{{asset('static/bootstrap-material-design-dist/css/bootstrap-material-design.min.css')}}" rel="stylesheet">
 <link href="{{asset('static/font-awesome-4.7.0/css/font-awesome.min.css')}}" rel="stylesheet">
 <link href="{{asset('css/main.css')}}?version=2021.06" rel="stylesheet">
 
-
+{{-- js for jquery and bootstrap--}}
 <script src="{{asset('static/jquery-3.4.1/jquery-3.4.1.min.js')}}"></script>
 <script src="{{asset('static/popper.js/dist/umd/popper.min.js')}}" defer></script>
 <script src="{{asset('static/bootstrap-material-design-dist/js/bootstrap-material-design.min.js')}}" defer></script>
 
+{{-- 大文件上传 --}}
+<script src="{{asset('js/uploadBig.js')}}?v=08.11" defer></script>
 
+{{-- 提示工具 --}}
 <link href="{{asset('static/notiflix/minified/notiflix-2.0.0.min.css')}}" rel="stylesheet">
 <script src="{{asset('static/notiflix/minified/notiflix-2.0.0.min.js')}}" defer></script>
 

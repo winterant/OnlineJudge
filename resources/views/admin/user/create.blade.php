@@ -40,7 +40,6 @@
                 </table>
             </div>
         <textarea id="copy_users" hidden>@foreach($users as $u){{$u['username']}}&#9;{{$u['password']}}&#13;@endforeach</textarea>
-        <script src="{{asset('static/jquery-table2excel/jquery.table2excel.min.js')}}"></script>
         <script>
             function down_users(){
                 $("#table2excel").table2excel({

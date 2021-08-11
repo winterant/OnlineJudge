@@ -67,7 +67,6 @@
     </div>
     @endif
 
-    <link rel="stylesheet" href="{{asset("static/highlight/styles/github-gist.css")}}">
     <style>
         .hljs ol li {
             list-style: decimal-leading-zero;
@@ -75,8 +74,8 @@
             padding-left: 5px !important;
         }
     </style>
-    <script src="{{asset("static/highlight/highlight.pack.js")}}"></script>
-    <script>
+
+    <script type="text/javascript">
         $(function (){
             // hljs.initHighlightingOnLoad();
             hljs.highlightAll();

@@ -36,8 +36,6 @@
         </div>
         <div class="my-container bg-white">
             <form id="form_switch" onsubmit="return submit_settings(this)" method="post">
-                <link href="{{asset('static/switch-dist/switch.css')}}" rel="stylesheet"/>
-                <script src="{{asset('static/switch-dist/switch.js')}}"></script>
 
                 @csrf
 
