@@ -29,8 +29,12 @@ class SettingController extends Controller
     //升级系统
     public function upgrade_oj(Request $request){
         $source = $request->input('upgrade_source');
-        $cmd_git = 'sudo git clone https://'.$source.'/iamwinter/LDUOnlineJudge.git /home/lduoj_upgrade 2>&1';
-        $cmd_bash = 'sudo bash /home/lduoj_upgrade/install/ubuntu/update.sh '.base_path().' 2>&1';
+
+        $new_project = base_path('storage/oj_upgrade');
+        exec('rm -rf '.$new_project,$out,$status); //删除旧文件夹
+
+        $cmd_git = 'git clone https://'.$source.'/iamwinter/LDUOnlineJudge.git '.$new_project.' 2>&1';
+        $cmd_bash = 'bash '.$new_project.'/install/ubuntu/update.sh '.base_path().' 2>&1';
         exec($cmd_git,$out,$status);
         exec($cmd_bash,$out,$status);
         return 1;
