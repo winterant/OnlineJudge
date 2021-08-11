@@ -9,8 +9,7 @@
         <div class="col-12 col-md-6">
             <h2>导入题目</h2>
             <hr>
-            <form onsubmit="do_upload();return false">
-                @csrf
+            <form onsubmit="return do_upload() && false;">
                 <div class="form-inline">
                     <label>导入xml文件：
                         <input type="file" id="file_xml" required class="form-control">
