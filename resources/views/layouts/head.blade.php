@@ -19,3 +19,41 @@
 
 <link href="{{asset('static/notiflix/minified/notiflix-2.0.0.min.css')}}" rel="stylesheet">
 <script src="{{asset('static/notiflix/minified/notiflix-2.0.0.min.js')}}" defer></script>
+
+{{-- 开关小插件 contest/rank.blade.php; admin/settings.blade.php; --}}
+<link href="{{asset('static/switch-dist/switch.css')}}" rel="stylesheet"/>
+<script src="{{asset('static/switch-dist/switch.js')}}"></script>
+
+{{-- table下载为表格的js插件 contest/rank.blade.php; admin/user/create.blade.php --}}
+<script src="{{asset('static/jquery-table2excel/jquery.table2excel.min.js')}}"></script>
+
+{{-- ckeditor5 --}}
+<script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script>
+<script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
+
+{{-- 代码编辑器 codemirror  --}}
+{{-- admin/problem/edit.blade.php; client/code_editor.blade.php --}}
+<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/lib/codemirror.css")}}"/>
+<script src="{{asset("static/codemirror-5.61.0/lib/codemirror.js")}}"></script>
+{{-- 主题 --}}
+<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/theme/mbo.css")}}"/>
+<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/theme/idea.css")}}"/>
+{{-- 编辑器的功能 --}}
+<script src="{{asset("static/codemirror-5.61.0/addon/edit/matchbrackets.js")}}"></script>
+<script src="{{asset("static/codemirror-5.61.0/addon/edit/closebrackets.js")}}"></script>
+<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/addon/hint/show-hint.css")}}"/>
+<script src="{{asset("static/codemirror-5.61.0/addon/hint/show-hint.js")}}"></script>
+{{-- 需要高亮的语言 --}}
+<script src="{{asset("static/codemirror-5.61.0/mode/cmake/cmake.js")}}"></script>
+<script src="{{asset("static/codemirror-5.61.0/mode/clike/clike.js")}}"></script>
+<script src="{{asset("static/codemirror-5.61.0/mode/python/python.js")}}"></script>
+
+{{-- 代码高亮 clien/code_editor.blade.php; client/solution.blade.php --}}
+<link rel="stylesheet" href="{{asset("static/highlight/styles/github-gist.css")}}">
+<script src="{{asset("static/highlight/highlight.pack.js")}}"></script>
+
+{{-- echart画图工具 --}}
+<script src="{{asset('static/echarts/echarts.min.js')}}"></script>
+
+{{-- mathjax渲染latex公式 --}}
+<script type="text/javascript" src="{{asset('static/MathJax-2.7.7/MathJax.js?config=TeX-AMS_HTML')}}"></script>

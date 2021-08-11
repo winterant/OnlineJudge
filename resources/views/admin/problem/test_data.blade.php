@@ -126,7 +126,6 @@
         </div>
     </div>
 
-    <script src="{{asset('js/uploadBig.js')}}?v=08.02"></script>
     <script>
         function do_upload() {
             uploadBig({
@@ -137,7 +136,7 @@
                     'pid':"{{isset($_GET['pid'])?$_GET['pid']:0}}"
                 },
                 before:function (file_count, total_size) {
-                    Notiflix.Loading.Hourglass('开始上传'+file_count+'个文件!总大小：'+(total_size/1024).toFixed(1)+'MB');
+                    Notiflix.Loading.Hourglass('开始上传'+file_count+'个文件!总大小：'+(total_size/1024).toFixed(1)+'KB');
                 },
                 uploading: function (file_count,index,up_size,fsize) {
                     Notiflix.Loading.Change('上传中'+index+'/'+file_count+' : '+
@@ -154,7 +153,7 @@
                 },
                 error:function (xhr,status,err) {
                     Notiflix.Loading.Remove();
-                    Notiflix.Report.Failure('文件导入失败','您上传的文件似乎已损坏：'+err,'好的');
+                    Notiflix.Report.Failure('文件导入失败',xhr.responseJSON.message,'好的');
                 }
             });
             return false;

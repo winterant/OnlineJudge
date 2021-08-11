@@ -18,11 +18,8 @@ function uploadBig(obj) {
         formData.append('block_tot',Math.max(1,Math.ceil(args.files[index].size/args.blockSize)));//块数
         formData.append('block',args.files[index].slice(start,start+args.blockSize)); //文件块
 
-        if(args.data!==undefined && index===args.files.length-1 && start+args.blockSize>=args.files[index].size)//要上传最后一块了
-        {
-            for(let key of Object.keys(args.data)) //除文件外的附加数据
-                formData.append(key,args.data[key]);
-        }
+        for(let key of Object.keys(args.data)) //除文件外的附加数据
+            formData.append(key,args.data[key]);
 
         $.ajax({
             headers: {'X-CSRF-TOKEN': args._token},
