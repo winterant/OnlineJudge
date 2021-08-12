@@ -69,7 +69,8 @@ class ProblemController extends Controller
             ->where('problem_id',$id)
             ->get();
 
-        if(Auth::check()&&!Auth::user()->privilege('teacher')&&$problem->hidden) //已登录&&不是管理员&& 问题隐藏
+        if($problem->hidden &&
+            (!Auth::check() || Auth::check()&&!Auth::user()->privilege('teacher'))) // 问题是隐藏的，那么不登录或无权限是不可以看题的
         {
             $msg=trans('main.Problem').$id.': '.trans('main.Hidden').'; ';
             if($contests){
