@@ -6,9 +6,10 @@ Ludong University Online Judge
 
 **概览**
 
-- [预览网站](http://oj.01fun.top/) ；您可以使用账号guest0(密码:9AF860CB)登录参观网站。
-  该账号可以进入后台管理，不要使用该账号破坏小破站哦:smiley:。
-- [截屏展示](https://blog.csdn.net/winter2121/article/details/105294224)。
+- 网站首页：[lduoj.top](http://lduoj.top)
+- 演示网站（仅供演示）：[demo.lduoj.top](http://demo.lduoj.top) ；
+  管理员admin（demolduoj）；
+  [截屏展示](https://blog.csdn.net/winter2121/article/details/105294224) 。
 - 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统。
 - 支持**考试/竞赛**，支持**编程题、代码填空**（C/C++/Java/Python3）。
 - Web后端基于php框架 laravel 6.0 开发，php版本=7.2。
@@ -75,7 +76,7 @@ Ludong University Online Judge
   bash oj_upgrade/install/ubuntu/update.sh /home/LDUOnlineJudge
   ```
 
-# :cd: 项目迁移
+# :cd: 项目迁移（备份）
 
 + 基于Ubuntu
 
