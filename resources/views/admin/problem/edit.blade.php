@@ -55,7 +55,14 @@
                 </div>
 
                 <div class="form-group mt-3 mb-1">
-                    <p class="alert alert-info mb-0">备注：您可以在下面所有的编辑框里使用Latex公式（tips：\$行内公式\$(注意反斜杠)，$$单行居中公式$$）</p>
+                    <details>
+                        <summary>点我查看使用说明</summary>
+                        <p class="alert alert-info mb-0">
+                            您可以在下面所有的编辑框里使用Latex公式。示例：<br>
+                            · 行内公式：\$f(x)=x^2\$（显示效果为<span class="math_formula">\$f(x)=x^2\$</span>）<br>
+                            · 单行居中：$$f(x)=x^2$$（显示效果如下）<span class="math_formula">$$f(x)=x^2$$</span><br>
+                        </p>
+                    </details>
                 </div>
                 <div class="form-group">
                     <label for="description">题目描述：</label>

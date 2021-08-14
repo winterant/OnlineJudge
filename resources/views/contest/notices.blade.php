@@ -73,7 +73,7 @@
                                 </div>
 
                                 <!-- 模态框主体 -->
-                                <div id="notice-content" class="modal-body ck-content"></div>
+                                <div id="notice-content" class="modal-body ck-content math_formula"></div>
 
                                 <!-- 模态框底部 -->
                                 <div class="modal-footer">
@@ -163,6 +163,7 @@
                     console.log(ret)
                     $("#notice-title").html(ret.title)
                     $("#notice-content").html(ret.content + "<div class='text-right mt-3'>"+ret.created_at+"</div>")
+                    window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, document.getElementsByClassName("math_formula")]);//渲染公式
                 }
             );
         }

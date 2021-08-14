@@ -60,4 +60,23 @@
 <script src="{{asset('static/echarts/echarts.min.js')}}"></script>
 
 {{-- mathjax渲染latex公式 --}}
+<script type="text/x-mathjax-config">
+    window.MathJax.Hub.Config({
+        showProcessingMessages: false, //关闭js加载过程信息
+        messageStyle: "none",          //不显示信息
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+            inlineMath: [["\\$", "\\$"], ["\\(", "\\)"]], //行内公式选择符
+            displayMath: [["$$", "$$"], ["\\[", "\\]"]],  //段内公式选择符
+            skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a", "tips"] //避开某些标签
+        },
+        "HTML-CSS": {
+            availableFonts: ["STIX", "TeX"], //可选字体
+            showMathMenu: false     //关闭右击菜单显示
+        },
+        elements: [document.getElementsByClassName("math_formula")]  // 允许渲染的dom
+    });
+    // 动态渲染语句如下
+    // window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, document.getElementsByClassName("math_formula")]); //math_formula是自定义类名
+</script>
 <script type="text/javascript" src="{{asset('static/MathJax-2.7.7/MathJax.js?config=TeX-AMS_HTML')}}"></script>

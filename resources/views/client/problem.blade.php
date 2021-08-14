@@ -55,7 +55,7 @@
                         @endif
                     </h4>
                     <hr class="mt-0 mb-1">
-                    <div>
+                    <div class="math_formula">
                         <h4 class="text-sky">Description</h4>
                         {!! $problem->description !!}
 
@@ -378,12 +378,19 @@
                             @csrf
                             <input name="discussion_id" hidden>
                             <input name="reply_username" hidden>
+                            <details>
+                                <summary>点我查看使用说明</summary>
+                                <p class="alert alert-info mb-0">
+                                    您可以在下面所有的编辑框里使用Latex公式。示例：<br>
+                                    · 行内公式：\$f(x)=x^2\$（显示效果为<span class="math_formula">\$f(x)=x^2\$</span>）<br>
+                                    · 单行居中：$$f(x)=x^2$$（显示效果如下）<span class="math_formula">$$f(x)=x^2$$</span><br>
+                                </p>
+                            </details>
                             <tips class="alert alert-info mb-0">备注：编辑框支持Latex公式
                                 （tips：\$行内公式\$(注意反斜杠)，$$单行居中公式$$）
                             </tips>
                             <div class="form-group mt-2">
-                                <textarea id="content" name="content"
-                                          class="form-control-plaintext border bg-white"></textarea>
+                                <textarea id="content" name="content" class="form-control-plaintext border bg-white"></textarea>
                             </div>
                         </div>
 
@@ -434,27 +441,7 @@
         }
     </script>
 
-    {{--mathjax公式--}}
-    <script type="text/x-mathjax-config">
-        window.MathJax.Hub.Config({
-            showProcessingMessages: false, //关闭js加载过程信息
-            messageStyle: "none", //不显示信息
-            jax: ["input/TeX", "output/HTML-CSS"],
-            tex2jax: {
-                inlineMath: [["\\$", "\\$"], ["\\(", "\\)"]], //行内公式选择符
-                displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
-                skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a", "tips"] //避开某些标签
-            },
-            "HTML-CSS": {
-                availableFonts: ["STIX", "TeX"], //可选字体
-                showMathMenu: false //关闭右击菜单显示
-            }
-        });
-        window.MathJax.Hub.Queue(["Typeset", MathJax.Hub,document.getElementsByClassName("ck-content")]);
-
-
-    </script>
-
+    {{-- echarts表格渲染 --}}
     <script type="text/javascript">
         var myChart = echarts.init(document.getElementById('pieChart'));
         myChart.setOption({
@@ -552,15 +539,16 @@
     {{-- 讨论板的操作 --}}
     <script type="text/javascript">
         @if(session('discussion_added'))
-        $(function () {
-            Notiflix.Notify.Success("{{__('sentence.discussion_added')}}");
-        })
+            $(function () {
+                Notiflix.Notify.Success("{{__('sentence.discussion_added')}}");
+            })
         @endif
         @if(session('discussion_add_failed'))
-        $(function () {
-            Notiflix.Notify.Failure("五分钟内只允许发起一次讨论！");
-        })
+            $(function () {
+                Notiflix.Notify.Failure("五分钟内只允许发起一次讨论！");
+            })
         @endif
+
         // 加载discussion
         let discussion_page = 0;
         function load_discussion() {
@@ -583,7 +571,7 @@
                         let dis_div =
                             "<div class=\"overflow-hidden border-top pt-1\">\n" +
                             "   <p class=\"mb-0\">" + dis.username + "：" + "</p>\n" +
-                            "   <div class=\"pl-1\">" + dis.content + "</div>" +
+                            "   <div class=\"math_formula pl-1\">" + dis.content + "</div>" +
                             "   <div class=\"float-right\" style=\"font-size: 0.85rem\">\n" +
                             (dis.top ? "[<font class=\"text-red px-1\">{{trans('main.Top')}}</font>]" : '') +
                             (dis.hidden ? "[<font class=\"text-red px-1\">{{trans('main.Hidden')}}</font>]" : '') +
@@ -613,7 +601,7 @@
                                 let son_li =
                                     "<li class=\"overflow-hidden border-top pt-1\">\n" +
                                     "    <font>" + son_dis.username + reply_name + "：</font>\n" +
-                                    "    <div class=\"pl-1\">" + son_dis.content + "</div>\n" +
+                                    "    <div class=\"math_formula pl-1\">" + son_dis.content + "</div>\n" +
                                     "    <div class=\"float-right\" style=\"font-size: 0.85rem\">\n" +
                                     (son_dis.hidden ? "[<font class=\"text-red px-1\">{{trans('main.Hidden')}}</font>]" : '') +
                                     @if(Auth::check()&&Auth::user()->privilege('problem_tag'))
@@ -636,14 +624,15 @@
                     }
                     if (discussions.length < 1)
                         $("#discussion-content").append("<p>{{__('sentence.No more discussions')}}</p>");
+                    window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, document.getElementsByClassName("math_formula")]);
                 }
             );
-            window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName("ck-content")]);
         }
+        $(function (){
+            load_discussion() //初始加载一次
+        })
 
-        load_discussion()
-
-
+        // 删除讨论
         function delete_discussion(id, that) {
             $.post(
                 '{{route('delete_discussion')}}',
@@ -658,6 +647,7 @@
             );
         }
 
+        // 指定讨论
         function top_discussion(id, way) {
             $.post(
                 '{{route('top_discussion')}}',
@@ -672,6 +662,7 @@
             );
         }
 
+        // 隐藏讨论
         function hidden_discussion(id, value) {
             $.post(
                 '{{route('hidden_discussion')}}',
@@ -686,6 +677,7 @@
             );
         }
 
+        // 回复讨论
         function reply(id, username = '') {
             $("#edit-discussion").modal('show');
             $("input[name=discussion_id]").val(id);
