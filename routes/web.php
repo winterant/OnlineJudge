@@ -65,20 +65,22 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id'=>'[0-9]+'])->where(
         Route::get('/', 'Client\ContestController@home')->name('home');
         Route::get('/problem/{pid}', 'Client\ContestController@problem')->name('problem');
         Route::get('/status', 'Client\ContestController@status')->name('status');
-        Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->name('cancel_lock');//取消封榜
         Route::get('/notices', 'Client\ContestController@notices')->name('notices');//公告
         Route::post('/get_notice', 'Client\ContestController@get_notice')->name('get_notice');//获取一条公告
-        Route::post('/edit_notice', 'Client\ContestController@edit_notice')->name('edit_notice');//编辑/添加一条公告
-        Route::post('/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('delete_notice');//删除一条公告
+
+        Route::middleware(['Privilege:contest,client'])->group(function (){
+            Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->name('cancel_lock');//取消封榜
+            Route::post('/edit_notice', 'Client\ContestController@edit_notice')->name('edit_notice');//编辑/添加一条公告
+            Route::post('/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('delete_notice');//删除一条公告
+            Route::post('/start_to_judge', 'Client\ContestController@start_to_judge')->name('start_to_judge');
+        });
 
         Route::middleware(['Privilege:balloon,client'])->group(function (){//气球,需要权限
             Route::get('/balloons', 'Client\ContestController@balloons')->name('balloons');
             Route::post('/deliver_ball/{bid}', 'Client\ContestController@deliver_ball')->name('deliver_ball');
         });
-        Route::middleware(['Privilege:contest,client'])->group(function (){
-            Route::post('/start_to_judge', 'Client\ContestController@start_to_judge')->name('start_to_judge');
-        });
     });
+
     Route::any('/password', 'Client\ContestController@password')->middleware(['auth'])->name('password');
     Route::get('/rank', 'Client\ContestController@rank')->name('rank');
 });

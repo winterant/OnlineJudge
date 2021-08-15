@@ -61,7 +61,16 @@
                 <input type="text" name="contest[title]" value="{{isset($contest->title)?$contest->title:''}}" required class="form-control" style="color: black">
             </div>
 
-            <div class="mt-4 p-2 bg-sky">竞赛描述/考试说明：</div>
+            <div class="mt-4 p-2 bg-sky">
+                <details>
+                    <summary>竞赛描述/考试说明（点我查看备注）：</summary>
+                    <p class="alert alert-info mb-0">
+                        您可以在下面的编辑框里使用Latex公式。示例：<br>
+                        · 行内公式：\$f(x)=x^2\$（显示效果为<span class="math_formula">\$f(x)=x^2\$</span>）<br>
+                        · 单行居中：$$f(x)=x^2$$（显示效果如下）<span class="math_formula">$$f(x)=x^2$$</span><br>
+                    </p>
+                </details>
+            </div>
             <div class="form-group">
                 <textarea id="description" name="contest[description]" class="form-control-plaintext border bg-white">{{isset($contest->description)?$contest->description:''}}</textarea>
             </div>
@@ -228,8 +237,6 @@
 
             </div>
 
-
-
             <div class="form-group m-4 text-center">
                 <button type="submit" class="btn-lg btn-success">提交</button>
             </div>
@@ -280,23 +287,15 @@
             });
         }
 
-
         //编辑框配置
-        var config={
-            language: "zh-cn",
-            removePlugins:['Autoformat'],  //取消markdown自动排版
-            ckfinder: {
-                uploadUrl:'{{route('ck_upload_image',['_token'=>csrf_token()])}}'
-            }
-        };
-        //编辑框ckeditor
-        ClassicEditor.create(document.querySelector('#description'), config).then(editor => {
-            window.editor = editor;
-            console.log(editor.getData());
-        } ).catch(error => {
-            console.log(error);
-        } );
-
+        $(function () {
+            ClassicEditor.create(document.querySelector('#description'), ck_config).then(editor => {
+                window.editor = editor;
+                console.log(editor.getData());
+            } ).catch(error => {
+                console.log(error);
+            } );
+        })
 
         // textarea自动高度
         $(function(){

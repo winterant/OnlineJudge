@@ -38,22 +38,12 @@
     </div>
 
     <script type="text/javascript">
-
-        //编辑框配置
-        var config={
-            language: "zh-cn",
-            removePlugins:['Autoformat'],  //取消markdown自动排版
-            ckfinder: {
-                uploadUrl:'{{route('ck_upload_image',['_token'=>csrf_token()])}}'
-            }
-        };
-        //各个编辑框ckeditor
-        ClassicEditor.create(document.querySelector('#content'), config).then(editor => {
-            window.editor = editor;
-            console.log(editor.getData());
-        } ).catch(error => {
-            console.log(error);
-        } );
-
+        $(function () {
+            ClassicEditor.create(document.querySelector('#content'), ck_config).then(editor => {
+                window.editor = editor;
+            } ).catch(error => {
+                console.log(error);
+            } );
+        })
     </script>
 @endsection

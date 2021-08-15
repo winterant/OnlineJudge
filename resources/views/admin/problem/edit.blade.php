@@ -210,6 +210,7 @@
     </script>
 
     <script type="text/javascript">
+        // 监听代码填空
         function type_has_change(number) {
             if(number===1)
                 $('#text_fill_in_blank').show();
@@ -217,41 +218,28 @@
                 $('#text_fill_in_blank').hide();
         }
         type_has_change(parseInt('{{isset($problem)?$problem->type:0}}')); //初始执行一次
+    </script>
 
-        //编辑框配置
-        var config={
-            language: "zh-cn",
-            removePlugins:['Autoformat'],  //取消markdown自动排版
-            ckfinder: {
-                uploadUrl:'{{route('ck_upload_image',['_token'=>csrf_token()])}}'
-            }
-        };
-
+    <script type="text/javascript">
         //各个编辑框ckeditor
         var ck_description,ck_input,ck_output,ck_hint;
-        ClassicEditor.create(document.querySelector('#description'), config).then(editor => {
-            ck_description=editor;
-            editor.plugins.get( 'TextTransformation' ).isEnabled = false;
-            // console.log(editor.getData());
-        } ).catch(error => {
-            // console.log(error);
-        } );
+        $(function (){
+            ClassicEditor.create(document.querySelector('#description'), ck_config).then(editor => {
+                ck_description=editor;
+                editor.plugins.get( 'TextTransformation' ).isEnabled = false;
+            })
+            ClassicEditor.create(document.querySelector('#input'), ck_config).then(editor => {
+                ck_input = editor;
+            })
+            ClassicEditor.create(document.querySelector('#output'), ck_config).then(editor => {
+                ck_output = editor;
+            })
+            ClassicEditor.create(document.querySelector('#hint'), ck_config).then(editor => {
+                ck_hint = editor;
+            })
+        })
 
-        ClassicEditor.create(document.querySelector('#input'), config).then(editor => {
-            ck_input = editor;
-        } ).catch(error => {
-        } );
-
-        ClassicEditor.create(document.querySelector('#output'), config).then(editor => {
-            ck_output = editor;
-        } ).catch(error => {
-        } );
-
-        ClassicEditor.create(document.querySelector('#hint'),config).then(editor => {
-            ck_hint = editor;
-        } ).catch(error => {
-        } );
-
+        //检查编辑框中的特殊字符
         function check_ckeditor_data(){
             function has_special_char(str) {
                 var ret=str.match(/[\x00-\x08\x0B\x0E-\x1f]+/);

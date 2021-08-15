@@ -408,22 +408,15 @@
     {{-- ckeditor样式 --}}
     @if(Auth::check())
         <script type="text/javascript">
-
-            //编辑框配置
-            var config = {
-                language: "zh-cn",
-                removePlugins: ['Autoformat'],  //取消markdown自动排版
-                ckfinder: {
-                    uploadUrl: '{{route('ck_upload_image',['_token'=>csrf_token()])}}'
-                }
-            };
-            //各个编辑框ckeditor
-            var editor = ClassicEditor.create(document.querySelector('#content'), config).then(editor => {
-                window.editor = editor;
-                // console.log(editor.getData());
-            }).catch(error => {
-                console.log(error);
-            });
+            // problem讨论板编辑框
+            $(function () {
+                ClassicEditor.create(document.querySelector('#content'), ck_config).then(editor => {
+                    window.editor = editor;
+                    console.log(editor.getData());
+                } ).catch(error => {
+                    console.log(error);
+                } );
+            })
         </script>
     @endif
 

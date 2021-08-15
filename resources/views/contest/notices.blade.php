@@ -17,7 +17,7 @@
                     <hr class="mt-0">
                     @if(Auth::user()->privilege('contest'))
                         <button class="btn btn-info" data-toggle="modal" data-target="#edit_notice"
-                                onclick="$('#form_edit_notice')[0].reset()">{{__('main.New Notice')}}</button>
+                                onclick="$('#form_edit_notice')[0].reset();window.editor.setData('')">{{__('main.New Notice')}}</button>
                     @endif
                     <table class="table table-sm table-hover">
                         <thead>
@@ -134,21 +134,14 @@
     <script type="text/javascript">
 
         @if(Auth::user()->privilege('contest'))
-            //编辑框配置
-            var config={
-                language: "zh-cn",
-                removePlugins:['Autoformat'],  //取消markdown自动排版
-                ckfinder: {
-                    uploadUrl:'{{route('ck_upload_image',['_token'=>csrf_token()])}}'
-                }
-            };
-            //各个编辑框ckeditor
-            var editor=ClassicEditor.create(document.querySelector('#content'), config).then(editor => {
-                window.editor = editor;
-                console.log(editor.getData());
-            } ).catch(error => {
-                console.log(error);
-            } );
+            $(function () {
+                ClassicEditor.create(document.querySelector('#content'), ck_config).then(editor => {
+                    window.editor = editor;
+                    console.log(editor.getData());
+                } ).catch(error => {
+                    console.log(error);
+                } );
+            })
         @endif
 
         function get_notice(nid) {
@@ -179,7 +172,7 @@
                     ret=JSON.parse(ret);
                     $("#form_notice_id").val(nid);
                     $("#form_title").val(ret.title);
-                    editor.setData(ret.content)
+                    window.editor.setData(ret.content)
                 }
             );
         }

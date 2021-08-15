@@ -32,8 +32,8 @@
 <script src="{{asset('static/jquery-table2excel/jquery.table2excel.min.js')}}"></script>
 
 {{-- ckeditor5 --}}
-<script src="{{asset('static/ckeditor5-build-classic/ckeditor.js')}}"></script>
-<script src="{{asset('static/ckeditor5-build-classic/translations/zh-cn.js')}}"></script>
+<script src="{{asset('static/ckeditor5/build/ckeditor.js')}}" defer></script>
+<script src="{{asset('static/ckeditor5/config.js')}}" defer></script>
 
 {{-- 代码编辑器 codemirror  --}}
 {{-- admin/problem/edit.blade.php; client/code_editor.blade.php --}}

@@ -343,8 +343,7 @@ class ContestController extends Controller
 
     public function cancel_lock($id){
         //管理员取消封榜
-        if(Auth::user()->privilege('contest'))
-            DB::table('contests')->where('id',$id)->update(['lock_rate'=>0]);
+        DB::table('contests')->where('id',$id)->update(['lock_rate'=>0]);
         return back();
     }
 
