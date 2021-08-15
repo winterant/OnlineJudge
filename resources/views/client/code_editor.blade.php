@@ -53,7 +53,7 @@
             </div>
         @elseif($problem->type==1)
             {{-- 代码填空 --}}
-            <div class="border p-1 mb-3">
+            <div class="mb-3">
                 <pre id="blank_code"><code>{{$problem->fill_in_blank}}</code></pre>
                 <script type="text/javascript">
                     $(function (){

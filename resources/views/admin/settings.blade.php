@@ -70,54 +70,56 @@
                     <font>在竞赛的榜单中，显示用户的名称</font>
                 </div>
                 <script>
-                    new Switch($("#web_page_display_wide")[0],{
-                        // size: 'small',
-                        checked: '{{get_setting('web_page_display_wide')?1:0}}'==='1',
-                        onChange:function () {
-                            $("input[name=web_page_display_wide]").attr('value',this.getChecked());
-                            $("#form_switch").submit();
-                        }
-                    });
-                    new Switch($("#allow_register")[0],{
-                        // size: 'small',
-                        checked: '{{get_setting('allow_register')?1:0}}'==='1',
-                        onChange:function () {
-                            $("input[name=allow_register]").attr('value',this.getChecked());
-                            $("#form_switch").submit();
-                        }
-                    });
-                    new Switch($("#show_home_notice_marquee")[0],{
-                        // size: 'small',
-                        checked: '{{get_setting('show_home_notice_marquee')?1:0}}'==='1',
-                        onChange:function () {
-                            $("input[name=show_home_notice_marquee]").attr('value',this.getChecked());
-                            $("#form_switch").submit();
-                        }
-                    });
-                    new Switch($("#guest_see_problem")[0],{
-                        // size: 'small',
-                        checked: '{{get_setting('guest_see_problem')?1:0}}'==='1',
-                        onChange:function () {
-                            $("input[name=guest_see_problem]").attr('value',this.getChecked());
-                            $("#form_switch").submit();
-                        }
-                    });
-                    new Switch($("#rank_show_school")[0],{
-                        // size: 'small',
-                        checked: '{{get_setting('rank_show_school')?1:0}}'==='1',
-                        onChange:function () {
-                            $("input[name=rank_show_school]").attr('value',this.getChecked());
-                            $("#form_switch").submit();
-                        }
-                    });
-                    new Switch($("#rank_show_nick")[0],{
-                        // size: 'small',
-                        checked: '{{get_setting('rank_show_nick')?1:0}}'==='1',
-                        onChange:function () {
-                            $("input[name=rank_show_nick]").attr('value',this.getChecked());
-                            $("#form_switch").submit();
-                        }
-                    });
+                    $(function (){
+                        new Switch($("#web_page_display_wide")[0],{
+                            // size: 'small',
+                            checked: '{{get_setting('web_page_display_wide')?1:0}}'==='1',
+                            onChange:function () {
+                                $("input[name=web_page_display_wide]").attr('value',this.getChecked());
+                                $("#form_switch").submit();
+                            }
+                        });
+                        new Switch($("#allow_register")[0],{
+                            // size: 'small',
+                            checked: '{{get_setting('allow_register')?1:0}}'==='1',
+                            onChange:function () {
+                                $("input[name=allow_register]").attr('value',this.getChecked());
+                                $("#form_switch").submit();
+                            }
+                        });
+                        new Switch($("#show_home_notice_marquee")[0],{
+                            // size: 'small',
+                            checked: '{{get_setting('show_home_notice_marquee')?1:0}}'==='1',
+                            onChange:function () {
+                                $("input[name=show_home_notice_marquee]").attr('value',this.getChecked());
+                                $("#form_switch").submit();
+                            }
+                        });
+                        new Switch($("#guest_see_problem")[0],{
+                            // size: 'small',
+                            checked: '{{get_setting('guest_see_problem')?1:0}}'==='1',
+                            onChange:function () {
+                                $("input[name=guest_see_problem]").attr('value',this.getChecked());
+                                $("#form_switch").submit();
+                            }
+                        });
+                        new Switch($("#rank_show_school")[0],{
+                            // size: 'small',
+                            checked: '{{get_setting('rank_show_school')?1:0}}'==='1',
+                            onChange:function () {
+                                $("input[name=rank_show_school]").attr('value',this.getChecked());
+                                $("#form_switch").submit();
+                            }
+                        });
+                        new Switch($("#rank_show_nick")[0],{
+                            // size: 'small',
+                            checked: '{{get_setting('rank_show_nick')?1:0}}'==='1',
+                            onChange:function () {
+                                $("input[name=rank_show_nick]").attr('value',this.getChecked());
+                                $("#form_switch").submit();
+                            }
+                        });
+                    })
                 </script>
             </form>
         </div>

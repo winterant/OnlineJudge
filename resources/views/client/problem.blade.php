@@ -433,43 +433,44 @@
 
     {{-- echarts表格渲染 --}}
     <script type="text/javascript">
-        var myChart = echarts.init(document.getElementById('pieChart'));
-        myChart.setOption({
-            title: {
-                // text: '实例'
-            },
-            tooltip: {
-                showDelay: 20,   // 显示延迟，添加显示延迟可以避免频繁切换，单位ms
-                hideDelay: 20,   // 隐藏延迟，单位ms
-                formatter: '{b} : {c} ({d}%)'
-            },
-            legend: {
-                data: ['销量']
-            },
-            series: [{
-                // name: '提交',
-                type: 'pie',
-                data: [
-                        @foreach($results as $item)
-                    {
-                        name: '{{config('oj.result.'.$item->result)}}', value: {{$item->result_count}}
-                    },
-                    @endforeach
-                ]
-            }]
-        });
+        $(function () {
+            var myChart = echarts.init(document.getElementById('pieChart'));
+            myChart.setOption({
+                title: {
+                    // text: '实例'
+                },
+                tooltip: {
+                    showDelay: 20,   // 显示延迟，添加显示延迟可以避免频繁切换，单位ms
+                    hideDelay: 20,   // 隐藏延迟，单位ms
+                    formatter: '{b} : {c} ({d}%)'
+                },
+                legend: {
+                    data: ['销量']
+                },
+                series: [{
+                    // name: '提交',
+                    type: 'pie',
+                    data: [
+                            @foreach($results as $item)
+                        {
+                            name: '{{config('oj.result.'.$item->result)}}', value: {{$item->result_count}}
+                        },
+                        @endforeach
+                    ]
+                }]
+            });
 
-        function echart_resize(myChart) {
-            var dom = $("#pieChart")
-            var width = dom.width() * 0.8
-            myChart.resize({height: width});
-            dom.height(width)
-        }
-
-        echart_resize(myChart)
-        window.onresize = function () {
+            function echart_resize(myChart) {
+                var dom = $("#pieChart")
+                var width = dom.width() * 0.8
+                myChart.resize({height: width});
+                dom.height(width)
+            }
             echart_resize(myChart)
-        }
+            window.onresize = function () {
+                echart_resize(myChart)
+            }
+        })
     </script>
 
     {{-- 问题标签的操作 --}}

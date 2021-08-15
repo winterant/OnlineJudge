@@ -166,58 +166,59 @@
 
     {{--    代码编辑器的配置   这段js一定要放在函数type_has_change前面 --}}
     <script type="text/javascript">
-        var code_editor = CodeMirror.fromTextArea(document.getElementById("code_editor"), {
-            // autofocus: true, // 初始自动聚焦
-            indentUnit: 4,   //自动缩进的空格数
-            indentWithTabs: true, //在缩进时，是否需要把 n*tab宽度个空格替换成n个tab字符，默认为false 。
-            lineNumbers: true,	//显示行号
-            matchBrackets: true,	//括号匹配
-            autoCloseBrackets: true,  //自动补全括号
-            theme: 'idea',         // 编辑器主题
-        });
+        $(function () {
+            var code_editor = CodeMirror.fromTextArea(document.getElementById("code_editor"), {
+                // autofocus: true, // 初始自动聚焦
+                indentUnit: 4,   //自动缩进的空格数
+                indentWithTabs: true, //在缩进时，是否需要把 n*tab宽度个空格替换成n个tab字符，默认为false 。
+                lineNumbers: true,	//显示行号
+                matchBrackets: true,	//括号匹配
+                autoCloseBrackets: true,  //自动补全括号
+                theme: 'idea',         // 编辑器主题
+            });
 
-        //监听用户选中的语言，实时修改代码提示框
-        function listen_lang_selected() {
-            var langs = JSON.parse('{!! json_encode(config('oj.lang')) !!}')  // 系统设定的语言候选列表
-            var lang = $("#lang_select").children('option:selected').val();  //当前选中的语言下标
-            lang = langs[lang]
+            //监听用户选中的语言，实时修改代码提示框
+            function listen_lang_selected() {
+                var langs = JSON.parse('{!! json_encode(config('oj.lang')) !!}')  // 系统设定的语言候选列表
+                var lang = $("#lang_select").children('option:selected').val();  //当前选中的语言下标
+                lang = langs[lang]
 
-            if(lang === 'C'){
-                code_editor.setOption('mode','text/x-csrc')
-            }else if(lang === 'C++'){
-                code_editor.setOption('mode','text/x-c++src')
-            }else if(lang === 'Java'){
-                code_editor.setOption('mode','text/x-java')
-            }else if(lang === 'Python3'){
-                code_editor.setOption('mode','text/x-python')
+                if(lang === 'C'){
+                    code_editor.setOption('mode','text/x-csrc')
+                }else if(lang === 'C++'){
+                    code_editor.setOption('mode','text/x-c++src')
+                }else if(lang === 'Java'){
+                    code_editor.setOption('mode','text/x-java')
+                }else if(lang === 'Python3'){
+                    code_editor.setOption('mode','text/x-python')
+                }
+                console.log('代码编辑框配置位置：client/code_editor.blade.php；代码编辑器语言已更新为: '+code_editor.getOption('mode'))
             }
-            console.log('代码编辑框配置位置：client/code_editor.blade.php；代码编辑器语言已更新为: '+code_editor.getOption('mode'))
-        }
-        listen_lang_selected()
-        $("#lang_select").change(function(){
             listen_lang_selected()
-        });
+            $("#lang_select").change(function(){
+                listen_lang_selected()
+            });
 
-        //监听输入，自动补全代码：
-        code_editor.on('change', (instance, change) => {
-            // 自动补全的时候，也会触发change事件，所有判断一下，以免死循环，正则是为了不让空格，换行之类的也提示
-            // 通过change对象你可以自定义一些规则去判断是否提示
-            if (change.origin !== 'complete' && change.text.length<2 && /\w|\./g.test(change.text[0])) {
-                instance.showHint()
-            }
+            //监听输入，自动补全代码：
+            code_editor.on('change', (instance, change) => {
+                // 自动补全的时候，也会触发change事件，所有判断一下，以免死循环，正则是为了不让空格，换行之类的也提示
+                // 通过change对象你可以自定义一些规则去判断是否提示
+                if (change.origin !== 'complete' && change.text.length<2 && /\w|\./g.test(change.text[0])) {
+                    instance.showHint()
+                }
+            })
         })
 
-    </script>
-
-    <script type="text/javascript">
-        // 监听代码填空
+        // 监听题目类型：代码填空or编程
         function type_has_change(number) {
             if(number===1)
                 $('#text_fill_in_blank').show();
             else if(number===0)
                 $('#text_fill_in_blank').hide();
         }
-        type_has_change(parseInt('{{isset($problem)?$problem->type:0}}')); //初始执行一次
+        $(function (){
+            type_has_change(parseInt('{{isset($problem)?$problem->type:0}}')); //初始执行一次
+        })
     </script>
 
     <script type="text/javascript">

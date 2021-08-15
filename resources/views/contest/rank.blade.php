@@ -55,22 +55,24 @@
                                 <input type="text" name="big" value="{{isset($_GET['big'])?$_GET['big']:'false'}}" hidden>
                             @endif
                             <script>
-                                new Switch($("#switch_buti")[0],{
-                                    size: 'small',
-                                    checked: $('input[name=buti]').attr('value')==='true',
-                                    onChange:function () {
-                                        $("input[name=buti]").attr('value',this.getChecked());
-                                        $("#form_switch").submit();
-                                    }
-                                });
-                                new Switch($("#switch_big")[0],{
-                                    size: 'small',
-                                    checked: $('input[name=big]').attr('value')==='true',
-                                    onChange:function () {
-                                        $("input[name=big]").attr('value',this.getChecked());
-                                        $("#form_switch").submit();
-                                    }
-                                });
+                                $(function (){
+                                    new Switch($("#switch_buti")[0],{
+                                        size: 'small',
+                                        checked: $('input[name=buti]').attr('value')==='true',
+                                        onChange:function () {
+                                            $("input[name=buti]").attr('value',this.getChecked());
+                                            $("#form_switch").submit();
+                                        }
+                                    });
+                                    new Switch($("#switch_big")[0],{
+                                        size: 'small',
+                                        checked: $('input[name=big]').attr('value')==='true',
+                                        onChange:function () {
+                                            $("input[name=big]").attr('value',this.getChecked());
+                                            $("#form_switch").submit();
+                                        }
+                                    });
+                                })
                             </script>
 
                         </form>
