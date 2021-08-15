@@ -68,7 +68,8 @@
         tex2jax: {
             inlineMath: [["\\$", "\\$"], ["\\(", "\\)"]], //行内公式选择符
             displayMath: [["$$", "$$"], ["\\[", "\\]"]],  //段内公式选择符
-            skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a", "tips"] //避开某些标签
+            skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a", "tips"], //避开某些标签
+            ignoreClass:"not_math"  // 避开class
         },
         "HTML-CSS": {
             availableFonts: ["STIX", "TeX"], //可选字体

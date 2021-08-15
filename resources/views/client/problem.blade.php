@@ -73,7 +73,7 @@
                             <h4 class="mt-2 text-sky">Samples</h4>
                         @endif
                         @foreach($samples as $i=>$sam)
-                            <div class="border mb-4">
+                            <div class="border mb-4 not_math">
                                 <div class="border-bottom pl-2 bg-light">Input
                                     <a href="javascript:" onclick="copy('sam_in{{$i}}')">{{__('main.Copy')}}</a>
                                 </div>
@@ -386,9 +386,6 @@
                                     · 单行居中：$$f(x)=x^2$$（显示效果如下）<span class="math_formula">$$f(x)=x^2$$</span><br>
                                 </p>
                             </details>
-                            <tips class="alert alert-info mb-0">备注：编辑框支持Latex公式
-                                （tips：\$行内公式\$(注意反斜杠)，$$单行居中公式$$）
-                            </tips>
                             <div class="form-group mt-2">
                                 <textarea id="content" name="content" class="form-control-plaintext border bg-white"></textarea>
                             </div>
