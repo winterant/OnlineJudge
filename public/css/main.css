@@ -8,6 +8,16 @@
     overflow-y: hidden !important;
 }
 
+/* 代码高亮：行号样式调整 */
+.hljs ol li {
+    /*list-style: decimal-leading-zero;*/
+    border-left: 1px solid #ddd !important;
+    padding-left: 5px !important;
+}
+pre {
+    tab-size: 4; /* 制表符宽度 */
+}
+
 /*html*/
 html, body {
     width:100%;

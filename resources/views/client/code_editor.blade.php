@@ -52,25 +52,17 @@
                 <textarea id="code_editor" name="solution[code]"></textarea>
             </div>
         @elseif($problem->type==1)
-            {{--            填空题 --}}
+            {{-- 代码填空 --}}
             <div class="border p-1 mb-3">
-                <style>
-                    .hljs ol li {
-                        list-style: decimal-leading-zero;
-                        border-left: 1px solid #ddd !important;
-                        padding-left: 5px !important;
-                    }
-                </style>
+                <pre id="blank_code"><code>{{$problem->fill_in_blank}}</code></pre>
                 <script type="text/javascript">
                     $(function (){
-                        // hljs.initHighlightingOnLoad();
-                        hljs.highlightAll();
-                        $("code").each(function(){
+                        hljs.highlightAll();// 代码高亮
+                        $("code").each(function(){  // 代码添加行号
                             $(this).html("<ol><li>" + $(this).html().replace(/\n/g,"\n</li><li>") +"\n</li></ol>");
                         })
                     });
                 </script>
-                <pre id="blank_code"><code>{{$problem->fill_in_blank}}</code></pre>
             </div>
         @endif
 

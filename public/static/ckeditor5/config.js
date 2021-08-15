@@ -47,5 +47,14 @@ const ck_config = {
             'mergeTableCells'
         ]
     },
+    codeBlock: {
+        languages: [
+            { language: 'cpp', label: 'C++', class: 'cpp'}, // The default language.
+            { language: 'c', label: 'C' },  // 默认class为language-c
+            { language: 'java', label: 'Java' },
+            { language: 'python', label: 'Python' },
+            { language: 'plaintext', label: 'Plain text' },
+        ]
+    },
     licenseKey: '',
 }

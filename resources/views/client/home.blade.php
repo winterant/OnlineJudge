@@ -156,6 +156,7 @@
                     $("#notice-title").html(ret.title)
                     $("#notice-content").html(ret.content + "<div class='text-right mt-3'>"+ret.created_at+"</div>")
                     window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, document.getElementsByClassName("math_formula")]);//渲染公式
+                    hljs.highlightAll();// 代码高亮
                 }
             );
         }

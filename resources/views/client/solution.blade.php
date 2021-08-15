@@ -66,28 +66,19 @@
         </div>
     </div>
     @endif
-
-    <style>
-        .hljs ol li {
-            list-style: decimal-leading-zero;
-            border-left: 1px solid #ddd !important;
-            padding-left: 5px !important;
-        }
-    </style>
-
-    <script type="text/javascript">
-        $(function (){
-            // hljs.initHighlightingOnLoad();
-            hljs.highlightAll();
-            $("code").each(function(){
-                $(this).html("<ol><li>" + $(this).html().replace(/\n/g,"\n</li><li>") +"\n</li></ol>");
-            })
-        });
-    </script>
     <div class="container">
         <div class="my-container bg-white">
             <pre class="border p-1"><code>{{$solution->code}}</code></pre>
         </div>
     </div>
+    <script type="text/javascript">
+        // 代码高亮
+        $(function (){
+            hljs.highlightAll();
+            $("code").each(function(){  // 代码添加行号
+                $(this).html("<ol><li>" + $(this).html().replace(/\n/g,"\n</li><li>") +"\n</li></ol>");
+            })
+        });
+    </script>
 
 @endsection

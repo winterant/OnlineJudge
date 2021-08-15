@@ -615,6 +615,7 @@
                     if (discussions.length < 1)
                         $("#discussion-content").append("<p>{{__('sentence.No more discussions')}}</p>");
                     window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, document.getElementsByClassName("math_formula")]);
+                    hljs.highlightAll();// 代码高亮
                 }
             );
         }
