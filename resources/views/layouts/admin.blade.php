@@ -273,7 +273,10 @@
 
                 <li class="nav-item">
                     <a class="nav-link border-top" href="{{route('admin.settings')}}">
-                        <i class="fa fa-cogs fa-lg" aria-hidden="true"></i> 系统配置
+                        <i class="fa fa-cogs fa-lg" aria-hidden="true"></i> 系统设置
+                    </a>
+                    <a class="nav-link border-top" href="{{route('admin.upgrade')}}">
+                        <i class="fa fa-arrow-up fa-lg" aria-hidden="true"></i> 系统升级
                     </a>
                 </li>
 

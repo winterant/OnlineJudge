@@ -5,9 +5,27 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
+    public function settings(Request $request){
+        if ($request->isMethod('get')){
+            return view('admin.settings');
+        }else{
+            $modified=$request->all();
+            foreach($modified as $key=>$val) {
+                if($val==='true')$val=true;
+                if($val==='false')$val=false;
+                if(is_numeric($val))$val=intval($val);
+
+                DB::table('settings')->updateOrInsert(['key'=>$key],['value'=>$val]);
+            }
+            system('php '.base_path('artisan').' optimize',$out);
+            return "OK";
+        }
+    }
+
     private function get_code_version($local){
         exec('cd '.base_path(),$_,$status);
         if($local){
@@ -29,40 +47,39 @@ class SettingController extends Controller
     //升级系统
     public function upgrade_oj(Request $request){
         $source = $request->input('upgrade_source');
+        $source = 'https://'.$source.'/iamwinter/LDUOnlineJudge.git'; //升级来源
 
-        $new_project = base_path('storage/oj_upgrade');
+        $new_project = storage_path('oj_upgrade');
         exec('rm -rf '.$new_project,$out,$status); //删除旧文件夹
 
-        $cmd_git = 'git clone https://'.$source.'/iamwinter/LDUOnlineJudge.git '.$new_project.' 2>&1';
-        $cmd_bash = 'bash '.$new_project.'/install/ubuntu/update.sh '.base_path().' 2>&1';
+        Log::info('----------------------------------------------------------------');
+        Log::info('Start to upgrade LDUOnlineJudge!');
+
+        $cmd_git = 'sudo git clone '.$source.' '.$new_project.' 2>&1';
+        Log::info($cmd_git);
+        unset($out);
         exec($cmd_git,$out,$status);
+        foreach ($out as $line)
+            Log::info($line);
+
+        $cmd_bash = 'sudo bash '.$new_project.'/install/ubuntu/update.sh '.base_path().' 2>&1';
+        Log::info($cmd_bash);
         exec($cmd_bash,$out,$status);
+        foreach ($out as $line)
+            Log::info($line);
+        Log::info('----------------------------------------------------------------');
+
         return 1;
 //        return '<h1>升级成功！</h1><br>'.implode('<br>',$out);
 //        return view('client.success',['msg'=>implode('<br>',$out)]);
     }
 
-    public function settings(Request $request){
-        if ($request->isMethod('get')){
-            $old_version = $this->get_code_version(true);
-            $new_version = $this->get_code_version(false);
-            exec('git remote -v |head -1|cut -d / -f 3', $remote_domain, $status);
-            $remote_domain = $remote_domain[0];
-            return view('admin.settings', compact('old_version', 'new_version', 'remote_domain'));
-        }
-
-
-        if($request->isMethod('post')){
-            $modified=$request->all();
-            foreach($modified as $key=>$val) {
-                if($val==='true')$val=true;
-                if($val==='false')$val=false;
-                if(is_numeric($val))$val=intval($val);
-
-                DB::table('settings')->updateOrInsert(['key'=>$key],['value'=>$val]);
-            }
-            system('php '.base_path('artisan').' optimize',$out);
-            return "OK";
-        }
+    public function upgrade(Request $request){
+        $old_version = $this->get_code_version(true);
+        $new_version = $this->get_code_version(false);
+        exec('git remote -v |head -1|cut -d / -f 3', $remote_domain, $status);
+        $remote_domain = $remote_domain[0];
+        return view('admin.upgrade', compact('old_version', 'new_version', 'remote_domain'));
     }
+
 }

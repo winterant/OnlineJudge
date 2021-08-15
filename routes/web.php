@@ -182,5 +182,6 @@ Route::middleware(['auth','CheckBlacklist'])->prefix('admin')->name('admin.')->w
 
 //    setting
     Route::any('/settings','Admin\SettingController@settings')->middleware(['Privilege:admin'])->name('settings');
+    Route::get('/upgrade','Admin\SettingController@upgrade')->middleware(['Privilege:admin'])->name('upgrade');
     Route::post('/upgrade_oj', 'Admin\SettingController@upgrade_oj')->middleware(['Privilege:admin'])->name('upgrade_oj');
 });

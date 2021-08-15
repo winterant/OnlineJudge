@@ -145,67 +145,9 @@
                 </div>
             </form>
         </div>
-
-        <div class="my-container bg-white">
-            <h4>系统升级</h4>
-            <hr>
-            <div class="overflow-auto px-2">
-                @if(isset($_GET['check_update']))
-                    <span>
-                        【最新版本：
-                        <a href="https://github.com/iamwinter/LDUOnlineJudge/commits/master" target="_blank">官方站</a>
-                        <a href="https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge/commits/master" target="_blank">镜像站</a>
-                        】
-                    </span>
-                    <br>
-                    <span>{!! $new_version !!}</span>
-                    <br>
-                    <br>
-                @endif
-
-                <span>【当前系统版本】</span>
-                @if($old_version==$new_version)
-                    @if(isset($_GET['check_update']))
-                        <span class="text-green">(最新版本)</span>
-                    @endif
-                    <script type="text/javascript">
-                        $(function (){
-                            $('#upgrade_btn').html('强制升级')
-                        })
-                    </script>
-                @else
-                    <span class="text-red">(可升级)</span>
-                @endif
-                @if(!isset($_GET['check_update']))
-                    &ensp;
-                    <a href="?check_update=1" class="text-sky">检查更新</a>
-                @endif
-                <br>
-                <span>{!! $old_version !!}</span>
-                <br>
-
-                <div class="float-right">
-                    <form id="form_upgrade" class="mb-0">
-                        @csrf
-                        <span>升级来源：</span>
-                        <select id="upgrade_source" name="upgrade_source" class="px-3" style="border-radius: 4px">
-                            <option class="form-control" value="github.com.cnpmjs.org">github.com.cnpmjs.org（境内速度快）</option>
-                            <option class="form-control" value="github.com">github.com（服务器在境外请选此项）</option>
-                            <option class="form-control" value="gitee.com">gitee.com（码云镜像；可能版本较老）</option>
-                        </select>
-                        <button type="button" id="upgrade_btn" class="btn bg-info text-white">开始升级</button>
-                    </form>
-                </div>
-            </div>
-            <hr>
-        </div>
     </div>
 
     <script type="text/javascript">
-        $(function () {
-            $("#upgrade_source option[value='{{$remote_domain}}']").attr("selected",true);
-        })
-
         function submit_settings(form) {
             $.ajax({
                 type: "POST",//方法类型
@@ -216,51 +158,10 @@
                     Notiflix.Notify.Success("修改成功!");
                 },
                 error : function() {
-                    Notiflix.Notify.Failure("修改失败！请联系开发者解决");
+                    Notiflix.Notify.Failure("修改失败！请重试");
                 }
             });
             return false;
         }
-    </script>
-
-    <script type="text/javascript">
-        $("#upgrade_btn").click(function (){
-            Notiflix.Confirm.Init({
-                plainText: false, //使<br>可以换行
-            });
-            Notiflix.Confirm.Show('操作确认','执行升级将从指定来源获取源码并覆盖当前本地代码。' +
-                '如果您修改了本地源码，请提前备份。<br><br>' +
-                '点击"开始升级"后，请不要关闭当前页面！升级成功后将弹出成功页面！<br>','确认升级','取消',function () {
-                $('#upgrade_btn').html('正在升级...');
-                $('#upgrade_btn').attr('disabled',true);
-
-                Notiflix.Loading.Init({clickToClose:false});
-                Notiflix.Loading.Standard('正在升级中(约1分钟)...   请不要关闭此页面！');
-
-                $.ajax({
-                    type: "POST",//方法类型
-                    dataType: "json",//预期服务器返回的数据类型
-                    url: "{{route('admin.upgrade_oj')}}" ,//url
-                    data: $('#form_upgrade').serialize(),
-                    success: function (result) {
-                        console.log(result);//打印服务端返回的数据(调试用)
-                        Notiflix.Report.Init({
-                            plainText: false, //使<br>可以换行
-                        });
-                        Notiflix.Report.Info('升级成功','您已成功升级Online Judge到最新版本！快去体验吧!','刷新页面',function (){window.location.reload()});
-                    },
-                    error : function() {
-                        Notiflix.Report.Init({
-                            plainText: false, //使<br>可以换行
-                        });
-                        Notiflix.Report.Info('连接中断','升级过程中与服务器与服务器失去了连接！可能的原因：<br><br>' +
-                            '【1】升级成功！由于服务端的重启导致该页面失去连接。<br><br>' +
-                            '【1】升级失败，这种情况发生的几率很小。' +
-                            '如果造成网站无法访问，请尝试重启容器(docker restart lduoj)或服务器(reboot)',
-                            '刷新页面',function (){window.location.reload()});
-                    }
-                });
-            })
-        })
     </script>
 @endsection
