@@ -32,7 +32,7 @@
 <script src="{{asset('static/jquery-table2excel/jquery.table2excel.min.js')}}" defer></script>
 
 {{-- ckeditor5 --}}
-<script src="{{asset('static/ckeditor5/build/ckeditor.js')}}" defer></script>
+<script src="{{asset('static/ckeditor5/build/ckeditor.js?v=20210815')}}" defer></script>
 <script src="{{asset('static/ckeditor5/config.js')}}" defer></script>
 
 {{-- 代码编辑器 codemirror  --}}
