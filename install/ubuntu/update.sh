@@ -18,7 +18,7 @@ cd "${APP_HOME}" || exit 2
 chown www-data:www-data -R storage bootstrap/cache
 composer install --ignore-platform-reqs
 php artisan storage:link
-php artisan key:generate
+#php artisan key:generate
 php artisan optimize
 
 # 更新mysql表结构信息
