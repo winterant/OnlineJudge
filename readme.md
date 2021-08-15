@@ -4,23 +4,21 @@ Ludong University Online Judge
 
 # :bulb: 快速了解
 
-**概览**
-
-- 网站首页：[lduoj.top](http://lduoj.top)
-- 演示网站（仅供演示）：[demo.lduoj.top](http://demo.lduoj.top) ；
-  管理员admin（demolduoj）；
-  [截屏展示](https://blog.csdn.net/winter2121/article/details/105294224) 。
-- 程序设计在线评测系统，大学生程序设计考试系统，ACM-ICPC竞赛系统。
-- 支持**考试/竞赛**，支持**编程题、代码填空**（C/C++/Java/Python3）。
-- Web后端基于php框架 laravel 6.0 开发，php版本=7.2。
-- Web前端使用bootstrap4、jquery，适配移动端和PC端。
-- 判题端基于C/C++和shell编程，存放于`judge`文件夹。
+程序设计在线评测系统(`Online Judge`)常见于程序设计竞赛、ACM集训、算法考试和教学任务中。
+`LDUOnlineJudge`可分为两个部分：1.基于laravel 6.0（PHP7.2）开发的web端；
+2.基于C语言开发的判题端（源码位于`./judge/`）。
+Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管理员管理后台、编写题目、组织竞赛/考试等。
+判题端可将学生提交的代码进行评判，基于C语言实现在Linux系统下对选手代码进行评测。
+判题端使用Ptrace监视选手子进程，严格限制时间、空间，严格禁止系统调用；
+同时支持出题人自行编写评判程序对选手程序运行结果进行评判。
+欢迎访问LDUOJ([http://lduoj.top](http://lduoj.top))。
+您还可以查看[截屏展示](https://blog.csdn.net/winter2121/article/details/105294224) 。
 
 **前台**
 
 + 首页；公告/新闻，本周榜，上周榜。
 + 状态；用户提交记录与判题结果。
-+ 问题；题库（编程、代码填空）。
++ 问题；题库（支持编程题、代码填空题）。
 + 竞赛；题目(选自题库)，排名(ACM,OI)可封榜，**赛后补题榜**，公告栏，气球派送。
 + 排名；用户解题排行榜，可按年/月/周/日查询。
 
