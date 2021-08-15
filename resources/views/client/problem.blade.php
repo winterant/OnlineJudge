@@ -18,7 +18,7 @@
             @endif
 
             <div class="col-lg-9 col-md-8 col-sm-12 col-12">
-                <div class="my-container bg-white d-inline-block ck-content">
+                <div class="my-container bg-white d-inline-block">
                     {{--                非竞赛&&题目未公开，则提示 --}}
                     @if(!isset($contest)&&$problem->hidden==1)
                         [<font class="text-red">{{trans('main.Hidden')}}</font>]
@@ -57,16 +57,16 @@
                     <hr class="mt-0 mb-1">
                     <div class="math_formula">
                         <h4 class="text-sky">Description</h4>
-                        {!! $problem->description !!}
+                        <div class="ck-content">{!! $problem->description !!}</div>
 
                         @if($problem->input!=null)
                             <h4 class="mt-2 text-sky">Input</h4>
-                            {!!$problem->input !!}
+                            <div class="ck-content">{!!$problem->input !!}</div>
                         @endif
 
                         @if($problem->output!=null)
                             <h4 class="mt-2 text-sky">Output</h4>
-                            {!!$problem->output !!}
+                            <div class="ck-content">{!!$problem->output !!}</div>
                         @endif
 
                         @if(count($samples) > 0)
@@ -85,7 +85,7 @@
 
                         @if($problem->hint!=null)
                             <h4 class="mt-2 text-sky">Hint</h4>
-                            {!! $problem->hint !!}
+                            <div class="ck-content">{!! $problem->hint !!}</div>
                         @endif
 
                         @if( ($problem->source!=null) && (!isset($contest)||$contest->end_time<date('Y-m-d H:i:s')) )
