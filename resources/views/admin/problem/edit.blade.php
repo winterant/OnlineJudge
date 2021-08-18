@@ -227,7 +227,6 @@
         $(function (){
             ClassicEditor.create(document.querySelector('#description'), ck_config).then(editor => {
                 ck_description=editor;
-                editor.plugins.get( 'TextTransformation' ).isEnabled = false;
             })
             ClassicEditor.create(document.querySelector('#input'), ck_config).then(editor => {
                 ck_input = editor;
@@ -278,6 +277,15 @@
                 "     </div>";
             $(that).before(dom);
         }
+    </script>
+
+    <script type="text/javascript">
+        window.onbeforeunload = function() {
+            return "确认离开当前页面吗？未保存的数据将会丢失！";
+        }
+        $("form").submit(function(e){
+            window.onbeforeunload = null
+        });
     </script>
 
 @endsection

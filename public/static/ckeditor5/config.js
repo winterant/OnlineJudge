@@ -3,35 +3,34 @@ const ck_config = {
         items: [
             'heading',
             '|',
-            'fontFamily',
-            'fontSize',
             'fontColor',
-            'fontBackgroundColor',
             'highlight',
-            '|',
+            'horizontalLine',
             'bold',
             'italic',
+            '|',
+            'code',
+            'codeBlock',
+            'blockQuote',
             'link',
-            'bulletedList',
-            'numberedList',
             '|',
             'alignment',
             'outdent',
             'indent',
+            'bulletedList',
+            'numberedList',
             '|',
-            'horizontalLine',
-            'code',
-            'codeBlock',
-            '|',
-            'blockQuote',
             'insertTable',
             'imageUpload',
+            'mediaEmbed',
             'undo',
             'redo'
         ]
     },
     language: 'zh-cn',
-    removePlugins: ['Title'],  //取消自动填充初始标题
+    ckfinder: {
+        uploadUrl:''
+    },
     image: {
         toolbar: [
             'imageTextAlternative',

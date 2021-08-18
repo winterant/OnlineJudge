@@ -32,9 +32,13 @@
 <script src="{{asset('static/jquery-table2excel/jquery.table2excel.min.js')}}" defer></script>
 
 {{-- ckeditor5 --}}
-<script src="{{asset('static/ckeditor5/build/ckeditor.js?v=20210815')}}" defer></script>
-<script src="{{asset('static/ckeditor5/config.js')}}" defer></script>
-
+<script type="text/javascript">
+    $(function (){
+        ck_config.ckfinder.uploadUrl = "{{route('ck_upload_image',['_token'=>csrf_token()])}}"
+    })
+</script>
+<script src="{{asset('static/ckeditor5/build/ckeditor.js?v=0818')}}" defer></script>
+<script src="{{asset('static/ckeditor5/config.js?v=0818')}}" defer></script>
 {{-- 代码编辑器 codemirror  --}}
 {{-- admin/problem/edit.blade.php; client/code_editor.blade.php --}}
 <link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/lib/codemirror.css")}}"/>
