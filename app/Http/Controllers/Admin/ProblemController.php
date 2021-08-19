@@ -167,10 +167,10 @@ class ProblemController extends Controller
         if(isset($_GET['pid'])){
             if(!DB::table('problems')->where('id',$_GET['pid'])->exists())
                 return view('admin.fail',['msg'=>'题目'.$_GET['pid'].'不存在']);
-            foreach (Storage::allFiles('data/'.$_GET['pid'].'/test') as $filepath){
+            foreach (readAllFilesPath(testdata_path($_GET['pid'].'/test')) as $filepath){
                 $name=pathinfo($filepath,PATHINFO_FILENAME);  //文件名
                 $ext=pathinfo($filepath,PATHINFO_EXTENSION);    //拓展名
-                $tests[]=['index'=>$name,'filename'=>$name.'.'.$ext, 'size'=>Storage::size($filepath)];
+                $tests[]=['index'=>$name,'filename'=>$name.'.'.$ext, 'size'=>filesize($filepath)];
             }
         }
         uasort($tests,function ($x,$y){
@@ -191,7 +191,7 @@ class ProblemController extends Controller
         $filename=$request->input('filename');
 
         $uc=new UploadController;
-        $isUploaded=$uc->upload($request,'data/'.$pid.'/test',$filename);
+        $isUploaded=$uc->upload($request,testdata_path($pid.'/test'),$filename);
         if(!$isUploaded)return 0;
 
         return 1;
@@ -204,7 +204,7 @@ class ProblemController extends Controller
             return -1;
         $pid=$request->input('pid');
         $filename=$request->input('filename');
-        $data=Storage::get('data/'.$pid.'/test/'.$filename);
+        $data=file_get_contents(testdata_path($pid.'/test/'.$filename));
         return json_encode($data);
     }
 
@@ -217,7 +217,7 @@ class ProblemController extends Controller
         $pid=$request->input('pid');
         $filename=$request->input('filename');
         $content=$request->input('content');
-        Storage::put('data/'.$pid.'/test/'.$filename,str_replace(["\r\n","\r","\n"],PHP_EOL, $content));
+        file_put_contents(testdata_path($pid.'/test/'.$filename), str_replace(["\r\n","\r","\n"],PHP_EOL, $content));
         return back();
     }
 
@@ -230,7 +230,8 @@ class ProblemController extends Controller
         $pid=$request->input('pid');
         $fnames=$request->input('fnames');
         foreach ($fnames as $filename)
-            Storage::delete('data/'.$pid.'/test/'.$filename);
+            if(file_exists(testdata_path($pid.'/test/'.$filename)))
+                unlink(testdata_path($pid.'/test/'.$filename));
         return 1;
     }
 
@@ -280,7 +281,7 @@ class ProblemController extends Controller
         }
 
         $uc=new UploadController;
-        $isUploaded=$uc->upload($request,'xml_temp','import_problems.xml');
+        $isUploaded=$uc->upload($request,storage_path('app/xml_temp'),'import_problems.xml');
         if(!$isUploaded)return 0;
 
         //读取xml->导入题库

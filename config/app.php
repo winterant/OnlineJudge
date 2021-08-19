@@ -5,6 +5,7 @@ return [
     /*
      * 判题端相关配置
      */
+    'JG_DATA_DIR' => env('JG_DATA_DIR','storage/app/data'),
     'JG_NAME' => env('JG_NAME','Master'),
     'JG_MAX_RUNNING' => env('JG_MAX_RUNNING',1),
 
