@@ -7,18 +7,20 @@
 
     <div class="row">
 
-        <div class="col-md-6 table-responsive">
+        <div class="col-md-6">
             <h2>账号权限管理</h2>
-            <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
-            <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
+            <div class="float-left">
+                <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
+                <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
 
-{{--            <a href="javascript:" class="ml-3">预设</a>--}}
-{{--            <a href="javascript:" class="text-gray" data-toggle="tooltip"--}}
-{{--               title="解释">--}}
-{{--                <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
-{{--            </a>--}}
-
-            <table class="table table-striped table-hover table-sm">
+                {{--            <a href="javascript:" class="ml-3">预设</a>--}}
+                {{--            <a href="javascript:" class="text-gray" data-toggle="tooltip"--}}
+                {{--               title="解释">--}}
+                {{--                <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
+                {{--            </a>--}}
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-sm">
                 <thead>
                 <tr>
                     <th></th>
@@ -43,10 +45,10 @@
                         <td nowrap>{{$item->authority}}</td>
                         <td nowrap>{{$item->created_at}}</td>
                         <td><a @if($item->creator)href="{{route('user',$item->creator)}}"@endif target="_blank">{{$item->creator}}</a></td>
-                        <td>
+                        <td nowrap>
                             @if($item->username!='admin'||$item->authority!='admin')
                                 <a href="javascript:delete_privilege({{$item->id}})" class="px-1" title="删除">
-                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                    <i class="fa fa-trash" aria-hidden="true"></i> 删除
                                 </a>
                             @endif
                         </td>
@@ -54,6 +56,7 @@
                 @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
 
         <div class="col-md-6 border-left">

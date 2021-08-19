@@ -40,44 +40,45 @@
         </form>
     </div>
     <div>
-        {{$users->appends($_GET)->links()}}
-        <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
-        <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
+        <div class="float-left">
+            {{$users->appends($_GET)->links()}}
+            <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
+            <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
 
-        <a href="javascript:update_revise(0);" class="ml-3">禁止修改</a>
-        <a href="javascript:" class="text-gray"
-           onclick="whatisthis('选中的用户将被禁止修改个人资料!防止用户私自乱改信息，混淆视听！管理员不受限制')">
-            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-        </a>
+            <a href="javascript:update_revise(0);" class="ml-3">禁止修改个人资料</a>
+            <a href="javascript:" class="text-gray"
+               onclick="whatisthis('选中的用户将被禁止修改个人资料！管理员不受限制。')">
+                <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+            </a>
 
-        <a href="javascript:update_revise(1);" class="ml-3">允许资料变动1</a>
-        <a href="javascript:" class="text-gray"
-           onclick="whatisthis('选中的用户将被设为仅有 1 次修改个人资料的机会！<br>可用于防止用户乱改个人资料')">
-            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-        </a>
+            <a href="javascript:update_revise(1);" class="ml-3">允许修改个人资料1次</a>
+            <a href="javascript:" class="text-gray"
+               onclick="whatisthis('选中的用户将被设为仅有 1 次修改个人资料的机会！<br>可用于防止用户乱改个人资料')">
+                <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+            </a>
 
-        <a href="javascript:update_revise(3);" class="ml-3">允许资料变动3</a>
-        <a href="javascript:" onclick="delete_user()" class="ml-3">批量删除</a>
-
+            <a href="javascript:update_revise(1000);" class="ml-3">永久允许修改个人资料</a>
+            <a href="javascript:" onclick="delete_user()" class="ml-3">删除选中项</a>
+        </div>
         <div class="table-responsive">
             <table class="table table-striped table-hover table-sm">
                 <thead>
                 <tr>
                     <th></th>
-                    <th>编号</th>
-                    <th>登录名</th>
-                    <th>邮箱</th>
-                    <th>姓名</th>
-                    <th>学校</th>
-                    <th>班级</th>
-                    <th>资料变动次数
+                    <th nowrap>编号</th>
+                    <th nowrap>登录名</th>
+                    <th nowrap>邮箱</th>
+                    <th nowrap>姓名</th>
+                    <th nowrap>学校</th>
+                    <th nowrap>班级</th>
+                    <th nowrap>修改限制
                         <a href="javascript:" style="color: #838383"
                            onclick="whatisthis('允许用户可自行修改个人资料的次数，可防止用户随意改动。影响状态、榜单等混乱。管理员不受限制')">
                             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                         </a>
                     </th>
-                    <th>注册时间</th>
-                    <th>操作</th>
+                    <th nowrap>注册时间</th>
+                    <th nowrap>操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -94,12 +95,12 @@
                         <td nowrap>{{$item->class}}</td>
                         <td>{{$item->revise}}</td>
                         <td nowrap>{{$item->created_at}}</td>
-                        <td>
+                        <td nowrap>
                             <a href="{{route('user_edit',$item->username)}}" class="px-1" target="_blank" title="修改">
-                                <i class="fa fa-edit" aria-hidden="true"></i>
+                                <i class="fa fa-edit" aria-hidden="true"></i> 编辑
                             </a>
                             <a href="javascript:" onclick="delete_user({{$item->id}})" class="px-1" title="删除">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                <i class="fa fa-trash" aria-hidden="true"></i> 删除
                             </a>
                         </td>
                     </tr>

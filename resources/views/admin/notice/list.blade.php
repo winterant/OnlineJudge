@@ -5,7 +5,7 @@
 @section('content')
 
     <h2>公告列表</h2>
-    <div class="table-responsive">
+    <div class="float-left">
         {{$notices->appends($_GET)->links()}}
         <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
         <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
@@ -17,8 +17,9 @@
            onclick="whatisthis('选中的公告将设为隐藏，无法在网站首页查看')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
-        <a href="javascript:" onclick="delete_notice()" class="ml-3">批量删除</a>
-
+        <a href="javascript:" onclick="delete_notice()" class="ml-3">删除选中项</a>
+    </div>
+    <div class="table-responsive">
         <table class="table table-striped table-hover table-sm">
             <thead>
             <tr>
@@ -44,12 +45,12 @@
                     <td nowrap>{{$item->created_at}}</td>
                     <td nowrap>{{$item->updated_at}}</td>
                     <td nowrap><a href="{{route('user',$item->username?:0)}}">{{$item->username}}</a></td>
-                    <td>
+                    <td nowrap>
                         <a href="{{route('admin.notice.update',$item->id)}}" class="px-1" target="_blank" title="修改">
-                            <i class="fa fa-edit" aria-hidden="true"></i>
+                            <i class="fa fa-edit" aria-hidden="true"></i> 编辑
                         </a>
                         <a href="javascript:" onclick="delete_notice({{$item->id}})" class="px-1" title="删除">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            <i class="fa fa-trash" aria-hidden="true"></i> 删除
                         </a>
                     </td>
                 </tr>

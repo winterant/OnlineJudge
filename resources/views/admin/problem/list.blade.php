@@ -31,7 +31,7 @@
         </div>
         <button class="btn border">查询</button>
     </form>
-    <div class="table-responsive">
+    <div class="float-left">
         {{$problems->appends($_GET)->links()}}
         <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
         <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
@@ -45,7 +45,7 @@
         <a href="javascript:" class="text-gray" onclick="whatisthis('选中的题目将被隐藏，普通用户无法在题库中查看和提交，但不会影响竞赛!')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
-
+    </div>
 {{--        <a href="javascript:" class="ml-3">删除</a>--}}
 {{--        <a href="javascript:" class="text-gray" onclick="whatisthis('删除选中的题目，删除后对应题号将空缺！')">--}}
 {{--            <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
@@ -66,7 +66,7 @@
 {{--        <a href="javascript:" class="text-gray" onclick="whatisthis('选中的题目将被插入到对应题号之后！')">--}}
 {{--            <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
 {{--        </a>--}}
-
+    <div class="table-responsive">
         <table class="table table-striped table-hover table-sm">
             <thead>
             <tr>
@@ -99,15 +99,15 @@
                     <td><a @if($item->creator)href="{{route('user',$item->creator)}}"@endif target="_blank">{{$item->creator}}</a></td>
                     <td nowrap>
                         <a href="javascript:" onclick="update_hidden('{{1-$item->hidden}}',{{$item->id}});"
-                            class="px-1" title="点击切换">{{$item->hidden?'隐藏*不可见':'公开'}}</a>
+                            class="px-1" title="点击切换">{{$item->hidden?'**隐藏**':'公开'}}</a>
                     </td>
                     <td nowrap>
                         <a href="{{route('admin.problem.update_withId',$item->id)}}" target="_blank" class="px-1"
                            data-toggle="tooltip" title="修改">
-                            <i class="fa fa-edit" aria-hidden="true"></i>
+                            <i class="fa fa-edit" aria-hidden="true"></i> 编辑
                         </a>
                         <a href="{{route('admin.problem.test_data',['pid'=>$item->id])}}" target="_blank" class="px-1" data-toggle="tooltip" title="测试数据">
-                            <i class="fa fa-file" aria-hidden="true"></i>
+                            <i class="fa fa-file" aria-hidden="true"></i> 测试数据
                         </a>
                     </td>
                 </tr>

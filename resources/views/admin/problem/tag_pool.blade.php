@@ -6,7 +6,6 @@
 
     <h2>标签库</h2>
     <hr>
-
     <form action="" method="get" class="pull-right form-inline">
         <div class="form-inline mx-3">
             每页
@@ -24,7 +23,7 @@
         </div>
         <button class="btn border">查询</button>
     </form>
-    <div class="table-responsive">
+    <div class="float-left">
         {{$tag_pool->appends($_GET)->links()}}
         <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
         <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
@@ -36,16 +35,17 @@
         <a href="javascript:" class="text-gray" onclick="whatisthis('选中项将被删除!')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
-
+    </div>
+    <div class="table-responsive">
         <table class="table table-striped table-hover table-sm">
             <thead>
             <tr>
                 <th></th>
-                <th>编号</th>
-                <th>标签名称</th>
-                <th>隐藏</th>
-                <th>创建时间</th>
-                <th>操作</th>
+                <th nowrap>编号</th>
+                <th nowrap>标签名称</th>
+                <th nowrap>隐藏</th>
+                <th nowrap>创建时间</th>
+                <th nowrap>操作</th>
             </tr>
             </thead>
             <tbody>
@@ -64,7 +64,7 @@
                     <td nowrap>{{$item->created_at}}</td>
                     <td nowrap>
                         <a href="javascript:" onclick="tag_pool_delete('{{$item->id}}');" class="px-1" title="删除">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            <i class="fa fa-trash" aria-hidden="true"></i> 删除
                         </a>
                     </td>
                 </tr>
@@ -73,7 +73,8 @@
         </table>
         {{$tag_pool->appends($_GET)->links()}}
     </div>
-    <script>
+
+    <script type="text/javascript">
         function tag_pool_hidden(hidden,id=-1) {
             if(id!==-1){  ///单独修改一个
                 $('td input[type=checkbox]').prop('checked',false)

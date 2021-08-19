@@ -48,7 +48,7 @@
         </div>
         <button class="btn border">查找</button>
     </form>
-    <div class="table-responsive">
+    <div class="float-left">
         {{$contests->appends($_GET)->links()}}
         <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
         <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
@@ -60,7 +60,8 @@
         </a>
         <a href="javascript:" onclick="update_hidden(1)" class="ml-3">设为隐藏</a>
         <a href="javascript:" onclick="delete_contest()" class="ml-3">批量删除</a>
-
+    </div>
+    <div class="table-responsive">
         <table class="table table-striped table-hover table-sm">
             <thead>
             <tr>
@@ -108,15 +109,15 @@
                         </a>
                     </td>
                     <td nowrap>{{$item->username}}</td>
-                    <td>
+                    <td nowrap>
                         <a href="{{route('admin.contest.update',$item->id)}}" class="px-1" target="_blank" title="修改">
-                            <i class="fa fa-edit" aria-hidden="true"></i>
+                            <i class="fa fa-edit" aria-hidden="true"></i> 编辑
                         </a>
                         <a href="javascript:" onclick="delete_contest({{$item->id}})" class="px-1" title="删除">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            <i class="fa fa-trash" aria-hidden="true"></i> 删除
                         </a>
                         <a href="javascript:" onclick="clone_contest({{$item->id}})" class="px-1" title="克隆该竞赛">
-                            <i class="fa fa-clone" aria-hidden="true"></i>
+                            <i class="fa fa-clone" aria-hidden="true"></i> 克隆
                         </a>
                         <a href="javascript:" onclick="contest_set_top('{{$item->id}}',1)" class="px-1" title="置顶" style="white-space: nowrap">
                             置顶
@@ -133,8 +134,8 @@
         </table>
         {{$contests->appends($_GET)->links()}}
     </div>
-    <script>
 
+    <script type="text/javascript">
         function contest_set_top(cid, way) {
             $.post(
                 '{{route('admin.contest.set_top')}}',

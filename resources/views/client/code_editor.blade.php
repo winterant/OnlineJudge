@@ -1,4 +1,4 @@
-<div class="my-container bg-white ck-content">
+<div class="my-container bg-white">
     <h5>{{trans('sentence.Submit')}}</h5>
     <hr class="mt-0">
 

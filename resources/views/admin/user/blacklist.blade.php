@@ -35,13 +35,13 @@
                         <td onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
                             <input type="checkbox" value="{{$item->id}}" onclick="window.event.stopPropagation();" style="vertical-align:middle;zoom: 140%">
                         </td>
-                        <td nowrap><a href="{{route('user',$item->username)}}" target="_blank">{{$item->username}}</a></td>
+                        <td nowrap><a href="{{route('user',$item->username?:'')}}" target="_blank">{{$item->username}}</a></td>
                         <td nowrap>{{$item->nick}}</td>
                         <td nowrap>{{$item->created_at}}</td>
-                        <td><a @if($item->creator)href="{{route('user',$item->creator)}}"@endif target="_blank">{{$item->creator}}</a></td>
+                        <td><a @if($item->creator)href="{{route('user',$item->creator?:'')}}"@endif target="_blank">{{$item->creator}}</a></td>
                         <td>
                             <a href="javascript:delete_black({{$item->id}})" class="px-1" title="删除">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                <i class="fa fa-trash" aria-hidden="true"></i> 删除
                             </a>
                         </td>
                     </tr>
@@ -66,8 +66,8 @@
                     </lable>
                 </div>
                 <div class="form-group col-12">
-                    <font class="pull-left">拉黑原因：</font>
-                    <textarea name="reason" cols="45" autoHeight maxlength="255"></textarea>
+                    <span class="pull-left">拉黑原因：</span>
+                    <textarea name="reason" cols="45" autoHeight maxlength="255" style="max-width: 100%"></textarea>
                 </div>
                 <div class="form-group col-8 text-center">
                     <button class="btn border">提交</button>

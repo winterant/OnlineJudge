@@ -6,7 +6,6 @@
 
     <h2>标签管理</h2>
     <hr>
-
     <form action="" method="get" class="pull-right form-inline">
         <div class="form-inline mx-3">
             每页
@@ -32,7 +31,7 @@
         </div>
         <button class="btn border">查询</button>
     </form>
-    <div class="table-responsive">
+    <div class="float-left">
         {{$tags->appends($_GET)->links()}}
         <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
         <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
@@ -41,17 +40,18 @@
         <a href="javascript:" class="text-gray" onclick="whatisthis('选中项将被删除!')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
-
+    </div>
+    <div class="table-responsive">
         <table class="table table-striped table-hover table-sm">
             <thead>
             <tr>
                 <th></th>
-                <th>题号</th>
-                <th>题目</th>
-                <th>提交人</th>
-                <th>标签</th>
-                <th>创建时间</th>
-                <th>操作</th>
+                <th nowrap>题号</th>
+                <th nowrap>题目</th>
+                <th nowrap>提交人</th>
+                <th nowrap>标签</th>
+                <th nowrap>创建时间</th>
+                <th nowrap>操作</th>
             </tr>
             </thead>
             <tbody>
@@ -71,7 +71,7 @@
 {{--                            <i class="fa fa-edit" aria-hidden="true"></i>--}}
 {{--                        </a>--}}
                         <a href="javascript:" onclick="tag_delete('{{$item->id}}');" class="px-1" title="删除">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            <i class="fa fa-trash" aria-hidden="true"></i> 删除
                         </a>
                     </td>
                 </tr>

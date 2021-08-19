@@ -36,7 +36,7 @@
     </div>
     <div>
         @if(isset($_GET['pid']))
-            <div class="table-responsive px-4">
+            <div class="float-left">
                 <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
                 <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
 
@@ -44,7 +44,8 @@
                 <a href="javascript:" class="text-gray" onclick="whatisthis('选中的文件将被删除')">
                     <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                 </a>
-
+            </div>
+            <div class="table-responsive px-4">
                 <div class="row">
                     {{-- 把所有数据文件分为两部分，然后左右分栏显示 --}}
                     @php($tests_parts=[array_slice($tests,0,(count($tests)+1)>>1),array_slice($tests,(count($tests)+1)>>1)])
