@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -ex
-
 APP_HOME=$(dirname $(dirname $(readlink -f "$0")))
 cd "${APP_HOME}"/judge || exit
 

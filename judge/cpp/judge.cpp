@@ -295,7 +295,7 @@ int compile()
     //编译用户提交的代码
     const char *CP_C[]  ={"gcc","Main.c",  "-o","Main","-Wall","-lm","--static","-std=c99",  "-fmax-errors=5","-DONLINE_JUDGE","-O2",NULL};
     const char *CP_CPP[]={"g++","Main.cpp","-o","Main","-Wall","-lm","--static","-std=c++11","-fmax-errors=5","-DONLINE_JUDGE","-O2","-fno-asm", NULL};
-    const char *CP_JAVA[]={"javac","-J-Xms64m","-J-Xmx128m","-encoding","UTF-8","Main.java",NULL};
+    const char *CP_JAVA[]={"javac","-J-Xms64m","-J-Xmx256m","-encoding","UTF-8","Main.java",NULL};
     int pid;
     if( (pid=fork()) == 0 ) //子进程编译
     {
@@ -308,9 +308,11 @@ int compile()
         LIM.rlim_max=LIM.rlim_cur=(10<<20);//file size limit: 10MB,compile file size limit
         setrlimit(RLIMIT_FSIZE, &LIM);
 
-        LIM.rlim_max=LIM.rlim_cur= solution.language<=1 ? (512<<20) : (1024<<20); //memory limit; c/c++ 512MB, java 1024MB
-        setrlimit(RLIMIT_AS, &LIM);
-
+        if(solution.language!=2)//java can be limited by command options
+        {
+            LIM.rlim_max=LIM.rlim_cur=(1<<30); //memory limit; 1024MB
+            setrlimit(RLIMIT_AS, &LIM);
+        }
         alarm(0);
         alarm(cpu_time);  //定时
 
