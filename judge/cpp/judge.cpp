@@ -170,7 +170,9 @@ int file_size(const char filename[])//文件大小
 {
     struct stat statbuf;
     stat(filename,&statbuf);
-    return statbuf.st_size;
+    if(S_ISREG(statbuf.st_mode)) //返回值为1时返回文件大小；返回值为0说明文件不存在，statbuf.st_size为随机值
+        return statbuf.st_size;
+    return 0;
 }
 
 char *read_file(const char filename[])//从文件读取内容，返回字符串指针
