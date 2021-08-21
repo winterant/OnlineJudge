@@ -206,11 +206,11 @@ char* isInFile(const char fname[])  //检查文件名后缀是否为.in
 	return NULL;
 }
 
-char* get_data_out_path(const char data_dir[], const char test_name[]) //获取标准答案的文件路径
+char* get_datafile_path(const char data_dir[], const char test_name[], const char ext[]) //获取标准数据的文件路径
 {
     char *path = new char[256];
-    sprintf(path,"%s/%s.out",data_dir,test_name);
-    if(access(path,F_OK)==-1)
+    sprintf(path,"%s/%s.%s",data_dir,test_name,ext);
+    if(strcmp(ext,"out")==0 && access(path,F_OK)==-1) //.out文件不存在，返回.ans
         sprintf(path,"%s/%s.ans",data_dir,test_name);
     return path;
 }
@@ -344,10 +344,10 @@ int compile()
 }
 
 //运行一次用户程序，产生用户答案user.out
-void running()
+void running(const char data_in_path[])
 {
     nice(19); //优先级-20~19，19最低
-    freopen("data.in", "r", stdin);
+    freopen(data_in_path, "r", stdin);
     freopen("user.out", "w", stdout);
     freopen("error.out", "a+", stderr);
     ptrace(PTRACE_TRACEME, 0, NULL, NULL); //让父进程跟踪自己
@@ -577,15 +577,15 @@ int judge(char *data_dir, char *spj_path)
     {
         char *test_name = isInFile(dirfile->d_name);
         if(test_name==NULL)continue; //不是输入数据，跳过
-        system_cmd("/bin/cp %s/%s.in  ./data.in",data_dir,test_name); //复制输入数据到当前目录
-        char *data_out_path = get_data_out_path(data_dir,test_name);  //输出文件路径
+        char *data_in_path = get_datafile_path(data_dir,test_name,"in");
+        char *data_out_path = get_datafile_path(data_dir,test_name,"out");  //输出文件路径
         test_count++;
         int pid=fork();
         if(pid==0)//child
         {
             printf("test%3s | running on test %d  ===================  %s.in(%dB)=>%s.out(%dB)\n",
-            test_name, test_count,test_name,file_size("data.in"),test_name,file_size(data_out_path));
-            running();
+            test_name, test_count,test_name,file_size(data_in_path),test_name,file_size(data_out_path));
+            running(data_in_path);
             exit(0);
         }
         else if(pid>0)
@@ -594,7 +594,7 @@ int judge(char *data_dir, char *spj_path)
             if(result == OJ_TC)  //运行完成，需要判断用户的答案是否正确
             {
                 if(solution.spj)  //special judge
-                    result = running_spj("data.in",data_out_path,"user.out",test_name);
+                    result = running_spj(data_in_path,data_out_path,"user.out",test_name);
                 else  //比较文件
                     result = compare_file(data_out_path,"user.out");  //非spj直接比较文件
             }
