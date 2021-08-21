@@ -399,7 +399,7 @@ void running(const char data_in_path[])
 }
 
 //运行special judge
-int running_spj(const char *in,const char *out,const char *user_out,const char *test_name)
+int running_spj(const char *spj_path,const char *data_in_path,const char *data_out_path,const char *user_out_path,const char *test_name)
 {
     struct rlimit LIM;
     //time limit
@@ -424,8 +424,8 @@ int running_spj(const char *in,const char *out,const char *user_out,const char *
     LIM.rlim_cur = LIM.rlim_max = 256<<20;  //256MB
     setrlimit(RLIMIT_STACK, &LIM);
 
-    int ret = system_cmd("./spj %s %s %s > spj_temp.out",in,out,user_out);
-    if(file_size("spj_temp.out")){
+    int ret = system_cmd("%s %s %s %s > spj_temp.out",spj_path,data_in_path,data_out_path,user_out_path);
+    if(file_size("spj_temp.out")>0){
         system_cmd("echo '\n ---- Special judge result on test [%s]:' >> spj.out",test_name);
         system_cmd("cat spj_temp.out >> spj.out",test_name);
     }
@@ -568,7 +568,6 @@ int judge(char *data_dir, char *spj_path)
             write_file(error,"error.out","a+");
             return OJ_SE; //系统错误
         }
-        system_cmd("/bin/cp %s ./spj",spj_path);
     }
 
     bool is_acm = (strcmp(solution.judge_type,"acm")==0);
@@ -594,7 +593,7 @@ int judge(char *data_dir, char *spj_path)
             if(result == OJ_TC)  //运行完成，需要判断用户的答案是否正确
             {
                 if(solution.spj)  //special judge
-                    result = running_spj(data_in_path,data_out_path,"user.out",test_name);
+                    result = running_spj(spj_path,data_in_path,data_out_path,"user.out",test_name);
                 else  //比较文件
                     result = compare_file(data_out_path,"user.out");  //非spj直接比较文件
             }

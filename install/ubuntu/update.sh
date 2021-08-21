@@ -18,7 +18,6 @@ cd "${APP_HOME}" || exit 2
 chown www-data:www-data -R storage bootstrap/cache
 composer install --ignore-platform-reqs
 php artisan storage:link
-#php artisan key:generate
 php artisan optimize
 
 # 更新mysql表结构信息
@@ -28,7 +27,7 @@ bash "${APP_HOME}"/install/mysql/update_mysql.sh
 if [ -f /.dockerenv ]; then
     chmod +x "${APP_HOME}"/install/docker/startup.sh
     ln -sf "${APP_HOME}"/install/docker/startup.sh /startup.sh
-    nohup bash /startup.sh > /startup_nohup.txt 2>&1 &
+    nohup bash /startup.sh > /dev/null 2>&1 &
     sleep 1  # nohup后台执行，防止他执行的顺序比后面的语句晚
 fi
 
