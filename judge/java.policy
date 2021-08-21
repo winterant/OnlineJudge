@@ -1,4 +1,1 @@
-//java执行策略，仅授予读取jvm的权限
-grant {
-    permission java.io.FilePermission "/usr/lib/jvm", "read";
-}
+grant{};
