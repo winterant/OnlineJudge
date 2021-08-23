@@ -132,7 +132,7 @@ class ProblemController extends Controller
             ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('problem_id',$_GET['pid']);})
             ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username',$_GET['username']);})
             ->when(isset($_GET['tag_name'])&&$_GET['tag_name']!='',function ($q){return $q->where('name','like','%'.$_GET['tag_name'].'%');})
-            ->orderBy('id')
+            ->orderByDesc('id')
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:20);
         return view('admin.problem.tags',compact('tags'));
     }
@@ -144,7 +144,7 @@ class ProblemController extends Controller
         $tag_pool=DB::table('tag_pool')
             ->select('id','name','hidden','created_at')
             ->when(isset($_GET['tag_name'])&&$_GET['tag_name']!='',function ($q){return $q->where('name','like','%'.$_GET['tag_name'].'%');})
-            ->orderBy('id')
+            ->orderByDesc('id')
             ->paginate(isset($_GET['perPage'])?$_GET['perPage']:20);
         return view('admin.problem.tag_pool',compact('tag_pool'));
     }
