@@ -31,24 +31,6 @@
                 </div>
             </div>
             <hr>
-            <div class="overflow-auto px-2">
-                <form action="{{route('admin.modify_env')}}" method="post">
-                @csrf
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text text-black">判题机名称：</span>
-                    </div>
-                    <input type="text" name="JG_NAME" value="{{session('JG_NAME')??config('app.JG_NAME')}}" required class="form-control" autocomplete="off">
-                </div>
-                <div class="form-inline">
-                    <label>并行判题数：
-                        <input type="number" name="JG_MAX_RUNNING" value="{{session('JG_MAX_RUNNING')??config('app.JG_MAX_RUNNING')}}" required class="form-control">
-                        （建议值：可用内存(available MB)/2048; 该值过大会导致服务器卡顿或判题进程退出）
-                    </label>
-                </div>
-                <button class="btn pull-right text-white mt-4 bg-success">保存并重启判题机</button>
-            </form>
-            </div>
         </div>
 
         <div class="my-container bg-white">

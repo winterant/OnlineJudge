@@ -96,8 +96,6 @@ Route::middleware(['auth','CheckBlacklist'])->prefix('admin')->name('admin.')->w
     Route::middleware(['Privilege:admin'])->group(function (){
         // 判题端指令：启动、重启、停止
         Route::post('/cmd_polling', 'Admin\HomeController@cmd_polling')->name('cmd_polling');
-        // 修改配置文件.env。包括修改判题端配置
-        Route::post('/modify_env', 'Admin\HomeController@modify_env')->name('modify_env');
     });
 
 //    manage notice
