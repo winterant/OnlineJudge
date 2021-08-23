@@ -9,7 +9,9 @@ RUN set -ex &&\
 
 RUN bash /volume/LDUOnlineJudge/install/ubuntu/install.sh
 
-ENTRYPOINT ["/startup.sh"]
+RUN chmod +x /volume/LDUOnlineJudge/install/docker/startup.sh
+
+ENTRYPOINT ["/volume/LDUOnlineJudge/install/docker/startup.sh"]
 
 VOLUME ["/volume"]
 

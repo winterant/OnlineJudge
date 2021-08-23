@@ -55,13 +55,7 @@ cp -p "${APP_HOME}"/judge/sim/sim.1 /usr/share/man/man1/
 cd "${APP_HOME}"/judge/sim/ && make install
 bash "${APP_HOME}"/judge/startup.sh
 
-# 在docker中，初始化容器启动脚本
-if [ -f /.dockerenv ]; then
-    chmod +x "${APP_HOME}"/install/docker/startup.sh
-    ln -sf "${APP_HOME}"/install/docker/startup.sh /startup.sh
-fi
-
-# 对于一些必要命令，为php用户www-data赋予sudo权限
+# 对于一些必要命令，为用户www-data赋予sudo权限
 if [ -f /.dockerenv ]; then
     apt-get -y install sudo
 fi
