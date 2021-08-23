@@ -346,7 +346,7 @@ int compile()
 //运行一次用户程序，产生用户答案user.out
 void running(const char data_in_path[])
 {
-    nice(19); //优先级-20~19，19最低
+    nice(19); //进程执行顺序优先级-20~19，19最低
     freopen(data_in_path, "r", stdin);
     freopen("user.out", "w", stdout);
     freopen("error.out", "a+", stderr);
@@ -626,6 +626,7 @@ void sim(char *ac_dir)
 {
     DIR *dir=opendir(ac_dir);  //已AC代码文件夹
     dirent *dirfile;
+    int max_sim_rate=0;
     while(dir!=NULL && (dirfile=readdir(dir))!=NULL)
     {
         if(strcmp(strstr(LANG[solution.language],"."),strstr(dirfile->d_name,"."))!=0) //后缀不相等
@@ -645,8 +646,9 @@ void sim(char *ac_dir)
         system_cmd("../../sim/%s -p %s %s/%s |grep consists|head -1|awk '{print $4}' > sim_rate.out",
             SIM_LANG[solution.language], LANG[solution.language], ac_dir, dirfile->d_name);
         int sim_rate = atoi(read_file("sim_rate.out"));
-        if(sim_rate>=50)
+        if(sim_rate>=50&&sim_rate>max_sim_rate)
         {
+            max_sim_rate=sim_rate;//记最大查重率
             char *fname = dirfile->d_name;
             *strstr(fname,".")='\0';
             solution.sim_sid=atoi(fname);
@@ -682,9 +684,9 @@ int main (int argc, char* argv[])
     }
 
     // 3. 创建临时文件夹并进入
-    if(access("../run",F_OK)==-1)
-        mkdir("../run",0777);
-    chdir("../run"); //进入工作目录
+    if(access("./run",F_OK)==-1)
+        mkdir("./run",0777);
+    chdir("./run"); //进入工作目录
     mkdir(sid,0777);
     chdir(sid); //进入sid临时文件夹
 
@@ -743,7 +745,6 @@ int main (int argc, char* argv[])
             system_cmd("/bin/cp -p %s %s/%d.%s", LANG[solution.language], ac_path, solution.id, LANG[solution.language]+5);
         }
     }
-
 
     // 5. 判题结果写回数据库
     solution.update_solution();    // update all of data

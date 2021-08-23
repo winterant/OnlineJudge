@@ -8,22 +8,11 @@
 #include<sys/wait.h>
 #include<signal.h>
 
-
 #define OJ_WT  0    //waiting
 #define OJ_QI  1    //queueing
 #define OJ_CI  2    //compiling
 #define OJ_RI  3    //running
 #define OJ_AC  4    //accepted
-#define OJ_PE  5    //presentation error
-#define OJ_WA  6    //wrong answer
-#define OJ_TL  7    //time limit exceeded
-#define OJ_ML  8    //time limit exceeded
-#define OJ_OL  9    //output limit exceeded
-#define OJ_RE 10    //runtime error
-#define OJ_CE 11    //compile error
-#define OJ_TC 12    //test completed
-#define OJ_SK 13    //skipped
-
 
 char *db_host;
 char *db_port;
@@ -34,91 +23,103 @@ char *JG_DATA_DIR;   //测试数据所在目录
 int  max_running;    //最大同时判题数
 char *JG_NAME;
 
-MYSQL *mysql;    //数据库连接对象
-MYSQL_RES *mysql_res;   //sql查询结果
-MYSQL_ROW mysql_row;    //sql查询到的单行数据
-char sql[256];   //暂存sql语句
+MYSQL *mysql;        //数据库连接对象
+MYSQL_RES *mysql_res;//sql查询结果
+MYSQL_ROW mysql_row; //sql查询到的单行数据
+char sql[256];       //暂存sql语句
+
+int Recv_SIGTERM=0; // 标记是否接收到了终止信号
 
 
-void get_wating_solution(int solution_queue[],int &queueing_cnt) //从solutions表读取max_running个待判编号
+void stop_polling(int signo)
 {
-    queueing_cnt=0;
-    sprintf(sql,"SELECT id FROM solutions WHERE result=%d ORDER BY id ASC limit %d",OJ_WT,max_running);
-    if(mysql_real_query(mysql,sql,strlen(sql))!=0){
-        printf("sql failed:\n%s\n",sql);
-        exit(1);
-    }
-    mysql_res=mysql_store_result(mysql);    //保存查询结果
-    char *sid_str=new char[max_running*11];
-    sid_str[0]='\0';
-    while((mysql_row=mysql_fetch_row(mysql_res)))  //将结果读入判题队列
-    {
-        solution_queue[queueing_cnt++]=atoi(mysql_row[0]);
-        if(sid_str[0]!='\0')strcat(sid_str,",");
-        strcat(sid_str,mysql_row[0]);
-    }
+    printf("[signal] Received signal %d\n",signo);
+    Recv_SIGTERM=1;
+}
+
+int get_a_waiting_solution() //从solutions表读取1个待判编号
+{
+    // 1. 防并发；即开始一个事务，确保下面的查询和修改具有原子性
+    sprintf(sql,"begin");
+    mysql_real_query(mysql,sql,strlen(sql));
+
+    // 2. 查询1个waiting solution
+    int sid=-1;
+    sprintf(sql,"SELECT id FROM solutions WHERE result=%d ORDER BY id ASC limit 1",OJ_WT);
+    mysql_real_query(mysql,sql,strlen(sql));
+    mysql_res=mysql_store_result(mysql);
+    mysql_row=mysql_fetch_row(mysql_res);
+    if(mysql_row)
+        sid=atoi(mysql_row[0]);   //查询到1个waiting solution
     mysql_free_result(mysql_res); //必须释放结果集，因为它是malloc申请在堆里的内存
-    if(queueing_cnt>0)  //更新已读入的solution的result=queueing
+
+    // 3. 更新状态为Queueing
+    if(sid!=-1)
     {
-        printf("Judger named [%s] is gonna judge following %d sid: (%s)\n",JG_NAME,queueing_cnt,sid_str);
-        sprintf(sql,"UPDATE solutions SET result=%d,judger='%s' WHERE id in (%s)",OJ_QI,JG_NAME,sid_str); //更新状态
+        printf("Judger named [%s] is gonna judge solution %d\n",JG_NAME,sid);
+        sprintf(sql,"UPDATE solutions SET result=%d,judger='%s' WHERE id=%d",OJ_QI,JG_NAME,sid);
         mysql_real_query(mysql,sql,strlen(sql));
     }
-    delete sid_str;
+
+    // 4. 提交事务；并返回solution id
+    sprintf(sql,"commit");
+    mysql_real_query(mysql,sql,strlen(sql));
+    return sid;
 }
 
 void polling()  //轮询数据库收集待判提交
 {
-    int running_cnt=0,queueing_cnt;     //正在判题数,排队数
-    int *solution_queue=new int[max_running];  //判题队列
+    int running_cnt=0,sid;     //正在判题数,solution id
     int pid,did;
     char sid_str[12];
     sprintf(sql,"UPDATE solutions SET result=0 where result<=%d and judger='%s'",OJ_RI,JG_NAME); //将上次停机未判完的记录重判
     mysql_real_query(mysql,sql,strlen(sql));
-    while(true)
+    while(!Recv_SIGTERM || running_cnt>0)
     {
-        get_wating_solution(solution_queue,queueing_cnt);  //获取判题队列
-        if(queueing_cnt==0)
+        // 1.
+        while( (did=waitpid(-1,NULL,WNOHANG))>0 ) // 主动回收僵尸进程. WNOHANG不等待,若无僵尸进程立马返回0
         {
-            while( (did=waitpid(-1,NULL,WNOHANG))>0 ) //回收僵尸进程,WNOHANG不等待,若无死进程立马返回0; 其实不回收也可以，判题前会回收一次
-            {
-                running_cnt--;
-                printf("Recycled a process: %d\n",did);
-            }
-//            printf("Solution queue is empty, process is sleeping for 1 second... [ time : %d ]\n",(int)clock());
+            running_cnt--;
+            printf("Recycled process %d\n",did);
+        }
+        // 2.
+        if(running_cnt>=max_running) // 被动(阻塞)回收子进程. 已达到最大并行判题数,只能等待任意判题进程结束
+        {
+            did=waitpid(-1,NULL,0);
+            running_cnt--;
+            printf("Recycled process %d\n",did);
+        }
+        // 3.
+        if(Recv_SIGTERM) // 已终止，不再获取新任务
+            continue;
+        sid=get_a_waiting_solution(); // 获取1个waiting solution
+        if(sid==-1)
+        {
             sleep(1); //当前无题可判，休息1秒
             continue;
         }
-
-        for(int i=0;i<queueing_cnt;i++)     //遍历队列
-        {
-            if(running_cnt>=max_running)   //已达到最大正在判题数,等待任意判题进程结束,亦可回收僵尸进程
-            {
-                waitpid(-1,NULL,0);
-                running_cnt--;
-            }
-
-            sprintf(sid_str,"%d",solution_queue[i]);
+        // 4.
+        if( (pid=fork()) > 0 ) //父进程，判题数+1
             running_cnt++;
-            if( (pid=fork()) == 0 )  //当前为子进程，进行一次判题
-            {
-                if( 0 > execl("./judge","",db_host,db_port,db_user,db_pass,db_name,sid_str,JG_DATA_DIR,(char*)NULL) )
-                    perror("Polling execl error:");
-                exit(0);  //结束子进程
-            }
-            else if(pid<0) //创建子进程出错
-            {
-                printf("Error: fork error!\n");
-                exit(1);
-            }
+        else if(pid == 0)  //子进程，进行一次判题
+        {
+            sprintf(sid_str,"%d",sid);
+            if( 0 > execl("./judge","",db_host,db_port,db_user,db_pass,db_name,sid_str,JG_DATA_DIR,(char*)NULL) )
+                perror("Polling execl error:");
+            exit(0);  //结束子进程
+        }
+        else //创建子进程出错
+        {
+            printf("Error: fork error!\n");
+            exit(1);
         }
     }
-    while((pid=waitpid(-1,NULL,0))>0) //回收所有子进程，下班了
-        printf("Process %d was recycled\n",pid);
 }
 
 int main (int argc, char* argv[])
 {
+    signal(SIGTERM, stop_polling); // 监听信号
+
     if(argc!=8+1){
         printf("Polling Error: argv error!\n%d\n",argc);
         exit(1);
@@ -142,6 +143,6 @@ int main (int argc, char* argv[])
 
     polling();
     mysql_close(mysql);
-    printf("[Polling]: Good Bye!\n");
+    printf("[Stop Polling]: Good Bye!\n");
     return 0;
 }
