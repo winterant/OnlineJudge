@@ -7,8 +7,6 @@
             &nbsp;&nbsp;|&nbsp;&nbsp;
             <a href="http://www.beian.miit.gov.cn" target="_blank">{{get_setting('beian')}}</a>
         @endif
-        &nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="https://iamwinter.github.io" target="_blank">关于作者</a>
     </div>
 
     © 2020-{{date('Y')}} <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">Online Judge</a>
