@@ -4,7 +4,7 @@
  Source Server         : lab
  Source Server Type    : MySQL
  Source Server Version : 50721
- Source Host           : 10.170.14.60:8036
+ Source Host           : *:8036
  Source Schema         : lduoj
 
  Target Server Type    : MySQL

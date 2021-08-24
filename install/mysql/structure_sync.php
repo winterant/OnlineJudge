@@ -1,4 +1,5 @@
 <?php
+
 if($argc<3)return;
 
 $db = [

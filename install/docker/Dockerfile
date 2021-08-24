@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 COPY LDUOnlineJudge/ /volume/LDUOnlineJudge/
 
 RUN set -ex &&\
-    #cat /volume/LDUOnlineJudge/install/docker/sources.list > /etc/apt/sources.list &&\
+    sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.aliyun.com\/ubuntu/g' /etc/apt/sources.list && \
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     echo 'Asia/Shanghai' > /etc/timezone
 

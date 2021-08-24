@@ -37,4 +37,5 @@ fi
 
 # 删除升级包
 rm -rf "${upgrade}" &
+
 echo "You have successfully updated LDU Online Judge! Enjoy it!"
