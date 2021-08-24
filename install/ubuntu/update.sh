@@ -25,13 +25,12 @@ bash install/mysql/update_mysql.sh
 
 # docker startup
 if [ -f /.dockerenv ]; then
-    chmod +x install/docker/startup.sh
-    nohup bash install/docker/startup.sh > /dev/null 2>&1 &
+    cp install/docker/startup.sh /
+    chmod +x /startup.sh
+    nohup bash /startup.sh > /dev/null 2>&1 &
     sleep 1  # nohup后台执行，防止他执行的顺序比后面的语句晚
-fi
-
-# 不在docker容器中，手动启动判题进程
-if [ ! -f /.dockerenv ]; then
+else
+    # 手动重启判题进程
     bash judge/startup.sh
 fi
 
