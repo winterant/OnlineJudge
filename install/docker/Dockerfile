@@ -1,17 +1,16 @@
 FROM ubuntu:20.04
 
-COPY LDUOnlineJudge/ /volume/LDUOnlineJudge/
+# 不能在这把项目复制进/volume，否则启动容器时会被宿主机目录覆盖
+COPY LDUOnlineJudge/ /home/LDUOnlineJudge/
 
 RUN set -ex &&\
-    sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.aliyun.com\/ubuntu/g' /etc/apt/sources.list && \
+    #sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.aliyun.com\/ubuntu/g' /etc/apt/sources.list && \
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     echo 'Asia/Shanghai' > /etc/timezone
 
-RUN bash /volume/LDUOnlineJudge/install/ubuntu/install.sh
+RUN bash /home/LDUOnlineJudge/install/ubuntu/install.sh
 
-RUN chmod +x /volume/LDUOnlineJudge/install/docker/startup.sh
-
-ENTRYPOINT ["/volume/LDUOnlineJudge/install/docker/startup.sh"]
+ENTRYPOINT ["/startup.sh"]
 
 VOLUME ["/volume"]
 

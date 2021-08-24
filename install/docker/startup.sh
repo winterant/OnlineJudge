@@ -1,7 +1,16 @@
 #!/bin/bash
 
+APP_HOME=/home/LDUOnlineJudge
+
+if [ ! -d /volume/LDUOnlineJudge ]; then
+    mv -f "${APP_HOME}" /volume/
+else
+    rm -rf "${APP_HOME}"
+fi
+ln -s /volume/LDUOnlineJudge "${APP_HOME}"
+
 ################################################################################
-# 2021.06.29 版本兼容处理
+# 2021.06.29版本兼容处理
 # 新版本取消了除lduoj表以外的表映射到/volume，所以此处把旧版本映射出去的表移回原位
 if [ -h /var/lib/mysql ]; then
     rm -rf /var/lib/mysql
@@ -29,7 +38,7 @@ rm -rf /var/run/mysqld/mysqld.sock.lock
 service nginx start
 service php7.2-fpm start
 service mysql start
-bash /volume/LDUOnlineJudge/judge/startup.sh
+bash "${APP_HOME}"/judge/startup.sh
 
 while true; do
 #    echo "Keep docker container running in the background!";
