@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -ex
+
 APP_HOME=$(dirname $(dirname $(dirname $(readlink -f "$0"))))
 cd "${APP_HOME}" || { echo No such project: "${APP_HOME}";exit 1; }
 
