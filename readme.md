@@ -222,11 +222,18 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 
 + 将本项目构建为docker镜像，**务必**在一个新建文件夹内操作（如`./lduoj_build`，结束后删除即可）
 
+  ```shell
+  git config --global core.autocrlf input  # 仅windows用户执行
+  ```
+
   ```shell script
   mkdir lduoj_build && cd lduoj_build
   git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
   docker build -f ./LDUOnlineJudge/install/docker/Dockerfile -t lduoj:local .
   ```
+  windows用户git默认`autocrlf=true`，
+  执行`git clone`下载的文件换行符会被自动转换为`\r\n`，
+  所以下载前需要手动修改配置`autocrlf=input`。
 
 + 为镜像重命名（相当于复制了一份，请将用户名`iamwinter`替换）
 
