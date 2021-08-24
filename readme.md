@@ -105,13 +105,15 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
   A. 网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端  
   B. 通过终端命令启动判题端：`bash judge/startup.sh`
 
-+ 判题端配置(文件`.env`)：
++ 判题端配置
   ```shell
   JG_DATA_DIR=storage/app/data  # 测试数据所在目录，**请勿修改!**
   JG_NAME="Master"              # 判题机名称，可修改
   JG_MAX_RUNNING=1              # 并行判题进程数，建议值为可用内存(GB)/2
   ```
-  注：修改`.env`后，执行`php artisan optimize`生效。
+  注：以上配置在文件`.env`或`judge/config.js`中均可配置。
+  判题端默认使用`.env`中的配置（执行`php artisan optimize`生效）。
+  若需单独配置判题端，可在`judge/config.js`中配置。
 
 # :page_facing_up: 整体架构
 
@@ -186,11 +188,10 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 
 2. 准备环境
 
-  + 推荐`phpstudy`（含php、mysql、nginx等环境）。推荐IDE是`PhpStorm`。
-
-  + 数据库脚本：`install/mysql/lduoj.sql`。
-
-  + nginx配置：`install/nginx/lduoj.conf`；也可以自行配置apache服务器。
+  + PHP >=7.2 （必需拓展：php7.2-fpm php7.2-mysql php7.2-xml php7.2-mbstring）
+  + mysql >=5.7 （建库脚本：`install/mysql/lduoj.sql`）
+  + 判题环境需求（只能在linux系统运行）：
+    g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex
 
 3. 填写配置文件
 
@@ -210,9 +211,12 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
     php artisan optimize        # 非必需，优化汇总所有配置；开发阶段可不执行
     ```
 
-5. 预览主页。
-
-   浏览器访问`http://localhost:port`显示主页则表示部署成功，`port`为nginx配置的端口号。
+5. 启动服务，预览主页。
+    ```shell
+    php -S 127.0.0.1:8000  # 或 php artisan serve --port=8000
+    ```
+    浏览器访问`http://localhost:8000`显示主页则表示部署成功。
+    生产环境中请配置nginx。
 
 # :earth_asia: Docker镜像发布
 
