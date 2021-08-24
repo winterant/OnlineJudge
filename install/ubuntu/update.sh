@@ -3,10 +3,6 @@
 set -x
 APP_HOME=$1    # 原项目位置
 upgrade=$(dirname $(dirname $(dirname $(readlink -f "$0"))))  # 新版本位置
-
-if [ ! -f "${APP_HOME}" ];then
-    read -p "Please input old project location (such as /home/LDUOnlineJudge):" APP_HOME
-fi
 cd "${APP_HOME}" || { echo "No such a folder ${APP_HOME}"; exit 1; }
 
 # 更新文件

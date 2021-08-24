@@ -63,9 +63,4 @@ fi
 echo 'www-data ALL=(ALL) NOPASSWD: /bin/bash,/usr/bin/git,/usr/bin/g++' >> /etc/sudoers
 # 用户名 主机名(ALL所有主机)=(用户名,以该用户运行命令,ALL表示任意用户) NOPASSWD不需要输入密码: 命令的绝对路径(逗号分隔)ALL表示所有命令
 
-if [ -f /.dockerenv ]; then
-    cp "${APP_HOME}"/install/docker/startup.sh /
-    chmod +x /startup.sh
-fi
-
 echo "You have successfully installed LDU Online Judge! Location: ${APP_HOME}"

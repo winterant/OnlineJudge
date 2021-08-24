@@ -10,6 +10,9 @@ RUN set -ex &&\
 
 RUN bash /home/LDUOnlineJudge/install/ubuntu/install.sh
 
+RUN cp /home/LDUOnlineJudge/install/docker/startup.sh / &&\
+    chmod +x /startup.sh
+
 ENTRYPOINT ["/startup.sh"]
 
 VOLUME ["/volume"]

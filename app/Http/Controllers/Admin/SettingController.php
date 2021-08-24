@@ -48,11 +48,13 @@ class SettingController extends Controller
         $source = $request->input('upgrade_source');
         $source = 'https://'.$source.'/iamwinter/LDUOnlineJudge.git'; //升级来源
 
-        $new_project = storage_path('oj_upgrade');
-        exec('rm -rf '.$new_project,$out,$status); //删除旧文件夹
-
         Log::info('----------------------------------------------------------------');
         Log::info('Start to upgrade LDUOnlineJudge!');
+
+        $new_project = storage_path('oj_upgrade');
+        exec('rm -rf '.$new_project,$out,$status); //删除旧文件夹
+        foreach ($out as $line)
+            Log::info($line);
 
         $cmd_git = 'sudo git clone '.$source.' '.$new_project.' 2>&1';
         Log::info($cmd_git);
@@ -63,14 +65,13 @@ class SettingController extends Controller
 
         $cmd_bash = 'sudo bash '.$new_project.'/install/ubuntu/update.sh '.base_path().' 2>&1';
         Log::info($cmd_bash);
+        unset($out);
         exec($cmd_bash,$out,$status);
         foreach ($out as $line)
             Log::info($line);
         Log::info('----------------------------------------------------------------');
 
         return 1;
-//        return '<h1>升级成功！</h1><br>'.implode('<br>',$out);
-//        return view('client.success',['msg'=>implode('<br>',$out)]);
     }
 
     public function upgrade(Request $request){
