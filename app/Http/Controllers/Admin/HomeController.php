@@ -17,7 +17,9 @@ class HomeController extends Controller
         exec('ps -eo pid,user,comm,vsz|grep polling 2>&1',$out,$status);
         if(count($out)>0){
             $run=true;
-            $info='[ 正在运行 ] pid='.$out[0].'KB';
+            $info="";
+            foreach ($out as $line)
+                $info.='[ 正在运行 ] pid='.$line.'KB; ';
         }else{
             $run=false;
             $info='[ 停止运行 ]';

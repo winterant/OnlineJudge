@@ -31,40 +31,23 @@ char sql[256];       //暂存sql语句
 int Recv_SIGTERM=0; // 标记是否接收到了终止信号
 
 
-void stop_polling(int signo)
-{
-    printf("[signal] Received signal %d\n",signo);
-    Recv_SIGTERM=1;
-}
-
 int get_a_waiting_solution() //从solutions表读取1个待判编号
 {
-    // 1. 防并发；即开始一个事务，确保下面的查询和修改具有原子性
-    sprintf(sql,"begin");
+    int solution_id=-1;
+    sprintf(sql,"set @sid:=-1");
     mysql_real_query(mysql,sql,strlen(sql));
 
-    // 2. 查询1个waiting solution
-    int sid=-1;
-    sprintf(sql,"SELECT id FROM solutions WHERE result=%d ORDER BY id ASC limit 1",OJ_WT);
+    sprintf(sql,"update `solutions` set id=(select @sid:=id),result=%d,judger='%s' where result=%d order by id limit 1",OJ_QI,JG_NAME,OJ_WT);
+    mysql_real_query(mysql,sql,strlen(sql));
+
+    sprintf(sql,"select @sid");
     mysql_real_query(mysql,sql,strlen(sql));
     mysql_res=mysql_store_result(mysql);
     mysql_row=mysql_fetch_row(mysql_res);
     if(mysql_row)
-        sid=atoi(mysql_row[0]);   //查询到1个waiting solution
+        solution_id=atoi(mysql_row[0]);
     mysql_free_result(mysql_res); //必须释放结果集，因为它是malloc申请在堆里的内存
-
-    // 3. 更新状态为Queueing
-    if(sid!=-1)
-    {
-        printf("Judger named [%s] is gonna judge solution %d\n",JG_NAME,sid);
-        sprintf(sql,"UPDATE solutions SET result=%d,judger='%s' WHERE id=%d",OJ_QI,JG_NAME,sid);
-        mysql_real_query(mysql,sql,strlen(sql));
-    }
-
-    // 4. 提交事务；并返回solution id
-    sprintf(sql,"commit");
-    mysql_real_query(mysql,sql,strlen(sql));
-    return sid;
+    return solution_id;
 }
 
 void polling()  //轮询数据库收集待判提交
@@ -118,7 +101,10 @@ void polling()  //轮询数据库收集待判提交
 
 int main (int argc, char* argv[])
 {
-    signal(SIGTERM, stop_polling); // 监听信号
+    signal(SIGTERM, [](int signo){
+        printf("[signal] Received signal %d\n",signo);
+        Recv_SIGTERM=1;
+    }); // 监听信号
 
     if(argc!=8+1){
         printf("Polling Error: argv error!\n%d\n",argc);

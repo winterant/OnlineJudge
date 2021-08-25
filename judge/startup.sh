@@ -11,7 +11,6 @@ DATA_DIR=${JG_DATA_DIR}
 if [[ ${DATA_DIR:0:1} != "/" ]]; then
     DATA_DIR="${APP_HOME}/${DATA_DIR}"
 fi
-echo "[Test data location] ${DATA_DIR}"
 
 # 编译判题端源码
 g++ ./cpp/polling.cpp -o ./polling -std=c++11 -lmysqlclient 2>&1
@@ -24,9 +23,10 @@ else
     ./polling "${DB_HOST}" "${DB_PORT}" "${DB_USERNAME}" "${DB_PASSWORD}" "${DB_DATABASE}" "${JG_MAX_RUNNING}" "${DATA_DIR}" "${JG_NAME}" > /dev/null &
     sleep 1;
     polling_name=$(ps -e | grep polling | awk '{print $4}')
-    if [ "${polling_name}" == "polling" ];then
-        echo "[Starting judgement process]: OK."
+    if [[ "${polling_name}" =~ "polling" ]];then
+        echo -e "[Starting judgement process]: OK."
     else
-        echo "[Starting judgement process]: Failed."
+        echo -e "[Starting judgement process]: Failed."
     fi
 fi
+echo -e "[Test data location] ${DATA_DIR}"
