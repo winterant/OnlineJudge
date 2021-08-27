@@ -51,9 +51,9 @@
     <div class="container">
         <div class="my-container bg-white">
             <div class="d-inline">
-                {{__('main.Wrong Data')}}:
-                <a class="px-2" href="{{route('solution_wrong_data',[$solution->id,'in'])}}">{{$solution->wrong_data}}.in</a>
-                <a href="{{route('solution_wrong_data',[$solution->id,'out'])}}">{{$solution->wrong_data}}.out</a>
+                <span>{{__('main.Wrong Data')}}:</span>
+                <a class="ml-2" href="{{route('solution_wrong_data',[$solution->id,'in'])}}" target="_blank">{{$solution->wrong_data}}.in</a>
+                <a class="ml-2" href="{{route('solution_wrong_data',[$solution->id,'out'])}}" target="_blank">{{$solution->wrong_data}}.out</a>
             </div>
         </div>
     </div>
