@@ -35,7 +35,7 @@ function readAllFilesPath($dir_path): array
  * @param bool $from_sample
  * @return array  返回二维字符串数组，第一维[test0,test1,...]，第二维[.in, .out]
  */
-function read_problem_data($problem_id, $from_sample = true)
+function read_problem_data($problem_id, $from_sample = true): array
 {
     $samples = [];
     $dir = testdata_path($problem_id . '/' . ($from_sample ? 'sample' : 'test'));
@@ -57,10 +57,9 @@ function read_problem_data($problem_id, $from_sample = true)
  * @param $problem_id
  * @param $ins
  * @param $outs
- * @param bool $as_sample
- * @param bool $del_old
+ * @param bool $from_sample
  */
-function save_problem_data($problem_id, $ins, $outs, $from_sample = true, $del_old = true)
+function save_problem_data($problem_id, $ins, $outs, $from_sample = true)
 {
     $dir = testdata_path($problem_id . '/' . ($from_sample ? 'sample' : 'test')); // 测试数据文件夹
     foreach (readAllFilesPath($dir) as $item)
@@ -74,26 +73,20 @@ function save_problem_data($problem_id, $ins, $outs, $from_sample = true, $del_o
 }
 
 /**
- * @param $problem_id
- * @param $code
- * @return mixed
- *  保存特判文件
+ * @param $cpp_path
+ * @param $out_path
+ * @return string
+ *  编译c++文件；该功能在后期开发中即将废弃，应当通过linux终端编译，或判题端编译
  */
-function save_problem_spj($problem_id, $code)
+function compile_cpp($cpp_path, $out_path): string
 {
-    $dir = testdata_path($problem_id . '/spj'); // 特判文件夹
-    foreach (readAllFilesPath($dir) as $item)
-        unlink($item); //删除原有文件
-    if (!is_dir($dir))
-        mkdir($dir, 0777, true);  // 文件夹不存在则创建
-    file_put_contents($dir . '/spj.cpp', $code);
-    $cmd = sprintf("sudo g++ %s/spj.cpp -o %s/spj -lm -std=c++17 2>&1", $dir, $dir);
+    $cmd = sprintf("sudo g++ %s -o %s -lm -std=c++17 2>&1", $cpp_path, $out_path);
     $out[] = $cmd;
     exec($cmd, $out);
     if (count($out) == 1)
-        $out[] = "特判程序编译成功！";
+        $out[] = "Compiled successfully!";
     else
-        $out[] = "特判程序编译出错，请根据报错信息修正后重新上传！";
+        $out[] = "Compilation failed!";
     return implode('<br>', $out);
 }
 
@@ -102,7 +95,7 @@ function save_problem_spj($problem_id, $code)
  * @param $problem_id
  * @return string
  */
-function get_spj_code($problem_id)
+function get_spj_code($problem_id): ?string
 {
     $filepath = testdata_path($problem_id . '/spj/spj.cpp');
     if (is_file($filepath))
@@ -110,7 +103,7 @@ function get_spj_code($problem_id)
     return null;
 }
 
-//将一个数字题号（从1开始）转为大写字母
+//将一个数字题号转为大写字母 A~Z(0~25), 27, 28, 29, ...
 function index2ch(int $index)
 {
     if ($index < 26)

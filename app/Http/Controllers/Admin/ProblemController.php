@@ -88,14 +88,15 @@ class ProblemController extends Controller
             ///保存样例、spj
             $samp_ins =$request->input('sample_ins');
             $samp_outs=$request->input('sample_outs');
-            save_problem_data($id,(array)$samp_ins,(array)$samp_outs,true,true); //保存样例
+            save_problem_data($id,(array)$samp_ins,(array)$samp_outs,true); //保存样例
 
             $msg=sprintf('题目<a href="%s" target="_blank">%d</a>修改成功！ <a href="%s">上传测试数据</a>',
                 route('problem',$id),$id,route('admin.problem.test_data','pid='.$id));
 
             $spjFile=$request->file('spj_file');
             if($spjFile!=null && $spjFile->isValid()) {
-                $spj_compile=save_problem_spj($id, autoiconv(file_get_contents($spjFile)));
+                $spjFile->move(testdata_path($id.'/spj'), 'spj.cpp');  // 保存特判代码文件
+                $spj_compile=compile_cpp(testdata_path($id.'/spj/spj.cpp'), testdata_path($id.'/spj/spj')); //编译特判代码
                 $msg.='<br><br>[ 特判程序编译信息 ]:<br>'.$spj_compile;
             } //保存spj
             return view('admin.success',['msg'=>$msg]);
@@ -319,10 +320,14 @@ class ProblemController extends Controller
             $samp_outputs=(array)$node->children()->sample_output;
             $test_inputs =(array)$node->children()->test_input;
             $test_outputs=(array)$node->children()->test_output;
-            save_problem_data($pid,$samp_inputs,$samp_outputs);//保存样例
+            save_problem_data($pid,$samp_inputs,$samp_outputs,true);//保存样例
             save_problem_data($pid,$test_inputs,$test_outputs,false);//保存测试数据
             if($node->spj){
-                save_problem_spj($pid,$node->spj);//保存特判
+                $dir = testdata_path($pid . '/spj'); // 特判文件夹
+                if (!is_dir($dir))
+                    mkdir($dir, 0777, true);  // 文件夹不存在则创建
+                file_put_contents($dir . '/spj.cpp', $node->spj);  // 保存代码文件
+                compile_cpp($dir . '/spj.cpp', $dir . '/spj');  // 编译特判代码
             }
             foreach($node->solution as $solu){
                 $language=$solu->attributes()->language;
