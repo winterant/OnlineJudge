@@ -15,7 +15,7 @@ $result_sql.="SET NAMES utf8mb4;\n";  //设置字符集
 $result_sql.="SET FOREIGN_KEY_CHECKS = 0;\n\n";  //取消外键检查
 
 //建立连接
-$conn = mysqli_connect($db['host'], $db['user'], $db['pwd']) or die(mysqli_error());
+$conn = mysqli_connect($db['host'], $db['user'], $db['pwd']) or die($conn->error);
 
 //读取表结构，转为数组形式
 $stru1 = "SELECT TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,ORDINAL_POSITION,COLUMN_DEFAULT,IS_NULLABLE,COLUMN_TYPE,COLUMN_COMMENT,EXTRA,DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '{$db['db1']}'";
@@ -50,7 +50,7 @@ if(!empty($diff2))
 {
     foreach($diff2 as $val)
     {
-        $result_sql.="drop table {$val};\n";
+        $result_sql.="drop table `{$val}`;\n";
     }
     $result_sql.="\n";
 }
@@ -70,7 +70,7 @@ foreach($data1 as $key1 => $val1)
             {
                 foreach($column1 as $col_info)
                 {
-                    $alter_sql = "alter table {$col_info['TABLE_NAME']} add column {$col_info['COLUMN_NAME']} {$col_info['COLUMN_TYPE']}";
+                    $alter_sql = "alter table `{$col_info['TABLE_NAME']}` add column `{$col_info['COLUMN_NAME']}` {$col_info['COLUMN_TYPE']}";
                     if($col_info['IS_NULLABLE'] == 'NO')
                     {
                         $alter_sql .= " not null ";
@@ -89,7 +89,8 @@ foreach($data1 as $key1 => $val1)
                     }
                     if($col_info['EXTRA'])
                     {
-                        $alter_sql .= " ".$col_info['EXTRA'];
+                        if($col_info['EXTRA']!=="DEFAULT_GENERATED") //该字段不识别，注意！
+                            $alter_sql .= " ".$col_info['EXTRA'];
                     }
                     if($col_info['COLUMN_COMMENT'])
                     {
@@ -104,7 +105,7 @@ foreach($data1 as $key1 => $val1)
             {
                 foreach($column2 as $col_info)
                 {
-                    $result_sql .= "alter table {$col_info['TABLE_NAME']} drop column {$col_info['COLUMN_NAME']};\n";
+                    $result_sql .= "alter table `{$col_info['TABLE_NAME']}` drop column `{$col_info['COLUMN_NAME']}`;\n";
                 }
             }
 
@@ -117,11 +118,12 @@ foreach($data1 as $key1 => $val1)
                     {
                         if($info1['ORDINAL_POSITION'] !== $info2['ORDINAL_POSITION'] || $info1['COLUMN_DEFAULT'] !== $info2['COLUMN_DEFAULT'] || $info1['IS_NULLABLE'] !== $info2['IS_NULLABLE'] || $info1['COLUMN_TYPE'] !== $info2['COLUMN_TYPE'] || $info1['COLUMN_COMMENT'] !== $info2['COLUMN_COMMENT'])
                         {
-                            $modify = "alter table {$info2['TABLE_NAME']} modify column {$info1['COLUMN_NAME']} {$info1['COLUMN_TYPE']}";
+                            $modify = "alter table `{$info2['TABLE_NAME']}` modify column `{$info1['COLUMN_NAME']}` {$info1['COLUMN_TYPE']}";
                             if($info1['IS_NULLABLE'] == 'NO')
                             {
                                 $modify .= " not null ";
                             }
+
                             if($info1['COLUMN_DEFAULT'] !== null)
                             {
                                 if(in_array($info1['DATA_TYPE'],['bit'])
@@ -134,14 +136,18 @@ foreach($data1 as $key1 => $val1)
                                     $modify .= " default '{$info1['COLUMN_DEFAULT']}'";
                                 }
                             }
+                            //额外信息
                             if($info1['EXTRA'])
                             {
-                                $modify .= " ".$info1['EXTRA'];
+                                if($info1['EXTRA']!=="DEFAULT_GENERATED") //该字段不识别，注意！
+                                    $modify .= " ".$info1['EXTRA'];
                             }
+                            // 注释信息
                             if($info1['COLUMN_COMMENT'])
                             {
                                 $modify .= " comment '{$info1['COLUMN_COMMENT']}'";
                             }
+                            // 位置
                             if($info1['ORDINAL_POSITION'] == 1)
                             {
                                 $modify .= " first";
@@ -150,7 +156,7 @@ foreach($data1 as $key1 => $val1)
                             {
                                 $last_pos = $info1['ORDINAL_POSITION'] - 1;
                                 $last_col = query_as_array($conn,"select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where ORDINAL_POSITION = {$last_pos} and table_schema = '{$db['db1']}' and table_name = '{$info1['TABLE_NAME']}'");
-                                $modify .= " after ".$last_col[0]['COLUMN_NAME'];
+                                $modify .= " after `".$last_col[0]['COLUMN_NAME']."`";
                             }
                             $result_sql.=$modify.";\n";
                         }

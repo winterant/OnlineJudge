@@ -21,7 +21,7 @@ bash install/mysql/update_mysql.sh
 
 # docker startup
 if [ -f /.dockerenv ]; then
-    cp install/docker/startup.sh /
+    cp -f install/docker/startup.sh /
     chmod +x /startup.sh
     nohup bash /startup.sh > /dev/null 2>&1 &
     sleep 1  # nohup后台执行，防止他执行的顺序比后面的语句晚
@@ -31,6 +31,6 @@ else
 fi
 
 # 删除升级包
-rm -rf "${upgrade}" &
+# rm -rf "${upgrade}" &
 
 echo "You have successfully updated LDU Online Judge! Enjoy it!"

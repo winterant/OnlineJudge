@@ -32,9 +32,8 @@ php artisan optimize
 # 安装nignx并配置
 apt-get -y install nginx
 rm -rf /etc/nginx/sites-enabled/default
-rm -rf /etc/nginx/conf.d/lduoj.conf
-sed -i "s/\/home\/LDUOnlineJudge/${APP_HOME//\//\\\/}/" "${APP_HOME}"/install/nginx/lduoj.conf
-ln -sf "${APP_HOME}"/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf
+cp -f "${APP_HOME}"/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf
+sed -i "s/root .*\/.*;$/root ${APP_HOME//\//\\\/}\/public;/" /etc/nginx/conf.d/lduoj.conf
 service nginx restart
 
 # 安装mysql并配置
