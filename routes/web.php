@@ -51,7 +51,7 @@ Route::post('/load_discussion', 'Client\ProblemController@load_discussion')->nam
 Route::middleware(['auth','CheckBlacklist'])->group(function () {
     Route::post('/edit_discussion/{pid}', 'Client\ProblemController@edit_discussion')->name('edit_discussion');
 });
-Route::middleware(['auth','CheckBlacklist','Privilege:problem_tag'])->group(function () {
+Route::middleware(['auth','CheckBlacklist','Privilege:problem_discussion'])->group(function () {
     Route::post('/delete_discussion', 'Client\ProblemController@delete_discussion')->name('delete_discussion');
     Route::post('/top_discussion', 'Client\ProblemController@top_discussion')->name('top_discussion');
     Route::post('/hidden_discussion', 'Client\ProblemController@hidden_discussion')->name('hidden_discussion');
@@ -68,14 +68,14 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id'=>'[0-9]+'])->where(
         Route::get('/notices', 'Client\ContestController@notices')->name('notices');//公告
         Route::post('/get_notice', 'Client\ContestController@get_notice')->name('get_notice');//获取一条公告
 
-        Route::middleware(['Privilege:contest,client'])->group(function (){
+        Route::middleware(['Privilege:contest'])->group(function (){
             Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->name('cancel_lock');//取消封榜
             Route::post('/edit_notice', 'Client\ContestController@edit_notice')->name('edit_notice');//编辑/添加一条公告
             Route::post('/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('delete_notice');//删除一条公告
             Route::post('/start_to_judge', 'Client\ContestController@start_to_judge')->name('start_to_judge');
         });
 
-        Route::middleware(['Privilege:balloon,client'])->group(function (){//气球,需要权限
+        Route::middleware(['Privilege:balloon'])->group(function (){//气球,需要权限
             Route::get('/balloons', 'Client\ContestController@balloons')->name('balloons');
             Route::post('/deliver_ball/{bid}', 'Client\ContestController@deliver_ball')->name('deliver_ball');
         });
@@ -89,7 +89,7 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id'=>'[0-9]+'])->where(
 // Administration 管理员后台页面所有路由
 Route::middleware(['auth','CheckBlacklist'])->prefix('admin')->name('admin.')->where(['id'=>'[0-9]+'])->group(function () {
 
-    Route::middleware(['Privilege:teacher,client'])->group(function (){
+    Route::middleware(['Privilege:admin_home'])->group(function (){
         Route::get('/', 'Admin\HomeController@index')->name('home');
     });
 
@@ -128,7 +128,7 @@ Route::middleware(['auth','CheckBlacklist'])->prefix('admin')->name('admin.')->w
     });
 
 //   manage problem editor
-    Route::middleware(['Privilege:edit_problem'])->prefix('problem')->name('problem.')->group(function (){
+    Route::middleware(['Privilege:problem_edit'])->prefix('problem')->name('problem.')->group(function (){
         Route::any('/add','Admin\ProblemController@add')->name('add');
         Route::get('/update','Admin\ProblemController@update')->name('update');
         Route::any('/update/{id}','Admin\ProblemController@update')->name('update_withId');

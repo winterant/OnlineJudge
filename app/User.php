@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'email', 'password','school','class','nick',
+        'username', 'email', 'password', 'school', 'class', 'nick',
     ];
 
     /**
@@ -39,18 +39,19 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function privilege($power){
-        //如果查询的$power是以下之一，则视为老师，只查询数据库中当前账户是不是老师
-        //这样做的原因是后续开发要求增加teacher这个权限，并涵盖题目的增改、竞赛管理等。
-        //为了兼容以前的版本，尽量少改动原来的代码，在这里统一把这些权限视为teacher
-        if(in_array($power, ['problem_list','edit_problem','problem_data','problem_tag','problem_rejudge','contest']))
-            $power=array_merge((array)$power,['teacher']);
+    public function privilege($power)
+    {
+        //teacher涵盖以下权限；即 只要数据库中查询到teacher权限，则该用户拥有以下权限
+        if (in_array($power, ['admin_home', 'problem_list', 'problem_edit', 'problem_data', 'problem_tag', 'problem_rejudge', 'contest']))
+            $power = array_merge((array)$power, ['teacher']);
 
-        //判断用户是否具有某项权限, admin一定有权
-        if(DB::table('privileges')->where('user_id',$this->id)
-            ->whereIn('authority',array_merge((array)$power,['admin']))->exists()){
+        //admin涵盖所有权限
+        $power = array_merge((array)$power, ['admin']);
+
+        //查询该用户的权限
+        if (DB::table('privileges')->where('user_id', $this->id)->whereIn('authority', $power)->exists()) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
