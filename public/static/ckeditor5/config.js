@@ -23,10 +23,13 @@ const ck_config = {
             'insertTable',
             'imageUpload',
             'mediaEmbed',
+            '|',
+            'removeFormat',
             'undo',
             'redo'
         ]
     },
+    // removePlugins: ['TextTransformation'],
     language: 'zh-cn',
     ckfinder: {
         uploadUrl:''
