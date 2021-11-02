@@ -196,7 +196,7 @@ class ContestController extends Controller
             ->where('contest_problems.contest_id',$id)
             ->when(isset($_GET['index'])&&$_GET['index']!='',function ($q){return $q->where('index',$_GET['index']);})
             ->when(isset($_GET['sim_rate'])&&$_GET['sim_rate']!=0,function ($q){return $q->where('sim_rate','>=',$_GET['sim_rate']);})
-            ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username',$_GET['username']);})
+            ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username','like','%'.$_GET['username'].'%');})
             ->when(isset($_GET['result'])&&$_GET['result']!='-1',function ($q){return $q->where('result',$_GET['result']);})
             ->when(isset($_GET['language'])&&$_GET['language']!='-1',function ($q){return $q->where('language',$_GET['language']);})
             ->orderByDesc('solutions.id')
@@ -222,7 +222,7 @@ class ContestController extends Controller
             else //终榜
                 $end=strtotime($contest->end_time);
         }else{
-            if($contest->lock_rate==0 && isset($_GET['buti'])?$_GET['buti']=='true':false) //没封榜 && 查看全榜
+            if($contest->lock_rate == 0 && isset($_GET['buti']) && $_GET['buti'] == 'true') //没封榜 && 查看全榜
                 $end=time();
             else //终榜or封榜
                 $end=strtotime($contest->end_time)
