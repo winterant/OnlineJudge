@@ -88,7 +88,11 @@
 
         /*所有table的表头不换行*/
         th{
-            white-space: nowrap
+            white-space: nowrap;
+        }
+        td{
+            /*table垂直居中*/
+            vertical-align: middle !important;
         }
     </style>
 </head>

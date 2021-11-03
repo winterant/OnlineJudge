@@ -13,8 +13,8 @@
                 <span>竞赛分类：</span>
 
                 <select name="contest[cate_id]" class="form-control px-3">
-                    @foreach($categories as $id=>$item)
-                        <option value="{{$id}}">
+                    @foreach($categories as $item)
+                        <option value="{{$item->id}}">
                             @if($item->parent_title)
                                 {{$item->parent_title}} =>
                             @endif

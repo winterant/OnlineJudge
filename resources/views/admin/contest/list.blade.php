@@ -23,15 +23,13 @@
             <select name="cate_id" class="form-control px-3" onchange="this.form.submit();">
                 <option value="">所有类别</option>
                 @foreach($categories as $id=>$item)
-                    @if(!$item->has_son)
-                        <option value="{{$id}}"
-                                @if(isset($_GET['cate_id'])&&$_GET['cate_id']==$id)selected @endif>
-                            @if($item->parent_title)
-                                {{$item->parent_title}} =>
-                            @endif
-                            {{$item->title}}
-                        </option>
-                    @endif
+                    <option value="{{$id}}"
+                            @if(isset($_GET['cate_id'])&&$_GET['cate_id']==$id)selected @endif>
+                        @if($item->parent_title)
+                            {{$item->parent_title}} =>
+                        @endif
+                        {{$item->title}}
+                    </option>
                 @endforeach
             </select>
         </div>
@@ -104,7 +102,21 @@
                         <input type="checkbox" value="{{$item->id}}" onclick="window.event.stopPropagation();" style="vertical-align:middle;zoom: 140%">
                     </td>
                     <td>{{$item->id}}</td>
-                    <td>{{$item->cate_title}}</td>
+                    <td>
+                        <div class="form-inline">
+                            <select name="cate_id" class="form-control px-3" onchange="alert('todo  切换类别：'+$(this).val())">
+                                <option value="">---</option>
+                                @foreach($categories as $cate)
+                                    <option value="{{$cate->id}}" @if($item->cate_id==$id)selected @endif>
+                                        @if($cate->parent_title)
+                                            {{$cate->parent_title}} =>
+                                        @endif
+                                        {{$cate->title}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </td>
                     <td nowrap><a href="{{route('contest.home',$item->id)}}" target="_blank">{{$item->title}}</a></td>
                     <td nowrap>{{$item->judge_type}}</td>
                     <td nowrap>{{$item->start_time}}</td>

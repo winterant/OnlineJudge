@@ -27,7 +27,7 @@ class ContestController extends Controller
         DB::table('contest_cate')->insert(['title'=>'实验', 'order'=>++$order_index, 'parent_id'=>$ids[2]]);
         DB::table('contest_cate')->insert(['title'=>'考试', 'order'=>++$order_index, 'parent_id'=>$ids[2]]);
         //历史赛事
-        DB::table('contest_cate')->insert(['title'=>'山东省赛', 'description'=>'山东省ACM程序设计大赛', 'order'=>++$order_index, 'parent_id'=>$ids[4]]);
+        DB::table('contest_cate')->insert(['title'=>'省赛', 'description'=>'山东省ACM程序设计大赛', 'order'=>++$order_index, 'parent_id'=>$ids[4]]);
         DB::table('contest_cate')->insert(['title'=>'ICPC', 'description'=>'ACM-ICPC国际大学生程序设计竞赛', 'order'=>++$order_index, 'parent_id'=>$ids[4]]);
         DB::table('contest_cate')->insert(['title'=>'CCPC', 'description'=>'CCPC中国大学生程序设计竞赛', 'order'=>++$order_index, 'parent_id'=>$ids[4]]);
     }
@@ -46,17 +46,14 @@ class ContestController extends Controller
             return redirect(route('contests', DB::table('contest_cate')->first()->id));
         }
 
-        //一级标题，并且有子分类，则自动跳转到第一个子分类；没有子分类，则直接显示竞赛列表
-        if ($current_cate->parent_id == 0){
-            $son = DB::table('contest_cate')->where('parent_id',$current_cate->id)->first();
-            if($son)
-                return redirect(route('contests', $son->id));
-        }
-
-        //对于二级类别，拿到所有兄弟类别； 对于1级类别，将获得空数组
-        $sons = DB::table('contest_cate')->where('parent_id',$current_cate->parent_id)->where('parent_id','>', 0)->get();
+        //拿到所有的二级类别
+        $sons = DB::table('contest_cate')
+            ->where('parent_id',$current_cate->parent_id?:$current_cate->id)
+            ->where('parent_id','>', 0)
+            ->orderBy('order')
+            ->get();
         //拿到所有的一级类别
-        $categories = DB::table('contest_cate')->where('parent_id', 0)->get();
+        $categories = DB::table('contest_cate')->where('parent_id', 0)->orderBy('order')->get();
 
         $contests=DB::table('contests as c')
             ->leftJoin('contest_cate as cc', 'cc.id', '=', 'c.cate_id')

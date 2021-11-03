@@ -16,22 +16,19 @@ class ContestController extends Controller
         $categories = DB::table('contest_cate as cc')
             ->leftJoin('contest_cate as other', 'other.id', '=', 'cc.parent_id')
             ->select(['cc.id', 'cc.title', 'cc.order', 'cc.parent_id'])
-            ->orderBy('cc.parent_id')
             ->orderBy('cc.order')
+            ->orderBy('cc.parent_id')
             ->orderBy('cc.id')
             ->get();
 
-        $has_son = [];
         $cate_titles = [0 => null];
         foreach ($categories as $cate) {
             $cate_titles[$cate->id] = $cate->title;
-            $has_son[$cate->parent_id] = true;
         }
 
         //取父分类的名字
         foreach ($categories as &$cate) {
             $cate->parent_title = $cate_titles[$cate->parent_id];
-            $cate->has_son = isset($has_son[$cate->id]);
         }
         return $categories;
     }
@@ -40,8 +37,7 @@ class ContestController extends Controller
     {
         $contests = DB::table('contests as c')
             ->leftJoin('users', 'users.id', '=', 'user_id')
-            ->leftJoin('contest_cate as cc', 'cc.id', '=', 'c.cate_id')
-            ->select(['c.*', 'username', 'cc.title as cate_title'])
+            ->select(['c.*', 'username'])
             ->when(isset($_GET['state']) && $_GET['state'] != 'all', function ($q) {
                 if ($_GET['state'] == 'ended') return $q->where('end_time', '<', date('Y-m-d H:i:s'));
                 else if ($_GET['state'] == 'waiting') return $q->where('start_time', '>', date('Y-m-d H:i:s'));
