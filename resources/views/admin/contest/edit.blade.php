@@ -10,28 +10,22 @@
         <form class="p-4 col-12 col-md-9" action="" method="post" enctype="multipart/form-data" onsubmit="presubmit()">
             @csrf
             <div class="form-inline mb-3">
-                <span>竞赛类别：</span>
+                <span>竞赛分类：</span>
 
-                @foreach(config('oj.contestType') as $key=>$name)
-                    <div class="custom-control custom-radio ml-3">
-                        <input type="radio" name="contest[type]" value="{{$key}}" class="custom-control-input" id="type{{$key}}"
-                               @if(!isset($contest->type)||$contest->type==$key)checked @endif>
-                        <label class="custom-control-label pt-1" for="type{{$key}}">
-                            {{$name}}
-                            @if($name=='course')
-                                (课程)
-                            @elseif($name=='training')
-                                (训练)
-                            @elseif($name=='contest')
-                                (竞赛)
+                <select name="contest[cate_id]" class="form-control px-3">
+                    @foreach($categories as $id=>$item)
+                        <option value="{{$id}}">
+                            @if($item->parent_title)
+                                {{$item->parent_title}} =>
                             @endif
-                        </label>
-                    </div>
-                @endforeach
+                            {{$item->title}}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="form-inline mb-3">
-                <font>判题时机：</font>
+                <span>判题时机：</span>
                 <div class="custom-control custom-radio ml-3">
                     <input type="radio" name="contest[judge_instantly]" value="1" class="custom-control-input" id="shishi" checked>
                     <label class="custom-control-label pt-1" for="shishi">实时判题</label>
@@ -119,7 +113,7 @@
                         <input type="number" step="0.01" max="1" min="0" name="contest[lock_rate]"
                                value="{{isset($contest)?$contest->lock_rate:0}}" class="form-control">
                         <a href="javascript:" class="ml-1" style="color: #838383"
-                            onclick="whatisthis('封榜时长=比赛时长×封榜比例；<br>数值范围0.0~1.0' +
+                           onclick="whatisthis('封榜时长=比赛时长×封榜比例；<br>数值范围0.0~1.0' +
                              '<br><br>例如：封榜比例0.2，比赛总时长5小时，则比赛达到4小时后榜单停止更新' +
                               '（管理员依旧可以看到实时榜单）' +
                                '<br><br>若封榜比例为1.0，则全程不更新榜单，适合考试。')">
@@ -137,7 +131,7 @@
                     <font>验证方式：</font>
                     <div class="custom-control custom-radio mx-3">
                         <input type="radio" name="contest[access]" value="public" class="custom-control-input" id="Public" checked
-                            onchange="access_has_change('public')">
+                               onchange="access_has_change('public')">
                         <label class="custom-control-label pt-1" for="Public">Public</label>
                     </div>
                     <div class="custom-control custom-radio mx-3">
@@ -154,15 +148,15 @@
                     </div>
                 </div>
 
-{{--                <div class="form-group">--}}
-{{--                    <label class="form-inline">验证方式：--}}
-{{--                        <select name="contest[access]" class="form-control" onchange="type_has_change($(this).val())">--}}
-{{--                            <option value="public">public：任意用户可以参与</option>--}}
-{{--                            <option value="password" {{isset($contest)&&$contest->access=='password'?'selected':''}}>password：需要输入密码进入</option>--}}
-{{--                            <option value="private" {{isset($contest)&&$contest->access=='private'?'selected':''}}>private：指定用户可参与</option>--}}
-{{--                        </select>--}}
-{{--                    </label>--}}
-{{--                </div>--}}
+                {{--                <div class="form-group">--}}
+                {{--                    <label class="form-inline">验证方式：--}}
+                {{--                        <select name="contest[access]" class="form-control" onchange="type_has_change($(this).val())">--}}
+                {{--                            <option value="public">public：任意用户可以参与</option>--}}
+                {{--                            <option value="password" {{isset($contest)&&$contest->access=='password'?'selected':''}}>password：需要输入密码进入</option>--}}
+                {{--                            <option value="private" {{isset($contest)&&$contest->access=='private'?'selected':''}}>private：指定用户可参与</option>--}}
+                {{--                        </select>--}}
+                {{--                    </label>--}}
+                {{--                </div>--}}
 
                 <div id="type_password" class="form-inline my-3">
                     <label>
@@ -246,42 +240,45 @@
     <script type="text/javascript">
         function presubmit() {
             //将允许语言的标记以二进制形式状态压缩为一个整数
-            var ret=0;
-            $("input[type=checkbox]:checked").each(function() {ret|=1<<this.value;});
+            var ret = 0;
+            $("input[type=checkbox]:checked").each(function () {
+                ret |= 1 << this.value;
+            });
             $("#input_allow_lang").val(ret);
         }
 
 
         //监听竞赛权限改变
         function access_has_change(type) {
-            if(type==='public'){
+            if (type === 'public') {
                 $("#type_password").hide();
                 $("#type_users").hide();
-            }else if(type==='password'){
+            } else if (type === 'password') {
                 $("#type_password").show();
                 $("#type_users").hide();
-            }else{
+            } else {
                 $("#type_password").hide();
                 $("#type_users").show();
             }
         }
+
         access_has_change('{{isset($contest)?$contest->access:'public'}}');  //初始执行一次
 
 
         //删除附件
-        function delete_file(that,filename) {
-            Notiflix.Confirm.Show( '删除前确认', '确定删除这个附件？'+filename, '确认', '取消', function(){
+        function delete_file(that, filename) {
+            Notiflix.Confirm.Show('删除前确认', '确定删除这个附件？' + filename, '确认', '取消', function () {
                 $.post(
                     '{{route('admin.contest.delete_file',isset($contest)?$contest->id:0)}}',
                     {
-                        '_token':'{{csrf_token()}}',
-                        'filename':filename,
+                        '_token': '{{csrf_token()}}',
+                        'filename': filename,
                     },
                     function (ret) {
-                        if(ret>0){
+                        if (ret > 0) {
                             that.parent().remove()
                             Notiflix.Notify.Success('删除成功！')
-                        }else Notiflix.Notify.Failure('删除失败,系统错误或权限不足！');
+                        } else Notiflix.Notify.Failure('删除失败,系统错误或权限不足！');
                     }
                 );
             });
@@ -292,22 +289,23 @@
             ClassicEditor.create(document.querySelector('#description'), ck_config).then(editor => {
                 window.editor = editor;
                 console.log(editor.getData());
-            } ).catch(error => {
+            }).catch(error => {
                 console.log(error);
-            } );
+            });
         })
 
         // textarea自动高度
-        $(function(){
-            $.fn.autoHeight = function(){
-                function autoHeight(elem){
+        $(function () {
+            $.fn.autoHeight = function () {
+                function autoHeight(elem) {
                     elem.style.height = 'auto';
                     elem.scrollTop = 0; //防抖动
-                    elem.style.height = elem.scrollHeight+2 + 'px';
+                    elem.style.height = elem.scrollHeight + 2 + 'px';
                 }
-                this.each(function(){
+
+                this.each(function () {
                     autoHeight(this);
-                    $(this).on('input', function(){
+                    $(this).on('input', function () {
                         autoHeight(this);
                     });
                 });
@@ -317,10 +315,10 @@
 
     </script>
     <script type="text/javascript">
-        window.onbeforeunload = function() {
+        window.onbeforeunload = function () {
             return "确认离开当前页面吗？未保存的数据将会丢失！";
         }
-        $("form").submit(function(e){
+        $("form").submit(function (e) {
             window.onbeforeunload = null
         });
     </script>

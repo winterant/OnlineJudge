@@ -1,5 +1,32 @@
 {{-- 菜单 --}}
 
+
+@php($menu_cate = DB::table('contest_cate')->find($contest->cate_id))
+@if($menu_cate)
+    @php($son_cate = DB::table('contest_cate')->find($menu_cate->parent_id))
+    <ul class="breadcrumb">
+        <li class="mr-2">
+            <a href="{{route('contests','all')}}">{{__('main.Contests')}}</a>
+        </li>
+        /
+        @if($son_cate)
+            <li class="mx-2">
+                <a href="{{route('contests', $son_cate->id)}}">{{$son_cate->title}}</a>
+            </li>
+            /
+        @endif
+        <li class="mx-2">
+            <a href="{{route('contests', $menu_cate->id)}}">{{$menu_cate->title}}</a>
+        </li>
+        /
+        <li class="mx-2 active">
+            {{$contest->title}}
+        </li>
+    </ul>
+@endif
+
+
+{{-- 没有设置用户昵称的用户，提醒设置填写信息 --}}
 @if(Auth::check() && Auth::user()->nick==null)
     <div class="my-container alert alert-danger">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
@@ -11,8 +38,7 @@
     </div>
 @endif
 
-{{--<div class="my-container bg-white pt-2 pb-1">--}}
-{{--    <ul class="nav nav-tabs nav-justified">--}}
+{{-- 每场竞赛的导航栏 --}}
 <div class="tabbable border-bottom mb-3">
     <ul class="nav nav-tabs">
         <li class="nav-item">

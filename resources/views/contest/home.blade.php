@@ -15,9 +15,9 @@
 
                     <h3 class="text-center">{{$contest->id}}. {{$contest->title}}
                         @if(Auth::check()&&Auth::user()->privilege('problem'))
-                            <font style="font-size: 0.85rem">
+                            <span style="font-size: 0.85rem">
                                 [ <a href="{{route('admin.contest.update',$contest->id)}}" target="_blank">{{__('main.Edit')}}</a> ]
-                            </font>
+                            </span>
                         @endif
                     </h3>
                     <hr class="mt-0">
@@ -73,8 +73,6 @@
                         if(!ended)
                             timer_id=setInterval(remain_time,1000);
                     </script>
-
-
 
                     @if($contest->description)
                         <style>

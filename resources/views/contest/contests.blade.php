@@ -27,12 +27,21 @@
 {{--            </ul>--}}
 {{--        </div>--}}
 
-        <div class="tabbable border-bottom mb-3">
-            <ul class="nav nav-tabs">
-                @foreach([0=>'all']+config('oj.contestType') as $i=>$ctype)
+        <div class="tabbable mb-3">
+            <ul class="nav nav-tabs border-bottom">
+                @foreach($categories as $cate)
                     <li class="nav-item">
-                        <a class="nav-link text-center py-3" href="{{route('contests',$ctype)}}">
-                            {{__('main.'.ucfirst($ctype))}}
+                        <a class="nav-link text-center py-3" href="{{route('contests',$cate->id)}}">
+                            {{ucfirst($cate->title)}}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+            <ul class="nav nav-tabs border-bottom border-left ml-5">
+                @foreach($sons as $cate)
+                    <li class="nav-item">
+                        <a class="nav-link text-center py-3" href="{{route('contests',$cate->id)}}">
+                            {{ucfirst($cate->title)}}
                         </a>
                     </li>
                 @endforeach
@@ -41,18 +50,7 @@
 
         <div class="my-container bg-white">
             <div class="overflow-hidden">
-{{--                <h4 class="pull-left">--}}
-{{--                    @if(isset($_GET['state']))--}}
-{{--                        {{__('main.'.ucfirst($_GET['state']))}}--}}
-{{--                    @endif--}}
-{{--                    @if($type_id)--}}
-{{--                        {{__('main.'.config('oj.contestType.'.$type_id))}}--}}
-{{--                    @else--}}
-{{--                        {{__('main.All')}}--}}
-{{--                    @endif--}}
-{{--                </h4>--}}
                 <form action="" method="get" class="mb-2 pull-right form-inline">
-                    <input type="number" onchange="this.form.submit();" name="type" value="{{isset($_GET['type'])?$_GET['type']:''}}" hidden>
                     <div class="form-inline mx-3">
                         <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
                             <option value="5" @if(isset($_GET['perPage'])&&$_GET['perPage']==5)selected @endif>5</option>
@@ -78,15 +76,16 @@
                         </select>
                     </div>
                     <div class="form-inline mx-3">
-                        <input type="text" class="form-control text-center" placeholder="{{__('main.Title')}}" onchange="this.form.submit();"
-                               name="title" value="{{isset($_GET['title'])?$_GET['title']:''}}">
+                        <input type="text" class="form-control text-center" placeholder="{{__('main.Title')}}" onchange="this.form.submit();" name="title" value="{{$_GET['title'] ?? ''}}">
                     </div>
                     <button class="btn border">{{__('main.Find')}}</button>
                 </form>
             </div>
+
             {{$contests->appends($_GET)->links()}}
+
             <ul class="list-unstyled border-top">
-                @foreach($contests as $item)
+                @foreach($contests as $i=>$item)
                     <li class="d-flex flex-wrap border-bottom pt-3 pb-2">
                         <div class="p-xs-0 px-3 text-center align-self-center">
                             <img height="45px" src="{{$item->state==1?asset('images/trophy/running.png'):asset('images/trophy/gold.png')}}" alt="pic">
@@ -96,9 +95,6 @@
                                 <a href="{{route('contest.home',$item->id)}}" class="text-black">{{$item->title}}</a>
                                 @if($item->hidden)
                                     <font class="text-blue" style="font-size: 0.9rem;vertical-align: top;">{{__('main.Hidden')}}</font>
-                                @endif
-                                @if($item->top>0)
-                                    <font class="text-red" style="font-size: 0.9rem;vertical-align: top;">{{__('main.Top')}}</font>
                                 @endif
                             </h5>
                             <ul class="d-flex flex-wrap list-unstyled" style="font-size: .9rem;color: #484f56">
@@ -115,13 +111,6 @@
                                         {{round($time_len/3600,1)}} {{trans_choice('main.hours',round($time_len/3600,1))}}
                                     @endif
                                 </li>
-                                @if(!$type_id)
-                                    <li class="px-2">
-                                        <div class="m-0 border bg-light pl-1 pr-1" style="border-radius: 12px">
-                                            {{__('main.'.ucfirst(config('oj.contestType.'.$item->type)))}}
-                                        </div>
-                                    </li>
-                                @endif
                                 <li class="px-2">
                                     <div class="border bg-light px-1" style="border-radius: 12px">{{strtoupper($item->judge_type)}}</div>
                                 </li>
@@ -149,21 +138,19 @@
                                     <i class="fa fa-hourglass text-green pr-1" aria-hidden="true"></i>{{__('main.Running')}}
                                 @endif
                             </a>
-                            @if(Auth::check()&&Auth::user()->privilege('contest'))
-                                <a href="javascript:" class="px-1" onclick="contest_set_top('{{$item->id}}',1)">
-                                    {{__('main.To Top')}}
-                                </a>
-                                @if($item->top>0)
-                                    <a href="javascript:" class="" onclick="contest_set_top('{{$item->id}}',0)">
-                                        {{__('main.Cancel')}}
-                                    </a>
-                                @endif
+                            @if($i>0)
+                                <span>
+                                    <a href="javascript:exchange_contests_order('{{$contests[$i]->id}}', '{{$contests[$i-1]->id}}')" class="mx-1">置顶</a>
+                                    <a href="javascript:contest_order_to_top('{{$i}}')" class="mx-1">上移</a>
+                                </span>
                             @endif
                         </div>
                     </li>
                 @endforeach
             </ul>
+
             {{$contests->appends($_GET)->links()}}
+
             @if(count($contests)==0)
                 <p class="text-center">{{__('sentence.No data')}}</p>
             @endif
@@ -172,18 +159,47 @@
 
     <script>
 
-        function contest_set_top(cid, way) {
+        //向后端请求，交换两个竞赛的顺序
+        function exchange_contests_order(cid1, cid2) {
             $.post(
-                '{{route('admin.contest.set_top')}}',
+                '{{route('api.contests.manage.exchange_order')}}',
                 {
                     '_token':'{{csrf_token()}}',
-                    'cid':cid,
-                    'way':way
+                    'contest1_id':cid1,
+                    'contest2_id':cid2
                 },
                 function (ret) {
-                    location.reload();
+                    ret = JSON.parse(ret)
+                    console.log(ret)
+                    location.reload()
                 }
             );
         }
+        //向后端请求，将竞赛的顺序调到当前分类的顶端
+        function contest_order_to_top(contest_id) {
+            $.post(
+                '{{route('api.contests.manage.order_to_top')}}',
+                {
+                    '_token':'{{csrf_token()}}',
+                    'contest_id':contest_id,
+                },
+                function (ret) {
+                    ret = JSON.parse(ret)
+                    console.log(ret)
+                    location.reload()
+                }
+            );
+        }
+
+        // 设置竞赛类别菜单高亮active
+        $(function () {
+            const url = location.href.split('?')[0];
+            //当处于二级类别下时，设置一级类别的高亮
+            $("ul.nav-tabs").find("a").each(function () {
+                if ($(this).attr("href") === url.substr(0, url.lastIndexOf('/'))+'/{{$current_cate->parent_id}}') {
+                    $(this).addClass("active");
+                }
+            });
+        })
     </script>
 @endsection

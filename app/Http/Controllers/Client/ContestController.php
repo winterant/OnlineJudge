@@ -11,26 +11,65 @@ use Illuminate\Support\Facades\Storage;
 
 class ContestController extends Controller
 {
-    public function contests($type){
-        $type_id = array_search($type,config('oj.contestType'));
-        $contests=DB::table('contests')
-            ->select(['id','type','judge_type','title','start_time','end_time','access','top','hidden',
+    //系统第一次使用时初始化默认类别
+    public function init_contest_categories(){
+        $order_index=0;
+        //插入一级默认类别
+        $ids[]=DB::table('contest_cate')->insertGetId(['title'=>'竞赛', 'description'=>'程序设计竞赛', 'order'=>++$order_index]);
+        $ids[]=DB::table('contest_cate')->insertGetId(['title'=>'日常训练', 'description'=>'日常训练', 'order'=>++$order_index]);
+        $ids[]=DB::table('contest_cate')->insertGetId(['title'=>'教学课程', 'description'=>'教学课程、实验、考试', 'order'=>++$order_index]);
+        $ids[]=DB::table('contest_cate')->insertGetId(['title'=>'编程书籍配套练习', 'description'=>'教学课程、实验、考试', 'order'=>++$order_index]);
+        $ids[]=DB::table('contest_cate')->insertGetId(['title'=>'历史赛事', 'description'=>'山东省ACM程序设计大赛、ICPC亚洲区域赛、CCPC中国大学生程序设计竞赛', 'order'=>++$order_index]);
+
+        //二级默认类别
+        //课程教学
+        DB::table('contest_cate')->insert(['title'=>'作业', 'order'=>++$order_index, 'parent_id'=>$ids[2]]);
+        DB::table('contest_cate')->insert(['title'=>'实验', 'order'=>++$order_index, 'parent_id'=>$ids[2]]);
+        DB::table('contest_cate')->insert(['title'=>'考试', 'order'=>++$order_index, 'parent_id'=>$ids[2]]);
+        //历史赛事
+        DB::table('contest_cate')->insert(['title'=>'山东省赛', 'description'=>'山东省ACM程序设计大赛', 'order'=>++$order_index, 'parent_id'=>$ids[4]]);
+        DB::table('contest_cate')->insert(['title'=>'ICPC', 'description'=>'ACM-ICPC国际大学生程序设计竞赛', 'order'=>++$order_index, 'parent_id'=>$ids[4]]);
+        DB::table('contest_cate')->insert(['title'=>'CCPC', 'description'=>'CCPC中国大学生程序设计竞赛', 'order'=>++$order_index, 'parent_id'=>$ids[4]]);
+    }
+
+    public function contests($cate){
+        if(DB::table('contest_cate')->count()==0){
+            //如果没有类别，即系统第一次使用竞赛，则创建默认的类别
+            $this->init_contest_categories();
+        }
+
+        //获取类别
+        $current_cate = DB::table('contest_cate')->find($cate);
+
+        //类别不存在，则自动跳转到默认竞赛
+        if(!$current_cate){
+            return redirect(route('contests', DB::table('contest_cate')->first()->id));
+        }
+
+        //一级标题，并且有子分类，则自动跳转到第一个子分类；没有子分类，则直接显示竞赛列表
+        if ($current_cate->parent_id == 0){
+            $son = DB::table('contest_cate')->where('parent_id',$current_cate->id)->first();
+            if($son)
+                return redirect(route('contests', $son->id));
+        }
+
+        //对于二级类别，拿到所有兄弟类别； 对于1级类别，将获得空数组
+        $sons = DB::table('contest_cate')->where('parent_id',$current_cate->parent_id)->where('parent_id','>', 0)->get();
+        //拿到所有的一级类别
+        $categories = DB::table('contest_cate')->where('parent_id', 0)->get();
+
+        $contests=DB::table('contests as c')
+            ->leftJoin('contest_cate as cc', 'cc.id', '=', 'c.cate_id')
+            ->select(['c.id','judge_type','c.title','start_time','end_time','access','c.order','c.hidden','cate_id','cc.title as cate_title',
                 DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
-                DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")])
-            ->when(isset($_GET['state'])&&$_GET['state']!='all',function ($q){
-                if($_GET['state']=='ended')return $q->where('end_time','<',date('Y-m-d H:i:s'));
-                else if($_GET['state']=='waiting')return $q->where('start_time','>',date('Y-m-d H:i:s'));
-                else return $q->where('start_time','<',date('Y-m-d H:i:s'))->where('end_time','>',date('Y-m-d H:i:s'));
-            })
-            ->when($type_id,function ($q)use($type_id){return $q->where('type',$type_id);})
-            ->when(isset($_GET['judge_type'])&&$_GET['judge_type']!=null,function ($q){return $q->where('judge_type',$_GET['judge_type']);})
-            ->when(isset($_GET['title']),function ($q){return $q->where('title','like','%'.$_GET['title'].'%');})
-            ->when(!Auth::check()||!Auth::user()->privilege('contest'),function ($q){return $q->where('hidden',0);})
-            ->orderByDesc('top')
+                DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=c.id) as number")])
+            ->where('cate_id', $current_cate->id)
+            ->orderByDesc('c.order')
             ->orderBy('state')
-            ->orderByDesc('id')
-            ->paginate(isset($_GET['perPage'])?$_GET['perPage']:50);
-        return view('contest.contests',compact('contests','type_id'));
+            ->orderByDesc('c.id')
+            ->paginate($_GET['perPage'] ?? 50);
+
+        return view('contest.contests',compact('contests', 'categories','sons','current_cate'));
     }
 
     public function password(Request $request,$id){
@@ -57,7 +96,7 @@ class ContestController extends Controller
 
     public function home($id){
         $contest=DB::table('contests')
-            ->select(['id','type','judge_instantly','judge_type','title','start_time','end_time','access','description',
+            ->select(['id','judge_instantly','judge_type','title','start_time','end_time','access','description','cate_id',
                 DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")])->find($id);
         $problems=DB::table('problems')
             ->join('contest_problems','contest_problems.problem_id','=','problems.id')
@@ -247,7 +286,7 @@ class ContestController extends Controller
         else if(isset($_GET['big']))
             Cookie::queue('rank_table_lg',$_GET['big']); //保存榜单是否全屏
 
-        $contest=DB::table('contests')->select(['id','type','judge_type','title','start_time','end_time','lock_rate','hidden'])->find($id);
+        $contest=DB::table('contests')->find($id);
         //对于隐藏的竞赛，普通用户不能查看榜单
         if($contest->hidden && (!Auth::check()||!Auth::user()->privilege('contest')))
         {

@@ -82,7 +82,7 @@
 {{--                </div>--}}
 {{--            </li>--}}
             <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" id="link_contests" href="{{route('contests','all')}}">
+                <a class="nav-link text-nowrap p-2" id="link_contests" href="{{route('contests','_')}}">
                     <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
                 </a>
             </li>
@@ -175,25 +175,21 @@
 
     // 遍历导航栏按钮，如果href与当前位置相等，就active
     $(function () {
-        var url=location.href.split('?')[0];
-        if(url==="{{route('home')}}/"){ //特判home
+        const url = location.href.split('?')[0];
+        //主导航栏
+        $("ul li").find("a").each(function () {
+            if (url===$(this).attr("href")) {
+                $(this).addClass("active");
+            }
+        });
+        //特判home
+        if(url==="{{route('home')}}/"){
             $("#link_home").addClass('active')
-        }else if(url.indexOf('/contests/')!==-1){
-            $('#link_contests').addClass('active')
-            $('ul li').find("a").each(function (){
-                if (url===$(this).attr("href")) {
-                    $(this).addClass("active");
-                    // $(this).prepend("<i class=\"fa fa-angle-double-right pr-1\" aria-hidden=\"true\"></i>")
-                }
-            })
-        }else{
-            $("ul li").find("a").each(function () {
-                if (url===$(this).attr("href")) {
-                    $(this).addClass("active");
-                }
-            });
         }
-
+        //特判contests
+        if(url.indexOf('/contest')!==-1){
+            $('#link_contests').addClass('active')
+        }
     })
 
 </script>

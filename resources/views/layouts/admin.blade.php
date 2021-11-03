@@ -268,6 +268,10 @@
                             <a class="nav-link border-top" href="{{route('admin.contest.add')}}">
                                 <i class="fa fa-plus" aria-hidden="true"></i> 添加竞赛</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-top" href="{{route('admin.contest.categories')}}">
+                                <i class="fa fa-tags" aria-hidden="true"></i> 分类管理</a>
+                        </li>
                     </ul>
                 </li>
 

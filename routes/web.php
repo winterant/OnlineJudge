@@ -27,7 +27,7 @@ Route::post('/ajax_get_status','Client\StatusController@ajax_get_status')->name(
 Route::get('/problems','Client\ProblemController@problems')->name('problems');
 Route::get('/problem/{id}','Client\ProblemController@problem')->middleware('CheckBlacklist')->where(['id'=>'[0-9]+'])->name('problem');
 Route::get('/contests','Client\ContestController@contests')->name('contests');
-Route::get('/contests/{type}','Client\ContestController@contests')->name('contests');
+Route::get('/contests/{cate}','Client\ContestController@contests')->name('contests');
 Route::get('/standings','Client\UserController@standings')->name('standings');
 Route::get('/user/{username}','Client\UserController@user')->name('user');
 Route::get('/change_language/{lang}','Client\UserController@change_language')->name('change_language');
@@ -176,6 +176,8 @@ Route::middleware(['auth','CheckBlacklist'])->prefix('admin')->name('admin.')->w
         Route::post('/update/hidden','Admin\ContestController@update_hidden')->name('update_hidden');
         Route::post('/clone','Admin\ContestController@clone')->name('clone');
         Route::post('/set_top','Admin\ContestController@set_top')->name('set_top');
+
+        Route::get('/categories','Admin\ContestController@categories')->name('categories');
     });
 
 //    setting

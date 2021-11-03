@@ -91,26 +91,43 @@ CREATE TABLE `group_contests`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `contests`;
 CREATE TABLE `contests`  (
-    `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `type` tinyint(4) NOT NULL DEFAULT 0 COMMENT '竞赛分类',
-    `judge_instantly` tinyint(4) NOT NULL DEFAULT 1 COMMENT '是否即时判题，否则赛后只判最后一次提交',
+    `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+    `judge_instantly` tinyint NOT NULL DEFAULT 1 COMMENT '是否即时判题，否则赛后只判最后一次提交',
     `judge_type` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'acm' COMMENT 'acm,oi',
-    `open_discussion` tinyint(4) NULL DEFAULT 1,
+    `open_discussion` tinyint NULL DEFAULT 1,
     `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
     `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-    `allow_lang` int(11) NULL DEFAULT 0 COMMENT '按位标记允许的提交语言',
+    `allow_lang` int NULL DEFAULT 0 COMMENT '按位标记允许的提交语言',
     `start_time` datetime NULL DEFAULT NULL,
     `end_time` datetime NULL DEFAULT NULL,
     `lock_rate` float NULL DEFAULT 0 COMMENT '封榜比例，0.00~1.00',
     `access` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'public' COMMENT 'public,password,private',
     `password` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-    `user_id` int(11) NULL DEFAULT NULL,
-    `hidden` tinyint(4) NULL DEFAULT 0,
-    `top` int(11) NULL DEFAULT 0 COMMENT '置顶级别',
+    `user_id` int NULL DEFAULT NULL,
+    `hidden` tinyint NULL DEFAULT 0,
+    `order` int NULL DEFAULT 0,
+    `cate_id` int NULL DEFAULT 0,
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `stime`(`start_time`) USING BTREE,
-    INDEX `etime`(`end_time`) USING BTREE
+    INDEX `etime`(`end_time`) USING BTREE,
+    INDEX `index_user_id`(`user_id`) USING BTREE,
+    INDEX `index_cate_id`(`cate_id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for contest_cate
+-- ----------------------------
+DROP TABLE IF EXISTS `contest_cate`;
+CREATE TABLE `contest_cate`  (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+    `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '分类描述',
+    `hidden` tinyint NULL DEFAULT 0,
+    `order` int NULL DEFAULT 0 COMMENT '顺序',
+    `parent_id` int NULL DEFAULT 0 COMMENT '子分类的父id，0代表一级分类',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `index_parent_id`(`parent_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for contest_balloons

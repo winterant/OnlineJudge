@@ -991,7 +991,7 @@
   function maxPos(a, b) { return cmp(a, b) < 0 ? b : a }
   function minPos(a, b) { return cmp(a, b) < 0 ? a : b }
 
-  // Most of the external API clips given positions to make sure they
+  // Most of the external Api clips given positions to make sure they
   // actually exist within the document.
   function clipLine(doc, n) {return Math.max(doc.first, Math.min(n, doc.first + doc.size - 1))}
   function clipPos(doc, pos) {
@@ -8215,7 +8215,7 @@
     return div
   }
 
-  // The publicly visible API. Note that methodOp(f) means
+  // The publicly visible Api. Note that methodOp(f) means
   // 'wrap f in an operation, performed on its `this` parameter'.
 
   // This is not the complete set of editor methods. Most of the
@@ -8824,7 +8824,7 @@
       if (e.clipboardData) {
         e.clipboardData.clearData();
         var content = lastCopied.text.join("\n");
-        // iOS exposes the clipboard API, but seems to discard content inserted into it
+        // iOS exposes the clipboard Api, but seems to discard content inserted into it
         e.clipboardData.setData("Text", content);
         if (e.clipboardData.getData("Text") == content) {
           e.preventDefault();
