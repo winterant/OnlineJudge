@@ -8,24 +8,27 @@
         select {
             text-align: center;
             text-align-last: center;
-            color:black;
+            color: black;
         }
-        @media screen and (max-width: 992px){
-            .p-xs-0{padding: 0}
+
+        @media screen and (max-width: 992px) {
+            .p-xs-0 {
+                padding: 0
+            }
         }
     </style>
 
     <div class="container">
 
-{{--        <div class="my-container bg-white pt-2 pb-1">--}}
-{{--            <ul class="nav nav-tabs nav-justified">--}}
-{{--                @foreach(config('oj.contestType') as $i=>$ctype)--}}
-{{--                    <li class="nav-item">--}}
-{{--                        <a class="nav-link p-2" href="{{route('contests',['type'=>$i])}}">{{ucfirst($ctype)}}</a>--}}
-{{--                    </li>--}}
-{{--                @endforeach--}}
-{{--            </ul>--}}
-{{--        </div>--}}
+        {{--        <div class="my-container bg-white pt-2 pb-1">--}}
+        {{--            <ul class="nav nav-tabs nav-justified">--}}
+        {{--                @foreach(config('oj.contestType') as $i=>$ctype)--}}
+        {{--                    <li class="nav-item">--}}
+        {{--                        <a class="nav-link p-2" href="{{route('contests',['type'=>$i])}}">{{ucfirst($ctype)}}</a>--}}
+        {{--                    </li>--}}
+        {{--                @endforeach--}}
+        {{--            </ul>--}}
+        {{--        </div>--}}
 
         <div class="tabbable mb-3">
             <ul class="nav nav-tabs border-bottom">
@@ -164,9 +167,9 @@
             $.post(
                 '{{route('api.contests.manage.exchange_order')}}',
                 {
-                    '_token':'{{csrf_token()}}',
-                    'contest1_id':cid1,
-                    'contest2_id':cid2
+                    '_token': '{{csrf_token()}}',
+                    'contest1_id': cid1,
+                    'contest2_id': cid2
                 },
                 function (ret) {
                     ret = JSON.parse(ret)
@@ -175,13 +178,14 @@
                 }
             );
         }
+
         //向后端请求，将竞赛的顺序调到当前分类的顶端
         function contest_order_to_top(contest_id) {
             $.post(
                 '{{route('api.contests.manage.order_to_top')}}',
                 {
-                    '_token':'{{csrf_token()}}',
-                    'contest_id':contest_id,
+                    '_token': '{{csrf_token()}}',
+                    'contest_id': contest_id,
                 },
                 function (ret) {
                     ret = JSON.parse(ret)
@@ -193,10 +197,11 @@
 
         // 设置竞赛类别菜单高亮active
         $(function () {
-            const url = location.href.split('?')[0];
+            const uri = location.pathname
             //当处于二级类别下时，设置一级类别的高亮
             $("ul.nav-tabs").find("a").each(function () {
-                if ($(this).attr("href") === url.substr(0, url.lastIndexOf('/'))+'/{{$current_cate->parent_id}}') {
+                const parent_cate_uri = uri.substr(0, uri.lastIndexOf('/')) + '/{{$current_cate->parent_id}}'
+                if ($(this).attr("href").split('?')[0].endsWith(parent_cate_uri)) {
                     $(this).addClass("active");
                 }
             });

@@ -97,7 +97,8 @@ class ContestController extends Controller
                 $files[] = array_slice(explode('/', $item), -1, 1)[0];
             }
             $pageTitle = '修改竞赛';
-            return view('admin.contest.edit', compact('pageTitle', 'contest', 'unames', 'pids', 'files'));
+            $categories = $this->get_categories();
+            return view('admin.contest.edit', compact('pageTitle', 'contest', 'unames', 'pids', 'files', 'categories'));
         }
         if ($request->isMethod('post')) {
             $contest = $request->input('contest');

@@ -175,19 +175,19 @@
 
     // 遍历导航栏按钮，如果href与当前位置相等，就active
     $(function () {
-        const url = location.href.split('?')[0];
+        const uri = location.pathname;
         //主导航栏
         $("ul li").find("a").each(function () {
-            if (url===$(this).attr("href")) {
+            if ($(this).attr("href").split('?')[0].endsWith(uri)) {
                 $(this).addClass("active");
             }
         });
         //特判home
-        if(url==="{{route('home')}}/"){
+        if(uri==="/"){
             $("#link_home").addClass('active')
         }
         //特判contests
-        if(url.indexOf('/contest')!==-1){
+        if(uri.indexOf('/contest')!==-1){
             $('#link_contests').addClass('active')
         }
     })
