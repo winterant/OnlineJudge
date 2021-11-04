@@ -140,7 +140,11 @@
                     function (ret) {
                         ret = JSON.parse(ret)
                         console.log(ret)
-                        Notiflix.Notify.Success(ret.msg);
+                        if (ret.ret) {
+                            Notiflix.Notify.Success(ret.msg);
+                            location.reload()
+                        } else
+                            Notiflix.Report.Failure('删除失败', ret.msg, '确认')
                     }
                 );
             })

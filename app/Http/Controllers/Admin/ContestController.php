@@ -24,7 +24,7 @@ class ContestController extends Controller
             $cate_titles[$cate->id] = $cate->title;
         }
         foreach ($categories as &$cate) {
-            $cate->parent_title = isset($cate_titles[$cate->parent_id]) ?? null;
+            $cate->parent_title = $cate_titles[$cate->parent_id] ?? null;
         }
         return $categories;
     }
@@ -308,6 +308,12 @@ class ContestController extends Controller
 
     public function delete_cate($id)
     {
+        if (DB::table('contest_cate')->where('parent_id', $id)->exists()) {
+            return json_encode([
+                'ret' => false,
+                'msg' => '一级分类下包含子类别，请先删除或移走所有子类别再删除当前类别'
+            ]);
+        }
         DB::table('contest_cate')->where('id', $id)->delete();
         return json_encode([
             'ret' => true,

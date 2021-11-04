@@ -105,7 +105,7 @@
                     <td>
                         <div class="form-inline">
                             <select class="form-control px-3" onchange="update_contest_cate_id('{{$item->id}}',$(this).val())">
-                                <option value="0">--- 未分类 ---</option>
+                                <option value="0" hidden>--- 未分类 ---</option>
                                 @foreach($categories as $cate)
                                     <option value="{{$cate->id}}" @if($item->cate_id==$cate->id)selected @endif>
                                         @if($cate->parent_title)
