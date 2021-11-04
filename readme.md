@@ -31,12 +31,17 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 + 竞赛管理；增删查改，公开/隐藏。
 + 系统配置；修改网站名称，打开/关闭一些全局功能，**中英文切换**，系统在线升级等。
 
+下文拉取代码的git命令如果速度缓慢，可以尝试使用镜像站地址，例如
+```bash
+git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
+```
+
 # :wrench: 项目安装
 
 + **基于Linux Ubuntu 18.04/20.04**
   [帮助:[更换中科大软件源](https://mirrors.ustc.edu.cn/help/ubuntu.html#id7)]
   ```shell script
-  git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
+  git clone https://github.com/iamwinter/LDUOnlineJudge.git
   bash LDUOnlineJudge/install/ubuntu/install.sh
   ```
   - 浏览器访问服务器ip进入首页。
@@ -67,7 +72,7 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 + 基于docker安装的用户请先进入容器（`docker exec -it lduoj /bin/bash`）。
 
   ```shell script
-  git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git oj_upgrade
+  git clone https://github.com/iamwinter/LDUOnlineJudge.git oj_upgrade
   bash oj_upgrade/install/ubuntu/update.sh /home/LDUOnlineJudge  # 最后这个参数为原项目路径
   ```
 
@@ -183,7 +188,7 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 方式二：基于本地环境
 1. 下载源码
     ```shell script
-    git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
+    git clone https://github.com/iamwinter/LDUOnlineJudge.git
     ```
 
 2. 准备环境
@@ -228,7 +233,7 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 
   ```shell script
   mkdir lduoj_build && cd lduoj_build
-  git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
+  git clone https://github.com/iamwinter/LDUOnlineJudge.git
   docker build -f ./LDUOnlineJudge/install/docker/Dockerfile -t lduoj:local .
   ```
   windows用户git默认`autocrlf=true`，
@@ -261,7 +266,7 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 |2021.06.25|将中英文切换功能放到主页导航栏，用户自由切换。|cookie记住用户选择|2021.06.26|[iamwinter](https://github.com/iamwinter)|
 |2021.06.23|后台权限需要整顿；每个题目/竞赛，应当保存创建人，只有创建人可修改。| |2021.06.30|iamwinter|
 |2021.06.23|增加【班级/团队】模块，可对班级布置作业；学生可在【我的作业】中查看作业。| | | |
-|2021.06.23|新增竞赛类别；管理员可以自由管理竞赛的类别，含二级分类。分出一栏“我的进行中”| | | |
+|2021.06.23|新增竞赛类别；管理员可以自由管理竞赛的类别，含二级分类。分出一栏“我的进行中”|除“进行中”外完成 |2021.11.04|iamwinter|
 |2021.06.23|讨论板增加审核功能，总开关：权限分配。前端js动态生成语句凌乱，需重构| | | |
 |2021.05.01|增加echarts工具进行数据分析，包括榜单、题目通过率等的图表展示。| 仅problem页面；可在其他页面继续增加 |2021.05.11|[iamwinter](https://github.com/iamwinter)|
 |2021.05.01|代码高亮。以及使用网页代码编辑器。| |2021.05.11|[iamwinter](https://github.com/iamwinter)|
