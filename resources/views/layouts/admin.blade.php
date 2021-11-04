@@ -7,37 +7,41 @@
 
     <style type="text/css">
         .nav-link, .btn {
-            text-transform: none;  /*不使用大写*/
+            text-transform: none; /*不使用大写*/
         }
 
         /*侧边菜单*/
-        .sidebar{
-            position: fixed;  /*相对于窗口定位*/
+        .sidebar {
+            position: fixed; /*相对于窗口定位*/
             top: 56px;
             bottom: 0;
             left: 0;
-            padding:0;
-            z-index:10;
-            background-color: rgba(255,255,255,.85);
+            padding: 0;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, .85);
         }
+
         .sidebar-sticky {
             height: 100%;
             padding: .7rem 0;
             overflow-y: auto;
         }
+
         /*下面是菜单栏滚动条样式*/
         .sidebar-sticky::-webkit-scrollbar {
-            width : 5px;  /*滚动条整体样式*/
+            width: 5px; /*滚动条整体样式*/
         }
+
         .sidebar-sticky::-webkit-scrollbar-thumb {
-            border-radius: 10px;  /*滚动条里面小方块*/
-            box-shadow   : inset 0 0 5px rgb(3, 255, 0);
-            background   : rgba(86, 169, 226, 0.79);
+            border-radius: 10px; /*滚动条里面小方块*/
+            box-shadow: inset 0 0 5px rgb(3, 255, 0);
+            background: rgba(86, 169, 226, 0.79);
         }
+
         .sidebar-sticky::-webkit-scrollbar-track {
-            box-shadow   : inset 0 0 5px rgba(0, 0, 0, 0.2);/*滚动条里面轨道*/
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); /*滚动条里面轨道*/
             border-radius: 10px;
-            background   : #ededed;
+            background: #ededed;
         }
 
         /*下面是菜单项右侧小箭头*/
@@ -45,52 +49,55 @@
             display: block;
             position: absolute;
             right: 20px;
-            font-family:FontAwesome;
-            font-weight:normal;
-            font-style:normal;
+            font-family: FontAwesome;
+            font-weight: normal;
+            font-style: normal;
             content: '\f078';
         }
+
         .sidebar a[aria-expanded="false"]::before {
             display: block;
             position: absolute;
             right: 20px;
-            font-family:FontAwesome;
-            font-weight:normal;
-            font-style:normal;
-            content:"\f054"
+            font-family: FontAwesome;
+            font-weight: normal;
+            font-style: normal;
+            content: "\f054"
         }
 
         /*选中的菜单项样式*/
-        .nav-item .active{
+        .nav-item .active {
             background-color: #e6e6e6;
             color: #000000;
         }
 
         /*侧边菜单项不换行*/
-        #left-menu a{
-            white-space:nowrap;
+        #left-menu a {
+            white-space: nowrap;
         }
 
 
         @media screen and (min-width: 768px) {
             /*大屏幕，隐藏侧边栏按钮*/
-            #btn-left-menu{
+            #btn-left-menu {
                 display: none;
             }
         }
+
         @media screen and (max-width: 768px) {
             /*小屏幕，初始隐藏侧边栏*/
-            #left-menu{
+            #left-menu {
                 display: none;
             }
         }
 
 
         /*所有table的表头不换行*/
-        th{
+        th {
             white-space: nowrap;
         }
-        td{
+
+        td {
             /*table垂直居中*/
             vertical-align: middle !important;
         }
@@ -103,7 +110,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="z-index: 5">
 
         <button id="btn-left-menu" class="btn border m-0"
-            onclick="$('#left-menu').css('display')=='none'?$('#left-menu').slideLeftShow():$('#left-menu').slideLeftHide()">
+                onclick="$('#left-menu').css('display')=='none'?$('#left-menu').slideLeftShow():$('#left-menu').slideLeftHide()">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -303,23 +310,23 @@
 
 <script type="text/javascript">
     // 移动端 左侧菜单栏滑动效果
-    jQuery.fn.slideLeftHide = function( speed, callback ) {
+    jQuery.fn.slideLeftHide = function (speed, callback) {
         this.animate({
-            width : "hide",
-            paddingLeft : "hide",
-            paddingRight : "hide",
-            marginLeft : "hide",
-            marginRight : "hide"
-        }, speed, callback );
+            width: "hide",
+            paddingLeft: "hide",
+            paddingRight: "hide",
+            marginLeft: "hide",
+            marginRight: "hide"
+        }, speed, callback);
     };
-    jQuery.fn.slideLeftShow = function( speed, callback ) {
+    jQuery.fn.slideLeftShow = function (speed, callback) {
         this.animate({
-            width : "show",
-            paddingLeft : "show",
-            paddingRight : "show",
-            marginLeft : "show",
-            marginRight : "show"
-        }, speed, callback );
+            width: "show",
+            paddingLeft: "show",
+            paddingRight: "show",
+            marginLeft: "show",
+            marginRight: "show"
+        }, speed, callback);
     };
 </script>
 
@@ -328,15 +335,15 @@
     // 遍历导航栏按钮，如果href与当前位置相等，就active
     $(function () {
         $("ul li.nav-item").each(function () {
-            var a = $(this).find("a:first")[0];
-            var href = $(a).attr("href")
-            var url=location.href.split('?')[0];
-            if(/\d+$/.test(url))
-                url=url.substring(0,url.lastIndexOf('/')); //去掉编号参数
-            if (url===href) {
+            const a = $(this).find("a:first")[0];
+            const href = $(a).attr("href");
+            let uri = location.pathname
+            if (/\d+$/.test(uri))
+                uri = uri.substring(0, uri.lastIndexOf('/')); //去掉编号参数
+            if (href.endsWith(uri)) {
                 $(a).addClass("active");
                 $(this).parent().prev().click();
-                $('.sidebar-sticky').animate({scrollTop:$(this).parent().position().top-50+'px'});
+                $('.sidebar-sticky').animate({scrollTop: $(this).parent().position().top - 50 + 'px'});
             }
         });
     })
