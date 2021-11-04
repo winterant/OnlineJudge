@@ -15,22 +15,15 @@ class ContestController extends Controller
     public function init_contest_categories()
     {
         $order_index = 0;
-        //插入一级默认类别
+        //一级默认类别
         $ids[] = DB::table('contest_cate')->insertGetId(['title' => '竞赛', 'description' => '程序设计竞赛', 'order' => ++$order_index]);
-        $ids[] = DB::table('contest_cate')->insertGetId(['title' => '日常训练', 'description' => '日常训练', 'order' => ++$order_index]);
-        $ids[] = DB::table('contest_cate')->insertGetId(['title' => '教学课程', 'description' => '教学课程、实验、考试', 'order' => ++$order_index]);
-        $ids[] = DB::table('contest_cate')->insertGetId(['title' => '编程书籍配套练习', 'description' => '教学课程、实验、考试', 'order' => ++$order_index]);
-        $ids[] = DB::table('contest_cate')->insertGetId(['title' => '历史赛事', 'description' => '山东省ACM程序设计大赛、ICPC亚洲区域赛、CCPC中国大学生程序设计竞赛', 'order' => ++$order_index]);
+        $ids[] = DB::table('contest_cate')->insertGetId(['title' => '训练', 'description' => '日常训练', 'order' => ++$order_index]);
+        $ids[] = DB::table('contest_cate')->insertGetId(['title' => '类别示例', 'description' => '这是一级类别，你可以在后台创建新的一级类别，也可以创建二级类别。', 'order' => ++$order_index]);
 
         //二级默认类别
-        //课程教学
-        DB::table('contest_cate')->insert(['title' => '作业', 'order' => ++$order_index, 'parent_id' => $ids[2]]);
-        DB::table('contest_cate')->insert(['title' => '实验', 'order' => ++$order_index, 'parent_id' => $ids[2]]);
-        DB::table('contest_cate')->insert(['title' => '考试', 'order' => ++$order_index, 'parent_id' => $ids[2]]);
-        //历史赛事
-        DB::table('contest_cate')->insert(['title' => '山东省赛', 'description' => '山东省ACM大学生程序设计大赛', 'order' => ++$order_index, 'parent_id' => $ids[4]]);
-        DB::table('contest_cate')->insert(['title' => 'ICPC', 'description' => 'ACM-ICPC国际大学生程序设计竞赛', 'order' => ++$order_index, 'parent_id' => $ids[4]]);
-        DB::table('contest_cate')->insert(['title' => 'CCPC', 'description' => 'CCPC中国大学生程序设计竞赛', 'order' => ++$order_index, 'parent_id' => $ids[4]]);
+        DB::table('contest_cate')->insert(['title' => '二级类别示例1', 'order' => ++$order_index, 'parent_id' => $ids[2]]);
+        DB::table('contest_cate')->insert(['title' => '二级类别示例2', 'order' => ++$order_index, 'parent_id' => $ids[2]]);
+        DB::table('contest_cate')->insert(['title' => '二级类别示例3', 'order' => ++$order_index, 'parent_id' => $ids[2]]);
 
         //初始化所有竞赛的order字段为id值
         DB::update("update contests set `order`=`id`");
