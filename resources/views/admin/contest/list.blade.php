@@ -22,9 +22,9 @@
 
             <select name="cate_id" class="form-control px-3" onchange="this.form.submit();">
                 <option value="">所有类别</option>
-                @foreach($categories as $id=>$item)
-                    <option value="{{$id}}"
-                            @if(isset($_GET['cate_id'])&&$_GET['cate_id']==$id)selected @endif>
+                @foreach($categories as $item)
+                    <option value="{{$item->id}}"
+                            @if(isset($_GET['cate_id'])&&$_GET['cate_id']==$item->id)selected @endif>
                         @if($item->parent_title)
                             {{$item->parent_title}} =>
                         @endif
@@ -104,10 +104,10 @@
                     <td>{{$item->id}}</td>
                     <td>
                         <div class="form-inline">
-                            <select name="cate_id" class="form-control px-3" onchange="alert('todo  切换类别：'+$(this).val())">
-                                <option value="">---</option>
+                            <select class="form-control px-3" onchange="update_contest_cate_id('{{$item->id}}',$(this).val())">
+                                <option value="0">--- 未分类 ---</option>
                                 @foreach($categories as $cate)
-                                    <option value="{{$cate->id}}" @if($item->cate_id==$id)selected @endif>
+                                    <option value="{{$cate->id}}" @if($item->cate_id==$cate->id)selected @endif>
                                         @if($cate->parent_title)
                                             {{$cate->parent_title}} =>
                                         @endif
@@ -130,15 +130,26 @@
                     </td>
                     <td nowrap>{{$item->username}}</td>
                     <td nowrap>
-                        <a href="{{route('admin.contest.update',$item->id)}}" class="px-1" target="_blank" title="修改">
+                        <a href="{{route('admin.contest.update',$item->id)}}" class="mx-1" target="_blank" title="修改">
                             <i class="fa fa-edit" aria-hidden="true"></i> 编辑
                         </a>
-                        <a href="javascript:" onclick="delete_contest({{$item->id}})" class="px-1" title="删除">
+                        <a href="javascript:" onclick="delete_contest({{$item->id}})" class="mx-1" title="删除">
                             <i class="fa fa-trash" aria-hidden="true"></i> 删除
                         </a>
-                        <a href="javascript:" onclick="clone_contest({{$item->id}})" class="px-1" title="克隆该竞赛">
+                        <a href="javascript:" onclick="clone_contest({{$item->id}})" class="mx-1" title="克隆该竞赛">
                             <i class="fa fa-clone" aria-hidden="true"></i> 克隆
                         </a>
+                        @if(isset($_GET['cate_id'])&&$_GET['cate_id']!='')
+                            <a href="javascript:" onclick="update_order('{{$item->id}}', 'to_top')" class="mx-1" title="置顶">
+                                <i class="fa fa-level-up" aria-hidden="true"></i> 置顶
+                            </a>
+                            <a href="javascript:" onclick="update_order('{{$item->id}}', 'to_up')" class="mx-1" title="上移">
+                                <i class="fa fa-arrow-up" aria-hidden="true"></i> 上移
+                            </a>
+                            <a href="javascript:" onclick="update_order('{{$item->id}}', 'to_down')" class="mx-1" title="下移">
+                                <i class="fa fa-arrow-down" aria-hidden="true"></i> 下移
+                            </a>
+                        @endif
                     </td>
                 </tr>
             @endforeach
@@ -239,6 +250,39 @@
                             });
                         } else Notiflix.Report.Failure('修改失败', '没有可以更新的数据或权限不足', 'confirm')
                     }
+                }
+            );
+        }
+
+        function update_order(cid, mode) {
+            $.post(
+                '{{route('admin.contest.update_order')}}',
+                {
+                    '_token': '{{csrf_token()}}',
+                    'contest_id': cid,
+                    'mode': mode
+                },
+                function (ret) {
+                    ret = JSON.parse(ret)
+                    console.log(ret)
+                    location.reload()
+                }
+            );
+        }
+
+        //修改竞赛的类别
+        function update_contest_cate_id(contest_id, cate_id) {
+            $.post(
+                '{{route('admin.contest.update_contest_cate_id')}}',
+                {
+                    '_token': '{{csrf_token()}}',
+                    'contest_id': contest_id,
+                    'cate_id': cate_id
+                },
+                function (ret) {
+                    ret = JSON.parse(ret)
+                    console.log(ret)
+                    Notiflix.Notify.Success(ret.msg)
                 }
             );
         }

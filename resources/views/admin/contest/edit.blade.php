@@ -14,7 +14,7 @@
 
                 <select name="contest[cate_id]" class="form-control px-3">
                     @foreach($categories as $item)
-                        <option value="{{$item->id}}">
+                        <option value="{{$item->id}}" @if(isset($contest->cate_id)&&$contest->cate_id==$item->id) selected @endif>
                             @if($item->parent_title)
                                 {{$item->parent_title}} =>
                             @endif

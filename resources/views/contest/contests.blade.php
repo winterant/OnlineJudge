@@ -51,8 +51,10 @@
             </ul>
         </div>
 
+
         <div class="my-container bg-white">
-            <div class="overflow-hidden">
+            <div class="overflow-hidden mb-2">
+                <p class="pull-left">{{$current_cate->description}}</p>
                 <form action="" method="get" class="mb-2 pull-right form-inline">
                     <div class="form-inline mx-3">
                         <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
@@ -88,7 +90,7 @@
             {{$contests->appends($_GET)->links()}}
 
             <ul class="list-unstyled border-top">
-                @foreach($contests as $i=>$item)
+                @foreach($contests as $item)
                     <li class="d-flex flex-wrap border-bottom pt-3 pb-2">
                         <div class="p-xs-0 px-3 text-center align-self-center">
                             <img height="45px" src="{{$item->state==1?asset('images/trophy/running.png'):asset('images/trophy/gold.png')}}" alt="pic">
@@ -141,12 +143,11 @@
                                     <i class="fa fa-hourglass text-green pr-1" aria-hidden="true"></i>{{__('main.Running')}}
                                 @endif
                             </a>
-                            @if($i>0)
-                                <span>
-                                    <a href="javascript:exchange_contests_order('{{$contests[$i]->id}}', '{{$contests[$i-1]->id}}')" class="mx-1">置顶</a>
-                                    <a href="javascript:contest_order_to_top('{{$i}}')" class="mx-1">上移</a>
-                                </span>
-                            @endif
+                            <span>
+                                <a href="javascript:update_order('{{$item->id}}', 'to_top')" class="mx-1">置顶</a>
+                                <a href="javascript:update_order('{{$item->id}}', 'to_up')" class="mx-1">上移</a>
+                                <a href="javascript:update_order('{{$item->id}}', 'to_down')" class="mx-1">下移</a>
+                            </span>
                         </div>
                     </li>
                 @endforeach
@@ -160,32 +161,15 @@
         </div>
     </div>
 
-    <script>
+    <script type="text/javascript">
 
-        //向后端请求，交换两个竞赛的顺序
-        function exchange_contests_order(cid1, cid2) {
+        function update_order(cid, mode) {
             $.post(
-                '{{route('api.contests.manage.exchange_order')}}',
+                '{{route('admin.contest.update_order')}}',
                 {
                     '_token': '{{csrf_token()}}',
-                    'contest1_id': cid1,
-                    'contest2_id': cid2
-                },
-                function (ret) {
-                    ret = JSON.parse(ret)
-                    console.log(ret)
-                    location.reload()
-                }
-            );
-        }
-
-        //向后端请求，将竞赛的顺序调到当前分类的顶端
-        function contest_order_to_top(contest_id) {
-            $.post(
-                '{{route('api.contests.manage.order_to_top')}}',
-                {
-                    '_token': '{{csrf_token()}}',
-                    'contest_id': contest_id,
+                    'contest_id': cid,
+                    'mode': mode
                 },
                 function (ret) {
                     ret = JSON.parse(ret)

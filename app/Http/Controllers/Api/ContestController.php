@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Storage;
 
 class ContestController extends Controller
 {
+    public function update_order(Request $request)
+    {
+        assert(1);
+        return 1;
+        return $request->all();
+    }
+
     //交换两个竞赛的order字段
     public function exchange_order(Request $request)
     {

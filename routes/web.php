@@ -178,6 +178,11 @@ Route::middleware(['auth','CheckBlacklist'])->prefix('admin')->name('admin.')->w
         Route::post('/set_top','Admin\ContestController@set_top')->name('set_top');
 
         Route::get('/categories','Admin\ContestController@categories')->name('categories');
+        Route::post('/update_order', 'Admin\ContestController@update_order')->name('update_order');
+        Route::post('/update_contest_cate_id', 'Admin\ContestController@update_contest_cate_id')->name('update_contest_cate_id');
+        Route::post('/update_cate', 'Admin\ContestController@update_cate')->name('update_cate');
+        Route::post('/update_cate_order', 'Admin\ContestController@update_cate_order')->name('update_cate_order');
+        Route::post('/delete_cate/{id}', 'Admin\ContestController@delete_cate')->name('delete_cate');
     });
 
 //    setting

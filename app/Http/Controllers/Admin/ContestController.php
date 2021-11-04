@@ -15,20 +15,16 @@ class ContestController extends Controller
     {
         $categories = DB::table('contest_cate as cc')
             ->leftJoin('contest_cate as other', 'other.id', '=', 'cc.parent_id')
-            ->select(['cc.id', 'cc.title', 'cc.order', 'cc.parent_id'])
-            ->orderBy('cc.order')
-            ->orderBy('cc.parent_id')
-            ->orderBy('cc.id')
-            ->get();
+            ->select('cc.*')
+            ->orderBy('cc.order')->get();
 
-        $cate_titles = [0 => null];
+        //找出父分类的名字
+        $cate_titles = [];
         foreach ($categories as $cate) {
             $cate_titles[$cate->id] = $cate->title;
         }
-
-        //取父分类的名字
         foreach ($categories as &$cate) {
-            $cate->parent_title = $cate_titles[$cate->parent_id];
+            $cate->parent_title = isset($cate_titles[$cate->parent_id]) ?? null;
         }
         return $categories;
     }
@@ -52,7 +48,7 @@ class ContestController extends Controller
             ->when(isset($_GET['title']), function ($q) {
                 return $q->where('c.title', 'like', '%' . $_GET['title'] . '%');
             })
-            ->orderByDesc('c.id')
+            ->orderByDesc('c.order')
             ->paginate($_GET['perPage'] ?? 10);
 
         $categories = $this->get_categories();
@@ -215,9 +211,145 @@ class ContestController extends Controller
     }
 
 
+    //修改竞赛的类别号
+    public function update_contest_cate_id(Request $request)
+    {
+        $contest_id = $request->input('contest_id');
+        $new_cate_id = $request->input('cate_id');
+        DB::table('contests')->where('id', $contest_id)->update(['cate_id' => $new_cate_id]);
+        $new_cate = DB::table('contest_cate')->find($new_cate_id);
+        return json_encode([
+            'ret' => true,
+            'msg' => sprintf('竞赛%d已修改类别为：%s', $contest_id, $new_cate ? $new_cate->title : '未分类')
+        ]);
+    }
+
+    //修改竞赛的顺序，即order字段
+    public function update_order(Request $request)
+    {
+        $contest_id = (int)$request->input('contest_id');
+        $mode = $request->input('mode');
+        assert(in_array($mode, ['to_top', 'to_up', 'to_down']));
+        $contest = DB::table('contests')->find($contest_id);
+        if ($mode == 'to_top')//置顶
+        {
+            $contests = DB::table('contests')->select(['id', 'order'])
+                ->where('order', '>=', $contest->order)
+                ->orderByDesc('order')->get();
+            if ($contests) {
+                $top_order = $contests[0]->order;
+                $len = count($contests);
+                for ($i = 0; $i < $len - 1; $i++) {
+                    $contests[$i]->order = $contests[$i + 1]->order;
+                }
+                $contests[$len - 1]->order = $top_order;
+                foreach ($contests as $item)
+                    DB::table('contests')->where('id', $item->id)->update(['order' => $item->order]);
+            }
+            return json_encode([
+                'ret' => true,
+                'msg' => sprintf('竞赛%d已置顶', $contest_id)
+            ]);
+        } else if ($mode == 'to_up') {
+            $contests = DB::table('contests')->select(['id', 'order'])
+                ->where('order', '>=', $contest->order)
+                ->orderByDesc('order')->get();
+            if (($len = count($contests)) >= 2) {
+                DB::table('contests')->where('id', $contests[$len - 1]->id)->update(['order' => $contests[$len - 2]->order]);
+                DB::table('contests')->where('id', $contests[$len - 2]->id)->update(['order' => $contests[$len - 1]->order]);
+            }
+            return json_encode([
+                'ret' => true,
+                'msg' => sprintf('竞赛%d已上移', $contest_id)
+            ]);
+        } else//下移
+        {
+            $contests = DB::table('contests')->select(['id', 'order'])
+                ->where('order', '<=', $contest->order)
+                ->orderByDesc('order')->get();
+            if (($len = count($contests)) >= 2) {
+                DB::table('contests')->where('id', $contests[0]->id)->update(['order' => $contests[1]->order]);
+                DB::table('contests')->where('id', $contests[1]->id)->update(['order' => $contests[0]->order]);
+            }
+            return json_encode([
+                'ret' => true,
+                'msg' => sprintf('竞赛%d已下移', $contest_id)
+            ]);
+        }
+    }
+
+
+    /*****************************  类别   ***********************************/
     public function categories(Request $request)
     {
         $categories = $this->get_categories();
         return view('admin.contest.categories', compact('categories'));
     }
+
+    //修改类别信息
+    public function update_cate(Request $request)
+    {
+        $id = $request->input('id');
+        $values = $request->input('values');
+        if ($id == null || $id == -1)//视为插入新记录
+        {
+            $id = DB::table('contest_cate')->insertGetId($values);
+            DB::table('contest_cate')->where('id', $id)->update(['order' => $id]);
+            return back();
+        } else //修改已有记录
+        {
+            DB::table('contest_cate')->where('id', $id)->update($values);
+            return json_encode([
+                'ret' => true,
+                'msg' => '已修改为：' . implode($values)
+            ]);
+        }
+    }
+
+    public function delete_cate($id)
+    {
+        DB::table('contest_cate')->where('id', $id)->delete();
+        return json_encode([
+            'ret' => true,
+            'msg' => '已删除; 请刷新页面'
+        ]);
+    }
+
+    //修改竞赛类别的顺序，即order字段
+    public function update_cate_order(Request $request)
+    {
+        $id = (int)$request->input('id');
+        $mode = $request->input('mode');
+        assert(in_array($mode, ['to_up', 'to_down']));
+        $cate = DB::table('contest_cate')->find($id);
+        if ($mode == 'to_up') {
+            $cates = DB::table('contest_cate')->select(['id', 'order'])
+                ->where('order', '<=', $cate->order)
+                ->orderBy('order')
+                ->get();
+            if (($len = count($cates)) >= 2) {
+                DB::table('contest_cate')->where('id', $cates[$len - 1]->id)->update(['order' => $cates[$len - 2]->order]);
+                DB::table('contest_cate')->where('id', $cates[$len - 2]->id)->update(['order' => $cates[$len - 1]->order]);
+            }
+            return json_encode([
+                'ret' => true,
+                'msg' => sprintf('类别%s已上移', $cate->title)
+            ]);
+        } else//下移
+        {
+            $cates = DB::table('contest_cate')->select(['id', 'order'])
+                ->where('order', '>=', $cate->order)
+                ->orderBy('order')
+                ->get();
+            if (($len = count($cates)) >= 2) {
+                DB::table('contest_cate')->where('id', $cates[0]->id)->update(['order' => $cates[1]->order]);
+                DB::table('contest_cate')->where('id', $cates[1]->id)->update(['order' => $cates[0]->order]);
+            }
+            return json_encode([
+                'ret' => true,
+                'msg' => sprintf('类别%s已下移', $cate->title)
+            ]);
+        }
+    }
+
 }
