@@ -70,21 +70,24 @@
                             </div>
                         </td>
                         <td>
-                            @if($item->parent_id>0)
-                                <div class="form-inline">
-                                    <select class="form-control px-3" onchange="update_cate('{{$item->id}}',{'parent_id':$(this).val()})">
-                                        @foreach($categories as $father)
-                                            @if($father->parent_id == 0)
-                                                <option value="{{$father->id}}" @if($item->parent_id==$father->id)selected @endif>
-                                                    {{$father->title}}
-                                                </option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                </div>
-                            @else
-                                {{$item->parent_title}}
-                            @endif
+                            <div class="form-inline">
+                                <select class="form-control px-3" onchange="update_cate('{{$item->id}}',{'parent_id':$(this).val()})">
+                                    <option value="0">
+                                        @if($item->parent_id>0)
+                                            【变更为一级类别】
+                                        @else
+                                            -
+                                        @endif
+                                    </option>
+                                    @foreach($categories as $father)
+                                        @if($father->parent_id == 0)
+                                            <option value="{{$father->id}}" @if($item->parent_id==$father->id)selected @endif>
+                                                {{$father->title}}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
                         </td>
                         <td>
                             <div class="form-inline">
@@ -123,8 +126,10 @@
                 },
                 function (ret) {
                     ret = JSON.parse(ret)
-                    console.log(ret)
-                    Notiflix.Notify.Success(ret.msg);
+                    if (ret.ret)
+                        Notiflix.Notify.Success(ret.msg);
+                    else
+                        Notiflix.Notify.Failure(ret.msg);
                 }
             );
         }

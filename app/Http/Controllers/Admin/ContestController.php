@@ -296,14 +296,32 @@ class ContestController extends Controller
             $id = DB::table('contest_cate')->insertGetId($values);
             DB::table('contest_cate')->where('id', $id)->update(['order' => $id]);
             return back();
-        } else //修改已有记录
-        {
-            DB::table('contest_cate')->where('id', $id)->update($values);
-            return json_encode([
-                'ret' => true,
-                'msg' => '已修改为：' . implode($values)
-            ]);
         }
+
+        //以下处理修改记录
+        if (isset($values['parent_id']))//拦截非法的父级类别修改
+        {
+            $parent = DB::table('contest_cate')->find($values['parent_id']);
+            if ($values['parent_id'] > 0 && !$parent) {
+                return json_encode([
+                    'ret' => false,
+                    'msg' => '指定的父级类别不存在！'
+                ]);
+            }
+            if ($values['parent_id'] > 0 && $parent->parent_id > 0) {
+                return json_encode([
+                    'ret' => false,
+                    'msg' => '指定的父级类别必须是一级类别！请刷新页面后重试！'
+                ]);
+            }
+        }
+
+        //执行修改
+        DB::table('contest_cate')->where('id', $id)->update($values);
+        return json_encode([
+            'ret' => true,
+            'msg' => '已修改'
+        ]);
     }
 
     public function delete_cate($id)
