@@ -127,7 +127,7 @@ CREATE TABLE `contest_cate`  (
     `parent_id` int NULL DEFAULT 0 COMMENT '子分类的父id，0代表一级分类',
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `index_parent_id`(`parent_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for contest_balloons
