@@ -65,9 +65,11 @@ class ContestController extends Controller
         if ($request->isMethod('post')) {
             $cid = DB::table('contests')->insertGetId(['user_id' => Auth::id()]);
             $this->update($request, $cid);
+            DB::table('contests')->update(['order' => $cid]);//设置顺序
             $msg = sprintf('成功创建竞赛：<a href="%s" target="_blank">%d</a>', route('contest.home', $cid), $cid);
             return view('admin.success', compact('msg'));
         }
+        return 404;
     }
 
     public function update(Request $request, $id)
