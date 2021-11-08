@@ -49,21 +49,20 @@
                                                 <select name="index" class="pl-1 form-control" onchange="this.form.submit();">
                                                     <option class="form-control" value="">{{__('main.Problems')}}</option>
                                                     @foreach($index_map as $i=>$pid)
-                                                        <option value="{{$i}}" {{isset($_GET['index'])&&$_GET['index']===$i?'selected':null}}>{{index2ch($i)}}</option>
+                                                        <option value="{{$i}}" {{isset($_GET['index'])&&$_GET['index']==$i?'selected':null}}>{{index2ch($i)}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         @else
                                             <div class="form-group m-0 p-0 bmd-form-group">
-                                                <input type="text" class="form-control" placeholder="{{__('main.Problem')}} {{__('main.Id')}}"
-                                                       name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:''}}">
+                                                <input type="text" class="form-control" placeholder="{{__('main.Problem')}} {{__('main.Id')}}" name="pid" value="{{$_GET['pid'] ?? ''}}">
                                             </div>
                                         @endif
                                     </th>
                                     <th>
                                         <div class="form-group m-0 p-0 bmd-form-group">
                                             <input type="text" class="form-control" placeholder="Username"
-                                                   name="username" value="{{isset($_GET['username'])?$_GET['username']:''}}">
+                                                   name="username" value="{{$_GET['username'] ?? ''}}">
                                         </div>
                                     </th>
                                     <th>
