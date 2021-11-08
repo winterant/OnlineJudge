@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title',trans('main.Status').' | '.trans('main.Contest').$contest->id.' | '.get_setting('siteName'))
+@section('title',trans('main.Password').' | '.trans('main.Contest').$contest->id.' | '.get_setting('siteName'))
 
 @section('content')
 
@@ -18,18 +18,18 @@
                     </div>
                 </div>
             @endif
-            <div class="col-sm-12 col-12">
+            <div class="col-sm-12 col-md-6 text-center" style="margin: auto">
                 <div class="my-container bg-white table-responsive">
-                    <form action="{{route('contest.password',$contest->id)}}" method="post" class="text-center"
+                    <span>本场比赛需要输入正确的参赛密码才能参与</span>
+                    <hr>
+                    <form action="{{route('contest.password',$contest->id)}}" method="post" class="" style="margin: auto"
                           onsubmit="$('input[name=pwd]').attr('type','password');return true">
                         @csrf
-                        <div class="form-inline">
-                            <label>
-                                请输入密码：
-                                <input type="text" name="pwd" class="form-control" autofocus autocomplete="off">
-                            </label>
-                            <button class="btn border ml-3">{{trans('main.Confirm')}}</button>
+                        <div class="input-group mb-3" style="margin: auto">
+                            <span style="margin: auto">请输入参赛密码：</span>
+                            <input type="text" name="pwd" class="form-control" autofocus autocomplete="off">
                         </div>
+                        <button class="btn btn-success border">{{trans('main.Confirm')}}</button>
                     </form>
                 </div>
             </div>
