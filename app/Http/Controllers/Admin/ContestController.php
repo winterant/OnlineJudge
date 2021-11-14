@@ -49,6 +49,7 @@ class ContestController extends Controller
                 return $q->where('c.title', 'like', '%' . $_GET['title'] . '%');
             })
             ->orderByDesc('c.order')
+            ->orderByDesc('c.id')
             ->paginate($_GET['perPage'] ?? 10);
 
         $categories = $this->get_categories();
