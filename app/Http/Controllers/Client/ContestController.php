@@ -37,6 +37,8 @@ class ContestController extends Controller
             //如果没有类别，即系统第一次使用竞赛，则创建默认的类别
             $this->init_contest_categories();
         }
+        //可能有些比赛order值为0，因为以前的bug：添加比赛时没有填写order造成的
+        DB::update('update contests set `order`=`id` where `order`<1');
 
         //获取类别
         $current_cate = DB::table('contest_cate')->find($cate);
