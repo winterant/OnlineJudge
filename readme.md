@@ -59,7 +59,7 @@ git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
       -p 8080:80 \
       -v ~/lduoj_docker:/volume \
       --name lduoj \
-      iamwinter/lduoj
+      winterant/lduoj
   ```
 
   - `-p`指定`8080`作为web端口，
@@ -162,7 +162,7 @@ git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
           -p 8036:3306 \
           -v /d/myproject:/volume \
           --name lduoj \
-          iamwinter/lduoj
+          winterant/lduoj
     ```
   - `-p`指定8036端口作为宿主机mysql端口，指定8080端口作为网页入口。
   - `-v`将数据映射到本地`D:\myproject\{LDUOnlineJudge, mysql}`，本地编辑项目即可。
