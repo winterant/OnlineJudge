@@ -28,7 +28,7 @@
                 <br>
 
                 <span>【最新版本】</span>
-                <span>(<a href="https://github.com/iamwinter/LDUOnlineJudge/commits/master" target="_blank">查看</a>)</span>
+                <span>(<a href="https://github.com/winterant/LDUOnlineJudge/commits/master" target="_blank">查看</a>)</span>
                 <br>
                 <span>{!! $new_version !!}</span>
                 <br>
@@ -95,7 +95,7 @@
                                 '请尝试刷新页面，您可能会遇到以下情况：<br><br>' +
                                 '【1】刷新后系统已升级成功。<br><br>' +
                                 '【2】刷新页面报500错误，请稍等10秒左右再刷新。<br><br>' +
-                                '【3】刷新显示页面，但并未升级，请使用<a href="https://github.com/iamwinter/LDUOnlineJudge#hammer-%E9%A1%B9%E7%9B%AE%E5%8D%87%E7%BA%A7" target="_blank">脚本升级</a>。<br><br>' +
+                                '【3】刷新显示页面，但并未升级，请使用<a href="https://github.com/winterant/LDUOnlineJudge#hammer-%E9%A1%B9%E7%9B%AE%E5%8D%87%E7%BA%A7" target="_blank">脚本升级</a>。<br><br>' +
                                 '【4】仍然失败请联系开发者解决。<br><br>',
                                 '刷新页面',
                                 function (){window.location.reload()}

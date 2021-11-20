@@ -1,16 +1,15 @@
-
 <div id="footer" class="text-center mb-2">
     <hr>
     <div>
-        <font id="localtime">{{date('Y-m-d H:i:s')}}</font>
+        <span id="localtime">{{date('Y-m-d H:i:s')}}</span>
         @if(get_setting('beian')!=null)
             &nbsp;&nbsp;|&nbsp;&nbsp;
             <a href="http://www.beian.miit.gov.cn" target="_blank">{{get_setting('beian')}}</a>
         @endif
     </div>
 
-    © 2020-{{date('Y')}} <a target="_blank" href="https://github.com/iamwinter/LDUOnlineJudge">Online Judge</a>
-    by <a target="_blank" href="https://github.com/iamwinter">Winter</a>.
+    © 2020-{{date('Y')}} <a target="_blank" href="https://github.com/winterant/LDUOnlineJudge">Online Judge</a>
+    by <a target="_blank" href="https://github.com/winterant">Winterant</a>.
     All Rights Reserved.
 </div>
 

@@ -31,9 +31,10 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 + 竞赛管理；增删查改，公开/隐藏。
 + 系统配置；修改网站名称，打开/关闭一些全局功能，**中英文切换**，系统在线升级等。
 
-下文拉取代码的git命令如果速度缓慢，可以尝试使用镜像站地址，例如
+### Tips
+下文拉取代码的git命令如果连接超时，可以尝试使用镜像站地址，例如
 ```bash
-git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
+git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
 ```
 
 # :wrench: 项目安装
@@ -41,7 +42,7 @@ git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
 + **基于Linux Ubuntu 18.04/20.04**
   [帮助:[更换中科大软件源](https://mirrors.ustc.edu.cn/help/ubuntu.html#id7)]
   ```shell script
-  git clone https://github.com/iamwinter/LDUOnlineJudge.git
+  git clone https://github.com/winterant/LDUOnlineJudge.git
   bash LDUOnlineJudge/install/ubuntu/install.sh
   ```
   - 浏览器访问服务器ip进入首页。
@@ -72,7 +73,7 @@ git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
 + 基于docker安装的用户请先进入容器（`docker exec -it lduoj /bin/bash`）。
 
   ```shell script
-  git clone https://github.com/iamwinter/LDUOnlineJudge.git oj_upgrade
+  git clone https://github.com/winterant/LDUOnlineJudge.git oj_upgrade
   bash oj_upgrade/install/ubuntu/update.sh /home/LDUOnlineJudge  # 最后这个参数为原项目路径
   ```
 
@@ -188,7 +189,7 @@ git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
 方式二：基于本地环境
 1. 下载源码
     ```shell script
-    git clone https://github.com/iamwinter/LDUOnlineJudge.git
+    git clone https://github.com/winterant/LDUOnlineJudge.git
     ```
 
 2. 准备环境
@@ -233,24 +234,24 @@ git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
 
   ```shell script
   mkdir lduoj_build && cd lduoj_build
-  git clone https://github.com/iamwinter/LDUOnlineJudge.git
+  git clone https://github.com/winterant/LDUOnlineJudge.git
   docker build -f ./LDUOnlineJudge/install/docker/Dockerfile -t lduoj:local .
   ```
   windows用户git默认`autocrlf=true`，
   执行`git clone`下载的文件换行符会被自动转换为`\r\n`，
   所以下载前需要手动修改配置`autocrlf=input`。
 
-+ 为镜像重命名（相当于复制了一份，请将用户名`iamwinter`替换）
++ 为镜像重命名（相当于复制了一份，请将用户名`winterant`替换）
 
   ```shell script
-  docker tag lduoj:local iamwinter/lduoj
+  docker tag lduoj:local winterant/lduoj
   ```
 
 + 将镜像上传到`dockerhub`
 
   ```shell script
   docker login
-  docker push iamwinter/lduoj
+  docker push winterant/lduoj
   ```
 
 # :memo: 开发日志
@@ -262,14 +263,14 @@ git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
 |2021.08.17|需求：竞赛题目，右侧显示题目列表| | | |
 |2021.08.17|Web：Admin，将设置移动到各自的模块去。其中滚动公告改为指定公告| | | |
 |2021.08.16|Web：榜单和气球页面可以设置气球图标（含颜色）| | | |
-|2021.08.16|Web：后台大部分table对左右滑动适配把标题也移动了，另外“操作”按钮换行了。（黑名单输入框对手机太宽）|已全部调整|2021.08.19|iamwinter|
-|2021.06.25|将中英文切换功能放到主页导航栏，用户自由切换。|cookie记住用户选择|2021.06.26|[iamwinter](https://github.com/iamwinter)|
-|2021.06.23|后台权限需要整顿；每个题目/竞赛，应当保存创建人，只有创建人可修改。| |2021.06.30|iamwinter|
+|2021.08.16|Web：后台大部分table对左右滑动适配把标题也移动了，另外“操作”按钮换行了。（黑名单输入框对手机太宽）|已全部调整|2021.08.19|winterant|
+|2021.06.25|将中英文切换功能放到主页导航栏，用户自由切换。|cookie记住用户选择|2021.06.26|[winterant](https://github.com/winterant)|
+|2021.06.23|后台权限需要整顿；每个题目/竞赛，应当保存创建人，只有创建人可修改。| |2021.06.30|winterant|
 |2021.06.23|增加【班级/团队】模块，可对班级布置作业；学生可在【我的作业】中查看作业。| | | |
-|2021.06.23|新增竞赛类别；管理员可以自由管理竞赛的类别，含二级分类。分出一栏“我的进行中”|除“进行中”外完成 |2021.11.04|iamwinter|
+|2021.06.23|新增竞赛类别；管理员可以自由管理竞赛的类别，含二级分类。分出一栏“我的进行中”|除“进行中”外完成 |2021.11.04|winterant|
 |2021.06.23|讨论板增加审核功能，总开关：权限分配。前端js动态生成语句凌乱，需重构| | | |
-|2021.05.01|增加echarts工具进行数据分析，包括榜单、题目通过率等的图表展示。| 仅problem页面；可在其他页面继续增加 |2021.05.11|[iamwinter](https://github.com/iamwinter)|
-|2021.05.01|代码高亮。以及使用网页代码编辑器。| |2021.05.11|[iamwinter](https://github.com/iamwinter)|
+|2021.05.01|增加echarts工具进行数据分析，包括榜单、题目通过率等的图表展示。| 仅problem页面；可在其他页面继续增加 |2021.05.11|[winterant](https://github.com/winterant)|
+|2021.05.01|代码高亮。以及使用网页代码编辑器。| |2021.05.11|[winterant](https://github.com/winterant)|
 |2021.03.30|美化UI，首页增加竞赛、新闻、照片等信息的展示。| | | |
 |2021.03.01|查重代码左右对比。| | | |
 |2021.03.01|增加`About`专栏，向用户解释判题命令、使用手册等。滚动公告可自行设置id，公告直接作为`About`即可| | | |
@@ -279,7 +280,7 @@ git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
 
 | 发现日期 | 具体描述 | 备注 | 修复日期 | 开发者 |
 |---|---|---|---|---|
-|2021.06.24|安装脚本`install.sh`中`sed`命令后面的变量需要转移斜杠`/`| |2021.06.24|[iamwinter](https://github.com/iamwinter)|
+|2021.06.24|安装脚本`install.sh`中`sed`命令后面的变量需要转移斜杠`/`| |2021.06.24|[winterant](https://github.com/winterant)|
 
 # :gift_heart: 鸣谢
 
@@ -297,5 +298,5 @@ git clone https://github.com.cnpmjs.org/iamwinter/LDUOnlineJudge.git
 
 # :scroll: 开源许可
 
-iamwinter/LDUOnlineJudge is licensed under the
-**[GNU General Public License v3.0](https://github.com/iamwinter/LDUOnlineJudge/blob/master/LICENSE)**  
+winterant/LDUOnlineJudge is licensed under the
+**[GNU General Public License v3.0](https://github.com/winterant/LDUOnlineJudge/blob/master/LICENSE)**  

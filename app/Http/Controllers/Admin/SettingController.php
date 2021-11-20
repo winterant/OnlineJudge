@@ -46,7 +46,7 @@ class SettingController extends Controller
     //升级系统
     public function upgrade_oj(Request $request){
         $source = $request->input('upgrade_source');
-        $source = 'https://'.$source.'/iamwinter/LDUOnlineJudge.git'; //升级来源
+        $source = 'https://'.$source.'/winterant/LDUOnlineJudge.git'; //升级来源
 
         Log::info('----------------------------------------------------------------');
         Log::info('Start to upgrade LDUOnlineJudge!');
