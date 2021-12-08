@@ -96,9 +96,9 @@ class UserController extends Controller
             foreach($usernames as $i=>$username){
                 $password = $this->make_passwd(8);
                 $user=[
-                    'username'=>$username,
+                    'username'=>trim($username),
                     'password'=>Hash::make($password),
-                    'revise'=>$data['revise'],
+                    'revise'=>trim($data['revise']),
                     'nick'=>isset($nick[$i])?$nick[$i]:'',
                     'email'=>isset($email[$i])?$email[$i]:'',
                     'school'=>isset($school[$i])?$school[$i]:'',
