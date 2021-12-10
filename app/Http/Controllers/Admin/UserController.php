@@ -66,13 +66,14 @@ class UserController extends Controller
         return $ret;
     }
     private function make_passwd($len){
-        return substr(str_shuffle("0123456789ABCDEF"),0,8);
+        return substr(str_shuffle("ABCDMNXYZ"),0,4).substr(str_shuffle("0123456789ABCDEF"),0,4);
     }
     public function create(Request $request){
         if ($request->isMethod('get')){
             return view('admin.user.create');
         }
         if($request->isMethod('post')){
+            set_time_limit(60);
             $data=$request->input('data');
 
             if($data['stu_id']!=null){
