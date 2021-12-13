@@ -1,6 +1,13 @@
 Ludong University Online Judge
 ===
+
 > 鲁东大学程序设计在线测评系统与考试平台
+
+github主仓库: <https://github.com/winterant/LDUOnlineJudge>
+
+gitee同步仓库: <https://gitee.com/winterantzhao/LDUOnlineJudge>
+
+中国镜像站仓库: <https://github.com.cnpmjs.org/winterant/LDUOnlineJudge>
 
 # :bulb: 快速了解
 
@@ -31,25 +38,20 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 + 竞赛管理；增删查改，公开/隐藏。
 + 系统配置；修改网站名称，打开/关闭一些全局功能，**中英文切换**，系统在线升级等。
 
-### Tips
-下文拉取代码的git命令如果连接超时，可以尝试使用镜像站地址，例如
-```bash
-git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
-```
-
 # :wrench: 项目安装
 
 + **基于Linux Ubuntu 18.04/20.04**
   [帮助:[更换中科大软件源](https://mirrors.ustc.edu.cn/help/ubuntu.html#id7)]
+
   ```shell script
   git clone https://github.com/winterant/LDUOnlineJudge.git
   bash LDUOnlineJudge/install/ubuntu/install.sh
   ```
-  - 浏览器访问服务器ip进入首页。
-  - **注册用户admin自动成为管理员**。
-  - mysql数据库名lduoj，默认用户lduoj@localhost(密码123456789)。
-  - nginx配置文件`/etc/nginx/conf.d/lduoj.conf`
 
+  + 浏览器访问服务器ip进入首页。
+  + **注册用户admin自动成为管理员**。
+  + mysql数据库名lduoj，默认用户lduoj@localhost(密码123456789)。
+  + nginx配置文件`/etc/nginx/conf.d/lduoj.conf`
 
 + **基于docker（推荐）**
   [帮助:[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)]
@@ -62,47 +64,65 @@ git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
       winterant/lduoj
   ```
 
-  - `-p`指定`8080`作为web端口，
+  + `-p`指定`8080`作为web端口，
     浏览器访问`服务器ip:8080`进入首页。
     [帮助:[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)]
-  - `-v`指定`~/lduoj_docker`作为保存项目的宿主机目录。
-  - 进入容器进行管理： `docker exec -it lduoj /bin/bash`。
+  + `-v`指定`~/lduoj_docker`作为保存项目的宿主机目录。
+  + 进入容器进行管理： `docker exec -it lduoj /bin/bash`。
 
 # :hammer: 项目升级
 
-+ 基于docker安装的用户请先进入容器（`docker exec -it lduoj /bin/bash`）。
+1. 进入docker容器（仅docker用户）
+  ```bash
+  docker exec -it lduoj /bin/bash
+  ```
 
+2. 拉取源码（三选一）
+  ```bash
+  git clone https://github.com/winterant/LDUOnlineJudge.git ojup
+  git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git ojup
+  git clone https://gitee.com/winterantzhao/LDUOnlineJudge.git ojup
+  ```
+
+3. 执行升级脚本  
+  最后一个参数是安装位置。
   ```shell script
-  git clone https://github.com/winterant/LDUOnlineJudge.git oj_upgrade
-  bash oj_upgrade/install/ubuntu/update.sh /home/LDUOnlineJudge  # 最后这个参数为原项目路径
+  bash ojup/install/ubuntu/update.sh /home/LDUOnlineJudge
   ```
 
 # :cd: 项目迁移（备份）
 
-+ 基于Ubuntu
++ 基于Ubuntu安装者
 
   1.在**原主机**备份数据库
+
   ```shell script
   bash install/mysql/database_backup.sh
   ```
+
   2.拷贝**原主机**项目文件夹（即`LDUOnlineJudge/`）到**新主机**。  
   3.在**新主机**上执行安装。
+
   ```shell script
   bash install/ubuntu/install.sh
   ```
 
-+ 基于docker
++ 基于docker安装者
 
   1.在**原主机**将文件夹`~/lduoj_docker`（或docker容器内`/volume`）打包，发送到**新主机**
+
   ```shell
   tar -zcvf volume.tar.gz /volume     # 打包
   scp -P 22 volume.tar.gz root@ip:~/  # 发送到新主机`~/`下；也可以自行拷贝
   ```
+
   2.在新主机解压收到的压缩文件
+
   ```shell
   tar -zxvf volume.tar.gz   # 解压
   ```
-  3.在新主机[基于docker安装](#项目安装)，**参数`-v`挂载步骤2解压出的目录(绝对路径)**。
+
+  3.在新主机[基于docker安装](#项目安装)；**参数`-v`挂载步骤2解压出的目录(绝对路径)**。
 
 # :mega: 判题端使用说明
 
@@ -111,32 +131,30 @@ git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
   A. 网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端  
   B. 通过终端命令启动判题端：`bash judge/startup.sh`
 
-+ 判题端配置
++ 判题端配置  
+  编辑配置文件`.env`(默认)或`judge/config.js`：
   ```shell
   JG_DATA_DIR=storage/app/data  # 测试数据所在目录，**请勿修改!**
   JG_NAME="Master"              # 判题机名称，可修改
   JG_MAX_RUNNING=1              # 并行判题进程数，建议值为可用内存(GB)/2
   ```
-  注：以上配置在文件`.env`或`judge/config.js`中均可配置。
-  判题端默认使用`.env`中的配置（执行`php artisan optimize`生效）。
-  若需单独配置判题端，可在`judge/config.js`中配置。
 
 # :page_facing_up: 整体架构
 
 + 主要文件
 
-  - `routes/web.php`：路由转发文件，定义了全站路由。
-  - `config/oj/`：含本OJ自定义的配置文件。
-  - `app/Http/`：后端控制器`Controllers`、中间件`Middleware`等程序。
-  - `resources/views/`：前端html代码。
-  - `resources/lang/`：网页文字语言文件。
-  - `public/`：网页访问入口`index.php`，js、css文件和web插件。
-  - `storage/app/`：保存题目数据、文件等。
-  - `storage/app/public/`：保存静态文件(如图片)等。
+  + `routes/web.php`：路由转发文件，定义了全站路由。
+  + `config/oj/`：含本OJ自定义的配置文件。
+  + `app/Http/`：后端控制器`Controllers`、中间件`Middleware`等程序。
+  + `resources/views/`：前端html代码。
+  + `resources/lang/`：网页文字语言文件。
+  + `public/`：网页访问入口`index.php`，js、css文件和web插件。
+  + `storage/app/`：保存题目数据、文件等。
+  + `storage/app/public/`：保存静态文件(如图片)等。
     软连接到`public/storage`供网页访问。
-  - `judge/`：判题程序，与laravel框架无关。
-  - `install/`：用于安装本OJ，与laravel框架无关。
-  - `.env.example`：配置文件，含数据库连接信息、判题设置等。
+  + `judge/`：判题程序，与laravel框架无关。
+  + `install/`：用于安装本OJ，与laravel框架无关。
+  + `.env.example`：配置文件，含数据库连接信息、判题设置等。
     复制为`.env`生效。
 
 + 工作原理
@@ -153,9 +171,10 @@ git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
 
 # :computer: 本地二次开发
 
-方式一：基于docker
+## 方式一：基于docker
 
 1. 启动容器
+
     ```shell
     docker run -dit --restart=always --cap-add=SYS_PTRACE \
           -p 8080:80 \
@@ -164,9 +183,10 @@ git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
           --name lduoj \
           winterant/lduoj
     ```
-  - `-p`指定8036端口作为宿主机mysql端口，指定8080端口作为网页入口。
-  - `-v`将数据映射到本地`D:\myproject\{LDUOnlineJudge, mysql}`，本地编辑项目即可。
-  - 浏览器访问`http://localhost:8080`显示主页则表示部署成功。
+
++ `-p`指定8036端口作为宿主机mysql端口，指定8080端口作为网页入口。
++ `-v`将数据映射到本地`D:\myproject\{LDUOnlineJudge, mysql}`，本地编辑项目即可。
++ 浏览器访问`http://localhost:8080`显示主页则表示部署成功。
 
 2. 连接docker内的mysql数据库（非必需）（等同于远程连接mysql）
 
@@ -184,19 +204,22 @@ git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
     mysql -u${USER} -p${PW} -e"CREATE USER If Not Exists 'ldu'@'%' IDENTIFIED WITH mysql_native_password BY '123456';"
     mysql -u${USER} -p${PW} -e"GRANT all privileges ON lduoj.* TO 'ldu'@'%';flush privileges;"
     ```
+
    然后远程连接【**宿主机ip**:8036】，使用新建的用户ldu登录mysql即可。
 
-方式二：基于本地环境
+## 方式二：基于本地环境
+
 1. 下载源码
+
     ```shell script
     git clone https://github.com/winterant/LDUOnlineJudge.git
     ```
 
 2. 准备环境
 
-  + PHP >=7.2 （必需拓展：php7.2-fpm php7.2-mysql php7.2-xml php7.2-mbstring）
-  + mysql >=5.7 （建库脚本：`install/mysql/lduoj.sql`）
-  + 判题环境需求（只能在linux系统运行）：
++ PHP >=7.2 （必需拓展：php7.2-fpm php7.2-mysql php7.2-xml php7.2-mbstring）
++ mysql >=5.7 （建库脚本：`install/mysql/lduoj.sql`）
++ 判题环境需求（只能在linux系统运行）：
     g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex
 
 3. 填写配置文件
@@ -204,9 +227,11 @@ git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
     ```shell script
     cp -rf .env.example .env
     ```
+
    然后编辑`.env`文件，填写mysql连接信息。
 
 4. 初始化项目
+
     ```
     chown www-data:www-data -R storage bootstrap/cache  # linux系统需要赋权
     composer install --ignore-platform-reqs             # 下载laravel依赖
@@ -218,9 +243,11 @@ git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
     ```
 
 5. 启动服务，预览主页。
+
     ```shell
     php -S 127.0.0.1:8000  # 或 php artisan serve --port=8000
     ```
+
     浏览器访问`http://localhost:8000`显示主页则表示部署成功。
     生产环境中请配置nginx。
 
@@ -237,6 +264,7 @@ git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
   git clone https://github.com/winterant/LDUOnlineJudge.git
   docker build -f ./LDUOnlineJudge/install/docker/Dockerfile -t lduoj:local .
   ```
+
   windows用户git默认`autocrlf=true`，
   执行`git clone`下载的文件换行符会被自动转换为`\r\n`，
   所以下载前需要手动修改配置`autocrlf=input`。
@@ -276,13 +304,7 @@ git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git
 |2021.03.01|增加`About`专栏，向用户解释判题命令、使用手册等。滚动公告可自行设置id，公告直接作为`About`即可| | | |
 |2021.01.01|考试模式。考试期间只允许考试账号登录，限制登录ip等。| | | |
 
-# :bug: bug修复
-
-| 发现日期 | 具体描述 | 备注 | 修复日期 | 开发者 |
-|---|---|---|---|---|
-|2021.06.24|安装脚本`install.sh`中`sed`命令后面的变量需要转移斜杠`/`| |2021.06.24|[winterant](https://github.com/winterant)|
-
-# :gift_heart: 鸣谢
+# :gift_heart: 感谢
 
 [zhblue/hustoj](https://github.com/zhblue/hustoj)  
 [sim](https://dickgrune.com/Programs/similarity_tester/)  
