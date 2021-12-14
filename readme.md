@@ -43,20 +43,18 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 + **基于Linux Ubuntu 18.04/20.04**
   [帮助:[更换中科大软件源](https://mirrors.ustc.edu.cn/help/ubuntu.html#id7)]
 
-  ```shell script
+  ```bash
   git clone https://github.com/winterant/LDUOnlineJudge.git
   bash LDUOnlineJudge/install/ubuntu/install.sh
   ```
 
-  + 浏览器访问服务器ip进入首页。
-  + **注册用户admin自动成为管理员**。
-  + mysql数据库名lduoj，默认用户lduoj@localhost(密码123456789)。
+  + 浏览器访问服务器ip进入首页，**注册账号admin自动成为管理员**。
   + nginx配置文件`/etc/nginx/conf.d/lduoj.conf`
 
 + **基于docker（推荐）**
   [帮助:[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)]
 
-  ```shell script
+  ```bash
   docker run -dit --restart=always --cap-add=SYS_PTRACE \
       -p 8080:80 \
       -v ~/lduoj_docker:/volume \
@@ -68,27 +66,26 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
     浏览器访问`服务器ip:8080`进入首页。
     [帮助:[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)]
   + `-v`指定`~/lduoj_docker`作为保存项目的宿主机目录。
-  + 进入容器进行管理： `docker exec -it lduoj /bin/bash`。
 
 # :hammer: 项目升级
 
 1. 进入docker容器（仅docker用户）
-  ```bash
-  docker exec -it lduoj /bin/bash
-  ```
+    ```bash
+    docker exec -it lduoj /bin/bash
+    ```
 
-2. 拉取源码（三选一）
-  ```bash
-  git clone https://github.com/winterant/LDUOnlineJudge.git ojup
-  git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git ojup
-  git clone https://gitee.com/winterantzhao/LDUOnlineJudge.git ojup
-  ```
+2. 下载源码（三选一，推荐使用最后一个）
+    ```bash
+    git clone https://github.com/winterant/LDUOnlineJudge.git ojup
+    git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git ojup
+    git clone https://gitee.com/winterantzhao/LDUOnlineJudge.git ojup
+    ```
 
 3. 执行升级脚本  
-  最后一个参数是安装位置。
-  ```shell script
-  bash ojup/install/ubuntu/update.sh /home/LDUOnlineJudge
-  ```
+    ```shell script
+    bash ojup/install/ubuntu/update.sh /home/LDUOnlineJudge
+    ```
+    其中`home/LDUOnlineJudge`为项目安装路径。
 
 # :cd: 项目迁移（备份）
 
@@ -122,7 +119,7 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
   tar -zxvf volume.tar.gz   # 解压
   ```
 
-  3.在新主机[基于docker安装](#项目安装)；**参数`-v`挂载步骤2解压出的目录(绝对路径)**。
+  3.在新主机[基于docker安装](#项目安装)，需要将**参数`-v`改为挂载步骤2解压出的目录(绝对路径)**。
 
 # :mega: 判题端使用说明
 
@@ -222,13 +219,9 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 + 判题环境需求（只能在linux系统运行）：
     g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex
 
-3. 填写配置文件
+3. 配置文件
 
-    ```shell script
-    cp -rf .env.example .env
-    ```
-
-   然后编辑`.env`文件，填写mysql连接信息。
+    将文件`.env.example`复制一份名为`.env`，可编辑其中的相关配置。
 
 4. 初始化项目
 
@@ -255,11 +248,11 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 
 + 将本项目构建为docker镜像，**务必**在一个新建文件夹内操作（如`./lduoj_build`，结束后删除即可）
 
-  ```shell
+  ```bash
   git config --global core.autocrlf input  # 仅windows用户执行
   ```
 
-  ```shell script
+  ```bash
   mkdir lduoj_build && cd lduoj_build
   git clone https://github.com/winterant/LDUOnlineJudge.git
   docker build -f ./LDUOnlineJudge/install/docker/Dockerfile -t lduoj:local .
@@ -271,13 +264,13 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 
 + 为镜像重命名（相当于复制了一份，请将用户名`winterant`替换）
 
-  ```shell script
+  ```bash
   docker tag lduoj:local winterant/lduoj
   ```
 
 + 将镜像上传到`dockerhub`
 
-  ```shell script
+  ```bash
   docker login
   docker push winterant/lduoj
   ```
