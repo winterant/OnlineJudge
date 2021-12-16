@@ -13,13 +13,12 @@ gitee同步仓库: <https://gitee.com/winterantzhao/LDUOnlineJudge>
 
 程序设计在线评测系统(`Online Judge`)常见于程序设计竞赛、ACM集训、算法考试和教学任务中。
 `LDUOnlineJudge`可分为两个部分：1.基于laravel 6.0（PHP7.2）开发的web端；
-2.基于C语言开发的判题端（源码位于`./judge/`）。
+2.使用C语言实现的判题端（源码位于`./judge/`）。
 Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管理员管理后台、编写题目、组织竞赛/考试等。
-判题端可将学生提交的代码进行评判，基于C语言实现在Linux系统下对选手代码进行评测。
+判题端使用C语言实现，通过轮询数据库获取学生提交的代码进行评判。
 判题端使用Ptrace监视选手子进程，严格限制时间、空间，严格禁止系统调用；
-同时支持出题人自行编写评判程序对选手程序运行结果进行评判。
-欢迎访问LDUOJ([http://lduoj.top](http://lduoj.top))。
-您还可以查看[截屏展示](https://blog.csdn.net/winter2121/article/details/105294224) 。
+同时支持出题人自行编写特判程序对选手程序运行结果进行评判。
+预览LDUOJ([http://lduoj.top](http://lduoj.top))；[截屏展示](https://blog.csdn.net/winter2121/article/details/105294224) 。
 
 **前台**
 
@@ -74,7 +73,7 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
     docker exec -it lduoj /bin/bash
     ```
 
-2. 下载源码（三选一，推荐使用最后一个）
+2. 下载源码（三选一，推荐使用最后一个gitee）
     ```bash
     git clone https://github.com/winterant/LDUOnlineJudge.git ojup
     git clone https://github.com.cnpmjs.org/winterant/LDUOnlineJudge.git ojup
@@ -136,37 +135,7 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
   JG_MAX_RUNNING=1              # 并行判题进程数，建议值为可用内存(GB)/2
   ```
 
-# :page_facing_up: 整体架构
-
-+ 主要文件
-
-  + `routes/web.php`：路由转发文件，定义了全站路由。
-  + `config/oj/`：含本OJ自定义的配置文件。
-  + `app/Http/`：后端控制器`Controllers`、中间件`Middleware`等程序。
-  + `resources/views/`：前端html代码。
-  + `resources/lang/`：网页文字语言文件。
-  + `public/`：网页访问入口`index.php`，js、css文件和web插件。
-  + `storage/app/`：保存题目数据、文件等。
-  + `storage/app/public/`：保存静态文件(如图片)等。
-    软连接到`public/storage`供网页访问。
-  + `judge/`：判题程序，与laravel框架无关。
-  + `install/`：用于安装本OJ，与laravel框架无关。
-  + `.env.example`：配置文件，含数据库连接信息、判题设置等。
-    复制为`.env`生效。
-
-+ 工作原理
-
-  Web前端使用bootstrap4、jquery，适配移动端和PC端。
-
-  网页端向用户展示题目等相关信息，用户可通过题目或竞赛途径上传自己的代码。
-
-  判题机启动时，轮询程序(`judge/cpp/polling.cpp`)将不停查询数据库，
-  收集未判的提交记录（提交编号），
-  然后开启子进程(`judge/cpp/judge.cpp`)判题（并行）。
-  对于每一个判题进程，主要步骤是：从数据库读取代码、编译、输入数据运行、
-  输出结果与正确结果对比（或者特判）、将判题结论写入数据库。
-
-# :computer: 本地二次开发
+# :computer: 本地开发
 
 ## 方式一：基于docker
 
@@ -248,37 +217,48 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 
 + 将本项目构建为docker镜像，**务必**在一个新建文件夹内操作（如`./lduoj_build`，结束后删除即可）
 
+  windows用户请注意，为了避免`git clone`获取源码时自动将末尾换行`\n`改为`\r\n`，请修改git配置：
   ```bash
   git config --global core.autocrlf input  # 仅windows用户执行
   ```
-
+  创建空文件夹，拉取源码，构建镜像：
   ```bash
   mkdir lduoj_build && cd lduoj_build
   git clone https://github.com/winterant/LDUOnlineJudge.git
   docker build -f ./LDUOnlineJudge/install/docker/Dockerfile -t lduoj:local .
   ```
 
-  windows用户git默认`autocrlf=true`，
-  执行`git clone`下载的文件换行符会被自动转换为`\r\n`，
-  所以下载前需要手动修改配置`autocrlf=input`。
-
-+ 为镜像重命名（相当于复制了一份，请将用户名`winterant`替换）
++ 为镜像重命名
 
   ```bash
   docker tag lduoj:local winterant/lduoj
   ```
 
-+ 将镜像上传到`dockerhub`
++ 将镜像发布到`dockerhub`
 
   ```bash
-  docker login
   docker push winterant/lduoj
   ```
+
+# :page_facing_up: 整体架构
+
++ `routes/web.php`：路由转发文件，定义了全站路由。
++ `config/oj/`：含本OJ自定义的配置文件。
++ `app/Http/`：后端控制器`Controllers`、中间件`Middleware`等程序。
++ `resources/views/`：前端html代码。
++ `resources/lang/`：网页文字语言文件。
++ `public/`：网页访问入口`index.php`，js、css文件和web插件。
++ `storage/app/`：保存题目数据、文件等。
++ `storage/app/public/`：保存静态文件(如图片)等。软连接到`public/storage`供网页访问。
++ `judge/`：判题程序，与laravel框架无关。
++ `install/`：用于安装本OJ，与laravel框架无关。
++ `.env.example`：配置文件，含数据库连接信息、判题设置等。复制为`.env`生效。
 
 # :memo: 开发日志
 
 | 提出日期 | 开发计划 | 备注 | 完成日期 | 开发者 |
 |---|---|---|---|---|
+|2021.12.10|权限管理列表增加一键批量删除| | | |
 |2021.09.03|客户端登录加密| | | |
 |2021.08.21|判题潜在bug：系统调用没有完全禁用，如可以提交python代码攻击服务器。解决方案可以使用chroot()| | | |
 |2021.08.17|需求：竞赛题目，右侧显示题目列表| | | |
