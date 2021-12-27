@@ -128,11 +128,11 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
   B. 通过终端命令启动判题端：`bash judge/startup.sh`
 
 + 判题端配置  
-  编辑配置文件`.env`(默认)或`judge/config.js`：
+  编辑配置文件`judge/config.sh`：
   ```shell
   JG_DATA_DIR=storage/app/data  # 测试数据所在目录，**请勿修改!**
   JG_NAME="Master"              # 判题机名称，可修改
-  JG_MAX_RUNNING=1              # 并行判题进程数，建议值为可用内存(GB)/2
+  JG_MAX_RUNNING=1              # 最大并行判题进程数；建议值 = 剩余内存(GB) / 2
   ```
 
 # :computer: 本地开发
