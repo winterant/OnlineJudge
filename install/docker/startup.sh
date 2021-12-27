@@ -7,7 +7,7 @@ if [ ! -d /volume/LDUOnlineJudge ]; then
 else
     rm -rf "${APP_HOME}"
 fi
-ln -s /volume/LDUOnlineJudge "${APP_HOME}"
+ln -s /volume/LDUOnlineJudge "${APP_HOME}"  # 兼容老版本中，nginx配置web root路径仍为/home/LDUOnlineJudge的情况
 
 ################################################################################
 # 2021.06.29版本兼容处理

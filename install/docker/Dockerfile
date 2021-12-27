@@ -10,6 +10,9 @@ RUN set -ex &&\
 
 RUN bash /home/LDUOnlineJudge/install/ubuntu/install.sh
 
+# 修改nginx配置文件的web root路径为/volume/LDUOnlineJudge/public
+RUN sed -i "s/root .*\/.*;$/root \/volume\/LDUOnlineJudge\/public;/" /etc/nginx/conf.d/lduoj.conf
+
 RUN cp /home/LDUOnlineJudge/install/docker/startup.sh / &&\
     chmod +x /startup.sh
 
