@@ -7,6 +7,7 @@ cd "${APP_HOME}" || { echo "No such a folder ${APP_HOME}"; exit 1; }
 
 # 更新文件
 cp -rf "${APP_HOME}"/public/favicon.ico       "${upgrade}"/public/
+cp -rf "${APP_HOME}"/judge/config.sh          "${upgrade}"/judge/
 cp -rf "${upgrade}"/.                         "${APP_HOME}"/
 
 # 更新laravel依赖包
