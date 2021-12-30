@@ -1,13 +1,10 @@
 Ludong University Online Judge
 ===
 
-> 鲁东大学程序设计在线测评系统与考试平台
-
-github主仓库: <https://github.com/winterant/LDUOnlineJudge>
-
-gitee同步仓库: <https://gitee.com/winterantzhao/LDUOnlineJudge>
-
-中国镜像站仓库: <https://github.com.cnpmjs.org/winterant/LDUOnlineJudge>
+> 鲁东大学程序设计在线测评系统与考试平台  
+github主仓库: <https://github.com/winterant/LDUOnlineJudge>  
+gitee同步仓库: <https://gitee.com/winterantzhao/LDUOnlineJudge>  
+中国镜像仓库: <https://github.com.cnpmjs.org/winterant/LDUOnlineJudge>  
 
 # :bulb: 快速了解
 
@@ -215,17 +212,16 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 
 # :earth_asia: Docker镜像发布
 
-+ 将本项目构建为docker镜像，**务必**在一个新建文件夹内操作（如`./lduoj_build`，结束后删除即可）
-
-  windows用户请注意，为了避免`git clone`获取源码时自动将末尾换行`\n`改为`\r\n`，请修改git配置：
++ 将本项目构建为docker镜像
+  
   ```bash
-  git config --global core.autocrlf input  # 仅windows用户执行
-  ```
-  创建空文件夹，拉取源码，构建镜像：
-  ```bash
-  mkdir lduoj_build && cd lduoj_build
+  mkdir lduoj_build && cd lduoj_build  # 请务必在新建文件夹内操作
   git clone https://github.com/winterant/LDUOnlineJudge.git
   docker build -f ./LDUOnlineJudge/install/docker/Dockerfile -t lduoj:local .
+  ```
+  注意：Windows用户请从网页下载源码，若使用`git clone`则会自动将所有文件行末`\n`自动转换为`\r\n`。若坚持使用`git clone`获取源码，请在获取前修改`git`配置
+  ```bash
+  git config --global core.autocrlf input
   ```
 
 + 为镜像重命名
@@ -246,7 +242,7 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 + `config/oj/`：含本OJ自定义的配置文件。
 + `app/Http/`：后端控制器`Controllers`、中间件`Middleware`等程序。
 + `resources/views/`：前端html代码。
-+ `resources/lang/`：网页文字语言文件。
++ `resources/lang/`：网页文字语言翻译文件。
 + `public/`：网页访问入口`index.php`，js、css文件和web插件。
 + `storage/app/`：保存题目数据、文件等。
 + `storage/app/public/`：保存静态文件(如图片)等。软连接到`public/storage`供网页访问。
@@ -258,6 +254,7 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 
 | 提出日期 | 开发计划 | 备注 | 完成日期 | 开发者 |
 |---|---|---|---|---|
+|2021.12.30|使用docker-compose启动容器；使用judge0作为判题服务| | | |
 |2021.12.10|权限管理列表增加一键批量删除| | | |
 |2021.09.03|客户端登录加密| | | |
 |2021.08.21|判题潜在bug：系统调用没有完全禁用，如可以提交python代码攻击服务器。解决方案可以使用chroot()| | | |
@@ -277,19 +274,22 @@ Web端可供学生查阅题目、参加比赛/考试、提交代码等，供管�
 |2021.03.01|增加`About`专栏，向用户解释判题命令、使用手册等。滚动公告可自行设置id，公告直接作为`About`即可| | | |
 |2021.01.01|考试模式。考试期间只允许考试账号登录，限制登录ip等。| | | |
 
-# :gift_heart: 感谢
+# :gift_heart: 致谢
 
-[zhblue/hustoj](https://github.com/zhblue/hustoj)  
-[sim](https://dickgrune.com/Programs/similarity_tester/)  
-[laravel-6.0](https://laravel.com/)  
-[bootstrap-material-design](https://fezvrasta.github.io/bootstrap-material-design/)  
-[jquery-3.4.1](https://jquery.com/)  
-[font-awesome](http://www.fontawesome.com.cn/)  
-[ckeditor-5](https://ckeditor.com/ckeditor-5/)  
-[MathJax](https://www.mathjax.org/)  
-[zhiyul/switch](https://github.com/notiflix/Notiflix)  
-[codemirror](https://codemirror.net/)  
-[highlight.js](https://highlightjs.org/)
+Thanks for the following products: 
+[zhblue/hustoj](https://github.com/zhblue/hustoj),
+[judge0](https://judge0.com/),
+[sim](https://dickgrune.com/Programs/similarity_tester/),
+[laravel-6.0](https://laravel.com/),
+[bootstrap-material-design](https://fezvrasta.github.io/bootstrap-material-design/),
+[jquery-3.4.1](https://jquery.com/),
+[font-awesome](http://www.fontawesome.com.cn/),
+[ckeditor-5](https://ckeditor.com/ckeditor-5/),
+[MathJax](https://www.mathjax.org/),
+[zhiyul/switch](https://github.com/notiflix/Notiflix),
+[codemirror](https://codemirror.net/)
+and
+[highlight.js](https://highlightjs.org/).
 
 # :scroll: 开源许可
 
