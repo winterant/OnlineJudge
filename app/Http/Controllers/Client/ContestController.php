@@ -60,13 +60,23 @@ class ContestController extends Controller
         $contests = DB::table('contests as c')
             ->leftJoin('contest_cate as cc', 'cc.id', '=', 'c.cate_id')
             ->select(['c.id', 'judge_type', 'c.title', 'start_time', 'end_time', 'access', 'c.order', 'c.hidden', 'cate_id', 'cc.title as cate_title',
-                DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as state"),
+                DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as stage"),
                 DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=c.id) as number")])
             ->where('cate_id', $current_cate->id)
+
+            ->when(isset($_GET['state'])&&$_GET['state']!='all',function ($q){
+                if($_GET['state']=='ended')return $q->where('end_time','<',date('Y-m-d H:i:s'));
+                else if($_GET['state']=='waiting')return $q->where('start_time','>',date('Y-m-d H:i:s'));
+                else return $q->where('start_time','<',date('Y-m-d H:i:s'))->where('end_time','>',date('Y-m-d H:i:s'));
+            })
+            ->when(isset($_GET['judge_type'])&&$_GET['judge_type']!=null,function ($q){return $q->where('c.judge_type',$_GET['judge_type']);})
+            ->when(isset($_GET['title']),function ($q){return $q->where('c.title','like','%'.$_GET['title'].'%');})
+            ->when(!Auth::check()||!Auth::user()->privilege('contest'),function ($q){return $q->where('c.hidden',0);})
+
             ->orderByDesc('c.order')
-            ->orderBy('state')
+            ->orderBy('stage')
             ->orderByDesc('c.id')
-            ->paginate($_GET['perPage'] ?? 50);
+            ->paginate($_GET['perPage'] ?? 30);
 
         return view('contest.contests', compact('contests', 'categories', 'sons', 'current_cate'));
     }

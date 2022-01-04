@@ -93,7 +93,7 @@
                 @foreach($contests as $item)
                     <li class="d-flex flex-wrap border-bottom pt-3 pb-2">
                         <div class="p-xs-0 px-3 text-center align-self-center">
-                            <img height="45px" src="{{$item->state==1?asset('images/trophy/running.png'):asset('images/trophy/gold.png')}}" alt="pic">
+                            <img height="45px" src="{{$item->stage==1?asset('images/trophy/running.png'):asset('images/trophy/gold.png')}}" alt="pic">
                         </div>
                         <div class="col-9 col-sm-8 pr-0">
                             <h5 style="font-size: 1.15rem">
