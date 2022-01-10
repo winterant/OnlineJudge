@@ -1,46 +1,42 @@
 #!/bin/bash
 
-APP_HOME=/home/LDUOnlineJudge
+##############################################################
+# 为了持久化数据，本脚本将在容器启动时，将必要的数据移动到/volume
+# 在创建容器时，请将/volume挂载到宿主机
+# 需要持久化的数据包括：
+# - /home/LDUOnlineJudge/storage             # 项目主要数据
+# - /home/LDUOnlineJudge/.env                # 项目配置文件
+# - /home/LDUOnlineJudge/judge/config.sh     # 判题端配置文件
+# - /home/LDUOnlineJudge/public/favicon.ico  # 网站图标
+# - /etc/php/7.2/fpm/pool.d/www.conf         # php7.2-fpm配置文件
+# - /var/lib/mysql/lduoj                     # 数据库lduoj
+# 为了保证系统运行，移动后的文件需要软连接回原位置
+##############################################################
 
-if [ ! -d /volume/LDUOnlineJudge ]; then
-    mv -f "${APP_HOME}" /volume/
-else
-    rm -rf "${APP_HOME}"
-fi
-ln -s /volume/LDUOnlineJudge "${APP_HOME}"  # 兼容老版本中，nginx配置web root路径仍为/home/LDUOnlineJudge的情况
 
-################################################################################
-# 2021.06.29版本兼容处理
-# 新版本取消了除lduoj表以外的表映射到/volume，所以此处把旧版本映射出去的表移回原位
-if [ -h /var/lib/mysql ]; then
-    rm -rf /var/lib/mysql
-    mv -f /volume/mysql /var/lib/mysql
-fi
-if [ -h /etc/mysql/debian.cnf ]; then
-    rm -rf /etc/mysql/debian.cnf
-    mv -f /volume/etc/mysql/debian.cnf /etc/mysql/debian.cnf
-    rm -rf /volume/etc
-fi
-################################################################################
+transferFile(){
+    # 将$1转移到$2, 并软连接回去
+    if [ ! -d $2 ]; then
+        mkdir -p $(dirname $2)
+        mv -f $1 $2
+    else
+        rm -rf $1
+    fi
+    ln -s $2 $1
+}
 
-# 数据库转移与赋权
-if [ ! -d /volume/mysql/lduoj ]; then
-    mkdir /volume/mysql
-    mv /var/lib/mysql/lduoj /volume/mysql/lduoj
-else
-    rm -rf /var/lib/mysql/lduoj
-fi
-ln -s /volume/mysql/lduoj /var/lib/mysql/lduoj
+transferFile /home/LDUOnlineJudge/storage            /volume/LDUOnlineJudge/storage
+transferFile /home/LDUOnlineJudge/.env               /volume/LDUOnlineJudge/.env
+transferFile /home/LDUOnlineJudge/judge/config.sh    /volume/LDUOnlineJudge/judge/config.sh
+transferFile /home/LDUOnlineJudge/public/favicon.ico /volume/LDUOnlineJudge/public/favicon.ico
+transferFile /etc/php/7.2/fpm/pool.d/www.conf        /volume/php-fpm/www.conf
+transferFile /var/lib/mysql/lduoj                    /volume/mysql/lduoj
 chown -R mysql:mysql /volume/mysql
 rm -rf /var/run/mysqld/mysqld.sock.lock
 
-# 启动服务
 service nginx start
 service php7.2-fpm start
 service mysql start
-bash "${APP_HOME}"/judge/startup.sh
+bash /home/LDUOnlineJudge/judge/startup.sh
 
-while true; do
-#    echo "Keep docker container running in the background!";
-    sleep 10;
-done
+sleep infinity

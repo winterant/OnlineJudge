@@ -1,22 +1,59 @@
 FROM ubuntu:20.04
 
-# 不能在这把项目复制进/volume，否则启动容器时会被宿主机目录覆盖
-COPY LDUOnlineJudge/ /home/LDUOnlineJudge/
+COPY . /home/LDUOnlineJudge/
 
-RUN set -ex &&\
-    #sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.aliyun.com\/ubuntu/g' /etc/apt/sources.list && \
-    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
-    echo 'Asia/Shanghai' > /etc/timezone
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
+    echo 'Asia/Shanghai' > /etc/timezone &&\
+    sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.163.com\/ubuntu/g' /etc/apt/sources.list &&\
+    apt-get update && apt-get -y upgrade &&\
+    apt-get -y install software-properties-common &&\
+    apt-get -y install language-pack-en-base &&\
+    echo -e "\n" | add-apt-repository ppa:deadsnakes/ppa &&\
+    echo -e "\n" | apt-add-repository ppa:ondrej/php &&\
+    apt-get update && apt-get -y upgrade &&\
+    apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml php7.2-mbstring &&\
+    apt-get -y install composer zip unzip &&\
+    apt-get -y install nginx &&\
+    apt-get -y install mysql-server &&\
+    apt-get -y install g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex &&\
+    apt-get -y install sudo vim
 
-RUN bash /home/LDUOnlineJudge/install/ubuntu/install.sh
+RUN cd /home/LDUOnlineJudge &&\
+    export LC_ALL=en_US.UTF-8 &&\
+    export LANG=en_US.UTF-8 &&\
+    composer install --ignore-platform-reqs &&\
+    chown www-data:www-data -R storage bootstrap/cache &&\
+    cp -rf .env.example .env &&\
+    cp -rf judge/config.sh.sample judge/config.sh &&\
+    cp -rf public/favicon.ico.sample public/favicon.ico &&\
+    php artisan storage:link &&\
+    php artisan key:generate &&\
+    php artisan optimize &&\
+    # sim
+    cp -rf judge/sim/sim.1 /usr/share/man/man1/ &&\
+    cd judge/sim/ && make install && cd ../../ &&\
+    # nginx
+    rm -rf /etc/nginx/sites-enabled/default &&\
+    cp -rf install/nginx/lduoj.conf /etc/nginx/conf.d/ &&\
+    # php7.2-fpm
+    mv /etc/php/7.2/fpm/pool.d/www.conf /etc/php/7.2/fpm/pool.d/www.conf.bak &&\
+    cp -rf install/php-fpm/www.conf /etc/php/7.2/fpm/pool.d/ &&\
+    # docker startup
+    chmod +x install/docker/startup.sh &&\
+    # sudoers
+    echo 'www-data ALL=(ALL) NOPASSWD: /bin/bash,/usr/bin/git,/usr/bin/g++' >> /etc/sudoers
 
-# 修改nginx配置文件的web root路径为/volume/LDUOnlineJudge/public
-RUN sed -i "s/root .*\/.*;$/root \/volume\/LDUOnlineJudge\/public;/" /etc/nginx/conf.d/lduoj.conf
+RUN USER=$(cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}') &&\
+    PASSWORD=$(cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}') &&\
+    service mysql restart &&\
+    mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE DATABASE If Not Exists lduoj;" &&\
+    mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE USER If Not Exists 'lduoj'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456789';" &&\
+    mysql -u"${USER}" -p"${PASSWORD}" -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost';flush privileges;" &&\
+    mysql -u"${USER}" -p"${PASSWORD}" -Dlduoj < /home/LDUOnlineJudge/install/mysql/lduoj.sql
 
-RUN cp /home/LDUOnlineJudge/install/docker/startup.sh / &&\
-    chmod +x /startup.sh
+ENTRYPOINT ["/home/LDUOnlineJudge/install/docker/startup.sh"]
 
-ENTRYPOINT ["/startup.sh"]
+WORKDIR /volume
 
 VOLUME ["/volume"]
 

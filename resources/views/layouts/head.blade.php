@@ -41,24 +41,24 @@
 <script src="{{asset('static/ckeditor5/config.js?v=0910')}}" defer></script>
 {{-- 代码编辑器 codemirror  --}}
 {{-- admin/problem/edit.blade.php; client/code_editor.blade.php --}}
-<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/lib/codemirror.css")}}"/>
-<script src="{{asset("static/codemirror-5.61.0/lib/codemirror.js")}}" defer></script>
+<link rel="stylesheet" href="{{asset('static/codemirror-5.61.0/lib/codemirror.css')}}"/>
+<script src="{{asset('static/codemirror-5.61.0/lib/codemirror.js')}}" defer></script>
 {{-- 主题 --}}
-<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/theme/mbo.css")}}"/>
-<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/theme/idea.css")}}"/>
+<link rel="stylesheet" href="{{asset('static/codemirror-5.61.0/theme/mbo.css')}}"/>
+<link rel="stylesheet" href="{{asset('static/codemirror-5.61.0/theme/idea.css')}}"/>
 {{-- 编辑器的功能 --}}
-<script src="{{asset("static/codemirror-5.61.0/addon/edit/matchbrackets.js")}}" defer></script>
-<script src="{{asset("static/codemirror-5.61.0/addon/edit/closebrackets.js")}}" defer></script>
-<link rel="stylesheet" href="{{asset("static/codemirror-5.61.0/addon/hint/show-hint.css")}}"/>
-<script src="{{asset("static/codemirror-5.61.0/addon/hint/show-hint.js")}}" defer></script>
+<script src="{{asset('static/codemirror-5.61.0/addon/edit/matchbrackets.js')}}" defer></script>
+<script src="{{asset('static/codemirror-5.61.0/addon/edit/closebrackets.js')}}" defer></script>
+<link rel="stylesheet" href="{{asset('static/codemirror-5.61.0/addon/hint/show-hint.css')}}"/>
+<script src="{{asset('static/codemirror-5.61.0/addon/hint/show-hint.js')}}" defer></script>
 {{-- 需要高亮的语言 --}}
-<script src="{{asset("static/codemirror-5.61.0/mode/cmake/cmake.js")}}" defer></script>
-<script src="{{asset("static/codemirror-5.61.0/mode/clike/clike.js")}}" defer></script>
-<script src="{{asset("static/codemirror-5.61.0/mode/python/python.js")}}" defer></script>
+<script src="{{asset('static/codemirror-5.61.0/mode/cmake/cmake.js')}}" defer></script>
+<script src="{{asset('static/codemirror-5.61.0/mode/clike/clike.js')}}" defer></script>
+<script src="{{asset('static/codemirror-5.61.0/mode/python/python.js')}}" defer></script>
 
 {{-- 代码高亮 clien/code_editor.blade.php; client/solution.blade.php --}}
-<link rel="stylesheet" href="{{asset("static/highlight/styles/github-gist.css")}}">
-<script src="{{asset("static/highlight/highlight.pack.js")}}" defer></script>
+<link rel="stylesheet" href="{{asset('static/highlight/styles/github-gist.css')}}">
+<script src="{{asset('static/highlight/highlight.pack.js')}}" defer></script>
 
 {{-- echart画图工具 --}}
 <script src="{{asset('static/echarts/echarts.min.js')}}" defer></script>
