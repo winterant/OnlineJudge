@@ -45,11 +45,10 @@ docker run -d -p 8080:80 \
 
 # 🔄 项目升级
 
-+ 方式一，拉取最新的docker镜像，启动新容器即可（推荐方法）；
++ 方式一，拉取最新的docker镜像，启动新容器即可；
 
-+ 方式二，从容器内更新源码（不推荐）；
++ 方式二，从容器内更新源码；
 
-  **注意：2022年元旦之前的版本只能使用方式一升级！**
   ```bash
   docker exec -it lduoj /bin/bash
   git clone https://github.com/winterant/LDUOnlineJudge.git ojup
