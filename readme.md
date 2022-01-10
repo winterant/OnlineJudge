@@ -44,32 +44,33 @@ docker run -d -p 8080:80 \
 + **注册账号admin自动成为管理员**。
 
 # 🔄 项目升级
-+ 方式一，更新容器内的源码
-```bash
-docker exec -it lduoj /bin/bash
-git clone https://github.com/winterant/LDUOnlineJudge.git ojup
-# git clone https://gitee.com/winterantzhao/LDUOnlineJudge.git ojup
-bash ojup/install/ubuntu/update.sh
-```
 
-+ 方式二，拉取最新的docker镜像，启动新容器。
++ 方式一，拉取最新的docker镜像，启动新容器即可（推荐方法）；
+
++ 方式二，从容器内更新源码（不推荐）；
+
+  **注意：2022年元旦之前的版本只能使用方式一升级！**
+  ```bash
+  docker exec -it lduoj /bin/bash
+  git clone https://github.com/winterant/LDUOnlineJudge.git ojup
+  # git clone https://gitee.com/winterantzhao/LDUOnlineJudge.git ojup
+  bash ojup/install/ubuntu/update.sh
+  ```
 
 # 💿 项目迁移（备份）
 
-1.在**原主机**将文件夹`~/lduoj_docker`（即容器内`/volume`）打包，发送到**新主机**
+1. 在**原主机**将文件夹`~/lduoj_docker`（即容器内`/volume`）打包，发送到**新主机**
+  ```bash
+  tar -zcvf volume.tar.gz /volume     # 打包
+  scp -P 22 volume.tar.gz root@ip:~/  # 发送到新主机`~/`下；也可以自行拷贝
+  ```
 
-```bash
-tar -zcvf volume.tar.gz /volume     # 打包
-scp -P 22 volume.tar.gz root@ip:~/  # 发送到新主机`~/`下；也可以自行拷贝
-```
+2. 在新主机解压收到的压缩文件
+  ```bash
+  tar -zxvf volume.tar.gz
+  ```
 
-2.在新主机解压收到的压缩文件
-
-```bash
-tar -zxvf volume.tar.gz
-```
-
-3.在新主机[启动容器](#项目部署)，注意参数`-v`改为挂载步骤2解压出的目录(绝对路径)
+3. 在新主机[启动容器](#项目部署)，注意参数`-v`改为挂载步骤2解压出的目录(绝对路径)
 
 # 📝 判题端使用说明
 

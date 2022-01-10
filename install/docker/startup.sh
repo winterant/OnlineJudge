@@ -14,9 +14,22 @@
 ##############################################################
 
 
+##############################################################
+# 兼容以前的版本。如果原位置是软连接，就把真实文件移回去
+if [ -h /home/LDUOnlineJudge ]; then
+    rm -rf /home/LDUOnlineJudge
+    mv -f /volume/LDUOnlineJudge /home/LDUOnlineJudge
+fi
+if [ -h /var/lib/mysql ]; then
+    rm -rf /var/lib/mysql
+    mv -f /volume/mysql /var/lib/mysql
+fi
+##############################################################
+
+
 transferFile(){
     # 将$1转移到$2, 并软连接回去
-    if [ ! -d $2 ]; then
+    if [ ! -e $2 ]; then
         mkdir -p $(dirname $2)
         mv -f $1 $2
     else
@@ -31,6 +44,9 @@ transferFile /home/LDUOnlineJudge/judge/config.sh    /volume/LDUOnlineJudge/judg
 transferFile /home/LDUOnlineJudge/public/favicon.ico /volume/LDUOnlineJudge/public/favicon.ico
 transferFile /etc/php/7.2/fpm/pool.d/www.conf        /volume/php-fpm/www.conf
 transferFile /var/lib/mysql/lduoj                    /volume/mysql/lduoj
+
+chown www-data:www-data -R /home/LDUOnlineJudge/bootstrap/cache
+chown www-data:www-data -R /home/LDUOnlineJudge/storage
 chown -R mysql:mysql /volume/mysql
 rm -rf /var/run/mysqld/mysqld.sock.lock
 
