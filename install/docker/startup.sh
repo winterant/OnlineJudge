@@ -24,6 +24,7 @@ if [ -h /var/lib/mysql ]; then
     rm -rf /var/lib/mysql
     mv -f /volume/mysql /var/lib/mysql
 fi
+cp -rf /home/LDUOnlineJudge/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf
 ##############################################################
 
 
@@ -45,8 +46,8 @@ transferFile /home/LDUOnlineJudge/public/favicon.ico /volume/LDUOnlineJudge/publ
 transferFile /etc/php/7.2/fpm/pool.d/www.conf        /volume/php-fpm/www.conf
 transferFile /var/lib/mysql/lduoj                    /volume/mysql/lduoj
 
-chown www-data:www-data -R /home/LDUOnlineJudge/bootstrap/cache
-chown www-data:www-data -R /home/LDUOnlineJudge/storage
+chown www-data:www-data -R /home/LDUOnlineJudge/bootstrap/cache/
+chown www-data:www-data -R /home/LDUOnlineJudge/storage/
 chown -R mysql:mysql /volume/mysql
 rm -rf /var/run/mysqld/mysqld.sock.lock
 
