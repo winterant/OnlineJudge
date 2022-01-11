@@ -46,14 +46,16 @@ transferFile /home/LDUOnlineJudge/public/favicon.ico /volume/LDUOnlineJudge/publ
 transferFile /etc/php/7.2/fpm/pool.d/www.conf        /volume/php-fpm/www.conf
 transferFile /var/lib/mysql/lduoj                    /volume/mysql/lduoj
 
-chown www-data:www-data -R /home/LDUOnlineJudge/bootstrap/cache/
-chown www-data:www-data -R /home/LDUOnlineJudge/storage/
-chown -R mysql:mysql /volume/mysql
+chown -R www-data:www-data /home/LDUOnlineJudge/bootstrap/cache/
+chown -R www-data:www-data /home/LDUOnlineJudge/storage/
+chown -R mysql:mysql /var/lib/mysql/
 rm -rf /var/run/mysqld/mysqld.sock.lock
 
 service nginx start
 service php7.2-fpm start
 service mysql start
+cd /home/LDUOnlineJudge
+php artisan optimize
 bash /home/LDUOnlineJudge/judge/startup.sh
 
 sleep infinity

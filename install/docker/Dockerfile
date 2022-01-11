@@ -45,6 +45,7 @@ RUN cd /home/LDUOnlineJudge &&\
 
 RUN USER=$(cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}') &&\
     PASSWORD=$(cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}') &&\
+    usermod -d /var/lib/mysql/ mysql &&\
     service mysql restart &&\
     mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE DATABASE If Not Exists lduoj;" &&\
     mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE USER If Not Exists 'lduoj'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456789';" &&\
