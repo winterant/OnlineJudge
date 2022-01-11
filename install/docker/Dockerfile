@@ -1,7 +1,5 @@
 FROM ubuntu:20.04
 
-COPY . /home/LDUOnlineJudge/
-
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     echo 'Asia/Shanghai' > /etc/timezone &&\
     sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.163.com\/ubuntu/g' /etc/apt/sources.list &&\
@@ -17,6 +15,8 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     apt-get -y install mysql-server &&\
     apt-get -y install g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex &&\
     apt-get -y install sudo vim
+
+COPY . /home/LDUOnlineJudge/
 
 RUN cd /home/LDUOnlineJudge &&\
     export LC_ALL=en_US.UTF-8 &&\
