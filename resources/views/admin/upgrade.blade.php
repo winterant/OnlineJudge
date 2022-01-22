@@ -39,9 +39,8 @@
                         @csrf
                         <span>【源码来源】</span>
                         <select id="upgrade_source" name="upgrade_source" class="px-3" style="border-radius: 4px">
-                            <option class="form-control" value="github.com">github.com（境外服务器首选）</option>
-                            <option class="form-control" value="github.com.cnpmjs.org">github.com.cnpmjs.org（大陆服务器首选）</option>
-                            <option class="form-control" value="gitee.com">gitee.com（备用）</option>
+                            <option class="form-control" value="github">github（中国大陆访问较慢）</option>
+                            <option class="form-control" value="gitee">gitee（推荐）</option>
                         </select>
                         <hr>
                         <button type="button" id="upgrade_btn" class="btn bg-info float-right text-white">开始升级</button>
