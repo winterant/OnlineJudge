@@ -3,13 +3,12 @@
 > 鲁东大学程序设计在线测评系统与考试平台  
 github主仓库: <https://github.com/winterant/LDUOnlineJudge>  
 gitee同步仓库: <https://gitee.com/winterantzhao/LDUOnlineJudge>  
-中国镜像仓库: <https://github.com.cnpmjs.org/winterant/LDUOnlineJudge>  
 
 # 💡 快速了解
 
-+ 官方网站[http://icpc.ldu.edu.cn](http://icpc.ldu.edu.cn)；
-+ 演示网站[https://lduoj.top](https://lduoj.top)；
-+ 截屏展示[点击跳转](https://blog.csdn.net/winter2121/article/details/105294224)；
++ 官方网站：[http://icpc.ldu.edu.cn](http://icpc.ldu.edu.cn)；
++ 演示网站：[https://lduoj.top](https://lduoj.top)；
++ 截屏展示：[点击跳转](https://blog.csdn.net/winter2121/article/details/105294224)；
 
 **前台**
 
@@ -38,28 +37,24 @@ docker run -d -p 8080:80 \
     winterant/lduoj
 ```
 
-+ 若镜像下载过慢，请[更换docker镜像源](https://blog.csdn.net/winter2121/article/details/107399812)后重试；
-+ `-p`指定`8080`作为对外端口，访问`http://ip:8080`进入首页；您可在宿主机[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)；
++ `-p`指定`8080`作为宿主机对外端口，访问`http://ip:8080`进入首页；您可在宿主机[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)；
 + `-v`指定`~/lduoj_docker`作为宿主机挂载目录；
 + **注册账号admin自动成为管理员**。
 
-# 🔄 项目升级
+# 🚗 项目升级
 
-+ 方式一，拉取最新的docker镜像，启动新容器即可；
-
-+ 方式二，从容器内更新源码；
-
-  ```bash
-  docker exec -it lduoj /bin/bash
-  git clone https://github.com/winterant/LDUOnlineJudge.git ojup
-  # git clone https://gitee.com/winterantzhao/LDUOnlineJudge.git ojup
-  bash ojup/install/ubuntu/update.sh
-  ```
+```bash
+docker exec -it lduoj /bin/bash
+git clone https://github.com/winterant/LDUOnlineJudge.git ojup
+# git clone https://gitee.com/winterantzhao/LDUOnlineJudge.git ojup
+bash ojup/install/ubuntu/update.sh
+```
 
 # 💿 项目迁移（备份）
 
-1. 在**原主机**将文件夹`~/lduoj_docker`（即容器内`/volume`）打包，发送到**新主机**
+1. 在**原主机**将容器内文件夹`/volume`打包，发送到**新主机**
   ```bash
+  docker exec -it lduoj /bin/bash
   tar -zcvf volume.tar.gz /volume     # 打包
   scp -P 22 volume.tar.gz root@ip:~/  # 发送到新主机`~/`下；也可以自行拷贝
   ```
@@ -82,7 +77,7 @@ docker run -d -p 8080:80 \
   ```shell
   JG_DATA_DIR=storage/app/data  # 测试数据所在目录，**请勿修改!**
   JG_NAME="Master"              # 判题机名称，可修改
-  JG_MAX_RUNNING=1              # 最大并行判题进程数；建议值 = 剩余内存(GB) / 2
+  JG_MAX_RUNNING=2              # 最大并行判题进程数；建议值 = 剩余内存(GB) / 2
   ```
 
 # 💝 致谢

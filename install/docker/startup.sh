@@ -1,33 +1,5 @@
 #!/bin/bash
 
-##############################################################
-# 为了持久化数据，本脚本将在容器启动时，将必要的数据移动到/volume
-# 在创建容器时，请将/volume挂载到宿主机
-# 需要持久化的数据包括：
-# - /home/LDUOnlineJudge/storage             # 项目主要数据
-# - /home/LDUOnlineJudge/.env                # 项目配置文件
-# - /home/LDUOnlineJudge/judge/config.sh     # 判题端配置文件
-# - /home/LDUOnlineJudge/public/favicon.ico  # 网站图标
-# - /etc/php/7.2/fpm/pool.d/www.conf         # php7.2-fpm配置文件
-# - /var/lib/mysql/lduoj                     # 数据库lduoj
-# 为了保证系统运行，移动后的文件需要软连接回原位置
-##############################################################
-
-
-##############################################################
-# 兼容以前的版本。如果原位置是软连接，就把真实文件移回去
-if [ -h /home/LDUOnlineJudge ]; then
-    rm -rf /home/LDUOnlineJudge
-    mv -f /volume/LDUOnlineJudge /home/LDUOnlineJudge
-fi
-if [ -h /var/lib/mysql ]; then
-    rm -rf /var/lib/mysql
-    mv -f /volume/mysql /var/lib/mysql
-fi
-cp -rf /home/LDUOnlineJudge/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf
-##############################################################
-
-
 transferFile(){
     # 将$1转移到$2, 并软连接回去
     if [ ! -e $2 ]; then
@@ -39,12 +11,9 @@ transferFile(){
     ln -s $2 $1
 }
 
-transferFile /home/LDUOnlineJudge/storage            /volume/LDUOnlineJudge/storage
-transferFile /home/LDUOnlineJudge/.env               /volume/LDUOnlineJudge/.env
-transferFile /home/LDUOnlineJudge/judge/config.sh    /volume/LDUOnlineJudge/judge/config.sh
-transferFile /home/LDUOnlineJudge/public/favicon.ico /volume/LDUOnlineJudge/public/favicon.ico
-transferFile /etc/php/7.2/fpm/pool.d/www.conf        /volume/php-fpm/www.conf
-transferFile /var/lib/mysql/lduoj                    /volume/mysql/lduoj
+transferFile /home/LDUOnlineJudge              /volume/LDUOnlineJudge
+transferFile /etc/php/7.2/fpm/pool.d/www.conf  /volume/php-fpm/www.conf
+transferFile /var/lib/mysql/lduoj              /volume/mysql/lduoj
 
 chown -R www-data:www-data /home/LDUOnlineJudge/bootstrap/cache/
 chown -R www-data:www-data /home/LDUOnlineJudge/storage/
