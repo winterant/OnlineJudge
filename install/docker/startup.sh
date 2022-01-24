@@ -6,7 +6,9 @@ transferFile(){
         mkdir -p $(dirname $2)
         mv -f $1 $2
     else
-        rm -rf $1
+        # rm -rf $1 # 弃用直接删除的方式，取而代之的是下面两句，将其备份
+        rm -rf "$1.backup"
+        mv -f $1 "$1.backup"
     fi
     ln -s $2 $1
 }

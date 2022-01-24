@@ -1,7 +1,7 @@
 #!/bin/sh
 
 set -x
-APP_HOME=/home/LDUOnlineJudge    # 原项目位置
+APP_HOME=/volume/LDUOnlineJudge    # 原项目位置
 upgrade=$(dirname $(dirname $(dirname $(readlink -f "$0"))))  # 新版本位置
 cd "${APP_HOME}" || { echo "No such folder ${APP_HOME}"; exit 1; }
 
@@ -17,8 +17,9 @@ bash install/mysql/update_mysql.sh
 
 # docker startup
 if [ -f /.dockerenv ]; then
-    chmod +x install/docker/startup.sh
-    nohup bash install/docker/startup.sh > /dev/null 2>&1 &
+    cp -rf install/docker/startup.sh /startup.sh
+    chmod +x /startup.sh
+    nohup bash /startup.sh > /dev/null 2>&1 &
     sleep 1  # nohup后台执行，sleep保证后面的命令最后执行
 fi
 
