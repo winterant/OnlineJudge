@@ -95,14 +95,6 @@ bash ojup/install/ubuntu/update.sh
 [codemirror](https://codemirror.net/)  
 [highlight.js](https://highlightjs.org/)  
 
-# 💰 捐助
-
-一杯咖啡就能增加我写代码的动力~ 3Q~
-<div align="center">
-  <img src="install/images/alipay.jpg" height=300>
-  <img src="install/images/wechatpay.jpg" height=300>
-</div>
-
 # 📜 开源许可
 
 LDUOnlineJudge is licensed under the

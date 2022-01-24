@@ -18,8 +18,9 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
 
 COPY . /home/LDUOnlineJudge/
 
-RUN cd /home/LDUOnlineJudge &&\
-    export LC_ALL=en_US.UTF-8 &&\
+WORKDIR /home/LDUOnlineJudge
+
+RUN export LC_ALL=en_US.UTF-8 &&\
     export LANG=en_US.UTF-8 &&\
     composer install --ignore-platform-reqs &&\
     chown www-data:www-data -R storage bootstrap/cache &&\
@@ -39,7 +40,8 @@ RUN cd /home/LDUOnlineJudge &&\
     mv /etc/php/7.2/fpm/pool.d/www.conf /etc/php/7.2/fpm/pool.d/www.conf.bak &&\
     cp -rf install/php-fpm/www.conf /etc/php/7.2/fpm/pool.d/ &&\
     # docker startup
-    chmod +x install/docker/startup.sh &&\
+    cp -rf install/docker/startup.sh /startup.sh &&\
+    chmod +x /startup.sh &&\
     # sudoers
     echo 'www-data ALL=(ALL) NOPASSWD: /bin/bash,/usr/bin/git,/usr/bin/g++' >> /etc/sudoers
 
@@ -50,11 +52,11 @@ RUN USER=$(cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}') &&\
     mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE DATABASE If Not Exists lduoj;" &&\
     mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE USER If Not Exists 'lduoj'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456789';" &&\
     mysql -u"${USER}" -p"${PASSWORD}" -e"GRANT all privileges ON lduoj.* TO 'lduoj'@'localhost';flush privileges;" &&\
-    mysql -u"${USER}" -p"${PASSWORD}" -Dlduoj < /home/LDUOnlineJudge/install/mysql/lduoj.sql
-
-ENTRYPOINT ["/home/LDUOnlineJudge/install/docker/startup.sh"]
+    mysql -u"${USER}" -p"${PASSWORD}" -Dlduoj < install/mysql/lduoj.sql
 
 WORKDIR /volume
+
+ENTRYPOINT ["/startup.sh"]
 
 VOLUME ["/volume"]
 
