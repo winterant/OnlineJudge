@@ -69,11 +69,11 @@
                 <textarea id="description" name="contest[description]" class="form-control-plaintext border bg-white">{{isset($contest->description)?$contest->description:''}}</textarea>
             </div>
 
-            <div class="mt-4 p-2 bg-sky">为竞赛添加一些附件</div>
+            <div class="mt-4 p-2 bg-sky">为竞赛添加一些附件（仅支持如下类型：txt, pdf, doc, docx, xls, xlsx, csv, ppt, pptx）</div>
             <div class="border p-2">
                 <div class="form-group">
                     <div class="form-inline">选择文件：
-                        <input type="file" name="files[]" multiple class="form-control">
+                        <input type="file" name="files[]" multiple class="form-control" accept=".txt, .pdf, .doc, .docx, .xls, .xlsx, .csv, .ppt, .pptx">
                     </div>
                 </div>
 

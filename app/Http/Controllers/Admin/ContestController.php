@@ -99,7 +99,6 @@ class ContestController extends Controller
             $contest = $request->input('contest');
             $problem_ids = $request->input('problems');
             $c_users = $request->input('contest_users'); //指定用户
-            $files = $request->file('files') ?: [];
             //数据格式处理
             foreach (explode(PHP_EOL, $problem_ids) as &$item) {
                 $line = explode('-', $item);
@@ -129,8 +128,12 @@ class ContestController extends Controller
             }
 
             //附件
+            $files = $request->file('files') ?: [];
+            $allowed_ext = ["txt", "pdf", "doc", "docx", "xls", "xlsx", "csv", "ppt", "pptx"];
             foreach ($files as $file) {     //保存附件
-                $file->move(storage_path('app/public/contest/files/' . $id), $file->getClientOriginalName());//保存附件
+                if(in_array($file->getClientOriginalExtension(), $allowed_ext)){
+                    $file->move(storage_path('app/public/contest/files/' . $id), $file->getClientOriginalName());//保存附件
+                }
             }
             $msg = sprintf('成功更新竞赛：<a href="%s">%d</a>', route('contest.home', $id), $id);
             return view('admin.success', compact('msg'));
