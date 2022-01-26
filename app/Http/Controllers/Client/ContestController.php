@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 class ContestController extends Controller
 {
     //系统第一次使用时初始化默认类别
+    /*
     public function init_contest_categories()
     {
         $order_index = 0;
@@ -29,14 +30,16 @@ class ContestController extends Controller
         DB::update("update contests set `order`=`id`");
         //初始化所有类别的order
         DB::update("update contest_cate set `order`=`id`");
-    }
+    }*/
 
     public function contests($cate)
     {
+        /* 20220126 取消了初始化类别
         if (DB::table('contest_cate')->count() == 0) {
             //如果没有类别，即系统第一次使用竞赛，则创建默认的类别
             $this->init_contest_categories();
         }
+        */
         //可能有些比赛order值为0，因为以前的bug：添加比赛时没有填写order造成的
         DB::update('update contests set `order`=`id` where `order`<1');
 
@@ -45,7 +48,10 @@ class ContestController extends Controller
 
         //类别不存在，则自动跳转到默认竞赛
         if (!$current_cate) {
-            return redirect(route('contests', DB::table('contest_cate')->first()->id));
+            $first_contest = DB::table('contest_cate')->first();
+            if(!$first_contest)
+                return view('client.fail', ['msg' => '竞赛中没有任何可用类别，请管理员前往后台添加类别！']);
+            return redirect(route('contests', $first_contest->id));
         }
 
         //拿到所有的二级类别
