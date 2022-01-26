@@ -78,7 +78,7 @@
                         <style>
                             #description_div p{margin-bottom: 0}
                         </style>
-                        <div id="description_div" class="alert-info p-2">{!! $contest->description !!}</div>
+                        <div id="description_div" class="ck-content alert-info p-2">{!! $contest->description !!}</div>
                     @endif
 
                     @if(isset($files)&&!empty($files))

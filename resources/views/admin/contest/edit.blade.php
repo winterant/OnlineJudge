@@ -262,14 +262,14 @@
             }
         }
 
-        access_has_change('{{isset($contest)?$contest->access:'public'}}');  //初始执行一次
+        access_has_change('{{isset($contest)?$contest->access:"public"}}');  //初始执行一次
 
 
         //删除附件
         function delete_file(that, filename) {
             Notiflix.Confirm.Show('删除前确认', '确定删除这个附件？' + filename, '确认', '取消', function () {
                 $.post(
-                    '{{route('admin.contest.delete_file',isset($contest)?$contest->id:0)}}',
+                    '{{route("admin.contest.delete_file",isset($contest)?$contest->id:0)}}',
                     {
                         '_token': '{{csrf_token()}}',
                         'filename': filename,
