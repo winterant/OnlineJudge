@@ -4,22 +4,17 @@
 
 ## 方式一：基于docker
 
-1. 启动容器
+### 1. 启动容器
 
     ```shell
-    docker run -d -p 8080:80 -p 8036:3306 \
-          -v /d/myproject/volume:/volume \
-          -v /d/myproject/LDUOnlineJudge:/home/LDUOnlineJudge \
-          --restart always \
-          --name lduoj \
-          winterant/lduoj
+    docker run -d -p 8080:80 -p 8036:3306 -v /d/volume:/volume --name lduoj winterant/lduoj
     ```
 
 + `-p`指定8036端口作为宿主机mysql端口，指定8080端口作为网页入口。
-+ `-v`将数据映射到本地`D:/myproject/LDUOnlineJudge`，本地编辑项目即可。
++ `-v`将数据映射到本地`D:/volume/LDUOnlineJudge`，本地编辑项目即可。
 + 浏览器访问`http://localhost:8080`显示主页则表示部署成功。
 
-2. 连接docker内的mysql数据库（非必需）（等同于远程连接mysql）
+### 2. 连接docker内的mysql数据库（非必需，等同于远程连接mysql）
 
     ```shell
     # 进入docker容器内
@@ -40,42 +35,45 @@
 
 ## 方式二：基于本地环境
 
-1. 下载源码
+### 1. 下载源码
 
-    ```shell script
-    git clone https://github.com/winterant/LDUOnlineJudge.git
-    ```
+```shell script
+git clone https://github.com/winterant/LDUOnlineJudge.git
+```
 
-2. 准备环境
+### 2. 准备环境
 
 + PHP >=7.2 （必需拓展：php7.2-fpm php7.2-mysql php7.2-xml php7.2-mbstring）
 + mysql >=5.7 （建库脚本：`install/mysql/lduoj.sql`）
 + 判题环境需求（只能在linux系统运行）：
     g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex
 
-3. 配置文件
+### 3. 配置文件
 
-    将文件`.env.example`复制一份名为`.env`，可编辑其中的相关配置。
+```bash
+cp .env.example .env
+cp judge/config.sh.sample judge/config.sh
+cp public/favicon.ico.sample public/favicon.ico
+```
 
-4. 初始化项目
+### 4. 初始化项目
 
     ```
-    chown www-data:www-data -R storage bootstrap/cache  # linux系统需要赋权
+    chown -R www-data:www-data storage bootstrap/cache  # linux系统需要赋权
     composer install --ignore-platform-reqs             # 下载laravel依赖
-    
-    mkdir -p storage/app/public # 新建前端静态文件存储目录
-    php artisan storage:link    # 将静态文件存储目录软连接到public/storage
+
+    php artisan storage:link    # 将静态目录软连接到public/storage
     php artisan key:generate    # 必需，生成.env中的APP_KEY
-    php artisan optimize        # 非必需，优化汇总所有配置；开发阶段可不执行
+    php artisan optimize        # 优化汇总所有配置；开发阶段可不执行
     ```
 
-5. 启动服务，预览主页。
+### 5. 启动服务，预览主页。
 
-    ```shell
-    php -S 127.0.0.1:8000  # 或 php artisan serve --port=8000
-    ```
+```shell
+php -S 127.0.0.1:8000  # 或 php artisan serve --port=8000
+```
 
-    浏览器访问`http://localhost:8000`显示主页则表示环境搭建成功。
+浏览器访问`http://localhost:8000`显示主页则表示环境搭建成功。
 
 # 🌏 Docker镜像发布
 
@@ -86,10 +84,7 @@
   cd LDUOnlineJudge
   docker build -f install/docker/Dockerfile -t lduoj:local .
   ```
-  注意：Windows用户请从网页下载源码，若使用`git clone`则会自动将所有文件行末`\n`自动转换为`\r\n`。若坚持使用`git clone`获取源码，请在获取前修改`git`配置
-  ```bash
-  git config --global core.autocrlf input
-  ```
+  注意：由于换行符问题，不建议在Windows环境构建镜像。
 
 + 为镜像重命名
 

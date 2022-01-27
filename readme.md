@@ -27,21 +27,17 @@ gitee同步仓库: <https://gitee.com/winterantzhao/LDUOnlineJudge>
 + 竞赛管理；增删查改，公开/隐藏；
 + 系统配置；修改网站名称，打开/关闭一些全局功能，**中英文切换**，系统在线升级等。
 
-# 🔨 项目部署
+# 🔨 部署
 
 ```bash
-docker run -d -p 8080:80 \
-    -v ~/lduoj_docker:/volume \
-    --restart always \
-    --name lduoj \
-    winterant/lduoj
+docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
 ```
 
 + `-p`指定`8080`作为宿主机对外端口，访问`http://ip:8080`进入首页；您可在宿主机[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)；
 + `-v`指定`~/lduoj_docker`作为宿主机挂载目录；
 + **注册账号admin自动成为管理员**。
 
-# 🚗 项目升级
+# 🚗 升级
 
 ```bash
 docker exec -it lduoj /bin/bash
@@ -50,21 +46,30 @@ git clone https://github.com/winterant/LDUOnlineJudge.git ojup
 bash ojup/install/ubuntu/update.sh
 ```
 
-# 💿 项目迁移（备份）
+# 💿 备份/迁移
 
-1. 在**原主机**将容器内文件夹`/volume`打包，发送到**新主机**
-  ```bash
-  docker exec -it lduoj /bin/bash
-  tar -zcvf volume.tar.gz /volume     # 打包
-  scp -P 22 volume.tar.gz root@ip:~/  # 发送到新主机`~/`下；也可以自行拷贝
-  ```
-
-2. 在新主机解压收到的压缩文件
-  ```bash
-  tar -zxvf volume.tar.gz
-  ```
-
-3. 在新主机[启动容器](#项目部署)，注意参数`-v`改为挂载步骤2解压出的目录(绝对路径)
+## 备份
+1. 备份数据库；
+    ```bash
+    bash install/mysql/database_backup.sh
+    ```
+2. 将文件夹`/volume`打包；
+    ```bash
+    tar -zcvf volume.tar.gz /volume     # 打包
+    ```
+## 恢复
+1. 解压`/volume`；
+    ```bash
+    tar -zxvf volume.tar.gz
+    ```
+2. 停止旧容器，并重新[创建容器](#项目部署)；注意参数`-v`挂载路径改为上一步的解压路径(绝对路径)；
+    ```bash
+    docker stop lduoj
+    ```
+3. 恢复数据库；
+    ```bash
+    bash install/mysql/database_recover.sh
+    ```
 
 # 📝 判题端使用说明
 
