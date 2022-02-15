@@ -55,7 +55,7 @@ bash ojup/install/ubuntu/update.sh
     ```
 2. 将文件夹`/volume`打包；
     ```bash
-    tar -zcvf volume.tar.gz /volume     # 打包
+    tar -cf - /volume | pigz -p $(nproc) > volume.tar.gz
     ```
 ## 恢复
 1. 解压`/volume`；

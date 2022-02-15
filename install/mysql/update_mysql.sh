@@ -13,5 +13,5 @@ mysql -u${USER} -p${PASSWORD} -e"alter user '${USER}'@'localhost' IDENTIFIED WIT
 mysql -u${USER} -p${PASSWORD} -e"DROP DATABASE IF EXISTS lduoj_upgrade;"
 mysql -u${USER} -p${PASSWORD} -e"CREATE DATABASE IF NOT EXISTS lduoj_upgrade;"
 mysql -u${USER} -p${PASSWORD} -Dlduoj_upgrade < ${APP_HOME}/install/mysql/lduoj.sql
-php ${APP_HOME}/install/mysql/structure_sync.php ${USER} ${PASSWORD} | mysql -u${USER} -p${PASSWORD} -Dlduoj -v
+php ${APP_HOME}/install/mysql/structure_sync.php ${USER} ${PASSWORD} | mysql -u${USER} -p${PASSWORD} -Dlduoj_db -v
 mysql -u${USER} -p${PASSWORD} -e"DROP DATABASE IF EXISTS lduoj_upgrade;"
