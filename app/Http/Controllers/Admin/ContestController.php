@@ -316,6 +316,12 @@ class ContestController extends Controller
                     'msg' => '指定的父级类别不存在！'
                 ]);
             }
+            if ($values['parent_id'] == $parent->id) {
+                return json_encode([
+                    'ret' => false,
+                    'msg' => '不能作为自身的子类别！'
+                ]);
+            }
             if ($values['parent_id'] > 0 && $parent->parent_id > 0) {
                 return json_encode([
                     'ret' => false,
