@@ -151,7 +151,7 @@ class UserController extends Controller
             ->orderByDesc('solved')
             ->orderBy('submit')
             ->paginate($_GET['perPage'] ?? 30);
-        if (!Auth::user()) {
+        if (!Auth::user() && !get_setting('display_complete_standings')) {
             foreach ($users as &$user) {
                 for ($i = 3; $i < strlen($user->username) - 3 || $i < 6; $i++)
                     $user->username[$i] = '*';

@@ -11,6 +11,7 @@ return [
 
 	"allow_register"	        => true,    //允许访客注册账号
 	"display_complete_userinfo" => true,    //对于未登录访客，个人信息页面 是否显示用户完整信息
+	"display_complete_standings"=> true,    //对于未登录访客，排行榜页面 是否显示用户完整信息
 	"guest_see_problem"	        => true,    //允许访客浏览题目内容
 
 	"rank_show_school"	        => false,   //榜单显示学校

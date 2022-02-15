@@ -64,7 +64,12 @@
             <div class="form-group">
                 <input id="display_complete_userinfo" type="checkbox">
                 <input name="display_complete_userinfo" value="{{get_setting('display_complete_userinfo')?'true':'false'}}" type="text" hidden>
-                <font>是否对未登录的访客显示用户的完整个人信息，关闭后部分个人信息页面将隐藏部分信息</font>
+                <font>对于未登录访客，在个人信息页面显示用户的完整信息，关闭后部分信息将被隐藏</font>
+            </div>
+            <div class="form-group">
+                <input id="display_complete_standings" type="checkbox">
+                <input name="display_complete_standings" value="{{get_setting('display_complete_standings')?'true':'false'}}" type="text" hidden>
+                <font>对于未登录访客，在排行榜页面显示排行榜完整名，关闭后排行榜用户名将被隐藏</font>
             </div>
             <div class="form-group">
                 <input id="guest_see_problem" type="checkbox">
@@ -94,6 +99,7 @@
                 "show_home_notice_marquee",
                 "allow_register",
                 "display_complete_userinfo",
+                "display_complete_standings",
                 "guest_see_problem",
                 "rank_show_school",
                 "rank_show_nick",
@@ -110,60 +116,6 @@
             @endforeach
         })
 
-        /*
-        $(function (){
-            for (var i =0 ;i<btns.length;i++){
-                new Switch($("#"+btns[i])[0],{
-                    // size: 'small',
-                    checked: '{{get_setting('web_page_display_wide')?1:0}}'==='1',
-                    onChange:function () {
-                        $("input[name=web_page_display_wide]").attr('value',this.getChecked());
-                        $("#form_switch").submit();
-                    }
-                });
-            }
-                new Switch($("#allow_register")[0],{
-                    // size: 'small',
-                    checked: '{{get_setting("allow_register")?1:0}}'==='1',
-                    onChange:function () {
-                        $("input[name=allow_register]").attr('value',this.getChecked());
-                        $("#form_switch").submit();
-                    }
-                });
-                new Switch($("#show_home_notice_marquee")[0],{
-                    // size: 'small',
-                    checked: '{{get_setting('show_home_notice_marquee')?1:0}}'==='1',
-                    onChange:function () {
-                        $("input[name=show_home_notice_marquee]").attr('value',this.getChecked());
-                        $("#form_switch").submit();
-                    }
-                });
-                new Switch($("#guest_see_problem")[0],{
-                    // size: 'small',
-                    checked: '{{get_setting('guest_see_problem')?1:0}}'==='1',
-                    onChange:function () {
-                        $("input[name=guest_see_problem]").attr('value',this.getChecked());
-                        $("#form_switch").submit();
-                    }
-                });
-                new Switch($("#rank_show_school")[0],{
-                    // size: 'small',
-                    checked: '{{get_setting('rank_show_school')?1:0}}'==='1',
-                    onChange:function () {
-                        $("input[name=rank_show_school]").attr('value',this.getChecked());
-                        $("#form_switch").submit();
-                    }
-                });
-                new Switch($("#rank_show_nick")[0],{
-                    // size: 'small',
-                    checked: '{{get_setting('rank_show_nick')?1:0}}'==='1',
-                    onChange:function () {
-                        $("input[name=rank_show_nick]").attr('value',this.getChecked());
-                        $("#form_switch").submit();
-                    }
-                });
-            })
-    */
     </script>
     <div class="my-container bg-white">
         <form onsubmit="return submit_settings(this)" method="post">
