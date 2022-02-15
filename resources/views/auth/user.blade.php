@@ -9,7 +9,7 @@
             <h2>
                 <font>{{$user->username}}</font>
                 @if(isset($user->email)&&$user->email) <font style="font-weight: lighter;font-size: 1rem"><{{$user->email}}></font> @endif
-                @if(Auth::check() && (Auth::user()->privilege('admin') || Auth::user()->username==$user->username) )
+                @if(Auth::check() && (privilege(Auth::user(), 'admin') || Auth::user()->username==$user->username) )
                     <a href="{{route('user_edit',$user->username)}}" class="pull-right" title="edit">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                     </a>

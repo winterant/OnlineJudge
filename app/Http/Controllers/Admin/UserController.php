@@ -49,7 +49,8 @@ class UserController extends Controller
     }
 
     public function privilege_delete(Request $request){
-        return DB::table('privileges')->delete($request->input('id'));
+        $pids=$request->input('pids')?:[];
+        return DB::table('privileges')->whereIn('id',$pids)->where('user_id','!=',1000)->delete();
     }
 
     //批量生成账号

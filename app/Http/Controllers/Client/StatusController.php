@@ -28,7 +28,7 @@ class StatusController extends Controller
             ->select('solutions.id','solutions.contest_id','contest_problems.index','solutions.problem_id','solutions.user_id','nick','username',
                 'result','time','memory','language', 'submit_time', 'solutions.judge_type', 'pass_rate','judger', 'sim_rate', 'sim_sid')
             ->when(isset($_GET['inc_contest']),function ($q){
-                if(Auth::check()&&Auth::user()->privilege('solution'))
+                if(Auth::check()&&privilege(Auth::user(), 'solution'))
                     return $q;
                 return $q->where(function ($q){
                     return $q->where('solutions.contest_id',-1)->orWhere('end_time','<',date('Y-m-d H:i:s'));
@@ -80,7 +80,7 @@ class StatusController extends Controller
                 'result','pass_rate','time','memory','judge_type','submit_time','judge_time',
                 'code','code_length','language','error_info','wrong_data'])
             ->where('solutions.id',$id)->first();
-        if(Auth::user()->privilege('solution')||
+        if(privilege(Auth::user(), 'solution')||
             (Auth::id()==$solution->user_id && $solution->submit_time>Auth::user()->created_at))
             return view('client.solution',compact('solution'));
         return view('client.fail',['msg'=>trans('sentence.Permission denied')]);
@@ -92,7 +92,7 @@ class StatusController extends Controller
             ->select('solutions.problem_id','solutions.user_id','contests.end_time','solutions.wrong_data')
             ->where('solutions.id',$id)
             ->first();
-        if(($solution && Auth::id()==$solution->user_id && $solution->wrong_data!==null)||Auth::user()->privilege('solution')){
+        if(($solution && Auth::id()==$solution->user_id && $solution->wrong_data!==null)||privilege(Auth::user(), 'solution')){
             if(date('Y-m-d H:i:s') < $solution->end_time) //比赛未结束
                 return view('client.fail',['msg'=>trans('sentence.not_end')]);
             if($type=='in')
@@ -111,7 +111,7 @@ class StatusController extends Controller
     public function create(Request $request)
     {
         //拦截非管理员的频繁提交
-        if(!Auth::user()->privilege('teacher')){
+        if(!privilege(Auth::user(), 'teacher')){
             $last_submit_time = DB::table('solutions')
                 ->where('user_id',Auth::id())
                 ->orderByDesc('submit_time')
@@ -138,7 +138,7 @@ class StatusController extends Controller
             }
         }else{ //通过题库提交，需要判断一下用户权限
             $hidden=$problem->hidden;
-            if(!Auth::user()->privilege('teacher') && $hidden==1) //不是管理员&&问题隐藏 => 不允许提交
+            if(!privilege(Auth::user(), 'teacher') && $hidden==1) //不是管理员&&问题隐藏 => 不允许提交
                 return view('client.fail',['msg'=>trans('main.Problem').$data['pid'].'：'.trans('main.Hidden')]);
         }
 

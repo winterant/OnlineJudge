@@ -26,7 +26,7 @@
                     <h4 class="text-center">{{isset($contest)?index2ch($problem->index):$problem->id}}
                         . {{$problem->title}}
                         {{--                    管理员编辑题目的连接 --}}
-                        @if(Auth::check()&&Auth::user()->privilege('teacher'))
+                        @if(Auth::check()&&privilege(Auth::user(), 'teacher'))
                             <font style="font-size: 0.85rem">
                                 [ <a href="{{route('admin.problem.update_withId',$problem->id)}}"
                                      target="_blank">{{__('main.Edit')}}</a> ]
@@ -34,7 +34,7 @@
                                      target="_blank">{{__('main.Test Data')}}</a> ]
                             </font>
                         @endif
-                        @if(isset($contest)&&(Auth::check()&&Auth::user()->privilege('problem')||$contest->end_time<date('Y-m-d H:i:s')))
+                        @if(isset($contest)&&(Auth::check()&&privilege(Auth::user(), 'problem')||$contest->end_time<date('Y-m-d H:i:s')))
                             <font style="font-size: 0.85rem">
                                 [
                                 <a href="{{route('problem',$problem->id)}}">{{__('main.Problem')}} {{$problem->id}}</a>
@@ -566,7 +566,7 @@
                             "   <div class=\"float-right\" style=\"font-size: 0.85rem\">\n" +
                             (dis.top ? "[<font class=\"text-red px-1\">{{trans('main.Top')}}</font>]" : '') +
                             (dis.hidden ? "[<font class=\"text-red px-1\">{{trans('main.Hidden')}}</font>]" : '') +
-                            @if(Auth::check()&&Auth::user()->privilege('problem_tag'))
+                            @if(Auth::check()&&privilege(Auth::user(), 'admin.problem.tag'))
                             (dis.top ?
                                 "    <a href=\"javascript:top_discussion(" + dis.id + ",0)\" class=\"px-1\">{{__('main.Cancel Top')}}</a>\n" :
                                 "    <a href=\"javascript:top_discussion(" + dis.id + ",1)\" class=\"px-1\">{{__('main.To Top')}}</a>\n") +
@@ -595,7 +595,7 @@
                                     "    <div class=\"math_formula pl-1\">" + son_dis.content + "</div>\n" +
                                     "    <div class=\"float-right\" style=\"font-size: 0.85rem\">\n" +
                                     (son_dis.hidden ? "[<font class=\"text-red px-1\">{{trans('main.Hidden')}}</font>]" : '') +
-                                    @if(Auth::check()&&Auth::user()->privilege('problem_tag'))
+                                    @if(Auth::check()&&privilege(Auth::user(), 'admin.problem.tag'))
                                     (son_dis.hidden ?
                                         "   <a href=\"javascript:hidden_discussion(" + son_dis.id + ",0)\" class=\"px-1\">{{__('main.Public')}}</a>\n" :
                                         "   <a href=\"javascript:hidden_discussion(" + son_dis.id + ",1)\" class=\"px-1\">{{__('main.Hidden')}}</a>\n") +

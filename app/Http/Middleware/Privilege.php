@@ -18,12 +18,14 @@ class Privilege
      */
     public function handle($request, Closure $next, $role)
     {
-        if (!Auth::user()->privilege($role)) {
-            if (DB::table('privileges')->where('user_id', Auth::id())->limit(1)->exists())//是个特权用户
-                $page = 'admin'; //特权用户，提供后台的fail页面
+        if (!privilege(Auth::user(), $role)) {
+            if (
+                strpos($request->getRequestUri(), '/admin') == 0
+                && DB::table('privileges')->where('user_id', Auth::id())->limit(1)->exists()
+            ) //管理员在后台页面访问时，权限不足
+                return response()->view('admin.fail', ['msg' => '权限不足！如果您需要访问该页面，请联系管理员索要权限：' . $role]);
             else
-                $page = 'client';
-            return response()->view($page . '.fail', ['msg' => '权限不足！您没有该权限：' . $role]);
+                return response()->view('client.fail', ['msg' => '权限不足！']);
         }
         return $next($request);
     }

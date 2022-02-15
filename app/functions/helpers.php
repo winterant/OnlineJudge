@@ -1,6 +1,37 @@
 <?php
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+
+
+//查询用户权限: 查询user是否具有power权限
+function privilege($user, $power)
+{
+    //无效的user
+    if(!$user || !isset($user->id))
+        return false;
+
+    //teacher涵盖以下权限；即 只要数据库中查询到teacher权限，则该用户拥有以下权限
+    if (in_array($power, [
+        'admin.home',
+        'admin.problem.list',
+        'admin.problem.edit',
+        'admin.problem.data',
+        'amdin.problem.tag',
+        'admin.problem.rejudge',
+        'admin.contest']))
+        $power = array_merge((array)$power, ['teacher']);
+
+    //admin涵盖所有权限
+    $power = array_merge((array)$power, ['admin']);
+
+    //查询该用户的权限
+    if (DB::table('privileges')->where('user_id', $user->id)->whereIn('authority', $power)->exists()) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 // 获取测试数据保存路径
 function testdata_path($path = null): string

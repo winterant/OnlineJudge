@@ -75,7 +75,7 @@ class ContestController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!Auth::user()->privilege('admin') && Auth::id() != DB::table('contests')->where('id', $id)->value('id'))
+        if (!privilege(Auth::user(),'admin') && Auth::id() != DB::table('contests')->where('id', $id)->value('id'))
             return view('admin.fail', ['msg' => '权限不足！您不是这场比赛的创建者']);
 
         if ($request->isMethod('get')) {
@@ -171,6 +171,7 @@ class ContestController extends Controller
         return json_encode(['cloned' => false]);
     }
 
+    /*
     public function set_top(Request $request)
     {
         $cid = $request->input('cid');
@@ -182,11 +183,12 @@ class ContestController extends Controller
         DB::table('contests')->where('id', $cid)->update(['top' => $new_top]);
         return $new_top;
     }
+    */
 
     public function delete(Request $request)
     {
         $cids = $request->input('cids') ?: [];
-        if (Auth::user()->privilege('admin')) //超管，直接进行
+        if (privilege(Auth::user(), 'admin')) //超管，直接进行
             $ret = DB::table('contests')->whereIn('id', $cids)->delete();
         else
             $ret = DB::table('contests')->whereIn('id', $cids)->where('user_id', Auth::id())->delete();//创建者
@@ -210,7 +212,7 @@ class ContestController extends Controller
     {
         $cids = $request->input('cids') ?: [];
         $hidden = $request->input('hidden');
-        if (Auth::user()->privilege('admin')) //超管，直接进行
+        if (privilege(Auth::user(), 'admin')) //超管，直接进行
             return DB::table('contests')->whereIn('id', $cids)->update(['hidden' => $hidden]);
         return DB::table('contests')->whereIn('id', $cids)
             ->where('user_id', Auth::id())->update(['hidden' => $hidden]);

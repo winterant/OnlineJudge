@@ -13,11 +13,7 @@
                 <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
                 <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
 
-                {{--            <a href="javascript:" class="ml-3">预设</a>--}}
-                {{--            <a href="javascript:" class="text-gray" data-toggle="tooltip"--}}
-                {{--               title="解释">--}}
-                {{--                <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
-                {{--            </a>--}}
+                <a href="javascript:" onclick="delete_manager()" class="ml-3">删除选中项</a>
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm">
@@ -47,7 +43,7 @@
                         <td><a @if($item->creator)href="{{route('user',$item->creator)}}"@endif target="_blank">{{$item->creator}}</a></td>
                         <td nowrap>
                             @if($item->username!='admin'||$item->authority!='admin')
-                                <a href="javascript:delete_privilege({{$item->id}})" class="px-1" title="删除">
+                                <a href="javascript:delete_manager({{$item->id}})" class="px-1" title="删除">
                                     <i class="fa fa-trash" aria-hidden="true"></i> 删除
                                 </a>
                             @endif
@@ -159,7 +155,7 @@
     </div>
 
     <script>
-
+        /*
         function delete_privilege(id) {
             Notiflix.Confirm.Init();
             Notiflix.Confirm.Show( '敏感操作', '确定删除该权限?', '确认', '取消', function(){
@@ -175,6 +171,28 @@
                     }
                 );
             });
+        }
+        */
+        function delete_manager(id=-1) {
+            Notiflix.Confirm.Init();
+            Notiflix.Confirm.Show('操作确认','确定删除选中的用户权限？','确认删除','取消',function () {
+                if(id!==-1){  ///单独一个
+                    $('td input[type=checkbox]').prop('checked',false)
+                    $('td input[value='+id+']').prop('checked',true)
+                }
+                var nids=[];
+                $('td input[type=checkbox]:checked').each(function () { nids.push($(this).val()); });
+                $.post(
+                    '{{route('admin.user.privilege_delete')}}',
+                    {
+                        '_token':'{{csrf_token()}}',
+                        'pids':nids,
+                    },
+                    function (ret) {
+                        location.reload();
+                    }
+                );
+            })
         }
     </script>
 @endsection

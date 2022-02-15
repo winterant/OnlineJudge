@@ -38,7 +38,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    /*
     public function privilege($power)
     {
         //teacher涵盖以下权限；即 只要数据库中查询到teacher权限，则该用户拥有以下权限
@@ -55,4 +55,5 @@ class User extends Authenticatable
             return false;
         }
     }
+    */
 }

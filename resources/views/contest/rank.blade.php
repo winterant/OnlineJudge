@@ -31,7 +31,7 @@
                                 {{trans('sentence.rank_end_time',['time'=>date('Y-m-d H:i:s',$end_time)])}}
                             </font>
 
-                            @if(Auth::check() && Auth::user()->privilege('contest')) {{-- 管理员可以取消封榜 --}}
+                            @if(Auth::check() && privilege(Auth::user(), 'admin.contest')) {{-- 管理员可以取消封榜 --}}
                             <form class="d-inline" action="{{route('contest.cancel_lock',$contest->id)}}" method="post"
                                   onsubmit="return confirm('当前处于封榜状态，确认开放榜单？')" hidden>
                                 @csrf
@@ -45,7 +45,7 @@
                         <form id="form_switch" action="" method="get">
 
                             @if(strtotime($contest->end_time)<time() &&
-                                (Auth::check() && Auth::user()->privilege('contest') || $contest->lock_rate==0) )
+                                (Auth::check() && privilege(Auth::user(), 'admin.contest') || $contest->lock_rate==0) )
                                 <font title="{{__('sentence.Up to now')}}">{{trans('main.Up to now')}}：</font>
                                 <input id="switch_buti" type="checkbox">
                                 <input type="text" name="buti" value="{{isset($_GET['buti'])?$_GET['buti']:'false'}}" hidden>

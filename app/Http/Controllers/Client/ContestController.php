@@ -49,7 +49,7 @@ class ContestController extends Controller
         //类别不存在，则自动跳转到默认竞赛
         if (!$current_cate) {
             $first_contest = DB::table('contest_cate')->first();
-            if(!$first_contest)
+            if (!$first_contest)
                 return view('client.fail', ['msg' => '竞赛中没有任何可用类别，请管理员前往后台添加类别！']);
             return redirect(route('contests', $first_contest->id));
         }
@@ -65,19 +65,27 @@ class ContestController extends Controller
 
         $contests = DB::table('contests as c')
             ->leftJoin('contest_cate as cc', 'cc.id', '=', 'c.cate_id')
-            ->select(['c.id', 'judge_type', 'c.title', 'start_time', 'end_time', 'access', 'c.order', 'c.hidden', 'cate_id', 'cc.title as cate_title',
+            ->select([
+                'c.id', 'judge_type', 'c.title', 'start_time', 'end_time', 'access', 'c.order', 'c.hidden', 'cate_id', 'cc.title as cate_title',
                 DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as stage"),
-                DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=c.id) as number")])
+                DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=c.id) as number")
+            ])
             ->where('cate_id', $current_cate->id)
 
-            ->when(isset($_GET['state'])&&$_GET['state']!='all',function ($q){
-                if($_GET['state']=='ended')return $q->where('end_time','<',date('Y-m-d H:i:s'));
-                else if($_GET['state']=='waiting')return $q->where('start_time','>',date('Y-m-d H:i:s'));
-                else return $q->where('start_time','<',date('Y-m-d H:i:s'))->where('end_time','>',date('Y-m-d H:i:s'));
+            ->when(isset($_GET['state']) && $_GET['state'] != 'all', function ($q) {
+                if ($_GET['state'] == 'ended') return $q->where('end_time', '<', date('Y-m-d H:i:s'));
+                else if ($_GET['state'] == 'waiting') return $q->where('start_time', '>', date('Y-m-d H:i:s'));
+                else return $q->where('start_time', '<', date('Y-m-d H:i:s'))->where('end_time', '>', date('Y-m-d H:i:s'));
             })
-            ->when(isset($_GET['judge_type'])&&$_GET['judge_type']!=null,function ($q){return $q->where('c.judge_type',$_GET['judge_type']);})
-            ->when(isset($_GET['title']),function ($q){return $q->where('c.title','like','%'.$_GET['title'].'%');})
-            ->when(!Auth::check()||!Auth::user()->privilege('contest'),function ($q){return $q->where('c.hidden',0);})
+            ->when(isset($_GET['judge_type']) && $_GET['judge_type'] != null, function ($q) {
+                return $q->where('c.judge_type', $_GET['judge_type']);
+            })
+            ->when(isset($_GET['title']), function ($q) {
+                return $q->where('c.title', 'like', '%' . $_GET['title'] . '%');
+            })
+            ->when(!Auth::check() || !privilege(Auth::user(), 'admin.contest'), function ($q) {
+                return $q->where('c.hidden', 0);
+            })
 
             ->orderByDesc('c.order')
             ->orderBy('stage')
@@ -94,12 +102,12 @@ class ContestController extends Controller
             $contest = DB::table('contests')->select('id', 'judge_type', 'cate_id', 'title')->find($id);
             return view('contest.password', compact('contest'));
         }
-        if ($request->isMethod('post'))//接收提交的密码
+        if ($request->isMethod('post')) //接收提交的密码
         {
             $contest = DB::table('contests')->select('id', 'judge_type', 'password', 'cate_id', 'title')->find($id);
             if ($request->input('pwd') == $contest->password) //通过验证
             {
-                DB::table('contest_users')->insertOrIgnore(['contest_id' => $contest->id, 'user_id' => Auth::id()]);//保存
+                DB::table('contest_users')->insertOrIgnore(['contest_id' => $contest->id, 'user_id' => Auth::id()]); //保存
                 return redirect(route('contest.home', $contest->id));
             } else {
                 $msg = trans('sentence.pwd wrong');
@@ -111,12 +119,15 @@ class ContestController extends Controller
     public function home($id)
     {
         $contest = DB::table('contests')
-            ->select(['id', 'judge_instantly', 'judge_type', 'title', 'start_time', 'end_time', 'access', 'description', 'cate_id',
-                DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")])->find($id);
+            ->select([
+                'id', 'judge_instantly', 'judge_type', 'title', 'start_time', 'end_time', 'access', 'description', 'cate_id',
+                DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")
+            ])->find($id);
         $problems = DB::table('problems')
             ->join('contest_problems', 'contest_problems.problem_id', '=', 'problems.id')
             ->where('contest_id', $id)
-            ->select(['problems.id', 'problems.type', 'problems.title', 'contest_problems.index',
+            ->select([
+                'problems.id', 'problems.type', 'problems.title', 'contest_problems.index',
                 DB::raw("(select count(id) from solutions where contest_id=" . $contest->id . " and problem_id=problems.id and result=4) as accepted"),
                 DB::raw("(select count(distinct user_id) from solutions where contest_id=" . $contest->id . " and problem_id=problems.id and result=4) as solved"),
                 DB::raw("(select count(id) from solutions where contest_id=" . $contest->id . " and problem_id=problems.id) as submit"),
@@ -139,7 +150,7 @@ class ContestController extends Controller
             ])
             ->orderBy('contest_problems.index')
             ->get();
-//读取标签
+        //读取标签
         foreach ($problems as &$problem) {
             $tag = DB::table('tag_marks')
                 ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
@@ -166,11 +177,11 @@ class ContestController extends Controller
         //是否需要显示开始判题的按钮, 是否允许点击，仅用于赛后判题模式
         $show_judge_button = false;
         $judge_enable = false;
-        if (Auth::user()->privilege('contest') && $contest->judge_instantly == 0) {
+        if (privilege(Auth::user(), 'admin.contest') && $contest->judge_instantly == 0) {
             $show_judge_button = true;
             $judge_enable = DB::table('solutions')->where('contest_id', $id)
-                    ->where('result', 15)
-                    ->exists()
+                ->where('result', 15)
+                ->exists()
                 && time() > strtotime($contest->end_time);
         }
         return view('contest.home', compact('contest', 'problems', 'files', 'show_judge_button', 'judge_enable'));
@@ -189,8 +200,21 @@ class ContestController extends Controller
         $contest = DB::table('contests')->find($id);
         $problem = DB::table('problems')
             ->join('contest_problems', 'contest_problems.problem_id', '=', 'problems.id')
-            ->select('index', 'hidden', 'problem_id as id', 'title', 'description', 'input', 'output', 'hint', 'source',
-                'time_limit', 'memory_limit', 'spj', 'type', 'fill_in_blank',
+            ->select(
+                'index',
+                'hidden',
+                'problem_id as id',
+                'title',
+                'description',
+                'input',
+                'output',
+                'hint',
+                'source',
+                'time_limit',
+                'memory_limit',
+                'spj',
+                'type',
+                'fill_in_blank',
                 DB::raw("(select count(id) from solutions where problem_id=problems.id and contest_id=" . $id . ") as submit"),
                 DB::raw("(select count(distinct user_id) from solutions where problem_id=problems.id and contest_id=" . $id . " and result=4) as solved")
             )
@@ -225,10 +249,10 @@ class ContestController extends Controller
                 ->where('problem_id', '=', $problem->id)
                 ->exists()
             && DB::table('solutions')
-                ->where('user_id', '=', Auth::id())
-                ->where('problem_id', '=', $problem->id)
-                ->where('result', 4)
-                ->exists();
+            ->where('user_id', '=', Auth::id())
+            ->where('problem_id', '=', $problem->id)
+            ->where('result', 4)
+            ->exists();
         if ($tag_mark_enable)
             $tag_pool = DB::table('tag_pool')
                 ->select('id', 'name')
@@ -243,7 +267,7 @@ class ContestController extends Controller
     public function status($id)
     {
         $contest = DB::table('contests')->find($id);
-        if (!Auth::user()->privilege('contest') && time() < strtotime($contest->end_time)) //比赛没结束，只能看自己
+        if (!privilege(Auth::user(), 'admin.contest') && time() < strtotime($contest->end_time)) //比赛没结束，只能看自己
             $_GET['username'] = Auth::user()->username;
 
         $solutions = DB::table('solutions')
@@ -283,7 +307,11 @@ class ContestController extends Controller
         //rank的辅助函数，获取榜单的截止时间
         if (!isset($_GET['buti'])) $_GET['buti'] = "true"; //默认打开补题开关
 
-        if (Auth::check() && Auth::user()->privilege('contest')) {
+        if (
+            Auth::check() &&
+            (privilege(Auth::user(), 'admin.contest')
+                || privilege(Auth::user(), 'admin.contest'))
+        ) {
             if (isset($_GET['buti']) ? $_GET['buti'] == 'true' : false) //实时榜
                 $end = time();
             else //终榜
@@ -322,7 +350,7 @@ class ContestController extends Controller
 
         $contest = DB::table('contests')->find($id);
         //对于隐藏的竞赛，普通用户不能查看榜单
-        if ($contest->hidden && (!Auth::check() || !Auth::user()->privilege('contest'))) {
+        if ($contest->hidden && (!Auth::check() || !privilege(Auth::user(), 'admin.contest'))) {
             return view('client.fail', ['msg' => '竞赛不存在或权限不足！']);
         }
         $solutions = DB::table('solutions')
@@ -355,7 +383,7 @@ class ContestController extends Controller
                 $users[$solution->user_id] = ['score' => 0, 'penalty' => 0];
                 $uids[] = $solution->user_id;
             }
-            $user =& $users[$solution->user_id];
+            $user = &$users[$solution->user_id];
             if (!isset($user[$solution->index])) //该用户首次提交该题
                 $user[$solution->index] = ['AC' => false, 'AC_time' => 0, 'wrong' => 0, 'score' => 0, 'penalty' => 0];
             if (!$user[$solution->index]['AC']) {  //尚未AC该题

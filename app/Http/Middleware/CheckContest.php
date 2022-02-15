@@ -21,7 +21,7 @@ class CheckContest
     public function handle($request, Closure $next)
     {
         $contest=DB::table('contests')->find($request->route()->parameter('id'));
-        if(Auth::user()->privilege('contest')) //contest管理员直接进入
+        if(privilege(Auth::user(), 'admin.contest')) //contest管理员直接进入
             return $next($request);
 
         if($contest->hidden)
