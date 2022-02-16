@@ -7,7 +7,7 @@ $db = [
     'user'  => $argv[1],
     'pwd'   => $argv[2],
     'db1'   => 'lduoj_upgrade', //源表
-    'db2'   => 'lduoj_db', //目标表，即要改动的表
+    'db2'   => 'lduoj', //目标表，即要改动的表
 ];
 
 $result_sql="/* Modify database {$db['db2']} with reference to {$db['db1']}. */\n\n";  //字符串用于拼接修改语句sql
