@@ -18,32 +18,43 @@ class StatusController extends Controller
      */
     public function index()
     {
-        if(!isset($_GET['pid']))$_GET['inc_contest']='on'; //未筛选时默认包含竞赛提交
+        //用户名模糊查询: 找出符合条件的用户
+        $users = null;
+        if(isset($_GET['username'])&&$_GET['username']!=''){
+            $query=DB::table('users')
+                ->select('id','username','nick')
+                ->where('username','like','%'.$_GET['username'].'%')
+                ->get();
+            foreach($query as $u)
+                $users[$u->id] = $u;
+        }
+        //读取提交记录
         $solutions=DB::table('solutions')
-            ->join('users','solutions.user_id','=','users.id')
-            ->leftJoin('contests','solutions.contest_id','=','contests.id')  //非必须，left
-            ->leftJoin('contest_problems',function ($q){
-                $q->on('solutions.contest_id','=','contest_problems.contest_id')->on('solutions.problem_id','=','contest_problems.problem_id');
-            })
-            ->select('solutions.id','solutions.contest_id','contest_problems.index','solutions.problem_id','solutions.user_id','nick','username',
-                'result','time','memory','language', 'submit_time', 'solutions.judge_type', 'pass_rate','judger', 'sim_rate', 'sim_sid')
-            ->when(isset($_GET['inc_contest']),function ($q){
-                if(Auth::check()&&privilege(Auth::user(), 'solution'))
-                    return $q;
-                return $q->where(function ($q){
-                    return $q->where('solutions.contest_id',-1)->orWhere('end_time','<',date('Y-m-d H:i:s'));
-                });//普通用户只能查看已结束比赛的solution
-            })
-            ->when(!isset($_GET['inc_contest']),function ($q){return $q->where('solutions.contest_id',-1);})
+            ->select('id','contest_id','problem_id','user_id',
+                'result','time','memory','language', 'submit_time', 'judge_type',
+                'pass_rate','judger', 'sim_rate', 'sim_sid')
+            //普通用户只能查看非竞赛提交
+            //关闭“包含竞赛”按钮时只能查看非竞赛提交
+            ->when(!privilege(Auth::user(), 'teacher')||!isset($_GET['inc_contest']),function ($q){return $q->where('solutions.contest_id',-1);})
+            
             ->when(isset($_GET['sim_rate'])&&$_GET['sim_rate']!=0,function ($q){return $q->where('sim_rate','>=',$_GET['sim_rate']);})
             ->when(isset($_GET['sid'])&&$_GET['sid']!='',function ($q){return $q->where('solutions.id',$_GET['sid']);})
             ->when(isset($_GET['pid'])&&$_GET['pid']!='',function ($q){return $q->where('solutions.problem_id',$_GET['pid']);})
-            ->when(isset($_GET['username'])&&$_GET['username']!='',function ($q){return $q->where('username','like','%'.$_GET['username'].'%');})
+            ->when($users!=null,function($q)use($users){return $q->whereIn('user_id',array_keys($users));})
             ->when(isset($_GET['result'])&&$_GET['result']!='-1',function ($q){return $q->where('result',$_GET['result']);})
             ->when(isset($_GET['language'])&&$_GET['language']!='-1',function ($q){return $q->where('language',$_GET['language']);})
             ->orderByDesc('solutions.id')
             ->paginate(10);
 
+        foreach($solutions as $s){
+            $u = DB::table('users')->find($s->user_id);
+            //所有人都能看到用户名
+            $s->username=$u?$u->username:null;
+            //管理员能看到昵称
+            if(privilege(Auth::user(), 'teacher')){
+                $s->nick=$u?$u->nick:null;
+            }
+        }
         return view('client.status',compact('solutions'));
     }
 

@@ -20,20 +20,24 @@
                 <div class="my-container bg-white">
                     <form action="" method="get">
                         <div class="form-inline float-right ">
-                            <select name="sim_rate" class="form-control px-2 mr-3" onchange="this.form.submit();">
-                                <option class="form-control" value="0">{{__('main.Similarity Check')}}</option>
-                                @for($i=50;$i<=100;$i+=10)
-                                    <option class="form-control" value="{{$i}}"
-                                            @if(isset($_GET['sim_rate']) && $i==$_GET['sim_rate'])selected @endif> ≥{{$i}}% </option>
-                                @endfor
-                            </select>
-                            @if(!isset($contest))
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" name="inc_contest" class="custom-control-input" id="customCheck"
-                                           @if(isset($_GET['inc_contest']))checked @endif
-                                           onchange="this.form.submit()">
-                                    <label class="custom-control-label pt-1" for="customCheck">{{__('main.include contest')}}</label>
-                                </div>
+                            {{-- 管理员可以筛选查重记录 --}}
+                            @if(privilege(Auth::user(), 'teacher'))
+                                <select name="sim_rate" class="form-control px-2 mr-3" onchange="this.form.submit();">
+                                    <option class="form-control" value="0">{{__('main.Similarity Check')}}</option>
+                                    @for($i=50;$i<=100;$i+=10)
+                                        <option class="form-control" value="{{$i}}"
+                                                @if(isset($_GET['sim_rate']) && $i==$_GET['sim_rate'])selected @endif> ≥{{$i}}% </option>
+                                    @endfor
+                                </select>
+                                {{-- 总提交记录列表中，管理员可以查看竞赛提交 --}}
+                                @if(!isset($contest))
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="inc_contest" class="custom-control-input" id="customCheck"
+                                            @if(isset($_GET['inc_contest']))checked @endif
+                                            onchange="this.form.submit()">
+                                        <label class="custom-control-label pt-1" for="customCheck">{{__('main.include contest')}}</label>
+                                    </div>
+                                @endif
                             @endif
                         </div>
 
@@ -107,23 +111,21 @@
                                         </td>
                                         <td nowrap>
                                             @if(isset($contest))
+                                                {{-- 比赛中的状态 --}}
                                                 <a href="{{route('contest.problem',[$contest->id,$sol->index])}}">{{index2ch($sol->index)}}</a>
                                             @else
+                                                {{-- 总状态列表 --}}
                                                 <a href="{{route('problem',$sol->problem_id)}}">{{$sol->problem_id}}</a>
                                                 @if($sol->contest_id!=-1)
                                                     &nbsp;
                                                     <i class="fa fa-trophy" aria-hidden="true">
-                                                        @if(isset($sol->index)&&$sol!=null)
-                                                    </i><a href="{{route('contest.problem',[$sol->contest_id,$sol->index])}}">{{$sol->contest_id}}-{{index2ch($sol->index)}}</a>
-                                                @else
                                                     <i><a href="{{route('contest.home',$sol->contest_id)}}">{{$sol->contest_id}}</a></i>
                                                 @endif
-                                            @endif
                                             @endif
                                         </td>
                                         <td nowrap>
                                             <a href="{{route('user',$sol->username)}}" target="_blank">{{$sol->username}}</a>
-                                            @if($sol->nick && Auth::check()&&privilege(Auth::user(), 'solution'))&nbsp;{{$sol->nick}}@endif
+                                            @if(isset($sol->nick))&nbsp;{{$sol->nick}}@endif
                                         </td>
                                         <td nowrap>
                                             <font hidden>{{$sol->id}}</font>
