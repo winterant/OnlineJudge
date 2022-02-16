@@ -50,11 +50,11 @@ RUN USER=$(cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}') &&\
     usermod -d /var/lib/mysql/ mysql &&\
     service mysql restart &&\
     rand_passwd=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-16}) &&\
-    mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE DATABASE If Not Exists lduoj_db;" &&\
+    mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE DATABASE If Not Exists lduoj;" &&\
     mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE USER If Not Exists 'oj_user'@'localhost' IDENTIFIED WITH mysql_native_password BY '${rand_passwd}';" &&\
-    mysql -u"${USER}" -p"${PASSWORD}" -e"GRANT all privileges ON lduoj_db.* TO 'oj_user'@'localhost';flush privileges;" &&\
-    mysql -u"${USER}" -p"${PASSWORD}" -Dlduoj_db < install/mysql/lduoj.sql &&\
-    sed -i "s/^DB_DATABASE.*$/DB_DATABASE=lduoj_db/"       .env  judge/config.sh &&\
+    mysql -u"${USER}" -p"${PASSWORD}" -e"GRANT all privileges ON lduoj.* TO 'oj_user'@'localhost';flush privileges;" &&\
+    mysql -u"${USER}" -p"${PASSWORD}" -Dlduoj < install/mysql/lduoj.sql &&\
+    sed -i "s/^DB_DATABASE.*$/DB_DATABASE=lduoj/"       .env  judge/config.sh &&\
     sed -i "s/^DB_USERNAME.*$/DB_USERNAME=oj_user/"        .env  judge/config.sh &&\
     sed -i "s/^DB_PASSWORD.*$/DB_PASSWORD=${rand_passwd}/" .env  judge/config.sh
 
