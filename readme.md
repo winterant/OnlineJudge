@@ -33,8 +33,9 @@ gitee同步仓库: <https://gitee.com/winterantzhao/LDUOnlineJudge>
 docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
 ```
 
-+ `-p`指定`8080`作为宿主机对外端口，访问`http://ip:8080`进入首页；您可在宿主机[配置域名与端口](https://blog.csdn.net/winter2121/article/details/107783085)；
-+ `-v`指定`~/lduoj_docker`作为宿主机挂载目录；
++ 安装docker请参考[官方文档](https://yeasy.gitbook.io/docker_practice/install/ubuntu#shi-yong-jiao-ben-zi-dong-an-zhuang)
++ `-p`指定`8080`作为宿主机对外端口，访问`http://ip:8080`进入首页；您可在宿主机[配置域名](https://blog.csdn.net/winter2121/article/details/107783085)；
++ `-v`指定`~/lduoj/volume`作为宿主机挂载目录；
 + **注册账号admin自动成为管理员**。
 
 # 🚗 升级
@@ -49,11 +50,12 @@ bash ojup/install/ubuntu/update.sh
 # 💿 备份/迁移
 
 ## 备份
-1. 备份数据库；
+1. 进入容器，备份数据库；
     ```bash
+    docker exec -it lduoj bash
     bash install/mysql/database_backup.sh
     ```
-2. 将文件夹`/volume`打包；
+2. 将文件夹`/volume`打包，自行备份；
     ```bash
     tar -cf - /volume | pigz -p $(nproc) > volume.tar.gz
     ```
@@ -62,12 +64,14 @@ bash ojup/install/ubuntu/update.sh
     ```bash
     tar -zxvf volume.tar.gz
     ```
-2. 停止旧容器，并重新[创建容器](#项目部署)；注意参数`-v`挂载路径改为上一步的解压路径(绝对路径)；
+2. 删除旧容器，并重新 [创建容器](#项目部署)；注意参数`-v`挂载路径改为上一步的解压路径(绝对路径)；
     ```bash
     docker stop lduoj
+    docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
     ```
-3. 恢复数据库；
+3. 进入容器，恢复数据库；
     ```bash
+    docker exec -it lduoj bash
     bash install/mysql/database_recover.sh
     ```
 
