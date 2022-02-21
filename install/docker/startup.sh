@@ -21,14 +21,14 @@ fi
 ln -s /volume/php-fpm/www.conf $fpm_www
 
 # mysql
-database=/var/lib/mysql/lduoj_db
-if [ ! -d /volume/mysql/lduoj_db ]; then
+database=/var/lib/mysql/lduoj
+if [ ! -d /volume/mysql/lduoj ]; then
     mkdir -p /volume/mysql
     mv -f $database /volume/mysql/
 else
     rm -rf $database
 fi
-ln -s /volume/mysql/lduoj_db $database
+ln -s /volume/mysql/lduoj $database
 
 
 cd /volume/LDUOnlineJudge

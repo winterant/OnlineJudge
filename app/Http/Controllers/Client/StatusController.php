@@ -237,7 +237,7 @@ class StatusController extends Controller
         return redirect(route('status', ['pid' => $data['pid'], 'username' => Auth::user()->username]));
     }
 
-    //向judge0发起一次判题
+    //向judge0发起一次判题，与oj自带判题端不可同时使用
     private function judge0($sid)
     {
         $solution = DB::table('solutions')->find($sid);
