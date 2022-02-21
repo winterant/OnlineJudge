@@ -41,6 +41,7 @@ service nginx start
 service php7.2-fpm start
 service mysql start
 php artisan storage:link
+php artisan key:generate
 php artisan optimize
 bash judge/startup.sh
 
