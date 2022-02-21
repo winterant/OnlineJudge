@@ -123,6 +123,8 @@ class ContestController extends Controller
                 'id', 'judge_instantly', 'judge_type', 'title', 'start_time', 'end_time', 'access', 'description', 'cate_id',
                 DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")
             ])->find($id);
+        if(!$contest)
+            return abort(404);
         $problems = DB::table('problems')
             ->join('contest_problems', 'contest_problems.problem_id', '=', 'problems.id')
             ->where('contest_id', $id)

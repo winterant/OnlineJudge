@@ -70,7 +70,7 @@ class ContestController extends Controller
             $msg = sprintf('成功创建竞赛：<a href="%s" target="_blank">%d</a>', route('contest.home', $cid), $cid);
             return view('admin.success', compact('msg'));
         }
-        return 404;
+        return abort(404);
     }
 
     public function update(Request $request, $id)
