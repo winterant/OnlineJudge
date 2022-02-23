@@ -231,7 +231,7 @@ class StatusController extends Controller
         //善后工作
         $data = $request->input('solution');
         Cookie::queue('submit_language', $data['language']); //Cookie记住用户使用的语言，以后提交默认该语言
-        if (isset($contest)) //竞赛提交
+        if (isset($data['cid'])) //竞赛提交
             return redirect(route('contest.status', [$data['cid'], 'index' => $data['index'], 'username' => Auth::user()->username]));
 
         return redirect(route('status', ['pid' => $data['pid'], 'username' => Auth::user()->username]));
