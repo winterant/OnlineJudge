@@ -2,12 +2,13 @@
 
 return [
 
+    'FORCE_HTTPS' => env('FORCE_HTTPS', 'false'),
     /*
      * 判题端相关配置
      */
-    'JG_DATA_DIR' => env('JG_DATA_DIR','storage/app/data'),
-    'JG_NAME' => env('JG_NAME','Master'),
-    'JG_MAX_RUNNING' => env('JG_MAX_RUNNING',1),
+    'JG_DATA_DIR' => env('JG_DATA_DIR', 'storage/app/data'),
+    'JG_NAME' => env('JG_NAME', 'Master'),
+    'JG_MAX_RUNNING' => env('JG_MAX_RUNNING', 1),
 
     /*
     |--------------------------------------------------------------------------
@@ -74,7 +75,7 @@ return [
     |
     */
 
-    'timezone' => env('TIMEZONE','UTC'),
+    'timezone' => env('TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
