@@ -2,7 +2,7 @@
 
 return [
 
-    'FORCE_HTTPS' => env('FORCE_HTTPS', 'false'),
+    'FORCE_HTTPS' => env('FORCE_HTTPS', false),
     /*
      * 判题端相关配置
      */
