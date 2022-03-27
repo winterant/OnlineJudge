@@ -121,7 +121,7 @@ class UserController extends Controller
     }
 
     public function update_revise(Request $request){
-        if($request->ajax()){
+        if($request->isMethod('post')){
             $uids=$request->input('uids')?:[];
             $revise=$request->input('revise');
             return DB::table('users')->whereIn('id',$uids)->update(['revise'=>$revise]);

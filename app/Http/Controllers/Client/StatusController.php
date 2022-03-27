@@ -88,7 +88,7 @@ class StatusController extends Controller
     //状态页面使用ajax实时更新题目的判题结果
     public function ajax_get_status(Request $request)
     {
-        if ($request->ajax()) {
+        if ($request->isMethod('post')) {
             $sids = $request->input('sids');
             $solutions = DB::table('solutions')
                 ->select(['id', 'judge_type', 'result', 'time', 'memory', 'pass_rate'])

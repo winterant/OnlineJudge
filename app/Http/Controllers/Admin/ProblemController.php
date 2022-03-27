@@ -135,7 +135,7 @@ class ProblemController extends Controller
     //管理员修改题目状态  0密封 or 1公开
     public function update_hidden(Request $request)
     {
-        if ($request->ajax()) {
+        if ($request->isMethod('post')) {
             $pids = $request->input('pids') ?: [];
             $hidden = $request->input('hidden');
             return DB::table('problems')
