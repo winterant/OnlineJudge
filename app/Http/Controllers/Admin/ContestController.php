@@ -309,14 +309,14 @@ class ContestController extends Controller
         //以下处理修改记录
         if (isset($values['parent_id']))//拦截非法的父级类别修改
         {
-            $parent = DB::table('contest_cate')->find($values['parent_id']);
+            $parent = DB::table('contest_cate')->find($values['parent_id']); // 欲指定的父类别
             if ($values['parent_id'] > 0 && !$parent) {
                 return json_encode([
                     'ret' => false,
                     'msg' => '指定的父级类别不存在！'
                 ]);
             }
-            if ($values['parent_id'] == $parent->id) {
+            if ($values['parent_id'] == $id) {
                 return json_encode([
                     'ret' => false,
                     'msg' => '不能作为自身的子类别！'

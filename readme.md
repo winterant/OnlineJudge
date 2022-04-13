@@ -1,8 +1,8 @@
 <h1 align="center">Ludong University Online Judge</h1>
 
-> 鲁东大学程序设计在线测评系统与考试平台  
-github主仓库: <https://github.com/winterant/LDUOnlineJudge>  
-gitee同步仓库: <https://gitee.com/winterantzhao/LDUOnlineJudge>  
+> 鲁东大学程序设计在线测评系统与考试平台
+github主仓库: <https://github.com/winterant/LDUOnlineJudge>
+gitee同步仓库: <https://gitee.com/wrant/LDUOnlineJudge>
 
 # 💡 快速了解
 
@@ -43,7 +43,7 @@ docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
 ```bash
 docker exec -it lduoj /bin/bash
 git clone https://github.com/winterant/LDUOnlineJudge.git ojup
-# git clone https://gitee.com/winterantzhao/LDUOnlineJudge.git ojup
+# git clone https://gitee.com/wrant/LDUOnlineJudge.git ojup
 bash ojup/install/ubuntu/update.sh
 ```
 
@@ -79,7 +79,7 @@ bash ojup/install/ubuntu/update.sh
 
 + 启动方式
 
-  A. 网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端  
+  A. 网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端
   B. 通过终端命令启动判题端：`bash judge/startup.sh`
 
 + 判题端配置（`judge/config.sh`）：
@@ -91,18 +91,18 @@ bash ojup/install/ubuntu/update.sh
 
 # 💝 致谢
 
-[zhblue/hustoj](https://github.com/zhblue/hustoj)  
-[judge0](https://judge0.com/)  
-[sim](https://dickgrune.com/Programs/similarity_tester/)  
-[laravel-6.0](https://laravel.com/)  
-[bootstrap-material-design](https://fezvrasta.github.io/bootstrap-material-design/)  
-[jquery-3.4.1](https://jquery.com/)  
-[font-awesome](http://www.fontawesome.com.cn/)  
-[ckeditor-5](https://ckeditor.com/ckeditor-5/)  
-[MathJax](https://www.mathjax.org/)  
-[zhiyul/switch](https://github.com/notiflix/Notiflix)  
-[codemirror](https://codemirror.net/)  
-[highlight.js](https://highlightjs.org/)  
+[zhblue/hustoj](https://github.com/zhblue/hustoj)
+[judge0](https://judge0.com/)
+[sim](https://dickgrune.com/Programs/similarity_tester/)
+[laravel-6.0](https://laravel.com/)
+[bootstrap-material-design](https://fezvrasta.github.io/bootstrap-material-design/)
+[jquery-3.4.1](https://jquery.com/)
+[font-awesome](http://www.fontawesome.com.cn/)
+[ckeditor-5](https://ckeditor.com/ckeditor-5/)
+[MathJax](https://www.mathjax.org/)
+[zhiyul/switch](https://github.com/notiflix/Notiflix)
+[codemirror](https://codemirror.net/)
+[highlight.js](https://highlightjs.org/)
 
 # 📜 开源许可
 
