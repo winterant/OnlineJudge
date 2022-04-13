@@ -4,11 +4,29 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 
+// 获取用户真实ip（参考https://blog.csdn.net/m0_46266407/article/details/107222142）
+function get_client_real_ip()
+{
+    $clientip = '';
+    if (getenv('HTTP_CLIENT_IP') && strcasecmp(getenv('HTTP_CLIENT_IP'), 'unknown')) {
+        $clientip = getenv('HTTP_CLIENT_IP');
+    } elseif (getenv('HTTP_X_FORWARDED_FOR') && strcasecmp(getenv('HTTP_X_FORWARDED_FOR'), 'unknown')) {
+        $clientip = getenv('HTTP_X_FORWARDED_FOR');
+    } elseif (getenv('REMOTE_ADDR') && strcasecmp(getenv('REMOTE_ADDR'), 'unknown')) {
+        $clientip = getenv('REMOTE_ADDR');
+    } elseif (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], 'unknown')) {
+        $clientip = $_SERVER['REMOTE_ADDR'];
+    }
+    preg_match("/[\d.]{7,15}/", $clientip, $clientipmatches);
+    $clientip = $clientipmatches[0] ? $clientipmatches[0] : 'unknown';
+    return $clientip;
+}
+
 //查询用户权限: 查询user是否具有power权限
 function privilege($user, $power)
 {
     //无效的user
-    if(!$user || !isset($user->id))
+    if (!$user || !isset($user->id))
         return false;
 
     //teacher涵盖以下权限；即 只要数据库中查询到teacher权限，则该用户拥有以下权限
@@ -19,7 +37,8 @@ function privilege($user, $power)
         'admin.problem.data',
         'amdin.problem.tag',
         'admin.problem.rejudge',
-        'admin.contest']))
+        'admin.contest'
+    ]))
         $power = array_merge((array)$power, ['teacher']);
 
     //admin涵盖所有权限
@@ -166,11 +185,11 @@ function autoiconv($text, $type = "gb2312//ignore")
         $encodType = 'UTF-16LE';
     //下面的判断主要还是判断ANSI编码的·
     if ($encodType == '') { //即默认创建的txt文本-ANSI编码的
-//        $content = mb_convert_encoding($text,"UTF-8","auto");
+        //        $content = mb_convert_encoding($text,"UTF-8","auto");
         $content = iconv("GBK", "UTF-8//ignore", $text);
-    } else if ($encodType == 'UTF-8 BOM') {//本来就是UTF-8不用转换
+    } else if ($encodType == 'UTF-8 BOM') { //本来就是UTF-8不用转换
         $content = $text;
-    } else {//其他的格式都转化为UTF-8就可以了
+    } else { //其他的格式都转化为UTF-8就可以了
         $content = iconv($encodType, "UTF-8", $text);
     }
     return $content;

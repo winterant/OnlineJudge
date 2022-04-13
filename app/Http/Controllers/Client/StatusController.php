@@ -206,7 +206,7 @@ class StatusController extends Controller
 
             'judge_type'    => isset($contest->judge_type) ? $contest->judge_type : 'oi', //acm,oi
 
-            'ip'            => $request->getClientIp(),
+            'ip'            => get_client_real_ip(),
             'code_length'   => strlen($data['code']),
             'code'          => $data['code']
         ];
