@@ -1,8 +1,8 @@
 <h1 align="center">Ludong University Online Judge</h1>
 
-> 鲁东大学程序设计在线测评系统与考试平台
-github主仓库: <https://github.com/winterant/LDUOnlineJudge>
-gitee同步仓库: <https://gitee.com/wrant/LDUOnlineJudge>
+> 鲁东大学程序设计在线测评系统与考试平台  
+github主仓库: <https://github.com/winterant/LDUOnlineJudge>  
+gitee同步仓库: <https://gitee.com/wrant/LDUOnlineJudge>  
 
 # 💡 快速了解
 
