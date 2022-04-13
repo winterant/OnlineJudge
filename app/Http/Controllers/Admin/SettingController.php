@@ -49,7 +49,7 @@ class SettingController extends Controller
         if($source=='github')
             $source = 'https://github.com/winterant/LDUOnlineJudge.git';
         else
-            $source = 'https://gitee.com/winterantzhao/LDUOnlineJudge.git';
+            $source = 'https://gitee.com/wrant/LDUOnlineJudge.git';
 
         Log::info('----------------------------------------------------------------');
         Log::info('Start to upgrade LDUOnlineJudge!');
