@@ -44,7 +44,8 @@ class StatusController extends Controller
                 'pass_rate',
                 'judger',
                 'sim_rate',
-                'sim_sid'
+                'sim_sid',
+                'ip'
             )
             //普通用户只能查看非竞赛提交
             //关闭“包含竞赛”按钮时只能查看非竞赛提交
@@ -69,6 +70,9 @@ class StatusController extends Controller
             })
             ->when(isset($_GET['language']) && $_GET['language'] != '-1', function ($q) {
                 return $q->where('language', $_GET['language']);
+            })
+            ->when(isset($_GET['ip']) && $_GET['ip'] != '', function ($q) {
+                return $q->where('ip', $_GET['ip']);
             })
             ->orderByDesc('solutions.id')
             ->paginate(10);

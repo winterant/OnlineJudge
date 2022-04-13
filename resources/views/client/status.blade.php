@@ -93,7 +93,17 @@
                                             </select>
                                         </div>
                                     </th>
-                                    <th nowrap>{{__('main.Submit Time')}}</th>
+                                    <th nowrap>{{__('main.Submited Time')}}</th>
+                                    <th nowrap>
+                                        @if(privilege(Auth::user(), 'teacher'))
+                                            <div class="form-group m-0 p-0 bmd-form-group">
+                                                <input type="text" class="form-control" placeholder="IP"
+                                                    name="ip" value="{{$_GET['ip'] ?? ''}}">
+                                            </div>
+                                        @else
+                                            IP
+                                        @endif
+                                    </th>
                                     <th nowrap>{{__('main.Judger')}}</th>
                                     <button type="submit" hidden></button>
 
@@ -154,6 +164,11 @@
                                             @endif
                                         </td>
                                         <td nowrap>{{$sol->submit_time}}</td>
+                                        @if(privilege(Auth::user(), 'teacher'))
+                                            <td nowrap>{{$sol->ip}}</td>
+                                        @else
+                                            <td nowrap>-</td>
+                                        @endif
                                         <td nowrap>{{$sol->judger}}</td>
                                     </tr>
                                 @endforeach

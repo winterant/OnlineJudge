@@ -275,7 +275,8 @@ class ContestController extends Controller
         $solutions = DB::table('solutions')
             ->join('users', 'solutions.user_id', '=', 'users.id')
             ->join('contest_problems', 'solutions.problem_id', '=', 'contest_problems.problem_id')
-            ->select(['solutions.id', 'index', 'user_id', 'username', 'nick', 'result', 'judge_type', 'pass_rate', 'sim_rate', 'sim_sid', 'time', 'memory', 'language', 'submit_time', 'judger'])
+            ->select(['solutions.id', 'index', 'user_id', 'username', 'nick', 'result', 'judge_type',
+                 'pass_rate', 'sim_rate', 'sim_sid', 'time', 'memory', 'language', 'submit_time', 'judger', 'ip'])
             ->where('solutions.contest_id', $id)
             ->where('contest_problems.contest_id', $id)
             ->when(isset($_GET['index']) && $_GET['index'] != '', function ($q) {
@@ -292,6 +293,9 @@ class ContestController extends Controller
             })
             ->when(isset($_GET['language']) && $_GET['language'] != '-1', function ($q) {
                 return $q->where('language', $_GET['language']);
+            })
+            ->when(isset($_GET['ip']) && $_GET['ip'] != '', function ($q) {
+                return $q->where('ip', $_GET['ip']);
             })
             ->orderByDesc('solutions.id')
             ->paginate(10);
