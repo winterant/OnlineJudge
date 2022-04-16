@@ -66,10 +66,6 @@
                     <td nowrap>{{$item->name}}</td>
                     <td nowrap>{{$item->created_at}}</td>
                     <td nowrap>
-{{--                        <a href="{{route('admin.problem.update_withId',$item->id)}}" target="_blank" class="px-1"--}}
-{{--                           data-toggle="tooltip" title="修改">--}}
-{{--                            <i class="fa fa-edit" aria-hidden="true"></i>--}}
-{{--                        </a>--}}
                         <a href="javascript:" onclick="tag_delete('{{$item->id}}');" class="px-1" title="删除">
                             <i class="fa fa-trash" aria-hidden="true"></i> 删除
                         </a>

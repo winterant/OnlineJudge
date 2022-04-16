@@ -23,7 +23,7 @@ return [
     "This Week"     => "本周",
     "Last Week"     => "上周",
 
-//    menu
+    //    menu
     "ID"            => "编号",
     "Id"            => "编号",
     "Home"          => "主页",
@@ -52,8 +52,12 @@ return [
     "Notification"  => "告示",
     "Discussion"    => "讨论",
     "Discussions"   => "讨论板",
+    "Group"         => "群组",
+    "Groups"        => "群组",
+    "group"         => "群组",
+    "groups"        => "群组",
 
-//    user
+    //    user
     "Confirm"       => "确认",
     "Cancel"        => "取消",
     "Delete"        => "删除",
@@ -62,14 +66,14 @@ return [
     "Login"         => "登录",
     "Logout"         => "登出",
     "Username"      => "用户名",
-    "E-Mail Address"=> "邮箱地址",
+    "E-Mail Address" => "邮箱地址",
     "Password"      => "密码",
     "New Password"  => "新密码",
     "Old Password"  => "旧密码",
     "Confirm Password" => "确认密码",
     "Remember Me"   => "记住我",
     "Profile"       => "个人资料",
-    "Administration"=> "管理",
+    "Administration" => "管理",
     "Name"          => "名字",
     "School"        => "学校",
     "Class"         => "班级",
@@ -81,7 +85,7 @@ return [
     "Accepted"      => "接受",
     "Attempting"    => "尝试",
 
-//problem
+    //problem
     "Title"         => "标题",
     "Source"        => "来源",
     "Submitted"     => "已提交",
@@ -109,16 +113,16 @@ return [
     "replies"       => "回复",
     "Reply"         => "回复",
     "reply to"      => "回复",
-    "New Discussion"=> "我想说",
+    "New Discussion" => "我想说",
 
-//    standing
+    //    standing
     "All"           => "所有",
     "Year"          => "年",
     "Month"         => "月",
     "Week"          => "周",
     "Day"           => "日",
 
-//solution
+    //solution
     "include contest"   => "包含竞赛",
     "Time"          => "时间",
     "Memory"        => "空间",
@@ -140,7 +144,7 @@ return [
     "Wrong Data"    => "出错数据",
 
 
-//    contest
+    //    contest
     "Score"         => "分值",
     "Solved"        => "已解决",
     "Penalty"       => "惩罚",

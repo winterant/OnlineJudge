@@ -164,15 +164,14 @@
             <ul class="list-unstyled">
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('admin.home')}}">
-                        <i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i> 概览
+                        <i class="fa fa-bar-chart fa-lg mr-1" aria-hidden="true"></i> 概览
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
                        data-target="#menu-notice" aria-expanded="false">
-                        <i class="fa fa-sticky-note-o mr-1" aria-hidden="true"></i>
-                        公告管理
+                        <i class="fa fa-sticky-note-o fa-lg mr-2" aria-hidden="true"></i> 公告管理
                     </a>
                     <ul id="menu-notice" class="collapse">
 
@@ -192,7 +191,7 @@
                 <li class="nav-item">
                     <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
                        data-target="#menu-user" aria-expanded="false">
-                        <i class="fa fa-users mr-1" aria-hidden="true"></i>
+                        <i class="fa fa-user-circle-o fa-lg mr-1" aria-hidden="true"></i>
                         账号管理
                     </a>
                     <ul id="menu-user" class="collapse">
@@ -226,6 +225,20 @@
 
                 <li class="nav-item">
                     <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
+                       data-target="#menu-groups" aria-expanded="false">
+                        <i class="fa fa-users fa-lg mr-2" aria-hidden="true"></i>群组管理
+                    </a>
+                    <ul id="menu-groups" class="collapse">
+                        <li class="nav-item">
+                            <a class="nav-link border-top" href="{{route('admin.group.list')}}">
+                                <i class="fa fa-list" aria-hidden="true"></i> 群组列表</a>
+                        </li>
+                        {{-- todo --}}
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
                        data-target="#menu-problem" aria-expanded="false">
                         <i class="fa fa-file-text-o fa-lg mr-2" aria-hidden="true"></i>题库管理
                     </a>
@@ -238,10 +251,10 @@
                             <a class="nav-link border-top" href="{{route('admin.problem.add')}}">
                                 <i class="fa fa-plus" aria-hidden="true"></i> 添加题目</a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link border-top" href="{{route('admin.problem.update')}}">
                                 <i class="fa fa-edit" aria-hidden="true"></i> 修改题目</a>
-                        </li>
+                        </li> --}}
                         <li class="nav-item">
                             <a class="nav-link border-top" href="{{route('admin.problem.tags')}}">
                                 <i class="fa fa-tag" aria-hidden="true"></i> 标签管理</a>
@@ -285,6 +298,7 @@
                         </li>
                     </ul>
                 </li>
+
 
                 <li class="nav-item">
                     <a class="nav-link border-top" href="{{route('admin.settings')}}">

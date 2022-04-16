@@ -87,6 +87,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link text-nowrap p-2" href="{{route('groups')}}">
+                    <i class="fa fa-users" aria-hidden="true"></i>&nbsp;{{trans('main.Groups')}}</i>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-nowrap p-2" href="{{route('standings')}}">
                     <i class="fa fa-sort-amount-desc" aria-hidden="true">&nbsp;{{trans('main.Standings')}}</i>
                 </a>

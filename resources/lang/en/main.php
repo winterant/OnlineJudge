@@ -52,6 +52,10 @@ return [
     "Notification"  => "Notification",
     "Discussion"    => "Discussion",
     "Discussions"   => "Discussions",
+    "Group"         => "Group",
+    "Groups"        => "Groups",
+    "group"         => "group",
+    "groups"        => "groups",
 
 //    user
     "Confirm"       => "Confirm",

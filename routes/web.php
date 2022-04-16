@@ -28,6 +28,7 @@ Route::get('/problems', 'Client\ProblemController@problems')->name('problems');
 Route::get('/problem/{id}', 'Client\ProblemController@problem')->middleware('CheckBlacklist')->where(['id' => '[0-9]+'])->name('problem');
 Route::get('/contests', 'Client\ContestController@contests')->name('contests');
 Route::get('/contests/{cate}', 'Client\ContestController@contests')->name('contests');
+Route::get('/groups', 'Client\GroupController@groups')->name('groups');
 Route::get('/standings', 'Client\UserController@standings')->name('standings');
 Route::get('/user/{username}', 'Client\UserController@user')->name('user');
 Route::get('/change_language/{lang}', 'Client\UserController@change_language')->name('change_language');
@@ -129,7 +130,7 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
     //   manage problem editor
     Route::middleware(['Privilege:admin.problem.edit'])->prefix('problem')->name('problem.')->group(function () {
         Route::any('/add', 'Admin\ProblemController@add')->name('add');
-        Route::get('/update', 'Admin\ProblemController@update')->name('update');
+        // Route::get('/update', 'Admin\ProblemController@update')->name('update');
         Route::any('/update/{id}', 'Admin\ProblemController@update')->name('update_withId');
         Route::post('/update/hidden', 'Admin\ProblemController@update_hidden')->name('update_hidden');
         Route::get('/get_spj/{pid}', 'Admin\ProblemController@get_spj')->name('get_spj');
@@ -184,6 +185,12 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
             Route::post('/update_cate_order', 'Admin\ContestController@update_cate_order')->name('update_cate_order');
             Route::post('/delete_cate/{id}', 'Admin\ContestController@delete_cate')->name('delete_cate');
         });
+    });
+
+    // manage group
+    Route::middleware(['Privilege:admin.home'])->prefix('group')->name('group.')->group(function () {
+        Route::get('/list', 'Admin\GroupController@list')->name('list');
+        // todo
     });
 
     //    setting

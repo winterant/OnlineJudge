@@ -105,7 +105,8 @@ class UserController extends Controller
                     'email'=>isset($email[$i])?$email[$i]:'',
                     'school'=>isset($school[$i])?$school[$i]:'',
                     'class'=>isset($class[$i])?$class[$i]:'',
-                    'created_at'=>date('Y-m-d H:i:s')
+                    'created_at'=>date('Y-m-d H:i:s'),
+                    'updated_at'=>date('Y-m-d H:i:s')
                 ];
                 DB::table('users')->updateOrInsert(['username'=>$username],$user);
                 $user['password']=$password;
