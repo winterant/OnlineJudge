@@ -30,7 +30,7 @@
         {{--            </ul>--}}
         {{--        </div>--}}
 
-        <div class="tabbable mb-3">
+        <div class="tabbable">
             <ul class="nav nav-tabs border-bottom">
                 @foreach($categories as $cate)
                     <li class="nav-item">
@@ -40,15 +40,22 @@
                     </li>
                 @endforeach
             </ul>
-            <ul class="nav nav-tabs border-bottom border-left ml-5">
+            {{-- <ul class="nav nav-tabs ml-3">
                 @foreach($sons as $cate)
                     <li class="nav-item">
-                        <a class="nav-link text-center py-3" href="{{route('contests',$cate->id)}}">
+                        <a class="nav-link text-center" href="{{route('contests',$cate->id)}}">
                             {{ucfirst($cate->title)}}
                         </a>
                     </li>
                 @endforeach
-            </ul>
+            </ul> --}}
+            <div class="btn-group ml-5">
+                @foreach($sons as $cate)        
+                    <a class="btn btn-secondary" href="{{route('contests',$cate->id)}}">
+                        {{ucfirst($cate->title)}}
+                    </a>
+                @endforeach
+            </div>
         </div>
 
 
@@ -186,6 +193,13 @@
             $("ul.nav-tabs").find("a").each(function () {
                 const parent_cate_uri = uri.substr(0, uri.lastIndexOf('/')) + '/{{$current_cate->parent_id}}'
                 if ($(this).attr("href").split('?')[0].endsWith(parent_cate_uri)) {
+                    $(this).addClass("active");
+                }
+            });
+
+            //二级菜单栏
+            $(".btn-group").find("a").each(function () {
+                if ($(this).attr("href").split('?')[0].endsWith(uri)) {
                     $(this).addClass("active");
                 }
             });

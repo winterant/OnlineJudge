@@ -16,7 +16,6 @@ return [
     "admin.notice.update" => "修改公告",
     "admin.notice.delete" => "删除公告",
     "admin.notice.update_state" => "公开或隐藏公告",
-
     "admin.user.list" => "查看用户列表",
     "admin.user.privileges" => "查看权限分配表",
     "admin.user.create" => "创建用户",

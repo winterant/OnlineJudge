@@ -8,6 +8,7 @@ return [
     "Test Data"     => "测试数据",
     "Judger"        => "判题机",
     "Succeeded"     => "成功",
+    "Success"       => "Success",
     "Failed"        => "失败",
     "Type"          => "类型",
     "Reason"        => "原因",

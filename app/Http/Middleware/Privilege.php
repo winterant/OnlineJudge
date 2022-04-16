@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -16,9 +15,11 @@ class Privilege
      * @param $role
      * @return mixed
      */
-    public function handle($request, Closure $next, $role)
+    public function handle($request, $next, $role)
     {
-        if (!privilege(Auth::user(), $role)) {
+        if (!privilege(Auth::user(), $role))
+        // if (!privilege(Auth::user(), $request->route()->getName()))  // todo
+        {
             if (
                 strpos($request->getRequestUri(), '/admin') == 0
                 && DB::table('privileges')->where('user_id', Auth::id())->limit(1)->exists()

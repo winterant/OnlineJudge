@@ -1,3 +1,18 @@
+
+
+{{-- 没有设置昵称的用户，提示设置昵称 --}}
+@if(Auth::check() && Auth::user()->nick==null)
+    <div class="my-container alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            &times;
+        </button>
+        <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
+        {{trans('sentence.Complete Profile')}}
+        <a href="{{route('user_edit',Auth::user()->username)}}">{{trans('main.Confirm')}}</a>
+    </div>
+@endif
+
+
 <div class="my-container bg-white">
 
     <h5>{{trans('main.Contest')}} {{trans('main.Information')}}</h5>
