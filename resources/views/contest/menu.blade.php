@@ -16,6 +16,10 @@
             <li class="mx-2">
                 <a href="{{route('contests', $menu_cate->id)}}">{{$menu_cate->title}}</a>
             </li>
+                /
+            <li class="mx-2 active">
+                <span>{{$contest->title}}</span>
+            </li>
         </ul>
         {{-- 每场竞赛的导航栏 --}}
         <div class="tabbable border-bottom ml-2">
