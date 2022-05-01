@@ -31,19 +31,19 @@
                     <tbody>
                         <tr>
                             <td class="border-top-0 text-left">{{__('main.Opened Problems')}}</td>
-                            <td class="border-top-0">{{$opened}}</td>
+                            <td class="border-top-0">{{count($problem_submitted)}}</td>
                         </tr>
                         <tr>
                             <td class="border-top-0 text-left">{{__('main.Submissions')}}</td>
-                            <td class="border-top-0">{{$submissions}}</td>
+                            <td class="border-top-0">{{array_sum($problem_submitted)}}</td>
                         </tr>
                         <tr>
                             <td class="border-top-0 text-left">{{__('main.Accepted')}}</td>
-                            <td class="border-top-0">{{$results[4]}}</td>
+                            <td class="border-top-0">{{array_sum($problem_ac)}}</td>
                         </tr>
                         <tr>
                             <td class="border-top-0 text-left">{{__('main.Solved')}}</td>
-                            <td class="border-top-0">{{$solved}}</td>
+                            <td class="border-top-0">{{count($problem_ac)}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -52,10 +52,10 @@
             <div>
                 <h6 class="text-center">{{__('main.Attempting')}} {{__('main.Problems')}}</h6>
                 <div>
-                    @foreach($submit as $item)
-                        @if($item->ac==0)
-                            <a href="{{route('problem',$item->problem_id)}}">{{$item->problem_id}}</a>
-                            <font class="text-danger" style="font-size: 0.7rem">{{$item->ac}}/{{$item->sum}}</font>
+                    @foreach($problem_submitted as $i=>$c)
+                        @if(!isset($problem_ac[$i]))
+                            <a href="{{route('problem', $i)}}">{{$i}}</a>
+                            <span class="text-danger" style="font-size: 0.7rem">0/{{$c}}</span>
                         @endif
                     @endforeach
                 </div>
@@ -64,11 +64,9 @@
             <div>
                 <h6 class="text-center">{{__('main.Solved')}} {{__('main.Problems')}}</h6>
                 <div>
-                    @foreach($submit as $item)
-                        @if($item->ac)
-                            <a href="{{route('problem',$item->problem_id)}}">{{$item->problem_id}}</a>
-                            <font class="text-danger" style="font-size: 0.7rem">{{$item->ac}}/{{$item->sum}}</font>
-                        @endif
+                    @foreach($problem_ac as $i=>$c)
+                        <a href="{{route('problem',$i)}}">{{$i}}</a>
+                        <span class="text-danger" style="font-size: 0.7rem">{{$c}}/{{$problem_submitted[$i]}}</span>
                     @endforeach
                 </div>
             </div>

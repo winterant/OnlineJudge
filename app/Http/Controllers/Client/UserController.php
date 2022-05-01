@@ -19,46 +19,18 @@ class UserController extends Controller
         if ($user == null)
             return view('client.fail', ['msg' => trans('sentence.User not found', ['un' => $username])]);
 
-        $opened = DB::table('solutions')
-            ->leftJoin('users', 'user_id', '=', 'users.id')
-            ->where('username', $username)
-            ->distinct()
-            ->count('problem_id');
-
         $submissions = DB::table('solutions')
-            ->leftJoin('users', 'user_id', '=', 'users.id')
-            ->where('username', $username)
-            ->count();
-
-        $group_results = DB::table('solutions')
-            ->leftJoin('users', 'user_id', '=', 'users.id')
-            ->where('username', $username)
-            ->select('result', DB::raw('COUNT(*) as num'))
-            ->groupBy('result')
+            ->where('user_id', $user->id)
             ->get();
-        $results = [4 => 0];
-        foreach ($group_results as $item)
-            $results[$item->result] = $item->num;
-
-        $solved = DB::table('solutions')
-            ->leftJoin('users', 'user_id', '=', 'users.id')
-            ->where('username', $username)
-            ->where('result', 4)
-            ->distinct()
-            ->count('problem_id');
-
-        $submit = DB::table('solutions as A')
-            ->leftJoin('users', 'user_id', '=', 'users.id')
-            ->select(
-                'problem_id',
-                //此处查询AC数目，效率较低
-                DB::raw('(select count(*) from solutions join users on user_id=users.id
-                    where username=\'' . $username . '\' and problem_id=A.problem_id and result=4) as ac'),
-                DB::raw('COUNT(*) as sum')
-            )
-            ->where('username', $username)
-            ->groupBy('problem_id')
-            ->get();
+        $results=[]; // 按提交结果统计
+        $problem_submitted=[]; // 每个题目的提交次数
+        $problem_ac=[]; // 每个题目的ac次数
+        foreach($submissions as $item){
+            $results[$item->result] = (isset($results[$item->result]) ? $results[$item->result] : 0) + 1;
+            $problem_submitted[$item->problem_id] = (isset($problem_submitted[$item->problem_id]) ? $problem_submitted[$item->problem_id] : 0) + 1;
+            if($item->result==4)
+                $problem_ac[$item->problem_id] = (isset($problem_ac[$item->problem_id]) ? $problem_ac[$item->problem_id] : 0) + 1;
+        }
 
         if (!Auth::user() && !get_setting('display_complete_userinfo')) {
             //对访客隐藏部分信息
@@ -67,7 +39,7 @@ class UserController extends Controller
             $user->class = '****';
             $user->nick = '***';
         }
-        return view('auth.user', compact('user', 'opened', 'submissions', 'results', 'solved', 'submit'));
+        return view('auth.user', compact('user', 'result', 'problem_submitted', 'problem_ac'));
     }
 
     public function user_edit(Request $request, $username)
