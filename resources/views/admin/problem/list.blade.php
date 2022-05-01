@@ -92,8 +92,8 @@
                                 switchs_hidden[{{$item->id}}]=s
                             })
                         </script>
-                        <a href="javascript:" onclick="update_hidden('{{1-$item->hidden}}',{{$item->id}});"
-                            class="px-1" title="点击切换">{{$item->hidden?'**隐藏**':'公开'}}</a>
+                        {{-- <a href="javascript:" onclick="update_hidden('{{1-$item->hidden}}',{{$item->id}});"
+                            class="px-1" title="点击切换">{{$item->hidden?'**隐藏**':'公开'}}</a> --}}
                     </td>
                     <td nowrap>
                         <a href="{{route('admin.problem.update_withId',$item->id)}}" target="_blank" class="px-1"
