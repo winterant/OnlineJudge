@@ -33,7 +33,7 @@ class CheckBlacklist
             
             if(Auth::user()->locked && Auth::user()->username!='admin')
             {
-                $msg = '您的账号已被锁定，无法继续使用。如需继续使用，请练习管理员解锁。';
+                $msg = '您的账号已被锁定，无法继续使用。如需继续使用，请联系管理员解锁。';
                 return response()->view('client.fail', ['msg'=>$msg]);
             }
         }

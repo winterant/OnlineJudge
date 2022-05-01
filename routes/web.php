@@ -67,6 +67,7 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->wher
         Route::get('/status', 'Client\ContestController@status')->name('status');
         Route::get('/notices', 'Client\ContestController@notices')->name('notices'); //公告
         Route::post('/get_notice', 'Client\ContestController@get_notice')->name('get_notice'); //获取一条公告
+        Route::get('/private_rank', 'Client\ContestController@rank')->name('private_rank'); // 私有榜单
 
         Route::middleware(['Privilege:admin.contest'])->group(function () {
             Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->name('cancel_lock'); //取消封榜
@@ -175,6 +176,7 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
         Route::post('/delete', 'Admin\ContestController@delete')->name('delete');
         Route::post('/delete/file/{id}', 'Admin\ContestController@delete_file')->name('delete_file');
         Route::post('/update/hidden', 'Admin\ContestController@update_hidden')->name('update_hidden');
+        Route::post('/update/public_rank', 'Admin\ContestController@update_public_rank')->name('update_public_rank');
         Route::post('/clone', 'Admin\ContestController@clone')->name('clone');
         // Route::post('/set_top','Admin\ContestController@set_top')->name('set_top');
         Route::post('/update_order', 'Admin\ContestController@update_order')->name('update_order');

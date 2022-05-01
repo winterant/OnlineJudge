@@ -56,15 +56,24 @@
     </form>
     <div class="float-left">
         {{$contests->appends($_GET)->links()}}
-        <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
-        <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
+        <a href="javascript:$('.cb input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
+        <a href="javascript:$('.cb input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
 
-        <a href="javascript:" onclick="update_hidden(0)" class="ml-3">设为公开</a>
+        &nbsp;公开榜单:[
+        <a href="javascript:" onclick="update_public_rank(1)">公开</a>
+        |
+        <a href="javascript:" onclick="update_public_rank(0)">隐藏</a>
+        ]
+
+        &nbsp;前台可见性:[
+        <a href="javascript:" onclick="update_hidden(0)">公开</a>
+        |
+        <a href="javascript:" onclick="update_hidden(1)">隐藏</a>
+        ]
         <a href="javascript:" class="text-gray"
-           onclick="whatisthis('选中的竞赛将被公开，即前台竞赛页面可以看到；隐藏反之')">
+           onclick="whatisthis('普通用户是否可以在前台竞赛页面看到该竞赛.')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
-        <a href="javascript:" onclick="update_hidden(1)" class="ml-3">设为隐藏</a>
         <a href="javascript:" onclick="delete_contest()" class="ml-3">批量删除</a>
     </div>
     <div class="table-responsive">
@@ -78,19 +87,25 @@
                 <th>赛制</th>
                 <th>开始时间</th>
                 <th>结束时间</th>
-                <th>封榜比例
-                    <a href="javascript:" style="color: #838383"
-                       onclick="whatisthis('数值范围0~1<br>比赛时长*封榜比例=比赛封榜时间。<br>如：时长5小时，比例0.2，则第4小时开始榜单不更新。<br><br>值为0表示不封榜。<br>管理员不受影响')">
-                        <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-                    </a>
-                </th>
                 <th>参赛权限
                     <a href="javascript:" style="color: #838383"
                        onclick="whatisthis('public：任意用户可参加。<br>password：输入密码正确者可参加。<br>private：后台规定的用户可参加')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                 </th>
-                <th>隐藏</th>
+                <th>封榜比例
+                    <a href="javascript:" style="color: #838383"
+                       onclick="whatisthis('数值范围0~1<br>比赛时长*封榜比例=比赛封榜时间。<br>如：时长5小时，比例0.2，则第4小时开始榜单不更新。<br><br>值为0表示不封榜。<br>管理员不受影响')">
+                        <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                    </a>
+                </th>
+                <th>公开榜单
+                    <a href="javascript:" style="color: #838383"
+                       onclick="whatisthis('是否允许任意访客查看榜单。如果关闭此项，则只有参赛选手和管理员可以查看榜单')">
+                        <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                    </a>
+                </th>
+                <th>前台可见</th>
                 <th>创建人</th>
                 <th>操作</th>
             </tr>
@@ -98,7 +113,7 @@
             <tbody>
             @foreach($contests as $item)
                 <tr>
-                    <td onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
+                    <td class="cb" onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
                         <input type="checkbox" value="{{$item->id}}" onclick="window.event.stopPropagation();" style="vertical-align:middle;zoom: 140%">
                     </td>
                     <td>{{$item->id}}</td>
@@ -121,12 +136,43 @@
                     <td nowrap>{{$item->judge_type}}</td>
                     <td nowrap>{{$item->start_time}}</td>
                     <td nowrap>{{$item->end_time}}</td>
-                    <td nowrap>{{$item->lock_rate}}</td>
                     <td nowrap>{{$item->access}}</td>
+                    <td nowrap>{{$item->lock_rate}}</td>
                     <td nowrap>
-                        <a href="javascript:" title="点击切换" onclick="update_hidden('{{1-$item->hidden}}',{{$item->id}})">
-                            {{$item->hidden?"**隐藏**":"公开"}}
-                        </a>
+                        {{-- {{$item->public_rank}} --}}
+                        <input id="switch_prank{{$item->id}}" type="checkbox">
+                        <script type="text/javascript">
+                            // 初始化开关
+                            $(function (){
+                                var s = new Switch($("#switch_prank{{$item->id}}")[0], {
+                                    size: 'small',
+                                    checked: "{{$item->public_rank}}"=="1",
+                                    onChange:function () {
+                                        if(!lock_single_call)
+                                            update_public_rank(this.getChecked()?1:0, "{{$item->id}}")
+                                    }
+                                });
+                                switchs_prank[{{$item->id}}]=s
+                            })
+                        </script>
+                    </td>
+                    <td nowrap>
+                        {{-- {{$item->hidden}} --}}
+                        <input id="switch_hidden{{$item->id}}" type="checkbox">
+                        <script type="text/javascript">
+                            // 初始化开关
+                            $(function (){
+                                var s = new Switch($("#switch_hidden{{$item->id}}")[0], {
+                                    size: 'small',
+                                    checked: "{{$item->hidden}}"=="0",
+                                    onChange:function () {
+                                        if(!lock_single_call)
+                                            update_hidden(this.getChecked()?0:1, "{{$item->id}}")
+                                    }
+                                });
+                                switchs_hidden[{{$item->id}}]=s
+                            })
+                        </script>
                     </td>
                     <td nowrap>{{$item->username}}</td>
                     <td nowrap>
@@ -161,14 +207,14 @@
     <script type="text/javascript">
         function delete_contest(id = -1) {
             Notiflix.Confirm.Show('敏感操作', '确定删除该竞赛?无法找回', '确认', '取消', function () {
-                if (id !== -1) {  ///单独删除一个
-                    $('td input[type=checkbox]').prop('checked', false)
-                    $('td input[value=' + id + ']').prop('checked', true)
-                }
                 var cids = [];
-                $('td input[type=checkbox]:checked').each(function () {
-                    cids.push($(this).val());
-                });
+                if (id !== -1) {  ///单独删除一个
+                    cids=[id]
+                }else{
+                    $('.cb input[type=checkbox]:checked').each(function () {
+                        cids.push($(this).val());
+                    });
+                }
                 $.post(
                     '{{route('admin.contest.delete')}}',
                     {
@@ -191,7 +237,6 @@
                 );
             });
         }
-
 
         function clone_contest(cid) {
             Notiflix.Confirm.Show('克隆竞赛', '您即将克隆这场比赛，是否继续？', '继续', '取消', function () {
@@ -221,16 +266,26 @@
             });
         }
 
+
+
+        var lock_single_call=false
+        var switchs_hidden={}
+        var switchs_prank={}
         function update_hidden(hidden, id = -1) {
-            if (id !== -1) {  ///单独一个
-                $('td input[type=checkbox]').prop('checked', false)
-                $('td input[value=' + id + ']').prop('checked', true)
-            }
-            // 修改竞赛状态 1公开 or 0隐藏
             var cids = [];
-            $('td input[type=checkbox]:checked').each(function () {
-                cids.push($(this).val());
-            });
+            if (id != -1) {  ///单独一个
+                cids=[id]
+            }else{
+                lock_single_call=true
+                $('.cb input[type=checkbox]:checked').each(function () {
+                    cids.push($(this).val());
+                    if(hidden)
+                        switchs_hidden[$(this).val()].off()
+                    else
+                        switchs_hidden[$(this).val()].on()
+                });
+                lock_single_call=false
+            }
             $.post(
                 '{{route('admin.contest.update_hidden')}}',
                 {
@@ -239,15 +294,44 @@
                     'hidden': hidden,
                 },
                 function (ret) {
-                    if (id === -1) {
-                        Notiflix.Report.Success('修改成功', ret + '条数据已更新', 'confirm', function () {
-                            location.reload();
-                        });
+                    if (id == -1) {
+                        Notiflix.Notify.Success('修改成功');
                     } else {
                         if (ret > 0) {
-                            Notiflix.Report.Success('修改成功', '该场竞赛已更新', 'confirm', function () {
-                                location.reload();
-                            });
+                            Notiflix.Notify.Success('修改成功');
+                        } else Notiflix.Report.Failure('修改失败', '没有可以更新的数据或权限不足', 'confirm')
+                    }
+                }
+            );
+        }
+        function update_public_rank(public_rank, id = -1) {
+            var cids = [];
+            if (id != -1) {
+                cids=[id]
+            }else{
+                lock_single_call=true
+                $('.cb input[type=checkbox]:checked').each(function () {
+                    cids.push($(this).val());
+                    if(public_rank)
+                        switchs_prank[$(this).val()].on()
+                    else
+                        switchs_prank[$(this).val()].off()
+                });
+                lock_single_call=false
+            }
+            $.post(
+                '{{route('admin.contest.update_public_rank')}}',
+                {
+                    '_token': '{{csrf_token()}}',
+                    'cids': cids,
+                    'public_rank': public_rank,
+                },
+                function (ret) {
+                    if (id == -1) {
+                        Notiflix.Notify.Success('修改成功');
+                    } else {
+                        if (ret > 0) {
+                            Notiflix.Notify.Success('修改成功');
                         } else Notiflix.Report.Failure('修改失败', '没有可以更新的数据或权限不足', 'confirm')
                     }
                 }

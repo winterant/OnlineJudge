@@ -211,13 +211,13 @@
                 </div>
 
 
-                <div class="form-inline">
-                    <font>榜单规则：</font>
-                    <div class="custom-control custom-radio ml-3">
+                <div class="form-inline mb-3">
+                    <font>判题规则：</font>
+                    <div class="custom-control custom-radio ml-2">
                         <input type="radio" name="contest[judge_type]" value="acm" class="custom-control-input" id="acmicpc" checked>
                         <label class="custom-control-label pt-1" for="acmicpc">ACM-ICPC程序设计竞赛</label>
                     </div>
-                    <div class="custom-control custom-radio mx-3">
+                    <div class="custom-control custom-radio mx-4">
                         <input type="radio" name="contest[judge_type]" value="oi" class="custom-control-input" id="oixinxi"
                                @if(isset($contest)&&$contest->judge_type=='oi')checked @endif>
                         <label class="custom-control-label pt-1" for="oixinxi">OI信息学竞赛</label>
@@ -225,6 +225,22 @@
                     <a href="javascript:" style="color: #838383"
                        onclick="whatisthis('ACM赛制：<br>对于每题，通过时间累加为罚时，通过前的每次错误提交罚时20分钟；<br><br>' +
                             'oi赛制：<br>对于每题，满分100分，错误提交没有惩罚；<br>你也可以自定义每题的分数')">
+                        <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <div class="form-inline mb-3">
+                    <div class="pull-left">公开榜单：</div>
+
+                    <div class="custom-control custom-checkbox mx-2">
+                        <input type="checkbox" name="contest[public_rank]"
+                            class="custom-control-input" id="public_rank"
+                            @if(isset($contest->public_rank) && $contest->public_rank)checked @endif>
+                        <label class="custom-control-label pt-1" for="public_rank">允许任意访客查看榜单</label>
+                    </div>
+
+                    <a href="javascript:" class="text-gray"
+                        onclick="whatisthis('若勾选此项，任意访客（含未登录用户）都可以查看该榜单；否则仅参赛选手和管理员可查看！')">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                 </div>

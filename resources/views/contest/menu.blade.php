@@ -32,7 +32,10 @@
                     <a class="nav-link py-3" href="{{route('contest.status',$contest->id)}}">{{trans('main.Status')}}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-nowrap py-3" href="{{route('contest.rank',$contest->id)}}">{{trans('main.Rank')}} [ {{$contest->judge_type}} ]</a>
+                    <a class="nav-link text-nowrap py-3"
+                        href="{{$contest->public_rank ? route('contest.rank',$contest->id):route('contest.private_rank',$contest->id)}}">
+                        {{trans('main.Rank')}} [ {{$contest->judge_type}} ]
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link py-3" href="{{route('contest.notices',$contest->id)}}">

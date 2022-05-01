@@ -57,7 +57,7 @@
             <a href="javascript:update_locked(0);">解锁</a>
             ]
             
-            <a href="javascript:" onclick="delete_user()" class="ml-3">删除</a>
+            <a href="javascript:" onclick="delete_user()" class="ml-3">批量删除</a>
         </div>
         <div class="table-responsive">
             <table class="table table-striped table-hover table-sm">

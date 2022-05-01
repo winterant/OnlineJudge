@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
@@ -120,7 +121,7 @@ class ContestController extends Controller
     {
         $contest = DB::table('contests')
             ->select([
-                'id', 'judge_instantly', 'judge_type', 'title', 'start_time', 'end_time', 'access', 'description', 'cate_id',
+                '*',
                 DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")
             ])->find($id);
         if(!$contest)
@@ -345,6 +346,13 @@ class ContestController extends Controller
 
     public function rank($id)
     {
+        $contest = DB::table('contests')->find($id);
+
+        // 首先判断榜单的可访问性。如果榜单未公开，则只允许参赛选手和管理员查看
+        if(!$contest->public_rank && Route::currentRouteName()=='contest.rank')
+        {
+            return redirect(route('contest.private_rank', $id));
+        }
 
         //查看Cookie是否保存了全屏显示的标记
         if (get_setting('web_page_display_wide')) //管理员启用了宽屏模式，这里用户启用全屏无效
@@ -354,7 +362,6 @@ class ContestController extends Controller
         else if (isset($_GET['big']))
             Cookie::queue('rank_table_lg', $_GET['big']); //保存榜单是否全屏
 
-        $contest = DB::table('contests')->find($id);
         //对于隐藏的竞赛，普通用户不能查看榜单
         if ($contest->hidden && (!Auth::check() || !privilege(Auth::user(), 'admin.contest'))) {
             return view('client.fail', ['msg' => '竞赛不存在或权限不足！']);

@@ -109,6 +109,7 @@ class ContestController extends Controller
             if ($contest['access'] != 'password') unset($contest['password']);
 
             //数据库
+            $contest['public_rank'] = isset($contest['public_rank']) ? 1 : 0; // 公开榜单
             DB::table('contests')->where('id', $id)->update($contest);
             DB::table('contest_problems')->where('contest_id', $id)->delete();//舍弃原来的题目
             foreach ($pids as $i => $pid) {
@@ -215,6 +216,17 @@ class ContestController extends Controller
             return DB::table('contests')->whereIn('id', $cids)->update(['hidden' => $hidden]);
         return DB::table('contests')->whereIn('id', $cids)
             ->where('user_id', Auth::id())->update(['hidden' => $hidden]);
+    }
+
+    // 修改榜单的可见性
+    public function update_public_rank(Request $request)
+    {
+        $cids = $request->input('cids') ?: [];
+        $public_rank = $request->input('public_rank');
+        if (privilege(Auth::user(), 'admin')) //超管，直接进行
+            return DB::table('contests')->whereIn('id', $cids)->update(['public_rank' => $public_rank]);
+        return DB::table('contests')->whereIn('id', $cids)
+            ->where('user_id', Auth::id())->update(['public_rank' => $public_rank]);
     }
 
 
