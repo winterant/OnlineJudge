@@ -93,7 +93,7 @@
                                             </select>
                                         </div>
                                     </th>
-                                    <th nowrap>{{__('main.Submited Time')}}</th>
+                                    <th nowrap>{{__('main.Submission Time')}}</th>
                                     <th nowrap>
                                         @if(privilege(Auth::user(), 'teacher'))
                                             <div class="form-group m-0 p-0 bmd-form-group">

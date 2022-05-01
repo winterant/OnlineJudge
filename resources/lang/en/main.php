@@ -134,7 +134,7 @@ return [
     "Memory Limit"  => "Memory Limit",
     "Special Judge" => "Special Judge",
     "Submit"        => "Submit",
-    "Submited"      => "Submited",
+    "Submitted"      => "Submitted",
     "Submission Time"=> "Submission Time",
     "Judge Time"    => "Judge Time",
     "Code Length"   => "Code Length",
