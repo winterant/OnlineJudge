@@ -33,39 +33,18 @@
     </form>
     <div class="float-left">
         {{$problems->appends($_GET)->links()}}
-        <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
-        <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
+        <a href="javascript:$('.cb input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
+        <a href="javascript:$('.cb input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
 
-        <a href="javascript:update_hidden(0);" class="ml-3">公开</a>
-        <a href="javascript:" class="text-gray" onclick="whatisthis('选中的题目将被公开，允许普通用户在题库中查看和提交!')">
-            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-        </a>
-
-        <a href="javascript:update_hidden(1);" class="ml-3">隐藏</a>
-        <a href="javascript:" class="text-gray" onclick="whatisthis('选中的题目将被隐藏，普通用户无法在题库中查看和提交，但不会影响竞赛!')">
+        &nbsp;前台可见:[
+        <a href="javascript:update_hidden(0);">公开</a>
+        |
+        <a href="javascript:update_hidden(1);">隐藏</a>
+        ]
+        <a href="javascript:" class="text-gray" onclick="whatisthis('若选择公开，则任意用户可以在前台题库看到题目；若隐藏，普通用户无法在题库中查看和提交。但不会影响竞赛!')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
         </a>
     </div>
-{{--        <a href="javascript:" class="ml-3">删除</a>--}}
-{{--        <a href="javascript:" class="text-gray" onclick="whatisthis('删除选中的题目，删除后对应题号将空缺！')">--}}
-{{--            <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
-{{--        </a>--}}
-
-{{--        <a href="javascript:" class="ml-3">删除并补位</a>--}}
-{{--        <a href="javascript:" class="text-gray" onclick="whatisthis('删除选中的题目，后面的题目将自动向前移动以填充空缺的题号！')">--}}
-{{--            <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
-{{--        </a>--}}
-
-{{--        <a href="javascript:" class="ml-3">自动补位</a>--}}
-{{--        <a href="javascript:" class="text-gray" onclick="whatisthis('若有空缺题号，则自动将后面的题号向前移动以填充空缺题号。<br>' +--}}
-{{--            '如1001题被删除，则1002将变为1001题，1003题将变为1002题...以此类推！')">--}}
-{{--            <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
-{{--        </a>--}}
-
-{{--        <a href="javascript:" class="ml-3">转移至___之后</a>--}}
-{{--        <a href="javascript:" class="text-gray" onclick="whatisthis('选中的题目将被插入到对应题号之后！')">--}}
-{{--            <i class="fa fa-question-circle-o" aria-hidden="true"></i>--}}
-{{--        </a>--}}
     <div class="table-responsive">
         <table class="table table-striped table-hover table-sm">
             <thead>
@@ -76,7 +55,7 @@
                 <th>类型</th>
                 <th>出处</th>
                 <th>特判</th>
-                <th>解决/提交</th>
+                <th>解决/AC/提交</th>
                 <th>创建时间</th>
                 <th>创建人</th>
                 <th>当前状态</th>
@@ -86,7 +65,7 @@
             <tbody>
             @foreach($problems as $item)
                 <tr>
-                    <td onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
+                    <td class="cb" onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
                         <input type="checkbox" value="{{$item->id}}" onclick="window.event.stopPropagation();" style="vertical-align:middle;zoom: 140%">
                     </td>
                     <td nowrap>{{$item->id}}</td>
@@ -94,10 +73,25 @@
                     <td nowrap>{{$item->type?'代码填空':'编程'}}</td>
                     <td nowrap>{{$item->source}}</td>
                     <td nowrap>{{$item->spj?'特判':'否'}}</td>
-                    <td nowrap>{{$item->solved}} / {{$item->submit}}</td>
+                    <td nowrap>{{$item->solved}} / {{$item->accepted}} / {{$item->submitted}}</td>
                     <td nowrap>{{$item->created_at}}</td>
                     <td><a @if($item->creator)href="{{route('user',$item->creator)}}"@endif target="_blank">{{$item->creator}}</a></td>
                     <td nowrap>
+                        <input id="switch_hidden{{$item->id}}" type="checkbox">
+                        <script type="text/javascript">
+                            // 初始化开关
+                            $(function (){
+                                var s = new Switch($("#switch_hidden{{$item->id}}")[0], {
+                                    size: 'small',
+                                    checked: "{{$item->hidden}}"=="0",
+                                    onChange:function () {
+                                        if(!lock_single_call)
+                                            update_hidden(this.getChecked()?0:1, "{{$item->id}}")
+                                    }
+                                });
+                                switchs_hidden[{{$item->id}}]=s
+                            })
+                        </script>
                         <a href="javascript:" onclick="update_hidden('{{1-$item->hidden}}',{{$item->id}});"
                             class="px-1" title="点击切换">{{$item->hidden?'**隐藏**':'公开'}}</a>
                     </td>
@@ -117,14 +111,23 @@
         {{$problems->appends($_GET)->links()}}
     </div>
     <script>
+        var switchs_hidden={}
+        var lock_single_call=false
         function update_hidden(hidden,id=-1) {
-            if(id!==-1){  ///单独修改一个
-                $('td input[type=checkbox]').prop('checked',false)
-                $('td input[value='+id+']').prop('checked',true)
-            }
-            // 修改题目状态 1公开 or 0隐藏
             var pids=[];
-            $('td input[type=checkbox]:checked').each(function () { pids.push($(this).val()); });
+            if(id!==-1){
+                pids=[id]
+            }else{
+                lock_single_call=true
+                $('.cb input[type=checkbox]:checked').each(function () { 
+                    pids.push($(this).val());
+                    if(hidden)
+                        switchs_hidden[$(this).val()].off();
+                    else
+                        switchs_hidden[$(this).val()].on();
+                });
+                lock_single_call=false
+            }
             $.post(
                 '{{route('admin.problem.update_hidden')}}',
                 {
@@ -133,17 +136,10 @@
                     'hidden':hidden,
                 },
                 function (ret) {
-                    if(id===-1){
-                        Notiflix.Report.Init();
-                        Notiflix.Report.Success('操作成功','成功更新'+ret+'条数据！注意：非最高管理员只能修改自己创建的题目。','confirm',function () {
-                            location.reload();
-                        })
+                    if(ret>0) {
+                        Notiflix.Notify.Success('成功修改了'+ret+'条数据')
                     }else{
-                        if(ret==0) {
-                            Notiflix.Notify.Failure('只有最高管理员或该题目的创建者可以修改！')
-                            $('td input[type=checkbox]').prop('checked',false)
-                        }else
-                            location.reload();
+                        Notiflix.Notify.Failure('修改失败。没有可更改的项（只有最高管理员或该题目的创建者可以修改）。')
                     }
                 }
             );

@@ -30,8 +30,9 @@ class ProblemController extends Controller
                 'problems.created_at',
                 'hidden',
                 'username as creator',
-                DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
-                DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as  solved")
+                'problems.solved',
+                'problems.accepted',
+                'problems.submitted'
             )
             ->when(isset($_GET['pid']) && $_GET['pid'] != '', function ($q) {
                 return $q->where('problems.id', $_GET['pid']);
