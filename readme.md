@@ -91,18 +91,19 @@ bash ojup/install/ubuntu/update.sh
 
 # 💝 致谢
 
-[zhblue/hustoj](https://github.com/zhblue/hustoj)
-[judge0](https://judge0.com/)
-[sim](https://dickgrune.com/Programs/similarity_tester/)
-[laravel-6.0](https://laravel.com/)
-[bootstrap-material-design](https://fezvrasta.github.io/bootstrap-material-design/)
-[jquery-3.4.1](https://jquery.com/)
-[font-awesome](http://www.fontawesome.com.cn/)
-[ckeditor-5](https://ckeditor.com/ckeditor-5/)
-[MathJax](https://www.mathjax.org/)
-[zhiyul/switch](https://github.com/notiflix/Notiflix)
-[codemirror](https://codemirror.net/)
-[highlight.js](https://highlightjs.org/)
+[zhblue/hustoj](https://github.com/zhblue/hustoj)  
+[judge0](https://judge0.com/)  
+[sim](https://dickgrune.com/Programs/similarity_tester/)  
+[laravel-6.0](https://laravel.com/)  
+[bootstrap-material-design](https://fezvrasta.github.io/bootstrap-material-design/)  
+[jquery-3.4.1](https://jquery.com/)  
+[font-awesome](http://www.fontawesome.com.cn/)  
+[ckeditor-5](https://ckeditor.com/ckeditor-5/)  
+[MathJax](https://www.mathjax.org/)  
+[notiflix/Notiflix](https://github.com/notiflix/Notiflix)  
+[weatherstar/switch](https://github.com/weatherstar/switch)  
+[codemirror](https://codemirror.net/)  
+[highlight.js](https://highlightjs.org/)  
 
 # 📜 开源许可
 

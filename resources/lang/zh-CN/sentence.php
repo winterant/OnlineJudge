@@ -19,6 +19,7 @@ return [
     "Please login first"=> "请先登录!",
 
 //    user
+    "forbid_edit"       => "您现在没有权限修改以下信息.",
     "user_edit_chances" => "你还有 :i 次机会修改你的个人资料!",
     "User not found"    => "用户 :un 不存在!",
     "in_blacklist"      => "由于您的账号已被加入黑名单，无法显示该页面！",

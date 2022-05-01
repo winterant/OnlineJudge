@@ -36,7 +36,7 @@
                 <div class="col-6 col-sm-2">{{__('main.User').': '}}<a
                         href="{{route('user',$solution->username)}}">{{$solution->username}}</a></div>
                 <div class="col-6 col-sm-2">{{__('main.Judge Type').': '.$solution->judge_type}}</div>
-                <div class="col-12 col-sm-4">{{__('main.Submit Time').': '.$solution->submit_time}}</div>
+                <div class="col-12 col-sm-4">{{__('main.Submission Time').': '.$solution->submit_time}}</div>
 
                 <div class="col-6 col-sm-2">{{__('main.Time').': '.$solution->time}}MS</div>
                 <div class="col-6 col-sm-2">{{__('main.Memory').': '.round($solution->memory,2)}}MB</div>

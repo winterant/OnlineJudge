@@ -114,6 +114,7 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
         Route::any('/create', 'Admin\UserController@create')->name('create');
         Route::post('/delete', 'Admin\UserController@delete')->name('delete');
         Route::post('/update/revise', 'Admin\UserController@update_revise')->name('update_revise');
+        Route::post('/update/locked', 'Admin\UserController@update_locked')->name('update_locked');
         Route::post('/privilege/create', 'Admin\UserController@privilege_create')->name('privilege_create');
         Route::post('/privilege/delete', 'Admin\UserController@privilege_delete')->name('privilege_delete');
         Route::any('/reset_pwd', 'Admin\UserController@reset_pwd')->name('reset_pwd');

@@ -21,7 +21,7 @@
                         <th nowrap>学校</th>
                         <th nowrap>班级</th>
                         <th nowrap>邮箱</th>
-                        <th nowrap>资料变动次数</th>
+                        <th nowrap>是否允许修改个人资料</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,7 +63,7 @@
                     <p class="m-0">生成失败！</p>
                     <p class="m-0">对于您本次要生成的账号，系统检测到以下用户名已存在，您有两种解决方法：</p>
                     <p class="m-0">(1)：更改要创建的用户名，不再与已存在用户冲突</p>
-                    <p>(2)：取消本页最后的“检查重名用户”再提交，此方式将覆盖已存在的重名用户</p>
+                    <p>(2)：取消本页最后的“检查重名用户”之后，再提交，此方式将覆盖已存在的重名用户</p>
                     <p class="m-0">
                         重名用户：
                         @foreach(session('exist_users') as $item)
@@ -150,17 +150,17 @@
                     </div>
                 </div>
 
-
-                <div class="form-inline">
-                    <label>允许这些用户修改个人资料的次数：
-                        <input type="number" name="data[revise]" value="{{old('data.revise')?:0}}" required class="form-control" min="0">
+                <div class="custom-control custom-checkbox m-2">
+                    <input type="checkbox" name="data[revise]" @if(old('data.revise'))checked @endif class="custom-control-input" id="allow_user_modify">
+                    <label class="custom-control-label pt-1" for="allow_user_modify">
+                        允许用户修改个人资料；勾选此项，则计划生成的用户均可修改自己的个人资料；
                     </label>
                 </div>
 
                 <div class="custom-control custom-checkbox m-2">
                     <input type="checkbox" name="data[check_exist]" checked class="custom-control-input" id="customCheck">
                     <label class="custom-control-label pt-1" for="customCheck">
-                        检查重名用户； 若您不勾选此项，当生成的账号已存在时，将直接覆盖已存在用户
+                        检查重名用户；若计划生成的用户名在数据库中已存在，则撤销本次生成任务；
                     </label>
                 </div>
 

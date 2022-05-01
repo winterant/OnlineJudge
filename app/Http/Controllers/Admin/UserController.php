@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Session;
 class UserController extends Controller
 {
     public function list(Request $request){
-        $users=DB::table('users')->select(['id','username','email','nick','school','class','revise','created_at'])
+        $users=DB::table('users')->select(['id','username','email','nick','school','class','solved','accepted','submitted','revise','locked','created_at'])
             ->when(isset($_GET['username'])&&$_GET['username'],function ($q){return $q->where('username','like',$_GET['username'].'%');})
             ->when(isset($_GET['email'])&&$_GET['email'],function ($q){return $q->where('email','like',$_GET['email'].'%');})
             ->when(isset($_GET['nick'])&&$_GET['nick'],function ($q){return $q->where('nick','like',$_GET['nick'].'%');})
@@ -77,12 +77,23 @@ class UserController extends Controller
             set_time_limit(60);
             $data=$request->input('data');
 
+            $usernames=[];
             if($data['stu_id']!=null){
-                $usernames=explode(PHP_EOL,$data['stu_id']); //将要注册的账号名收集到$usernames中
+                $temp=explode(PHP_EOL,$data['stu_id']); //将要注册的账号名收集到$usernames中
+                foreach($temp as $u)
+                    if(strlen(trim($u))>0)
+                        $usernames[]=trim($u);
             }else{
-                for ($i=intval($data['begin']);$i<=intval($data['end']);$i++)
-                    $usernames[]=sprintf("%s%0".strlen($data['end'])."d", $data['prefix'],$i);
+                $data['prefix']=trim($data['prefix']);
+                if(intval($data['begin'])==intval($data['end'])) // 单个用户，则直接生成名字
+                    $usernames[]=$data['prefix'];
+                else
+                    for ($i=intval($data['begin']);$i<=intval($data['end']);$i++) // 多个用户，按顺序生成
+                        $usernames[]=sprintf("%s%03d", $data['prefix'], $i);
             }
+
+            if(count($usernames) > 1000)
+                return view('admin.fail',['msg'=>'每次生成的用户数量不能超过1000，请分批生成！']);
 
             if (isset($data['check_exist'])){
                 //设置了安全检查，发现已存在用户时，告诉管理员，而不是直接删除
@@ -100,7 +111,7 @@ class UserController extends Controller
                 $user=[
                     'username'=>trim($username),
                     'password'=>Hash::make($password),
-                    'revise'=>trim($data['revise']),
+                    'revise'=>trim($data['revise'] == 'on' ? 1 : 0),
                     'nick'=>isset($nick[$i])?$nick[$i]:'',
                     'email'=>isset($email[$i])?$email[$i]:'',
                     'school'=>isset($school[$i])?$school[$i]:'',
@@ -126,6 +137,15 @@ class UserController extends Controller
             $uids=$request->input('uids')?:[];
             $revise=$request->input('revise');
             return DB::table('users')->whereIn('id',$uids)->update(['revise'=>$revise]);
+        }
+        return 0;
+    }
+
+    public function update_locked(Request $request){
+        if($request->isMethod('post')){
+            $uids=$request->input('uids')?:[];
+            $locked=$request->input('locked');
+            return DB::table('users')->whereIn('id',$uids)->update(['locked'=>$locked]);
         }
         return 0;
     }
