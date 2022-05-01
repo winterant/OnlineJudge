@@ -86,9 +86,14 @@
                 <font>在竞赛的榜单中，显示用户的学校</font>
             </div>
             <div class="form-group">
+                <input id="rank_show_class" type="checkbox">
+                <input name="rank_show_class" value="{{get_setting('rank_show_class')?'true':'false'}}" type="text" hidden>
+                <font>在竞赛的榜单中，显示用户的班级</font>
+            </div>
+            <div class="form-group">
                 <input id="rank_show_nick" type="checkbox">
                 <input name="rank_show_nick" value="{{get_setting('rank_show_nick')?'true':'false'}}" type="text" hidden>
-                <font>在竞赛的榜单中，显示用户的名称</font>
+                <font>在竞赛的榜单中，显示用户的姓名</font>
             </div>
         </div>
     </form>
@@ -102,6 +107,7 @@
                 "display_complete_standings",
                 "guest_see_problem",
                 "rank_show_school",
+                "rank_show_class",
                 "rank_show_nick",
             ])
             @foreach($btns as $name)

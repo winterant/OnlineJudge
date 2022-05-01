@@ -95,6 +95,13 @@
                                                    name="school" value="{{isset($_GET['school'])?$_GET['school']:''}}">
                                         </th>
                                     @endif
+                                    @if(get_setting('rank_show_class'))
+                                        <th width="5%" class="text-center">
+                                            <input type="text" class="form-control" placeholder="{{trans('main.Class')}}"
+                                                   style="height: auto;font-size: 0.9rem"
+                                                   name="class" value="{{isset($_GET['class'])?$_GET['class']:''}}">
+                                        </th>
+                                    @endif
                                     @if(get_setting('rank_show_nick'))
                                         <th width="5%" class="text-center">
                                             <input type="text" class="form-control" placeholder="{{trans('main.Name')}}"
@@ -130,6 +137,7 @@
                                         </td>
                                         <td nowrap><a href="{{route('user',$user['username'])}}">{{$user['username']}}</a></td>
                                         @if(get_setting('rank_show_school'))<td nowrap>{{$user['school']}}</td> @endif
+                                        @if(get_setting('rank_show_class'))<td nowrap>{{$user['class']}}</td> @endif
                                         @if(get_setting('rank_show_nick'))<td nowrap>{{$user['nick']}}</td> @endif
                                         <td class="text-center">{{$user['score']}}</td>
                                         <td class="text-center">{{$user['penalty']}}</td>

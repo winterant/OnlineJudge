@@ -15,6 +15,7 @@ return [
 	"guest_see_problem"	        => true,    //允许访客浏览题目内容
 
 	"rank_show_school"	        => false,   //榜单显示学校
+	"rank_show_class"			=> false,   //榜单显示班级
 	"rank_show_nick"	        => true,    //榜单显示昵称（姓名）
 
 	"penalty_acm"	            => 1200,    //竞赛acm模式错误一次的罚时，1200秒=20分钟
