@@ -179,4 +179,6 @@ return [
     "Grade"         => "Grade",
     "Major"         => "Major",
     "Class"         => "Class",
+    "New Group"     => "New Group",
+    "Members"       => "Members",
 ];

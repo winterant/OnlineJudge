@@ -13,6 +13,7 @@
                 <span>竞赛分类：</span>
 
                 <select name="contest[cate_id]" class="form-control px-3">
+                    <option value="0">--- 不分类 ---</option>
                     @foreach($categories as $item)
                         <option value="{{$item->id}}" @if(isset($contest->cate_id)&&$contest->cate_id==$item->id) selected @endif>
                             @if($item->parent_title)
@@ -25,6 +26,18 @@
             </div>
 
             <div class="form-inline mb-3">
+                <span>是否发布：</span>
+                <div class="custom-control custom-radio ml-3">
+                    <input type="radio" name="contest[hidden]" value="1" class="custom-control-input" id="hidden_yes" checked>
+                    <label class="custom-control-label pt-1" for="hidden_yes">隐藏（前台无法看到该比赛）</label>
+                </div>
+                <div class="custom-control custom-radio ml-3">
+                    <input type="radio" name="contest[hidden]" value="0" class="custom-control-input" id="hidden_no"
+                           @if(isset($contest->hidden)&&$contest->hidden==0)checked @endif>
+                    <label class="custom-control-label pt-1" for="hidden_no">公开（前台可以看到该比赛）</label>
+                </div>
+            </div>
+            <div class="form-inline mb-3">
                 <span>判题时机：</span>
                 <div class="custom-control custom-radio ml-3">
                     <input type="radio" name="contest[judge_instantly]" value="1" class="custom-control-input" id="shishi" checked>
@@ -33,7 +46,11 @@
                 <div class="custom-control custom-radio ml-3">
                     <input type="radio" name="contest[judge_instantly]" value="0" class="custom-control-input" id="saihou"
                            @if(isset($contest->judge_instantly)&&$contest->judge_instantly==0)checked @endif>
-                    <label class="custom-control-label pt-1" for="saihou">赛后判题（同一用户同一题只判最后一次提交，赛后管理员必须手动点击开始判题）</label>
+                    <label class="custom-control-label pt-1" for="saihou">赛后判题
+                    <a href="javascript:" class="ml-1" style="color: #838383"
+                        onclick="whatisthis('同一用户同一题目只判最后一次提交，管理员必须在比赛结束后手动点击开始判题')">
+                        <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                    </a></label>
                 </div>
             </div>
 
@@ -41,7 +58,7 @@
                 <font>题目讨论：</font>
                 <div class="custom-control custom-radio ml-3">
                     <input type="radio" name="contest[open_discussion]" value="1" class="custom-control-input" id="kaifang" checked>
-                    <label class="custom-control-label pt-1" for="kaifang">开放</label>
+                    <label class="custom-control-label pt-1" for="kaifang">允许讨论</label>
                 </div>
                 <div class="custom-control custom-radio ml-3">
                     <input type="radio" name="contest[open_discussion]" value="0" class="custom-control-input" id="guanbi"

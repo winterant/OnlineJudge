@@ -8,8 +8,7 @@
         @endif
     </div>
 
-    © 2020-{{date('Y')}} <a target="_blank" href="https://github.com/winterant/LDUOnlineJudge">Online Judge</a>
-    by <a target="_blank" href="https://github.com/winterant">Winterant</a>.
+    © 2020-{{date('Y')}} <a target="_blank" href="https://github.com/winterant/LDUOnlineJudge">Online Judge</a>.
     All Rights Reserved.
 </div>
 

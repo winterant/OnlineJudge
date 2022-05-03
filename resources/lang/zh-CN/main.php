@@ -178,4 +178,6 @@ return [
     "Grade"         => "年级",
     "Major"         => "专业",
     "Class"         => "班级",
+    "New Group"     => "新建群组",
+    "Members"       => "成员",
 ];

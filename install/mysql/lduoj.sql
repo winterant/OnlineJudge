@@ -84,9 +84,6 @@ CREATE TABLE `group_contests`  (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `contest_id` int(11) NOT NULL COMMENT '比赛ID',
     `group_id` int(11) NOT NULL COMMENT '班级ID',
-    `order` int(11) NOT NULL DEFAULT 0 COMMENT 'contest顺序',
-    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `cid`(`contest_id`) USING BTREE,
     INDEX `gid`(`group_id`) USING BTREE

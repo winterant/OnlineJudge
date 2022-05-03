@@ -33,11 +33,8 @@ function privilege($user, $power)
     if (in_array($power, [
         'admin.home',
         'admin.problem.list',
-        'admin.problem.edit',
-        'admin.problem.data',
-        'amdin.problem.tag',
-        'admin.problem.rejudge',
-        'admin.contest'
+        'admin.contest',
+        'admin.group',
     ]))
         $power = array_merge((array)$power, ['teacher']);
 

@@ -64,7 +64,7 @@ bash ojup/install/ubuntu/update.sh
     ```bash
     tar -zxvf volume.tar.gz
     ```
-2. 删除旧容器，并重新 [创建容器](#项目部署)；注意参数`-v`挂载路径改为上一步的解压路径(绝对路径)；
+2. 删除旧容器，并重新部署项目(创建容器)；注意参数`-v`挂载路径改为上一步的解压路径(绝对路径)；
     ```bash
     docker stop lduoj
     docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj

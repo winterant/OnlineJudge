@@ -27,21 +27,7 @@
 
     <div class="container">
 
-        <div class="tabbable mb-3">
-            <ul class="nav nav-tabs border-bottom">
-                <li class="nav-item">
-                    <a class="nav-link text-center py-3" href="{{route('groups.my')}}">
-                        {{__('main.My')}}{{__('main.Groups')}}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-center py-3" href="{{route('groups.all')}}">
-                        {{__('main.Find')}}{{__('main.Groups')}}
-                    </a>
-                </li>
-            </ul>
-        </div>
-
+        @include('group.header_menu')
 
         <div class="my-container bg-white">
             <div class="overflow-hidden mb-2">
@@ -79,7 +65,7 @@
                         <div class="my-3 p-3 border">
                             {{-- <img class="" src="" alt="" /> --}}
                             <h5>
-                                <a href="{{route('group.home', $item->id)}}" target="_blank">
+                                <a href="{{route('group.home', $item->id)}}">
                                     {{$item->name}}
                                 </a>
                                 @if($item->private)
@@ -93,12 +79,12 @@
                             <div class="table-responsive">
                                 <table id="table-overview" class="table table-sm">
                                     <tbody>
-                                    <style type="text/css">
-                                        #table-overview td {
-                                            border: 0;
-                                            text-align: left
-                                        }
-                                    </style>
+                                        <style type="text/css">
+                                            #table-overview td {
+                                                border: 0;
+                                                text-align: left
+                                            }
+                                        </style>
                                         <tr>
                                             <td nowrap>{{__('main.Grade')}}:</td>
                                             <td nowrap>{{$item->grade}}</td>
@@ -113,12 +99,24 @@
                                         </tr>
                                         <tr>
                                             <td nowrap>{{__('main.Creator')}}:</td>
-                                            <td nowrap><a href="{{route('user', $item->username)}}" target="_blank">{{$item->username}}</a></td>
+                                            <td nowrap><a href="{{route('user', $item->creator)}}" target="_blank">{{$item->creator}}</a></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <p style="font-size: 0.85rem">{{$item->description}}</p>
+                            {{-- <p style="font-size: 0.85rem">
+                                @php($max_desc=120)
+                                @if(strlen($item->description) > $max_desc)
+                                    @php($item->description=substr($item->description, 0, $max_desc))
+                                @endif
+                                {{$item->description}}
+                            </p> --}}
+                            <div>
+                                @if(privilege(Auth::user(), 'admin.group'))
+                                    <a class="btn btn-info" href="{{route('admin.group.edit',['id'=>$item->id])}}" target="_blank">编辑</a>
+                                    <a class="btn btn-danger" href="javascript:alert('数据宝贵,暂不支持删除. 你可以修改信息或设为隐藏.')">删除</a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 @endforeach
