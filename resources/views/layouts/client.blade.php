@@ -87,7 +87,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-nowrap p-2" href="{{route('groups')}}">
+                <a class="nav-link text-nowrap p-2" id="link_groups" href="{{route('groups')}}">
                     <i class="fa fa-users" aria-hidden="true"></i>&nbsp;{{trans('main.Groups')}}</i>
                 </a>
             </li>
@@ -194,6 +194,10 @@
         //特判contests
         if(uri.indexOf('/contest')!==-1){
             $('#link_contests').addClass('active')
+        }
+        //特判groups
+        if(uri.indexOf('/group')!==-1){
+            $('#link_groups').addClass('active')
         }
     })
 

@@ -1,5 +1,6 @@
 <?php
 return [
+    "My"            => "My ",
     "Yes"           => "Yes",
     "No"            => "No",
     "Copy"          => "Copy",
@@ -62,7 +63,7 @@ return [
     "Confirm"       => "Confirm",
     "Cancel"        => "Cancel",
     "Delete"        => "Delete",
-    "Find"          => "Find",
+    "Find"          => "Find ",
     "Register"      => "Register",
     "Login"         => "Login",
     "Logout"         => "Logout",
@@ -171,5 +172,11 @@ return [
     "EXAM"          => "EXAM",
 
     "New Notice"    => "New Notification",
-    "Content"       => "Content"
+    "Content"       => "Content",
+
+    // Groups
+    "Creator"       => "Creator",
+    "Grade"         => "Grade",
+    "Major"         => "Major",
+    "Class"         => "Class",
 ];

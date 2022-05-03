@@ -29,6 +29,8 @@ Route::get('/problem/{id}', 'Client\ProblemController@problem')->middleware('Che
 Route::get('/contests', 'Client\ContestController@contests')->name('contests');
 Route::get('/contests/{cate}', 'Client\ContestController@contests')->name('contests');
 Route::get('/groups', 'Client\GroupController@groups')->name('groups');
+Route::get('/groups/my', 'Client\GroupController@mygroups')->name('groups.my');
+Route::get('/groups/all', 'Client\GroupController@allgroups')->name('groups.all');
 Route::get('/standings', 'Client\UserController@standings')->name('standings');
 Route::get('/user/{username}', 'Client\UserController@user')->name('user');
 Route::get('/change_language/{lang}', 'Client\UserController@change_language')->name('change_language');
@@ -84,6 +86,20 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->wher
 
     Route::any('/password', 'Client\ContestController@password')->middleware(['auth'])->name('password');
     Route::get('/rank', 'Client\ContestController@rank')->name('rank');
+});
+
+// group，用户前台竞赛页面所有路由
+Route::prefix('group/{id}')->name('group.')->where(['id' => '[0-9]+'])->where(['pid' => '[0-9]+'])->group(function () {
+    Route::middleware(['auth', 'CheckBlacklist'])->group(function () {
+        Route::get('/', 'Client\GroupController@home')->name('home');
+
+        Route::middleware(['Privilege:admin.contest'])->group(function () {
+            Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->name('cancel_lock'); //取消封榜
+            Route::post('/edit_notice', 'Client\ContestController@edit_notice')->name('edit_notice'); //编辑/添加一条公告
+            Route::post('/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('delete_notice'); //删除一条公告
+            Route::post('/start_to_judge', 'Client\ContestController@start_to_judge')->name('start_to_judge');
+        });
+    });
 });
 
 

@@ -1,5 +1,6 @@
 <?php
 return [
+    "My"            => "我的",
     "Yes"           => "是",
     "No"            => "否",
     "Copy"          => "复制",
@@ -170,5 +171,11 @@ return [
     "EXAM"          => "EXAM",
 
     "New Notice"    => "新告示",
-    "Content"       => "内容"
+    "Content"       => "内容",
+    
+    // Groups
+    "Creator"       => "创建者",
+    "Grade"         => "年级",
+    "Major"         => "专业",
+    "Class"         => "班级",
 ];

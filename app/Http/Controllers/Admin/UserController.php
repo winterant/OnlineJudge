@@ -111,7 +111,7 @@ class UserController extends Controller
                 $user=[
                     'username'=>trim($username),
                     'password'=>Hash::make($password),
-                    'revise'=>trim($data['revise'] == 'on' ? 1 : 0),
+                    'revise'=>trim(isset($data['revise']) ? 1 : 0),
                     'nick'=>isset($nick[$i])?$nick[$i]:'',
                     'email'=>isset($email[$i])?$email[$i]:'',
                     'school'=>isset($school[$i])?$school[$i]:'',
