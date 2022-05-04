@@ -51,9 +51,9 @@
                                         @if(isset($contest))
                                             <div class="form-group m-0 p-0 bmd-form-group">
                                                 <select name="index" class="pl-1 form-control" onchange="this.form.submit();">
-                                                    <option class="form-control" value="">{{__('main.Problems')}}</option>
+                                                    <option value="-1">{{__('main.Problems')}}</option>
                                                     @foreach($index_map as $i=>$pid)
-                                                        <option value="{{$i}}" {{isset($_GET['index'])&&$_GET['index']==$i?'selected':null}}>{{index2ch($i)}}</option>
+                                                        <option value="{{$i}}" @if(isset($_GET['index'])&&$_GET['index']==$i)selected @endif}}>{{index2ch($i)}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>

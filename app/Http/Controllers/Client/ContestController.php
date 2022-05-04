@@ -280,7 +280,7 @@ class ContestController extends Controller
                  'pass_rate', 'sim_rate', 'sim_sid', 'time', 'memory', 'language', 'submit_time', 'judger', 'ip'])
             ->where('solutions.contest_id', $id)
             ->where('contest_problems.contest_id', $id)
-            ->when(isset($_GET['index']) && $_GET['index'] != '', function ($q) {
+            ->when(isset($_GET['index']) && $_GET['index'] >= 0, function ($q) {
                 return $q->where('index', $_GET['index']);
             })
             ->when(isset($_GET['sim_rate']) && $_GET['sim_rate'] != 0, function ($q) {
