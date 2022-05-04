@@ -31,6 +31,12 @@ class GroupController extends Controller
                 $_GET['id'] = DB::table('groups')->insertGetId([
                     'creator' => Auth::id()
                 ]);
+                // 把创建者自己加入到群组成员
+                DB::table('group_users')->insert([
+                    'group_id'=>$_GET['id'],
+                    'user_id'=>Auth::id(),
+                    'identity'=>3, // 老师/管理员
+                ]);
             }
         }
 
@@ -87,7 +93,11 @@ class GroupController extends Controller
             $item = trim($item);
         $uids = DB::table('users')->whereIn('username', $unames)->pluck('id');
         foreach ($uids as &$uid) {
-            DB::table('group_users')->updateOrInsert(['group_id' => $id, 'user_id' => $uid]);
+            DB::table('group_users')->updateOrInsert([
+                'group_id' => $id,
+                'user_id' => $uid,
+                'identity'=>2, // 普通成员
+            ]);
         }
         return back();
     }

@@ -68,16 +68,10 @@
                                 <a href="{{route('group.home', $item->id)}}">
                                     {{$item->name}}
                                 </a>
-                                @if($item->private)
-                                    <span style="font-size: 0.75rem;color:red">{{__('main.Private')}}</span>
-                                @endif
-                                @if($item->hidden)
-                                    <span style="font-size: 0.75rem;color:red">{{__('main.Hidden')}}</span>
-                                @endif
                             </h5>
                             <hr>
                             <div class="table-responsive">
-                                <table id="table-overview" class="table table-sm">
+                                <table id="table-overview" class="table table-sm mb-0">
                                     <tbody>
                                         <style type="text/css">
                                             #table-overview td {
@@ -111,6 +105,16 @@
                                 @endif
                                 {{$item->description}}
                             </p> --}}
+                            <div class="my-2">
+                                @if($item->private)
+                                    <i class="fa fa-tag text-sky" aria-hidden="true"></i>
+                                    <span style="font-size: 0.75rem;color:red">{{__('main.Private')}}</span>
+                                @endif
+                                @if($item->hidden)
+                                    <i class="fa fa-tag text-sky" aria-hidden="true"></i>
+                                    <span style="font-size: 0.75rem;color:red">{{__('main.Hidden')}}</span>
+                                @endif
+                            </div>
                             <div>
                                 @if(privilege(Auth::user(), 'admin.group'))
                                     <a class="btn btn-info" href="{{route('admin.group.edit',['id'=>$item->id])}}" target="_blank">编辑</a>

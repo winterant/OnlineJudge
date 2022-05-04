@@ -180,4 +180,6 @@ return [
     "Class"         => "班级",
     "New Group"     => "新建群组",
     "Members"       => "成员",
+    "Date Added"    => "加入时间",
+    "Identity"      => "身份",
 ];

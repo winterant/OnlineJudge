@@ -70,7 +70,7 @@ class GroupController extends Controller
         $members = DB::table('group_users as gu')
             ->join('users as u', 'u.id', '=', 'gu.user_id')
             ->where('gu.group_id', $id)
-            ->get('u.*');
+            ->get(['u.*', 'gu.identity', 'gu.created_at']);
         return view('group.members', compact('group', 'members'));
     }
 }

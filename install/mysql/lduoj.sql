@@ -67,10 +67,8 @@ CREATE TABLE `group_users`  (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `group_id` int(11) NOT NULL COMMENT '班级编号',
     `user_id` int(11) NOT NULL COMMENT '成员编号',
-    `identity` tinyint(4) NOT NULL DEFAULT 0 COMMENT '0;尚未加入; 1:普通成员; 2:班长; 3:教师',
-    `status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '0:申请加入; 1:拒绝加入; 2:通过申请; 3:创建者邀入; 4:已退出',
+    `identity` tinyint(4) NOT NULL DEFAULT 0 COMMENT '0:申请加入; 1:普通成员; 2:班长; 3:教师/管理员; 4: 已退出/拒绝加入',
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `gid`(`group_id`) USING BTREE,
     INDEX `uid`(`user_id`) USING BTREE

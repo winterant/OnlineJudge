@@ -181,4 +181,6 @@ return [
     "Class"         => "Class",
     "New Group"     => "New Group",
     "Members"       => "Members",
+    "Date Added"    => "Date Added",
+    "Identity"      => "Identity",
 ];

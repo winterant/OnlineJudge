@@ -22,15 +22,20 @@
                                 <tr>
                                     <th>{{trans('main.Username')}}</th>
                                     <th>{{trans('main.Name')}}</th>
+                                    <th>{{trans('main.Identity')}}</th>
+                                    <th>{{trans('main.Date Added')}}</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @php($ident=[0=>'申请加入', 1=>'普通成员', 2=>'班长', 3=>'教师/管理员', 4=>'已退出'])
                                 @foreach($members as $u)
                                     <tr>
                                         <td nowrap>
                                             <a href="{{route('user',$u->username)}}" target="_blank">{{$u->username}}</a>
                                         </td>
                                         <td nowrap>{{$u->nick}}</td>
+                                        <td nowrap>{{$ident[intval($u->identity)]}}</td>
+                                        <td nowrap>{{$u->created_at}}</td>
                                         @if(privilege(Auth::user(),'admin') || $group->creator == Auth::user()->username)
                                             <td nowrap>
                                                 <a href="javascript:alert('暂不支持备注')">备注</a>
