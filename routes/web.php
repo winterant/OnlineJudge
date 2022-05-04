@@ -205,8 +205,8 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
         Route::get('/list', 'Admin\GroupController@list')->name('list');
         Route::any('/edit', 'Admin\GroupController@edit')->name('edit');
         Route::post('/add_member/{id}', 'Admin\GroupController@add_member')->name('add_member');
-        Route::post('/del_member/{id}/{uid}', 'Admin\GroupController@del_member')->name('del_member');
-        Route::post('/member_iden/{id}/{uid}/{iden}', 'Admin\GroupController@member_iden')->name('member_iden');
+        Route::get('/del_member/{id}/{uid}', 'Admin\GroupController@del_member')->name('del_member');
+        Route::get('/member_iden/{id}/{uid}/{iden}', 'Admin\GroupController@member_iden')->name('member_iden');
     });
 
     // setting

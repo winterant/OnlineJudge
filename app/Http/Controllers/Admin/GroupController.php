@@ -104,7 +104,7 @@ class GroupController extends Controller
         return back();
     }
 
-    // post
+    // get
     public function del_member(Request $request, $id, $uid)
     {
         if (!($group = DB::table('groups')->find($id)))
@@ -119,7 +119,7 @@ class GroupController extends Controller
         return back();
     }
 
-    // post 修改用户身份
+    // get 修改用户身份
     public function member_iden(Request $request, $id, $uid, $iden)
     {
         if (!($group = DB::table('groups')->find($id)))
