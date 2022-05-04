@@ -50,6 +50,7 @@ class GroupController extends Controller
             $contest_ids = DB::table('group_contests as gc')
                 ->join('contests as c', 'c.id', '=', 'gc.contest_id')
                 ->where('gc.group_id', $_GET['id'])
+                ->orderBy('gc.id')
                 ->pluck('c.id');
             return view('group.edit', compact('group', 'contest_ids'));
         } else {

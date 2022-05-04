@@ -12,7 +12,7 @@
         </li>
     </ul>
     {{-- 导航栏 --}}
-    <div class="tabbable border-bottom ml-2">
+    <div class="tabbable border-bottom ml-2 mb-3">
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link py-3" href="{{route('group.home',$group->id)}}">{{trans('main.Overview')}}</a>

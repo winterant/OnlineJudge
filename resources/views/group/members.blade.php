@@ -155,6 +155,7 @@
                                     <option value="2">普通成员</option>
                                     <option value="3">班长</option>
                                     <option value="4">管理员</option>
+                                    <option value="1">设为申请中</option>
                                 </select>
                             </div>
                             <button class="btn btn-success">确认添加</button>
