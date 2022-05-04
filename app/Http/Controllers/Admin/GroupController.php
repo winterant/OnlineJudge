@@ -20,41 +20,41 @@ class GroupController extends Controller
 
     public function edit(Request $request)
     {
-        if ($request->isMethod('get')) {
-            if (isset($_GET['id'])) {
-                // 当前是修改群组
-                $group = DB::table('groups')->find($_GET['id']);
-                if (!$group)
-                    return abort(404); // 群组不存在
-                if(!privilege(Auth::user(), 'admin.group') && Auth::id()!=$group->creator)
-                    return view('client.fail',['msg'=>'您既不是该群组的创建者，也没有群组管理权限!']);
-                $contest_ids = DB::table('group_contests as gc')
-                    ->join('contests as c', 'c.id', '=', 'gc.contest_id')
-                    ->where('gc.group_id', $_GET['id'])
-                    ->pluck('c.id');
-                // dd($contest_ids);
-                return view('group.edit', compact('group', 'contest_ids'));
-            }
-            return view('group.edit');
-        } else if ($request->isMethod('post')) {
-            // 修改群组基本信息
-            $group = $request->input('group');
-            if (!DB::table('groups')->find($group['id'])) { // 新建群组
-                $group['id'] = DB::table('groups')->insertGetId([
+        // 用isset($_GET['id'])区分新建和修改
+        // ============ 新建群组 ================
+        if (!isset($_GET['id'])) // 新建
+        {
+            if ($request->isMethod('get')) {
+                return view('group.edit'); //提供界面
+            } else {
+                // 处理请求; 新建一条数据，跳转到修改
+                $_GET['id'] = DB::table('groups')->insertGetId([
                     'creator' => Auth::id()
                 ]);
-            } else { // 修改群组
-                $group['updated_at'] = date('Y-m-d H:i:s');
             }
-            if(!privilege(Auth::user(), 'admin.group') && Auth::id()!=$group['id'])
-                return view('client.fail',['msg'=>'您既不是该群组的创建者，也没有群组管理权限!']);
-            $group_id = $group['id'];
-            unset($group['id']);
-            DB::table('groups')->where('id', $group_id)->update($group);
+        }
+
+        // ============  修改群组信息 ==============
+        if (!($group=DB::table('groups')->find($_GET['id'])))
+            return view('client.fail', ['msg' => '群组不存在!']);
+        if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
+            return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
+        // 提供界面
+        if ($request->isMethod('get')) {
+            $contest_ids = DB::table('group_contests as gc')
+                ->join('contests as c', 'c.id', '=', 'gc.contest_id')
+                ->where('gc.group_id', $_GET['id'])
+                ->pluck('c.id');
+            return view('group.edit', compact('group', 'contest_ids'));
+        } else {
+            // 接收修改请求
+            $group = $request->input('group');
+            $group['updated_at'] = date('Y-m-d H:i:s');
+            DB::table('groups')->where('id', $_GET['id'])->update($group);
 
             // 添加竞赛
             $contest_ids = $request->input('contest_ids');
-            DB::table('group_contests')->where('group_id', $group_id)->delete();
+            DB::table('group_contests')->where('group_id', $_GET['id'])->delete();
             foreach (explode(PHP_EOL, $contest_ids) as &$cid) {
                 $line = explode('-', trim($cid));
                 $cids = [];
@@ -66,11 +66,44 @@ class GroupController extends Controller
                 foreach ($cids as $c)
                     if (DB::table('contests')->find($c))
                         DB::table('group_contests')->insert([
-                            'group_id' => $group_id,
+                            'group_id' => $_GET['id'],
                             'contest_id' => $c,
                         ]);
             }
-            return redirect(route('group.home', $group_id));
+            return redirect(route('group.home', $_GET['id']));
         }
+    }
+
+    // post
+    public function add_member(Request $request, $id)
+    {
+        if (!($group=DB::table('groups')->find($id)))
+            return view('client.fail', ['msg' => '群组不存在!']);
+        if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
+            return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
+        // 开始处理
+        $unames = explode(PHP_EOL, $request->input('usernames'));
+        foreach ($unames as &$item)
+            $item = trim($item);
+        $uids = DB::table('users')->whereIn('username', $unames)->pluck('id');
+        foreach ($uids as &$uid) {
+            DB::table('group_users')->updateOrInsert(['group_id' => $id, 'user_id' => $uid]);
+        }
+        return back();
+    }
+
+    // post
+    public function del_member(Request $request, $id, $uid)
+    {
+        if (!($group=DB::table('groups')->find($id)))
+            return view('client.fail', ['msg' => '群组不存在!']);
+        if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
+            return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
+        // 开始处理
+        $num_deleted = DB::table('group_users')
+            ->where('group_id', $id)
+            ->where('user_id', $uid)
+            ->delete();
+        return back();
     }
 }

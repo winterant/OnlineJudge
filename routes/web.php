@@ -90,7 +90,7 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->wher
 
 // group，用户前台竞赛页面所有路由
 Route::prefix('group/{id}')->name('group.')->where(['id' => '[0-9]+'])->where(['pid' => '[0-9]+'])->group(function () {
-    Route::middleware(['auth', 'CheckBlacklist'])->group(function () {
+    Route::middleware(['auth', 'CheckGroup', 'CheckBlacklist'])->group(function () {
         Route::get('/', 'Client\GroupController@home')->name('home');
         Route::get('/members', 'Client\GroupController@members')->name('members');
     });
@@ -204,10 +204,11 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
     Route::middleware(['Privilege:admin.group'])->prefix('group')->name('group.')->group(function () {
         Route::get('/list', 'Admin\GroupController@list')->name('list');
         Route::any('/edit', 'Admin\GroupController@edit')->name('edit');
-        // todo
+        Route::any('/add_member/{id}', 'Admin\GroupController@add_member')->name('add_member');
+        Route::any('/del_member/{id}/{uid}', 'Admin\GroupController@del_member')->name('del_member');
     });
 
-    //    setting
+    // setting
     Route::middleware(['Privilege:admin.setting'])->group(function () {
         Route::any('/settings', 'Admin\SettingController@settings')->name('settings');
         Route::get('/upgrade', 'Admin\SettingController@upgrade')->name('upgrade');

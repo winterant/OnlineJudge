@@ -46,31 +46,31 @@ class GroupController extends Controller
     {
         $group = DB::table('groups as g')
             ->leftJoin('users as u', 'u.id', '=', 'g.creator')
-            ->select('g.*', 'u.username as creator')
+            ->select('g.*', 'u.username as creator_username')
             ->where('g.id', $id)
             ->first();
         if (!$group)
             return abort(404);
-        $group_contests = DB::table('group_contests as gc')
+        $contests = DB::table('group_contests as gc')
             ->join('contests as c', 'c.id', '=', 'gc.contest_id')
             ->where('gc.group_id', $group->id)
             ->orderBy('gc.id')
             ->get('c.*');
         // dd($group_contests);
-        return view('group.home', compact('group', 'group_contests'));
+        return view('group.home', compact('group', 'contests'));
     }
 
     public function members(Request $request, $id)
     {
         $group = DB::table('groups as g')
             ->leftJoin('users as u', 'u.id', '=', 'g.creator')
-            ->select('g.*', 'u.username as creator')
+            ->select('g.*', 'u.username as creator_username')
             ->where('g.id', $id)
             ->first();
-        $group_users = DB::table('group_users as gu')
+        $members = DB::table('group_users as gu')
             ->join('users as u', 'u.id', '=', 'gu.user_id')
             ->where('gu.group_id', $id)
             ->get('u.*');
-        return view('group.members', compact('group', 'group_users'));
+        return view('group.members', compact('group', 'members'));
     }
 }

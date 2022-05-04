@@ -27,7 +27,7 @@
 
     <div class="container">
 
-        @include('group.header_menu')
+        @include('group.layouts.header_menu')
 
         <div class="my-container bg-white">
             <div class="overflow-hidden mb-2">

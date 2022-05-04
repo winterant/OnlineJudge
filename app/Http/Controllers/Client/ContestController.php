@@ -108,7 +108,7 @@ class ContestController extends Controller
             $contest = DB::table('contests')->select('id', 'judge_type', 'password', 'cate_id', 'title')->find($id);
             if ($request->input('pwd') == $contest->password) //通过验证
             {
-                DB::table('contest_users')->insertOrIgnore(['contest_id' => $contest->id, 'user_id' => Auth::id()]); //保存
+                DB::table('contest_users')->updateOrInsert(['contest_id' => $contest->id, 'user_id' => Auth::id()]); //保存
                 return redirect(route('contest.home', $contest->id));
             } else {
                 $msg = trans('sentence.pwd wrong');
@@ -187,7 +187,13 @@ class ContestController extends Controller
                 ->exists()
                 && time() > strtotime($contest->end_time);
         }
-        return view('contest.home', compact('contest', 'problems', 'files', 'show_judge_button', 'judge_enable'));
+
+        // 读取群组
+        $groups = DB::table('group_contests as gc')
+            ->join('groups as g', 'g.id', '=', 'gc.group_id')
+            ->where('gc.contest_id', $id)
+            ->get(['g.*']);
+        return view('contest.home', compact('contest', 'problems', 'files', 'show_judge_button', 'judge_enable', 'groups'));
     }
 
     public function start_to_judge($id)

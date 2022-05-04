@@ -35,7 +35,7 @@ class CheckContest
         if(DB::table('group_contests as gc')
             ->join('group_users as gu', 'gu.group_id', '=', 'gc.group_id')
             ->where('gc.contest_id', $contest->id)
-            ->where('gu', Auth::id())
+            ->where('gu.user_id', Auth::id())
             ->exists())
             return $next($request);
 

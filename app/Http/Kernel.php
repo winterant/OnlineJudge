@@ -5,6 +5,7 @@ namespace App\Http;
 use App\Http\Middleware\CheckBlacklist;
 use App\Http\Middleware\Privilege;
 use App\Http\Middleware\CheckContest;
+use App\Http\Middleware\CheckGroup;
 use App\Http\Middleware\SetGlobalVariable;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -69,6 +70,7 @@ class Kernel extends HttpKernel
 
         'Privilege' => Privilege::class,
         'CheckContest' => CheckContest::class,
+        'CheckGroup' => CheckGroup::class,
         'CheckBlacklist' => CheckBlacklist::class
     ];
 

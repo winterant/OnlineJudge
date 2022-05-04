@@ -25,7 +25,7 @@
                 </tr>
                 <tr>
                     <td nowrap>{{__('main.Creator')}}:</td>
-                    <td nowrap><a href="{{route('user', $group->creator)}}" target="_blank">{{$group->creator}}</a></td>
+                    <td nowrap><a href="{{route('user', $group->creator_username)}}" target="_blank">{{$group->creator_username}}</a></td>
                 </tr>
             </tbody>
         </table>

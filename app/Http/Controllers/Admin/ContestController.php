@@ -123,7 +123,7 @@ class ContestController extends Controller
                 foreach ($unames as &$item) $item = trim($item); //去除多余空白符号\r
                 $uids = DB::table('users')->whereIn('username', $unames)->pluck('id');
                 foreach ($uids as &$uid) {
-                    DB::table('contest_users')->insertOrIgnore(['contest_id' => $id, 'user_id' => $uid]);
+                    DB::table('contest_users')->updateOrInsert(['contest_id' => $id, 'user_id' => $uid]);
                 }
             }
 

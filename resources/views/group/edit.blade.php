@@ -5,7 +5,7 @@
 @section('content')
 
     <div class="container">
-        @include('group.header_menu')
+        @include('group.layouts.header_menu')
         <div class="my-container bg-white">
             <form class="" action="" method="post" enctype="multipart/form-data" onsubmit="presubmit()">
                 @csrf
@@ -41,7 +41,6 @@
 
                 <div class="mt-4 p-2 bg-sky">基本信息</div>
                 <div class="border p-2">
-                    <input name="group[id]" value="{{isset($group->id)?$group->id:-1}}" hidden>
                     <div class="input-group mb-3">
                         <span style="margin: auto">群组名称：</span>
                         <input type="text" name="group[name]" 
