@@ -204,8 +204,9 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
     Route::middleware(['Privilege:admin.group'])->prefix('group')->name('group.')->group(function () {
         Route::get('/list', 'Admin\GroupController@list')->name('list');
         Route::any('/edit', 'Admin\GroupController@edit')->name('edit');
-        Route::any('/add_member/{id}', 'Admin\GroupController@add_member')->name('add_member');
-        Route::any('/del_member/{id}/{uid}', 'Admin\GroupController@del_member')->name('del_member');
+        Route::post('/add_member/{id}', 'Admin\GroupController@add_member')->name('add_member');
+        Route::post('/del_member/{id}/{uid}', 'Admin\GroupController@del_member')->name('del_member');
+        Route::post('/member_iden/{id}/{uid}/{iden}', 'Admin\GroupController@member_iden')->name('member_iden');
     });
 
     // setting

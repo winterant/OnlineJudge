@@ -35,7 +35,7 @@ class GroupController extends Controller
                 DB::table('group_users')->insert([
                     'group_id' => $_GET['id'],
                     'user_id' => Auth::id(),
-                    'identity' => 3, // 老师/管理员
+                    'identity' => 4, // 老师/管理员
                 ]);
             }
         }
@@ -97,7 +97,7 @@ class GroupController extends Controller
             DB::table('group_users')->updateOrInsert(
                 ['group_id' => $id, 'user_id' => $uid],
                 [
-                    'identity' => $iden ?: 1, // 默认1为普通成员
+                    'identity' => $iden ?: 2, // 默认2为普通成员
                 ]
             );
         }
@@ -112,10 +112,25 @@ class GroupController extends Controller
         if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
             return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
         // 开始处理
-        $num_deleted = DB::table('group_users')
+        DB::table('group_users')
             ->where('group_id', $id)
             ->where('user_id', $uid)
             ->delete();
+        return back();
+    }
+
+    // post 修改用户身份
+    public function member_iden(Request $request, $id, $uid, $iden)
+    {
+        if (!($group = DB::table('groups')->find($id)))
+            return view('client.fail', ['msg' => '群组不存在!']);
+        if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
+            return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
+        // 开始处理
+        DB::table('group_users')
+            ->where('group_id', $id)
+            ->where('user_id', $uid)
+            ->update(['identity' => $iden]);
         return back();
     }
 }

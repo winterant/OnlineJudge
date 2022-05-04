@@ -23,13 +23,10 @@ class CheckGroup
         if(DB::table('group_users as gu')
             ->where('gu.group_id', $group->id)
             ->where('gu.user_id', Auth::id())
+            ->where('gu.identity', '>', 1)
             ->exists())
             return $next($request);
 
-        // 隐藏的群组不允许访问
-        if($group->hidden)
-            return response()->view('client.fail',['msg'=>'你不是该群组成员或当前群组已隐藏']);
-
-        return $next($request); // 通过验证
+        return response()->view('client.fail',['msg'=>'你不是该群组成员或当前群组已隐藏']);
     }
 }

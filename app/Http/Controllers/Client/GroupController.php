@@ -24,6 +24,7 @@ class GroupController extends Controller
             ->join('group_users as gu', 'gu.group_id', '=', 'g.id')
             ->select('g.*', 'u.username as creator')
             ->where('gu.user_id', Auth::id())
+            ->where('gu.identity', '>', 1)
             ->orderByDesc('id')
             ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 12);
         return view('group.groups', compact('groups'));
@@ -70,7 +71,12 @@ class GroupController extends Controller
         $members = DB::table('group_users as gu')
             ->join('users as u', 'u.id', '=', 'gu.user_id')
             ->where('gu.group_id', $id)
+            ->orderByDesc('gu.identity')
+            ->orderBy('u.username')
             ->get(['u.*', 'gu.identity', 'gu.created_at']);
-        return view('group.members', compact('group', 'members'));
+        $member_count = [];
+        for($i=0;$i<=4;$i++)$member_count[$i]=0;
+        foreach($members as $m)$member_count[$m->identity]++;
+        return view('group.members', compact('group', 'members', 'member_count'));
     }
 }

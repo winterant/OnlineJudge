@@ -115,7 +115,7 @@
                                     <span style="font-size: 0.75rem;color:red">{{__('main.Hidden')}}</span>
                                 @endif
                             </div>
-                            <div>
+                            <div class="pull-right">
                                 @if(privilege(Auth::user(), 'admin.group'))
                                     <a class="btn btn-info" href="{{route('admin.group.edit',['id'=>$item->id])}}" target="_blank">编辑</a>
                                     <a class="btn btn-danger" href="javascript:alert('数据宝贵,暂不支持删除. 你可以修改信息或设为隐藏.')">删除</a>

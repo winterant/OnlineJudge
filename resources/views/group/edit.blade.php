@@ -85,7 +85,7 @@
                 <div class="form-group">
                     <textarea id="description" name="group[description]"
                         class="form-control-plaintext border bg-white"
-                        >{{isset($group->description)?$group->description:''}}</textarea>
+                        autoHeight>{{isset($group->description)?$group->description:''}}</textarea>
                 </div>
 
                 {{-- 
@@ -120,7 +120,7 @@
                         <label>
                         <textarea name="contest_ids" class="form-control-plaintext border bg-white"
                                 rows="8" cols="26" placeholder="1000&#13;&#10;1001&#13;&#10;每行一个竞赛编号&#13;&#10;你可以将表格的整列粘贴到这里"
-                        >@foreach(isset($contest_ids)?$contest_ids:[] as $item){{$item}}&#13;&#10;@endforeach</textarea>
+                                autoHeight>@foreach(isset($contest_ids)?$contest_ids:[] as $item){{$item}}&#13;&#10;@endforeach</textarea>
                         </label>
                     </div>
                 </div>
