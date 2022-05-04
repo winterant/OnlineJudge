@@ -33,15 +33,15 @@ class GroupController extends Controller
                 ]);
                 // 把创建者自己加入到群组成员
                 DB::table('group_users')->insert([
-                    'group_id'=>$_GET['id'],
-                    'user_id'=>Auth::id(),
-                    'identity'=>3, // 老师/管理员
+                    'group_id' => $_GET['id'],
+                    'user_id' => Auth::id(),
+                    'identity' => 3, // 老师/管理员
                 ]);
             }
         }
 
         // ============  修改群组信息 ==============
-        if (!($group=DB::table('groups')->find($_GET['id'])))
+        if (!($group = DB::table('groups')->find($_GET['id'])))
             return view('client.fail', ['msg' => '群组不存在!']);
         if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
             return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
@@ -83,21 +83,23 @@ class GroupController extends Controller
     // post
     public function add_member(Request $request, $id)
     {
-        if (!($group=DB::table('groups')->find($id)))
+        if (!($group = DB::table('groups')->find($id)))
             return view('client.fail', ['msg' => '群组不存在!']);
         if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
             return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
         // 开始处理
         $unames = explode(PHP_EOL, $request->input('usernames'));
+        $iden = $request->input('identity');
         foreach ($unames as &$item)
             $item = trim($item);
         $uids = DB::table('users')->whereIn('username', $unames)->pluck('id');
         foreach ($uids as &$uid) {
-            DB::table('group_users')->updateOrInsert([
-                'group_id' => $id,
-                'user_id' => $uid,
-                'identity'=>2, // 普通成员
-            ]);
+            DB::table('group_users')->updateOrInsert(
+                ['group_id' => $id, 'user_id' => $uid],
+                [
+                    'identity' => $iden ?: 1, // 默认1为普通成员
+                ]
+            );
         }
         return back();
     }
@@ -105,7 +107,7 @@ class GroupController extends Controller
     // post
     public function del_member(Request $request, $id, $uid)
     {
-        if (!($group=DB::table('groups')->find($id)))
+        if (!($group = DB::table('groups')->find($id)))
             return view('client.fail', ['msg' => '群组不存在!']);
         if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
             return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
