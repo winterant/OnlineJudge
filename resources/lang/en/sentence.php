@@ -19,7 +19,7 @@ return [
     "Please login first"=> "Please login first!",
 
 //    user
-    "forbid_edit"       => "You are not allowed to edit the following information.",
+    "forbid_edit"       => "The profile is forbidden to modify currently. Only administrators can modify it.",
     "user_edit_chances" => "You have :i more chances to modify your profile!",
     "User not found"    => "The user :un is not exist!",
     "in_blacklist"      => "You can't open this page because you are in blacklist!",
