@@ -53,10 +53,10 @@ function privilege($power, $user = null)
         // 如果数据库中含有teacher，则查询以下权限时均通过
         if (
             $p == 'teacher' &&
-            starts_with($power, 'admin.home') &&
-            starts_with($power, 'admin.problem') &&
-            starts_with($power, 'admin.contest') &&
-            starts_with($power, 'admin.group')
+            (starts_with($power, 'admin.home') ||
+                starts_with($power, 'admin.problem') ||
+                starts_with($power, 'admin.contest') ||
+                starts_with($power, 'admin.group'))
         )
             return true;
     }
