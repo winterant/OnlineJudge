@@ -49,7 +49,7 @@ class StatusController extends Controller
             )
             //普通用户只能查看非竞赛提交
             //关闭“包含竞赛”按钮时只能查看非竞赛提交
-            ->when(!privilege(Auth::user(), 'teacher') || !isset($_GET['inc_contest']), function ($q) {
+            ->when(!privilege('admin.problem.list') || !isset($_GET['inc_contest']), function ($q) {
                 return $q->where('solutions.contest_id', -1);
             })
 
@@ -82,7 +82,7 @@ class StatusController extends Controller
             //所有人都能看到用户名
             $s->username = $u ? $u->username : null;
             //管理员能看到昵称
-            if (privilege(Auth::user(), 'teacher')) {
+            if (privilege('admin.problem.list')) {
                 $s->nick = $u ? $u->nick : null;
             }
         }
@@ -127,7 +127,7 @@ class StatusController extends Controller
             ])
             ->where('solutions.id', $id)->first();
         if (
-            privilege(Auth::user(), 'solution') ||
+            privilege('admin.problem.solution') ||
             (Auth::id() == $solution->user_id && $solution->submit_time > Auth::user()->created_at)
         )
             return view('client.solution', compact('solution'));
@@ -141,7 +141,7 @@ class StatusController extends Controller
             ->select('solutions.problem_id', 'solutions.user_id', 'contests.end_time', 'solutions.wrong_data')
             ->where('solutions.id', $id)
             ->first();
-        if (($solution && Auth::id() == $solution->user_id && $solution->wrong_data !== null) || privilege(Auth::user(), 'solution')) {
+        if (($solution && Auth::id() == $solution->user_id && $solution->wrong_data !== null) || privilege('admin.problem.solution')) {
             if (date('Y-m-d H:i:s') < $solution->end_time) //比赛未结束
                 return view('client.fail', ['msg' => trans('sentence.not_end')]);
             if ($type == 'in')
@@ -177,7 +177,7 @@ class StatusController extends Controller
             }
         } else { //else 从题库中进行提交，需要判断一下用户权限
             $hidden = $problem->hidden;
-            if (!privilege(Auth::user(), 'teacher') && $hidden == 1) //不是管理员&&问题隐藏 => 不允许提交
+            if (!privilege('admin.problem.list') && $hidden == 1) //不是管理员&&问题隐藏 => 不允许提交
                 return view('client.fail', ['msg' => trans('main.Problem') . $data['pid'] . '：' . trans('main.Hidden')]);
         }
 
@@ -216,7 +216,7 @@ class StatusController extends Controller
     public function submit_solution(Request $request)
     {
         //拦截非管理员的频繁提交
-        if (!privilege(Auth::user(), 'teacher')) {
+        if (!privilege('admin.problem.list')) {
             $last_submit_time = DB::table('solutions')
                 ->where('user_id', Auth::id())
                 ->orderByDesc('submit_time')

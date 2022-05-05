@@ -53,7 +53,7 @@ Route::post('/load_discussion', 'Client\ProblemController@load_discussion')->nam
 Route::middleware(['auth', 'CheckBlacklist'])->group(function () {
     Route::post('/edit_discussion/{pid}', 'Client\ProblemController@edit_discussion')->name('edit_discussion');
 });
-Route::middleware(['auth', 'CheckBlacklist', 'Privilege:client.problem.discussion'])->group(function () {
+Route::middleware(['auth', 'CheckBlacklist', 'Privilege:admin.problem.discussion'])->group(function () {
     Route::post('/delete_discussion', 'Client\ProblemController@delete_discussion')->name('delete_discussion');
     Route::post('/top_discussion', 'Client\ProblemController@top_discussion')->name('top_discussion');
     Route::post('/hidden_discussion', 'Client\ProblemController@hidden_discussion')->name('hidden_discussion');
@@ -88,7 +88,7 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->wher
     Route::get('/rank', 'Client\ContestController@rank')->name('rank');
 });
 
-// group，用户前台竞赛页面所有路由
+// group，用户前台group页面所有路由
 Route::prefix('group/{id}')->name('group.')->where(['id' => '[0-9]+'])->where(['pid' => '[0-9]+'])->group(function () {
     Route::middleware(['auth', 'CheckGroup', 'CheckBlacklist'])->group(function () {
         Route::get('/', 'Client\GroupController@home')->name('home');

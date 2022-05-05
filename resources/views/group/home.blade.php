@@ -14,7 +14,7 @@
                 <div class="my-container bg-white">
 
                     <h3 class="text-center">{{$group->name}}
-                        @if(privilege(Auth::user(), 'admin.group.edit') || Auth::id()==$group->creator)
+                        @if(privilege('admin.group.edit') || Auth::id()==$group->creator)
                             <span style="font-size: 0.85rem">
                                 [ <a href="{{route('admin.group.edit',['id'=>$group->id])}}">{{__('main.Edit')}}</a> ]
                             </span>

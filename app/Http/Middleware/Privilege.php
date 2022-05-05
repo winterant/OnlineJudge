@@ -17,8 +17,8 @@ class Privilege
      */
     public function handle($request, $next, $role)
     {
-        if (!privilege(Auth::user(), $role))
-        // if (!privilege(Auth::user(), $request->route()->getName()))  // todo
+        if (!privilege($role))
+        // if (!privilege($request->route()->getName()))  // todo
         {
             if (
                 strpos($request->getRequestUri(), '/admin') == 0

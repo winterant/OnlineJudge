@@ -34,7 +34,7 @@ class GroupController extends Controller
         $groups = DB::table('groups as g')
             ->leftJoin('users as u', 'u.id', '=', 'g.creator')
             ->select('g.*', 'u.username as creator')
-            ->when(!privilege(Auth::user(), 'teacher'), function ($q) {
+            ->when(!privilege('admin.group'), function ($q) {
                 return $q->where('hidden', 0);
             })
 

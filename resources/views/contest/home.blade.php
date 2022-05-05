@@ -14,7 +14,7 @@
                 <div class="my-container bg-white">
 
                     <h3 class="text-center">{{$contest->id}}. {{$contest->title}}
-                        @if(Auth::check()&&privilege(Auth::user(), 'admin.problem.edit'))
+                        @if(Auth::check()&&privilege('admin.problem.edit'))
                             <span style="font-size: 0.85rem">
                                 [ <a href="{{route('admin.contest.update',$contest->id)}}" target="_blank">{{__('main.Edit')}}</a> ]
                             </span>
@@ -87,7 +87,7 @@
                             @foreach($files as $i=>$file)
                                 <div class="mr-4">
                                     {{$i+1}}.
-                                    @if(privilege(Auth::user(), 'admin.contest')||time()>strtotime($contest->start_time))
+                                    @if(privilege('admin.contest')||time()>strtotime($contest->start_time))
                                         <a href="{{$file[1]}}" class="mr-1" target="_blank">{{$file[0]}}</a>
                                     @else
                                         <a href="#" class="mr-1" target="_blank" disabled>{{$file[0]}}</a>
@@ -123,7 +123,7 @@
                                     </td>
                                     <td>{{index2ch($item->index)}}</td>
                                     <td nowrap>
-                                        @if(privilege(Auth::user(), 'admin.contest')||time()>strtotime($contest->start_time))
+                                        @if(privilege('admin.contest')||time()>strtotime($contest->start_time))
                                             <a href="{{route('contest.problem',[$contest->id,$item->index])}}">{{$item->title}}</a>
                                         @else
                                             -

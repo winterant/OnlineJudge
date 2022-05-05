@@ -23,7 +23,7 @@ class CheckContest
     {
         $contest=DB::table('contests')->find($request->route()->parameter('id'));
         //contest管理员直接进入
-        if(privilege(Auth::user(), 'admin.contest')) 
+        if(privilege('admin.contest')) 
             return $next($request);
 
         //============== 剩余情况均为普通用户 ==============

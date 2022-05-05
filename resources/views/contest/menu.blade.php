@@ -48,7 +48,7 @@
                     @endif
                 </a>
             </li>
-            @if(Auth::check()&&privilege(Auth::user(), 'balloon'))
+            @if(Auth::check()&&privilege('admin.contest.balloon'))
                 <li class="nav-item">
                     <a class="nav-link py-3" href="{{route('contest.balloons',$contest->id)}}">{{trans('main.Balloon')}}</a>
                 </li>

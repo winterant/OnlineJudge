@@ -84,7 +84,7 @@ class ContestController extends Controller
             ->when(isset($_GET['title']), function ($q) {
                 return $q->where('c.title', 'like', '%' . $_GET['title'] . '%');
             })
-            ->when(!Auth::check() || !privilege(Auth::user(), 'admin.contest'), function ($q) {
+            ->when(!Auth::check() || !privilege('admin.contest'), function ($q) {
                 return $q->where('c.hidden', 0);
             })
 
@@ -180,7 +180,7 @@ class ContestController extends Controller
         //是否需要显示开始判题的按钮, 是否允许点击，仅用于赛后判题模式
         $show_judge_button = false;
         $judge_enable = false;
-        if (privilege(Auth::user(), 'admin.contest') && $contest->judge_instantly == 0) {
+        if (privilege('admin.contest') && $contest->judge_instantly == 0) {
             $show_judge_button = true;
             $judge_enable = DB::table('solutions')->where('contest_id', $id)
                 ->where('result', 15)
@@ -276,7 +276,7 @@ class ContestController extends Controller
     public function status($id)
     {
         $contest = DB::table('contests')->find($id);
-        if (!privilege(Auth::user(), 'admin.contest') && time() < strtotime($contest->end_time)) //比赛没结束，只能看自己
+        if (!privilege('admin.contest') && time() < strtotime($contest->end_time)) //比赛没结束，只能看自己
             $_GET['username'] = Auth::user()->username;
 
         $solutions = DB::table('solutions')
@@ -320,11 +320,7 @@ class ContestController extends Controller
         //rank的辅助函数，获取榜单的截止时间
         if (!isset($_GET['buti'])) $_GET['buti'] = "true"; //默认打开补题开关
 
-        if (
-            Auth::check() &&
-            (privilege(Auth::user(), 'admin.contest')
-                || privilege(Auth::user(), 'admin.contest'))
-        ) {
+        if (privilege('admin.contest')) {
             if (isset($_GET['buti']) ? $_GET['buti'] == 'true' : false) //实时榜
                 $end = time();
             else //终榜
@@ -369,7 +365,7 @@ class ContestController extends Controller
             Cookie::queue('rank_table_lg', $_GET['big']); //保存榜单是否全屏
 
         //对于隐藏的竞赛，普通用户不能查看榜单
-        if ($contest->hidden && (!Auth::check() || !privilege(Auth::user(), 'admin.contest'))) {
+        if ($contest->hidden && !privilege('admin.contest')) {
             return view('client.fail', ['msg' => '竞赛不存在或权限不足！']);
         }
         $solutions = DB::table('solutions')

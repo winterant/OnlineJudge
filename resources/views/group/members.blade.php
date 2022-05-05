@@ -35,7 +35,7 @@
                                             <td nowrap>{{$u->nick}}</td>
                                             <td nowrap>{{$ident[intval($u->identity)]}}</td>
                                             <td nowrap>{{$u->created_at}}</td>
-                                            @if(privilege(Auth::user(),'admin') || $group->creator == Auth::user()->username)
+                                            @if(privilege('admin.group') || $group->creator == Auth::id())
                                                 <td nowrap>
                                                     {{-- <a href="javascript:alert('暂不支持备注')">备注</a> --}}
                                                     <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 2])}}" 
@@ -56,8 +56,7 @@
                     </div>
                 </div>
 
-                @if(privilege(Auth::user(),'admin') ||
-                    Auth::user() && $group->creator == Auth::user()->username)
+                @if(privilege('admin.group') || $group->creator == Auth::id())
                     @if($member_count[1]>0)
                         <div class="my-container bg-white">
                             <h5 class="">正在申请加入的用户</h5>
@@ -82,7 +81,7 @@
                                                     <td nowrap>{{$u->nick}}</td>
                                                     <td nowrap>{{$ident[intval($u->identity)]}}</td>
                                                     <td nowrap>{{$u->created_at}}</td>
-                                                    @if(privilege(Auth::user(),'admin') || $group->creator == Auth::user()->username)
+                                                    @if(privilege('admin.group') || $group->creator == Auth::id())
                                                         <td nowrap>
                                                             <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 2])}}" 
                                                                 class="ml-3">通过</a>
@@ -120,7 +119,7 @@
                                                     <td nowrap>{{$u->nick}}</td>
                                                     <td nowrap>{{$ident[intval($u->identity)]}}</td>
                                                     <td nowrap>{{$u->created_at}}</td>
-                                                    @if(privilege(Auth::user(),'admin') || $group->creator == Auth::user()->username)
+                                                    @if(privilege('admin.group') || $group->creator == Auth::id())
                                                         <td nowrap>
                                                             <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 2])}}" 
                                                                 class="">重新邀入</a>

@@ -69,8 +69,7 @@ class ProblemController extends Controller
             ->where('problem_id',$id)
             ->get();
 
-        if($problem->hidden &&
-            (!Auth::check() || Auth::check()&&!privilege(Auth::user(), 'teacher'))) // 问题是隐藏的，那么不登录或无权限是不可以看题的
+        if($problem->hidden && (!Auth::check() || !privilege('admin.problem.list'))) // 问题是隐藏的，那么不登录或无权限是不可以看题的
         {
             $msg=trans('main.Problem').$id.': '.trans('main.Hidden').'; ';
             if($contests){
@@ -152,7 +151,7 @@ class ProblemController extends Controller
             ->select('id','username','content','top','hidden','created_at')
             ->where('problem_id',$problem_id)
             ->where('discussion_id',-1)
-            ->when(!Auth::check()||!privilege(Auth::user(), 'admin.problem.tag'),function ($q){return $q->where('hidden',0);})
+            ->when(!privilege('admin.problem.tag'),function ($q){return $q->where('hidden',0);})
             ->orderByDesc('top')
             ->orderByDesc('created_at')
             ->forPage($page,3)
@@ -168,7 +167,7 @@ class ProblemController extends Controller
         $son_disc = DB::table('discussions')
             ->select('id','discussion_id','username','reply_username','content','top','hidden','created_at')
             ->whereIn('discussion_id',$ids)
-            ->when(!Auth::check()||!privilege(Auth::user(), 'admin.problem.tag'),function ($q){return $q->where('hidden',0);})
+            ->when(!privilege('admin.problem.tag'),function ($q){return $q->where('hidden',0);})
             ->orderBy('created_at')
             ->get();
         $replies = [];
@@ -184,7 +183,7 @@ class ProblemController extends Controller
     }
 
     public function edit_discussion(Request $request,$pid){
-        if(!privilege(Auth::user(), 'admin.problem.tag')){
+        if(!privilege('admin.problem.tag')){
             $last_time=DB::table('discussions')
                 ->where('username',Auth::user()->username)
                 ->where('discussion_id',-1)

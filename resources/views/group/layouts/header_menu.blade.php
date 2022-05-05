@@ -10,7 +10,7 @@
                 {{__('main.Find')}}{{__('main.Groups')}}
             </a>
         </li>
-        @if(privilege(Auth::user(), 'admin.group.edit'))
+        @if(privilege('admin.group.edit'))
             <li class="nav-item">
                 <a class="nav-link text-center py-3" href="{{route('admin.group.edit')}}">
                     {{__('main.New Group')}}

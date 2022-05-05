@@ -43,7 +43,7 @@ class GroupController extends Controller
         // ============  修改群组信息 ==============
         if (!($group = DB::table('groups')->find($_GET['id'])))
             return view('client.fail', ['msg' => '群组不存在!']);
-        if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
+        if (!privilege('admin') && Auth::id() != $group->creator)
             return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
         // 提供界面
         if ($request->isMethod('get')) {
@@ -86,7 +86,7 @@ class GroupController extends Controller
     {
         if (!($group = DB::table('groups')->find($id)))
             return view('client.fail', ['msg' => '群组不存在!']);
-        if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
+        if (!privilege('admin') && Auth::id() != $group->creator)
             return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
         // 开始处理
         $unames = explode(PHP_EOL, $request->input('usernames'));
@@ -110,7 +110,7 @@ class GroupController extends Controller
     {
         if (!($group = DB::table('groups')->find($id)))
             return view('client.fail', ['msg' => '群组不存在!']);
-        if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
+        if (!privilege('admin') && Auth::id() != $group->creator)
             return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
         // 开始处理
         DB::table('group_users')
@@ -125,7 +125,7 @@ class GroupController extends Controller
     {
         if (!($group = DB::table('groups')->find($id)))
             return view('client.fail', ['msg' => '群组不存在!']);
-        if (!privilege(Auth::user(), 'admin') && Auth::id() != $group->creator)
+        if (!privilege('admin') && Auth::id() != $group->creator)
             return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备最高管理权限[admin]!']);
         // 开始处理
         DB::table('group_users')

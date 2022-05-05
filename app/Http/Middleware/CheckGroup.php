@@ -15,7 +15,7 @@ class CheckGroup
     {
         $group=DB::table('groups')->find($request->route()->parameter('id'));
         //管理员直接进入
-        if(privilege(Auth::user(), 'admin.group')) 
+        if(privilege('admin.group')) 
             return $next($request);
 
         //============== 剩余情况均为普通用户 ==============

@@ -22,13 +22,13 @@ class UserController extends Controller
         $submissions = DB::table('solutions')
             ->where('user_id', $user->id)
             ->get();
-        $results=[]; // 按提交结果统计
-        $problem_submitted=[]; // 每个题目的提交次数
-        $problem_ac=[]; // 每个题目的ac次数
-        foreach($submissions as $item){
+        $results = []; // 按提交结果统计
+        $problem_submitted = []; // 每个题目的提交次数
+        $problem_ac = []; // 每个题目的ac次数
+        foreach ($submissions as $item) {
             $results[$item->result] = (isset($results[$item->result]) ? $results[$item->result] : 0) + 1;
             $problem_submitted[$item->problem_id] = (isset($problem_submitted[$item->problem_id]) ? $problem_submitted[$item->problem_id] : 0) + 1;
-            if($item->result==4)
+            if ($item->result == 4)
                 $problem_ac[$item->problem_id] = (isset($problem_ac[$item->problem_id]) ? $problem_ac[$item->problem_id] : 0) + 1;
         }
 
@@ -44,13 +44,10 @@ class UserController extends Controller
 
     public function user_edit(Request $request, $username)
     {
-        $online = Auth::user();
-        $user = DB::table('users')->where('username', $username)->first();
-        if (!privilege($online, 'admin.user') && $online->username != $username) //不是管理员&&不是本人
+        if (!privilege('admin.user.edit') && Auth::user()->username != $username) //不是管理员&&不是本人
             return view('client.fail', ['msg' => trans('sentence.Permission denied')]);
-        if ($online->id == $user->id && $user->revise <= 0) //是本人&&没有修改次数
-            return view('client.fail', ['msg' => trans('sentence.user_edit_chances', ['i' => Auth::user()->revise])]);
 
+        $user = DB::table('users')->where('username', $username)->first();
         // 提供修改界面
         if ($request->isMethod('get')) {
             return view('auth.user_edit', compact('user'));
@@ -58,6 +55,9 @@ class UserController extends Controller
 
         // 提交修改资料
         if ($request->isMethod('post')) {
+            if (Auth::user()->id == $user->id && $user->revise <= 0)     // 是本人&&没有修改次数
+                return view('client.fail', ['msg' => trans('sentence.forbid_edit')]); // 不允许本人修改
+
             $user = $request->input('user');
             $user['updated_at'] = date('Y-m-d H:i:s');
             $ret = DB::table('users')->where('username', $username)->update($user);
@@ -72,8 +72,7 @@ class UserController extends Controller
 
     public function password_reset(Request $request, $username)
     {
-        $online = Auth::user();
-        if (!privilege($online, 'admin.user') && $online->username != $username) //不是管理员&&不是本人
+        if (!privilege('admin.user.edit') && Auth::user()->username != $username) //不是管理员&&不是本人
             return view('client.fail', ['msg' => trans('sentence.Permission denied')]);
 
         // 提供界面

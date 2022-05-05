@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 
 // 获取用户真实ip（参考https://blog.csdn.net/m0_46266407/article/details/107222142）
@@ -22,31 +23,44 @@ function get_client_real_ip()
     return $clientip;
 }
 
-//查询用户权限: 查询user是否具有power权限
-function privilege($user, $power)
+function starts_with($str, $prefix)
 {
-    //无效的user
+    return substr($str, 0, strlen($prefix)) == $prefix;
+}
+
+//查询用户权限: 查询user是否具有power权限
+function privilege($power, $user = null)
+{
+    // 默认为当前用户
+    if ($user == null)
+        $user = Auth::user();
+    // 无效的user
     if (!$user || !isset($user->id))
         return false;
-
-    //teacher涵盖以下权限；即 只要数据库中查询到teacher权限，则该用户拥有以下权限
-    if (in_array($power, [
-        'admin.home',
-        'admin.problem.list',
-        'admin.contest',
-        'admin.group',
-    ]))
-        $power = array_merge((array)$power, ['teacher']);
-
-    //admin涵盖所有权限
-    $power = array_merge((array)$power, ['admin']);
-
-    //查询该用户的权限
-    if (DB::table('privileges')->where('user_id', $user->id)->whereIn('authority', $power)->exists()) {
-        return true;
-    } else {
-        return false;
+    /*
+    权限说明：
+        admin涵盖所有权限
+        admin.home为进入后台的权限
+        admin.problem包含admin.problem.*所有权限，其它类同
+        只要数据库中含有$power的前缀，则说明具有当前权限.
+    */
+    // 从数据库中查询出该用户已有权限
+    $powers = DB::table('privileges')->where('user_id', $user->id)->pluck('authority');
+    foreach ($powers as $p) {
+        // 数据库中具有上层权限，验证通过
+        if (starts_with($power, $p))
+            return true;
+        // 如果数据库中含有teacher，则查询以下权限时均通过
+        if (
+            $p == 'teacher' &&
+            starts_with($power, 'admin.home') &&
+            starts_with($power, 'admin.problem') &&
+            starts_with($power, 'admin.contest') &&
+            starts_with($power, 'admin.group')
+        )
+            return true;
     }
+    return false;
 }
 
 // 获取测试数据保存路径

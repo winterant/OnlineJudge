@@ -147,7 +147,7 @@
                         <a class="dropdown-item" href="{{route('user',Auth::user()->username)}}">{{trans('main.Profile')}}</a>
                         <a class="dropdown-item" href="{{route('password_reset',Auth::user()->username)}}">{{trans('sentence.Reset Password')}}</a>
 
-                        @if(privilege(Auth::user(), 'teacher'))
+                        @if(privilege('admin.home'))
                             <a class="dropdown-item" href="{{route('admin.home')}}">{{trans('main.Administration')}}</a>
                         @endif
 

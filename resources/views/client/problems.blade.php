@@ -56,7 +56,7 @@
                             @foreach($problems as $item)
                                 <tr>
                                     <td>{{$item->id}}</td>
-                                    @if($item->hidden==0 || Auth::check()&&privilege(Auth::user(), 'teacher'))
+                                    @if($item->hidden==0 || Auth::check()&&privilege('admin.problem.list'))
                                         <td nowrap>
                                             <a href="{{route('problem',$item->id)}}">{{$item->title}}</a>
                                             @if($item->hidden==1)
