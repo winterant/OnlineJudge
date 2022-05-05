@@ -90,7 +90,7 @@
                             <div class="form-inline">
                                 <label>账号前缀：
                                     <input type="text" name="data[prefix]" value="{{old('data.prefix')?:'team'}}"
-                                           onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')" class="ttt form-control">
+                                           onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" class="ttt form-control">
                                 </label>
                             </div>
                             <div class="form-inline">

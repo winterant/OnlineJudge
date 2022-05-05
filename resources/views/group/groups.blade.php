@@ -61,7 +61,7 @@
 
             <div class="row row-eq-height">
                 @foreach($groups as $item)
-                    <div class="col-12 col-sm-6 col-md-3">
+                    <div class="col-12 col-sm-6 col-md-3 col-lg-2">
                         <div class="my-3 p-3 border">
                             {{-- <img class="" src="" alt="" /> --}}
                             <h5>
