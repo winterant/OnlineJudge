@@ -71,11 +71,11 @@
                                     </th>
                                     <th>
                                         <div class="form-group m-0 p-0 bmd-form-group">
-                                            <select name="result" class="pl-1 form-control" onchange="this.form.submit();">
-                                                <option class="form-control" value="-1">All Result</option>
+                                            <select name="result" class="px-2 form-control" onchange="this.form.submit();">
+                                                <option class="form-control" value="-1">{{__('main.All Result')}}</option>
                                                 @foreach(config('oj.result') as $key=>$res)
                                                     <option value="{{$key}}" class="{{config('oj.resColor.'.$key)}}"
-                                                            @if(isset($_GET['result'])&&$key==$_GET['result'])selected @endif>{{$res}}</option>
+                                                            @if(isset($_GET['result'])&&$key==$_GET['result'])selected @endif>{{__('result.'.$res)}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -84,8 +84,8 @@
                                     <th nowrap>{{__('main.Memory')}}</th>
                                     <th>
                                         <div class="form-group m-0 p-0 bmd-form-group">
-                                            <select name="language" class="pl-1 form-control" onchange="this.form.submit();">
-                                                <option class="form-control" value="-1">{{__('main.Language')}}</option>
+                                            <select name="language" class="px-2 form-control" onchange="this.form.submit();">
+                                                <option class="form-control" value="-1">{{__('main.All Language')}}</option>
                                                 @foreach(config('oj.lang') as $key=>$res)
                                                     <option value="{{$key}}"
                                                             @if(isset($_GET['language'])&&$key==$_GET['language'])selected @endif>{{$res}}</option>
@@ -141,7 +141,7 @@
                                             <font hidden>{{$sol->id}}</font>
                                             <font hidden>{{$sol->result}}</font>
                                             <font id="result_{{$sol->id}}" class="{{config('oj.resColor.'.$sol->result)}} result_td">
-                                                {{config('oj.result.'.$sol->result)}}
+                                                {{ __('result.' . config('oj.result.'.$sol->result)) }}
                                                 @if($sol->judge_type=='oi')
                                                     ({{round($sol->pass_rate*100)}})
                                                 @endif

@@ -337,7 +337,7 @@
                                                 @if($sol->result<4)
                                                     <i class="fa fa-spinner" aria-hidden="true"></i>
                                                 @endif
-                                                {{config('oj.result.'.$sol->result)}}
+                                                {{__('result.' . config('oj.result.'.$sol->result))}}
                                             </td>
                                             <td>{{$sol->time}}ms</td>
                                             <td>{{round($sol->memory,2)}}MB</td>
@@ -453,7 +453,7 @@
                     data: [
                             @foreach($results as $item)
                         {
-                            name: '{{config('oj.result.'.$item->result)}}', value: {{$item->result_count}}
+                            name: '{{__("result.".config("oj.result.".$item->result))}}', value: {{$item->result_count}}
                         },
                         @endforeach
                     ]

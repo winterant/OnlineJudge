@@ -130,6 +130,7 @@ return [
     "Time"          => "Time",
     "Memory"        => "Memory",
     "Language"      => "Language",
+    "All Language"  => "All Language",
     "Judge Type"    => "Judge Type",
     "Time Limit"    => "Time Limit",
     "Memory Limit"  => "Memory Limit",
@@ -146,6 +147,7 @@ return [
     "More"          => "More",
     "Similarity Check" => "Similarity Check",
     "Wrong Data"    => "Wrong Data",
+    "All Result"    => "All Result",
 
 
 //    contest

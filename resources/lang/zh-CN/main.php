@@ -129,6 +129,7 @@ return [
     "Time"          => "时间",
     "Memory"        => "空间",
     "Language"      => "语言",
+    "All Language"  => "所有语言",
     "Judge Type"    => "判题类型",
     "Time Limit"    => "时间限制",
     "Memory Limit"  => "空间限制",
@@ -145,6 +146,7 @@ return [
     "More"          => "更多",
     "Similarity Check" => "相似度",
     "Wrong Data"    => "出错数据",
+    "All Result"    => "所有结果",
 
 
     //    contest
