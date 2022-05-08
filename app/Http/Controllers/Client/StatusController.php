@@ -141,9 +141,18 @@ class StatusController extends Controller
             ->select('solutions.problem_id', 'solutions.user_id', 'contests.end_time', 'solutions.wrong_data')
             ->where('solutions.id', $id)
             ->first();
-        if (($solution && Auth::id() == $solution->user_id && $solution->wrong_data !== null) || privilege('admin.problem.solution')) {
-            if (date('Y-m-d H:i:s') < $solution->end_time) //比赛未结束
+        if (!$solution || !$solution->wrong_data)
+            return abort(404);
+        $allow_get = false;
+        if (privilege('admin.problem.solution')) // 管理员可以直接看
+            $allow_get = true;
+        else if (Auth::id() == $solution->user_id) // 普通用户
+        {
+            if ($solution->end_time && date('Y-m-d H:i:s') < $solution->end_time) // 比赛未结束
                 return view('client.fail', ['msg' => trans('sentence.not_end')]);
+            $allow_get = true;
+        }
+        if ($allow_get) {
             if ($type == 'in')
                 return '<pre>' . file_get_contents(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.in')) . '</pre>';
             else if (file_exists(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.out')))
