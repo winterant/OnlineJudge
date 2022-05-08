@@ -89,6 +89,13 @@ return [
 
 //problem
     "Title"         => "Title",
+    "PDescription"  => "Problem Description",
+    "IDescription"  => "Input Description",
+    "ODescription"  => "Output Description",
+    "Samples"       => "Samples",
+    "Input"         => "Input",
+    "Output"        => "Output",
+    "Hint"          => "Hint",
     "Source"        => "Source",
     "Submitted"     => "Submitted",
     "AC/Submitted"     => "Accepted / Submitted",

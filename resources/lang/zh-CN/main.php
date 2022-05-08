@@ -89,6 +89,13 @@ return [
 
     //problem
     "Title"         => "标题",
+    "PDescription"  => "题目描述",
+    "IDescription"  => "输入描述",
+    "ODescription"  => "输出描述",
+    "Samples"       => "样例",
+    "Input"         => "输入",
+    "Output"        => "输出",
+    "Hint"          => "提示",
     "Source"        => "来源",
     "Submitted"     => "已提交",
     "AC/Submitted"     => "接受/提交",

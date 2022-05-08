@@ -21,29 +21,22 @@
                 <div class="my-container bg-white d-inline-block">
                     {{--                非竞赛&&题目未公开，则提示 --}}
                     @if(!isset($contest)&&$problem->hidden==1)
-                        [<font class="text-red">{{trans('main.Hidden')}}</font>]
+                        [<span class="text-red">{{trans('main.Hidden')}}</span>]
                     @endif
                     <h4 class="text-center">{{isset($contest)?index2ch($problem->index):$problem->id}}
                         . {{$problem->title}}
-                        {{--                    管理员编辑题目的连接 --}}
-                        @if(Auth::check()&&privilege('admin.problem.edit'))
-                            <font style="font-size: 0.85rem">
-                                [ <a href="{{route('admin.problem.update_withId',$problem->id)}}"
-                                     target="_blank">{{__('main.Edit')}}</a> ]
-                                [ <a href="{{route('admin.problem.test_data',['pid'=>$problem->id])}}"
-                                     target="_blank">{{__('main.Test Data')}}</a> ]
-                            </font>
-                        @endif
-                        @if(isset($contest)&&(Auth::check()&&privilege('admin.problem.list')||$contest->end_time<date('Y-m-d H:i:s')))
-                            <font style="font-size: 0.85rem">
-                                [
-                                <a href="{{route('problem',$problem->id)}}">{{__('main.Problem')}} {{$problem->id}}</a>
-                                <i class="fa fa-external-link text-sky" aria-hidden="true"></i>
-                                ]
-                            </font>
+                        
+                        @if(isset($contest))
+                            <span style="font-size: 0.85rem">
+                                [ <a href="{{route('contest.status',[$contest->id,'index'=>$problem->index])}}">{{__('main.Status')}}</a> ]
+                            </span>
+                        @else
+                            <span style="font-size: 0.85rem">
+                                [ <a href="{{route('status',['pid'=>$problem->id])}}">{{__('main.Status')}}</a> ]
+                            </span>
                         @endif
                         @if(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time))
-                            <font style="font-size: 0.85rem">
+                            <span style="font-size: 0.85rem">
                                 [
                                 <a href="javascript:"
                                    onclick="$('html,body').animate({scrollTop:$('#discussion_block').offset().top-20}, 400);"
@@ -51,45 +44,61 @@
                                     {{__('main.Discussion')}}
                                 </a>
                                 ]
-                            </font>
+                            </span>
+                        @endif
+                        @if(isset($contest)&&(privilege('admin.problem.list')||$contest->end_time<date('Y-m-d H:i:s')))
+                            <span style="font-size: 0.85rem">
+                                [
+                                <a href="{{route('problem',$problem->id)}}">{{__('main.Problem')}} {{$problem->id}}</a>
+                                <i class="fa fa-external-link text-sky" aria-hidden="true"></i>
+                                ]
+                            </span>
+                        @endif
+                        @if(privilege('admin.problem.edit'))
+                            <span style="font-size: 0.85rem">
+                                [ <a href="{{route('admin.problem.update_withId',$problem->id)}}"
+                                     target="_blank">{{__('main.Edit')}}</a> ]
+                                [ <a href="{{route('admin.problem.test_data',['pid'=>$problem->id])}}"
+                                     target="_blank">{{__('main.Test Data')}}</a> ]
+                            </span>
                         @endif
                     </h4>
-                    <hr class="mt-0 mb-1">
+                    <hr>
                     <div class="math_formula">
-                        <h4 class="text-sky">Description</h4>
+                        <h4 class="text-sky">{{__('main.PDescription')}}</h4>
                         <div class="ck-content">{!! $problem->description !!}</div>
 
                         @if($problem->input!=null)
-                            <h4 class="mt-2 text-sky">Input</h4>
+                            <h4 class="mt-2 text-sky">{{__('main.IDescription')}}</h4>
                             <div class="ck-content">{!!$problem->input !!}</div>
                         @endif
 
                         @if($problem->output!=null)
-                            <h4 class="mt-2 text-sky">Output</h4>
+                            <h4 class="mt-2 text-sky">{{__('main.ODescription')}}</h4>
                             <div class="ck-content">{!!$problem->output !!}</div>
                         @endif
 
                         @if(count($samples) > 0)
-                            <h4 class="mt-2 text-sky">Samples</h4>
+                            <h4 class="mt-2 text-sky">{{__('main.Samples')}}</h4>
                         @endif
                         @foreach($samples as $i=>$sam)
                             <div class="border mb-4 not_math">
-                                <div class="border-bottom pl-2 bg-light">Input
+                                <div class="border-bottom pl-2 bg-light">{{__('main.Input')}}
                                     <a href="javascript:" onclick="copy('sam_in{{$i}}')">{{__('main.Copy')}}</a>
                                 </div>
                                 <pre class="m-1" id="sam_in{{$i}}">{{$sam[0]}}</pre>
-                                <div class="border-top border-bottom pl-2 bg-light">Output</div>
+                                <div class="border-top border-bottom pl-2 bg-light">{{__('main.Output')}}</div>
                                 <pre class="m-1">{{$sam[1]}}</pre>
                             </div>
                         @endforeach
 
                         @if($problem->hint!=null)
-                            <h4 class="mt-2 text-sky">Hint</h4>
+                            <h4 class="mt-2 text-sky">{{__('main.Hint')}}</h4>
                             <div class="ck-content">{!! $problem->hint !!}</div>
                         @endif
 
                         @if( ($problem->source!=null) && (!isset($contest)||$contest->end_time<date('Y-m-d H:i:s')) )
-                            <h4 class="mt-2 text-sky">Source</h4>
+                            <h4 class="mt-2 text-sky">{{__('main.Source')}}</h4>
                             {{$problem->source}}
                         @endif
                     </div>

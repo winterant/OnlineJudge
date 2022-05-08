@@ -135,7 +135,7 @@
                                         </td>
                                         <td nowrap>
                                             <a href="{{route('user',$sol->username)}}" target="_blank">{{$sol->username}}</a>
-                                            @if(isset($sol->nick))&nbsp;{{$sol->nick}}@endif
+                                            @if(isset($sol->nick) && $sol->nick)&nbsp;{{$sol->nick}}@endif
                                         </td>
                                         <td nowrap>
                                             <font hidden>{{$sol->id}}</font>

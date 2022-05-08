@@ -103,7 +103,7 @@ class StatusController extends Controller
                     'id' => $item->id,
                     'result' => $item->result,
                     'color' => config('oj.resColor.' . $item->result),
-                    'text' => config('oj.result.' . $item->result) . ($item->judge_type == 'oi' ? sprintf(' (%s)', round($item->pass_rate * 100)) : null),
+                    'text' => trans('result.' . config('oj.result.' . $item->result)) . ($item->judge_type == 'oi' ? sprintf(' (%s)', round($item->pass_rate * 100)) : null),
                     'time' => $item->time . 'MS',
                     'memory' => round($item->memory, 2) . 'MB'
                 ];
