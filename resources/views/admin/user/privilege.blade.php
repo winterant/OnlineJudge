@@ -80,7 +80,7 @@
                         <select id="privi" class="form-control border border-bottom-0 px-3 bg-white" name="privilege[authority]">
                             <option value="admin">admin（超级管理员）</option>
                             <option value="teacher">teacher（教师）</option>
-                            <option value="solution">solution（查看代码）</option>
+                            <option value="admin.problem.solution">admin.problem.solution（查看代码）</option>
 {{--                            <option value="problem_list">problem_list（查看问题列表）</option>--}}
 {{--                            <option value="problem_tag">problem_tag（管理问题标签与讨论板）</option>--}}
 {{--                            <option value="problem_edit">problem_edit（编辑/添加题目）</option>--}}
@@ -88,7 +88,7 @@
 {{--                            <option value="problem_rejudge">problem_rejudge（重判提交记录）</option>--}}
 {{--                            <option value="import_export_problem">import_export_problem（导入/导出题目）</option>--}}
 {{--                            <option value="contest">contest（管理竞赛）</option>--}}
-                            <option value="balloon">balloon（派送气球）</option>
+                            <option value="admin.contest.balloon">admin.contest.balloon（派送气球）</option>
                         </select>
                     </label>
                 </div>
@@ -122,7 +122,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td nowrap>solution</td><td nowrap>查看所有用户提交的代码</td>
+                            <td nowrap>admin.problem.solution</td><td nowrap>查看所有用户提交的代码</td>
                         </tr>
 {{--                        <tr>--}}
 {{--                            <td nowrap>problem_list</td><td nowrap>查看题目列表</td>--}}
@@ -146,7 +146,7 @@
 {{--                            <td nowrap>contest</td><td nowrap>管理竞赛，增删改查</td>--}}
 {{--                        </tr>--}}
                         <tr>
-                            <td nowrap>balloon</td><td nowrap>在竞赛中查看气球派送信息</td>
+                            <td nowrap>admin.contest.balloon</td><td nowrap>在竞赛中查看气球派送信息</td>
                         </tr>
                     </tbody>
                 </table>

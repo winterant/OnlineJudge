@@ -78,7 +78,7 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->wher
             Route::post('/start_to_judge', 'Client\ContestController@start_to_judge')->name('start_to_judge');
         });
 
-        Route::middleware(['Privilege:balloon'])->group(function () { //气球,需要权限
+        Route::middleware(['Privilege:admin.contest.balloon'])->group(function () { //气球,需要权限
             Route::get('/balloons', 'Client\ContestController@balloons')->name('balloons');
             Route::post('/deliver_ball/{bid}', 'Client\ContestController@deliver_ball')->name('deliver_ball');
         });
