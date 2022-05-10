@@ -28,9 +28,7 @@ Route::get('/problems', 'Client\ProblemController@problems')->name('problems');
 Route::get('/problem/{id}', 'Client\ProblemController@problem')->middleware('CheckBlacklist')->where(['id' => '[0-9]+'])->name('problem');
 Route::get('/contests', 'Client\ContestController@contests')->name('contests');
 Route::get('/contests/{cate}', 'Client\ContestController@contests')->name('contests');
-Route::get('/groups', 'Client\GroupController@groups')->name('groups');
-Route::get('/groups/my', 'Client\GroupController@mygroups')->name('groups.my');
-Route::get('/groups/all', 'Client\GroupController@allgroups')->name('groups.all');
+
 Route::get('/standings', 'Client\UserController@standings')->name('standings');
 Route::get('/user/{username}', 'Client\UserController@user')->name('user');
 Route::get('/change_language/{lang}', 'Client\UserController@change_language')->name('change_language');
@@ -89,6 +87,11 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->wher
 });
 
 // group，用户前台group页面所有路由
+Route::middleware(['auth'])->group(function () {
+    Route::get('/groups', 'Client\GroupController@groups')->name('groups');
+    Route::get('/groups/my', 'Client\GroupController@mygroups')->name('groups.my');
+    Route::get('/groups/all', 'Client\GroupController@allgroups')->name('groups.all');
+});
 Route::prefix('group/{id}')->name('group.')->where(['id' => '[0-9]+'])->where(['pid' => '[0-9]+'])->group(function () {
     Route::middleware(['auth', 'CheckGroup', 'CheckBlacklist'])->group(function () {
         Route::get('/', 'Client\GroupController@home')->name('home');
