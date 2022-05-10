@@ -46,6 +46,7 @@ if(!empty($diff1))
 }
 
 //删除db2中多余的表。注意，重命名的表会被删除！！
+/*
 if(!empty($diff2))
 {
     foreach($diff2 as $val)
@@ -54,6 +55,7 @@ if(!empty($diff2))
     }
     $result_sql.="\n";
 }
+*/
 
 //比较字段信息
 foreach($data1 as $key1 => $val1)

@@ -226,7 +226,8 @@ CREATE TABLE `discussions`  (
     `top` int(11) NULL DEFAULT 0,
     `hidden` tinyint(4) NULL DEFAULT 0,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `IDX_problem_id`(`problem_id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -239,7 +240,10 @@ CREATE TABLE `tag_marks`  (
     `user_id` int(11) NOT NULL,
     `tag_id` int(11) NOT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `IDX_problem_id`(`problem_id`) USING BTREE,
+    INDEX `IDX_user_id`(`user_id`) USING BTREE,
+    INDEX `IDX_tag_id`(`tag_id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = FIXED;
 
 -- ----------------------------
@@ -284,7 +288,8 @@ CREATE TABLE `solutions`  (
     INDEX `uid`(`user_id`) USING BTREE,
     INDEX `pid`(`problem_id`) USING BTREE,
     INDEX `res`(`result`) USING BTREE,
-    INDEX `cid`(`contest_id`) USING BTREE
+    INDEX `cid`(`contest_id`) USING BTREE,
+    INDEX `IDX_submit_time`(`submit_time`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
