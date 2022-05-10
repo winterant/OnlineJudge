@@ -366,7 +366,7 @@ class ContestController extends Controller
 
         //对于隐藏的竞赛，普通用户不能查看榜单
         if ($contest->hidden && !privilege('admin.contest')) {
-            return view('client.fail', ['msg' => '竞赛不存在或权限不足！']);
+            return view('client.fail', ['msg' => '该竞赛处于隐藏状态，不可查看榜单。']);
         }
         $solutions = DB::table('solutions')
             ->join('contest_problems', function ($join) {
