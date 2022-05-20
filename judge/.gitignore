@@ -1,4 +1,7 @@
 config.sh
+polling
+judge
+/run
 sim/add_run.o
 sim/any_int.o
 sim/compare.o
@@ -32,5 +35,3 @@ sim/text.o
 sim/token.o
 sim/tokenarray.o
 sim/utf8.o
-polling
-judge

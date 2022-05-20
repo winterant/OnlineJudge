@@ -37,6 +37,9 @@ function privilege($power, $user = null)
     // 无效的user
     if (!$user || !isset($user->id))
         return false;
+    // 验证权限代号的有效性
+    if (!array_key_exists($power, config('oj.authority')))
+        abort(502, '[系统错误] 不存在的权限：' . $power);
     /*
     权限说明：
         admin涵盖所有权限
