@@ -55,7 +55,7 @@
                 <th>类型</th>
                 <th>出处</th>
                 <th>特判</th>
-                <th>解决/AC/提交</th>
+                {{-- <th>解决/AC/提交</th> --}}
                 <th>创建时间</th>
                 <th>创建人</th>
                 <th>当前状态</th>
@@ -73,7 +73,7 @@
                     <td nowrap>{{$item->type?'代码填空':'编程'}}</td>
                     <td nowrap>{{$item->source}}</td>
                     <td nowrap>{{$item->spj?'特判':'否'}}</td>
-                    <td nowrap>{{$item->solved}} / {{$item->accepted}} / {{$item->submitted}}</td>
+                    {{-- <td nowrap>{{$item->solved}} / {{$item->accepted}} / {{$item->submitted}}</td> --}}
                     <td nowrap>{{$item->created_at}}</td>
                     <td><a @if($item->creator)href="{{route('user',$item->creator)}}"@endif target="_blank">{{$item->creator}}</a></td>
                     <td nowrap>

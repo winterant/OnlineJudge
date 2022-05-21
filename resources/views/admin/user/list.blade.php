@@ -70,7 +70,7 @@
                     <th nowrap>姓名</th>
                     <th nowrap>学校</th>
                     <th nowrap>班级</th>
-                    <th nowrap>解决/通过/提交</th>
+                    {{-- <th nowrap>解决/通过/提交</th> --}}
                     <th nowrap>修改资料
                         <a href="javascript:" style="color: #838383"
                            onclick="whatisthis('允许用户可自行修改个人资料的次数，可防止用户随意改动。影响状态、榜单等混乱。管理员不受限制')">
@@ -99,7 +99,7 @@
                         <td nowrap>{{$item->nick}}</td>
                         <td nowrap>{{$item->school}}</td>
                         <td nowrap>{{$item->class}}</td>
-                        <td nowrap>{{$item->solved}} / {{$item->accepted}} / {{$item->submitted}}</td>
+                        {{-- <td nowrap>{{$item->solved}} / {{$item->accepted}} / {{$item->submitted}}</td> --}}
                         <td nowrap>
                             <input id="switch_revise{{$item->id}}" type="checkbox">
                             <script type="text/javascript">

@@ -29,10 +29,11 @@ class ProblemController extends Controller
                 'spj',
                 'problems.created_at',
                 'hidden',
-                'username as creator',
-                'problems.solved',
-                'problems.accepted',
-                'problems.submitted'
+                'username as creator'
+                // 暂不查询做题数
+                // 'problems.solved',
+                // 'problems.accepted',
+                // 'problems.submitted'
             )
             ->when(isset($_GET['pid']) && $_GET['pid'] != '', function ($q) {
                 return $q->where('problems.id', $_GET['pid']);

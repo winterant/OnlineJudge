@@ -100,6 +100,7 @@ return [
     "Submitted"     => "已提交",
     "AC/Submitted"     => "接受/提交",
     "AC/Solved/Submitted"  => "接受/解决/提交",
+    "Solved/Submitted"  => "解决/提交",
     "ACRate"        => "接受率",
     "SolvedRate"    => "解决率",
     "Public"        => "公开",

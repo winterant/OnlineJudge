@@ -100,6 +100,7 @@ return [
     "Submitted"     => "Submitted",
     "AC/Submitted"     => "Accepted / Submitted",
     "AC/Solved/Submitted"     => "Accepted / Solved / Submitted",
+    "Solved/Submitted"     => "Solved / Submitted",
     "ACRate"        => "Accepted Rate",
     "SolvedRate"    => "Solved Rate",
     "Public"        => "Public",

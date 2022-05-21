@@ -16,29 +16,33 @@
             <div class="overflow-hidden">
                 <h4 class="pull-left">{{__('main.Standings')}}</h4>
                 <form action="" method="get" class="pull-right form-inline">
-                    <div class="form-inline mx-3">
+                    <div class="form-inline mx-1">
                         <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
                             <option value="10" @if(isset($_GET['perPage'])&&$_GET['perPage']==10)selected @endif>10</option>
                             <option value="20" @if(isset($_GET['perPage'])&&$_GET['perPage']==20)selected @endif>20</option>
-                            <option value="30" @if(!isset($_GET['perPage'])||$_GET['perPage']==30)selected @endif>30</option>
-                            <option value="50" @if(isset($_GET['perPage'])&&$_GET['perPage']==50)selected @endif>50</option>
+                            <option value="50" @if(!isset($_GET['perPage'])||$_GET['perPage']==50)selected @endif>50</option>
                             <option value="100" @if(isset($_GET['perPage'])&&$_GET['perPage']==100)selected @endif>100</option>
-                            <option value="200" @if(isset($_GET['perPage'])&&$_GET['perPage']==200)selected @endif>200</option>
+                            <option value="200" @if(isset($_GET['perPage'])&&$_GET['perPage']==500)selected @endif>200</option>
                         </select>
                     </div>
-                    <div class="form-inline mx-3">
-                        <select name="range" class="form-control px-3" onchange="this.form.submit();">
-                            <option value="0">{{__('main.All')}}</option>
-                            <option value="year" @if(isset($_GET['range'])&&$_GET['range']=='year')selected @endif>{{__('main.Year')}}</option>
-                            <option value="month" @if(isset($_GET['range'])&&$_GET['range']=='month')selected @endif>{{__('main.Month')}}</option>
-                            <option value="week" @if(isset($_GET['range'])&&$_GET['range']=='week')selected @endif>{{__('main.Week')}}</option>
-                            <option value="day" @if(isset($_GET['range'])&&$_GET['range']=='day')selected @endif>{{__('main.Day')}}</option>
-                        </select>
-                    </div>
-                    <div class="form-inline mx-3">
+                    <div class="form-inline mx-1">
                         <input type="text" class="form-control text-center" placeholder="Username" onchange="this.form.submit();"
                                name="username" value="{{isset($_GET['username'])?$_GET['username']:''}}">
                     </div>
+
+                    {{-- 
+                    <div class="form-inline mx-1">
+                        <input type="datetime-local" name="start_time"
+                            @if(isset($_GET['start_time']))
+                                value="{{urldecode($_GET['start_time'])}}"
+                            @endif
+                            class="form-control">
+                        <span class="mx-2">-</span>
+                        <input type="datetime-local" name="end_time"
+                               value="{{isset($contest)?substr(str_replace(' ','T',$contest->start_time),0,16)
+                           :str_replace(' ','T',date('Y-m-d H:i:s',time()))}}" class="form-control" required>
+                    </div>
+                    --}}
                     <button class="btn border">{{__('main.Find')}}</button>
                 </form>
             </div>
@@ -52,8 +56,8 @@
                         <th>{{__('main.Rank')}}</th>
                         <th>{{__('main.User')}}</th>
                         <th>{{__('main.Name')}}</th>
-                        <th nowrap>{{__('main.AC/Solved/Submitted')}}</th>
-                        <th nowrap>{{__('main.ACRate')}} / {{__('main.SolvedRate')}}</th>
+                        <th nowrap>{{__('main.Solved/Submitted')}}</th>
+                        <th nowrap>{{__('main.SolvedRate')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -62,8 +66,8 @@
                             <td>{{isset($_GET['page']) ? ($_GET['page']-1)*$users->perPage()+$i : $i}}</td>
                             <td nowrap><a href="{{route('user',$item->username)}}" target="_blank">{{$item->username}}</a></td>
                             <td nowrap>{{$item->nick}}</td>
-                            <td nowrap>{{$item->accepted}} / {{$item->solved}} / {{$item->submit}}</td>
-                            <td nowrap>{{round($item->accepted*100/max(1,$item->submit),2)}}% / {{round($item->solved*100/max(1,$item->submit),2)}}%</td>
+                            <td nowrap>{{$item->solved}} / {{$item->submitted}}</td>
+                            <td nowrap>{{round($item->solved*100/max(1,$item->submitted),2)}}%</td>
                         </tr>
                     @endforeach
                     </tbody>

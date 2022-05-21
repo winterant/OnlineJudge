@@ -21,7 +21,7 @@
                         <th nowrap>学校</th>
                         <th nowrap>班级</th>
                         <th nowrap>邮箱</th>
-                        <th nowrap>是否允许修改个人资料</th>
+                        {{-- <th nowrap>是否允许修改个人资料</th> --}}
                     </tr>
                     </thead>
                     <tbody>
@@ -33,7 +33,7 @@
                             <td nowrap>{{$item['school']}}</td>
                             <td nowrap>{{$item['class']}}</td>
                             <td nowrap>{{$item['email']}}</td>
-                            <td>{{$item['revise']}}</td>
+                            {{-- <td>{{$item['revise']}}</td> --}}
                         </tr>
                     @endforeach
                     </tbody>

@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Session;
 class UserController extends Controller
 {
     public function list(Request $request){
-        $users=DB::table('users')->select(['id','username','email','nick','school','class','solved','accepted','submitted','revise','locked','created_at'])
+        $users=DB::table('users')->select(['id','username','email','nick','school','class',
+            // 'solved','accepted','submitted',
+            'revise','locked','created_at'])
             ->when(isset($_GET['username'])&&$_GET['username'],function ($q){return $q->where('username','like',$_GET['username'].'%');})
             ->when(isset($_GET['email'])&&$_GET['email'],function ($q){return $q->where('email','like',$_GET['email'].'%');})
             ->when(isset($_GET['nick'])&&$_GET['nick'],function ($q){return $q->where('nick','like',$_GET['nick'].'%');})

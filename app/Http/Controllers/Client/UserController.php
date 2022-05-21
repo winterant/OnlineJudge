@@ -104,8 +104,40 @@ class UserController extends Controller
         }
     }
 
-
     public function standings()
+    {
+        // 已解决数量
+        $query_solved = DB::table('solutions')
+            ->select('user_id', DB::raw('count(distinct problem_id) as solved'))
+            ->where('result', 4)
+            ->groupBy('user_id');
+
+        // 提交总次数
+        $query_submitted = DB::table('solutions')
+            ->select('user_id', DB::raw('count(*) as submitted'))
+            ->groupBy('user_id');
+
+        $users = DB::table('users as u')
+            ->leftJoinSub($query_solved, 'q1', 'q1.user_id', '=', 'u.id')
+            ->leftJoinSub($query_submitted, 'q2', 'q2.user_id', '=', 'u.id')
+            ->when(isset($_GET['username']) && $_GET['username'] != '', function ($q) {
+                return $q->where('username', 'like', '%' . $_GET['username'] . '%');
+            })
+            ->orderByDesc('q1.solved')
+            ->orderBy('q2.submitted')
+            ->paginate($_GET['perPage'] ?? 50);
+
+        // 遮掩真实用户名等敏感信息
+        if (!Auth::user() && !get_setting('display_complete_standings')) {
+            foreach ($users as &$user) {
+                for ($i = 3; $i < strlen($user->username) - 3 || $i < 6; $i++)
+                    $user->username[$i] = '*';
+            }
+        }
+        return view('client.standings', compact('users'));
+    }
+
+    public function standings_back()
     {
         $timediff = isset($_GET['range']) && $_GET['range'] != '0'
             ? sprintf(' and TIMESTAMPDIFF(%s,submit_time,now())=0', $_GET['range']) : '';
@@ -121,7 +153,7 @@ class UserController extends Controller
             })
             ->orderByDesc('solved')
             ->orderBy('submit')
-            ->paginate($_GET['perPage'] ?? 30);
+            ->paginate($_GET['perPage'] ?? 50);
         if (!Auth::user() && !get_setting('display_complete_standings')) {
             foreach ($users as &$user) {
                 for ($i = 3; $i < strlen($user->username) - 3 || $i < 6; $i++)
