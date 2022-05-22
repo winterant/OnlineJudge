@@ -41,6 +41,5 @@ return [
     "admin.group.edit"  => "新增、编辑课程（群组）",
 
     // 系统相关
-    "admin.settings"    => "修改系统设置",
-    "admin.upgrade"     => "执行系统升级",
+    "admin.setting"    => "修改系统设置、升级OJ"
 ];
