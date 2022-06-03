@@ -14,7 +14,7 @@ class UserController extends Controller
 {
     public function list(Request $request){
         $users=DB::table('users')->select(['id','username','email','nick','school','class',
-            // 'solved','accepted','submitted',
+            // 'solved','accepted','submitted', // 这三个字段实际没统计
             'revise','locked','created_at'])
             ->when(isset($_GET['username'])&&$_GET['username'],function ($q){return $q->where('username','like',$_GET['username'].'%');})
             ->when(isset($_GET['email'])&&$_GET['email'],function ($q){return $q->where('email','like',$_GET['email'].'%');})
@@ -22,6 +22,18 @@ class UserController extends Controller
             ->when(isset($_GET['school'])&&$_GET['school'],function ($q){return $q->where('school','like',$_GET['school'].'%');})
             ->when(isset($_GET['class'])&&$_GET['class'],function ($q){return $q->where('class','like',$_GET['class'].'%');})
             ->orderBy('id')->paginate(isset($_GET['perPage'])?$_GET['perPage']:10);
+        
+        foreach($users as &$u){
+            $u->solved = DB::table('solutions')
+                ->where('user_id', $u->id)
+                ->where('result', 4)
+                ->distinct('problem_id')->count(); // 正确通过的题数（去重）
+            $u->accepted = DB::table('solutions')
+            ->where('user_id', $u->id)
+            ->where('result', 4)->count(); // 正确通过的提交数
+            $u->submitted = DB::table('solutions')
+            ->where('user_id', $u->id)->count(); // 总提交次数
+        }
         return view('admin.user.list',compact('users'));
     }
 

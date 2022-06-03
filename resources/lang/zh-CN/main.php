@@ -54,10 +54,6 @@ return [
     "Notification"  => "告示",
     "Discussion"    => "讨论",
     "Discussions"   => "讨论板",
-    "Group"         => "群组",
-    "Groups"        => "群组",
-    "group"         => "群组",
-    "groups"        => "群组",
 
     //    user
     "Confirm"       => "确认",
@@ -184,11 +180,15 @@ return [
     "Content"       => "内容",
     
     // Groups
+    "Group"         => "课程(群组)",
+    "Groups"        => "课程(群组)",
+    "group"         => "课程(群组)",
+    "groups"        => "课程(群组)",
     "Creator"       => "创建者",
     "Grade"         => "年级",
     "Major"         => "专业",
     "Class"         => "班级",
-    "New Group"     => "新建群组",
+    "New Group"     => "新建课程(群组)",
     "Members"       => "成员",
     "Date Added"    => "加入时间",
     "Identity"      => "身份",

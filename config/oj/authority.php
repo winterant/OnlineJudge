@@ -34,7 +34,7 @@ return [
 
     // 竞赛
     "admin.contest"          => "管理竞赛",
-    "admin.contest.balloons" => "竞赛气球派送",
+    "admin.contest.balloon" => "竞赛气球派送",
 
     // 群组管理
     "admin.group"       => "管理课程（群组）",

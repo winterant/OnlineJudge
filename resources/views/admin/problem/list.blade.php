@@ -55,10 +55,10 @@
                 <th>类型</th>
                 <th>出处</th>
                 <th>特判</th>
-                {{-- <th>解决/AC/提交</th> --}}
+                <th>AC(人数)/提交</th>
                 <th>创建时间</th>
                 <th>创建人</th>
-                <th>当前状态</th>
+                <th>前台可见</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -69,11 +69,17 @@
                         <input type="checkbox" value="{{$item->id}}" onclick="window.event.stopPropagation();" style="vertical-align:middle;zoom: 140%">
                     </td>
                     <td nowrap>{{$item->id}}</td>
-                    <td nowrap><a href="{{route('problem',$item->id)}}" target="_blank">{{$item->title}}</a></td>
+                    <td><a href="{{route('problem',$item->id)}}" target="_blank">{{$item->title}}</a></td>
                     <td nowrap>{{$item->type?'代码填空':'编程'}}</td>
-                    <td nowrap>{{$item->source}}</td>
-                    <td nowrap>{{$item->spj?'特判':'否'}}</td>
-                    {{-- <td nowrap>{{$item->solved}} / {{$item->accepted}} / {{$item->submitted}}</td> --}}
+                    <td>{{$item->source}}</td>
+                    <td nowrap align="center">{{$item->spj?'特判':'-'}}</td>
+                    <td nowrap>
+                        {{$item->accepted}}
+                        (<i class="fa fa-user-o text-sky" aria-hidden="true"></i>
+                        {{$item->solved}})
+                        /
+                        {{$item->submitted}}
+                    </td>
                     <td nowrap>{{$item->created_at}}</td>
                     <td><a @if($item->creator)href="{{route('user',$item->creator)}}"@endif target="_blank">{{$item->creator}}</a></td>
                     <td nowrap>

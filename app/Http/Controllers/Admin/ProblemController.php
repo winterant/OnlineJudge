@@ -46,6 +46,24 @@ class ProblemController extends Controller
             })
             ->orderByDesc('problems.id')
             ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 100);
+            
+        foreach($problems as &$p){
+            // 提取提交记录
+            // $submissions = DB::table('solutions')
+            //     ->where('problem_id', $p->id)->count();
+            // $p->solved = 0;
+            // $p->accepted = 0;
+            // $p->submitted = 0;
+            $p->solved = DB::table('solutions')
+                ->where('problem_id', $p->id)
+                ->where('result', 4)
+                ->distinct('user_id')->count(); // 正确通过的人数（去重）
+            $p->accepted = DB::table('solutions')
+            ->where('problem_id', $p->id)
+            ->where('result', 4)->count(); // 正确通过的提交数
+            $p->submitted = DB::table('solutions')
+            ->where('problem_id', $p->id)->count(); // 总提交次数
+        }
         return view('admin.problem.list', compact('problems'));
     }
 

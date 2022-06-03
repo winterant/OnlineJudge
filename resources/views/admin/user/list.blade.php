@@ -14,6 +14,7 @@
                     <option value="50" @if(isset($_GET['perPage'])&&$_GET['perPage']==50)selected @endif>50</option>
                     <option value="100" @if(isset($_GET['perPage'])&&$_GET['perPage']==100)selected @endif>100</option>
                     <option value="200" @if(isset($_GET['perPage'])&&$_GET['perPage']==200)selected @endif>200</option>
+                    <option value="1000" @if(isset($_GET['perPage'])&&$_GET['perPage']==1000)selected @endif>1000</option>
                 </select>
             </div>
             <div class="form-inline mx-1">
@@ -70,7 +71,7 @@
                     <th nowrap>姓名</th>
                     <th nowrap>学校</th>
                     <th nowrap>班级</th>
-                    {{-- <th nowrap>解决/通过/提交</th> --}}
+                    <th nowrap>AC(题数)/提交</th>
                     <th nowrap>修改资料
                         <a href="javascript:" style="color: #838383"
                            onclick="whatisthis('允许用户可自行修改个人资料的次数，可防止用户随意改动。影响状态、榜单等混乱。管理员不受限制')">
@@ -97,9 +98,13 @@
                         <td nowrap><a href="{{route('user',$item->username)}}" target="_blank">{{$item->username}}</a></td>
                         <td nowrap>{{$item->email}}</td>
                         <td nowrap>{{$item->nick}}</td>
-                        <td nowrap>{{$item->school}}</td>
-                        <td nowrap>{{$item->class}}</td>
-                        {{-- <td nowrap>{{$item->solved}} / {{$item->accepted}} / {{$item->submitted}}</td> --}}
+                        <td>{{$item->school}}</td>
+                        <td>{{$item->class}}</td>
+                        <td nowrap>
+                            {{$item->accepted}}
+                            ({{$item->solved}})
+                            /
+                            {{$item->submitted}}</td>
                         <td nowrap>
                             <input id="switch_revise{{$item->id}}" type="checkbox">
                             <script type="text/javascript">
