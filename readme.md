@@ -6,7 +6,7 @@ gitee同步仓库: <https://gitee.com/wrant/LDUOnlineJudge>
 
 # 💡 快速了解
 
-+ 官方网站：[http://icpc.ldu.edu.cn](http://icpc.ldu.edu.cn)；
++ 官方网站：[https://icpc.ldu.edu.cn](http://icpc.ldu.edu.cn)；
 + 演示网站：[https://lduoj.top](https://lduoj.top)；
 + 截屏展示：[点击跳转](https://blog.csdn.net/winter2121/article/details/105294224)；
 
@@ -55,21 +55,21 @@ bash ojup/install/ubuntu/update.sh
     docker exec -it lduoj bash
     bash install/mysql/database_backup.sh
     ```
-2. 将文件夹`/volume`打包，自行备份；
+2. 将文件夹`/volume`打包，自行拷贝备份；这一步在宿主机、容器内均可；**打包过程中，不要关闭终端**；
     ```bash
     tar -cf - /volume | pigz -p $(nproc) > volume.tar.gz
     ```
 ## 恢复
-1. 解压`/volume`；
+1. 在宿主机找一个位置，解压出`/volume`；
     ```bash
     tar -zxvf volume.tar.gz
     ```
-2. 删除旧容器，并重新部署项目(创建容器)；注意参数`-v`挂载路径改为上一步的解压路径(绝对路径)；
+2. 删除旧容器，并重新部署项目(创建容器)；注意参数`-v`挂载路径是上一步解压出的绝对路径；
     ```bash
-    docker stop lduoj
+    docker rm -f lduoj  # 强制删除旧容器（如果有）
     docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
     ```
-3. 进入容器，恢复数据库；
+3. 进入容器，恢复数据库；这一步不做也可以，但数据无价，为了保险起见，执行一下；
     ```bash
     docker exec -it lduoj bash
     bash install/mysql/database_recover.sh
