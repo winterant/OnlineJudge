@@ -152,7 +152,7 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
     });
 
     //   manage problem tag
-    Route::middleware(['Privilege:amdin.problem.tag'])->prefix('problem')->name('problem.')->group(function () {
+    Route::middleware(['Privilege:admin.problem.tag'])->prefix('problem')->name('problem.')->group(function () {
         Route::get('/tags', 'Admin\ProblemController@tags')->name('tags');
         Route::post('/tag_delete', 'Admin\ProblemController@tag_delete')->name('tag_delete');
         Route::get('/tag_pool', 'Admin\ProblemController@tag_pool')->name('tag_pool');

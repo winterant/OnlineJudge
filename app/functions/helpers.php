@@ -43,25 +43,45 @@ function privilege($power, $user = null)
     /*
     权限说明：
         admin涵盖所有权限
-        admin.home为进入后台的权限
+        admin.home为进入后台页面的权限
         admin.problem包含admin.problem.*所有权限，其它类同
         只要数据库中含有$power的前缀，则说明具有当前权限.
     */
     // 从数据库中查询出该用户已有权限
     $powers = DB::table('privileges')->where('user_id', $user->id)->pluck('authority');
+
+    // teacher应当具有的权限
+    $teacher_power = [
+        'admin.home',
+        'admin.problem',
+        'admin.contest',
+        'admin.group',
+    ];
+    // teacher具有的权限中，应当排除的，即不应当具有的
+    $teacher_expower = [
+        'admin.problem.import_export',
+    ];
+
     foreach ($powers as $p) {
-        // 数据库中具有上层权限，验证通过
+        // 数据库中具有当前权限，或者上层权限，则验证通过
         if (starts_with($power, $p))
             return true;
-        // 如果数据库中含有teacher，则查询以下权限时均通过
-        if (
-            $p == 'teacher' &&
-            (starts_with($power, 'admin.home') ||
-                starts_with($power, 'admin.problem') ||
-                starts_with($power, 'admin.contest') ||
-                starts_with($power, 'admin.group'))
-        )
-            return true;
+        // 如果数据库中含有teacher（也就是当前用户是老师）
+        // 则在查询某些权限时，均通过
+        if ($p == 'teacher') {
+            foreach ($teacher_power as $i) {
+                if (starts_with($power, $i)) {
+
+                    $exclude = false; // 查询一下该权限是不是被除外的
+                    foreach ($teacher_expower as $j)
+                        if (starts_with($power, $j))
+                            $exclude = true;
+
+                    if (!$exclude)
+                        return true;
+                }
+            }
+        }
     }
     return false;
 }
