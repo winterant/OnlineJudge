@@ -60,6 +60,7 @@ function privilege($power, $user = null)
     // teacher具有的权限中，应当排除的，即不应当具有的
     $teacher_expower = [
         'admin.problem.import_export',
+        'admin.problem.tag',
     ];
 
     foreach ($powers as $p) {
