@@ -147,7 +147,7 @@
                 success:function (file_count,ret) {
                     Notiflix.Loading.Remove();
                     if(ret<0) {
-                        Notiflix.Report.Failure('上传失败', '您不是题目的创建者，也不是最高管理员，没有权限上传数据！', '好的');
+                        Notiflix.Report.Failure('上传失败', '您不是题目的创建者，也不是管理员，没有权限上传数据！', '好的');
                     }else{
                         Notiflix.Report.Success('上传成功', '已导入'+file_count+'个文件','好的',function () {location.reload()});
                     }
@@ -172,7 +172,7 @@
                 },
                 function (ret) {
                     if(ret<0) {
-                        Notiflix.Notify.Failure('您不是题目的创建者，也不是最高管理员，没有权限查看数据！');
+                        Notiflix.Notify.Failure('您不是题目的创建者，也不是管理员，没有权限查看数据！');
                     }else {
                         $('#myModal').modal('show');
                         ret = JSON.parse(ret);
@@ -200,7 +200,7 @@
                     },
                     function (ret) {
                         if(ret<0)
-                            Notiflix.Report.Failure('删除失败','您不是题目的创建者，也不是最高管理员，没有权限删除数据！','好的');
+                            Notiflix.Report.Failure('删除失败','您不是题目的创建者，也不是管理员，没有权限删除数据！','好的');
                         else
                             location.reload();
                     }

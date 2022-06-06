@@ -98,8 +98,8 @@ class ProblemController extends Controller
             $problem = DB::table('problems')->find($id);  // 提取出要修改的题目
             if ($problem == null)
                 return view('admin.fail', ['msg' => '该题目不存在或操作有误!']);
-            if (!privilege('admin') && Auth::id() != $problem->creator) //不是超级管理员 && 也不是出题人 ==> 禁止修改本题
-                return view('admin.fail', ['msg' => '您不是该题目的创建者，也不是最高管理员，没有权限修改本题!']);
+            if (!privilege('admin.problem') && Auth::id() != $problem->creator) //不是管理员 && 也不是出题人 ==> 禁止修改本题
+                return view('admin.fail', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem]，不能修改本题!']);
 
             $samples = read_problem_data($problem->id);
             //看看有没有特判文件
@@ -116,12 +116,12 @@ class ProblemController extends Controller
             $problem['updated_at'] = date('Y-m-d H:i:s');
             $update_ret = DB::table('problems')
                 ->where('id', $id)
-                ->when(!privilege('admin'), function ($q) {
+                ->when(!privilege('admin.problem'), function ($q) {
                     return $q->where('creator', Auth::id());
                 })
                 ->update($problem);
             if (!$update_ret)
-                return view('admin.fail', ['msg' => '您不是该题目的创建者，也不是最高管理员，没有权限修改本题!']);
+            return view('admin.fail', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem]，不能修改本题!']);
 
             ///保存样例、spj
             $samp_ins = $request->input('sample_ins');
@@ -246,7 +246,7 @@ class ProblemController extends Controller
         $problem = DB::table('problems')->find($request->input('pid'));  // 提取出要修改的题目
         if (!$problem)
             return -2;  // 题目不存在返回-2
-        if (!$problem || !privilege('admin') && Auth::id() != $problem->creator) //不是超级管理员 && 不是出题人 => 禁止上传数据
+        if (!$problem || !privilege('admin.problem.data') && Auth::id() != $problem->creator) //不是管理员 && 不是出题人 => 禁止上传数据
             return -1;  // 权限不足直接返回-1
 
         $pid = $request->input('pid');
@@ -272,9 +272,9 @@ class ProblemController extends Controller
         $problem = DB::table('problems')->find($request->input('pid'));  // 提取出要修改的题目
         if (
             !$problem ||
-            !privilege('admin')
+            !privilege('admin.problem.data')
             && Auth::id() != $problem->creator
-        ) //不是超级管理员 && 不是出题人 => 禁止查看数据
+        ) //不是管理员 && 不是出题人 => 禁止查看数据
             return -1;
         $pid = $request->input('pid');
         $filename = $request->input('filename');
@@ -288,8 +288,8 @@ class ProblemController extends Controller
     public function update_data(Request $request)
     {
         $problem = DB::table('problems')->find($request->input('pid'));  // 提取出要修改的题目
-        if (!$problem || !privilege('admin') && Auth::id() != $problem->creator) //不是超级管理员 && 不是出题人 => 禁止修改本题
-            return view('admin.fail', ['msg' => '您不是该题目的创建者，也不是最高管理员，没有权限修改测试数据!']);
+        if (!$problem || !privilege('admin.problem.data') && Auth::id() != $problem->creator) //不是超级管理员 && 不是出题人 => 禁止修改本题
+        return view('admin.fail', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem.data]，不能修改测试数据!']);
 
         $pid = $request->input('pid');
         $filename = $request->input('filename');
@@ -304,7 +304,7 @@ class ProblemController extends Controller
     public function delete_data(Request $request)
     {
         $problem = DB::table('problems')->find($request->input('pid'));  // 提取出要修改的题目
-        if (!$problem || !privilege('admin') && Auth::id() != $problem->creator) //不是超级管理员 && 不是出题人 => 禁止修改本题
+        if (!$problem || !privilege('admin.problem.data') && Auth::id() != $problem->creator) //不是管理员 && 不是出题人 => 禁止修改本题
             return -1;
 
         $pid = $request->input('pid');
