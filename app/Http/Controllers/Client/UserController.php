@@ -64,8 +64,8 @@ class UserController extends Controller
             if ($ret != 1) //失败
                 return view('client.fail', ['msg' => trans('sentence.Operation failed')]);
 
-            if (Auth::user()->username == $username) //是本人则次数减一
-                DB::table('users')->where('username', $username)->decrement('revise');
+            // if (Auth::user()->username == $username) //是本人则次数减一
+            //     DB::table('users')->where('username', $username)->decrement('revise');
             return redirect(route('user', $username));
         }
     }
