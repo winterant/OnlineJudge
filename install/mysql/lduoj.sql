@@ -325,7 +325,7 @@ DROP TABLE IF EXISTS `privileges`;
 CREATE TABLE `privileges`  (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,
-    `authority` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+    `authority` varchar(60) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
     `creator` int(11) NULL DEFAULT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE,
