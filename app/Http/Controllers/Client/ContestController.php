@@ -276,7 +276,8 @@ class ContestController extends Controller
     public function status($id)
     {
         $contest = DB::table('contests')->find($id);
-        if (!privilege('admin.contest') && time() < strtotime($contest->end_time)) //比赛没结束，只能看自己
+        if (!(privilege('admin.contest') || privilege('admin.problem.solution'))
+            && time() < strtotime($contest->end_time)) //比赛没结束，只能看自己
             $_GET['username'] = Auth::user()->username;
 
         $solutions = DB::table('solutions')

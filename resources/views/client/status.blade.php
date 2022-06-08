@@ -21,7 +21,7 @@
                     <form action="" method="get">
                         <div class="form-inline float-right ">
                             {{-- 管理员可以筛选查重记录 --}}
-                            @if(privilege('admin.problem.list'))
+                            @if(privilege('admin.problem.solution'))
                                 <select name="sim_rate" class="form-control px-2 mr-3" onchange="this.form.submit();">
                                     <option class="form-control" value="0">{{__('main.Similarity Check')}}</option>
                                     @for($i=50;$i<=100;$i+=10)
@@ -95,7 +95,7 @@
                                     </th>
                                     <th nowrap>{{__('main.Submission Time')}}</th>
                                     <th nowrap>
-                                        @if(privilege('admin.problem.list'))
+                                        @if(privilege('admin.problem.solution'))
                                             <div class="form-group m-0 p-0 bmd-form-group">
                                                 <input type="text" class="form-control" placeholder="IP"
                                                     name="ip" value="{{$_GET['ip'] ?? ''}}">
@@ -164,7 +164,7 @@
                                             @endif
                                         </td>
                                         <td nowrap>{{$sol->submit_time}}</td>
-                                        @if(privilege('admin.problem.list'))
+                                        @if(privilege('admin.problem.solution'))
                                             <td nowrap>{{$sol->ip}}</td>
                                         @else
                                             <td nowrap>-</td>

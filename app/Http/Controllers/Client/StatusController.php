@@ -49,7 +49,7 @@ class StatusController extends Controller
             )
             //普通用户只能查看非竞赛提交
             //关闭“包含竞赛”按钮时只能查看非竞赛提交
-            ->when(!privilege('admin.problem.list') || !isset($_GET['inc_contest']), function ($q) {
+            ->when(!privilege('admin.problem.solution') || !isset($_GET['inc_contest']), function ($q) {
                 return $q->where('solutions.contest_id', -1);
             })
 
@@ -82,7 +82,7 @@ class StatusController extends Controller
             //所有人都能看到用户名
             $s->username = $u ? $u->username : null;
             //管理员能看到昵称
-            if (privilege('admin.problem.list')) {
+            if (privilege('admin.problem.solution')) {
                 $s->nick = $u ? $u->nick : null;
             }
         }
@@ -186,7 +186,9 @@ class StatusController extends Controller
             }
         } else { //else 从题库中进行提交，需要判断一下用户权限
             $hidden = $problem->hidden;
-            if (!privilege('admin.problem.list') && $hidden == 1) //不是管理员&&问题隐藏 => 不允许提交
+            if (!privilege('admin.problem.solution') && 
+                !privilege('admin.problem.list') &&
+                $hidden == 1) //不是管理员&&问题隐藏 => 不允许提交
                 return view('client.fail', ['msg' => trans('main.Problem') . $data['pid'] . '：' . trans('main.Hidden')]);
         }
 
