@@ -40,6 +40,14 @@ class GroupController extends Controller
 
             ->orderByDesc('id')
             ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 12);
+        foreach($groups as &$g){
+            $g->user_in_group = DB::table('group_users')
+                ->where('user_id', Auth::id())
+                ->where('group_id', $g->id)
+                ->value('identity');// 获取当前用户在该group中的身份。未加入为null
+            if($g->user_in_group==null)
+                $g->user_in_group=-1;
+        }
         return view('group.groups', compact('groups'));
     }
 
@@ -78,5 +86,13 @@ class GroupController extends Controller
         for($i=0;$i<=4;$i++)$member_count[$i]=0;
         foreach($members as $m)$member_count[$m->identity]++;
         return view('group.members', compact('group', 'members', 'member_count'));
+    }
+
+
+    public function joinin($id)
+    {
+        DB::table('group_users')
+            ->updateOrInsert(['group_id'=>$id, 'user_id'=>Auth::id()], ['identity'=>1]);
+        return back();
     }
 }

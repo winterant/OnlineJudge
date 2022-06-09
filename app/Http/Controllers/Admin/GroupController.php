@@ -81,6 +81,14 @@ class GroupController extends Controller
         }
     }
 
+
+    // get 删除group
+    public function delete($id)
+    {
+        DB::table('groups')->delete($id);
+        return back();
+    }
+
     // post
     public function add_member(Request $request, $id)
     {

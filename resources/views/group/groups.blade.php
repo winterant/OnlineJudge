@@ -116,9 +116,17 @@
                                 @endif
                             </div>
                             <div class="pull-right">
+                                @if(isset($item->user_in_group) && $item->user_in_group<=1)
+                                    @if($item->user_in_group==1)
+                                        <a class="btn btn-info">已申请加入</a>
+                                    @else
+                                        <a class="btn btn-info" href="{{route('groups.joinin',['id'=>$item->id])}}">申请加入</a>
+                                    @endif
+                                @endif
                                 @if(privilege('admin.group'))
                                     <a class="btn btn-info" href="{{route('admin.group.edit',['id'=>$item->id])}}" target="_blank">编辑</a>
-                                    <a class="btn btn-danger" href="javascript:alert('数据宝贵,暂不支持删除. 你可以修改信息或设为隐藏.')">删除</a>
+                                    <a class="btn btn-danger" href="{{route('admin.group.delete',$item->id)}}"
+                                         onclick="return confirm('数据宝贵! 确定删除吗？')">删除</a>
                                 @endif
                             </div>
                         </div>
