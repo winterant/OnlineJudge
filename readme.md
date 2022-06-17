@@ -44,7 +44,7 @@ docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
 docker exec -it lduoj /bin/bash
 git clone https://github.com/winterant/LDUOnlineJudge.git ojup
 # git clone https://gitee.com/wrant/LDUOnlineJudge.git ojup
-bash ojup/install/ubuntu/update.sh
+bash ojup/install/update.sh
 ```
 
 # 💿 备份/迁移

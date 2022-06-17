@@ -66,7 +66,7 @@ class SettingController extends Controller
         foreach ($out as $line)
             Log::info($line);
 
-        $cmd_bash = 'sudo bash '.$new_project.'/install/ubuntu/update.sh '.base_path().' 2>&1';
+        $cmd_bash = 'sudo bash '.$new_project.'/install/update.sh '.base_path().' 2>&1';
         Log::info($cmd_bash);
         unset($out);
         exec($cmd_bash,$out,$status);
