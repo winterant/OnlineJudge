@@ -142,7 +142,7 @@ class StatusController extends Controller
             ->where('solutions.id', $id)
             ->first();
         if (!$solution || !$solution->wrong_data)
-            return abort(404);
+            return view('client.fail', ['msg' => '没有记录出错数据']);
         $allow_get = false;
         if (privilege('admin.problem.solution')) // 管理员可以直接看
             $allow_get = true;
@@ -154,15 +154,15 @@ class StatusController extends Controller
         }
         if ($allow_get) {
             if ($type == 'in')
-                return '<pre>' . file_get_contents(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.in')) . '</pre>';
+                $text = file_get_contents(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.in'));
             else if (file_exists(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.out')))
-                return '<pre>' . file_get_contents(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.out')) . '</pre>';
+                $text = file_get_contents(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.out'));
             else
-                return '<pre>' . file_get_contents(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.ans')) . '</pre>';
+                $text = file_get_contents(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.ans'));
+            return view('client.solution_wrong_data', compact('text'));
         }
         return view('client.fail', ['msg' => trans('sentence.Permission denied')]);
     }
-
 
     //从request表单中读取提交的信息，处理生成提交记录json格式
     private function process_solution(Request $request)
@@ -186,9 +186,11 @@ class StatusController extends Controller
             }
         } else { //else 从题库中进行提交，需要判断一下用户权限
             $hidden = $problem->hidden;
-            if (!privilege('admin.problem.solution') && 
+            if (
+                !privilege('admin.problem.solution') &&
                 !privilege('admin.problem.list') &&
-                $hidden == 1) //不是管理员&&问题隐藏 => 不允许提交
+                $hidden == 1
+            ) //不是管理员&&问题隐藏 => 不允许提交
                 return view('client.fail', ['msg' => trans('main.Problem') . $data['pid'] . '：' . trans('main.Hidden')]);
         }
 
