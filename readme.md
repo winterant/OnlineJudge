@@ -41,10 +41,10 @@ docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
 # 🚗 升级
 
 ```bash
-docker exec -it lduoj /bin/bash
-git clone https://github.com/winterant/LDUOnlineJudge.git ojup
-# git clone https://gitee.com/wrant/LDUOnlineJudge.git ojup
-bash ojup/install/update.sh
+docker exec -it lduoj bash
+# git clone https://github.com/winterant/LDUOnlineJudge.git ojup
+git clone https://gitee.com/wrant/LDUOnlineJudge.git ojup
+bash ojup/update.sh
 ```
 
 # 💿 备份/迁移
