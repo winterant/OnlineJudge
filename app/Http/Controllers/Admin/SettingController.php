@@ -81,7 +81,7 @@ class SettingController extends Controller
         $old_version = $this->get_code_version(true);
         $new_version = $this->get_code_version(false);
         exec('git remote -v |head -1|cut -d / -f 3', $remote_domain, $status);
-        $remote_domain = $remote_domain[0];
+        $remote_domain = $remote_domain[0]??"github";
         return view('admin.upgrade', compact('old_version', 'new_version', 'remote_domain'));
     }
 

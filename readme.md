@@ -42,12 +42,13 @@ docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
 
 ```bash
 docker exec -it lduoj bash
-# git clone https://github.com/winterant/LDUOnlineJudge.git ojup
 git clone https://gitee.com/wrant/LDUOnlineJudge.git ojup
-bash ojup/update.sh
+bash ojup/install/update.sh
 ```
 
 # 💿 备份/迁移
+
+【提示】若要迁移到其它机器，请务必先升级到最新。
 
 ## 备份
 1. 进入容器，备份数据库；
