@@ -1,3 +1,8 @@
+install/mysql/lduojbackup.sql
+judge/run
+judge/config.sh
+judge/judge
+judge/polling
 storage/app
 storage/logs/*.log
 storage/framework/cache/data/*
