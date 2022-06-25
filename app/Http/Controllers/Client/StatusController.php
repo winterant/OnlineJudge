@@ -18,6 +18,8 @@ class StatusController extends Controller
      */
     public function index()
     {
+        if (!isset($_GET['sim_rate']))
+            $_GET['inc_contest'] = 'on';
         //用户名模糊查询: 找出符合条件的用户
         $users = null;
         if (isset($_GET['username']) && $_GET['username'] != '') {

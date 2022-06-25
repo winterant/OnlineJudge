@@ -33,7 +33,7 @@
                                 {{-- 总提交记录列表中，管理员可以查看竞赛提交 --}}
                                 @if(!isset($contest))
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="inc_contest" class="custom-control-input" id="customCheck" checked
+                                        <input type="checkbox" name="inc_contest" class="custom-control-input" id="customCheck"
                                             @if(isset($_GET['inc_contest']))checked @endif
                                             onchange="this.form.submit()">
                                         <label class="custom-control-label pt-1" for="customCheck">{{__('main.include contest')}}</label>
