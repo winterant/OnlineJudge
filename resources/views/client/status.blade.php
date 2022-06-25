@@ -20,8 +20,9 @@
                 <div class="my-container bg-white">
                     <form action="" method="get">
                         <div class="form-inline float-right ">
-                            {{-- 管理员可以筛选查重记录 --}}
+                            {{-- 管理员附加按钮 --}}
                             @if(privilege('admin.problem.solution'))
+                                {{-- 管理员可以筛选查重记录 --}}
                                 <select name="sim_rate" class="form-control px-2 mr-3" onchange="this.form.submit();">
                                     <option class="form-control" value="0">{{__('main.Similarity Check')}}</option>
                                     @for($i=50;$i<=100;$i+=10)
@@ -32,7 +33,7 @@
                                 {{-- 总提交记录列表中，管理员可以查看竞赛提交 --}}
                                 @if(!isset($contest))
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="inc_contest" class="custom-control-input" id="customCheck"
+                                        <input type="checkbox" name="inc_contest" class="custom-control-input" id="customCheck" checked
                                             @if(isset($_GET['inc_contest']))checked @endif
                                             onchange="this.form.submit()">
                                         <label class="custom-control-label pt-1" for="customCheck">{{__('main.include contest')}}</label>
