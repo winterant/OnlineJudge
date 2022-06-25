@@ -67,11 +67,23 @@
     </div>
     @endif
     <div class="container">
-        <div class="my-container bg-white">
+        <div class="my-container bg-white position-relative">
             <pre class="border p-1"><code>{{$solution->code}}</code></pre>
+            <span id="code" hidden>{{$solution->code}}</span>
+            <button type="button" class="btn btn-primary border position-absolute" style="top: 2rem; right: 3rem" onclick="copy('code')">{{__('main.Copy')}}</button>
         </div>
     </div>
+    
+
     <script type="text/javascript">
+        // 复制
+        function copy(tag_id) {
+            $("body").append('<textarea id="copy_temp">' + $('#' + tag_id).html() + '</textarea>');
+            $("#copy_temp").select();
+            document.execCommand("Copy");
+            $("#copy_temp").remove();
+            Notiflix.Notify.Success('{{__('sentence.copy')}}');
+        }
         // 代码高亮
         $(function (){
             hljs.highlightAll();

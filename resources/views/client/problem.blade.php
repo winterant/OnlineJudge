@@ -83,12 +83,18 @@
                         @endif
                         @foreach($samples as $i=>$sam)
                             <div class="border mb-4 not_math">
-                                <div class="border-bottom pl-2 bg-light">{{__('main.Input')}}
+                                {{-- 样例输入 --}}
+                                <div class="border-bottom pl-2 bg-light">
+                                    {{__('main.Input')}}
                                     <a href="javascript:" onclick="copy('sam_in{{$i}}')">{{__('main.Copy')}}</a>
                                 </div>
                                 <pre class="m-1" id="sam_in{{$i}}">{{$sam[0]}}</pre>
-                                <div class="border-top border-bottom pl-2 bg-light">{{__('main.Output')}}</div>
-                                <pre class="m-1">{{$sam[1]}}</pre>
+                                {{-- 样例输出 --}}
+                                <div class="border-top border-bottom pl-2 bg-light">
+                                    {{__('main.Output')}}
+                                    <a href="javascript:" onclick="copy('sam_out{{$i}}')">{{__('main.Copy')}}</a>
+                                </div>
+                                <pre class="m-1" id="sam_out{{$i}}">{{$sam[1]}}</pre>
                             </div>
                         @endforeach
 
