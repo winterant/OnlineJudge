@@ -81,9 +81,13 @@ class StatusController extends Controller
             $u = DB::table('users')->find($s->user_id);
             //所有人都能看到用户名
             $s->username = $u ? $u->username : null;
-            //管理员能看到昵称
+            //管理员能看到昵称、ip及其属地
             if (privilege('admin.problem.solution')) {
                 $s->nick = $u ? $u->nick : null;
+                $s->ip_loc = getIpAddress($s->ip);
+            } else {
+                // 非管理员，抹掉ip信息
+                $s->ip = '-';
             }
         }
         return view('client.status', compact('solutions'));

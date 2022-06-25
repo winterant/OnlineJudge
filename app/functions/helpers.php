@@ -23,6 +23,18 @@ function get_client_real_ip()
     return $clientip;
 }
 
+
+// 获取ip属地
+function getIpAddress(string $ip = '')
+{
+    // 可以自己找第三方接口，返回数据不一样
+    $url = "http://whois.pconline.com.cn/ip.jsp?ip=" . $ip;
+    $res = file_get_contents($url);
+    // 因为这个接口返回的值gb2312编码，且有换行符，所以做以下处理
+    return preg_replace("/\s/", "", iconv("gb2312", "utf-8", $res));
+}
+
+
 function starts_with($str, $prefix)
 {
     return substr($str, 0, strlen($prefix)) == $prefix;
