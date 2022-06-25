@@ -146,7 +146,7 @@
                                                     ({{round($sol->pass_rate*100)}})
                                                 @endif
                                             </font>
-                                            @if($sol->sim_rate>=50)
+                                            @if(privilege('admin.problem.solution') && $sol->sim_rate>=50)
                                                 <a class="bg-sky px-1 text-black" style="border-radius: 3px"
                                                    href="{{route('solution',$sol->sim_sid)}}" target="_blank"
                                                    title="Your code is {{$sol->sim_rate}}% similar to solution {{$sol->sim_sid}}">
