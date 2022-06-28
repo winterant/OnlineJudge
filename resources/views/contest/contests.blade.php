@@ -181,7 +181,10 @@
                 function (ret) {
                     ret = JSON.parse(ret)
                     console.log(ret)
-                    location.reload()
+                    if(ret.ret)
+                        location.reload()
+                    else
+                        Notiflix.Notify.Failure(ret.msg);
                 }
             );
         }

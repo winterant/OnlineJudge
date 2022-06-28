@@ -65,7 +65,7 @@ class ContestController extends Controller
         if ($request->isMethod('post')) {
             $cid = DB::table('contests')->insertGetId(['user_id' => Auth::id()]);
             $this->update($request, $cid);
-            DB::table('contests')->update(['order' => $cid]);//设置顺序
+            DB::table('contests')->update(['order' => $cid]); //设置顺序
             $msg = sprintf('成功创建竞赛：<a href="%s" target="_blank">%d</a>', route('contest.home', $cid), $cid);
             return view('admin.success', compact('msg'));
         }
@@ -110,8 +110,9 @@ class ContestController extends Controller
 
             //数据库
             $contest['public_rank'] = isset($contest['public_rank']) ? 1 : 0; // 公开榜单
+            $contest['order'] = $id; // 竞赛初始order=id
             DB::table('contests')->where('id', $id)->update($contest);
-            DB::table('contest_problems')->where('contest_id', $id)->delete();//舍弃原来的题目
+            DB::table('contest_problems')->where('contest_id', $id)->delete(); //舍弃原来的题目
             foreach ($pids as $i => $pid) {
                 if (DB::table('problems')->find($pid))
                     DB::table('contest_problems')->insert(['contest_id' => $id, 'problem_id' => $pid, 'index' => $i]);
@@ -131,8 +132,8 @@ class ContestController extends Controller
             $files = $request->file('files') ?: [];
             $allowed_ext = ["txt", "pdf", "doc", "docx", "xls", "xlsx", "csv", "ppt", "pptx"];
             foreach ($files as $file) {     //保存附件
-                if(in_array($file->getClientOriginalExtension(), $allowed_ext)){
-                    $file->move(storage_path('app/public/contest/files/' . $id), $file->getClientOriginalName());//保存附件
+                if (in_array($file->getClientOriginalExtension(), $allowed_ext)) {
+                    $file->move(storage_path('app/public/contest/files/' . $id), $file->getClientOriginalName()); //保存附件
                 }
             }
             $msg = sprintf('成功更新竞赛：<a href="%s">%d</a>', route('contest.home', $id), $id);
@@ -159,7 +160,7 @@ class ContestController extends Controller
             foreach ($con_problems as $i => $item)
                 $cps[] = ['contest_id' => $cloned_cid, 'problem_id' => $item->problem_id, 'index' => $i + 1];
             DB::table('contest_problems')->insert($cps);
-//            复制附件
+            //            复制附件
             foreach (Storage::allFiles('public/contest/files/' . $cid) as $fp) {
                 $name = pathinfo($fp, PATHINFO_FILENAME);  //文件名
                 $ext = pathinfo($fp, PATHINFO_EXTENSION);    //拓展名
@@ -191,7 +192,7 @@ class ContestController extends Controller
         if (privilege('admin')) //超管，直接进行
             $ret = DB::table('contests')->whereIn('id', $cids)->delete();
         else
-            $ret = DB::table('contests')->whereIn('id', $cids)->where('user_id', Auth::id())->delete();//创建者
+            $ret = DB::table('contests')->whereIn('id', $cids)->where('user_id', Auth::id())->delete(); //创建者
         if ($ret > 0) {
             foreach ($cids as $cid) {
                 Storage::deleteDirectory('public/contest/files/' . $cid); //删除附件
@@ -250,11 +251,14 @@ class ContestController extends Controller
         $mode = $request->input('mode');
         assert(in_array($mode, ['to_top', 'to_up', 'to_down']));
         $contest = DB::table('contests')->find($contest_id);
-        if ($mode == 'to_top')//置顶
+        if ($mode == 'to_top') //置顶
         {
             $contests = DB::table('contests')->select(['id', 'order'])
+                ->where('cate_id', $contest->cate_id)
                 ->where('order', '>=', $contest->order)
-                ->orderByDesc('order')->get();
+                ->orderByDesc('order')
+                ->limit(2)
+                ->get();
             if ($contests) {
                 $top_order = $contests[0]->order;
                 $len = count($contests);
@@ -271,28 +275,51 @@ class ContestController extends Controller
             ]);
         } else if ($mode == 'to_up') {
             $contests = DB::table('contests')->select(['id', 'order'])
+                ->where('cate_id', $contest->cate_id)
                 ->where('order', '>=', $contest->order)
-                ->orderByDesc('order')->get();
+                ->orderBy('order')
+                ->limit(2)
+                ->get();
             if (($len = count($contests)) >= 2) {
-                DB::table('contests')->where('id', $contests[$len - 1]->id)->update(['order' => $contests[$len - 2]->order]);
-                DB::table('contests')->where('id', $contests[$len - 2]->id)->update(['order' => $contests[$len - 1]->order]);
+                DB::table('contests')->where('id', $contests[0]->id)->update(['order' => $contests[1]->order]);
+                DB::table('contests')->where('id', $contests[1]->id)->update(['order' => $contests[0]->order]);
+            }else{
+                return json_encode([
+                    'ret' => false,
+                    'msg' => sprintf('到顶了，不能再上移了')
+                ]);
             }
             return json_encode([
                 'ret' => true,
                 'msg' => sprintf('竞赛%d已上移', $contest_id)
             ]);
-        } else//下移
+        } else //下移
         {
             $contests = DB::table('contests')->select(['id', 'order'])
+                ->where('cate_id', $contest->cate_id)
                 ->where('order', '<=', $contest->order)
-                ->orderByDesc('order')->get();
+                ->orderByDesc('order')
+                ->limit(2)
+                ->get();
             if (($len = count($contests)) >= 2) {
-                DB::table('contests')->where('id', $contests[0]->id)->update(['order' => $contests[1]->order]);
-                DB::table('contests')->where('id', $contests[1]->id)->update(['order' => $contests[0]->order]);
+                // 判断数据错误
+                if ($contests[0]->order == $contests[1]->order) {
+                    // order 相等？？？说明整个数据库的order混乱了，回路重造吧，让order=id
+                    DB::table('contests')->update(['order' => DB::raw('`id`')]);
+                } else {
+                    // 正常情况下执行以下
+                    DB::table('contests')->where('id', $contests[0]->id)->update(['order' => $contests[1]->order]);
+                    DB::table('contests')->where('id', $contests[1]->id)->update(['order' => $contests[0]->order]);
+                }
+            }else{
+                return json_encode([
+                    'ret' => false,
+                    'msg' => sprintf('到底了，不能再下移了')
+                ]);
             }
             return json_encode([
                 'ret' => true,
-                'msg' => sprintf('竞赛%d已下移', $contest_id)
+                'msg' => sprintf('竞赛%d已下移', $contest_id).$contests
             ]);
         }
     }
@@ -310,7 +337,7 @@ class ContestController extends Controller
     {
         $id = $request->input('id');
         $values = $request->input('values');
-        if ($id == null || $id == -1)//视为插入新记录
+        if ($id == null || $id == -1) //视为插入新记录
         {
             $id = DB::table('contest_cate')->insertGetId($values);
             DB::table('contest_cate')->where('id', $id)->update(['order' => $id]);
@@ -318,7 +345,7 @@ class ContestController extends Controller
         }
 
         //以下处理修改记录
-        if (isset($values['parent_id']))//拦截非法的父级类别修改
+        if (isset($values['parent_id'])) //拦截非法的父级类别修改
         {
             $parent = DB::table('contest_cate')->find($values['parent_id']); // 欲指定的父类别
             if ($values['parent_id'] > 0 && !$parent) {
@@ -384,7 +411,7 @@ class ContestController extends Controller
                 'ret' => true,
                 'msg' => sprintf('类别%s已上移', $cate->title)
             ]);
-        } else//下移
+        } else //下移
         {
             $cates = DB::table('contest_cate')->select(['id', 'order'])
                 ->where('order', '>=', $cate->order)
@@ -400,5 +427,4 @@ class ContestController extends Controller
             ]);
         }
     }
-
 }
