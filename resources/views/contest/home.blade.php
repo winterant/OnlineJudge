@@ -75,10 +75,7 @@
                     </script>
 
                     @if($contest->description)
-                        <style>
-                            #description_div p{margin-bottom: 0}
-                        </style>
-                        <div id="description_div" class="ck-content alert-info p-2">{!! $contest->description !!}</div>
+                        <div id="description_div" class="ck-content p-2">{!! $contest->description !!}</div>
                     @endif
 
                     @if(isset($files)&&!empty($files))
@@ -103,7 +100,7 @@
                             <tr>
                                 <th width="5"></th>
                                 <th width="10">#</th>
-                                <th>{{trans('main.Title')}}</th>
+                                <th>{{trans('main.Problem_timu')}}</th>
                                 <th>{{trans('main.Type')}}</th>
                                 <th>{{trans('main.AC/Submitted')}}</th>
                                 @if(time()>strtotime($contest->end_time))
@@ -163,5 +160,10 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        $(function (){
+            hljs.highlightAll();// 代码高亮
+        })
+    </script>
 @endsection
 

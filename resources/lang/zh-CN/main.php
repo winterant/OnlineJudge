@@ -31,6 +31,7 @@ return [
     "Home"          => "主页",
     "Problems"      => "题库",
     "Problem"       => "问题",
+    "Problem_timu"  => "题目",
     "Status"        => "状态",
     "Solutions"     => "提交记录",
     "Solution"      => "解决方案",
