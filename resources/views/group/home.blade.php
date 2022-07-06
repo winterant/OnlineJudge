@@ -23,10 +23,7 @@
                     <hr class="mt-0">
 
                     @if($group->description)
-                        <style>
-                            #description_div p{margin-bottom: 0}
-                        </style>
-                        <div id="description_div" class="ck-content alert-info p-2">{!! $group->description !!}</div>
+                        <div id="description_div" class="ck-content p-2">{!! $group->description !!}</div>
                     @endif
 
                     <div class="table-responsive">
