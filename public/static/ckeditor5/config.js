@@ -1,5 +1,5 @@
 const ck_config = {
-    // removePlugins: ['Markdown'],
+    removePlugins: ['FontBackgroundColor'],
     // language: 'zh-cn',
     ckfinder: {
         uploadUrl:''
