@@ -201,9 +201,10 @@ class StatusController extends Controller
         }
 
         //如果用户提交了文件,从临时文件中直接提取文本
-        if (null != ($file = $request->file('code_file')))
-            $data['code'] = autoiconv(file_get_contents($file->getRealPath()));
-        else if ($problem->type == 1) //如果是填空题，填充用户的答案
+        // if (null != ($file = $request->file('code_file')))
+        //     $data['code'] = autoiconv(file_get_contents($file->getRealPath()));
+        // else 
+        if ($problem->type == 1) //如果是填空题，填充用户的答案
         {
             $data['code'] = $problem->fill_in_blank;
             foreach ($request->input('filled') as $ans) {
@@ -246,6 +247,8 @@ class StatusController extends Controller
 
         //将提交记录处理后写入数据库
         $solution = $this->process_solution($request);
+        if(!is_array($solution))
+            return $solution;
         $sid = DB::table('solutions')->insertGetId($solution);
 
         //使用judge0判题

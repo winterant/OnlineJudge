@@ -197,6 +197,7 @@ CREATE TABLE `problems`  (
     `input` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
     `output` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
     `fill_in_blank` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '代码填空的完整代码',
+    `language` tinyint(4) NOT NULL DEFAULT 0 COMMENT '填空的语言',
     `hint` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
     `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
     `spj` tinyint(4) NULL DEFAULT 0,

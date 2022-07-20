@@ -12,18 +12,20 @@
         @endif
 
         <div class="form-inline my-2">
-            <div class="flex-nowrap mr-3 mb-1">
-                <span class="mr-2">{{__('main.Language')}}:</span>
-                <select id="lang_select" name="solution[language]" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
-                    @foreach(config('oj.lang') as $key=>$res)
-                        @if(!isset($contest) || ( 1<<$key)&$contest->allow_lang)
-                            <option value="{{$key}}" @if(Cookie::get('submit_language')==$key)selected @endif>{{$res}}</option>
-                        @endif
-                    @endforeach
-                </select>
-            </div>
             @if($problem->type==0)
+                {{-- 编程题可以选择语言 --}}
+                <div class="flex-nowrap mr-3 mb-1">
+                    <span class="mr-2">{{__('main.Language')}}:</span>
+                    <select id="lang_select" name="solution[language]" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
+                        @foreach(config('oj.lang') as $key=>$res)
+                            @if(!isset($contest) || ( 1<<$key)&$contest->allow_lang)
+                                <option value="{{$key}}" @if(Cookie::get('submit_language')==$key)selected @endif>{{$res}}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
                 {{-- 编程题可以提交文件--}}
+                {{--
                 <div class="flex-nowrap mr-3 mb-1">
                     <span class="mr-2">{{__('main.Upload File')}}:</span>
                     <a id="selected_fname" href="javascript:" class="m-0 px-0" onclick="$('[name=code_file]').click()"
@@ -34,15 +36,21 @@
                            onchange="$('#selected_fname').html(this.files[0].name);$('#code_editor').attr('required',false)"
                            accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
                 </div>
+                --}}
 
                 {{--   编辑框主题 --}}
-                <div class="flex-nowrap mr-3 mb-1">
+                {{-- <div class="flex-nowrap mr-3 mb-1">
                     <span class="mr-2">{{__('main.Theme')}}:</span>
                     <select id="theme_select" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
                         <option value="idea">idea</option>
                         <option value="mbo">mbo</option>
                     </select>
-                </div>
+                </div> --}}
+            @else
+                {{-- 代码填空由出题人指定语言 --}}
+                <span class="mr-2">{{__('main.Language')}}:</span>
+                <span>{{config('oj.lang.'.$problem->language)}}</span>
+                <input name="solution[language]" value="{{$problem->language}}" hidden>
             @endif
         </div>
 
@@ -53,8 +61,8 @@
             </div>
         @elseif($problem->type==1)
             {{-- 代码填空 --}}
-            <div class="mb-3">
-                <pre id="blank_code"><code>{{$problem->fill_in_blank}}</code></pre>
+            <div class="mb-3 border">
+                <pre id="blank_code" class="mb-0"><code>{{$problem->fill_in_blank}}</code></pre>
                 <script type="text/javascript">
                     $(function (){
                         hljs.highlightAll();// 代码高亮
@@ -150,8 +158,9 @@
 
         //监听表单提交
         $("#code_form").submit(function (){
-            if($("input[name='code_file']").val()==="" && code_editor.getValue().length<3){
-                Notiflix.Report.Info('{{trans('sentence.Operation failed')}}','{{trans('sentence.empty_code')}}!','OK')
+            // if($("input[name='code_file']").val()==="" && code_editor.getValue().length<3){
+            if(code_editor.getValue().length<5){
+                Notiflix.Report.Info('{{trans('sentence.Operation failed')}}','{{trans('sentence.empty_code')}}','OK')
                 return false
             }
         })

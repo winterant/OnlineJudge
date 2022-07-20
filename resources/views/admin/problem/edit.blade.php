@@ -81,9 +81,9 @@
 
                 <div id="text_fill_in_blank" class="form-group">
                     <p class="mb-1">待填代码：</p>
-                    <select id="lang_select" class="col-2 px-3 form-control border border-bottom-0" style="text-align-last: center;">
+                    <select id="lang_select" name="problem[language]" class="col-2 px-3 form-control border border-bottom-0" style="text-align-last: center;">
                         @foreach(config('oj.lang') as $key=>$res)
-                            <option value="{{$key}}" @if("C++"==$res)selected @endif>{{$res}}</option>
+                            <option value="{{$key}}" @if(($problem->language??1)==$key)selected @endif>{{$res}}</option>
                         @endforeach
                     </select>
                     <div class="alert alert-info mb-0">
