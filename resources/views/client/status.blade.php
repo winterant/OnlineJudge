@@ -148,7 +148,7 @@
                                             <span id="result_{{$sol->id}}" class="{{config('oj.resColor.'.$sol->result)}} result_td">
                                                 {{ __('result.' . config('oj.result.'.$sol->result)) }}
                                                 @if($sol->judge_type=='oi' && $sol->result > 4)
-                                                    ({{round($sol->pass_rate*100)}})
+                                                    ({{round($sol->pass_rate*100)}})%
                                                 @endif
                                             </span>
                                             @if(privilege('admin.problem.solution') && $sol->sim_rate>=50)
