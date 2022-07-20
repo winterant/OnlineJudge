@@ -331,7 +331,6 @@ int compile()
     {
         int status;
         waitpid(pid, &status, 0);
-        status &= 255;
         if(status!=0)
         {
             char error[128];
