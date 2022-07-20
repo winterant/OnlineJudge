@@ -100,10 +100,16 @@ class ContestController extends Controller
             $c_users = $request->input('contest_users'); //指定用户
             //数据格式处理
             foreach (explode(PHP_EOL, $problem_ids) as &$item) {
+                $item = trim($item);
+                if(strlen($item)==0)
+                    continue;
                 $line = explode('-', $item);
+
                 if (count($line) == 1) $pids[] = intval($line[0]);
-                else foreach (range(intval($line[0]), intval(($line[1]))) as $i) $pids[] = $i;
+                else if(count($line) == 2)
+                    foreach (range(intval($line[0]), intval(($line[1]))) as $i) $pids[] = $i;
             }
+
             $contest['start_time'] = str_replace('T', ' ', $contest['start_time']);
             $contest['end_time'] = str_replace('T', ' ', $contest['end_time']);
             if ($contest['access'] != 'password') unset($contest['password']);
