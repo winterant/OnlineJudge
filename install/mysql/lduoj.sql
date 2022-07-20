@@ -113,7 +113,8 @@ CREATE TABLE `contests`  (
     INDEX `stime`(`start_time`) USING BTREE,
     INDEX `etime`(`end_time`) USING BTREE,
     INDEX `index_user_id`(`user_id`) USING BTREE,
-    INDEX `index_cate_id`(`cate_id`) USING BTREE
+    INDEX `index_cate_id`(`cate_id`) USING BTREE,
+    INDEX `index_order`(`order`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------

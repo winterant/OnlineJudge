@@ -42,7 +42,7 @@ class ContestController extends Controller
         }
         */
         //可能有些比赛order值为0，因为以前的bug：添加比赛时没有填写order造成的
-        DB::update('update contests set `order`=`id` where `order`<1');
+        DB::table('contests')->where('order', '=', 0)->update(['order' => DB::raw('`id`')]);
 
         //获取类别
         $current_cate = DB::table('contest_cate')->find($cate);

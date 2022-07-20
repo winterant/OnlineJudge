@@ -287,8 +287,10 @@ class ContestController extends Controller
                 ->limit(2)
                 ->get();
             if (($len = count($contests)) >= 2) {
-                DB::table('contests')->where('id', $contests[0]->id)->update(['order' => $contests[1]->order]);
-                DB::table('contests')->where('id', $contests[1]->id)->update(['order' => $contests[0]->order]);
+                DB::transaction(function () use ($contests) {
+                    DB::table('contests')->where('id', $contests[0]->id)->update(['order' => $contests[1]->order]);
+                    DB::table('contests')->where('id', $contests[1]->id)->update(['order' => $contests[0]->order]);
+                });
             }else{
                 return json_encode([
                     'ret' => false,
@@ -308,15 +310,11 @@ class ContestController extends Controller
                 ->limit(2)
                 ->get();
             if (($len = count($contests)) >= 2) {
-                // 判断数据错误
-                if ($contests[0]->order == $contests[1]->order) {
-                    // order 相等？？？说明整个数据库的order混乱了，回路重造吧，让order=id
-                    DB::table('contests')->update(['order' => DB::raw('`id`')]);
-                } else {
-                    // 正常情况下执行以下
+                // 执行以下事务
+                DB::transaction(function () use ($contests) {
                     DB::table('contests')->where('id', $contests[0]->id)->update(['order' => $contests[1]->order]);
                     DB::table('contests')->where('id', $contests[1]->id)->update(['order' => $contests[0]->order]);
-                }
+                });
             }else{
                 return json_encode([
                     'ret' => false,
