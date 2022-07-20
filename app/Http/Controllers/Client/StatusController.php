@@ -47,7 +47,8 @@ class StatusController extends Controller
                 'judger',
                 'sim_rate',
                 'sim_sid',
-                'ip'
+                'ip',
+                'ip_loc'
             )
             //普通用户只能查看非竞赛提交
             //关闭“包含竞赛”按钮时只能查看非竞赛提交

@@ -29,7 +29,12 @@ function getIpAddress(string $ip = '')
 {
     // 可以自己找第三方接口，返回数据不一样
     $url = "http://whois.pconline.com.cn/ip.jsp?ip=" . $ip;
-    $res = file_get_contents($url);
+    try {
+        $res = file_get_contents($url);
+    } catch (Exception $e) {
+        echo $e->getMessage();
+        $res = null;
+    }
     // 因为这个接口返回的值gb2312编码，且有换行符，所以做以下处理
     return preg_replace("/\s/", "", iconv("gb2312", "utf-8", $res));
 }
