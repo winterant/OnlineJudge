@@ -281,6 +281,7 @@ CREATE TABLE `solutions`  (
     `error_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
     `wrong_data` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
     `ip` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+    `ip_loc` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
     `judger` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
     `code_length` int(11) NULL DEFAULT 0,
     `code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,

@@ -135,18 +135,22 @@
                                             @endif
                                         </td>
                                         <td nowrap>
-                                            <a href="{{route('user',$sol->username)}}" target="_blank">{{$sol->username}}</a>
+                                            @if($sol->username)
+                                                <a href="{{route('user',$sol->username)}}" target="_blank">{{$sol->username}}</a>
+                                            @else
+                                                <span>{{$sol->username}}</span>
+                                            @endif
                                             @if(isset($sol->nick) && $sol->nick)&nbsp;{{$sol->nick}}@endif
                                         </td>
                                         <td nowrap>
-                                            <font hidden>{{$sol->id}}</font>
-                                            <font hidden>{{$sol->result}}</font>
-                                            <font id="result_{{$sol->id}}" class="{{config('oj.resColor.'.$sol->result)}} result_td">
+                                            <span hidden>{{$sol->id}}</span>
+                                            <span hidden>{{$sol->result}}</span>
+                                            <span id="result_{{$sol->id}}" class="{{config('oj.resColor.'.$sol->result)}} result_td">
                                                 {{ __('result.' . config('oj.result.'.$sol->result)) }}
-                                                @if($sol->judge_type=='oi')
+                                                @if($sol->judge_type=='oi' && $sol->result > 4)
                                                     ({{round($sol->pass_rate*100)}})
                                                 @endif
-                                            </font>
+                                            </span>
                                             @if(privilege('admin.problem.solution') && $sol->sim_rate>=50)
                                                 <a class="bg-sky px-1 text-black" style="border-radius: 3px"
                                                    href="{{route('solution',$sol->sim_sid)}}" target="_blank"

@@ -101,7 +101,7 @@ struct Solution{
 
     void load_solution(int sid) //从数据库读取提交记录，注：用到了全局mysql
     {
-        sprintf(sql,"select `judge_type`,`problem_id`,`spj`,`time_limit`,`memory_limit`,`language`,`code` from solutions A inner join problems B on A.problem_id=B.id where A.id=%d",sid);
+        sprintf(sql,"select `judge_type`,`problem_id`,`spj`,`time_limit`,`memory_limit`,`A`.`language` as `language`,`code` from solutions A inner join problems B on A.problem_id=B.id where A.id=%d",sid);
         if(mysql_real_query(mysql,sql,strlen(sql))!=0){
             printf("select failed!\n");
             exit(1);

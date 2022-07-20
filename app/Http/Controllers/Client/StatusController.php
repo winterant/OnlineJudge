@@ -86,10 +86,10 @@ class StatusController extends Controller
             //管理员能看到昵称、ip及其属地
             if (privilege('admin.problem.solution')) {
                 $s->nick = $u ? $u->nick : null;
-                $s->ip_loc = getIpAddress($s->ip);
             } else {
                 // 非管理员，抹掉ip信息
                 $s->ip = '-';
+                $s->ip_loc = '';
             }
         }
         return view('client.status', compact('solutions'));
@@ -109,7 +109,8 @@ class StatusController extends Controller
                     'id' => $item->id,
                     'result' => $item->result,
                     'color' => config('oj.resColor.' . $item->result),
-                    'text' => trans('result.' . config('oj.result.' . $item->result)) . ($item->judge_type == 'oi' ? sprintf(' (%s)', round($item->pass_rate * 100)) : null),
+                    'text' => trans('result.' . config('oj.result.' . $item->result))
+                        . ($item->judge_type == 'oi' && $item->result > 4 ? sprintf(' (%s%%)', round($item->pass_rate * 100)) : null),
                     'time' => $item->time . 'MS',
                     'memory' => round($item->memory, 2) . 'MB'
                 ];
@@ -227,6 +228,7 @@ class StatusController extends Controller
             'judge_type'    => isset($contest->judge_type) ? $contest->judge_type : 'oi', //acm,oi
 
             'ip'            => get_client_real_ip(),
+            'ip_loc'        => getIpAddress(get_client_real_ip()),
             'code_length'   => strlen($data['code']),
             'code'          => $data['code']
         ];
@@ -247,7 +249,7 @@ class StatusController extends Controller
 
         //将提交记录处理后写入数据库
         $solution = $this->process_solution($request);
-        if(!is_array($solution))
+        if (!is_array($solution))
             return $solution;
         $sid = DB::table('solutions')->insertGetId($solution);
 
