@@ -71,10 +71,24 @@
                 <input name="display_complete_standings" value="{{get_setting('display_complete_standings')?'true':'false'}}" type="text" hidden>
                 <font>对于未登录访客，在排行榜页面显示排行榜完整名，关闭后排行榜用户名将被隐藏</font>
             </div>
+        </div>
+        <div class="my-container bg-white">
+            <h4>题目访问</h4>
+            <hr>
             <div class="form-group">
                 <input id="guest_see_problem" type="checkbox">
                 <input name="guest_see_problem" value="{{get_setting('guest_see_problem')?'true':'false'}}" type="text" hidden>
-                <font>允许未登录的访客查看题目内容</font>
+                <span>允许未登录的访客查看题目内容</span>
+            </div>
+            <div class="form-group">
+                <input id="show_disscussions" type="checkbox">
+                <input name="show_disscussions" value="{{get_setting('show_disscussions')?'true':'false'}}" type="text" hidden>
+                <span>是否在题目页面显示讨论版</span>
+            </div>
+            <div class="form-group">
+                <input id="post_discussion" type="checkbox">
+                <input name="post_discussion" value="{{get_setting('post_discussion')?'true':'false'}}" type="text" hidden>
+                <span>是否允许普通用户在题目讨论版发言（管理员不受限制）</span>
             </div>
         </div>
 
@@ -105,7 +119,11 @@
                 "allow_register",
                 "display_complete_userinfo",
                 "display_complete_standings",
+
                 "guest_see_problem",
+                "show_disscussions",
+                "post_discussion",
+
                 "rank_show_school",
                 "rank_show_class",
                 "rank_show_nick",
@@ -128,7 +146,7 @@
             @csrf
             <div class="form-inline">
                 <label>提交间隔：
-                    <input type="number" name="submit_interval" value="{{get_setting('submit_interval')}}" required class="form-control">秒（短于该时间内无法提交2次，防止恶意提交；管理员不受限制，建议20秒）
+                    <input type="number" name="submit_interval" value="{{get_setting('submit_interval')}}" required class="form-control">秒（防止恶意提交，两次提交之间的最小间隔；管理员不受限制）
                 </label>
                 <button class="btn text-white ml-4 bg-success">保存</button>
             </div>

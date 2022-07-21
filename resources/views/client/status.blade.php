@@ -147,7 +147,7 @@
                                             <span hidden>{{$sol->result}}</span>
                                             <span id="result_{{$sol->id}}" class="{{config('oj.resColor.'.$sol->result)}} result_td">
                                                 {{ __('result.' . config('oj.result.'.$sol->result)) }}
-                                                @if($sol->judge_type=='oi' && $sol->result > 4)
+                                                @if($sol->judge_type=='oi' && $sol->result >=5 && $sol->result <= 10)
                                                     ({{round($sol->pass_rate*100)}}%)
                                                 @endif
                                             </span>

@@ -112,20 +112,23 @@
 
                 @include('client.code_editor')
 
-                @if(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time))
-                    <div id="discussion_block" class="my-container bg-white ck-content">
-                        <div class="d-flex">
-                            <h4 class="flex-row">{{__('main.Discussions')}}</h4>
-                            @if(Auth::check())
-                                <button class="btn btn-info flex-row ml-2" data-toggle="modal"
-                                        data-target="#edit-discussion"
-                                        onclick="$('#form_edit_discussion')[0].reset()">{{__('main.New Discussion')}}</button>
-                            @endif
+                @if(get_setting("show_disscussions"))
+                    @if(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time))
+                        <div id="discussion_block" class="my-container bg-white ck-content">
+                            <div class="d-flex">
+                                <h4 class="flex-row">{{__('main.Discussions')}}</h4>
+                                {{-- 发表按钮 --}}
+                                @if(Auth::check()&&
+                                    (get_setting("post_discussion") || privilege("admin.problem")))
+                                        <button class="btn btn-info flex-row ml-2" data-toggle="modal"
+                                            data-target="#edit-discussion"
+                                            onclick="$('#form_edit_discussion')[0].reset()">{{__('main.New Discussion')}}</button>
+                                @endif
+                            </div>
+                            <ul id="discussion-content" class="border-bottom list-unstyled"></ul>
+                            <a href="javascript:" onclick="load_discussion()">{{__('main.More')}}>></a>
                         </div>
-                        {{--                    <hr class="mt-0 mb-1">--}}
-                        <ul id="discussion-content" class="border-bottom list-unstyled"></ul>
-                        <a href="javascript:" onclick="load_discussion()">{{__('main.More')}}>></a>
-                    </div>
+                    @endif
                 @endif
             </div>
 

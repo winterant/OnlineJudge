@@ -111,7 +111,7 @@ class StatusController extends Controller
                     'result' => $item->result,
                     'color' => config('oj.resColor.' . $item->result),
                     'text' => trans('result.' . config('oj.result.' . $item->result))
-                        . ($item->judge_type == 'oi' && $item->result > 4 ? sprintf(' (%s%%)', round($item->pass_rate * 100)) : null),
+                        . ($item->judge_type == 'oi' && $item->result >=5 && $item->result <=10 ? sprintf(' (%s%%)', round($item->pass_rate * 100)) : null),
                     'time' => $item->time . 'MS',
                     'memory' => round($item->memory, 2) . 'MB'
                 ];
