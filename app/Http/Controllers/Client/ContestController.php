@@ -287,7 +287,7 @@ class ContestController extends Controller
             ->join('users', 'solutions.user_id', '=', 'users.id')
             ->join('contest_problems', 'solutions.problem_id', '=', 'contest_problems.problem_id')
             ->select(['solutions.id', 'index', 'user_id', 'username', 'nick', 'result', 'judge_type',
-                 'pass_rate', 'sim_rate', 'sim_sid', 'time', 'memory', 'language', 'submit_time', 'judger', 'ip'])
+                 'pass_rate', 'sim_rate', 'sim_sid', 'time', 'memory', 'language', 'submit_time', 'judger', 'ip', 'ip_loc'])
             ->where('solutions.contest_id', $id)
             ->where('contest_problems.contest_id', $id)
             ->when(isset($_GET['index']) && $_GET['index'] >= 0, function ($q) {

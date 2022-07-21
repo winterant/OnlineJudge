@@ -55,7 +55,7 @@
             </div>
 
             <div class="form-inline mb-3">
-                <font>题目讨论：</font>
+                <span>题目讨论：</span>
                 <div class="custom-control custom-radio ml-3">
                     <input type="radio" name="contest[open_discussion]" value="1" class="custom-control-input" id="kaifang" checked>
                     <label class="custom-control-label pt-1" for="kaifang">允许讨论</label>
@@ -118,7 +118,7 @@
                         <input type="datetime-local" name="contest[start_time]"
                                value="{{isset($contest)?substr(str_replace(' ','T',$contest->start_time),0,16)
                            :str_replace(' ','T',date('Y-m-d H:00',time()+3600))}}" class="form-control" required>
-                        <font class="mx-2">—</font>
+                        <span class="mx-2">—</span>
                         <input type="datetime-local" name="contest[end_time]"
                                value="{{isset($contest)?substr(str_replace(' ','T',$contest->end_time),0,16)
                            :str_replace(' ','T',date('Y-m-d H:00',time()+3600*6))}}" class="form-control" required>
@@ -145,7 +145,7 @@
             <div class="border p-2">
 
                 <div class="form-inline my-2">
-                    <font>验证方式：</font>
+                    <span>验证方式：</span>
                     <div class="custom-control custom-radio mx-3">
                         <input type="radio" name="contest[access]" value="public" class="custom-control-input" id="Public" checked
                                onchange="access_has_change('public')">
@@ -216,7 +216,7 @@
                     <input id="input_allow_lang" type="number" name="contest[allow_lang]" hidden>
                     @foreach(config('oj.lang') as $lang=>$name)
                         <div class="custom-control custom-checkbox mx-2">
-                            <input type="checkbox" name="allow_lang" value="{{$lang}}" class="custom-control-input" id="allow_lang{{$lang}}"
+                            <input type="checkbox" name="allow_lang" value="{{$lang}}" class="lang_checkbox custom-control-input" id="allow_lang{{$lang}}"
                                    @if(!isset($contest)||($contest->allow_lang&(1<<$lang)))checked @endif>
                             <label class="custom-control-label pt-1" for="allow_lang{{$lang}}">{{$name}}</label>
                         </div>
@@ -229,7 +229,7 @@
 
 
                 <div class="form-inline mb-3">
-                    <font>判题规则：</font>
+                    <span>判题规则：</span>
                     <div class="custom-control custom-radio ml-2">
                         <input type="radio" name="contest[judge_type]" value="acm" class="custom-control-input" id="acmicpc" checked>
                         <label class="custom-control-label pt-1" for="acmicpc">ACM-ICPC程序设计竞赛</label>
@@ -274,7 +274,7 @@
         function presubmit() {
             //将允许语言的标记以二进制形式状态压缩为一个整数
             var ret = 0;
-            $("input[type=checkbox]:checked").each(function () {
+            $(".lang_checkbox:checked").each(function () {
                 ret |= 1 << this.value;
             });
             $("#input_allow_lang").val(ret);
