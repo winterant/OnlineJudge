@@ -3,13 +3,6 @@
 <meta name="force-rendering" content="webkit"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{{-- 强制开启https；该配置可在.env文件中修改FORCE_HTTPS项 --}}
-{{-- 只有网站配置了https访问时，才可以启用该配置 --}}
-{{-- 另一种方法：也可以在nginx中启用强制转https，详见https://blog.csdn.net/winter2121/article/details/107783085 --}}
-@if(config('app.FORCE_HTTPS'))
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-@endif
-
 
 <!-- CSRF Token -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
