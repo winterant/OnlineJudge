@@ -91,6 +91,8 @@
 
 # 🌏 Docker镜像发布
 
+安装docker请参考[官方文档](https://yeasy.gitbook.io/docker_practice/install/ubuntu#shi-yong-jiao-ben-zi-dong-an-zhuang)
+
 + 将本项目构建为docker镜像
   
   ```bash
