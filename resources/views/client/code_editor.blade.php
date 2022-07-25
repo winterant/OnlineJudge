@@ -4,6 +4,11 @@
 
     <form id="code_form" action="{{route('submit_solution')}}" method="post" enctype="multipart/form-data">
         @csrf
+        
+        @if(isset($_GET['group']))
+            <input name="group" value="{{$_GET['group']}}" hidden>
+        @endif
+
         <input name="solution[pid]" value="{{$problem->id}}" hidden>
 
         @if(isset($contest))

@@ -112,7 +112,7 @@
                                     <th width="5%" class="text-center">{{$contest->judge_type == 'acm'?trans('main.Solved'):trans('main.Score')}}</th>
                                     <th width="5%" class="text-center">{{trans('main.Penalty')}}</th>
                                     @for($i=0;$i<$problem_count;$i++)
-                                        <th class="text-center"><a href="{{route('contest.problem',[$contest->id,$i])}}">{{index2ch($i)}}</a></th>
+                                        <th class="text-center"><a href="{{route('contest.problem',[$contest->id,$i,'group'=>$_GET['group']??null])}}">{{index2ch($i)}}</a></th>
                                     @endfor
                                 </tr>
                             </thead>

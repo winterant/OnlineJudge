@@ -121,7 +121,7 @@
                                     <td>{{index2ch($item->index)}}</td>
                                     <td nowrap>
                                         @if(privilege('admin.contest')||time()>strtotime($contest->start_time))
-                                            <a href="{{route('contest.problem',[$contest->id,$item->index])}}">{{$item->title}}</a>
+                                            <a href="{{route('contest.problem',[$contest->id,$item->index,'group'=>$_GET['group']??null])}}">{{$item->title}}</a>
                                         @else
                                             -
                                         @endif

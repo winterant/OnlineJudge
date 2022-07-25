@@ -19,6 +19,9 @@
             <div class="col-12">
                 <div class="my-container bg-white">
                     <form action="" method="get">
+                        @if(isset($_GET['group']))
+                            <input name="group" value="{{$_GET['group']}}" hidden>
+                        @endif
                         <div class="form-inline float-right ">
                             {{-- 管理员附加按钮 --}}
                             @if(privilege('admin.problem.solution'))
@@ -123,7 +126,7 @@
                                         <td nowrap>
                                             @if(isset($contest))
                                                 {{-- 比赛中的状态 --}}
-                                                <a href="{{route('contest.problem',[$contest->id,$sol->index])}}">{{index2ch($sol->index)}}</a>
+                                                <a href="{{route('contest.problem',[$contest->id,$sol->index, 'group' => $_GET['group'] ?? null])}}">{{index2ch($sol->index)}}</a>
                                             @else
                                                 {{-- 总状态列表 --}}
                                                 <a href="{{route('problem',$sol->problem_id)}}">{{$sol->problem_id}}</a>
