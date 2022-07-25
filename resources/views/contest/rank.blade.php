@@ -139,8 +139,8 @@
                                         @if(get_setting('rank_show_school'))<td nowrap>{{$user['school']}}</td> @endif
                                         @if(get_setting('rank_show_class'))<td nowrap>{{$user['class']}}</td> @endif
                                         @if(get_setting('rank_show_nick'))<td nowrap>{{$user['nick']}}</td> @endif
-                                        <td class="text-center">{{$user['score']}}</td>
-                                        <td class="text-center">{{$user['penalty']}}</td>
+                                        <td class="text-center" onclick="window.open('{{route('contest.status', [$contest->id,'username'=>$user['username'],'group'=>$_GET['group']??null])}}','_blank')">{{$user['score']}}</td>
+                                        <td class="text-center" onclick="window.open('{{route('contest.status', [$contest->id,'username'=>$user['username'],'group'=>$_GET['group']??null])}}','_blank')">{{$user['penalty']}}</td>
                                         {{-- 下面是每一道题的情况 --}}
                                         @for($i=0;$i<$problem_count;$i++)
                                             <td @if(isset($user[$i]))

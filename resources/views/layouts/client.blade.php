@@ -193,7 +193,11 @@
         }
         //特判contests
         if(uri.indexOf('/contest')!==-1){
-            $('#link_contests').addClass('active')
+            // 先特判从group进来的contest
+            if(location.search.indexOf('group=')!==-1)
+                $('#link_groups').addClass('active')
+            else
+                $('#link_contests').addClass('active')
         }
         //特判groups
         if(uri.indexOf('/group')!==-1){
