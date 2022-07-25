@@ -155,6 +155,7 @@
                                                     @else
                                                         style="background-color: #ffafa7"
                                                     @endif
+                                                    onclick="window.open('{{route('contest.status', [$contest->id,'username'=>$user['username'],'index'=>$i,'group'=>$_GET['group']??null])}}','_blank')"
                                                 @endif
                                                 class="border text-center">
                                                 {{isset($user[$i])?$user[$i]['AC_info']:null}}

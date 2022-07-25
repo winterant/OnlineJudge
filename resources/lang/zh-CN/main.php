@@ -157,7 +157,7 @@ return [
     //    contest
     "Score"         => "分值",
     "Solved"        => "已解决",
-    "Penalty"       => "惩罚",
+    "Penalty"       => "耗时",
     "Full screen"   => "全屏",
     "Up to now"     => "实时更新",
     "Waiting"       => "等待",
