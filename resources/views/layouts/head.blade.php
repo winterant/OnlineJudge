@@ -15,7 +15,7 @@
 {{-- styles--}}
 <link href="{{asset('static/bootstrap-material-design-dist/css/bootstrap-material-design.min.css')}}" rel="stylesheet">
 <link href="{{asset('static/font-awesome-4.7.0/css/font-awesome.min.css')}}" rel="stylesheet">
-<link href="{{asset('css/main.css')}}?v=20210815" rel="stylesheet">
+<link href="{{asset('css/main.css')}}?v=20220728" rel="stylesheet">
 
 
 {{-- js for jquery and bootstrap--}}

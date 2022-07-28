@@ -62,7 +62,7 @@
         @if($problem->type==0)
             {{--            编程题 --}}
             <div class="form-group border">
-                <textarea id="code_editor" name="solution[code]"></textarea>
+                <textarea id="code_editor" name="solution[code]" style="width: 100%;height:15rem"></textarea>
             </div>
         @elseif($problem->type==1)
             {{-- 代码填空 --}}

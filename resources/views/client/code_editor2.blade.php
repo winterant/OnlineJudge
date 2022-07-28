@@ -1,6 +1,6 @@
 
 <form id="code_form" action="{{route('submit_solution')}}" method="post" enctype="multipart/form-data"
-
+style="overflow:auto"
 >
     @csrf
     
@@ -60,12 +60,12 @@
 
     @if($problem->type==0)
         {{--            编程题 --}}
-        <div class="form-group border mr-1">
-            <textarea id="code_editor" name="solution[code]"></textarea>
+        <div class="form-group border mx-1">
+            <textarea id="code_editor" name="solution[code]" style="width: 100%;height:30rem"></textarea>
         </div>
     @elseif($problem->type==1)
         {{-- 代码填空 --}}
-        <div class="mb-3 border">
+        <div class="mb-3 mx-1 border">
             <pre id="blank_code" class="mb-0"><code>{{$problem->fill_in_blank}}</code></pre>
             <script type="text/javascript">
                 $(function (){

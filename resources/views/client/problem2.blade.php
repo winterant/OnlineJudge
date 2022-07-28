@@ -8,68 +8,39 @@
 
 @section('content')
     <style>
-        /* 美化滚动条 */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            width: 6px;
-            background: rgba(#101F1C, 0.1);
-            -webkit-border-radius: 2em;
-            -moz-border-radius: 2em;
-            border-radius: 2em;
-        }
-
-        ::-webkit-scrollbar-thumb {
-        background-color: rgba(144,147,153,.5);
-        background-clip: padding-box;
-        min-height: 28px;
-        -webkit-border-radius: 2em;
-        -moz-border-radius: 2em;
-        border-radius: 2em;
-        transition: background-color .3s;
-        cursor: pointer;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-        background-color: rgba(144,147,153,.3);
-        }
-
-
-        /* 分栏 */
-        body {
-            margin: 0;
-            overflow-y: hidden;
-        }
-        #container {
-            width: 100%;
-            height: 100vh;
-            margin-top: -0.7rem;
-            display: flex;
-            flex-wrap: nowrap;
-            align-items: stretch;
-            background-color: white;
-            position: relative;
-        }
-        #left {
-            width: calc(100% - 4px);
-            /* background-color: blue; */
-            overflow: auto;
-        }
-        #resize {
-            width: 4px;
-            height: 100vh;
-            cursor: ew-resize;
-        }
-        #resize:hover {
-            background-color: rgb(255, 238, 0);
-        }
-        #right {
-            width: 100%;
-            /* height: 100vh; */
-            /* background-color:green; */
+        /* 大屏幕分栏 */
+        @media screen and (min-width: 768px){
+            body{
+                overflow-y: hidden;
+            }
+            #container {
+                width: 100%;
+                height: 100vh;
+                margin-top: -0.7rem;
+                display: flex;
+                flex-wrap: nowrap;
+                align-items: stretch;
+                background-color: white;
+                position: relative;
+            }
+            #left {
+                width: calc(100% - 4px);
+                /* background-color: blue; */
+                overflow: auto;
+            }
+            #resize {
+                width: 4px;
+                height: 100vh;
+                cursor: ew-resize;
+            }
+            #resize:hover {
+                background-color: rgb(255, 238, 0);
+            }
+            #right {
+                width: 100%;
+                /* height: 100vh;  */
+                /* background-color:green; */
+            }
         }
     </style>
 
@@ -356,8 +327,6 @@
             @include('client.code_editor2')
         </div>
     </div>
-
-
 
     {{--     模态框  编辑讨论内容 --}}
     @if(Auth::check()&&(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time)))
