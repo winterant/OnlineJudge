@@ -303,7 +303,7 @@ int compile()
     if( (pid=fork()) == 0 ) //子进程编译
     {
         struct rlimit LIM;
-        int cpu_time = 60;     //10s, compile time limit
+        int cpu_time = 60;     //60s, compile time limit
 
         LIM.rlim_max=LIM.rlim_cur=cpu_time;
         setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit; 60s
@@ -373,10 +373,10 @@ void running(const char data_in_path[])
     setrlimit(RLIMIT_STACK, &LIM);
 
     //time limit
-    LIM.rlim_max=LIM.rlim_cur = solution.time_limit/1000+1; //S,增加1秒额外损耗
+    LIM.rlim_max=LIM.rlim_cur = solution.time_limit/1000 * 2 + 60; //S, 双倍 且 增加60秒额外损耗
     setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit
     alarm(0);
-    alarm((int)(LIM.rlim_cur<<1)+10); //定时自杀
+    alarm(LIM.rlim_cur); //定时自杀
 
     switch(solution.language)
     {
