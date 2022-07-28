@@ -172,6 +172,28 @@
 
             <hr>
 
+            {{-- 讨论版 --}}
+            @if(get_setting("show_disscussions"))
+                @if(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time))
+                    <div id="discussion_block" class="my-5 ck-content">
+                        <div class="d-flex p-2" style="background-color: rgb(162, 212, 255)">
+                            <h4 class="flex-row mb-0">{{__('main.Discussions')}}</h4>
+                            {{-- 发表按钮 --}}
+                            @if(Auth::check()&&
+                                (get_setting("post_discussion") || privilege("admin.problem")))
+                                    <button class="btn btn-info flex-row ml-2 mb-0" data-toggle="modal"
+                                        data-target="#edit-discussion"
+                                        onclick="$('#form_edit_discussion')[0].reset()">{{__('main.New Discussion')}}</button>
+                            @endif
+                        </div>
+                        <div class="p-3">
+                            <ul id="discussion-content" class="border-bottom list-unstyled"></ul>
+                            <a href="javascript:" onclick="load_discussion()">{{__('main.More')}}>></a>
+                        </div>
+                    </div>
+                @endif
+            @endif
+
             {{-- 已经AC的用户进行标签标记 --}}
             @if($tag_mark_enable)
                 {{--                    模态框选择标签 --}}
@@ -291,36 +313,6 @@
                 </div>
             @endif
 
-
-            {{-- 讨论版 --}}
-            @if(get_setting("show_disscussions"))
-                @if(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time))
-                    <div id="discussion_block" class="my-5 ck-content">
-                        <div class="d-flex p-2" style="background-color: rgb(162, 212, 255)">
-                            <h4 class="flex-row mb-0">{{__('main.Discussions')}}</h4>
-                            {{-- 发表按钮 --}}
-                            @if(Auth::check()&&
-                                (get_setting("post_discussion") || privilege("admin.problem")))
-                                    <button class="btn btn-info flex-row ml-2 mb-0" data-toggle="modal"
-                                        data-target="#edit-discussion"
-                                        onclick="$('#form_edit_discussion')[0].reset()">{{__('main.New Discussion')}}</button>
-                            @endif
-                        </div>
-                        <div class="p-3">
-                            <ul id="discussion-content" class="border-bottom list-unstyled"></ul>
-                            <a href="javascript:" onclick="load_discussion()">{{__('main.More')}}>></a>
-                        </div>
-                    </div>
-                @endif
-            @endif
-
-            {{-- 饼状图--}}
-            <div id="pieChartDiv" class="my-5">
-                <div class="p-2" style="background-color: rgb(162, 212, 255)">
-                    <h5 class="m-0">{{__('main.Submitted')}} {{__('main.Analysis')}}</h5>
-                </div>
-                <div id="pieChart" class="p-3"></div>
-            </div>
         </div>
         <div id="resize"></div>
         <div id="right">
@@ -374,73 +366,8 @@
 
     @endif
 
-    {{-- ckeditor样式 --}}
-    @if(Auth::check())
-    <script type="text/javascript">
-            // problem讨论板编辑框
-            $(function () {
-                ClassicEditor.create(document.querySelector('#content'), ck_config).then(editor => {
-                    window.editor = editor;
-                    console.log(editor.getData());
-                } ).catch(error => {
-                    console.log(error);
-                } );
-            })
-        </script>
-    @endif
-    
-    {{--copy--}}
-    <script type="text/javascript">
-        function copy(tag_id) {
-            $("body").append('<textarea id="copy_temp">' + $('#' + tag_id).html() + '</textarea>');
-            $("#copy_temp").select();
-            document.execCommand("Copy");
-            $("#copy_temp").remove();
-            Notiflix.Notify.Success('{{__('sentence.copy')}}');
-        }
-        </script>
-
     <script type="text/javascript">
         $(function () {
-            //====================================== {{-- echarts表格渲染 --}} ======================================
-            var myChart = echarts.init(document.getElementById('pieChart'));
-            myChart.setOption({
-                title: {
-                    // text: '实例'
-                },
-                tooltip: {
-                    showDelay: 0,   // 显示延迟，添加显示延迟可以避免频繁切换，单位ms
-                    hideDelay: 0,   // 隐藏延迟，单位ms
-                    formatter: '{b} : {c} ({d}%)'
-                },
-                legend: {
-                    data: ['销量']
-                },
-                series: [{
-                    // name: '提交',
-                    type: 'pie',
-                    data: [
-                        @foreach($results as $item)
-                            {
-                                name: '{{__("result.".config("oj.result.".$item->result))}}', value: {{$item->result_count}}
-                            },
-                        @endforeach
-                    ]
-                }]
-            });
-            
-            function echart_resize(myChart) {
-                var dom = $("#pieChart")
-                var width = dom.width() * 0.8
-                myChart.resize({height: width});
-                dom.height(width)
-            }
-            echart_resize(myChart)
-            // 监听窗口大小，调整饼状图宽度
-            window.onresize = function () {
-                echart_resize(myChart)
-            }
-            
             //========================================= {{-- 左右分栏js调整 --}} ===============================================
             window.onload = function() {
                 var resize = document.getElementById('resize');
@@ -456,20 +383,15 @@
                         var deltaX = curX - preX;
                         var leftWidth = resize.left + deltaX;
                         // 左边区域的最小宽度限制
-                        if (leftWidth < 200) leftWidth = 200; 
+                        if (leftWidth < 300) leftWidth = 300; 
                         // 右边区域最小宽度限制
-                        if (leftWidth > container.clientWidth - 200) leftWidth = container.clientWidth  - 200;  
+                        if (leftWidth > container.clientWidth - 300) leftWidth = container.clientWidth  - 300;  
                         // 设置左边区域的宽度
                         left.style.width = leftWidth + 'px';
                         // 设备分栏竖条的left位置
                         resize.style.left = leftWidth; 
                         // 设置右边区域的宽度
                         right.style.width = (container.clientWidth - leftWidth - 4) + 'px';
-                        
-                        //======================= 修改echart图的大小 =======================
-                        try{
-                            echart_resize(myChart)
-                        }catch(e){}
                     }
                     document.onmouseup = function(e) {
                         document.onmousemove = null;
@@ -478,7 +400,16 @@
                 }    
             };
         })
-        </script>
+        // ============================== problem讨论板 ckeditor 编辑框样式 ===========================
+        $(function () {
+            ClassicEditor.create(document.querySelector('#content'), ck_config).then(editor => {
+                window.editor = editor;
+                console.log(editor.getData());
+            } ).catch(error => {
+                console.log(error);
+            } );
+        })
+    </script>
 
     {{-- 问题标签的操作 --}}
     <script type="text/javascript">
@@ -685,4 +616,14 @@
         }
     </script>
 
+    {{--copy--}}
+    <script type="text/javascript">
+        function copy(tag_id) {
+            $("body").append('<textarea id="copy_temp">' + $('#' + tag_id).html() + '</textarea>');
+            $("#copy_temp").select();
+            document.execCommand("Copy");
+            $("#copy_temp").remove();
+            Notiflix.Notify.Success('{{__('sentence.copy')}}');
+        }
+    </script>
 @endsection
