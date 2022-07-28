@@ -135,7 +135,7 @@ function readAllFilesPath($dir_path): array
  * 读取样例/测试文件
  * @param $problem_id
  * @param bool $from_sample
- * @return array  返回二维字符串数组，第一维[test0,test1,...]，第二维[.in, .out]
+ * @return array  返回二维字符串数组(直接读取文件内容)，a[filename][.in/.out]=string
  */
 function read_problem_data($problem_id, $from_sample = true): array
 {
@@ -143,7 +143,7 @@ function read_problem_data($problem_id, $from_sample = true): array
     $dir = testdata_path($problem_id . '/' . ($from_sample ? 'sample' : 'test'));
     foreach (readAllFilesPath($dir) as $item) {
         $name = pathinfo($item, PATHINFO_FILENAME);  //文件名
-        $ext = pathinfo($item, PATHINFO_EXTENSION);    //拓展名
+        $ext = pathinfo($item, PATHINFO_EXTENSION);  //拓展名
         if (!isset($samples[$name])) //发现新样本
             $samples[$name] = ['', ''];
         if ($ext === 'in')

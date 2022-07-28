@@ -121,6 +121,7 @@ class StatusController extends Controller
         return json_encode([]);
     }
 
+    // 获取一条提交记录
     public function solution($id)
     {
         $solution = DB::table('solutions')
@@ -142,6 +143,7 @@ class StatusController extends Controller
         return view('client.fail', ['msg' => trans('sentence.Permission denied')]);
     }
 
+    // 读取出错数据
     public function solution_wrong_data($id, $type)
     {
         $solution = DB::table('solutions')
@@ -172,9 +174,20 @@ class StatusController extends Controller
         return view('client.fail', ['msg' => trans('sentence.Permission denied')]);
     }
 
-    //从request表单中读取提交的信息，处理生成提交记录json格式
-    private function process_solution(Request $request)
+    //将用户解决方案提交到数据库
+    public function submit_solution(Request $request)
     {
+        //============================= 拦截非管理员的频繁提交 =================================
+        if (!privilege('admin.problem.list') || !privilege('admin.problem.solution')) {
+            $last_submit_time = DB::table('solutions')
+                ->where('user_id', Auth::id())
+                ->orderByDesc('submit_time')
+                ->value('submit_time');
+            if (time() - strtotime($last_submit_time) < intval(get_setting('submit_interval')))
+                return view('client.fail', ['msg' => trans('sentence.submit_frequently', ['sec' => get_setting('submit_interval')])]);
+        }
+
+        //============================= 预处理提交记录的字段 =================================
         //获取前台提交的solution信息
         $data = $request->input('solution');
         $problem = DB::table('problems')->find($data['pid']); //找到题目
@@ -218,7 +231,7 @@ class StatusController extends Controller
         if (strlen($data['code']) < 3)
             return view('client.fail', ['msg' => '代码长度过短！']);
 
-        return [
+        $solution = [
             'problem_id'    => $data['pid'],
             'contest_id'    => isset($data['cid']) ? $data['cid'] : -1,
             'user_id'       => Auth::id(),
@@ -233,49 +246,18 @@ class StatusController extends Controller
             'code_length'   => strlen($data['code']),
             'code'          => $data['code']
         ];
-    }
 
-    //将用户解决方案提交到数据库
-    public function submit_solution(Request $request)
-    {
-        //拦截非管理员的频繁提交
-        if (!privilege('admin.problem.list')) {
-            $last_submit_time = DB::table('solutions')
-                ->where('user_id', Auth::id())
-                ->orderByDesc('submit_time')
-                ->value('submit_time');
-            if (time() - strtotime($last_submit_time) < intval(get_setting('submit_interval')))
-                return view('client.fail', ['msg' => trans('sentence.submit_frequently', ['sec' => get_setting('submit_interval')])]);
-        }
+        //=============================== 将提交记录写入数据库 ======================================
+        $solution['id'] = DB::table('solutions')->insertGetId($solution);
 
-        //将提交记录处理后写入数据库
-        $solution = $this->process_solution($request);
-        if (!is_array($solution))
-            return $solution;
-        $sid = DB::table('solutions')->insertGetId($solution);
+        //=============================== 运行评测 ===============================
+        $judger = new JudgeController();
+        $judger->judge($solution);
 
-        //使用judge0判题
-        $this->judge0($sid);
-
-        //善后工作
-        $data = $request->input('solution');
+        //=============================== 展示网页 ===============================
         Cookie::queue('submit_language', $data['language']); //Cookie记住用户使用的语言，以后提交默认该语言
         if (isset($data['cid'])) //竞赛提交
             return redirect(route('contest.status', [$data['cid'], 'index' => $data['index'], 'username' => Auth::user()->username, 'group'=>$request->input('group')??null]));
-
         return redirect(route('status', ['pid' => $data['pid'], 'username' => Auth::user()->username]));
-    }
-
-    //向judge0发起一次判题，与oj自带判题端不可同时使用
-    private function judge0($sid)
-    {
-        $solution = DB::table('solutions')->find($sid);
-        if (!$solution)
-            return null;
-
-        //向judge0发送判题指令
-        //todo
-        //后台读取判题结果
-        //todo
     }
 }
