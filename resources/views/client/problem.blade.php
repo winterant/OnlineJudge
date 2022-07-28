@@ -23,6 +23,9 @@
                     @if(!isset($contest)&&$problem->hidden==1)
                         [<span class="text-red">{{trans('main.Hidden')}}</span>]
                     @endif
+                    
+                    <a href="?page=new{{'&group='.($_GET['group']??'0')}}" class="float-right" style="font-size: 2rem">点击体验新版界面</a>
+
                     <h4 class="text-center">
                         {{isset($contest)?index2ch($problem->index):$problem->id}}. {{$problem->title}}
 

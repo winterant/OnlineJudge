@@ -120,7 +120,7 @@ return [
     "replies"       => "回复",
     "Reply"         => "回复",
     "reply to"      => "回复",
-    "New Discussion" => "我想说",
+    "New Discussion" => "我要发言",
 
     //    standing
     "All"           => "所有",
