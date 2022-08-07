@@ -22,6 +22,9 @@ class CheckContest
     public function handle($request, Closure $next)
     {
         $contest=DB::table('contests')->find($request->route()->parameter('id'));
+        if(!$contest)
+            return abort(404, '竞赛不存在'); // 竞赛不存在
+
         //contest管理员直接进入
         if(privilege('admin.contest')) 
             return $next($request);

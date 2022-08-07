@@ -4,7 +4,6 @@
 
     <form id="code_form" action="{{route('submit_solution')}}" method="post" enctype="multipart/form-data">
         @csrf
-        
         @if(isset($_GET['group']))
             <input name="group" value="{{$_GET['group']}}" hidden>
         @endif
@@ -62,7 +61,8 @@
         @if($problem->type==0)
             {{--            编程题 --}}
             <div class="form-group border">
-                <textarea id="code_editor" name="solution[code]" style="width: 100%;height:15rem"></textarea>
+                <input id="real_code" name="solution[code]" hidden>
+                <textarea id="code_editor" style="width: 100%;height:15rem"></textarea>
             </div>
         @elseif($problem->type==1)
             {{-- 代码填空 --}}
@@ -90,6 +90,7 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.2/base64.min.js"></script>
 {{--    代码填空的处理 --}}
 <script type="text/javascript">
     $(function () {
@@ -168,6 +169,9 @@
                 Notiflix.Report.Info('{{trans('sentence.Operation failed')}}','{{trans('sentence.empty_code')}}','OK')
                 return false
             }
+            // 代码加密提交
+            var encrypt = Base64.encode(code_editor.getValue())
+            $("#real_code").val(encrypt)
         })
     })
 </script>

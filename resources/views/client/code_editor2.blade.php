@@ -61,7 +61,8 @@ style="overflow:auto"
     @if($problem->type==0)
         {{--            编程题 --}}
         <div class="form-group border mx-1">
-            <textarea id="code_editor" name="solution[code]" style="width: 100%;height:30rem"></textarea>
+            <input id="real_code" name="solution[code]" hidden>
+            <textarea id="code_editor" style="width: 100%;height:30rem"></textarea>
         </div>
     @elseif($problem->type==1)
         {{-- 代码填空 --}}
@@ -86,6 +87,7 @@ style="overflow:auto"
     </div>
 </form>
 
+<script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.2/base64.min.js"></script>
 {{--    代码填空的处理 --}}
 <script type="text/javascript">
     $(function () {
@@ -162,11 +164,13 @@ style="overflow:auto"
 
         //监听表单提交
         $("#code_form").submit(function (){
-            // if($("input[name='code_file']").val()==="" && code_editor.getValue().length<3){
             if(code_editor.getValue().length<5){
                 Notiflix.Report.Info('{{trans('sentence.Operation failed')}}','{{trans('sentence.empty_code')}}','OK')
                 return false
             }
+            // 代码加密提交
+            var encrypt = Base64.encode(code_editor.getValue())
+            $("#real_code").val(encrypt)
         })
     })
 </script>

@@ -111,7 +111,7 @@ class StatusController extends Controller
                     'result' => $item->result,
                     'color' => config('oj.resColor.' . $item->result),
                     'text' => trans('result.' . config('oj.result.' . $item->result))
-                        . ($item->judge_type == 'oi' && $item->result >=5 && $item->result <=10 ? sprintf(' (%s%%)', round($item->pass_rate * 100)) : null),
+                        . ($item->judge_type == 'oi' && $item->result >= 5 && $item->result <= 10 ? sprintf(' (%s%%)', round($item->pass_rate * 100)) : null),
                     'time' => $item->time . 'MS',
                     'memory' => round($item->memory, 2) . 'MB'
                 ];
@@ -190,9 +190,9 @@ class StatusController extends Controller
         //============================= 预处理提交记录的字段 =================================
         //获取前台提交的solution信息
         $data = $request->input('solution');
+        $data['code'] = base64_decode($data['code']);
         $problem = DB::table('problems')->find($data['pid']); //找到题目
         $submitted_result = 0;
-
         //如果有cid，说明实在竞赛中进行提交
         if (isset($data['cid'])) {
             $contest = DB::table("contests")->select('judge_instantly', 'judge_type', 'allow_lang', 'end_time')->find($data['cid']);
@@ -257,7 +257,7 @@ class StatusController extends Controller
         //=============================== 展示网页 ===============================
         Cookie::queue('submit_language', $data['language']); //Cookie记住用户使用的语言，以后提交默认该语言
         if (isset($data['cid'])) //竞赛提交
-            return redirect(route('contest.status', [$data['cid'], 'index' => $data['index'], 'username' => Auth::user()->username, 'group'=>$request->input('group')??null]));
+            return redirect(route('contest.status', [$data['cid'], 'index' => $data['index'], 'username' => Auth::user()->username, 'group' => $request->input('group') ?? null]));
         return redirect(route('status', ['pid' => $data['pid'], 'username' => Auth::user()->username]));
     }
 }
