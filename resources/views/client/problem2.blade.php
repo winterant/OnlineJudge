@@ -71,7 +71,7 @@
                             [ <a href="{{route('status',['pid'=>$problem->id])}}">{{__('main.Status')}}</a> ]
                         </span>
                     @endif
-                    @if(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time))
+                    {{-- @if(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time))
                         <span style="font-size: 0.85rem">
                             [
                             <a href="javascript:"
@@ -81,7 +81,7 @@
                             </a>
                             ]
                         </span>
-                    @endif
+                    @endif --}}
                     @if(isset($contest)&&(privilege('admin.problem.list')||$contest->end_time<date('Y-m-d H:i:s')))
                         <span style="font-size: 0.85rem">
                             [
@@ -312,6 +312,8 @@
 
                 </div>
             @endif
+
+            <hr>
 
         </div>
         <div id="resize"></div>
