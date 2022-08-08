@@ -1,3 +1,4 @@
+**/.DS_store
 install/mysql/lduojbackup.sql
 judge/run
 judge/config.sh

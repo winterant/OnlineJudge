@@ -1,4 +1,4 @@
-FROM winterant/lduoj_os:22.07
+FROM winterant/lduoj_os:22.08
 
 COPY . /home/LDUOnlineJudge/
 
