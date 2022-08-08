@@ -51,12 +51,23 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-//            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string','max:30','min:4','unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'email' => ['max:255'],
-        ]);
+        if(get_setting('login_reg_captcha')){
+            return Validator::make($data, [
+                'username' => ['required', 'string','max:30','min:4','unique:users'],
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+                'email' => ['max:255'],
+                'captcha' => ['required', 'captcha'], // 验证码
+            ],[
+                'captcha.required' => '请输入验证码',
+                'captcha.captcha'  => '验证码错误! 请重新输入验证码'
+            ]);
+        }else{
+            return Validator::make($data, [
+                'username' => ['required', 'string','max:30','min:4','unique:users'],
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+                'email' => ['max:255']
+            ]);
+        }
     }
 
     /**

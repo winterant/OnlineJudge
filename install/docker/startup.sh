@@ -36,6 +36,7 @@ cd /volume/LDUOnlineJudge
 chown -R www-data:www-data bootstrap/cache storage
 chown -R mysql:mysql /var/lib/mysql/
 rm -rf /var/run/mysqld/mysqld.sock.lock
+sed -i "s/^;extension=gd.*/extension=gd/" /etc/php/7.2/fpm/php.ini  # use extension gd for captcha
 
 service nginx start
 service php7.2-fpm start

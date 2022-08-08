@@ -98,14 +98,14 @@
   ```bash
   git clone https://github.com/winterant/LDUOnlineJudge.git
   cd LDUOnlineJudge
-  docker build -f install/docker/Dockerfile_lduoj -t lduoj:local .
+  docker build -f install/docker/Dockerfile -t lduoj .  # 末尾有点
   ```
-  注意：由于换行符`\r\n`问题，不建议在Windows环境构建镜像。
+  注意：Windows系统下请先将换行符`\r\n`统一转换为`\n`再构建镜像。
 
 + 为镜像重命名
 
   ```bash
-  docker tag lduoj:local winterant/lduoj
+  docker tag lduoj winterant/lduoj
   ```
 
 + 将镜像发布到`dockerhub`

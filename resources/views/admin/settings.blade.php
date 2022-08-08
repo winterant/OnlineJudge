@@ -57,6 +57,11 @@
             <h4>用户访问</h4>
             <hr>
             <div class="form-group">
+                <input id="login_reg_captcha" type="checkbox">
+                <input name="login_reg_captcha" value="{{get_setting('login_reg_captcha')?'true':'false'}}" type="text" hidden>
+                <span>在用户登陆或注册时，使用图片验证码</span>
+            </div>
+            <div class="form-group">
                 <input id="allow_register" type="checkbox">
                 <input name="allow_register" value="{{get_setting('allow_register')?'true':'false'}}" type="text" hidden>
                 <font>允许访客通过前台网页注册账号</font>
@@ -72,6 +77,7 @@
                 <font>对于未登录访客，在排行榜页面显示排行榜完整名，关闭后排行榜用户名将被隐藏</font>
             </div>
         </div>
+
         <div class="my-container bg-white">
             <h4>题目访问</h4>
             <hr>
@@ -116,6 +122,7 @@
             @php($btns=[
                 "web_page_display_wide",
                 "show_home_notice_marquee",
+                "login_reg_captcha",
                 "allow_register",
                 "display_complete_userinfo",
                 "display_complete_standings",

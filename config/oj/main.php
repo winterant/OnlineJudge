@@ -10,6 +10,7 @@ return [
 	"show_home_notice_marquee"  => true,    //首页顶部滚动显示一条公告
 
 	"allow_register"	        => true,    //允许访客注册账号
+	"login_reg_captcha"			=> true,    //登陆和注册时使用验证码
 	"display_complete_userinfo" => true,    //对于未登录访客，个人信息页面 是否显示用户完整信息
 	"display_complete_standings"=> true,    //对于未登录访客，排行榜页面 是否显示用户完整信息
 

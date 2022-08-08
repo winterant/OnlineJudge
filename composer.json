@@ -16,7 +16,8 @@
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "laravel/ui": "^1.1",
-        "league/flysystem": "1.1.4"
+        "league/flysystem": "1.1.4",
+        "mews/captcha": "^3.0"
     },
     "require-dev": {
         "filp/whoops": "^2.0",

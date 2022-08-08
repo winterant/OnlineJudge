@@ -1,20 +1,4 @@
-FROM ubuntu:20.04
-
-RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
-    echo 'Asia/Shanghai' > /etc/timezone &&\
-    sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.163.com\/ubuntu/g' /etc/apt/sources.list &&\
-    apt-get update && apt-get -y upgrade &&\
-    apt-get -y install software-properties-common &&\
-    apt-get -y install language-pack-en-base &&\
-    echo -e "\n" | add-apt-repository ppa:deadsnakes/ppa &&\
-    echo -e "\n" | apt-add-repository ppa:ondrej/php &&\
-    apt-get update && apt-get -y upgrade &&\
-    apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml php7.2-mbstring &&\
-    apt-get -y install composer zip unzip &&\
-    apt-get -y install nginx &&\
-    apt-get -y install mysql-server &&\
-    apt-get -y install g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex &&\
-    apt-get -y install sudo vim
+FROM winterant/lduoj_os:22.07
 
 COPY . /home/LDUOnlineJudge/
 
@@ -54,8 +38,8 @@ RUN USER=$(cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}') &&\
     mysql -u"${USER}" -p"${PASSWORD}" -e"CREATE USER If Not Exists 'oj_user'@'localhost' IDENTIFIED WITH mysql_native_password BY '${db_passwd}';" &&\
     mysql -u"${USER}" -p"${PASSWORD}" -e"GRANT all privileges ON lduoj.* TO 'oj_user'@'localhost';flush privileges;" &&\
     mysql -u"${USER}" -p"${PASSWORD}" -Dlduoj < install/mysql/lduoj.sql &&\
-    sed -i "s/^DB_DATABASE.*$/DB_DATABASE=lduoj/"       .env  judge/config.sh &&\
-    sed -i "s/^DB_USERNAME.*$/DB_USERNAME=oj_user/"        .env  judge/config.sh &&\
+    sed -i "s/^DB_DATABASE.*$/DB_DATABASE=lduoj/"        .env  judge/config.sh &&\
+    sed -i "s/^DB_USERNAME.*$/DB_USERNAME=oj_user/"      .env  judge/config.sh &&\
     sed -i "s/^DB_PASSWORD.*$/DB_PASSWORD=${db_passwd}/" .env  judge/config.sh
 
 WORKDIR /volume

@@ -49,6 +49,34 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
+    /**
+     * Validate the user login request.
+     * 验证用户登陆信息
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function validateLogin(Request $request)
+    {
+        if(get_setting("login_reg_captcha")){
+            $request->validate([
+                $this->username() => 'required|string',
+                'password' => 'required|string',
+                'captcha' => ['required', 'captcha'], // 验证码
+            ],[
+                'captcha.required' => '请输入验证码',
+                'captcha.captcha'  => '验证码错误! 请重新输入验证码'
+            ]);
+        }else{
+            $request->validate([
+                $this->username() => 'required|string',
+                'password' => 'required|string'
+            ]);
+        }
+    }
+
     public function logout(Request $request)
     {
         $this->guard()->logout();
