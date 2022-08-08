@@ -1,12 +1,18 @@
 {{-- 菜单 --}}
 
-@php($menu_cate = DB::table('contest_cate')->find($contest->cate_id))
+{{-- @php($menu_cate = DB::table('contest_cate')->find($contest->cate_id)) --}}
 
 
 <div class="d-flex">
-    @if($menu_cate)
-        {{-- 父级目录 --}}
-        <ul class="breadcrumb mr-2">
+    <ul class="breadcrumb mr-2">
+        @if($group = DB::table('groups')->find($_GET['group']??null))
+            {{-- 如果是从group过来的，输出一下group链接 --}}
+            <li class="mx-2">
+                <a href="{{route('group.home', $_GET['group'])}}">{{$group->name}}</a>
+            </li>
+            /
+        @elseif($menu_cate = DB::table('contest_cate')->find($contest->cate_id))
+            {{-- 输出竞赛的类别。一般有两级类别 --}}
             @php($son_cate = DB::table('contest_cate')->find($menu_cate->parent_id))
             @if($son_cate)
                 <li class="mx-2">
@@ -18,29 +24,29 @@
                 <a href="{{route('contests', $menu_cate->id)}}">{{$menu_cate->title}}</a>
             </li>
                 /
-            <li class="mx-2 active">
-                <span>{{$contest->title}}</span>
-            </li>
-        </ul>
-    @endif
+        @endif
+        <li class="mx-2 active">
+            <span>{{$contest->title}}</span>
+        </li>
+    </ul>
     {{-- 每场竞赛的导航栏 --}}
     <div class="tabbable border-bottom mb-3">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link py-3" href="{{route('contest.home',$contest->id)}}">{{trans('main.Overview')}}</a>
+                <a class="nav-link py-3" href="{{route('contest.home',[$contest->id,'group'=>$_GET['group']??null])}}">{{trans('main.Overview')}}</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link py-3" href="{{route('contest.status',$contest->id)}}">{{trans('main.Status')}}</a>
+                <a class="nav-link py-3" href="{{route('contest.status',[$contest->id,'group'=>$_GET['group']??null])}}">{{trans('main.Status')}}</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-nowrap py-3"
-                    href="{{$contest->public_rank ? route('contest.rank',$contest->id):route('contest.private_rank',$contest->id)}}">
+                    href="{{route($contest->public_rank ? 'contest.rank' : 'contest.private_rank', [$contest->id,'group'=>$_GET['group']??null])}}">
                     {{trans('main.Rank')}} [ {{$contest->judge_type}} ]
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link py-3" href="{{route('contest.notices',$contest->id)}}">
+                <a class="nav-link py-3" href="{{route('contest.notices',[$contest->id,'group'=>$_GET['group']??null])}}">
                     {{trans('main.Notification')}}
                     @if(DB::table('contest_notices')->where('contest_id',$contest->id)->max('id')
                         > (Cookie::get('read_max_notification_'.$contest->id)?:-1) )
@@ -50,7 +56,7 @@
             </li>
             @if(Auth::check()&&privilege('admin.contest.balloon'))
                 <li class="nav-item">
-                    <a class="nav-link py-3" href="{{route('contest.balloons',$contest->id)}}">{{trans('main.Balloon')}}</a>
+                    <a class="nav-link py-3" href="{{route('contest.balloons',[$contest->id,'group'=>$_GET['group']??null])}}">{{trans('main.Balloon')}}</a>
                 </li>
             @endif
         </ul>

@@ -37,7 +37,7 @@
                                     @if($item->sent)
                                         {{$item->send_time}}
                                     @else
-                                        <form action="{{route('contest.deliver_ball',[$contest->id,$item->id])}}" method="post" class="d-inline">
+                                        <form action="{{route('contest.deliver_ball',[$contest->id,$item->id,'group'=>$_GET['group']??null])}}" method="post" class="d-inline">
                                             @csrf
                                             <a href="javascript:" onclick="$(this).parent().submit()"
                                                class="btn-sm border">{{__('main.Confirm')}}</a>

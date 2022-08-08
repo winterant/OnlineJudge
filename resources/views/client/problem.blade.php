@@ -23,12 +23,15 @@
                     @if(!isset($contest)&&$problem->hidden==1)
                         [<span class="text-red">{{trans('main.Hidden')}}</span>]
                     @endif
-                    <h4 class="text-center">{{isset($contest)?index2ch($problem->index):$problem->id}}
-                        . {{$problem->title}}
-                        
+                    
+                    <a href="?page=new{{'&group='.($_GET['group']??'0')}}" class="float-right" style="font-size: 2rem">点击体验新版界面</a>
+
+                    <h4 class="text-center">
+                        {{isset($contest)?index2ch($problem->index):$problem->id}}. {{$problem->title}}
+
                         @if(isset($contest))
                             <span style="font-size: 0.85rem">
-                                [ <a href="{{route('contest.status',[$contest->id,'index'=>$problem->index])}}">{{__('main.Status')}}</a> ]
+                                [ <a href="{{route('contest.status',[$contest->id, 'group' => $_GET['group'] ?? null, 'index'=>$problem->index])}}">{{__('main.Status')}}</a> ]
                             </span>
                         @else
                             <span style="font-size: 0.85rem">
@@ -216,8 +219,7 @@
                                 </style>
                                 @foreach($contests as $item)
                                     <tr>
-                                        <td><a href="{{route('contest.home',$item->id)}}">{{$item->id}}
-                                                . {{$item->title}}</a></td>
+                                        <td><a href="{{route('contest.home',$item->id)}}">{{$item->id}}. {{$item->title}}</a></td>
                                     </tr>
                                 @endforeach
                                 </tbody>

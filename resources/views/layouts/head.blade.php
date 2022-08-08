@@ -4,14 +4,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<!-- CSRF Token -->
+{{-- 如果前端请求自动升级https，回复upgrade-insecure-requests --}}
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+
+{{-- CSRF Token --}}
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
 {{-- styles--}}
 <link href="{{asset('static/bootstrap-material-design-dist/css/bootstrap-material-design.min.css')}}" rel="stylesheet">
 <link href="{{asset('static/font-awesome-4.7.0/css/font-awesome.min.css')}}" rel="stylesheet">
-<link href="{{asset('css/main.css')}}?v=20210815" rel="stylesheet">
+<link href="{{asset('css/main.css')}}?v=20220728" rel="stylesheet">
 
 
 {{-- js for jquery and bootstrap--}}

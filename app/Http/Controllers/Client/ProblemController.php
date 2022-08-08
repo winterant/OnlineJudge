@@ -138,7 +138,7 @@ class ProblemController extends Controller
                 ->get();
         else
             $tag_pool = [];
-        return view('client.problem', compact('problem', 'results', 'contests', 'samples', 'solutions', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool'));
+        return view('client.problem2', compact('problem', 'results', 'contests', 'samples', 'solutions', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool'));
     }
 
     function tag_mark(Request $request)

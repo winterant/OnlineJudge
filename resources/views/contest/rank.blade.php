@@ -112,7 +112,7 @@
                                     <th width="5%" class="text-center">{{$contest->judge_type == 'acm'?trans('main.Solved'):trans('main.Score')}}</th>
                                     <th width="5%" class="text-center">{{trans('main.Penalty')}}</th>
                                     @for($i=0;$i<$problem_count;$i++)
-                                        <th class="text-center"><a href="{{route('contest.problem',[$contest->id,$i])}}">{{index2ch($i)}}</a></th>
+                                        <th class="text-center"><a href="{{route('contest.problem',[$contest->id,$i,'group'=>$_GET['group']??null])}}">{{index2ch($i)}}</a></th>
                                     @endfor
                                 </tr>
                             </thead>
@@ -139,8 +139,8 @@
                                         @if(get_setting('rank_show_school'))<td nowrap>{{$user['school']}}</td> @endif
                                         @if(get_setting('rank_show_class'))<td nowrap>{{$user['class']}}</td> @endif
                                         @if(get_setting('rank_show_nick'))<td nowrap>{{$user['nick']}}</td> @endif
-                                        <td class="text-center">{{$user['score']}}</td>
-                                        <td class="text-center">{{$user['penalty']}}</td>
+                                        <td class="text-center" onclick="window.open('{{route('contest.status', [$contest->id,'username'=>$user['username'],'group'=>$_GET['group']??null])}}','_blank')">{{$user['score']}}</td>
+                                        <td class="text-center" onclick="window.open('{{route('contest.status', [$contest->id,'username'=>$user['username'],'group'=>$_GET['group']??null])}}','_blank')">{{$user['penalty']}}</td>
                                         {{-- 下面是每一道题的情况 --}}
                                         @for($i=0;$i<$problem_count;$i++)
                                             <td @if(isset($user[$i]))
@@ -155,6 +155,7 @@
                                                     @else
                                                         style="background-color: #ffafa7"
                                                     @endif
+                                                    onclick="window.open('{{route('contest.status', [$contest->id,'username'=>$user['username'],'index'=>$i,'group'=>$_GET['group']??null])}}','_blank')"
                                                 @endif
                                                 class="border text-center">
                                                 {{isset($user[$i])?$user[$i]['AC_info']:null}}

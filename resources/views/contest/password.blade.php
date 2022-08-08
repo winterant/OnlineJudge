@@ -22,7 +22,7 @@
                 <div class="my-container bg-white table-responsive">
                     <span>本场比赛需要输入正确的参赛密码才能参与</span>
                     <hr>
-                    <form action="{{route('contest.password',$contest->id)}}" method="post" class="" style="margin: auto"
+                    <form action="{{route('contest.password',[$contest->id,'group'=>$_GET['group']??null])}}" method="post" class="" style="margin: auto"
                           onsubmit="$('input[name=pwd]').attr('type','password');return true">
                         @csrf
                         <div class="input-group mb-3" style="margin: auto">

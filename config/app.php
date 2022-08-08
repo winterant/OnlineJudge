@@ -1,14 +1,11 @@
 <?php
 
 return [
+    // 强制开启HTTPS
+    'IS_HTTPS' => env('IS_HTTPS', false),
 
-    'FORCE_HTTPS' => env('FORCE_HTTPS', false),
-    /*
-     * 判题端相关配置
-     */
+    // 测试数据的路径
     'JG_DATA_DIR' => env('JG_DATA_DIR', 'storage/app/data'),
-    'JG_NAME' => env('JG_NAME', 'Master'),
-    'JG_MAX_RUNNING' => env('JG_MAX_RUNNING', 1),
 
     /*
     |--------------------------------------------------------------------------
