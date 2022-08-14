@@ -166,7 +166,9 @@
                                         <td>{{round($sol->memory,2)}}MB</td>
                                         <td>
                                             @if(privilege('admin.problem.solution') || Auth::id()==$sol->user_id)
-                                                <a href="{{route('solution',$sol->id)}}" target="_blank">{{config('oj.lang.'.$sol->language)}}</a>
+                                                <a href="{{route('solution',$sol->id)}}">{{config('oj.lang.'.$sol->language)}}</a>
+                                                /
+                                                <a href="{{route('problem', [$sol->problem_id, 'solution'=>$sol->id])}}">{{__('main.Edit')}}</a>
                                             @else
                                                 {{config('oj.lang.'.$sol->language)}}
                                             @endif

@@ -18,7 +18,7 @@ return [
     "admin.home"        => "进入后台管理页面",
 
     // 判题端控制权
-    "admin.cmd_polling" => "启动/关闭判题端",
+    "admin.judger" => "启动/关闭判题端",
 
     // 公告管理
     "admin.notice"      => "管理公告(所有功能)",

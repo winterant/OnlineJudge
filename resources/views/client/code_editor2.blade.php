@@ -52,9 +52,10 @@
     </div>
 
     @if($problem->type==0)
-        {{--            编程题 --}}
+        {{-- 编程题 --}}
         <div class="form-group border mx-1">
-            <textarea id="code_editor" name="solution[code]" style="width: 100%;height:30rem"></textarea>
+            <textarea id="code_editor" name="solution[code]" style="width: 100%;height:30rem"
+            >{{($get_solution = DB::table('solutions')->find($_GET['solution'] ?? -1)) ? $get_solution->code : null}}</textarea>
         </div>
     @elseif($problem->type==1)
         {{-- 代码填空 --}}
@@ -182,7 +183,9 @@
             // 代码修改时顺便保存本地，防止丢失
             localStorage.setItem('solution_p{{$problem->id}}', code_editor.getValue())
         })
-        code_editor.setValue(localStorage.getItem('solution_p{{$problem->id}}')) // 初始化填充代码
+        // 初始化填充代码
+        if(code_editor.getValue()=='')
+            code_editor.setValue(localStorage.getItem('solution_p{{$problem->id}}'))
 
         //监听提交按钮
         $("#submit_btn").click(function (){
