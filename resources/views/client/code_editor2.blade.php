@@ -54,7 +54,8 @@
     @if($problem->type==0)
         {{-- 编程题 --}}
         <div class="form-group border mx-1">
-            <textarea id="code_editor" name="solution[code]" style="width: 100%;height:30rem"
+            <input id="base64_code" name="solution[code]" hidden>
+            <textarea id="code_editor" style="width: 100%;height:30rem"
             >{{($get_solution = DB::table('solutions')->find($_GET['solution'] ?? -1)) ? $get_solution->code : null}}</textarea>
         </div>
     @elseif($problem->type==1)
@@ -193,7 +194,7 @@
             }
             // 代码加密提交
             var encrypt = Base64.encode(code_editor.getValue())
-            code_editor.setValue(encrypt)
+            $("#base64_code").val(encrypt)
 
             // 提交表单
             $("#code_form").submit()

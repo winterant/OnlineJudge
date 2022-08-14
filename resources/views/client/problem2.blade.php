@@ -102,26 +102,26 @@
                 </h4>
                 <hr>
 
-                <div class="alert-info p-2" style="font-size: 0.9rem">
-                    <p class="mb-1">{{__('main.Time Limit')}}: {{$problem->time_limit}}MS</p>
-                    <p class="mb-1">{{__("main.Memory Limit")}}: {{$problem->memory_limit}}MB</p>
-                    <p class="mb-1">{{__('main.Special Judge')}}:
+                <div class="alert-info p-2 d-flex align-content-start flex-wrap" style="font-size: 0.9rem">
+                    <div class="flex-fill px-2">{{__('main.Time Limit')}}: {{$problem->time_limit}}MS</div>
+                    <div class="flex-fill px-2">{{__("main.Memory Limit")}}: {{$problem->memory_limit}}MB</div>
+                    <div class="flex-fill px-2">{{__('main.Special Judge')}}:
                         @if($problem->spj==1)
-                            <span class="text-red">{{__('main.Yes')}}</span>
+                            <div class="text-red">{{__('main.Yes')}}</div>
                             @if(!$hasSpj)({{__('sentence.Wrong spj')}}) @endif
                         @else
                             {{__('main.No')}}
                         @endif
-                    </p>
-                    <p class="mb-1">{{__("main.Solved")}}/{{__("main.Submitted")}}: {{$problem->solved}}/{{$problem->submit}}</p>
+                    </div>
+                    <div class="flex-fill px-2">{{__("main.Solved")}}/{{__("main.Submitted")}}: {{$problem->solved}}/{{$problem->submit}}</div>
                     @if(count($tags)>0 && (!isset($contest)||time()>strtotime($contest->end_time)))
-                        <p class="mb-1">{{__("main.Tags")}}:
+                        <div class="flex-fill px-2">{{__("main.Tags")}}:
                             @foreach($tags as $item)
                                 <span class="px-1 text-nowrap">{{$item->name}}
                                     (<i class="fa fa-user-o" aria-hidden="true" style="padding:0 1px"></i>{{$item->count}})
                                 </span>
                             @endforeach
-                        </p>
+                        </div>
                     @endif
                 </div>
                 <hr class="mt-0">

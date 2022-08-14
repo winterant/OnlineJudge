@@ -4,28 +4,28 @@
 
 
 <div class="d-flex">
-    <ul class="breadcrumb mr-2">
+    <ul class="breadcrumb text-nowrap">
         @if($group = DB::table('groups')->find($_GET['group']??null))
             {{-- 如果是从group过来的，输出一下group链接 --}}
-            <li class="mx-2">
+            <li class="">
                 <a href="{{route('group.home', $_GET['group'])}}">{{$group->name}}</a>
             </li>
-            /
+            <span class="mx-1">/</span>
         @elseif($menu_cate = DB::table('contest_cate')->find($contest->cate_id))
             {{-- 输出竞赛的类别。一般有两级类别 --}}
             @php($son_cate = DB::table('contest_cate')->find($menu_cate->parent_id))
             @if($son_cate)
-                <li class="mx-2">
+                <li class="">
                     <a href="{{route('contests', $son_cate->id)}}">{{$son_cate->title}}</a>
                 </li>
-                /
+                <span class="mx-1">/</span>
             @endif
-            <li class="mx-2">
+            <li class="">
                 <a href="{{route('contests', $menu_cate->id)}}">{{$menu_cate->title}}</a>
             </li>
-                /
+            <span class="mx-1">/</span>
         @endif
-        <li class="mx-2 active">
+        <li class="active">
             <span>{{$contest->title}}</span>
         </li>
     </ul>
