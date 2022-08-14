@@ -1,9 +1,6 @@
-
-<form id="code_form" action="{{route('submit_solution')}}" method="post" enctype="multipart/form-data"
-style="overflow:auto"
->
+<form id="code_form" action="{{route('submit_solution')}}" method="post">
     @csrf
-    
+
     @if(isset($_GET['group']))
         <input name="group" value="{{$_GET['group']}}" hidden>
     @endif
@@ -156,9 +153,8 @@ style="overflow:auto"
             }else if(langs[lang] === 'Python3'){
                 code_editor.setOption('mode','text/x-python')
             }
-            console.log('代码编辑框配置位置：client/code_editor.blade.php；代码编辑器语言已更新为: '+code_editor.getOption('mode'))
         }
-        if(localStorage.getItem('code_lang'))
+        if(localStorage.getItem('code_lang')) // 切换为本地缓存的语言
             $("#lang_select").val(localStorage.getItem('code_lang'))
         listen_lang_selected()
         $("#lang_select").change(function(){
@@ -169,7 +165,7 @@ style="overflow:auto"
         $("#code_file").on("change", function(){
             $('#selected_fname').html(this.files[0].name);
             var reader = new FileReader();
-            reader.readAsText(this.files[0]);
+            reader.readAsText(this.files[0], "GBK");
             reader.onload=function(){
                 console.log(reader.result)
                 code_editor.setValue(reader.result)
@@ -183,7 +179,10 @@ style="overflow:auto"
             if (change.origin !== 'complete' && change.text.length<2 && /\w|\./g.test(change.text[0])) {
                 instance.showHint()
             }
+            // 代码修改时顺便保存本地，防止丢失
+            localStorage.setItem('solution_p{{$problem->id}}', code_editor.getValue())
         })
+        code_editor.setValue(localStorage.getItem('solution_p{{$problem->id}}')) // 初始化填充代码
 
         //监听提交按钮
         $("#submit_btn").click(function (){
