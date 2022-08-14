@@ -48,9 +48,8 @@
             <li class="nav-item">
                 <a class="nav-link py-3" href="{{route('contest.notices',[$contest->id,'group'=>$_GET['group']??null])}}">
                     {{trans('main.Notification')}}
-                    @if(DB::table('contest_notices')->where('contest_id',$contest->id)->max('id')
-                        > (Cookie::get('read_max_notification_'.$contest->id)?:-1) )
-                        <i class="fa fa-commenting text-red" aria-hidden="true"></i>
+                    @if(DB::table('contest_notices')->where('contest_id',$contest->id)->count() > 0)
+                        <i class="fa fa-commenting text-green" aria-hidden="true"></i>
                     @endif
                 </a>
             </li>

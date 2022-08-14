@@ -190,9 +190,12 @@ class StatusController extends Controller
         //============================= 预处理提交记录的字段 =================================
         //获取前台提交的solution信息
         $data = $request->input('solution');
-        $data['code'] = base64_decode($data['code']);
+        if(isset($data['code']))
+            $data['code'] = base64_decode($data['code']);
         $problem = DB::table('problems')->find($data['pid']); //找到题目
         $submitted_result = 0;
+        
+        //判断提交的来源
         //如果有cid，说明实在竞赛中进行提交
         if (isset($data['cid'])) {
             $contest = DB::table("contests")->select('judge_instantly', 'judge_type', 'allow_lang', 'end_time')->find($data['cid']);
@@ -215,15 +218,12 @@ class StatusController extends Controller
                 return view('client.fail', ['msg' => trans('main.Problem') . $data['pid'] . '：' . trans('main.Hidden')]);
         }
 
-        //如果用户提交了文件,从临时文件中直接提取文本
-        // if (null != ($file = $request->file('code_file')))
-        //     $data['code'] = autoiconv(file_get_contents($file->getRealPath()));
-        // else 
-        if ($problem->type == 1) //如果是填空题，填充用户的答案
+        //如果是填空题，填充用户的答案
+        if ($problem->type == 1)
         {
             $data['code'] = $problem->fill_in_blank;
             foreach ($request->input('filled') as $ans) {
-                $data['code'] = preg_replace("/\?\?/", $ans, $data['code'], 1);
+                $data['code'] = preg_replace("/\?\?/", base64_decode($ans), $data['code'], 1);
             }
         }
 
@@ -255,7 +255,6 @@ class StatusController extends Controller
         $judger->judge($solution);
 
         //=============================== 展示网页 ===============================
-        Cookie::queue('submit_language', $data['language']); //Cookie记住用户使用的语言，以后提交默认该语言
         if (isset($data['cid'])) //竞赛提交
             return redirect(route('contest.status', [$data['cid'], 'index' => $data['index'], 'username' => Auth::user()->username, 'group' => $request->input('group') ?? null]));
         return redirect(route('status', ['pid' => $data['pid'], 'username' => Auth::user()->username]));

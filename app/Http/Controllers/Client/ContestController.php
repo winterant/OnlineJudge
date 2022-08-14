@@ -360,14 +360,6 @@ class ContestController extends Controller
             return redirect(route('contest.private_rank', $id));
         }
 
-        //查看Cookie是否保存了全屏显示的标记
-        if (get_setting('web_page_display_wide')) //管理员启用了宽屏模式，这里用户启用全屏无效
-            $_GET['big'] = 'false';
-        if (!isset($_GET['big']) && Cookie::get('rank_table_lg') != null) //有cookie
-            $_GET['big'] = Cookie::get('rank_table_lg');
-        else if (isset($_GET['big']))
-            Cookie::queue('rank_table_lg', $_GET['big']); //保存榜单是否全屏
-
         //对于隐藏的竞赛，普通用户不能查看榜单
         if ($contest->hidden && !privilege('admin.contest')) {
             return view('client.fail', ['msg' => '该竞赛处于隐藏状态，不可查看榜单。']);
@@ -473,16 +465,12 @@ class ContestController extends Controller
         return back();
     }
 
-
     public function notices($id)
     {
-        $read_max_notice = Cookie::get('read_max_notification_' . $id) ?: -1;
         $notices = DB::table('contest_notices')
             ->where('contest_id', $id)
             ->orderByDesc('id')
             ->get();
-        if (isset($notices[0]->id) ?: -1 > $read_max_notice)
-            Cookie::queue('read_max_notification_' . $id, $notices[0]->id); //cookie更新已查看的通知最大编号
         $contest = DB::table('contests')->find($id);
         return view('contest.notices', compact('contest', 'notices'));
     }

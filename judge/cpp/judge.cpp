@@ -16,6 +16,9 @@
 #include<sys/syscall.h>
 #include<mysql/mysql.h>
 
+#include<iostream>
+#include<string>
+
 #define max(a,b) ((a)>(b) ? (a) : (b))
 #define min(a,b) ((a)<(b) ? (a) : (b))
 
@@ -82,20 +85,20 @@ char sql[BUFFER_SIZE];   //暂存sql语句
 //结构体，一条提交记录
 struct Solution{
     int id;
-    char *judge_type;
+    std::string judge_type;
     int problem_id;
     int spj;
     int time_limit;  //限制
     float memory_limit;
     int language;
-    char *code;
+    std::string code;
 
     int result=1;
     int time=0; //MS 实际耗时
     float memory=0; //MB 实际内存
     float pass_rate=0;
-    char *error_info=NULL;
-    char *wrong_data=NULL;
+    std::string error_info;
+    std::string wrong_data;
     int sim_rate=0;
     int sim_sid=-1;
 
@@ -138,15 +141,15 @@ struct Solution{
         sprintf(sql,"UPDATE solutions SET result=%d,time=%d,memory=%f,pass_rate=%f,judge_time=now(),error_info=NULL,sim_rate=%d,sim_sid=%d WHERE id=%d;",
             this->result,this->time,this->memory,this->pass_rate,this->sim_rate,this->sim_sid, this->id); //更新
         mysql_real_query(mysql,sql,strlen(sql));
-        if(this->error_info!=NULL){    //更新出错信息
+        if(!this->error_info.empty()){    //更新出错信息
             char *p=sql;
             p+=sprintf(p,"UPDATE solutions SET error_info=\'");
-            p+=mysql_real_escape_string(mysql,p,this->error_info,strlen(this->error_info));
+            p+=mysql_real_escape_string(mysql,p,this->error_info.c_str(),this->error_info.length());
             p+=sprintf(p,"\' where id=%d;",this->id);
             mysql_real_query(mysql,sql,strlen(sql));
         }
-        if(this->wrong_data!=NULL){    //记录未通过的测试文件名字
-            sprintf(sql,"UPDATE solutions SET wrong_data=\'%s\' where id=%d;",this->wrong_data,this->id);
+        if(!this->wrong_data.empty()){    //记录未通过的测试文件名字
+            sprintf(sql,"UPDATE solutions SET wrong_data=\'%s\' where id=%d;",this->wrong_data.c_str(),this->id);
             mysql_real_query(mysql,sql,strlen(sql));
         }
         mysql_real_query(mysql,sql,strlen(sql));
@@ -571,7 +574,7 @@ int judge(char *data_dir, char *spj_path)
         }
     }
 
-    bool is_acm = (strcmp(solution.judge_type,"acm")==0);
+    bool is_acm = (strcmp(solution.judge_type.c_str(),"acm")==0);
     int test_count=0,ac_count=0, oi_result=OJ_AC;
     while((dirfile=readdir(dir))!=NULL)
     {
@@ -600,7 +603,7 @@ int judge(char *data_dir, char *spj_path)
             }
             printf("test%3s | judge result: %d\n\n",test_name,result);
             if(result==OJ_AC)ac_count++;
-            else if(solution.wrong_data==NULL)solution.wrong_data=test_name;  //记下第一个未通过测试文件名
+            else if(solution.wrong_data.empty())solution.wrong_data=test_name;  //记下第一个未通过测试文件名
 
             if(is_acm && result!=OJ_AC)   //acm规则遇到WA直接返回，判题结束
                 return result;
@@ -693,7 +696,7 @@ int main (int argc, char* argv[])
 
     // 4.读取+编译+判题
     solution.load_solution(atoi(sid));   //从数据库读取提交记录
-    write_file(solution.code,LANG[solution.language],"w"); //创建代码文件
+    write_file(solution.code.c_str(),LANG[solution.language],"w"); //创建代码文件
     solution.update_result(OJ_CI); //update to compiling
 
     int CP_result=compile();

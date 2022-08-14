@@ -23,7 +23,7 @@
                     <select id="lang_select" name="solution[language]" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
                         @foreach(config('oj.lang') as $key=>$res)
                             @if(!isset($contest) || ( 1<<$key)&$contest->allow_lang)
-                                <option value="{{$key}}" @if(Cookie::get('submit_language')==$key)selected @endif>{{$res}}</option>
+                                <option value="{{$key}}">{{$res}}</option>
                             @endif
                         @endforeach
                     </select>

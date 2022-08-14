@@ -23,6 +23,8 @@
 <script src="{{asset('static/popper.js/dist/umd/popper.min.js')}}" defer></script>
 <script src="{{asset('static/bootstrap-material-design-dist/js/bootstrap-material-design.min.js')}}" defer></script>
 
+{{-- base64编码工具 https://github.com/dankogai/js-base64 --}}
+<script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.2/base64.min.js?v=1" defer></script>
 
 {{-- 大文件上传 --}}
 <script src="{{asset('js/uploadBig.js')}}?v=08.11" defer></script>
@@ -78,7 +80,8 @@
 {{-- echart画图工具 --}}
 <script src="{{asset('static/echarts/echarts.min.js')}}" defer></script>
 
-
+{{-- mathjax翻译数学公式 --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML" defer></script>
 {{-- mathjax渲染latex公式; 初始会自动对elements渲染一次 --}}
 <script type="text/x-mathjax-config">
     window.MathJax.Hub.Config({
@@ -100,4 +103,3 @@
     // 动态渲染语句如下
     // window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, document.getElementsByClassName("math_formula")]); //math_formula是自定义类名
 </script>
-<script type="text/javascript" src="{{asset('static/MathJax-2.7.7/MathJax.js?config=TeX-AMS_HTML')}}" defer></script>

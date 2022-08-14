@@ -15,7 +15,7 @@
             }
             #container {
                 width: 100%;
-                height: 100vh;
+                height: 93vh;
                 margin-top: -0.7rem;
                 display: flex;
                 flex-wrap: nowrap;
@@ -25,8 +25,8 @@
             }
             #left {
                 width: calc(100% - 4px);
-                /* background-color: blue; */
                 overflow: auto;
+                /* background-color: blue; */
             }
             #resize {
                 width: 4px;
@@ -38,6 +38,7 @@
             }
             #right {
                 width: 100%;
+                overflow: auto;
                 /* height: 100vh;  */
                 /* background-color:green; */
             }

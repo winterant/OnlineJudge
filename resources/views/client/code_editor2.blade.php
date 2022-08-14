@@ -23,33 +23,29 @@ style="overflow:auto"
                 <select id="lang_select" name="solution[language]" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
                     @foreach(config('oj.lang') as $key=>$res)
                         @if(!isset($contest) || ( 1<<$key)&$contest->allow_lang)
-                            <option value="{{$key}}" @if(Cookie::get('submit_language')==$key)selected @endif>{{$res}}</option>
+                            <option value="{{$key}}">{{$res}}</option>
                         @endif
                     @endforeach
                 </select>
             </div>
             {{-- 编程题可以提交文件--}}
-            {{--
             <div class="flex-nowrap mr-3 mb-1">
                 <span class="mr-2">{{__('main.Upload File')}}:</span>
-                <a id="selected_fname" href="javascript:" class="m-0 px-0" onclick="$('[name=code_file]').click()"
+                <a id="selected_fname" href="javascript:" class="m-0 px-0" onclick="$('#code_file').click()"
                     title="{{__('main.Upload File')}}">
                     <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
                 </a>
-                <input type="file" class="form-control-file" name="code_file"
-                        onchange="$('#selected_fname').html(this.files[0].name);$('#code_editor').attr('required',false)"
-                        accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
+                <input type="file" class="form-control-file" id="code_file" accept=".txt .c, .cc, .cpp, .java, .py" hidden/>
             </div>
-            --}}
 
             {{--   编辑框主题 --}}
-            {{-- <div class="flex-nowrap mr-3 mb-1">
+            <div class="flex-nowrap mr-3 mb-1">
                 <span class="mr-2">{{__('main.Theme')}}:</span>
                 <select id="theme_select" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
                     <option value="idea">idea</option>
                     <option value="mbo">mbo</option>
                 </select>
-            </div> --}}
+            </div>
         @else
             {{-- 代码填空由出题人指定语言 --}}
             <span class="mr-2">{{__('main.Language')}}:</span>
@@ -61,8 +57,7 @@ style="overflow:auto"
     @if($problem->type==0)
         {{--            编程题 --}}
         <div class="form-group border mx-1">
-            <input id="real_code" name="solution[code]" hidden>
-            <textarea id="code_editor" style="width: 100%;height:30rem"></textarea>
+            <textarea id="code_editor" name="solution[code]" style="width: 100%;height:30rem"></textarea>
         </div>
     @elseif($problem->type==1)
         {{-- 代码填空 --}}
@@ -80,25 +75,16 @@ style="overflow:auto"
     @endif
 
     <div class="pull-right mr-5">
-        <button type="submit" class="btn bg-success text-white m-2" @guest disabled @endguest>
+        <button id="submit_btn" type="button" class="btn bg-success text-white m-2" @guest disabled @endguest>
             {{trans('main.Submit')}}
             @guest 请先登录 @endguest
         </button>
     </div>
 </form>
 
-<script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.2/base64.min.js"></script>
-{{--    代码填空的处理 --}}
 <script type="text/javascript">
-    $(function () {
-        var blank_code = $("#blank_code")
-        if (blank_code.length > 0) {
-            var reg = new RegExp(/\?\?/, "g");//g,表示全部替换。
-            $code = blank_code.html().replace(reg, "<input name='filled[]' oninput='input_extend_width($(this))' autocomplete='off' required>")
-            blank_code.html($code)
-        }
-    });
-
+    //================= 代码填空题：将需要填空的位置设置为input框 ==============
+    // 代码填空框自动加长
     function input_extend_width(that) {
         var sensor = $('<pre>' + $(that).val() + '</pre>').css({display: 'none'});
         $('body').append(sensor);
@@ -106,13 +92,33 @@ style="overflow:auto"
         sensor.remove();
         $(that).css('width', Math.max(171, width + 30) + 'px');
     }
-</script>
+    $(function () {
+        // 替换??为input框
+        var blank_code = $("#blank_code")
+        if (blank_code.length > 0) {
+            var reg = new RegExp(/\?\?/, "g");//g,表示全部替换。
+            $code = blank_code.html().replace(reg, "<input class='code_blanks' name='filled[]' oninput='input_extend_width($(this))' autocomplete='off' required>")
+            blank_code.html($code)
+        }
 
-{{--    代码编辑器的配置 --}}
-<script type="text/javascript">
+        //监听提交按钮
+        $("#submit_btn").click(function (){
+            // 代码框加密base64
+            $(".code_blanks").each(function(){
+                $(this).val(Base64.encode($(this).val()))
+                alert($(this).val())
+            })
+
+            // 提交表单
+            $("#code_form").submit()
+        })
+    });
+
+    //==================== 编程题：代码编辑框以及表单的初始化和监听 ==================
     $(function (){
+        // 代码编辑器的初始化配置
         var code_editor = CodeMirror.fromTextArea(document.getElementById("code_editor"), {
-            // autofocus: true, // 初始自动聚焦
+            autofocus: true, // 初始自动聚焦
             indentUnit: 4,   //自动缩进的空格数
             indentWithTabs: true, //在缩进时，是否需要把 n*tab宽度个空格替换成n个tab字符，默认为false 。
             lineNumbers: true,	//显示行号
@@ -125,35 +131,52 @@ style="overflow:auto"
         code_editor.setSize("auto", (document.documentElement.clientHeight - 200) + "px")
 
         //监听用户选中的主题
+        if(localStorage.getItem('code_editor_theme')){
+            $("#theme_select").val(localStorage.getItem('code_editor_theme'))
+            code_editor.setOption('theme',localStorage.getItem('code_editor_theme'))
+        }
         $("#theme_select").change(function (){
             var theme_name = $(this).children('option:selected').val();  //当前选中的主题
             code_editor.setOption('theme',theme_name)
-            console.log('代码编辑器主题已更新为: '+code_editor.getOption('theme'))
+            localStorage.setItem('code_editor_theme', theme_name)
         })
 
         //监听用户选中的语言，实时修改代码提示框
         function listen_lang_selected() {
             var langs = JSON.parse('{!! json_encode(config('oj.lang')) !!}')  // 系统设定的语言候选列表
-            var lang = $("#lang_select").children('option:selected').val();  //当前选中的语言下标
-            lang = langs[lang]
+            var lang = $("#lang_select").children('option:selected').val();  // 当前选中的语言下标
+            localStorage.setItem('code_lang', lang)
 
-            if(lang === 'C'){
+            if(langs[lang] === 'C'){
                 code_editor.setOption('mode','text/x-csrc')
-            }else if(lang === 'C++'){
+            }else if(langs[lang] === 'C++'){
                 code_editor.setOption('mode','text/x-c++src')
-            }else if(lang === 'Java'){
+            }else if(langs[lang] === 'Java'){
                 code_editor.setOption('mode','text/x-java')
-            }else if(lang === 'Python3'){
+            }else if(langs[lang] === 'Python3'){
                 code_editor.setOption('mode','text/x-python')
             }
             console.log('代码编辑框配置位置：client/code_editor.blade.php；代码编辑器语言已更新为: '+code_editor.getOption('mode'))
         }
+        if(localStorage.getItem('code_lang'))
+            $("#lang_select").val(localStorage.getItem('code_lang'))
         listen_lang_selected()
         $("#lang_select").change(function(){
             listen_lang_selected()
         });
 
-        //监听输入，自动补全代码：
+        // 监听用户选中的文件，实时读取
+        $("#code_file").on("change", function(){
+            $('#selected_fname').html(this.files[0].name);
+            var reader = new FileReader();
+            reader.readAsText(this.files[0]);
+            reader.onload=function(){
+                console.log(reader.result)
+                code_editor.setValue(reader.result)
+            }
+        })
+
+        //监听代码输入，自动补全代码：
         code_editor.on('change', (instance, change) => {
             // 自动补全的时候，也会触发change事件，所有判断一下，以免死循环，正则是为了不让空格，换行之类的也提示
             // 通过change对象你可以自定义一些规则去判断是否提示
@@ -162,15 +185,18 @@ style="overflow:auto"
             }
         })
 
-        //监听表单提交
-        $("#code_form").submit(function (){
+        //监听提交按钮
+        $("#submit_btn").click(function (){
             if(code_editor.getValue().length<5){
                 Notiflix.Report.Info('{{trans('sentence.Operation failed')}}','{{trans('sentence.empty_code')}}','OK')
                 return false
             }
             // 代码加密提交
             var encrypt = Base64.encode(code_editor.getValue())
-            $("#real_code").val(encrypt)
+            code_editor.setValue(encrypt)
+
+            // 提交表单
+            $("#code_form").submit()
         })
     })
 </script>
