@@ -104,7 +104,6 @@
             // 代码框加密base64
             $(".code_blanks").each(function(){
                 $(this).val(Base64.encode($(this).val()))
-                alert($(this).val())
             })
 
             // 提交表单
@@ -166,9 +165,8 @@
         $("#code_file").on("change", function(){
             $('#selected_fname').html(this.files[0].name);
             var reader = new FileReader();
-            reader.readAsText(this.files[0], "GBK");
+            reader.readAsText(this.files[0], $("#lang_select").children('option:selected').val() <= 1 ? "GBK" : "UTF-8");
             reader.onload=function(){
-                console.log(reader.result)
                 code_editor.setValue(reader.result)
             }
         })
