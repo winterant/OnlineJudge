@@ -162,13 +162,17 @@
                                                 </a>
                                             @endif
                                         </td>
-                                        <td>{{$sol->time}}MS</td>
-                                        <td>{{round($sol->memory,2)}}MB</td>
-                                        <td>
+                                        <td nowrap>{{$sol->time}}MS</td>
+                                        <td nowrap>{{round($sol->memory,2)}}MB</td>
+                                        <td nowrap>
                                             @if(privilege('admin.problem.solution') || Auth::id()==$sol->user_id)
                                                 <a href="{{route('solution',$sol->id)}}">{{config('oj.lang.'.$sol->language)}}</a>
                                                 /
-                                                <a href="{{route('problem', [$sol->problem_id, 'solution'=>$sol->id])}}">{{__('main.Edit')}}</a>
+                                                @if(isset($contest))
+                                                    <a href="{{route('contest.problem',[$contest->id, $sol->index, 'group' => $_GET['group'] ?? null, 'solution'=>$sol->id])}}">{{__('main.Edit')}}</a>
+                                                @else
+                                                    <a href="{{route('problem', [$sol->problem_id, 'solution'=>$sol->id])}}">{{__('main.Edit')}}</a>
+                                                @endif
                                             @else
                                                 {{config('oj.lang.'.$sol->language)}}
                                             @endif
