@@ -3,7 +3,7 @@
 {{-- @php($menu_cate = DB::table('contest_cate')->find($contest->cate_id)) --}}
 
 
-<div class="d-flex">
+<div class="d-flex flex-wrap">
     <ul class="breadcrumb text-nowrap">
         @if($group = DB::table('groups')->find($_GET['group']??null))
             {{-- 如果是从group过来的，输出一下group链接 --}}

@@ -102,10 +102,10 @@
                 </h4>
                 <hr>
 
-                <div class="alert-info p-2 d-flex align-content-start flex-wrap" style="font-size: 0.9rem">
-                    <div class="flex-fill px-2">{{__('main.Time Limit')}}: {{$problem->time_limit}}MS</div>
-                    <div class="flex-fill px-2">{{__("main.Memory Limit")}}: {{$problem->memory_limit}}MB</div>
-                    <div class="flex-fill px-2">{{__('main.Special Judge')}}:
+                <div class="alert-info p-2 mb-2 d-flex flex-wrap" style="font-size: 0.9rem">
+                    <div style="min-width: 300px">{{__('main.Time Limit')}}: {{$problem->time_limit}}MS</div>
+                    <div style="min-width: 300px">{{__("main.Memory Limit")}}: {{$problem->memory_limit}}MB</div>
+                    <div style="min-width: 300px">{{__('main.Special Judge')}}:
                         @if($problem->spj==1)
                             <div class="text-red">{{__('main.Yes')}}</div>
                             @if(!$hasSpj)({{__('sentence.Wrong spj')}}) @endif
@@ -113,9 +113,9 @@
                             {{__('main.No')}}
                         @endif
                     </div>
-                    <div class="flex-fill px-2">{{__("main.Solved")}}/{{__("main.Submitted")}}: {{$problem->solved}}/{{$problem->submit}}</div>
+                    <div style="min-width: 300px">{{__("main.Solved")}}/{{__("main.Submitted")}}: {{$problem->solved}}/{{$problem->submit}}</div>
                     @if(count($tags)>0 && (!isset($contest)||time()>strtotime($contest->end_time)))
-                        <div class="flex-fill px-2">{{__("main.Tags")}}:
+                        <div style="min-width: 300px">{{__("main.Tags")}}:
                             @foreach($tags as $item)
                                 <span class="px-1 text-nowrap">{{$item->name}}
                                     (<i class="fa fa-user-o" aria-hidden="true" style="padding:0 1px"></i>{{$item->count}})
@@ -124,7 +124,7 @@
                         </div>
                     @endif
                 </div>
-                <hr class="mt-0">
+
                 <div class="math_formula">
                     <h4 class="text-sky">{{__('main.PDescription')}}</h4>
                     <div class="ck-content">{!! $problem->description !!}</div>
@@ -313,9 +313,6 @@
 
                 </div>
             @endif
-
-            <hr>
-
         </div>
         <div id="resize"></div>
         <div id="right">

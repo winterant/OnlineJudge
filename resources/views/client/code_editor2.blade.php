@@ -73,12 +73,15 @@
         </div>
     @endif
 
-    <div class="pull-right mr-5">
-        <button id="submit_btn" type="button" class="btn bg-success text-white m-2" @guest disabled @endguest>
-            {{trans('main.Submit')}}
-            @guest 请先登录 @endguest
-        </button>
+    <div class="overflow-hidden">
+        <div class="pull-right">
+            <button id="submit_btn" type="button" class="btn bg-success text-white m-2" @guest disabled @endguest>
+                {{trans('main.Submit')}}
+                @guest 请先登录 @endguest
+            </button>
+        </div>
     </div>
+ 
 </form>
 
 <script type="text/javascript">
@@ -183,7 +186,7 @@
             localStorage.setItem('solution_p{{$problem->id}}', code_editor.getValue())
         })
         // 初始化填充代码
-        if(code_editor.getValue()=='')
+        if(code_editor.getValue()=='' && localStorage.getItem('solution_p{{$problem->id}}'))
             code_editor.setValue(localStorage.getItem('solution_p{{$problem->id}}'))
 
         //监听提交按钮
