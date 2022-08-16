@@ -56,7 +56,7 @@
         <div class="form-group border mx-1">
             <input id="base64_code" name="solution[code]" hidden>
             <textarea id="code_editor" style="width: 100%;height:30rem"
-            >{{($get_solution = DB::table('solutions')->find($_GET['solution'] ?? -1)) ? $get_solution->code : null}}</textarea>
+            >{{$solution_code}}</textarea>
         </div>
     @elseif($problem->type==1)
         {{-- 代码填空 --}}

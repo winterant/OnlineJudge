@@ -71,8 +71,8 @@
             <pre class="border p-1"><code>{{$solution->code}}</code></pre>
             <span id="code" hidden>{{$solution->code}}</span>
             <button type="button" class="btn btn-primary border position-absolute" style="top: 2rem; right: 3rem" onclick="copy('code')">{{__('main.Copy')}}</button>
-            <button type="button" class="btn btn-primary border position-absolute" style="top: 2rem; right: 8rem"
-                href="{{route('problem', [$solution->problem_id, 'solution'=>$solution->id])}}">{{__('main.Edit')}}</button>
+            <a ype="button" class="btn btn-primary border position-absolute" style="top: 2rem; right: 8rem"
+                href="{{route('problem', [$solution->problem_id, 'solution'=>$solution->id])}}">{{__('main.Edit')}}</a>
         </div>
     </div>
     
