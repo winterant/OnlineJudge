@@ -84,123 +84,128 @@
  
 </form>
 
-<script type="text/javascript">
-    //================= 代码填空题：将需要填空的位置设置为input框 ==============
-    // 代码填空框自动加长
-    function input_extend_width(that) {
-        var sensor = $('<pre>' + $(that).val() + '</pre>').css({display: 'none'});
-        $('body').append(sensor);
-        var width = sensor.width();
-        sensor.remove();
-        $(that).css('width', Math.max(171, width + 30) + 'px');
-    }
-    $(function () {
-        // 替换??为input框
-        var blank_code = $("#blank_code")
-        if (blank_code.length > 0) {
-            var reg = new RegExp(/\?\?/, "g");//g,表示全部替换。
-            $code = blank_code.html().replace(reg, "<input class='code_blanks' name='filled[]' oninput='input_extend_width($(this))' autocomplete='off' required>")
-            blank_code.html($code)
+@if($problem->type==1)
+    {{-- ================ 代码填空题：将需要填空的位置设置为input框 ============== --}}
+    <script type="text/javascript">
+        // 代码填空框自动加长
+        function input_extend_width(that) {
+            var sensor = $('<pre>' + $(that).val() + '</pre>').css({display: 'none'});
+            $('body').append(sensor);
+            var width = sensor.width();
+            sensor.remove();
+            $(that).css('width', Math.max(171, width + 30) + 'px');
         }
+        $(function () {
+            // 替换??为input框
+            var blank_code = $("#blank_code")
+            if (blank_code.length > 0) {
+                var reg = new RegExp(/\?\?/, "g");//g,表示全部替换。
+                $code = blank_code.html().replace(reg, "<input class='code_blanks' name='filled[]' oninput='input_extend_width($(this))' autocomplete='off' required>")
+                blank_code.html($code)
+            }
 
-        //监听提交按钮
-        $("#submit_btn").click(function (){
-            // 代码框加密base64
-            $(".code_blanks").each(function(){
-                $(this).val(Base64.encode($(this).val()))
+            //监听提交按钮
+            $("#submit_btn").click(function (){
+                // 代码框加密base64
+                $(".code_blanks").each(function(){
+                    $(this).val(Base64.encode($(this).val()))
+                })
+
+                // 提交表单
+                $("#code_form").submit()
+            })
+        });
+    </script>
+@elseif($problem->type==0)
+    {{-- ==================== 编程题：代码编辑框以及表单的初始化和监听 ================== --}}
+    <script type="text/javascript">
+        $(function (){
+            // 代码编辑器的初始化配置
+            var code_editor = CodeMirror.fromTextArea(document.getElementById("code_editor"), {
+                autofocus: true, // 初始自动聚焦
+                indentUnit: 4,   //自动缩进的空格数
+                indentWithTabs: true, //在缩进时，是否需要把 n*tab宽度个空格替换成n个tab字符，默认为false 。
+                lineNumbers: true,	//显示行号
+                matchBrackets: true,	//括号匹配
+                autoCloseBrackets: true,  //自动补全括号
+                theme: 'idea',         // 编辑器主题
+            });
+
+            // 代码编辑框高度
+            code_editor.setSize("auto", (document.documentElement.clientHeight - 200) + "px")
+
+            //监听用户选中的主题
+            if(localStorage.getItem('code_editor_theme')){
+                $("#theme_select").val(localStorage.getItem('code_editor_theme'))
+                code_editor.setOption('theme',localStorage.getItem('code_editor_theme'))
+            }
+            $("#theme_select").change(function (){
+                var theme_name = $(this).children('option:selected').val();  //当前选中的主题
+                code_editor.setOption('theme',theme_name)
+                localStorage.setItem('code_editor_theme', theme_name)
             })
 
-            // 提交表单
-            $("#code_form").submit()
-        })
-    });
+            //监听用户选中的语言，实时修改代码提示框
+            function listen_lang_selected() {
+                var langs = JSON.parse('{!! json_encode(config('oj.lang')) !!}')  // 系统设定的语言候选列表
+                var lang = $("#lang_select").children('option:selected').val();  // 当前选中的语言下标
+                localStorage.setItem('code_lang', lang)
 
-    //==================== 编程题：代码编辑框以及表单的初始化和监听 ==================
-    $(function (){
-        // 代码编辑器的初始化配置
-        var code_editor = CodeMirror.fromTextArea(document.getElementById("code_editor"), {
-            autofocus: true, // 初始自动聚焦
-            indentUnit: 4,   //自动缩进的空格数
-            indentWithTabs: true, //在缩进时，是否需要把 n*tab宽度个空格替换成n个tab字符，默认为false 。
-            lineNumbers: true,	//显示行号
-            matchBrackets: true,	//括号匹配
-            autoCloseBrackets: true,  //自动补全括号
-            theme: 'idea',         // 编辑器主题
-        });
-
-        // 代码编辑框高度
-        code_editor.setSize("auto", (document.documentElement.clientHeight - 200) + "px")
-
-        //监听用户选中的主题
-        if(localStorage.getItem('code_editor_theme')){
-            $("#theme_select").val(localStorage.getItem('code_editor_theme'))
-            code_editor.setOption('theme',localStorage.getItem('code_editor_theme'))
-        }
-        $("#theme_select").change(function (){
-            var theme_name = $(this).children('option:selected').val();  //当前选中的主题
-            code_editor.setOption('theme',theme_name)
-            localStorage.setItem('code_editor_theme', theme_name)
-        })
-
-        //监听用户选中的语言，实时修改代码提示框
-        function listen_lang_selected() {
-            var langs = JSON.parse('{!! json_encode(config('oj.lang')) !!}')  // 系统设定的语言候选列表
-            var lang = $("#lang_select").children('option:selected').val();  // 当前选中的语言下标
-            localStorage.setItem('code_lang', lang)
-
-            if(langs[lang] === 'C'){
-                code_editor.setOption('mode','text/x-csrc')
-            }else if(langs[lang] === 'C++'){
-                code_editor.setOption('mode','text/x-c++src')
-            }else if(langs[lang] === 'Java'){
-                code_editor.setOption('mode','text/x-java')
-            }else if(langs[lang] === 'Python3'){
-                code_editor.setOption('mode','text/x-python')
+                if(langs[lang] === 'C'){
+                    code_editor.setOption('mode','text/x-csrc')
+                }else if(langs[lang] === 'C++'){
+                    code_editor.setOption('mode','text/x-c++src')
+                }else if(langs[lang] === 'Java'){
+                    code_editor.setOption('mode','text/x-java')
+                }else if(langs[lang] === 'Python3'){
+                    code_editor.setOption('mode','text/x-python')
+                }
             }
-        }
-        if(localStorage.getItem('code_lang')) // 切换为本地缓存的语言
-            $("#lang_select").val(localStorage.getItem('code_lang'))
-        listen_lang_selected()
-        $("#lang_select").change(function(){
+            if(localStorage.getItem('code_lang')) // 切换为本地缓存的语言
+                $("#lang_select").val(localStorage.getItem('code_lang'))
             listen_lang_selected()
-        });
+            $("#lang_select").change(function(){
+                listen_lang_selected()
+            });
 
-        // 监听用户选中的文件，实时读取
-        $("#code_file").on("change", function(){
-            $('#selected_fname').html(this.files[0].name);
-            var reader = new FileReader();
-            reader.readAsText(this.files[0], $("#lang_select").children('option:selected').val() <= 1 ? "GBK" : "UTF-8");
-            reader.onload=function(){
-                code_editor.setValue(reader.result)
-            }
+            // 监听用户选中的文件，实时读取
+            $("#code_file").on("change", function(){
+                $('#selected_fname').html(this.files[0].name);
+                var reader = new FileReader();
+                reader.readAsText(this.files[0], $("#lang_select").children('option:selected').val() <= 1 ? "GBK" : "UTF-8");
+                reader.onload=function(){
+                    code_editor.setValue(reader.result)
+                }
+            })
+
+            // 初始化填充代码
+            if(code_editor.getValue()=='' && localStorage.getItem('solution_p{{$problem->id}}'))
+                code_editor.setValue(localStorage.getItem('solution_p{{$problem->id}}'))
+
+            //监听代码输入，自动补全代码：
+            code_editor.on('change', (instance, change) => {
+                // 自动补全的时候，也会触发change事件，所有判断一下，以免死循环，正则是为了不让空格，换行之类的也提示
+                // 通过change对象你可以自定义一些规则去判断是否提示
+                if (change.origin !== 'complete' && change.text.length<2 && /\w|\./g.test(change.text[0])) {
+                    instance.showHint()
+                }
+                // 代码修改时顺便保存本地，防止丢失
+                localStorage.setItem('solution_p{{$problem->id}}', code_editor.getValue())
+            })
+
+            //监听提交按钮
+            $("#submit_btn").click(function (){
+                if(code_editor.getValue().length<5){
+                    Notiflix.Report.Info('{{trans('sentence.Operation failed')}}','{{trans('sentence.empty_code')}}','OK')
+                    return false
+                }
+                // 代码加密提交
+                var encrypt = Base64.encode(code_editor.getValue())
+                $("#base64_code").val(encrypt)
+
+                // 提交表单
+                $("#code_form").submit()
+            })
         })
-
-        //监听代码输入，自动补全代码：
-        code_editor.on('change', (instance, change) => {
-            // 自动补全的时候，也会触发change事件，所有判断一下，以免死循环，正则是为了不让空格，换行之类的也提示
-            // 通过change对象你可以自定义一些规则去判断是否提示
-            if (change.origin !== 'complete' && change.text.length<2 && /\w|\./g.test(change.text[0])) {
-                instance.showHint()
-            }
-            // 代码修改时顺便保存本地，防止丢失
-            localStorage.setItem('solution_p{{$problem->id}}', code_editor.getValue())
-        })
-        // 初始化填充代码
-        if(code_editor.getValue()=='' && localStorage.getItem('solution_p{{$problem->id}}'))
-            code_editor.setValue(localStorage.getItem('solution_p{{$problem->id}}'))
-
-        //监听提交按钮
-        $("#submit_btn").click(function (){
-            if(code_editor.getValue().length<5){
-                Notiflix.Report.Info('{{trans('sentence.Operation failed')}}','{{trans('sentence.empty_code')}}','OK')
-                return false
-            }
-            // 代码加密提交
-            var encrypt = Base64.encode(code_editor.getValue())
-            $("#base64_code").val(encrypt)
-
-            // 提交表单
-            $("#code_form").submit()
-        })
-    })
-</script>
+    </script>
+@endif
