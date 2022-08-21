@@ -3,10 +3,10 @@
 <meta name="force-rendering" content="webkit"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
-{{-- 如果前端请求自动升级https，回复upgrade-insecure-requests --}}
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-
+@if(config('app.IS_HTTPS'))
+    {{-- 如果前端请求自动升级https，回复upgrade-insecure-requests --}}
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+@endif
 
 {{-- CSRF Token --}}
 <meta name="csrf-token" content="{{ csrf_token() }}">
