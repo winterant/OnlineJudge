@@ -400,7 +400,7 @@ void running(const char data_in_path[])
     setrlimit(RLIMIT_STACK, &LIM);
 
     //time limit
-    LIM.rlim_max=LIM.rlim_cur = solution.time_limit/1000 * 2 + 60; //S, 双倍 且 增加额外损耗
+    LIM.rlim_max=LIM.rlim_cur = solution.time_limit/1000 * 2 + 10; //S, 双倍 且 增加额外损耗
     setrlimit(RLIMIT_CPU, &LIM);  // cpu time limit
     alarm(0);
     alarm(LIM.rlim_cur); //定时自杀
@@ -729,6 +729,7 @@ int main (int argc, char* argv[])
     write_file(solution.code.c_str(),LANG[solution.language],"w"); //创建代码文件
     solution.update_result(OJ_CI); //update to compiling
 
+    print_log("Start to compile solution %s.\n", sid);
     int CP_result=compile();
     if(CP_result==-1)//系统错误，正常情况下没有
     {
