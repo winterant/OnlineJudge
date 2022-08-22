@@ -251,8 +251,6 @@ class StatusController extends Controller
         $solution['id'] = DB::table('solutions')->insertGetId($solution);
 
         //=============================== 运行评测 ===============================
-        $judger = new JudgeController();
-        $judger->judge($solution);
 
         //=============================== 展示网页 ===============================
         if (isset($data['cid'])) //竞赛提交

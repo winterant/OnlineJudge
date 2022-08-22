@@ -30,7 +30,7 @@ gitee同步仓库: <https://gitee.com/wrant/LDUOnlineJudge>
 # 🔨 部署
 
 ```bash
-docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
+docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj:22.08
 ```
 
 + 访问首页`http://ip:8080`；可在宿主机[配置域名](https://blog.csdn.net/winter2121/article/details/107783085)；
@@ -66,7 +66,7 @@ bash ojup/install/update.sh
 2. 删除旧容器，并重新部署项目(创建容器)；注意参数`-v`挂载路径是上一步解压出的绝对路径；
     ```bash
     docker rm -f lduoj  # 强制删除旧容器（如果有）
-    docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
+    docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj:22.08
     ```
 3. 进入容器，恢复数据库；这一步不做也可以，但数据无价，为了保险起见，执行一下；
     ```bash

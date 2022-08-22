@@ -1,8 +1,25 @@
-FROM winterant/lduoj_os:22.08
+FROM ubuntu:20.04
 
 COPY . /home/LDUOnlineJudge/
 
 WORKDIR /home/LDUOnlineJudge
+
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
+    echo 'Asia/Shanghai' > /etc/timezone &&\
+    sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.163.com\/ubuntu/g' /etc/apt/sources.list &&\
+    apt-get update && apt-get -y upgrade &&\
+    apt-get -y install software-properties-common &&\
+    apt-get -y install language-pack-en-base &&\
+    echo -e "\n" | add-apt-repository ppa:deadsnakes/ppa &&\
+    echo -e "\n" | apt-add-repository ppa:ondrej/php &&\
+    apt-get update && apt-get -y upgrade &&\
+    apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml php7.2-mbstring php7.2-gd &&\
+    apt-get -y install composer zip unzip &&\
+    apt-get -y install nginx &&\
+    apt-get -y install mysql-server &&\
+    apt-get -y install g++ libmysqlclient-dev openjdk-8-jre openjdk-8-jdk python3.6 make flex &&\
+    apt-get -y install sudo vim &&\
+    sed -i "s/^;extension=gd.*/extension=gd/" /etc/php/7.2/fpm/php.ini  # use extension gd for captcha
 
 RUN export LC_ALL=en_US.UTF-8 &&\
     export LANG=en_US.UTF-8 &&\

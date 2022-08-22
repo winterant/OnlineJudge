@@ -21,7 +21,7 @@
 ### 1. 启动容器
 
   ```shell
-  docker run -d -p 8080:80 -p 8036:3306 -v /d/volume:/volume --name lduoj winterant/lduoj
+  docker run -d -p 8080:80 -p 8036:3306 -v /d/volume:/volume --name lduoj winterant/lduoj:22.08
   ```
 
 + `-p`指定8036端口作为宿主机mysql端口，指定8080端口作为网页入口。
