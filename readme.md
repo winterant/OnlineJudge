@@ -7,7 +7,6 @@ gitee同步仓库: <https://gitee.com/wrant/LDUOnlineJudge>
 # 💡 快速了解
 
 + 官方网站：[https://icpc.ldu.edu.cn](http://icpc.ldu.edu.cn)；
-+ 演示网站：[https://lduoj.top](https://lduoj.top)；
 + 截屏展示：[点击跳转](https://blog.csdn.net/winter2121/article/details/105294224)；
 
 **前台**
@@ -30,16 +29,21 @@ gitee同步仓库: <https://gitee.com/wrant/LDUOnlineJudge>
 # 🔨 部署
 
 ```bash
-docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
+docker run -d -p 8080:80 \
+    -v lduoj_storage:/LDUOnlineJudge/storage \
+    -v lduoj_database:/var/lib/mysql/lduoj \
+    --name lduoj \
+    winterant/lduoj:22.09
 ```
 
 + 访问首页`http://ip:8080`；可在宿主机[配置域名](https://blog.csdn.net/winter2121/article/details/107783085)；
-+ **注册账号admin自动成为管理员**。
++ **注册账号admin自动成为管理员**；
++ 你必须部署[judge0-v1.13.0](https://github.com/judge0/judge0/releases/tag/v1.13.0)才能判题；
 
 # 🚗 升级
 
 ```bash
-docker exec -it lduoj bash
+docker exec -it lduoj bash  # 进入容器
 git clone https://gitee.com/wrant/LDUOnlineJudge.git ojup
 bash ojup/install/update.sh
 ```
@@ -49,44 +53,21 @@ bash ojup/install/update.sh
 【提示】若要迁移到其它机器，请务必先升级到最新。
 
 ## 备份
-1. 进入容器，备份数据库；
+1. [可选]进入容器，备份数据库（以防万一）；
     ```bash
     docker exec -it lduoj bash
-    bash install/mysql/database_backup.sh
+    bash install/mysql/database_backup.sh /LDUOnlineJudge/storage/backup/db.sql
     ```
-2. 将文件夹`/volume`打包，自行拷贝备份；这一步在宿主机、容器内均可；**打包过程中，不要关闭终端**；
-    ```bash
-    tar -cf - /volume | pigz -p $(nproc) > volume.tar.gz
-    ```
+2. [备份数据卷](http://shouce.jb51.net/docker_practice/data_management/management.html) [`lduoj_storage`, `lduoj_database`]
+
 ## 恢复
-1. 在宿主机找一个位置，解压出`/volume`；
-    ```bash
-    tar -zxvf volume.tar.gz
-    ```
-2. 删除旧容器，并重新部署项目(创建容器)；注意参数`-v`挂载路径是上一步解压出的绝对路径；
-    ```bash
-    docker rm -f lduoj  # 强制删除旧容器（如果有）
-    docker run -d -p 8080:80 -v ~/lduoj/volume:/volume --name lduoj winterant/lduoj
-    ```
-3. 进入容器，恢复数据库；这一步不做也可以，但数据无价，为了保险起见，执行一下；
+1. [恢复数据卷](http://shouce.jb51.net/docker_practice/data_management/management.html) [`lduoj_storage`, `lduoj_database`]
+2. 重新[部署](#🔨-部署)
+3. [可选]如果数据库未恢复，可进入容器，手动恢复数据库；
     ```bash
     docker exec -it lduoj bash
     bash install/mysql/database_recover.sh
     ```
-
-# 📝 判题端使用说明
-
-+ 启动方式
-
-  A. 网页端进入后台首页，即可点击相应按钮启动/重启/停止判题端
-  B. 通过终端命令启动判题端：`bash judge/startup.sh`
-
-+ 判题端配置（`judge/config.sh`）：
-  ```shell
-  JG_DATA_DIR=storage/app/data  # 测试数据所在目录，**请勿修改!**
-  JG_NAME="Master"              # 判题机名称，可修改
-  JG_MAX_RUNNING=2              # 最大并行判题进程数；建议值 = 剩余内存(GB) / 2
-  ```
 
 # 💝 致谢
 

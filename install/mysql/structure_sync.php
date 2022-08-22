@@ -103,13 +103,13 @@ foreach($data1 as $key1 => $val1)
             }
 
             //在db2中删除比db1多余的字段。注意，重命名的字段会被删除！！
-            if(!empty($column2))
-            {
-                foreach($column2 as $col_info)
-                {
-                    $result_sql .= "alter table `{$col_info['TABLE_NAME']}` drop column `{$col_info['COLUMN_NAME']}`;\n";
-                }
-            }
+            // if(!empty($column2))
+            // {
+            //     foreach($column2 as $col_info)
+            //     {
+            //         $result_sql .= "alter table `{$col_info['TABLE_NAME']}` drop column `{$col_info['COLUMN_NAME']}`;\n";
+            //     }
+            // }
 
             //在db2中更新字段的属性，使其与db1同步
             foreach($val1 as $col1 => $info1)

@@ -1,9 +1,6 @@
 **/.DS_store
-install/mysql/lduojbackup.sql
-judge/run
-judge/config.sh
-judge/judge
-judge/polling
+.git
+.env
 storage/app
 storage/logs/*.log
 storage/framework/cache/data/*
