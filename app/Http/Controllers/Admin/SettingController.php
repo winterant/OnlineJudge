@@ -44,36 +44,15 @@ class SettingController extends Controller
     }
 
     //升级系统
-    public function upgrade_oj(Request $request){
-        $source = $request->input('upgrade_source');
-        if($source=='github')
-            $source = 'https://github.com/winterant/LDUOnlineJudge.git';
-        else
-            $source = 'https://gitee.com/wrant/LDUOnlineJudge.git';
-
-        Log::info('----------------------------------------------------------------');
+    public function upgrade_oj(Request $request){  
+              Log::info('----------------------------------------------------------------');
         Log::info('Start to upgrade LDUOnlineJudge!');
-
-        $new_project = storage_path('oj_upgrade');
-        exec('rm -rf '.$new_project,$out,$status); //删除旧文件夹
-        foreach ($out as $line)
-            Log::info($line);
-
-        $cmd_git = 'sudo git clone '.$source.' '.$new_project.' 2>&1';
-        Log::info($cmd_git);
-        unset($out);
-        exec($cmd_git,$out,$status);
-        foreach ($out as $line)
-            Log::info($line);
-
-        $cmd_bash = 'sudo bash '.$new_project.'/install/update.sh '.base_path().' 2>&1';
-        Log::info($cmd_bash);
-        unset($out);
-        exec($cmd_bash,$out,$status);
+        $source = $request->input('upgrade_source');
+        $update_sh = storage_path('install/updata.sh');
+        exec('sudo bash '.$update_sh.' '.$source, $out, $status); //删除旧文件夹
         foreach ($out as $line)
             Log::info($line);
         Log::info('----------------------------------------------------------------');
-
         return 1;
     }
 

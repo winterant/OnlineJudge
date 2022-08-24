@@ -13,18 +13,6 @@ class HomeController extends Controller
         if (!DB::table('privileges')->where('user_id',Auth::id())->exists())
             abort(404);
 
-        // 查询判题端进程
-        exec('ps -eo pid,user,comm,vsz|grep polling 2>&1',$out,$status);
-        if(count($out)>0){
-            $run=true;
-            $info="";
-            foreach ($out as $line)
-                $info.='[ 正在运行 ] pid='.$line.'KB; ';
-        }else{
-            $run=false;
-            $info='[ 停止运行 ]';
-        }
-
         //服务器相关信息
         $systemInfo = [
             '网站域名'      =>$_SERVER["HTTP_HOST"],
@@ -45,14 +33,4 @@ class HomeController extends Controller
         ];
         return view('admin.home',compact('run','info','systemInfo'));
     }
-
-    public function cmd_polling(Request $request){
-        $oper=$request->input('oper');
-        if($oper==='start'||$oper==='restart')
-            exec('sudo bash '.base_path('judge/startup.sh'),$out,$status);
-        else if($oper==='stop')
-            exec('sudo bash '.base_path('judge/stop.sh'),$out,$status);
-        return back()->with('ret',implode('<br>',$out));
-    }
-
 }

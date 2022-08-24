@@ -23,6 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app['request']->server->set('HTTPS', ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? null) == 'https' || config('app.IS_HTTPS'));
+        $this->app['request']->server->set('HTTPS', ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? null) == 'https' || config('app.URL_HTTPS'));
     }
 }

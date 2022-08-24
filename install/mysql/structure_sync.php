@@ -3,11 +3,12 @@
 if($argc<3)return;
 
 $db = [
-    'host'  => 'localhost',
-    'user'  => $argv[1],
-    'pwd'   => $argv[2],
+    'host'  => $argv[1],
+    'port'  => $argv[2],
+    'user'  => $argv[3],
+    'pwd'   => $argv[4],
     'db1'   => 'lduoj_upgrade', //源表
-    'db2'   => 'lduoj', //目标表，即要改动的表
+    'db2'   => $argv[5], //目标表，即要改动的表
 ];
 
 $result_sql="/* Modify database {$db['db2']} with reference to {$db['db1']}. */\n\n";  //字符串用于拼接修改语句sql
@@ -15,7 +16,7 @@ $result_sql.="SET NAMES utf8mb4;\n";  //设置字符集
 $result_sql.="SET FOREIGN_KEY_CHECKS = 0;\n\n";  //取消外键检查
 
 //建立连接
-$conn = mysqli_connect($db['host'], $db['user'], $db['pwd']) or die($conn->error);
+$conn = mysqli_connect($db['host'], $db['user'], $db['pwd'],$port=$db['port']) or die($conn->error);
 
 //读取表结构，转为数组形式
 $stru1 = "SELECT TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,ORDINAL_POSITION,COLUMN_DEFAULT,IS_NULLABLE,COLUMN_TYPE,COLUMN_COMMENT,EXTRA,DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '{$db['db1']}'";

@@ -108,11 +108,6 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
         Route::get('/', 'Admin\HomeController@index')->name('home');
     });
 
-    Route::middleware(['Privilege:admin.judger'])->group(function () {
-        // 判题端指令：启动、重启、停止
-        Route::post('/cmd_polling', 'Admin\HomeController@cmd_polling')->name('cmd_polling');
-    });
-
     //    manage notice
     Route::middleware(['Privilege:admin.notice'])->prefix('notice')->name('notice.')->group(function () {
         Route::get('/list', 'Admin\NoticeController@list')->name('list');

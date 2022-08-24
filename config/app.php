@@ -2,10 +2,14 @@
 
 return [
     // 强制开启HTTPS
-    'IS_HTTPS' => env('IS_HTTPS', false),
+    'URL_HTTPS' => env('URL_HTTPS', false),
 
     // 测试数据的路径
     'JG_DATA_DIR' => env('JG_DATA_DIR', 'storage/app/data'),
+    
+    // judge0 host and port
+    'JUDGE0_HOST' => env('JUDGE0_HOST', 'localhost'),
+    'JUDGE0_PORT' => env('JUDGE0_PORT', 2358),
 
     /*
     |--------------------------------------------------------------------------

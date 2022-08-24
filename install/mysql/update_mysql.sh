@@ -10,14 +10,14 @@ else
 fi
 
 # update mysql table schema
-USER=$(cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}')
-PASSWORD=$(cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}')
-
-# mysql >= 8.0 由于默认用户密码方式不对，需重新设一下密码，php才能连接
-mysql -u${USER} -p${PASSWORD} -e"alter user '${USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${PASSWORD}';"
+DB_HOST=${DB_HOST:-localhost}
+DB_PORT=${DB_PORT:-3306}
+DB_DATABASE=${DB_DATABASE:-lduoj}
+DB_USERNAME=${DB_USERNAME:-oj_user}
+DB_PASSWORD=${DB_PASSWORD:-OurFutrue2045}
 
 mysql -u${USER} -p${PASSWORD} -e"DROP DATABASE IF EXISTS lduoj_upgrade;"
 mysql -u${USER} -p${PASSWORD} -e"CREATE DATABASE IF NOT EXISTS lduoj_upgrade;"
 mysql -u${USER} -p${PASSWORD} -Dlduoj_upgrade < ${sql_path}
-php ${APP_HOME}/install/mysql/structure_sync.php ${USER} ${PASSWORD} | mysql -u${USER} -p${PASSWORD} -Dlduoj -v
+php ${APP_HOME}/install/mysql/structure_sync.php ${DB_HOST} ${DB_PORT} ${DB_USERNAME} ${DB_PASSWORD} ${DB_DATABASE} | mysql -h"${DB_HOST}" -P"${DB_PORT}" -u"${DB_USERNAME}" -p"${DB_PASSWORD}" -Dlduoj -v
 mysql -u${USER} -p${PASSWORD} -e"DROP DATABASE IF EXISTS lduoj_upgrade;"
