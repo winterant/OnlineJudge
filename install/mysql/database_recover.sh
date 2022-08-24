@@ -7,8 +7,12 @@ else
     sql_path=${APP_HOME}/install/mysql/lduojbackup.sql
 fi
 
-USER=$(cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}')
-PASSWORD=$(cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}')
-mysql -u"${USER}" -p"${PASSWORD}" -Dlduoj < "${sql_path}"
+DB_HOST=${DB_HOST:-localhost}
+DB_PORT=${DB_PORT:-3306}
+DB_DATABASE=${DB_DATABASE:-lduoj}
+DB_USERNAME=${DB_USERNAME:-oj_user}
+DB_PASSWORD=${DB_PASSWORD:-OurFutrue2045}
+
+mysql -h"${DB_HOST}" -P"${DB_PORT}" -u"${DB_USERNAME}" -p"${DB_PASSWORD}" -D"${DB_DATABASE}" < "${sql_path}"
 
 echo "Recovered from ${sql_path}"
