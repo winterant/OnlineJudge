@@ -15,7 +15,7 @@ services:
       - DB_PASSWORD=OurFuture2045
       - JUDGE0_HOST=judge0-server
       - JUDGE0_PORT=2358
-      - IS_HTTPS=false
+      - URL_HTTPS=false
     volumes:
       - ./data/storage/app:/app/storage/app
 

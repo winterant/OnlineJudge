@@ -14,7 +14,9 @@ class JudgeController extends Controller
     // 评判一个提交记录
     public function judge($solution)
     {
-        // dump($this->gather_tests(10741));
+        dump($solution);
+        dump($this->gather_tests($solution['problem_id']));
+        dd(1);
         // 搜集测试数据
         // 遍历测试数据，一一评测
         // 计算判题结果，时间、空间、通过率等
