@@ -6,6 +6,7 @@ sleep 5 # Waiting for mysql being started.
 # If host machine has not files, give it files.
 if [ ! -d "/app/public" ];then
     yes|cp -rf /app_tmp/. /app/
+    rm -rf /app_tmp
 fi
 
 # work dir.
