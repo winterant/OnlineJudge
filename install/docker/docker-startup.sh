@@ -3,6 +3,11 @@
 set -e
 sleep 5 # Waiting for mysql being started.
 
+# If host machine has not files, give it files.
+if [ ! -d "/app/public" ];then
+    cp -rf /app_tmp/* /app/
+fi
+
 # work dir.
 cd /app
 

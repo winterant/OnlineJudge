@@ -18,10 +18,14 @@ RUN export LC_ALL=en_US.UTF-8 &&\
     rm -rf /etc/nginx/sites-enabled/default &&\
     ln -s /app/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
     # docker startup
-    chmod +x /app/install/docker/startup.sh
+    cp -rf install/docker/docker-startup.sh /docker-startup.sh &&\
+    chmod +x /docker-startup.sh &&\
+    # Move the files to temp directory to prevent conflict with existed `volume`
+    mkdir /app_tmp &&\
+    mv -f /app/* /app_tmp/
 
 VOLUME ["/app"]
 
-ENTRYPOINT ["/app/install/docker/startup.sh"]
+ENTRYPOINT ["/docker-startup.sh"]
 
 EXPOSE 80
