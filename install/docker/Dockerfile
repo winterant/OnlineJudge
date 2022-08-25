@@ -20,9 +20,8 @@ RUN export LC_ALL=en_US.UTF-8 &&\
     # docker startup
     cp -rf install/docker/docker-startup.sh /docker-startup.sh &&\
     chmod +x /docker-startup.sh &&\
-    # Move the files to temp directory to prevent conflict with existed `volume`
-    mkdir /app_tmp &&\
-    mv -f /app/* /app_tmp/
+    # Rename the project to prevent conflict with existed `volume`
+    mv /app /app_tmp
 
 VOLUME ["/app"]
 
