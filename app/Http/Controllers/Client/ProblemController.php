@@ -145,7 +145,7 @@ class ProblemController extends Controller
             $solution_code=$solution->code??null;
         else
             $solution_code=null;
-        return view('client.problem2', compact('problem', 'results', 'contests', 'samples', 'solutions', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool', 'solution_code'));
+        return view('client.problem', compact('problem', 'results', 'contests', 'samples', 'solutions', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool', 'solution_code'));
     }
 
     function tag_mark(Request $request)

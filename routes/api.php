@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +13,18 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-//
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+
+/*
+reponse return {
+    'ok':1,
+    'msg':'',
+    'data':{}
+}
+*/
+
+Route::namespace('Api')->name('api.')->group(function () {
+    // =========================== Solution =================================
+    Route::middleware(['auth:api', 'CheckBlacklist'])->name('solution.')->where(['id' => '[0-9]+'])->group(function () {
+        Route::post('/submit_solution','SolutionController@submit')->name('submit');
+    });
+});

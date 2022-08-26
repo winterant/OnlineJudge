@@ -27,7 +27,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'api_token'
     ];
 
     /**
@@ -38,22 +38,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    /*
-    public function privilege($power)
-    {
-        //teacher涵盖以下权限；即 只要数据库中查询到teacher权限，则该用户拥有以下权限
-        if (in_array($power, ['admin_home', 'problem_list', 'problem_edit', 'problem_data', 'problem_tag', 'problem_rejudge', 'contest']))
-            $power = array_merge((array)$power, ['teacher']);
-
-        //admin涵盖所有权限
-        $power = array_merge((array)$power, ['admin']);
-
-        //查询该用户的权限
-        if (DB::table('privileges')->where('user_id', $this->id)->whereIn('authority', $power)->exists()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    */
 }

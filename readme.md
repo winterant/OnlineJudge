@@ -85,6 +85,30 @@ bash install/update.sh
     bash install/mysql/database_recover.sh
     ```
 
+# 如何从lduoj1.0升级到2.0？
+
+1. 1.0版本进入容器，备份数据库；
+    ```bash
+    USER=$(cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}')
+    PASSWORD=$(cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}')
+    mysqldump -u"${USER}" -p"${PASSWORD}" --no-create-info --complete-insert -B lduoj > data.sql
+    mysqldump -u"${USER}" -p"${PASSWORD}" --no-data -B lduoj > structure.sql
+    echo "Generated database structure.sql and data.sql"
+    ```
+2. 一键部署2.0，但先不要打开网页；
+3. 将1.0的静态资源移动到2.0的挂载文件夹下；
+    ```bash
+    mv -f ${old_app_path}/storage/app/* ${new_app_path}/data/storage/app/
+    ```
+4. 将第1步生成的`data.sql`移入`${new_app_path}/data/mysql`；随后进入mysql容器，恢复数据库；
+    ```bash
+    docker exec -it lduoj_mysql bash
+    cd /var/lib/mysql
+    mysql -uroot -pOurFuture2099 -f -Dlduoj < data.sql 
+    ```
+5. 大功告成，可以访问网页了。
+
+
 # 💝 致谢
 
 [zhblue/hustoj](https://github.com/zhblue/hustoj)  

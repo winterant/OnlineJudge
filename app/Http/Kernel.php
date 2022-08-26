@@ -2,11 +2,6 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\CheckBlacklist;
-use App\Http\Middleware\Privilege;
-use App\Http\Middleware\CheckContest;
-use App\Http\Middleware\CheckGroup;
-use App\Http\Middleware\SetGlobalVariable;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -24,7 +19,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-//        SetGlobalVariable::class,  //这句话移到$middlewareGroups中的web里，原因是放在这无法获取解密后的cookie
+        //        SetGlobalVariable::class,  //这句话移到$middlewareGroups中的web里，原因是放在这无法获取解密后的cookie
     ];
 
     /**
@@ -39,14 +34,17 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
+            // \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            SetGlobalVariable::class,
+            \App\Http\Middleware\SetGlobalVariable::class,
+            \App\Http\Middleware\CheckFormDecode::class,
         ],
 
         'api' => [
             'throttle:60,1',
             'bindings',
+            \App\Http\Middleware\SetGlobalVariable::class,
+            \App\Http\Middleware\CheckFormDecode::class,
         ],
     ];
 
@@ -68,10 +66,10 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        'Privilege' => Privilege::class,
-        'CheckContest' => CheckContest::class,
-        'CheckGroup' => CheckGroup::class,
-        'CheckBlacklist' => CheckBlacklist::class
+        'Privilege' => \App\Http\Middleware\Privilege::class,
+        'CheckContest' => \App\Http\Middleware\CheckContest::class,
+        'CheckGroup' => \App\Http\Middleware\CheckGroup::class,
+        'CheckBlacklist' => \App\Http\Middleware\CheckBlacklist::class
     ];
 
     /**

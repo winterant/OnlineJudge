@@ -250,10 +250,6 @@ class StatusController extends Controller
         //=============================== 将提交记录写入数据库 ======================================
         $solution['id'] = DB::table('solutions')->insertGetId($solution);
 
-        //=============================== 运行评测 ===============================
-        $judger = new JudgeController();
-        $judger->judge($solution);
-
         //=============================== 展示网页 ===============================
         if (isset($data['cid'])) //竞赛提交
             return redirect(route('contest.status', [$data['cid'], 'index' => $data['index'], 'username' => Auth::user()->username, 'group' => $request->input('group') ?? null]));

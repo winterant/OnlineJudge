@@ -169,7 +169,11 @@
     </div>
 </nav>
 
-<div class="container">@include('layouts.notice_marquee')</div>
+{{-- 出了题目页面外，都要滚动显示公告 --}}
+@if(!in_array(Route::currentRouteName(), ['problem', 'contest.problem']))
+    <div class="container">@include('layouts.notice_marquee')</div>
+@endif
+
 <div>
     @yield('content')
 </div>

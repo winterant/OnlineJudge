@@ -129,8 +129,6 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
         Route::post('/privilege/delete', 'Admin\UserController@privilege_delete')->name('privilege_delete');
         Route::any('/reset_pwd', 'Admin\UserController@reset_pwd')->name('reset_pwd');
         Route::get('/blacklist', 'Admin\UserController@blacklist')->name('blacklist');
-        Route::post('/blacklist/create', 'Admin\UserController@blacklist_create')->name('blacklist_create');
-        Route::post('/blacklist/delete', 'Admin\UserController@blacklist_delete')->name('blacklist_delete');
     });
 
     //   manage problem list

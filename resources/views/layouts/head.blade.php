@@ -22,6 +22,9 @@
 {{-- base64编码工具 https://github.com/dankogai/js-base64 --}}
 <script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.2/base64.min.js?v=1" defer></script>
 
+{{-- 自定义全局js脚本 --}}
+<script src="{{asset('js/globals.js')}}" defer></script>
+
 {{-- 大文件上传 --}}
 <script src="{{asset('js/uploadBig.js')}}?v=08.11" defer></script>
 

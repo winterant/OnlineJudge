@@ -1,4 +1,4 @@
-<form id="code_form" action="{{route('submit_solution')}}" method="post">
+<form id="code_form">
     @csrf
 
     @if(isset($_GET['group']))
@@ -12,8 +12,8 @@
         <input name="solution[cid]" value="{{$contest->id}}" hidden>
     @endif
 
-    <div class="form-inline m-2">
-        @if($problem->type==0)
+    @if($problem->type==0)
+        <div class="form-inline m-2">
             {{-- 编程题可以选择语言 --}}
             <div class="flex-nowrap mr-3 mb-1">
                 <span class="mr-2">{{__('main.Language')}}:</span>
@@ -43,33 +43,22 @@
                     <option value="mbo">mbo</option>
                 </select>
             </div>
-        @else
+        </div>
+        {{-- 代码框 --}}
+        <div class="form-group border mx-1">
+            <textarea id="code_editor" name="solution[code]" style="width: 100%;height:30rem"
+            >{{$solution_code}}</textarea>
+        </div>
+    @elseif($problem->type==1)
+        <div class="form-inline m-2">
             {{-- 代码填空由出题人指定语言 --}}
             <span class="mr-2">{{__('main.Language')}}:</span>
             <span>{{config('oj.lang.'.$problem->language)}}</span>
             <input name="solution[language]" value="{{$problem->language}}" hidden>
-        @endif
-    </div>
-
-    @if($problem->type==0)
-        {{-- 编程题 --}}
-        <div class="form-group border mx-1">
-            <input id="base64_code" name="solution[code]" hidden>
-            <textarea id="code_editor" style="width: 100%;height:30rem"
-            >{{$solution_code}}</textarea>
         </div>
-    @elseif($problem->type==1)
-        {{-- 代码填空 --}}
+        {{-- 代码框 --}}
         <div class="mb-3 mx-1 border">
             <pre id="blank_code" class="mb-0"><code>{{$problem->fill_in_blank}}</code></pre>
-            <script type="text/javascript">
-                $(function (){
-                    hljs.highlightAll();// 代码高亮
-                    $("code").each(function(){  // 代码添加行号
-                        $(this).html("<ol><li>" + $(this).html().replace(/\n/g,"\n</li><li>") +"\n</li></ol>");
-                    })
-                });
-            </script>
         </div>
     @endif
 
@@ -84,39 +73,7 @@
  
 </form>
 
-@if($problem->type==1)
-    {{-- ================ 代码填空题：将需要填空的位置设置为input框 ============== --}}
-    <script type="text/javascript">
-        // 代码填空框自动加长
-        function input_extend_width(that) {
-            var sensor = $('<pre>' + $(that).val() + '</pre>').css({display: 'none'});
-            $('body').append(sensor);
-            var width = sensor.width();
-            sensor.remove();
-            $(that).css('width', Math.max(171, width + 30) + 'px');
-        }
-        $(function () {
-            // 替换??为input框
-            var blank_code = $("#blank_code")
-            if (blank_code.length > 0) {
-                var reg = new RegExp(/\?\?/, "g");//g,表示全部替换。
-                $code = blank_code.html().replace(reg, "<input class='code_blanks' name='filled[]' oninput='input_extend_width($(this))' autocomplete='off' required>")
-                blank_code.html($code)
-            }
-
-            //监听提交按钮
-            $("#submit_btn").click(function (){
-                // 代码框加密base64
-                $(".code_blanks").each(function(){
-                    $(this).val(Base64.encode($(this).val()))
-                })
-
-                // 提交表单
-                $("#code_form").submit()
-            })
-        });
-    </script>
-@elseif($problem->type==0)
+@if($problem->type==0)
     {{-- ==================== 编程题：代码编辑框以及表单的初始化和监听 ================== --}}
     <script type="text/javascript">
         $(function (){
@@ -161,7 +118,7 @@
                     code_editor.setOption('mode','text/x-python')
                 }
             }
-            if(localStorage.getItem('code_lang')) // 切换为本地缓存的语言
+            if(localStorage.getItem('code_lang')!==null) // 切换为本地缓存的语言
                 $("#lang_select").val(localStorage.getItem('code_lang'))
             listen_lang_selected()
             $("#lang_select").change(function(){
@@ -191,7 +148,7 @@
                 }
                 // 代码修改时顺便保存本地，防止丢失
                 localStorage.setItem('solution_p{{$problem->id}}', code_editor.getValue())
-            })
+            });
 
             //监听提交按钮
             $("#submit_btn").click(function (){
@@ -199,13 +156,63 @@
                     Notiflix.Report.Info('{{trans('sentence.Operation failed')}}','{{trans('sentence.empty_code')}}','OK')
                     return false
                 }
-                // 代码加密提交
-                var encrypt = Base64.encode(code_editor.getValue())
-                $("#base64_code").val(encrypt)
-
-                // 提交表单
-                $("#code_form").submit()
+                $("#code_editor").val(code_editor.getValue())
+                $.ajax({
+                    type : 'post',
+                    url : '{{route("api.solution.submit")}}',
+                    dataType : 'json',
+                    data : form_json_base64($("#code_form"),'{{Auth::user()->api_token}}'),
+                    success : function(ret) {
+                        console.log(ret)
+                    },
+                    error : function(){
+                        
+                    }
+                })
             })
         })
+    </script>
+@elseif($problem->type==1)
+    {{-- ================ 代码填空题：将需要填空的位置设置为input框 ============== --}}
+    <script type="text/javascript">
+        // 代码填空框自动加长
+        function input_extend_width(that) {
+            var sensor = $('<pre>' + $(that).val() + '</pre>').css({display: 'none'});
+            $('body').append(sensor);
+            var width = sensor.width();
+            sensor.remove();
+            $(that).css('width', Math.max(171, width + 30) + 'px');
+        }
+        $(function () {
+            // 代码填空代码高亮
+            hljs.highlightAll();// 代码高亮
+            $("code").each(function(){  // 代码添加行号
+                $(this).html("<ol><li>" + $(this).html().replace(/\n/g,"\n</li><li>") +"\n</li></ol>");
+            })
+
+            // 替换??为input框
+            var blank_code = $("#blank_code")
+            if (blank_code.length > 0) {
+                var reg = new RegExp(/\?\?/, "g");//g,表示全部替换。
+                $code = blank_code.html().replace(reg, "<input class='code_blanks' name='filled[]' oninput='input_extend_width($(this))' autocomplete='off' required>")
+                blank_code.html($code)
+            }
+
+            //监听提交按钮
+            $("#submit_btn").click(function (){
+                $.ajax({
+                    type : 'post',
+                    url : '{{route("api.solution.submit")}}',
+                    dataType : 'json',
+                    data : form_json_base64($("#code_form"),'{{Auth::user()->api_token}}'),
+                    success : function(ret) {
+                        console.log(ret)
+                    },
+                    error : function(){
+                        
+                    }
+                })
+            })
+        });
     </script>
 @endif
