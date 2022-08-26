@@ -9,7 +9,6 @@ RUN export LC_ALL=en_US.UTF-8 &&\
     composer install --ignore-platform-reqs &&\
     chown www-data:www-data -R storage bootstrap/cache &&\
     cp -rf .env.example .env &&\
-    cp -rf public/favicon.ico.sample public/favicon.ico &&\
     php artisan storage:link &&\
     # I dont know why it does not work.
     php artisan key:generate &&\ 

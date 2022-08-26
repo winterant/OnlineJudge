@@ -13,11 +13,15 @@ services:
       - DB_DATABASE=lduoj
       - DB_USERNAME=oj_user
       - DB_PASSWORD=OurFuture2045
-      - JUDGE0_HOST=judge0-server
-      - JUDGE0_PORT=2358
-      - URL_HTTPS=false
+      - JUDGE0_SERVER=judge0-server:2358
+      # [Production] If using https but web page can't fetch static files, open it.
+      # - HREF_FORCE_HTTPS=true
     volumes:
       - ./data/storage/app:/app/storage/app
+      # [Production] User defined favicon.ico (Please make sure it exists).
+      # - ./data/web/public/favicon.ico:/app/public/favicon.ico:ro
+      # [Develop] Mount entire project to host machine.
+      # - ./data/web:/app
 
   mysql:
     image: docker.io/mysql:8.0

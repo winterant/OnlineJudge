@@ -4,10 +4,9 @@ set -e
 sleep 5 # Waiting for mysql being started.
 
 # If host machine has not files, give it files.
-if [ ! -d "/app/public" ];then
-    yes|cp -rf /app_tmp/. /app/
-    rm -rf /app_tmp
-fi
+echo "Copying files to /app"
+yes|cp -rf /app_tmp/. /app/
+rm -rf /app_tmp
 
 # work dir.
 cd /app
@@ -18,17 +17,15 @@ DB_PORT=${DB_PORT:-3306}
 DB_DATABASE=${DB_DATABASE:-lduoj}
 DB_USERNAME=${DB_USERNAME:-oj_user}
 DB_PASSWORD=${DB_PASSWORD:-OurFutrue2045}
-JUDGE0_HOST=${JUDGE0_HOST:-judge0-server}
-JUDGE0_PORT=${JUDGE0_PORT:-2358}
-URL_HTTPS=${URL_HTTPS:-false}
+JUDGE0_SERVER=${JUDGE0_SERVER:-judge0-server:2358}
+HREF_FORCE_HTTPS=${HREF_FORCE_HTTPS:-false}
 sed -i "s/^DB_HOST.*$/DB_HOST=${DB_HOST}/" .env
 sed -i "s/^DB_PORT.*$/DB_PORT=${DB_PORT}/" .env
 sed -i "s/^DB_DATABASE.*$/DB_DATABASE=${DB_DATABASE}/" .env
 sed -i "s/^DB_USERNAME.*$/DB_USERNAME=${DB_USERNAME}/" .env
 sed -i "s/^DB_PASSWORD.*$/DB_PASSWORD=${DB_PASSWORD}/" .env
-sed -i "s/^JUDGE0_HOST.*$/JUDGE0_HOST=${JUDGE0_HOST}/" .env
-sed -i "s/^JUDGE0_PORT.*$/JUDGE0_PORT=${JUDGE0_PORT}/" .env
-sed -i "s/^URL_HTTPS.*$/URL_HTTPS=${URL_HTTPS}/" .env
+sed -i "s/^JUDGE0_SERVER.*$/JUDGE0_SERVER=${JUDGE0_SERVER}/" .env
+sed -i "s/^HREF_FORCE_HTTPS.*$/HREF_FORCE_HTTPS=${HREF_FORCE_HTTPS}/" .env
 
 # init. database
 # The function of executing a mysql command.
@@ -46,8 +43,7 @@ else
 fi
 # Checking database with tables exists or not.
 if mysql_exec "select count(*) from ${DB_DATABASE}.users;"; then
-    echo "Databse ${DB_DATABASE}'s tables already exist."
-    # echo "Updating structure..."
+    echo "Databse ${DB_DATABASE}'s tables already exist. Updating structure..."
     # bash install/mysql/update_mysql.sh
 else
     echo "Databse ${DB_DATABASE}'s tables do not exist. Creating..."
