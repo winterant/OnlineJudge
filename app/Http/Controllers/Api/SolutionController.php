@@ -79,14 +79,14 @@ class SolutionController extends Controller
             'code'          => $data['code']
         ];
 
-        //============================== 使用judge0判题 ===================
-        $judge_tokens = $this->judge_solution($solution, $problem);
-        // todo 后台监听judge0判题结果
-
         //=============================== 将提交记录写入数据库 ======================================
         $solution['id'] = DB::table('solutions')->insertGetId($solution);
 
-        return ['ok'=>1, 'msg'=>'您已提交代码，正在评测...', 'data'=>$judge_tokens];
+        //============================== 使用judge0判题 ===================
+        $solution['judge0result'] = $this->judge_solution($solution, $problem);
+        // todo 后台监听judge0判题结果
+
+        return ['ok'=>1, 'msg'=>'您已提交代码，正在评测...', 'data'=>$solution['judge0result']];
     }
 
     private function judge_solution($solution, $problem){
@@ -110,7 +110,7 @@ class SolutionController extends Controller
             $post_data[]=$data;
         }
         $res = send_post(config('app.JUDGE0_SERVER').'/submissions/batch', ['submissions'=>$post_data]);
-        return $res;
+        return json_decode($res[1]);
     }
 
     // 给定题号，搜集目录下所有的.in/.out/.ans数据对，返回路径列表

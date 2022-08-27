@@ -87,7 +87,7 @@ class RegisterController extends Controller
             'school'   => $data['school'],
             'class'   => $data['class'],
             'nick'   => $data['nick'],
-            'api_token' => hash('sha256', $api_token = Str::random(128)), // hash 64 bits
+            'api_token' => hash('sha256', $api_token = Str::random(64)), // hash 64 bits
         ]);
         Cookie::queue('api_token', $api_token);
         if($data['username']=='admin')//默认管理员

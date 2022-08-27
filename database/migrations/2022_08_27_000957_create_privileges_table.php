@@ -17,7 +17,7 @@ class CreatePrivilegesTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->index();
             $table->string('authority');
-            $table->bigInteger('creator');
+            $table->bigInteger('creator')->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();
         });

@@ -80,7 +80,7 @@ class LoginController extends Controller
         if ($this->attemptLogin($request)) {
             // 登陆成功，刷新api_token
             DB::table('users')->where('id', Auth::id())
-                ->update(['api_token'=> hash('sha256', $api_token = Str::random(128))]); // hash 64 bits
+                ->update(['api_token'=> hash('sha256', $api_token = Str::random(64))]); // hash 64 bits
             Cookie::queue('api_token', $api_token);
             return $this->sendLoginResponse($request);
         }
