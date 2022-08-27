@@ -40,6 +40,15 @@ class CreateProblemsTable extends Migration
         });
         DB::statement("ALTER TABLE problems AUTO_INCREMENT=1000;");
 
+        Schema::create('problem_samples', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('problem_id')->index();
+            $table->text('input')->nullable();
+            $table->text('output')->nullable();
+            $table->dateTime('created_at')->useCurrent();
+            $table->dateTime('updated_at')->useCurrent();
+        });
+
         Schema::create('discussions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('problem_id')->index();
@@ -80,9 +89,9 @@ class CreateProblemsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('problems');
+        Schema::dropIfExists('problem_samples');
         Schema::dropIfExists('discussions');
         Schema::dropIfExists('tag_marks');
         Schema::dropIfExists('tag_pool');
-        
     }
 }

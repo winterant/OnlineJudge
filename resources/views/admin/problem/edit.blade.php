@@ -82,7 +82,7 @@
                 <div id="text_fill_in_blank" class="form-group">
                     <p class="mb-1">待填代码：</p>
                     <select id="lang_select" name="problem[language]" class="col-2 px-3 form-control border border-bottom-0" style="text-align-last: center;">
-                        @foreach(config('oj.lang') as $key=>$res)
+                        @foreach(config('oj.langJudge0Name') as $key=>$res)
                             <option value="{{$key}}" @if(($problem->language??1)==$key)selected @endif>{{$res}}</option>
                         @endforeach
                     </select>
@@ -179,7 +179,7 @@
 
             //监听用户选中的语言，实时修改代码提示框
             function listen_lang_selected() {
-                var langs = JSON.parse('{!! json_encode(config('oj.lang')) !!}')  // 系统设定的语言候选列表
+                var langs = JSON.parse('{!! json_encode(config('oj.langJudge0Name')) !!}')  // 系统设定的语言候选列表
                 var lang = $("#lang_select").children('option:selected').val();  //当前选中的语言下标
                 lang = langs[lang]
 

@@ -18,7 +18,7 @@
             <div class="flex-nowrap mr-3 mb-1">
                 <span class="mr-2">{{__('main.Language')}}:</span>
                 <select id="lang_select" name="solution[language]" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
-                    @foreach(config('oj.lang') as $key=>$res)
+                    @foreach(config('oj.langJudge0Name') as $key=>$res)
                         @if(!isset($contest) || ( 1<<$key)&$contest->allow_lang)
                             <option value="{{$key}}">{{$res}}</option>
                         @endif
@@ -53,7 +53,7 @@
         <div class="form-inline m-2">
             {{-- 代码填空由出题人指定语言 --}}
             <span class="mr-2">{{__('main.Language')}}:</span>
-            <span>{{config('oj.lang.'.$problem->language)}}</span>
+            <span>{{config('oj.langJudge0Name.'.$problem->language)}}</span>
             <input name="solution[language]" value="{{$problem->language}}" hidden>
         </div>
         {{-- 代码框 --}}
@@ -64,14 +64,73 @@
 
     <div class="overflow-hidden">
         <div class="pull-right">
-            <button id="submit_btn" type="button" class="btn bg-success text-white m-2" @guest disabled @endguest>
+            <button type="button"
+                data-target="#judge-result-page"
+                data-toggle="modal"
+                class="btn bg-info text-white m-2">评测结果</button>
+            <button id="submit_btn" type="button"
+                data-toggle="modal"
+                data-target="#judge-result-page"
+                class="btn bg-success text-white m-2" @guest disabled @endguest>
                 {{trans('main.Submit')}}
-                @guest 请先登录 @endguest
             </button>
         </div>
     </div>
  
 </form>
+
+
+{{-- 模态框 判题结果 --}}
+<div class="modal fade" id="judge-result-page">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title">判题结果</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+                <div class="form-group mt-2">
+                    判题列表
+                </div>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer p-4">
+                {{-- <a href="#" class="btn btn-success bg-success text-white"></a> --}}
+                <button type="button" class="btn btn-info" data-dismiss="modal">关闭窗口</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+// 以api方式 提交表单
+function submit_solution(){
+    $.ajax({
+        type : 'post',
+        url : '{{route("api.solution.submit")}}',
+        dataType : 'json',
+        data : form_json_base64($("#code_form"),'{{Illuminate\Support\Facades\Cookie::get("api_token")}}'),
+        success : function(ret) {
+            console.log(ret)
+            if(ret.ok){
+                Notiflix.Notify.Success(ret.msg)
+            }else{
+                Notiflix.Notify.Failure(ret.msg)
+            }
+        },
+        error : function(){
+            
+        }
+    })
+}
+</script>
 
 @if($problem->type==0)
     {{-- ==================== 编程题：代码编辑框以及表单的初始化和监听 ================== --}}
@@ -104,7 +163,7 @@
 
             //监听用户选中的语言，实时修改代码提示框
             function listen_lang_selected() {
-                var langs = JSON.parse('{!! json_encode(config('oj.lang')) !!}')  // 系统设定的语言候选列表
+                var langs = JSON.parse('{!! json_encode(config('oj.langJudge0Name')) !!}')  // 系统设定的语言候选列表
                 var lang = $("#lang_select").children('option:selected').val();  // 当前选中的语言下标
                 localStorage.setItem('code_lang', lang)
 
@@ -157,18 +216,7 @@
                     return false
                 }
                 $("#code_editor").val(code_editor.getValue())
-                $.ajax({
-                    type : 'post',
-                    url : '{{route("api.solution.submit")}}',
-                    dataType : 'json',
-                    data : form_json_base64($("#code_form"),'{{Auth::user()->api_token}}'),
-                    success : function(ret) {
-                        console.log(ret)
-                    },
-                    error : function(){
-                        
-                    }
-                })
+                submit_solution()
             })
         })
     </script>
@@ -200,18 +248,7 @@
 
             //监听提交按钮
             $("#submit_btn").click(function (){
-                $.ajax({
-                    type : 'post',
-                    url : '{{route("api.solution.submit")}}',
-                    dataType : 'json',
-                    data : form_json_base64($("#code_form"),'{{Auth::user()->api_token}}'),
-                    success : function(ret) {
-                        console.log(ret)
-                    },
-                    error : function(){
-                        
-                    }
-                })
+                submit_solution()
             })
         });
     </script>

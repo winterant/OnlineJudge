@@ -29,7 +29,7 @@ class CreateUsersTable extends Migration
             $table->integer('accepted')->default(0);
             $table->integer('submitted')->default(0);
 
-            $table->string('api_token', 60)->unique()->nullable();
+            $table->string('api_token', 65)->unique()->nullable();
             $table->rememberToken();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();

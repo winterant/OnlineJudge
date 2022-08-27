@@ -198,16 +198,9 @@ class StatusController extends Controller
         //判断提交的来源
         //如果有cid，说明实在竞赛中进行提交
         if (isset($data['cid'])) {
-            $contest = DB::table("contests")->select('judge_instantly', 'judge_type', 'allow_lang', 'end_time')->find($data['cid']);
+            $contest = DB::table("contests")->select('judge_type', 'allow_lang', 'end_time')->find($data['cid']);
             if (!((1 << $data['language']) & $contest->allow_lang)) //使用了不允许的代码语言
                 return view('client.fail', ['msg' => 'Using a programming language that is not allowed!']);
-            if ($contest->judge_instantly == 0 && time() < strtotime($contest->end_time)) { //赛后判题，之前的提交都作废=>Skipped
-                DB::table('solutions')->where('contest_id', $data['cid'])
-                    ->where('problem_id', $data['pid'])
-                    ->where('user_id', Auth::id())
-                    ->update(['result' => 13]);
-                $submitted_result = 15; //Submitted
-            }
         } else { //else 从题库中进行提交，需要判断一下用户权限
             $hidden = $problem->hidden;
             if (

@@ -90,7 +90,7 @@
                                         <div class="form-group m-0 p-0 bmd-form-group">
                                             <select name="language" class="px-2 form-control" onchange="this.form.submit();">
                                                 <option class="form-control" value="-1">{{__('main.All Language')}}</option>
-                                                @foreach(config('oj.lang') as $key=>$res)
+                                                @foreach(config('oj.langJudge0Name') as $key=>$res)
                                                     <option value="{{$key}}"
                                                             @if(isset($_GET['language'])&&$key==$_GET['language'])selected @endif>{{$res}}</option>
                                                 @endforeach
@@ -166,7 +166,7 @@
                                         <td nowrap>{{round($sol->memory,2)}}MB</td>
                                         <td nowrap>
                                             @if(privilege('admin.problem.solution') || Auth::id()==$sol->user_id)
-                                                <a href="{{route('solution',$sol->id)}}">{{config('oj.lang.'.$sol->language)}}</a>
+                                                <a href="{{route('solution',$sol->id)}}">{{config('oj.langJudge0Name.'.$sol->language)}}</a>
                                                 /
                                                 @if(isset($contest))
                                                     <a href="{{route('contest.problem',[$contest->id, $sol->index, 'group' => $_GET['group'] ?? null, 'solution'=>$sol->id])}}">{{__('main.Edit')}}</a>
@@ -174,7 +174,7 @@
                                                     <a href="{{route('problem', [$sol->problem_id, 'solution'=>$sol->id])}}">{{__('main.Edit')}}</a>
                                                 @endif
                                             @else
-                                                {{config('oj.lang.'.$sol->language)}}
+                                                {{config('oj.langJudge0Name.'.$sol->language)}}
                                             @endif
                                         </td>
                                         <td nowrap>{{$sol->submit_time}}</td>

@@ -12,10 +12,10 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-xml php7.2-mbstring &&\
     apt-get -y install php7.2-gd php7.2-curl &&\
     apt-get -y install composer zip unzip &&\
-    apt-get -y install sudo nginx mysql-client=8.0.* &&\
-    sed -i "s/^;extension=gd.*/extension=gd/"     /etc/php/7.2/fpm/php.ini &&\
-    sed -i "s/^;extension=curl.*/extension=curl/" /etc/php/7.2/fpm/php.ini &&\
-    sed -i "s/.*pm.max_children.*/pm.max_children = 1000/"          /etc/php/7.2/fpm/pool.d/www.conf &&\
-    sed -i "s/.*pm.max_spare_servers.*/pm.max_spare_servers = 500/" /etc/php/7.2/fpm/pool.d/www.conf &&\
-    # sudoers
-    echo 'www-data ALL=(ALL) NOPASSWD: /bin/bash,/usr/bin/git,/usr/bin/g++' >> /etc/sudoers
+    apt-get -y install nginx mysql-client=8.0.* &&\
+    sed -i "s/^;extension=gd.*/extension=gd/"                  /etc/php/7.2/fpm/php.ini &&\
+    sed -i "s/^;extension=curl.*/extension=curl/"              /etc/php/7.2/fpm/php.ini &&\
+    sed -i "s/^post_max_size.*/post_max_size=40M/"             /etc/php/7.2/fpm/php.ini &&\
+    sed -i "s/^upload_max_filesize.*/upload_max_filesize=40M/" /etc/php/7.2/fpm/php.ini &&\
+    sed -i "s/^.\?pm.max_children.*/pm.max_children = 1000/"          /etc/php/7.2/fpm/pool.d/www.conf &&\
+    sed -i "s/^.\?pm.max_spare_servers.*/pm.max_spare_servers = 500/" /etc/php/7.2/fpm/pool.d/www.conf

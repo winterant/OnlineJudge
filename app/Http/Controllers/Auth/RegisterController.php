@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Cookie;
 
 class RegisterController extends Controller
 {
@@ -86,8 +87,9 @@ class RegisterController extends Controller
             'school'   => $data['school'],
             'class'   => $data['class'],
             'nick'   => $data['nick'],
-            'api_token' => hash('sha256', Str::random(60)),
+            'api_token' => hash('sha256', $api_token = Str::random(128)), // hash 64 bits
         ]);
+        Cookie::queue('api_token', $api_token);
         if($data['username']=='admin')//默认管理员
             DB::table('privileges')->insert(['user_id'=>$user->getAttributes()['id'],'authority'=>'admin']);
         return $user;

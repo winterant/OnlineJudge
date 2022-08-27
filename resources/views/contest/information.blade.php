@@ -69,13 +69,4 @@
             ×{{$contest->number}}
         </li>
     </ul>
-
-    @if($show_judge_button)
-        <form method="post" action="{{route('contest.start_to_judge',$contest->id)}}">
-            @csrf
-            <button class="btn text-white bg-success w-100"
-                    title="You should click me to start to judge solutions after contest!"
-                    @if(!$judge_enable)disabled @endif>{{trans('sentence.Start to judge')}}</button>
-        </form>
-    @endif
 </div>

@@ -37,22 +37,6 @@
                     <label class="custom-control-label pt-1" for="hidden_no">公开（前台可以看到该比赛）</label>
                 </div>
             </div>
-            <div class="form-inline mb-3">
-                <span>判题时机：</span>
-                <div class="custom-control custom-radio ml-3">
-                    <input type="radio" name="contest[judge_instantly]" value="1" class="custom-control-input" id="shishi" checked>
-                    <label class="custom-control-label pt-1" for="shishi">实时判题</label>
-                </div>
-                <div class="custom-control custom-radio ml-3">
-                    <input type="radio" name="contest[judge_instantly]" value="0" class="custom-control-input" id="saihou"
-                           @if(isset($contest->judge_instantly)&&$contest->judge_instantly==0)checked @endif>
-                    <label class="custom-control-label pt-1" for="saihou">赛后判题
-                    <a href="javascript:" class="ml-1" style="color: #838383"
-                        onclick="whatisthis('同一用户同一题目只判最后一次提交，管理员必须在比赛结束后手动点击开始判题')">
-                        <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-                    </a></label>
-                </div>
-            </div>
 
             <div class="form-inline mb-3">
                 <span>题目讨论：</span>
@@ -214,7 +198,7 @@
                 <div class="form-inline mb-3">
                     <div class="pull-left">编程语言：</div>
                     <input id="input_allow_lang" type="number" name="contest[allow_lang]" hidden>
-                    @foreach(config('oj.lang') as $lang=>$name)
+                    @foreach(config('oj.langJudge0Name') as $lang=>$name)
                         <div class="custom-control custom-checkbox mx-2">
                             <input type="checkbox" name="allow_lang" value="{{$lang}}" class="lang_checkbox custom-control-input" id="allow_lang{{$lang}}"
                                    @if(!isset($contest)||($contest->allow_lang&(1<<$lang)))checked @endif>

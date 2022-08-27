@@ -177,23 +177,12 @@ class ContestController extends Controller
             ];
         }
 
-        //是否需要显示开始判题的按钮, 是否允许点击，仅用于赛后判题模式
-        $show_judge_button = false;
-        $judge_enable = false;
-        if (privilege('admin.contest') && $contest->judge_instantly == 0) {
-            $show_judge_button = true;
-            $judge_enable = DB::table('solutions')->where('contest_id', $id)
-                ->where('result', 15)
-                ->exists()
-                && time() > strtotime($contest->end_time);
-        }
-
         // 读取群组
         $groups = DB::table('group_contests as gc')
             ->join('groups as g', 'g.id', '=', 'gc.group_id')
             ->where('gc.contest_id', $id)
             ->get(['g.*']);
-        return view('contest.home', compact('contest', 'problems', 'files', 'show_judge_button', 'judge_enable', 'groups'));
+        return view('contest.home', compact('contest', 'problems', 'files', 'groups'));
     }
 
     public function start_to_judge($id)

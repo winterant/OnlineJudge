@@ -213,8 +213,9 @@ class UserController extends Controller
     public function blacklist()
     {
         $blacklist = DB::table('users')
-            ->select(['id', 'username', 'nick', 'reason', 'created_at'])
-            ->get();
+            ->select(['id', 'username', 'nick', 'created_at'])
+            ->where('locked', 1)
+            ->paginate();
         return view('admin.user.blacklist', compact('blacklist'));
     }
 }
