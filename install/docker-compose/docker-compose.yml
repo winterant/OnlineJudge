@@ -6,7 +6,7 @@ services:
     container_name: lduoj_web
     restart: always
     ports:
-      - 8090:80
+      - 8080:80
     environment:
       - DB_HOST=mysql
       - DB_PORT=3306
@@ -16,11 +16,13 @@ services:
       - JUDGE0_SERVER=judge0-server:2358
       # [Production] If using https but web page can't fetch static files, open it.
       # - HREF_FORCE_HTTPS=true
+      # [Local] Open debug mode for laravel
+      # - APP_DEBUG=true
     volumes:
       - ./data/storage/app:/app/storage/app
       # [Production] User defined favicon.ico (Please make sure it exists).
       # - ./data/web/public/favicon.ico:/app/public/favicon.ico:ro
-      # [Develop] Mount entire project to host machine.
+      # [Local] Mount entire project to host machine.
       # - ./data/web:/app
 
   mysql:
@@ -48,7 +50,7 @@ services:
     restart: always
     privileged: true
     volumes:
-      - ./data/judge0.conf:/judge0.conf:ro
+      - ./judge0.conf:/judge0.conf:ro
     # ports:
     #   - "2358:2358"
 
@@ -59,13 +61,13 @@ services:
     privileged: true
     command: ["./scripts/workers"]
     volumes:
-      - ./data/judge0.conf:/judge0.conf:ro
+      - ./judge0.conf:/judge0.conf:ro
 
   judge0-db:
     image: postgres:13.0
     container_name: judge0_postgres
     restart: always
-    env_file: ./data/judge0.conf
+    env_file: ./judge0.conf
     volumes:
       - ./data/judge0/postgres:/var/lib/postgresql/data
 
@@ -73,7 +75,7 @@ services:
     image: redis:6.0
     container_name: judge0_redis
     restart: always
-    env_file: ./data/judge0.conf
+    env_file: ./judge0.conf
     command: [
       "bash", "-c",
       'docker-entrypoint.sh --appendonly yes --requirepass "$$REDIS_PASSWORD"'

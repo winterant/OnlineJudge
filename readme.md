@@ -33,7 +33,7 @@ gitee同步仓库: <https://gitee.com/wrant/LDUOnlineJudge>
 docker-compose up -d
 ```
 
-- 访问首页`http://ip:8090`；可在宿主机[配置域名](https://blog.csdn.net/winter2121/article/details/107783085)；
+- 访问首页`http://ip:8080`；可在宿主机[配置域名](https://blog.csdn.net/winter2121/article/details/107783085)；
 - **注册账号admin自动成为管理员**；
 
 - 启动服务
