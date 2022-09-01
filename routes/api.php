@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\SolutionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +25,11 @@ reponse return {
 
 Route::namespace('Api')->name('api.')->group(function () {
     // =========================== Solution =================================
-    Route::middleware(['auth:api', 'CheckBlacklist'])->name('solution.')->where(['id' => '[0-9]+'])->group(function () {
-        Route::post('/submit_solution','SolutionController@submit')->name('submit');
+    Route::name('solution.')->where(['id' => '[0-9]+'])->group(function () {
+        Route::middleware(['auth:api', 'CheckBlacklist'])->group(function () {
+            Route::post('/solution/submit','SolutionController@submit')->name('submit');
+            Route::get('/solution/result', 'SolutionController@result')->name('result');
+        });
+        Route::post('/solution/judge0_callback/{solution_id}', 'SolutionController@judge0_callback')->name('judge0_callback');
     });
 });

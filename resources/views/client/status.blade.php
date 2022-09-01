@@ -178,7 +178,13 @@
                                             @endif
                                         </td>
                                         <td nowrap>{{$sol->submit_time}}</td>
-                                        <td nowrap>{{$sol->ip}} {{$sol->ip_loc??null}}</td>
+                                        <td nowrap>
+                                            @if(privilege('admin.problem.solution'))
+                                                {{$sol->ip}} {{$sol->ip_loc??null}}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
                                         <td nowrap>{{$sol->judger}}</td>
                                     </tr>
                                 @endforeach
