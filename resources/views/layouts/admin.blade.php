@@ -215,11 +215,6 @@
                             <a class="nav-link border-top" href="{{route('admin.user.reset_pwd')}}">
                                 <i class="fa fa-refresh" aria-hidden="true"></i> 账号密码重置</a>
                         </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.user.blacklist')}}">
-                                <i class="fa fa-user-secret" aria-hidden="true"></i> 黑名单</a>
-                        </li>
                     </ul>
                 </li>
 

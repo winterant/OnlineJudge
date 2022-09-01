@@ -19,7 +19,7 @@ if [ ! -n "$1" ]; then
     fi
 fi
 
-echo "Git source: ${source}"
+echo "Git source: ${source:-${gitee_src}}"
 
 # Download new code
 APP_HOME=$(dirname $(dirname $(readlink -f "$0")))    # Path of old project (current)
@@ -36,15 +36,13 @@ if [[ "${upgrade}" == "${APP_HOME}" ]]; then
     exit -1
 fi
 
-# Updating files.
+# ========================= Updating files.
 cp -rf "${upgrade}"/. "${APP_HOME}"/
 
-# Updating laravel packages.
+# ========================= Updating laravel packages.
 composer install --ignore-platform-reqs
+yes|php artisan migrate
 php artisan optimize
-
-# Updating database table structure.
-bash install/mysql/update_mysql.sh
 
 # Remove codes just downloaded.
 rm -rf "${upgrade}" &

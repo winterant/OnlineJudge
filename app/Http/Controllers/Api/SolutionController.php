@@ -80,16 +80,18 @@ class SolutionController extends Controller
         ];
 
         //=============================== 将提交记录写入数据库 ======================================
-        $solution['id'] = DB::table('solutions')->insertGetId($solution);
+        // $solution['id'] = DB::table('solutions')->insertGetId($solution);
 
         //============================== 使用judge0判题 ===================
-        $solution['judge0result'] = $this->judge_solution($solution, $problem);
+        $judge_result = $this->judge_solution($solution, $problem);
+        $solution['judge0result'] = [];
         // todo 后台监听judge0判题结果
 
-        return ['ok'=>1, 'msg'=>'您已提交代码，正在评测...', 'data'=>$solution['judge0result']];
+        return ['ok'=>1, 'msg'=>'您已提交代码，正在评测...', 'data'=>$judge_result];
     }
 
     private function judge_solution($solution, $problem){
+        return array($problem);
         $post_data = [];
         foreach($this->gather_tests($solution['problem_id']) as $sample){
             $data=[

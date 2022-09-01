@@ -16,7 +16,7 @@ class UserController extends Controller
     {
         $users = DB::table('users')->select([
             'id', 'username', 'email', 'nick', 'school', 'class',
-            // 'solved','accepted','submitted', // 这三个字段实际没统计
+            'solved','accepted','submitted',
             'revise', 'locked', 'created_at'
         ])
             ->when(isset($_GET['username']) && $_GET['username'], function ($q) {
@@ -36,17 +36,6 @@ class UserController extends Controller
             })
             ->orderBy('id')->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 10);
 
-        foreach ($users as &$u) {
-            $u->solved = DB::table('solutions')
-                ->where('user_id', $u->id)
-                ->where('result', 4)
-                ->distinct('problem_id')->count(); // 正确通过的题数（去重）
-            $u->accepted = DB::table('solutions')
-                ->where('user_id', $u->id)
-                ->where('result', 4)->count(); // 正确通过的提交数
-            $u->submitted = DB::table('solutions')
-                ->where('user_id', $u->id)->count(); // 总提交次数
-        }
         return view('admin.user.list', compact('users'));
     }
 
@@ -207,15 +196,5 @@ class UserController extends Controller
             }
             return view('admin.user.reset_pwd', compact('msg'));
         }
-    }
-
-
-    public function blacklist()
-    {
-        $blacklist = DB::table('users')
-            ->select(['id', 'username', 'nick', 'created_at'])
-            ->where('locked', 1)
-            ->paginate();
-        return view('admin.user.blacklist', compact('blacklist'));
     }
 }

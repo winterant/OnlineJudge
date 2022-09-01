@@ -59,11 +59,6 @@ bash install/update.sh
 # 💿 备份/迁移
 
 ## 备份
-1. [可选]进入容器，备份数据库（以防万一）；
-    ```bash
-    docker exec -it lduoj_web bash
-    bash install/mysql/database_backup.sh ./storage/backup/db.sql
-    ```
 1. 将`docker-compose.yml`所在文件夹打包备份；
     ```bash
     tar -cf - ./lduoj | pigz -p $(nproc) > lduoj_bak.tar.gz
@@ -79,32 +74,29 @@ bash install/update.sh
     cd lduoj_bak
     docker-compose up -d
     ```
-3. [可选]如果数据库未恢复，可进入容器，手动恢复数据库；
-    ```bash
-    docker exec -it lduoj_web bash
-    bash install/mysql/database_recover.sh
-    ```
 
-# 如何从lduoj1.0升级到2.0？
+# 如何从lduoj-v1.0升级到v2.0？
 
 1. 1.0版本进入容器，备份数据库；
     ```bash
+    docker exec -it lduoj bash  # 进入v1.0的容器
+    # 以下是在容器内执行的命令
     USER=$(cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}')
     PASSWORD=$(cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}')
     mysqldump -u"${USER}" -p"${PASSWORD}" --no-create-info --complete-insert -B lduoj > data.sql
     mysqldump -u"${USER}" -p"${PASSWORD}" --no-data -B lduoj > structure.sql
     echo "Generated database structure.sql and data.sql"
     ```
-2. 一键部署2.0，但先不要打开网页；
+2. 一键部署2.0，但**先不要打开网页**；
 3. 将1.0的静态资源移动到2.0的挂载文件夹下；
     ```bash
     mv -f ${old_app_path}/storage/app/* ${new_app_path}/data/storage/app/
     ```
-4. 将第1步生成的`data.sql`移入`${new_app_path}/data/mysql`；随后进入mysql容器，恢复数据库；
+4. 将第1步生成的`data.sql`移入`${new_app_path}/data/mysql/`；随后进入mysql容器，恢复数据库；
     ```bash
-    docker exec -it lduoj_mysql bash
+    docker exec -it lduoj_mysql bash  # 进入mysql容器
     cd /var/lib/mysql
-    mysql -uroot -pOurFuture2099 -f -Dlduoj < data.sql 
+    mysql -uroot -pOurFuture2099 -f -Dlduoj < data.sql
     ```
 5. 大功告成，可以访问网页了。
 
