@@ -201,7 +201,7 @@
                     @foreach(config('oj.langJudge0Name') as $lang=>$name)
                         <div class="custom-control custom-checkbox mx-2">
                             <input type="checkbox" name="allow_lang" value="{{$lang}}" class="lang_checkbox custom-control-input" id="allow_lang{{$lang}}"
-                                   @if(!isset($contest)||($contest->allow_lang&(1<<$lang)))checked @endif>
+                                   @if( !isset($contest) && $lang<=3 || ($contest->allow_lang>>1)&1 )checked @endif>
                             <label class="custom-control-label pt-1" for="allow_lang{{$lang}}">{{$name}}</label>
                         </div>
                     @endforeach

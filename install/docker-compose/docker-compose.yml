@@ -3,7 +3,6 @@ version: '3'
 services:
   web:
     image: winterant/lduoj:2.0
-    container_name: lduoj_web
     restart: always
     ports:
       - 8080:80
@@ -20,6 +19,7 @@ services:
       # - APP_DEBUG=true
     volumes:
       - ./data/storage/app:/app/storage/app
+      - ./data/storage/logs:/app/storage/logs
       # [Production] User defined favicon.ico (Please make sure it exists).
       # - ./data/web/public/favicon.ico:/app/public/favicon.ico:ro
       # [Local] Mount entire project to host machine.
@@ -27,7 +27,6 @@ services:
 
   mysql:
     image: docker.io/mysql:8.0
-    container_name: lduoj_mysql
     restart: always
     command:
       --authentication_policy=mysql_native_password
@@ -46,7 +45,6 @@ services:
 
   judge0-server:
     image: judge0/judge0:1.13.0
-    container_name: judge0_server
     restart: always
     privileged: true
     volumes:
@@ -56,7 +54,6 @@ services:
 
   jduge0-workers:
     image: judge0/judge0:1.13.0
-    container_name: judge0_workers
     restart: always
     privileged: true
     command: ["./scripts/workers"]
@@ -65,7 +62,6 @@ services:
 
   judge0-db:
     image: postgres:13.0
-    container_name: judge0_postgres
     restart: always
     env_file: ./judge0.conf
     volumes:
@@ -73,7 +69,6 @@ services:
 
   judge0-redis:
     image: redis:6.0
-    container_name: judge0_redis
     restart: always
     env_file: ./judge0.conf
     command: [
