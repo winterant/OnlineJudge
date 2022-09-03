@@ -81,7 +81,7 @@ class LoginController extends Controller
             // 登陆成功，刷新api_token
             DB::table('users')->where('id', Auth::id())
                 ->update(['api_token'=> hash('sha256', $api_token = Str::random(64))]); // hash 64 bits
-            Cookie::queue('api_token', $api_token);
+            Cookie::queue('api_token', $api_token, 5256000); // 10 years
             return $this->sendLoginResponse($request);
         }
 

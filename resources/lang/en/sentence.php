@@ -46,6 +46,12 @@ return [
     "problem_not_found" => "The problem is not exist!",
     "show_hidden_problems" => "Show hidden problems",
     "empty_code"        => "Input code, Please",
+    "Please_input"      => "Please Input something.",
+    "Fill in the sample"=> "Fill in the sample",
+    "please_submit_code"=> "Please submit code",
+    "pass_all_test"     => "Congratulations on passing all the test data!",
+    "judging"           => "Judging...",
+    "WA"                => "Unfortunately, your program can't pass all the test data.",
 
 //    contest.password
     "pwd wrong"         => "The password is wrong",

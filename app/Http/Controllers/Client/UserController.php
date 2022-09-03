@@ -165,7 +165,6 @@ class UserController extends Controller
 
     public function change_language(Request $request, $user_lang)
     {
-        Cookie::queue('client_language', $user_lang);
-        return back();
+        return back()->withCookie(cookie('client_language', $user_lang, 5256000)); // ten years
     }
 }

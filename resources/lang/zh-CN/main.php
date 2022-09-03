@@ -13,6 +13,7 @@ return [
     "Failed"        => "失败",
     "Type"          => "类型",
     "Reason"        => "原因",
+    "Close"         => "关闭",
 
     //home.blade
     "Notice Board"  => "公告板",
@@ -122,6 +123,11 @@ return [
     "reply to"      => "回复",
     "New Discussion" => "我要发言",
 
+    "local_test"    => "本地测试",
+    "judge_result"  => "评测结果",
+    "Compile and Run"=>"编译运行",
+    "Run Error"     => "运行出错",
+
     //    standing
     "All"           => "所有",
     "Year"          => "年",
@@ -152,6 +158,7 @@ return [
     "Similarity Check" => "相似度",
     "Wrong Data"    => "出错数据",
     "All Result"    => "所有结果",
+    "Result"        => "结果",
 
 
     //    contest
@@ -161,7 +168,7 @@ return [
     "Full screen"   => "全屏",
     "Up to now"     => "实时更新",
     "Waiting"       => "等待",
-    "Running"       => "正在进行",
+    "Running"       => "正在运行",
     "Ended"         => "已结束",
     "Balloon"       => "气球",
     "Delivery"      => "派送",

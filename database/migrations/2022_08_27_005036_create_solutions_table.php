@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateSolutionsTable extends Migration
 {
@@ -39,6 +40,7 @@ class CreateSolutionsTable extends Migration
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();
         });
+        DB::statement("ALTER TABLE solutions AUTO_INCREMENT=1000;");
     }
 
     /**

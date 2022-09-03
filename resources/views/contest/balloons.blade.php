@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title',trans('main.Status').' | '.trans('main.Contest').$contest->id.' | '.get_setting('siteName'))
+@section('title',trans('main.Balloon').' | '.trans('main.Contest').$contest->id.' | '.get_setting('siteName'))
 
 @section('content')
 

@@ -61,7 +61,7 @@ class ProblemController extends Controller
     public function problem($id)
     {
         if (!Auth::check() && !get_setting('guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
-            return view('client.fail', ['msg' => trans('sentence.Please login first')]);
+            return redirect(route('login'));
         // 在网页展示一个问题
         $problem = DB::table('problems')->select(
             '*',

@@ -11,7 +11,7 @@
 {{-- styles--}}
 <link href="{{asset('static/bootstrap-material-design-dist/css/bootstrap-material-design.min.css')}}" rel="stylesheet">
 <link href="{{asset('static/font-awesome-4.7.0/css/font-awesome.min.css')}}" rel="stylesheet">
-<link href="{{asset('css/main.css')}}?v=20220728" rel="stylesheet">
+<link href="{{asset('css/main.css')}}?v=1" rel="stylesheet">
 
 
 {{-- js for jquery and bootstrap--}}
@@ -19,14 +19,23 @@
 <script src="{{asset('static/popper.js/dist/umd/popper.min.js')}}" defer></script>
 <script src="{{asset('static/bootstrap-material-design-dist/js/bootstrap-material-design.min.js')}}" defer></script>
 
+{{-- vue3 --}}
+<script src="https://unpkg.com/vue@3"></script>
+
+{{-- jquery.serializejson.js; form表单转json--}}
+<script src="{{asset('static/jquery-serializeJSON/jquery.serializejson.min.js')}}" defer></script>
+
 {{-- base64编码工具 https://github.com/dankogai/js-base64 --}}
 <script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.2/base64.min.js?v=1" defer></script>
 
+
+{{-- =================================== 自定义部分 ========================= --}}
 {{-- 自定义全局js脚本 --}}
-<script src="{{asset('js/globals.js')}}" defer></script>
+<script src="{{asset('js/globals.js')}}?v=3" defer></script>
 
 {{-- 大文件上传 --}}
 <script src="{{asset('js/uploadBig.js')}}?v=08.11" defer></script>
+{{-- =================================== ========= ========================= --}}
 
 
 {{-- 提示工具 --}}
@@ -46,7 +55,7 @@
 {{-- ckeditor5 --}}
 <script type="text/javascript">
     $(function (){
-        ck_config.ckfinder.uploadUrl = "{{route('ck_upload_image',['_token'=>csrf_token()])}}"
+        ck_config.ckfinder.uploadUrl = "{{route('api.ck_upload_image')}}"
     })
 </script>
 <script src="{{asset('static/ckeditor5/build/ckeditor.js?v=220706')}}" defer></script>

@@ -26,10 +26,15 @@ reponse return {
 Route::namespace('Api')->name('api.')->group(function () {
     // =========================== Solution =================================
     Route::name('solution.')->where(['id' => '[0-9]+'])->group(function () {
-        Route::middleware(['auth:api', 'CheckBlacklist'])->group(function () {
-            Route::post('/solution/submit','SolutionController@submit')->name('submit');
-            Route::get('/solution/result', 'SolutionController@result')->name('result');
+        Route::middleware(['auth:api', 'CheckBlacklist'])->prefix('/solution')->group(function () {
+            Route::post('/submit', 'SolutionController@submit')->name('submit');
+            Route::post('/submit_local_test', 'SolutionController@submit_local_test')->name('submit_local_test');
+            Route::get('/result', 'SolutionController@result')->name('result');
+            // Route::get('/solution/result_by_tokens', 'SolutionController@result_by_tokens')->name('result_by_tokens');
         });
-        Route::post('/solution/judge0_callback/{solution_id}', 'SolutionController@judge0_callback')->name('judge0_callback');
     });
+
+    // CK editor upload image
+    Route::post('/ck_upload_image', 'UploadController@ck_upload_image')->name('ck_upload_image');
+
 });

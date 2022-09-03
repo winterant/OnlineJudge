@@ -1,4 +1,5 @@
 <?php
+// 判题结果代号 => 解释
 return [
     0 => 'Waiting',
     1 => 'Queueing',

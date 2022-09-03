@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class SolutionController extends Controller
 {
+    // api 提交一份代码
     public function submit(Request $request)
     {
         //============================= 拦截非管理员的频繁提交 =================================
@@ -82,144 +83,286 @@ class SolutionController extends Controller
         $solution['id'] = DB::table('solutions')->insertGetId($solution);
 
         //============================== 使用judge0判题 ==========================
-        $judge_response = $this->send_to_judge($solution, $problem);
+        $judge_response = $this->send_to_judge_solution(
+            $solution['problem_id'],
+            $solution['language'],
+            $solution['code'],
+            $problem->time_limit,
+            $problem->memory_limit
+        );
         if ($judge_response[0] != 201)
             return ['ok' => 0, 'msg' => '无法使用判题服务评判代码, 可能是判题服务没有启动. judge0 server returns ' . $judge_response[0]];
 
-        $judge0result = []; // 收集判题tokens: {token1=>{...}, token2=>{...}, ...};
-        $judge0tokens = [];  // 收集tokens: [token1, token2, ...]
+        $judge0result = []; // 收集判题tokens: {token1=>{...}, token2=>{...}, ...}
         foreach ($judge_response[1] as $judge0token_json) {
-            $judge0result[$judge0token_json['token']] = [];
-            $judge0tokens[] = $judge0token_json['token'];
+            $judge0result[$judge0token_json['token']] = [
+                'testname' => $judge0token_json['testname'] ?? null // 测试数据名字 不含后缀，如a代表a.in/a.out
+            ];
         }
 
-        //======================== todo 后台监听judge0判题结果 ===================
-
-
-        //=============================== 提交记录修改判题token ========================
+        //=============================== 提交记录保存judge0 token ========================
         DB::table('solutions')->where('id', $solution['id'])
             ->update(['judge0result' => json_encode($judge0result)]);
 
-        return ['ok' => 1, 'msg' => '您已提交代码，正在评测中...', 'data' => $judge0tokens];
+        return [
+            'ok' => 1, 'msg' => '您已提交代码，正在评测中...',
+            'data' => [
+                'solution_id' => $solution['id'],
+                'judge0result' => $judge0result
+            ]
+        ];
     }
 
-    // 向jduge0发送判题请求；no db
-    private function send_to_judge($solution, $problem)
+    // api 提交一条本地测试 No DB
+    public function submit_local_test(Request $request)
     {
-        $solution = json_decode(json_encode($solution), true); // 转为数组
-        $problem = json_decode(json_encode($problem), true);
-        $post_data = [];
-        foreach ($this->gather_tests($solution['problem_id']) as $sample) {
-            // 判题完成时回调url; 注意本地测试需要改为host.docker.internal
-            $callback_url = route('api.solution.judge0_callback', [$solution['id']]);
-            // todo 优先尝试容器间访问
-            $docker_url = str_replace(route('home'), 'host.docker.internal:' . Request()->getPort(), $callback_url);
-            if (send_get($docker_url)[0] == 200)
-                $callback_url = $docker_url;
-            $data = [
-                'language_id'     => config('oj.langJudge0Id.' . $solution['language']),
-                'source_code'     => base64_encode($solution['code']),
-                'stdin'           => base64_encode(file_get_contents($sample['in'])),
-                'expected_output' => base64_encode(file_get_contents($sample['out'])),
-                'cpu_time_limit'  => $problem['time_limit'] / 1000.0, //S
-                'cpu_extra_time'  => 5, //S
-                'memory_limit'    => $problem['memory_limit'] * 1024, //KB
-                'stack_limit'     => 128000, //KB (128MB)
-                'max_file_size'   => 1024,  //KB (1MB)
-                'enable_network'  => false,
-                'callback_url'    => $callback_url
-            ];
-            if ($solution['language'] == 1) //C++
-                $data['compiler_options'] = "-O2 -std=c++17";
-            $post_data[] = $data;
+        //============================= 拦截非管理员的频繁提交 =================================
+        if (!privilege('admin.problem.list') || !privilege('admin.problem.solution')) {
+            $last_submit_time = DB::table('solutions')
+                ->where('user_id', Auth::id())
+                ->orderByDesc('submit_time')
+                ->value('submit_time');
+            if (time() - strtotime($last_submit_time) < intval(get_setting('submit_interval')))
+                return [
+                    'ok' => 0,
+                    'msg' => trans('sentence.submit_frequently', ['sec' => get_setting('submit_interval')])
+                ];
         }
-        $res = send_post(config('app.JUDGE0_SERVER') . '/submissions/batch?base64_encoded=true', ['submissions' => $post_data]);
-        $res[1] = json_decode($res[1], true);
-        return $res;
+
+        //============================= 获取数据 =================================
+        $data = $request->input('solution');        //获取前台提交的solution信息
+        $problem = DB::table('problems')->find($data['pid']); //找到题目
+
+        //如果是填空题，填充用户的答案
+        if ($problem->type == 1) {
+            $data['code'] = $problem->fill_in_blank;
+            foreach ($request->input('filled') as $ans) {
+                $data['code'] = preg_replace("/\?\?/", base64_decode($ans), $data['code'], 1);
+            }
+        }
+
+        // return $request->all();
+        //============================== 使用judge0判题 ==========================
+        $judge_response = $this->send_to_run_code(
+            ($data['language'] != null) ? $data['language'] : 0, // 默认C
+            $data['code'],
+            $request->input('stdin'),
+            $problem->time_limit,
+            $problem->memory_limit,
+            true
+        );
+        if ($judge_response[0] != 201)
+            return ['ok' => 0, 'msg' => '无法使用判题服务运行代码, 可能是判题服务没有启动. judge0 server returns ' . $judge_response[0]];
+        return [
+            'ok' => 1,
+            'msg' => '运行完成',
+            'data' => ['judge0result' => $judge_response[1]]
+        ];
     }
 
-    // api 获取判题结果; no db
-    public function result(Request $request, $fields_str = null)
+    // api 获取一条提交记录的判题结果; Database will be updated if result been modified
+    public function result(Request $request, $verify_auth = true)
     {
-        // 传入参数：
-        // judge0tokens: [token1, token2, ...]
-        //      return: {token1:{`judge result json`}, token2:{...}, ...]
-        // judge0token: token
-        //      return: {`judge result json`}
+        // $request 传入参数：
         // solution_id: solution id
-        //      return: 同judge0tokens
+        //      return: {'result':0, 'judge0result':{token1:{`judge result json`}, token2:{...}, ...}}
+        // ==================== 根据solution id，查询所有测试数据的结果 ====================
+        $solution = DB::table('solutions')->find($request->input('solution_id'));
+        if (!$solution)
+            return ['ok' => 0, 'msg' => '提交记录不存在'];
+        if ($verify_auth)
+            if ((auth('api')->user()->id ?? -1) != $solution->user_id || !privilege('admin.problem.solution'))
+                return ['ok' => 0, 'msg' => '您没有权限查看该提交记录'];
 
-        if ($fields_str == null)
-            $fields_str = 'status_id,compile_output,stderr,time,memory';
+        // ==================== 读取判题结果 =========================
+        $judge0result = json_decode($solution->judge0result, true);
+        if (!$judge0result) // 无效的提交记录
+            return [
+                'ok' => 0,
+                'msg' => '该提交记录找不到判题痕迹，请重判它',
+            ];
+        // 如果solution记录还没有结果，则转为多tokens去查询judge0结果
+        if ($solution->result < 4) {
+            $request['judge0tokens'] = array_keys($judge0result);
+            unset($request['solution_id']);
+            $latest_results = $this->result_by_tokens($request);
+            foreach ($judge0result as $token => &$sub) // 合并式，不丢弃原有数据
+                $sub = array_merge($sub, $latest_results[$token]); // 其中一条记录合并到结果里
+        }
+        // 统计运行结果
+        $judge_result_id = 0; // Waiting
+        $num_tests = 0;    // 测试组数
+        $num_ac_tests = 0; // 正确组数
+        $used_time = 0; // MS
+        $used_memory = 0; // MB
+        $finished_time = date('Y-m-d H:i:s');
+        $error_info = null;
+        $wrong_data = null;
+        foreach ($judge0result as $s) {
+            if ($s['status_id'] == 3) {
+                $num_ac_tests++;
+            } else {
+                $judge_result_id = max($judge_result_id, $s['status_id']);
+                if ($s['status_id'] > 3) {
+                    if (!$error_info) // 记录错误
+                        $error_info = $s['error_info'];
+                    if (!$wrong_data)
+                        $wrong_data = $s['testname'] ?? null;
+                }
+            }
+            $num_tests++;
+            $used_time = max($used_time, $s['time']);
+            $used_memory = max($used_memory, $s['memory']);
+            $finished_time = max($finished_time, $s['finished_at']);
+        }
+        if ($num_ac_tests == $num_tests) //All Accepted
+            $judge_result_id = 3;
+        $web_result = config('oj.judge02result.' . $judge_result_id); // 转为web result id
+        // ================== 刷新数据库 =========================
+        if ($solution->result < 4) { // 更新数据库
+            DB::table('solutions')->where('id', $solution->id)
+                ->update([
+                    'result' => $web_result,
+                    'time' => $used_time,
+                    'memory' => $used_memory,
+                    'pass_rate' => $num_ac_tests * 1.0 / $num_tests,
+                    'error_info' => $error_info,
+                    'wrong_data' => $wrong_data,
+                    'judge0result' => $judge0result,
+                    'judge_time' => date('Y-m-d H:i:s', strtotime($finished_time))
+                ]);
+            // todo：如果AC，需要更新problem、user表的过题数
+        }
+        return [
+            'ok' => 1,
+            'msg' => 'OK',
+            'data' => [
+                'result' => $web_result,
+                'error_info' => $error_info,
+                'judge0result' => $judge0result
+            ]
+        ];
+    }
 
-        // decode query result
-        $decode_result = function ($submission) {
-            $s = $submission;
-            if (isset($s['message'])) $s['message'] = base64_decode($s['message']);
-            if (isset($s['compile_output'])) $s['compile_output'] = base64_decode($s['compile_output']);
-            if (isset($s['stderr'])) $s['stderr'] = base64_decode($s['stderr']);
-            if (isset($s['stdout'])) $s['stdout'] = base64_decode($s['stdout']);
-            if (isset($s['time'])) $s['time'] *= 1000;  // convert to MS
-            if (isset($s['memory'])) $s['memory'] = round($s['memory'] / 1024.0, 2); // convert to MB
-            return $s;
-        };
+    // api 根据judge0 token获取判题结果; No Database
+    public function result_by_tokens(Request $request, $extra_fields = null)
+    {
+        // $request 传入参数：
+        // judge0token: token
+        //      return: { fields, `result` and `result_id` } //`result`, `result_id`是web端配置的代号
+        // judge0tokens: [token1, token2, ...]
+        //      return: [token1:{`judge result json`}, token2:{...}, ...]
+        $fields_str = 'status_id,compile_output,stderr,message,time,memory,finished_at';
+        if ($extra_fields)
+            $fields_str .= ',' . $extra_fields;
 
-        // Send get request
+        // =================== Send get request ======================
         if ($request->has('judge0token')) {
-            // 查询单组测试
             $res = send_get(
                 config('app.JUDGE0_SERVER') . '/submissions/' . $request->input('judge0token'),
                 ['base64_encoded' => 'true', 'fields' => $fields_str]
             );
-            return $decode_result(json_decode($res[1], true)); // $res[0]==200才是正确数据
+            return $this->decode_base64_judge0_submission(json_decode($res[1], true)); // $res[0]==200才是正确数据
         } else if ($request->has('judge0tokens')) {
             // 查询多组测试
             $tokens_str = implode(',', $request['judge0tokens']);
-            unset($request['judge0tokens']);
             $res = send_get(
                 config('app.JUDGE0_SERVER') . '/submissions/batch',
                 ['tokens' => $tokens_str, 'base64_encoded' => 'true', 'fields' => $fields_str]
             );
             $results = json_decode($res[1], true)['submissions'];
-            foreach ($results as &$s)
-                $s = $decode_result($s);
-            return $results;
-        } else {
-            // 根据solution id，查询多组测试
-            $solution = DB::table('solutions')->find($request->input('solution_id'));
-            if (!$solution)
-                return ['ok' => 0, 'msg' => '提交记录不存在'];
-            if (auth('api')->user()->id != $solution->user_id || !privilege('admin.problem.solution'))
-                return ['ok' => 0, 'msg' => '提交记录不存在'];
-            $request['judge0tokens'] = json_decode($solution->judge0tokens, true);
-            unset($request['solution_id']);
-            return $this->result($request);
-        }
+            $ret_results = [];
+            foreach ($request['judge0tokens'] as $i => $token) {
+                $ret_results[$token] = $this->decode_base64_judge0_submission($results[$i]);
+                $ret_results[$token]['result_id'] = config('oj.judge02result.' . $results[$i]['status_id']);
+                $ret_results[$token]['result'] = __('result.' . config("oj.result." . $ret_results[$token]["result_id"]));
+            }
+            return $ret_results;
+        } else
+            return ['error' => 'Missing required parameters: judge0tokens'];
     }
 
-    public function judge0_callback(Request $request, $solution_id)
+    // 向jduge0发送判题请求；No Database
+    private function send_to_judge_solution($problem_id, $lang_id, $code, $time_limit_ms, $memory_limit_mb, $wait = false)
     {
-        // TODO
-        Log::info('judge0回调');
-        Log::info(json_encode($request->all()));
-        $solution = DB::table('solutions')->find($solution_id);
-        if (!$solution)
-            return 0; // 判题记录不存在
-        if (!isset($solution->judge0result) || !isset($solution->judge0result[$request->input('token')]))
-            return 0; // 判题记录中找不到字段
-        $judge0result = $solution->judge0result;
-        $num_tests = count($judge0result); // 测试组数
-        $num_done_tests = 0; //已经判题完成的组数
-        foreach ($judge0result as $item)
-            if (count($item) > 0)
-                $num_done_tests++;
-        // todo 根据已判组数
-        DB::table('solutions')->where('id', $solution_id)
-            ->update(['judge0result' => json_encode($judge0result)]);
-        return 1;
+        $post_data = [];
+        $testnames = [];
+        foreach ($this->gather_tests($problem_id) as $sample) {
+            $testnames[] = basename($sample['in'], '.in'); // 保存文件名
+            $data = [
+                'language_id'     => config('oj.langJudge0Id.' . $lang_id),
+                'source_code'     => base64_encode($code),
+                'stdin'           => base64_encode(file_get_contents($sample['in'])),
+                'expected_output' => base64_encode(file_get_contents($sample['out'])),
+                'cpu_time_limit'  => $time_limit_ms / 1000.0, //convert to S
+                'memory_limit'    => $memory_limit_mb * 1024, //convert to KB
+                'max_file_size'   => max(
+                    (filesize($sample['out']) / 1024.0) * 2 + 64, //convert B to KB and double add 64KB
+                    64 // at least 64KB
+                ),
+                'enable_network'  => false
+            ];
+            if ($lang_id == 1) //C++
+                $data['compiler_options'] = "-O2 -std=c++17";
+            $post_data[] = $data;
+        }
+        $url = config('app.JUDGE0_SERVER') . '/submissions/batch?' . http_build_query([
+            'base64_encoded' => 'true',
+            'wait' => $wait ? 'true' : 'false'
+        ]);
+        $res = send_post($url, ['submissions' => $post_data]);
+        $res[1] = json_decode($res[1], true); // [{'token':'**'}, ...]
+        // 保存测试文件名
+        foreach ($res[1] as $i => &$r)
+            $r['testname'] = $testnames[$i];
+        return $res;
     }
 
-    // 给定题号，搜集目录下所有的.in/.out/.ans数据对，返回路径列表
+    // 向jduge0发送一次运行请求；No Database
+    private function send_to_run_code($lang_id, $code, $stdin, $time_limit_ms, $memory_limit_mb, $wait = false)
+    {
+        $data = [
+            'language_id'     => config('oj.langJudge0Id.' . $lang_id),
+            'source_code'     => base64_encode($code),
+            'stdin'           => base64_encode($stdin),
+            // 'expected_output' => base64_encode(file_get_contents($sample['out'])),
+            'cpu_time_limit'  => $time_limit_ms / 1000.0, //convert to S
+            'memory_limit'    => $memory_limit_mb * 1024, //convert to KB
+            'max_file_size'   => 64, // 64KB
+            'enable_network'  => false,
+            // 'redirect_stderr_to_stdout' => true,
+        ];
+        if ($lang_id == 1) //C++
+            $data['compiler_options'] = "-O2 -std=c++17";
+        $url = config('app.JUDGE0_SERVER') . '/submissions/?' . http_build_query([
+            'base64_encoded' => 'true',
+            'wait' => $wait ? 'true' : 'false'
+        ]);
+        $res = send_post($url, $data);
+        $res[1] = json_decode($res[1], true);
+        $res[1] = $this->decode_base64_judge0_submission($res[1]);
+        $res[1]['stdin'] = $stdin;
+        return $res;
+    }
+
+    // 将judge0查询结果(base64)解码， 并汇总报错信息为error_info字段
+    private function decode_base64_judge0_submission($s)
+    {
+        if (isset($s['message'])) $s['message'] = base64_decode($s['message']);
+        if (isset($s['compile_output'])) $s['compile_output'] = base64_decode($s['compile_output']);
+        if (isset($s['stderr'])) $s['stderr'] = base64_decode($s['stderr']);
+        if (isset($s['stdout'])) $s['stdout'] = base64_decode($s['stdout']);
+        if (isset($s['time'])) $s['time'] *= 1000;  // convert to MS for lduoj_web
+        if (isset($s['memory'])) $s['memory'] = round($s['memory'] / 1024.0, 2); // convert to MB for lduoj_web
+        $s['error_info'] = implode('\n\n', array_filter([
+            $s['compile_output'] ?? null,
+            $s['stderr'] ?? null,
+            $s['message'] ?? null
+        ]));
+        return $s;
+    }
+
+    // 给定题号，搜集目录下所有的[.in][.out/.ans]数据对，返回路径列表
     private function gather_tests(string $pid)
     {
         $samples = [];

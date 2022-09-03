@@ -46,7 +46,12 @@ return [
     "problem_not_found" => "该题目不存在!",
     "show_hidden_problems" => "显示隐藏的题目",
     "empty_code"        => "请输入代码!",
-
+    "Please_input"      => "请输入内容",
+    "Fill in the sample"=> "填入样例",
+    "please_submit_code"=> "请提交代码",
+    "pass_all_test"     => "恭喜你通过了全部测试数据！",
+    "judging"           => "评测中...",
+    "WA"                => "很遗憾，你的程序没有通过全部测试数据.",
 
 //    contest.password
     "pwd wrong"         => "密码错误",

@@ -1,7 +1,7 @@
 <?php
 return [
     0  => 'C (gcc 9.2.0)',
-    1  => 'C++ (gcc 9.2.0)',
+    1  => 'C++17 (gcc 9.2.0)',
     2  => 'Java (OpenJDK 13.0.1)',
     3  => 'Python3.8',
     14 => 'Python2.7',

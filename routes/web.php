@@ -38,9 +38,9 @@ Route::middleware(['auth', 'CheckBlacklist'])->where(['id' => '[0-9]+'])->group(
         ->where(['type' => '(in|out)'])->name('solution_wrong_data');
     Route::any('/user/{username}/edit', 'Client\UserController@user_edit')->name('user_edit');
     Route::any('/user/{username}/password_reset', 'Client\UserController@password_reset')->name('password_reset');
-    Route::post('/status/submit_solution', 'Client\StatusController@submit_solution')->name('submit_solution');
+    // Route::post('/status/submit_solution', 'Client\StatusController@submit_solution')->name('submit_solution');
     //    CK editor upload image
-    Route::post('/ck_upload_image', 'UploadController@ck_upload_image')->name('ck_upload_image');
+    // Route::post('/ck_upload_image', 'UploadController@ck_upload_image')->name('ck_upload_image');
 
     //tag marking
     Route::post('/tag_mark', 'Client\ProblemController@tag_mark')->name('tag_mark');

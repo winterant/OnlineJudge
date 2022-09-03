@@ -118,6 +118,72 @@ html, body {
     color: purple;
 }
 
+/* ======================================== 判题结果样式 ==================================== */
+.judge-result-0{ 
+    /* Waiting */
+    color:black
+}
+.judge-result-1{ 
+    /* Queueing */
+    color: #ffdd00;
+}
+.judge-result-2{ 
+    /* Compiling */
+    color:rgb(242, 160, 7)
+}
+.judge-result-3{ 
+    /* Running */
+    color:orange
+}
+.judge-result-4{ 
+    /* Accepted */
+    color:green
+}
+.judge-result-5{ 
+    /* Presentation Error */
+    color:blue
+}
+.judge-result-6{ 
+    /* Wrong Answer */
+    color:red
+}
+.judge-result-7{ 
+    /* Time Limit Exceeded */
+    color:blue
+}
+.judge-result-8{ 
+    /* Memory Limit Exceeded */
+    color:blue
+}
+.judge-result-9{ 
+    /* Output Limit Exceeded */
+    color:blue
+}
+.judge-result-10{ 
+    /* Runtime Error */
+    color:blue
+}
+.judge-result-11{ 
+    /* Compile Error */
+    color: red
+}
+.judge-result-12{ 
+    /* Test Completed */
+    color:black
+}
+.judge-result-13{ 
+    /* Skipped */
+    color:gray
+}
+.judge-result-14{ 
+    /* System Error */
+    color:purple
+}
+.judge-result-15{ 
+    /* Submitted */
+    color:black
+}
+
 /* ========================================= 背景颜色 ========================================= */
 .bg-sky{
     background-color: #64ccff;

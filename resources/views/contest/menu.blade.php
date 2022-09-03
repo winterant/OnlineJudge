@@ -37,7 +37,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link py-3" href="{{route('contest.status',[$contest->id,'group'=>$_GET['group']??null])}}">{{trans('main.Status')}}</a>
+                <a class="nav-link py-3" href="{{route('contest.status',[$contest->id,'group'=>$_GET['group']??null])}}">{{trans('main.Solutions')}}</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-nowrap py-3"

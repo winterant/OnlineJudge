@@ -89,7 +89,7 @@ class RegisterController extends Controller
             'nick'   => $data['nick'],
             'api_token' => hash('sha256', $api_token = Str::random(64)), // hash 64 bits
         ]);
-        Cookie::queue('api_token', $api_token);
+        Cookie::queue('api_token', $api_token, 5256000); // 10 years
         if($data['username']=='admin')//默认管理员
             DB::table('privileges')->insert(['user_id'=>$user->getAttributes()['id'],'authority'=>'admin']);
         return $user;

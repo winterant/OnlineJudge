@@ -1,9 +1,9 @@
 @extends('layouts.client')
 
 @if(isset($contest))
-    @section('title',trans('main.Status').' | '.trans('main.Contest').' '.$contest->id.' | '.get_setting('siteName'))
+    @section('title',trans('main.Solutions').' | '.trans('main.Contest').' '.$contest->id.' | '.get_setting('siteName'))
 @else
-    @section('title',trans('main.Status').' | '.get_setting('siteName'))
+    @section('title',trans('main.Solutions').' | '.get_setting('siteName'))
 @endif
 
 @section('content')
@@ -78,7 +78,7 @@
                                             <select name="result" class="px-2 form-control" onchange="this.form.submit();">
                                                 <option class="form-control" value="-1">{{__('main.All Result')}}</option>
                                                 @foreach(config('oj.result') as $key=>$res)
-                                                    <option value="{{$key}}" class="{{config('oj.resColor.'.$key)}}"
+                                                    <option value="{{$key}}" class="judge-result-{{$key}}"
                                                             @if(isset($_GET['result'])&&$key==$_GET['result'])selected @endif>{{__('result.'.$res)}}</option>
                                                 @endforeach
                                             </select>
@@ -148,7 +148,7 @@
                                         <td nowrap>
                                             <span hidden>{{$sol->id}}</span>
                                             <span hidden>{{$sol->result}}</span>
-                                            <span id="result_{{$sol->id}}" class="{{config('oj.resColor.'.$sol->result)}} result_td">
+                                            <span id="result_{{$sol->id}}" class="result_td judge-result-{{$sol->result}}">
                                                 {{ __('result.' . config('oj.result.'.$sol->result)) }}
                                                 @if($sol->judge_type=='oi' && $sol->result >=5 && $sol->result <= 10)
                                                     ({{round($sol->pass_rate*100)}}%)

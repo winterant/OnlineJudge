@@ -58,7 +58,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-nowrap p-2" href="{{route('status')}}">
-                    <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;{{trans('main.Status')}}</i>
+                    <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;{{trans('main.Solutions')}}</i>
                 </a>
             </li>
             <li class="nav-item">

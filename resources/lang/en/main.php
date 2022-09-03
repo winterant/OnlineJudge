@@ -13,6 +13,7 @@ return [
     "Failed"        => "Failed",
     "Type"          => "Type",
     "Reason"        => "Reason",
+    "Close"         => "Close",
 
     //home.blade
     "Notice Board"  => "Notice Board",
@@ -127,6 +128,11 @@ return [
     "reply to"      => "reply to",
     "New Discussion"=> "New Discussion",
 
+    "local_test"    => "Local Test",
+    "judge_result"  => "Judge Result",
+    "Compile and Run"=>"Compile and Run",
+    "Run Error"     => "Run Error",
+
 //    standing
     "All"           => "All",
     "Year"          => "Year",
@@ -157,6 +163,7 @@ return [
     "Similarity Check" => "Similarity Check",
     "Wrong Data"    => "Wrong Data",
     "All Result"    => "All Result",
+    "Result"    => "Result",
 
 
 //    contest

@@ -125,7 +125,7 @@
                 <li class="nav-item" style="text-align:right"><a class="nav-link text-nowrap mb-0" href="{{route('home')}}">
                         <i class="fa fa-home" aria-hidden="true"></i> 返回前台</a></li>
                 <li class="nav-item" style="text-align:right"><a class="nav-link text-nowrap mb-0" href="{{route('status')}}">
-                        <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;</i>{{trans('main.Status')}}</a></li>
+                        <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;</i>{{trans('main.Solutions')}}</a></li>
 
             </ul>
 
