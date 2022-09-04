@@ -4,16 +4,13 @@ set -ex
 sleep 5 # Waiting for mysql being started.
 
 # If host machine has not files, give it files.
-if [ ! -d "/app/app" ];then
-    echo "Copying files to /app"
+if [ ! -d "/app/public" ];then
+    echo "Copying files from /app_tmp to /app"
     yes|cp -rf /app_tmp/. /app/
 fi
 
-# work dir.
-cd /app
-
-# Receive arguments and modify environment
-function mod_env(){  # key,value
+# Receive arguments and modify environment of laravel .env
+function mod_env(){
     sed -i "s/^.\?$1.*$/$1=${2//\//\\\/}/" .env
 }
 mod_env "APP_DEBUG"         ${APP_DEBUG:-false}
@@ -25,10 +22,10 @@ mod_env "DB_PASSWORD"       ${DB_PASSWORD:-OurFutrue2045}
 mod_env "JUDGE0_SERVER"     ${JUDGE0_SERVER:-host.docker.internal:2358}
 mod_env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false}
 
-# change owner
+# Change storage folders owner.
 chown www-data:www-data -R storage bootstrap/cache
 
-# start php-fpm
+# Start php-fpm server and initialize laravel app.
 service php7.2-fpm start
 php artisan storage:link
 php artisan optimize
@@ -36,7 +33,8 @@ yes|php artisan migrate
 yes|php artisan key:generate
 php artisan optimize
 
-# start nginx
+# start nginx server
 service nginx start
 
+# Sleep forever to keep container alives.
 sleep infinity
