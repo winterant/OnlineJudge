@@ -13,17 +13,17 @@ services:
       - DB_USERNAME=oj_user
       - DB_PASSWORD=OurFuture2045
       - JUDGE0_SERVER=judge0-server:2358
-      # [Production] If using https but web page can't fetch static files, open it.
-      # - HREF_FORCE_HTTPS=true
-      # [Local] Open debug mode for laravel
-      # - APP_DEBUG=true
+      # [Production]
+      # - HREF_FORCE_HTTPS=true  # If using https but web page can't fetch static files, open it.
+      # [Local]
+      # - APP_DEBUG=true  # Open debug mode for laravel
     volumes:
-      - ./data/storage/app:/app/storage/app
-      - ./data/storage/logs:/app/storage/logs
-      # [Production] User defined favicon.ico (Please make sure it exists).
-      # - ./data/web/public/favicon.ico:/app/public/favicon.ico:ro
-      # [Local] Mount entire project to host machine.
-      # - ./data/web:/app
+      # [Production]
+      - ./data/web/storage/app:/app/storage/app
+      - ./data/web/storage/logs:/app/storage/logs
+      # - ./data/web/public/favicon.ico:/app/public/favicon.ico:ro  # Customized favicon.ico
+      # [Local]
+      # - ./data/web:/app  # Mount entire project to host machine.
 
   mysql:
     image: docker.io/mysql:8.0
@@ -50,7 +50,7 @@ services:
     volumes:
       - ./judge0.conf:/judge0.conf:ro
     # ports:
-    #   - "2358:2358"
+    #   - 2358:2358
 
   jduge0-workers:
     image: judge0/judge0:1.13.0
