@@ -13,9 +13,9 @@
             <div class="col-lg-9 col-md-8 col-sm-12 col-12">
                 @php($ident=[0=>'已退出', 1=>'申请加入', 2=>'普通成员', 3=>'班长', 4=>'管理员'])
                 <div class="my-container bg-white">
-                    <h5 class="">群组成员</h5>
+                    <h5 class="">{{__('main.Group')}} {{__('main.Members')}}</h5>
                     <hr class="mt-0">
-                    <div class="table-responsive">
+                    <div class="table-responsive" style="overflow: auto; max-height:30rem;">
                         <table class="table table-sm table-hover">
                             <thead>
                                 <tr>
@@ -23,6 +23,7 @@
                                     <th>{{trans('main.Name')}}</th>
                                     <th>{{trans('main.Identity')}}</th>
                                     <th>{{trans('main.Date Added')}}</th>
+                                    <th>{{trans('main.Operate')}}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,8 +39,7 @@
                                             @if(privilege('admin.group') || $group->creator == Auth::id())
                                                 <td nowrap>
                                                     {{-- <a href="javascript:alert('暂不支持备注')">备注</a> --}}
-                                                    <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 2])}}" 
-                                                        class="ml-3">设为普通成员</a>
+                                                    <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 2])}}" >设为普通成员</a>
                                                     <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 3])}}" 
                                                         class="ml-3">设为班长</a>
                                                     <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 4])}}" 
@@ -61,7 +61,7 @@
                         <div class="my-container bg-white">
                             <h5 class="">正在申请加入的用户</h5>
                             <hr class="mt-0">
-                            <div class="table-responsive">
+                            <div class="table-responsive" style="overflow: auto; max-height:30rem;">
                                 <table class="table table-sm table-hover">
                                     <thead>
                                         <tr>
@@ -99,7 +99,7 @@
                         <div class="my-container bg-white">
                             <h5 class="">已退出的用户</h5>
                             <hr class="mt-0">
-                            <div class="table-responsive">
+                            <div class="table-responsive" style="overflow: auto; max-height:30rem;">
                                 <table class="table table-sm table-hover">
                                     <thead>
                                         <tr>

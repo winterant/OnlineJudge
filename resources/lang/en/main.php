@@ -201,4 +201,5 @@ return [
     "Members"       => "Members",
     "Date Added"    => "Date Added",
     "Identity"      => "Identity",
+    "Operate"       => "Operate",
 ];

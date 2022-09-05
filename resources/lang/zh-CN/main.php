@@ -200,4 +200,5 @@ return [
     "Members"       => "成员",
     "Date Added"    => "加入时间",
     "Identity"      => "身份",
+    "Operate"       => "操作",
 ];
