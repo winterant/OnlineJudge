@@ -100,12 +100,12 @@ class ContestController extends Controller
     {
         // 验证密码
         if ($request->isMethod('get')) {
-            $contest = DB::table('contests')->select('id', 'judge_type', 'cate_id', 'title')->find($id);
+            $contest = DB::table('contests')->select('id', 'judge_type', 'cate_id', 'title', 'public_rank')->find($id);
             return view('contest.password', compact('contest'));
         }
         if ($request->isMethod('post')) //接收提交的密码
         {
-            $contest = DB::table('contests')->select('id', 'judge_type', 'password', 'cate_id', 'title')->find($id);
+            $contest = DB::table('contests')->select('id', 'judge_type', 'password', 'cate_id', 'title', 'public_rank')->find($id);
             if ($request->input('pwd') == $contest->password) //通过验证
             {
                 DB::table('contest_users')->updateOrInsert(['contest_id' => $contest->id, 'user_id' => Auth::id()]); //保存
