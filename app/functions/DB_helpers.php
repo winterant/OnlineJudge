@@ -6,10 +6,11 @@ use Illuminate\Support\Facades\Auth;
 
 /************************ 前台 ***********************************/
 //查询一条最置顶的系统公告的id和title
-function get_top_notice(){
+function get_top_notice()
+{
     return DB::table('notices')
-        ->select('id','title')
-        ->where('state','!=',0)
+        ->select('id', 'title')
+        ->where('state', '!=', 0)
         ->orderByDesc('state')
         ->orderByDesc('id')
         ->first();
@@ -17,11 +18,12 @@ function get_top_notice(){
 
 /************************* 后台管理 *****************************/
 //获取配置值
-function get_setting($key,$default=null){
-    $val=DB::table('settings')->where('key',$key)->value('value');
-    if($val==null){
-        $sys_conf = config('oj.main.'.$key, $default);
-        DB::table('settings')->updateOrInsert(['key'=>$key,'value'=>$sys_conf]);
+function get_setting($key, $default = null)
+{
+    $val = DB::table('settings')->where('key', $key)->value('value');
+    if ($val == null) {
+        $sys_conf = config('oj.main.' . $key, $default);
+        DB::table('settings')->updateOrInsert(['key' => $key, 'value' => $sys_conf]);
         return $sys_conf;
     }
     return $val;
@@ -64,18 +66,21 @@ function privilege($power, $user = null)
     ];
 
     foreach ($powers as $p) {
+        $starts_with = function ($str, $prefix) {
+            return substr($str, 0, strlen($prefix)) == $prefix;
+        };
         // 数据库中具有当前权限，或者上层权限，则验证通过
-        if (starts_with($power, $p))
+        if ($starts_with($power, $p))
             return true;
         // 如果数据库中含有teacher（也就是当前用户是老师）
         // 则在查询某些权限时，均通过
         if ($p == 'teacher') {
             foreach ($teacher_power as $i) {
-                if (starts_with($power, $i)) {
+                if ($starts_with($power, $i)) {
 
                     $exclude = false; // 查询一下该权限是不是被除外的
                     foreach ($teacher_expower as $j)
-                        if (starts_with($power, $j))
+                        if ($starts_with($power, $j))
                             $exclude = true;
 
                     if (!$exclude)

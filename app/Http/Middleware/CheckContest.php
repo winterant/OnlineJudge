@@ -34,19 +34,20 @@ class CheckContest
         if(time()<strtotime($contest->start_time) && Route::currentRouteName()!='contest.home') //比赛尚未开始,必须重定向到home
             return redirect(route('contest.home',$contest->id));
 
-        // 群组成员有权访问群组内的竞赛，直接进入竞赛
-        if(DB::table('group_contests as gc')
-            ->join('group_users as gu', 'gu.group_id', '=', 'gc.group_id')
-            ->where('gc.contest_id', $contest->id)
-            ->where('gu.user_id', Auth::id())
-            ->where('gu.identity', '>', 1)
-            ->exists())
+        // 群组内private私有竞赛（不论竞赛是否隐藏），群组成员可以直接进入。不包括password密码竞赛
+        if($contest->access=='private' &&
+            DB::table('group_contests as gc')
+                ->join('group_users as gu', 'gu.group_id', '=', 'gc.group_id')
+                ->where('gc.contest_id', $contest->id)
+                ->where('gu.user_id', Auth::id())
+                ->where('gu.identity', '>', 1)
+                ->exists())
             return $next($request);
 
         // 隐藏的竞赛不允许访问
         if($contest->hidden)
             return response()->view('client.fail',['msg'=>trans('sentence.hidden')]);
-        
+
         // 私有的竞赛检查用户是否被邀请为参赛成员
         if($contest->access=='private'
                 && DB::table('contest_users')->where('contest_id',$contest->id)

@@ -6,6 +6,7 @@
     <title>@yield('title')</title>
 
     <style type="text/css">
+        /* 不同屏幕宽度下的主界面宽度 */
         @media screen and (max-width: 1200px) {
             .container{
                 @if(get_setting('web_page_display_wide'))
@@ -21,13 +22,14 @@
             }
         }
 
+        /* 导航栏菜单项选中时的底部样式 */
         .nav-tabs .active{
             /*border-color: #6599ff !important;*/
             border-bottom: .214rem solid #6599ff !important;
         }
 
-        /*所有table的表头不换行*/
         th{
+            /*所有table的表头不换行*/
             white-space: nowrap
         }
 
@@ -41,14 +43,17 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white mb-3">
+<nav class="navbar navbar-expand-lg navbar-light bg-white mb-3" style="z-index: 10">
 
+    {{-- 网站名称 --}}
     <a class="navbar-brand text-center" style="min-width: 200px">{{get_setting('siteName')}}</a>
 
+    {{-- 移动端按钮 --}}
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
         <span class="navbar-toggler-icon"></span>
     </button>
 
+    {{-- 导航栏项 --}}
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="navbar-nav nav-tabs">
             <li class="nav-item">
@@ -66,21 +71,21 @@
                     <i class="fa fa-list" aria-hidden="true">&nbsp;{{trans('main.Problems')}}</i>
                 </a>
             </li>
-{{--            <li class="nav-item dropdown">--}}
-{{--                <a class="nav-link dropdown-toggle text-nowrap p-2" href="#" id="contestDropdown" data-toggle="dropdown">--}}
-{{--                    <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>--}}
-{{--                </a>--}}
-{{--                <div class="dropdown-menu" aria-labelledby="contestDropdown">--}}
-{{--                    @foreach(config('oj.contestType') as $i=>$ctype)--}}
-{{--                        <a class="dropdown-item text-nowrap" href="{{route('contests',$ctype)}}">--}}
-{{--                            <i class="fa fa-book px-1" aria-hidden="true"></i>--}}
-{{--                            {{__('main.'.$ctype)}}--}}
-{{--                        </a>--}}
-{{--                    @endforeach--}}
-{{--                    <div class="dropdown-divider"></div>--}}
-{{--                    <a class="dropdown-item" href="#">Separated link</a>--}}
-{{--                </div>--}}
-{{--            </li>--}}
+           {{-- <li class="nav-item dropdown">
+               <a class="nav-link dropdown-toggle text-nowrap p-2" href="#" id="contestDropdown" data-toggle="dropdown">
+                   <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
+               </a>
+               <div class="dropdown-menu" aria-labelledby="contestDropdown">
+                   @foreach(config('oj.contestType') as $i=>$ctype)
+                       <a class="dropdown-item text-nowrap" href="{{route('contests',$ctype)}}">
+                           <i class="fa fa-book px-1" aria-hidden="true"></i>
+                           {{__('main.'.$ctype)}}
+                       </a>
+                   @endforeach
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item" href="#">Separated link</a>
+               </div>
+           </li> --}}
             <li class="nav-item">
                 <a class="nav-link text-nowrap p-2" id="link_contests" href="{{route('contests','_')}}">
                     <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
@@ -98,22 +103,23 @@
             </li>
         </ul>
 
+{{--
+       <form class="form-inline">
+           <input class="form-control mr-sm-2" type="text" />
+           <button class="btn btn-primary my-2 my-sm-0" type="submit">
+               Search
+           </button>
+       </form>
+--}}
 
-{{--        <form class="form-inline">--}}
-{{--            <input class="form-control mr-sm-2" type="text" />--}}
-{{--            <button class="btn btn-primary my-2 my-sm-0" type="submit">--}}
-{{--                Search--}}
-{{--            </button>--}}
-{{--        </form>--}}
-
-
+        {{-- 登陆按钮 --}}
         <ul class="navbar-nav ml-auto">
-{{--            语言切换 --}}
+           {{-- 语言切换 --}}
             <li class="nav-item dropdown mr-3">
                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                     <i class="fa fa-language" aria-hidden="true"></i>
                     @php($langs=['en'=>'English','zh-CN'=>'简体中文'])
-                    {{$langs[request()->cookie('client_language', get_setting('APP_LOCALE','en'))]??null}}
+                    {{$langs[request()->cookie('client_language')??get_setting('APP_LOCALE','en')]}}
                     <span class="caret"></span>
                 </a>
 
@@ -164,24 +170,26 @@
                 </li>
             @endguest
         </ul>
-
+        {{-- end of 个人信息按钮 --}}
 
     </div>
 </nav>
 
-{{-- 出了题目页面外，都要滚动显示公告 --}}
+{{-- 除了题目页面外，都要滚动显示公告 --}}
 @if(!in_array(Route::currentRouteName(), ['problem', 'contest.problem']))
     <div class="container">@include('layouts.notice_marquee')</div>
 @endif
 
+{{-- 主界面 --}}
 <div>
     @yield('content')
 </div>
 
+{{-- 页脚 --}}
 @include('layouts.footer')
 
+{{-- 导航栏js控制 --}}
 <script type="text/javascript">
-
     // 遍历导航栏按钮，如果href与当前位置相等，就active
     $(function () {
         const uri = location.pathname;
@@ -208,7 +216,6 @@
             $('#link_groups').addClass('active')
         }
     })
-
 </script>
 
 </body>

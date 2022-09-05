@@ -206,10 +206,10 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
         Route::get('/member_iden/{id}/{uid}/{iden}', 'Admin\GroupController@member_iden')->name('member_iden');
     });
 
-    // setting
+    // settings
     Route::middleware(['Privilege:admin.setting'])->group(function () {
         Route::any('/settings', 'Admin\SettingController@settings')->name('settings');
-        Route::get('/upgrade', 'Admin\SettingController@upgrade')->name('upgrade');
-        Route::post('/upgrade_oj', 'Admin\SettingController@upgrade_oj')->name('upgrade_oj');
+        // Route::get('/upgrade', 'Admin\SettingController@upgrade')->name('upgrade');
+        // Route::post('/upgrade_oj', 'Admin\SettingController@upgrade_oj')->name('upgrade_oj');
     });
 });

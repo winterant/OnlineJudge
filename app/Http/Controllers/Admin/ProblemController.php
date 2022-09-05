@@ -137,10 +137,10 @@ class ProblemController extends Controller
 
             $spjFile = $request->file('spj_file');
             if ($spjFile != null && $spjFile->isValid()) {
-                $spjFile->move(testdata_path($id . '/spj'), 'spj.cpp');  // 保存特判代码文件
-                $spj_compile = compile_cpp(testdata_path($id . '/spj/spj.cpp'), testdata_path($id . '/spj/spj')); //编译特判代码
-                $msg .= '<br><br>[ 特判程序编译信息 ]:<br>' . $spj_compile;
-            } //保存spj
+                $spjFile->move(testdata_path($id . '/spj'), 'spj.cpp');  // 保存特判代码文件spj.cpp
+                // $spj_compile = compile_cpp(testdata_path($id . '/spj/spj.cpp'), testdata_path($id . '/spj/spj')); //编译特判代码
+                // $msg .= '<br><br>[ 特判程序编译信息 ]:<br>' . $spj_compile;
+            }
             return view('admin.success', ['msg' => $msg]);
         }
     }
@@ -417,7 +417,7 @@ class ProblemController extends Controller
                 if (!is_dir($dir))
                     mkdir($dir, 0777, true);  // 文件夹不存在则创建
                 file_put_contents($dir . '/spj.cpp', $node->spj);  // 保存代码文件
-                compile_cpp($dir . '/spj.cpp', $dir . '/spj');  // 编译特判代码
+                // compile_cpp($dir . '/spj.cpp', $dir . '/spj');  // 编译特判代码
             }
             foreach ($node->solution as $solu) {
                 $language = $solu->attributes()->language;
