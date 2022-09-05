@@ -176,7 +176,7 @@
                             {{__('sentence.pass_all_test')}}
                         </p>
                         <div class="form-group mt-2 table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
                                         <th>{{__('main.Test Data')}}</th>
