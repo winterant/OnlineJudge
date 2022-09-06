@@ -39,7 +39,7 @@
                                 <tr>
                                     <td>{{$item->id}}</td>
                                     <td nowrap>
-                                        <a href="{{route('contest.home',[$item->id,'group'=>$group->id])}}" target="_blank">{{$item->title}}</a>
+                                        <a href="{{route('contest.home',[$item->id,'group'=>$group->id])}}">{{$item->title}}</a>
                                     </td>
                                 </tr>
                             @endforeach

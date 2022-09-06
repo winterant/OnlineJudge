@@ -36,24 +36,13 @@ docker-compose up -d
 - 访问首页`http://ip:8080`；可在宿主机[配置域名](https://blog.csdn.net/winter2121/article/details/107783085)；
 - **注册账号admin自动成为管理员**；
 
-- 启动服务
-    ```bash
-    docker-compose start
-    ```
-- 关闭服务
-    ```bash
-    docker-compose stop
-    ```
-- 关闭服务并删除容器
-    ```bash
-    docker-compose down
-    ```
-
 # 🚗 更新源码
 
 ```bash
-docker exec -it lduoj_web bash  # 进入容器
-bash install/update.sh
+docker exec -it lduoj_web bash  # 进入容器(使用实际容器名)
+git clone https://github.com/winterant/LDUOnlineJudge.git
+# git clone https://gitee.com/wrant/LDUOnlineJudge.git
+bash LDUOnlineJudge/install/update.sh
 ```
 
 # 💿 备份/迁移
@@ -94,7 +83,7 @@ bash install/update.sh
     ```
 4. 将第1步生成的`data.sql`移入`${new_app_path}/data/mysql/`；随后进入mysql容器，恢复数据库；
     ```bash
-    docker exec -it lduoj_mysql bash  # 进入mysql容器
+    docker exec -it lduoj_mysql bash  # 进入mysql容器(注意实际容器名)
     cd /var/lib/mysql
     mysql -uroot -pOurFuture2099 -f -Dlduoj < data.sql
     ```

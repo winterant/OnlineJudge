@@ -1,33 +1,11 @@
 #!/bin/bash
 
-set -e
+set -ex
 
-# Read arg
-if [ ! -n "$1" ]; then
-    github_src="https://github.com/winterant/LDUOnlineJudge.git"
-    gitee_src="https://gitee.com/wrant/LDUOnlineJudge.git"
-    echo "---------------------------------------------------------"
-    echo "Please choose a git source to download:"
-    echo "[1] ${github_src}"
-    echo "[2] ${gitee_src} (Default)"
-    echo "[Input a code source url directly]"
-    read -p "Input your choice or custom source url:" source
-    if [[ "${source}" == "1" ]];then
-        source=$github_src
-    elif [[ "${source}" == "2" ]];then
-        source=$gitee_src
-    fi
-fi
-
-echo "Git source: ${source:-${gitee_src}}"
-
-# Download new code
 APP_HOME=$(dirname $(dirname $(readlink -f "$0")))    # Path of old project (current)
-upgrade=~/"oj_up"  # Path of new code
+upgrade="$1"  # Path of new code
 echo "APP HOME: ${APP_HOME}"
-echo "Latest project: ${upgrade}"
-rm -rf ${upgrade}
-git clone ${source} ${upgrade}
+echo "Latest code: ${upgrade}"
 
 # Checking path error
 cd "${upgrade}" || { echo "No such folder ${upgrade}"; exit -1; }  # 检查新项目是否存在
@@ -36,15 +14,10 @@ if [[ "${upgrade}" == "${APP_HOME}" ]]; then
     exit -1
 fi
 
-# ========================= Updating files.
+# Updating files, package, database and configs.
 cp -rf "${upgrade}"/. "${APP_HOME}"/
-
-# ========================= Updating laravel packages.
 composer install --ignore-platform-reqs
 yes|php artisan migrate
 php artisan optimize
 
-# Remove codes just downloaded.
-rm -rf "${upgrade}" &
-
-echo "You have successfully updated LDU Online Judge! Enjoy it!"
+echo "You have successfully updated Online Judge. Enjoy it!"
