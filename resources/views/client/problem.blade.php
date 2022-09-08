@@ -102,7 +102,7 @@
                     <div style="min-width: 300px">{{__("main.Memory Limit")}}: {{$problem->memory_limit}}MB</div>
                     <div style="min-width: 300px">{{__('main.Special Judge')}}:
                         @if($problem->spj==1)
-                            <div class="text-red">{{__('main.Yes')}}</div>
+                            <span class="text-red">{{__('main.Yes')}}</span>
                             @if(!$hasSpj)({{__('sentence.Wrong spj')}}) @endif
                         @else
                             {{__('main.No')}}

@@ -13,6 +13,7 @@ services:
       - DB_USERNAME=oj_user
       - DB_PASSWORD=OurFuture2045
       - JUDGE0_SERVER=judge0-server:2358
+      - QUEUE_CONNECTION=database
       # [Production]
       # - HREF_FORCE_HTTPS=true  # If using https but web page can't fetch static files, open it.
       # [Local]

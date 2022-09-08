@@ -21,6 +21,7 @@ mod_env "DB_USERNAME"       ${DB_USERNAME:-oj_user}
 mod_env "DB_PASSWORD"       ${DB_PASSWORD:-OurFutrue2045}
 mod_env "JUDGE0_SERVER"     ${JUDGE0_SERVER:-host.docker.internal:2358}
 mod_env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false}
+mod_env "QUEUE_CONNECTION"  ${QUEUE_CONNECTION:-database}
 
 # Change storage folders owner.
 chown www-data:www-data -R storage bootstrap/cache
@@ -32,6 +33,7 @@ php artisan optimize
 yes|php artisan migrate
 yes|php artisan key:generate
 php artisan optimize
+php artisan queue:work
 
 # start nginx server
 service nginx start
