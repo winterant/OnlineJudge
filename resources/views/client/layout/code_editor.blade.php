@@ -178,7 +178,7 @@
                 <tbody>
                   <tr v-for="(item, index) in judge0result">
                     <td>@{{ index + 1 }}</td>
-                    <td><span :class="'judge-result-' + item.result_id">@{{ item.result }}</span></td>
+                    <td><span :class="'judge-result-' + item.result_id">@{{ item.result_desc }}</span></td>
                     <td>
                       <span v-if="item.time!=null">@{{ item.time }}MS</span>
                       <span v-else>-</span>
@@ -305,7 +305,7 @@
                     if (judge_ret.ok) {
                       this.judge0result = judge_ret.data.judge0result //更新表单
                       this.judge0result_error_info = judge_ret.data.error_info
-                      if (judge_ret.data.result < 4) {
+                      if (judge_ret.data.result < 4) {  // 4: web端判题结果代号正确
                         setTimeout(query_judge_result, 1000) // 继续查询
                       } else {
                         this.judge0processing = 2 // 判题完成
@@ -396,9 +396,12 @@
       $("#code_file").on("change", function() {
         $('#selected_fname').html(this.files[0].name);
         var reader = new FileReader();
-        reader.readAsText(this.files[0], $("#lang_select").children('option:selected').val() <= 1 ?
-          "GBK" : "UTF-8");
-        reader.onload = function() {
+        reader.readAsText(this.files[0], "UTF-8"); // 先尝试以UTF-8读取
+        reader.onload = ()=> {
+          if(reader.result.indexOf('�')!==-1){
+            reader.readAsText(this.files[0], 'GBK') // 重试以GBK读取
+            return
+          }
           code_editor.setValue(reader.result)
         }
       })

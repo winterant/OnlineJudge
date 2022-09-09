@@ -61,26 +61,25 @@ class QueryJudge0Result implements ShouldQueue
             //     'error_info' => '',
             //     'finished_at' => '2022-09-08T10:10:51.185Z',
             // );
-            if ($problem->spj) {
-                // todo 不能改动 $one['status_id']
-                if ($one['status_id'] == 3)  // 运行完成的代码，发起特判或查询特判结果
-                {
-                    $one['status_id'] = 10;  // running  todo spj写好后，改为2(running)！
-                    if (!isset($one['spj']) || empty($one['spj'])) {
-                        // todo 发起特判
-                        // 只有
-                    } else {
-                        // todo 查询特判结果，并更新父token的status_id,error_info(拼接)
-                    }
+            if ($problem->spj && $one['status_id'] == 3) // 用户程序已经运行完成，考虑特判
+            {
+                if (!isset($one['spj']['status_id'])) {
+                    // $one['status_id'] = 2;  // 特判中
+                    $one['status_id'] = 14;  // 特判中
+                    $one['spj'] = ['status_id' => 14];
+                    // todo 发起特判
+                    // 只有
+                } else if ($one['spj']['status_id'] < 3) {
+                    // todo 查询特判结果，并更新父token的status_id,error_info(拼接)
                 }
             }
+            unset($one['stdout']);
             $one['result_id'] = config('oj.judge02result.' . $one['status_id']); // web端判题结果代号
-            $one['result'] = trans('result.' . config("oj.result." . $one["result_id"])); // 判题结果文字说明
+            $one['result_desc'] = trans('result.' . config("oj.result." . $one["result_id"])); // 判题结果文字说明
         }
         // 更新数据库
-        $solution_result = $this->calculate_solution($judge0result);
-        DB::table('solutions')->where('id', $this->solution_id)
-            ->update($solution_result);
+        $solution_result = $this->calculate_solution($judge0result, $problem->spj);
+        DB::table('solutions')->where('id', $this->solution_id)->update($solution_result);
         // 若判题还未结束，则持续更新
         if ($solution_result['result'] < 4) {
             usleep(500000); // sleeping for 500ms (500000us)
@@ -108,7 +107,7 @@ class QueryJudge0Result implements ShouldQueue
         return $s;
     }
 
-    private function calculate_solution($judge0result)
+    private function calculate_solution($judge0result, $spj = false)
     {
         $judge_result_id = 0; // Waiting
         $num_tests = 0;    // 测试组数
@@ -119,6 +118,10 @@ class QueryJudge0Result implements ShouldQueue
         $error_info = null;
         $wrong_data = null;
         foreach ($judge0result as $s) {
+            if ($spj) {
+                $s['status_id'] = $s['spj']['status_id'] ?? 2; // 如有特判，则已特判结果为准,todo:能否标记出spj的错误呢？
+            }
+
             if ($s['status_id'] == 3) {
                 $num_ac_tests++;
             } else {
@@ -140,7 +143,7 @@ class QueryJudge0Result implements ShouldQueue
         }
         if ($num_ac_tests == $num_tests) //All Accepted
             $judge_result_id = 3;
-        $web_result = config('oj.judge02result.' . $judge_result_id); // 转为web result id
+        $web_result = config('oj.judge02result.' . $judge_result_id); // judge0 status_id ==> web result id
         return [
             'result' => $web_result,
             'time' => $used_time,
