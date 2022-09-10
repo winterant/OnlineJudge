@@ -24,7 +24,7 @@ mod_env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false}
 mod_env "QUEUE_CONNECTION"  ${QUEUE_CONNECTION:-database}
 
 # Change storage folders owner.
-chown www-data:www-data -R storage bootstrap/cache
+chmod -R 777 storage bootstrap/cache
 
 # Start php-fpm server and initialize laravel app.
 service php7.2-fpm start

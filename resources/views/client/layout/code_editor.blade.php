@@ -277,6 +277,7 @@
       submit_solution() {
         this.judge0processing = 1 //判题中
         this.judge0result = {}
+        var max_query_times = 15; // 最大查询次数
         $.ajax({
           type: 'post',
           url: '{{ route('api.solution.submit') }}',
@@ -305,7 +306,7 @@
                     if (judge_ret.ok) {
                       this.judge0result = judge_ret.data.judge0result //更新表单
                       this.judge0result_error_info = judge_ret.data.error_info
-                      if (judge_ret.data.result < 4) {  // 4: web端判题结果代号正确
+                      if (max_query_times-- > 0 && judge_ret.data.result < 4) { // 4: web端判题结果代号正确
                         setTimeout(query_judge_result, 1000) // 继续查询
                       } else {
                         this.judge0processing = 2 // 判题完成
@@ -397,8 +398,8 @@
         $('#selected_fname').html(this.files[0].name);
         var reader = new FileReader();
         reader.readAsText(this.files[0], "UTF-8"); // 先尝试以UTF-8读取
-        reader.onload = ()=> {
-          if(reader.result.indexOf('�')!==-1){
+        reader.onload = () => {
+          if (reader.result.indexOf('�') !== -1) {
             reader.readAsText(this.files[0], 'GBK') // 重试以GBK读取
             return
           }

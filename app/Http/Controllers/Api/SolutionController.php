@@ -174,7 +174,7 @@ class SolutionController extends Controller
     {
         // $request 传入参数：
         // solution_id: solution id
-        //      return: {'result':0, 'judge0result':{token1:{`judge result json`}, token2:{...}, ...}}
+        // return judge0result:{token1:{'result_id':, 'result_desc':, ...}, ...}
         // ==================== 根据solution id，查询结果 ====================
         $solution = DB::table('solutions')->find($request->input('solution_id'));
         if (!$solution)
@@ -190,7 +190,15 @@ class SolutionController extends Controller
                 'ok' => 0,
                 'msg' => '该提交记录找不到判题痕迹，请管理员检查测试数据是否缺失，并重判提交记录',
             ];
-        // 如果solution记录还没有结果，则转为多tokens去查询judge0结果
+        // ================= 给前台返回结果 =================
+        foreach ($judge0result as &$item) {
+            if (!isset($item['result_id'])) {
+                $item['result_id'] = 1;
+                $item['result_desc'] = trans('result.Queueing'); // 由于用户语言在Cookie中，trans无效
+            } else {
+                $item['result_desc'] = trans('result.' . $item['result_desc']);//todo trans 无效？
+            }
+        }
         return [
             'ok' => 1,
             'msg' => 'OK',
