@@ -74,7 +74,7 @@ class QueryJudge0Result implements ShouldQueue
                         config('app.JUDGE0_SERVER') . '/submissions/' . $one['spj']['token'],
                         [
                             'base64_encoded' => 'true',
-                            'fields' => 'token,status_id,exit_code,compile_output,stderr,message,stdout'
+                            'fields' => 'token,status_id,status,exit_code,compile_output,stderr,message,stdout'
                         ]
                     );
                     $one['spj'] = json_decode($res_spj[1], true);
@@ -85,8 +85,14 @@ class QueryJudge0Result implements ShouldQueue
                     $special_result_id = 3; // web shows judging
                 else if ($one['spj']['exit_code'] == 1) // spj completed but wrong answer.
                 {
-                    $special_result_id = 5; // web shows wrong answer
+                    $special_result_id = 6; // web shows wrong answer
                     $one['error_info'] .= $one['spj']['stdout'] ?? null;
+                } else if ($one['spj']['status_id'] > 3) // spj runtime error
+                {
+                    $special_result_id = 14; // web shows system error
+                    $one['error_info'] .= '[Special Judge Error]' . PHP_EOL;
+                    $one['error_info'] .= $one['spj']['status']['description'] . PHP_EOL;
+                    $one['error_info'] .= $one['spj']['error_info'] ?? null;
                 }
             }
             if ($special_result_id != -1)  // spj 特殊结果
@@ -172,7 +178,7 @@ class QueryJudge0Result implements ShouldQueue
         $lang_id = 1;
         $data = [
             'language_id'     => config('oj.langJudge0Id.' . $lang_id),
-            'source_code'     => base64_encode('#include<bits/stdc++.h>' . PHP_EOL . 'int main(){int a[10000000];std::cout<<"Yes";return 0;}'),
+            'source_code'     => base64_encode('#include<bits/stdc++.h>' . PHP_EOL . 'int main(){int *p=new int[9];std::cout<<"Yes";return 1;}'),
             'stdin'           => base64_encode('stdout'),
             'cpu_time_limit'  => 300, // S
             'memory_limit'    => 512000, // KB

@@ -193,7 +193,7 @@ class SolutionController extends Controller
         // ================= 给前台返回结果 =================
         foreach ($judge0result as &$item) {
             $item['result_desc'] = trans('result.' . config("oj.result." . ($item["result_id"] ?? 1)));
-            // unset($item['spj']); // spj没必要给用户看 todo
+            unset($item['spj']); // spj没必要给用户看 todo
         }
         return [
             'ok' => 1,
@@ -201,7 +201,7 @@ class SolutionController extends Controller
             'data' => [
                 'result' => $solution->result,
                 'error_info' => $solution->error_info,
-                'judge0result' => array_values($judge0result) // 不给用户看到真实judge0 token
+                'judge0result' => array_values($judge0result) // 不给用户看到 key (judge0 token)
             ]
         ];
     }
