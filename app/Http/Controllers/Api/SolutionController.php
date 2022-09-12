@@ -192,12 +192,8 @@ class SolutionController extends Controller
             ];
         // ================= 给前台返回结果 =================
         foreach ($judge0result as &$item) {
-            if (!isset($item['result_id'])) {
-                $item['result_id'] = 1;
-                $item['result_desc'] = trans('result.Queueing'); // 由于用户语言在Cookie中，trans无效
-            } else {
-                $item['result_desc'] = trans('result.' . $item['result_desc']);//todo trans 无效？
-            }
+            $item['result_desc'] = trans('result.' . config("oj.result." . ($item["result_id"] ?? 1)));
+            // unset($item['spj']); // spj没必要给用户看 todo
         }
         return [
             'ok' => 1,

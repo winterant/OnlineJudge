@@ -2,7 +2,7 @@
 // judge0的判题结果编号 => web端判题结果编号
 return [
     1 => 1, // In Queue     => Queueing
-    2 => 3, // Processing   => Running
+    2 => 2, // Processing   => Running
     3 => 4, // Accepted
     4 => 6, // Wrong Answer
     5 => 7, // Time Limit Exceeded

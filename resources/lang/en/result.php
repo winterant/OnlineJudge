@@ -4,6 +4,7 @@ return [
     'Queueing'  => 'Queueing',
     'Compiling' => 'Compiling',
     'Running'   => 'Running',
+    'Judging'   => 'Judging',
     'Accepted'  => 'Accepted',
     'Presentation Error'    => 'Presentation Error',
     'Wrong Answer'          => 'Wrong Answer',

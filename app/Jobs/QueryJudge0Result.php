@@ -60,8 +60,10 @@ class QueryJudge0Result implements ShouldQueue
             //     'error_info' => '',
             //     'finished_at' => '2022-09-08T10:10:51.185Z',
             // );
-            if ($problem->spj && $one['status_id'] == 3) // 用户程序已经运行完成，考虑特判
-            {
+            // ================== 若用户程序运行成功，则考虑特判其stdout
+            $special_result_id = -1;
+            if ($problem->spj && $one['status_id'] == 3) {
+                // 1. 请求judge0，获取spj运行结果
                 if (!isset($one['spj']['token'])) {
                     // 发送特判请求
                     $one['spj'] = $this->send_spj()[1]; // Send spj request and get submission token
@@ -78,27 +80,25 @@ class QueryJudge0Result implements ShouldQueue
                     $one['spj'] = json_decode($res_spj[1], true);
                     $one['spj'] = $this->decode_base64_judge0_submission($one['spj']);
                 }
-            }
-            if ($problem->spj) {
-                $status_id = $one['status_id'];
-                if ($status_id == 3) {
-                    if (($one['spj']['exit_code'] ?? 0) > 0)
-                        $status_id = 4; // Wrong answer
-                    else
-                        $status_id = $one['spj']['status_id'];
+                // 2. 根据spj结果，标记本组测试两种特殊情况(web result_id)：3:judging, 5:user wrong answer
+                if ($one['spj']['status_id'] < 3) // spj judging
+                    $special_result_id = 3; // web shows judging
+                else if ($one['spj']['exit_code'] == 1) // spj completed but wrong answer.
+                {
+                    $special_result_id = 5; // web shows wrong answer
+                    $one['error_info'] .= $one['spj']['stdout'] ?? null;
                 }
-                $one['result_id'] = config('oj.judge02result.' . $status_id); // web端判题结果代号
-                $one['result_desc'] = config("oj.result." . $one["result_id"]); // 判题结果文字说明   
-            } else {
-                $one['result_id'] = config('oj.judge02result.' . $one['status_id']); // web端判题结果代号
-                $one['result_desc'] = config("oj.result." . $one["result_id"]); // 判题结果文字说明   
             }
-
+            if ($special_result_id != -1)  // spj 特殊结果
+                $one['result_id'] = $special_result_id;
+            else
+                $one['result_id'] = config('oj.judge02result.' . $one['status_id']);
+            // user stdout, judge0 token 不要保存到database
             unset($one['stdout']);
             unset($one['token']);
         }
-        // 更新数据库
-        $solution_result = $this->calculate_solution($judge0result, $problem->spj);
+        // 根据所有测试组，汇总出solution结果，并更新数据库
+        $solution_result = $this->calculate_solution($judge0result);
         DB::table('solutions')->where('id', $this->solution_id)->update($solution_result);
         // 若判题还未结束，则持续更新
         if ($solution_result['result'] < 4) {
@@ -127,90 +127,42 @@ class QueryJudge0Result implements ShouldQueue
         return $s;
     }
 
-    private function calculate_solution($judge0result, $spj = false)
+    // 根据所有测试组的结果，汇总出solution结果
+    private function calculate_solution($judge0result)
     {
-        $judge0_status_id = 1000; // 无状态
+        $solution = [
+            'result' => 100,  // web端判题结果代号，初始无状态
+            'time' => 0,
+            'memory' => 0,
+            'pass_rate' => 0,
+            'error_info' => null,
+            'wrong_data' => null,
+            'judge0result' => $judge0result,
+            'judge_time' => null,
+        ];
         $num_tests = 0;    // 测试组数
         $num_ac_tests = 0; // 正确组数
-        $used_time = 0;    // MS
-        $used_memory = 0;  // MB
-        $finished_time = null;
-        $error_info = null;
-        $wrong_data = null;
         foreach ($judge0result as $s) {
-            if ($spj) {
-                $spj_status_id = $s['spj']['status_id'] ?? 0; // 如有特判，则以特判结果为准
-                if ($s['status_id'] < 3 || $s['status_id'] == 3 && $spj_status_id < 3) {
-                    // running
-                } else if ($s['status_id'] == 3 && ($spj_status_id == 3 || $s['spj']['exit_code'] > 0)) {
-                    // Both user and spj run completed.
-                    if ($s['spj']['exit_code'] == 0) // AC only if exit code of spj is 0.
-                        $num_ac_tests++;
-                    else {
-                        $spj_status_id = 4; // Wrong Answer
-                        if (!$error_info) // 记录错误
-                            $error_info = implode(PHP_EOL, array_filter([
-                                '[Special judge description]',
-                                ($s['spj']['stdout'] ?? null),
-                                ($s['spj']['error_info'] ?? null)
-                            ]));
-                    }
-                } else if ($s['status_id'] == 3 && $spj_status_id > 3) {
-                    // spj runtime error
-                    if (!$error_info) // 记录错误
-                        $error_info = implode(PHP_EOL, array_filter([
-                            '[Special judge runtime error]',
-                            'This is because the spj program crashed abnormally during running.',
-                            ($s['spj']['error_info'] ?? null)
-                        ]));
-                } else {
-                    // user runtime error
-                    if (!$error_info) // 记录错误
-                        $error_info = $s['error_info'];
-                    if (!$wrong_data) // 记录出错数据文件名
-                        $wrong_data = $s['testname'] ?? null;
-                }
-
-                // 讨论整条solution所处的状态
-                $temp_status_id = $s['status_id'] == 3 ? $spj_status_id : $s['status_id'];
-                if ($temp_status_id != 3)
-                    $judge0_status_id = min($judge0_status_id, $temp_status_id);
-            } else {
-                if ($s['status_id'] < 3) {
-                    // running
-                } else if ($s['status_id'] == 3) {
-                    // AC
-                    $num_ac_tests++;
-                } else {
-                    // runtime error
-                    if (!$error_info) // 记录错误
-                        $error_info = $s['error_info'];
-                    if (!$wrong_data) // 记录出错数据文件名
-                        $wrong_data = $s['testname'] ?? null;
-                }
-
-                // 讨论整条solution所处的状态
-                if ($s['status_id'] != 3)
-                    $judge0_status_id = min($judge0_status_id, $s['status_id']);
-            } // end of non-spj.
-
+            if ($s['result_id'] > 4) // 答案错误(或spj运行崩溃)
+            {
+                if (!$solution['error_info']) // 记录错误信息
+                    $solution['error_info'] = $s['error_info'];
+                if (!$solution['wrong_data']) // 记录出错数据文件名
+                    $solution['wrong_data'] = $s['testname'] ?? null;
+            }
+            if ($s['result_id'] == 4) // AC
+                $num_ac_tests++;
+            else // 尚未AC，记录最小代号即可
+                $solution['result'] = min($solution['result'], $s['result_id']);
             $num_tests++;
-            $used_time = max($used_time, $s['time']);
-            $used_memory = max($used_memory, $s['memory']);
-            $finished_time = max($finished_time, date('Y-m-d H:i:s', strtotime($s['finished_at'])));
+            $solution['time'] = max($solution['time'], $s['time']);
+            $solution['memory'] = max($solution['memory'], $s['memory']);
+            $solution['judge_time'] = max($solution['judge_time'], date('Y-m-d H:i:s', strtotime($s['finished_at'])));
         }
         if ($num_ac_tests == $num_tests) // All Accepted
-            $judge0_status_id = 3;
-        return [
-            'result' => config('oj.judge02result.' . $judge0_status_id), // judge0 status_id => web result id
-            'time' => $used_time,
-            'memory' => $used_memory,
-            'pass_rate' => $num_ac_tests * 1.0 / $num_tests,
-            'error_info' => $error_info,
-            'wrong_data' => $wrong_data,
-            'judge0result' => $judge0result,
-            'judge_time' => $finished_time
-        ];
+            $solution['result'] = 4;
+        $solution['pass_rate'] = $num_ac_tests * 1.0 / $num_tests;
+        return $solution;
     }
 
     // 发起特判，return {token:*}
@@ -220,7 +172,7 @@ class QueryJudge0Result implements ShouldQueue
         $lang_id = 1;
         $data = [
             'language_id'     => config('oj.langJudge0Id.' . $lang_id),
-            'source_code'     => base64_encode('#include<bits/stdc++.h>' . PHP_EOL . 'int main(){std::cout<<"Yes";return 0;}'),
+            'source_code'     => base64_encode('#include<bits/stdc++.h>' . PHP_EOL . 'int main(){int a[10000000];std::cout<<"Yes";return 0;}'),
             'stdin'           => base64_encode('stdout'),
             'cpu_time_limit'  => 300, // S
             'memory_limit'    => 512000, // KB

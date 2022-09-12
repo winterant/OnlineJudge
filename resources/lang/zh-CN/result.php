@@ -4,6 +4,7 @@ return [
     'Queueing'  => '队列中',
     'Compiling' => '编译中',
     'Running'   => '运行中',
+    'Judging'   => '评判中',
     'Accepted'  => '正确',
     'Presentation Error'    => '格式错误',
     'Wrong Answer'          => '答案错误',
