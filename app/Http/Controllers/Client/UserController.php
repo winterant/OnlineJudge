@@ -26,10 +26,10 @@ class UserController extends Controller
         $problem_submitted = []; // 每个题目的提交次数
         $problem_ac = []; // 每个题目的ac次数
         foreach ($submissions as $item) {
-            $results[$item->result] = (isset($results[$item->result]) ? $results[$item->result] : 0) + 1;
-            $problem_submitted[$item->problem_id] = (isset($problem_submitted[$item->problem_id]) ? $problem_submitted[$item->problem_id] : 0) + 1;
+            $results[$item->result] = ($results[$item->result] ?? 0) + 1;
+            $problem_submitted[$item->problem_id] = ($problem_submitted[$item->problem_id] ?? 0) + 1;
             if ($item->result == 4)
-                $problem_ac[$item->problem_id] = (isset($problem_ac[$item->problem_id]) ? $problem_ac[$item->problem_id] : 0) + 1;
+                $problem_ac[$item->problem_id] = ($problem_ac[$item->problem_id] ?? 0) + 1;
         }
 
         if (!Auth::user() && !get_setting('display_complete_userinfo')) {
@@ -106,55 +106,27 @@ class UserController extends Controller
 
     public function standings()
     {
-        // 已解决数量
-        $query_solved = DB::table('solutions')
-            ->select('user_id', DB::raw('count(distinct problem_id) as solved'))
-            ->where('result', 4)
-            ->groupBy('user_id');
-
-        // 提交总次数
-        $query_submitted = DB::table('solutions')
-            ->select('user_id', DB::raw('count(*) as submitted'))
-            ->groupBy('user_id');
-
-        $users = DB::table('users as u')
-            ->leftJoinSub($query_solved, 'q1', 'q1.user_id', '=', 'u.id')
-            ->leftJoinSub($query_submitted, 'q2', 'q2.user_id', '=', 'u.id')
-            ->when(isset($_GET['username']) && $_GET['username'] != '', function ($q) {
-                return $q->where('username', 'like', '%' . $_GET['username'] . '%');
-            })
-            ->orderByDesc('q1.solved')
-            ->orderBy('q2.submitted')
-            ->paginate($_GET['perPage'] ?? 50);
-
-        // 遮掩真实用户名等敏感信息
-        if (!Auth::user() && !get_setting('display_complete_standings')) {
-            foreach ($users as &$user) {
-                for ($i = 3; $i < strlen($user->username) - 3 || $i < 6; $i++)
-                    $user->username[$i] = '*';
-            }
-        }
-        return view('client.standings', compact('users'));
-    }
-
-    public function standings_back()
-    {
+        // todo
         $timediff = isset($_GET['range']) && $_GET['range'] != '0'
             ? sprintf(' and TIMESTAMPDIFF(%s,submit_time,now())=0', $_GET['range']) : '';
-        $users = DB::table('users')->select(
-            'username',
-            'nick',
-            DB::raw("(select count(id) from solutions where user_id=users.id and result=4" . $timediff . ") as accepted"),
-            DB::raw("(select count(distinct problem_id) from solutions where user_id=users.id and result=4" . $timediff . ") as solved"),
-            DB::raw("(select count(id) from solutions where user_id=users.id" . $timediff . ") as submit")
-        )
-            ->when(isset($_GET['username']), function ($q) {
+
+        $columes = ['username', 'nick', 'solved', 'accepted', 'submitted'];
+        if ($timediff)
+            $columes = [
+                'username', 'nick',
+                DB::raw("(select count(distinct problem_id) from solutions where user_id=users.id and result=4" . $timediff . ") as solved"),
+                DB::raw("(select count(id) from solutions where user_id=users.id and result=4" . $timediff . ") as accepted"),
+                DB::raw("(select count(id) from solutions where user_id=users.id" . $timediff . ") as submitted")
+            ];
+
+        $users = DB::table('users')->select($columes)
+            ->when($_GET['username']??false, function ($q) {
                 return $q->where('username', 'like', '%' . $_GET['username'] . '%');
             })
             ->orderByDesc('solved')
-            ->orderBy('submit')
+            ->orderBy('submitted')
             ->paginate($_GET['perPage'] ?? 50);
-        if (!Auth::user() && !get_setting('display_complete_standings')) {
+        if (!Auth::check() && !get_setting('display_complete_standings')) {
             foreach ($users as &$user) {
                 for ($i = 3; $i < strlen($user->username) - 3 || $i < 6; $i++)
                     $user->username[$i] = '*';

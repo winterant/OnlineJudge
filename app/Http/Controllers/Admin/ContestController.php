@@ -99,6 +99,7 @@ class ContestController extends Controller
             $problem_ids = $request->input('problems');
             $c_users = $request->input('contest_users'); //指定用户
             //数据格式处理
+            $pids = [];
             foreach (explode(PHP_EOL, $problem_ids) as &$item) {
                 $item = trim($item);
                 if(strlen($item)==0)
