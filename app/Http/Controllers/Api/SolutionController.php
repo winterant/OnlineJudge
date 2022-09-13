@@ -93,7 +93,12 @@ class SolutionController extends Controller
             $problem->spj   // if spj is true, 则不对比标准答案
         );
         if ($judge_response[0] != 201)
-            return ['ok' => 0, 'msg' => '[Submit] Cannot connect to judge server: ' . $judge_response[0]];
+            return [
+                'ok' => 0,
+                'msg' => '[Submit] Cannot connect to judge server: '
+                    . $judge_response[0] . '|'
+                    . $judge_response[1]['error']
+            ];
 
         // ===================== 收集判题tokens: {token1=>{testname:'', others}, ...}
         $judge0result = [];
@@ -269,11 +274,16 @@ class SolutionController extends Controller
                 $data['expected_output'] = base64_encode(file_get_contents($sample['out']));
             $post_data[] = $data;
         }
-        $res = send_post(config('app.JUDGE0_SERVER') . '/submissions/batch?base64_encoded=true', ['submissions' => $post_data]);
-        $res[1] = json_decode($res[1], true) ?? []; // [{'token':'**'}, ...]
-        // 保存测试文件名
-        foreach ($res[1] as $i => &$r) {
-            $r['testname'] = $testnames[$i]; // 记下测试数据名
+        if (count($post_data) == 0)
+            $res = [502, ['error' => 'The problem has no testdata!']];
+        else
+            $res = send_post(config('app.JUDGE0_SERVER') . '/submissions/batch?base64_encoded=true', ['submissions' => $post_data]);
+        if (intval($res[0] / 10) == 20) {
+            $res[1] = json_decode($res[1], true) ?? []; // [{'token':'**'}, ...]
+            // 保存测试文件名
+            foreach ($res[1] as $i => &$r) {
+                $r['testname'] = $testnames[$i]; // 记下测试数据名
+            }
         }
         return $res;
     }
