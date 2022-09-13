@@ -23,6 +23,9 @@ mod_env "JUDGE0_SERVER"     ${JUDGE0_SERVER:-host.docker.internal:2358}
 mod_env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false}
 mod_env "QUEUE_CONNECTION"  ${QUEUE_CONNECTION:-database}
 
+# start nginx server
+service nginx start
+
 # Change storage folders owner.
 chmod -R 777 storage bootstrap/cache
 
@@ -33,10 +36,9 @@ php artisan optimize
 yes|php artisan migrate
 yes|php artisan key:generate
 php artisan optimize
-php artisan queue:work --daemon
 
-# start nginx server
-service nginx start
+# Start laravel-queue
+php artisan queue:work
 
 # Sleep forever to keep container alives.
 sleep infinity
