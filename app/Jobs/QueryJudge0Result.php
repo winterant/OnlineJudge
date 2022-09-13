@@ -3,12 +3,13 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class QueryJudge0Result implements ShouldQueue
 {
@@ -33,8 +34,8 @@ class QueryJudge0Result implements ShouldQueue
      */
     public function handle()
     {
-        $solution = DB::table('solutions')->find($this->solution_id);
-        $problem = DB::table('problems')->find($solution->problem_id);
+        $solution = DB::table('solutions')->select(['problem_id', 'judge0result'])->find($this->solution_id);
+        $problem = DB::table('problems')->select(['spj'])->find($solution->problem_id);
         $judge0result = json_decode($solution->judge0result, true);
         $tokens_str = implode(',', array_keys($judge0result));
         $fields_str = 'token,status_id,compile_output,stderr,message,time,memory,finished_at';
@@ -65,7 +66,12 @@ class QueryJudge0Result implements ShouldQueue
                 // 1. 请求judge0，获取spj运行结果
                 if (!isset($one['spj']['token'])) {
                     // 发送特判请求
-                    $one['spj'] = $this->send_spj()[1]; // Send spj request and get submission token
+                    $one['spj'] = $this->send_spj(
+                        $this->solution_id,
+                        $solution->problem_id,
+                        $one['testname'],
+                        $one['stdout']
+                    )[1]; // Send spj request and get submission token
                     $one['spj']['status_id'] = 2; // Set initial status_id to Running
                 } else if ($one['spj']['status_id'] < 3) {
                     // 查询特判结果
@@ -132,7 +138,7 @@ class QueryJudge0Result implements ShouldQueue
         return $s;
     }
 
-    // 根据所有测试组的结果，汇总出solution结果
+    // 根据所有测试组的结果，汇总出solution结果；No database
     private function calculate_solution($judge0result)
     {
         $solution = [
@@ -170,25 +176,41 @@ class QueryJudge0Result implements ShouldQueue
         return $solution;
     }
 
-    // 发起特判，return {token:*}
-    private function send_spj()
+    // 发起特判，return {token:*}; No database
+    private function send_spj($solution_id, $problem_id, $testname, $user_stdout)
     {
-        // todo spj
-        $lang_id = 1;
-        $data = [
-            'language_id'     => config('oj.langJudge0Id.' . $lang_id),
-            'source_code'     => base64_encode('#include<bits/stdc++.h>' . PHP_EOL . 'int main(){int *p=new int[9];std::cout<<"Yes";return 1;}'),
-            'stdin'           => base64_encode('stdout'),
-            'cpu_time_limit'  => 300, // S
+        $testfilename = Storage::path(sprintf('data/%s/test/%s', $problem_id, $testname));
+        $testfilein = $testfilename . '.in';
+        $testfileout = $testfilename . (file_exists($testfilename . '.out') ?  '.out' : '.ans');
+        $spj_file = Storage::path(sprintf('data/%s/spj/spj.cpp', $problem_id));
+
+        $zip_dirname = sprintf('solution_spj/%s_%s', $solution_id, $testname);
+        Storage::makeDirectory($zip_dirname);
+        $zip_file = Storage::path($zip_dirname . '/spj.zip');
+
+        $zip = new \ZipArchive();
+        $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+        $zip->addFile($testfilein, 'std.in');
+        $zip->addFile($testfileout, 'std.out');
+        $zip->addFromString('user.out', $user_stdout);
+        $zip->addFile($spj_file, 'spj.cpp');
+        $zip->addFromString('compile', 'g++ spj.cpp -O2 -std=c++17 -o spj');
+        $zip->addFromString('run', './spj std.in std.out user.out');
+        $zip->close();
+
+        // 向判题端发送数据
+        $post_data = [
+            'language_id'      => 89,
+            'additional_files' => base64_encode(file_get_contents($zip_file)),
+            'cpu_time_limit'  => 300,    // S
             'memory_limit'    => 512000, // KB
-            'max_file_size'   => 1024, // KB
+            'max_file_size'   => 1024,   // KB
             'enable_network'  => false,
         ];
-        if ($lang_id == 1) //C++
-            $data['compiler_options'] = "-O2 -std=c++17";
-        $url = config('app.JUDGE0_SERVER') . '/submissions/?base64_encoded=true';
-        $res = send_post($url, $data);
+        $res = send_post(config('app.JUDGE0_SERVER') . '/submissions?base64_encoded=true', $post_data);
         $res[1] = json_decode($res[1], true);
+
+        Storage::deleteDirectory($zip_dirname); // 删除临时文件夹
         return $res;
     }
 }
