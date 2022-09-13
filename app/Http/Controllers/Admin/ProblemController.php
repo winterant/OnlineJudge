@@ -403,7 +403,19 @@ class ProblemController extends Controller
             foreach ($node->solution as $solu) {
                 $language = $solu->attributes()->language;
                 if ($language == 'Python') $language .= '3';  //本oj只支持python3
-                $lang = array_search($solu->attributes()->language, include config_path('oj/lang.php')); //保存提交记录
+                $langs = [
+                    'C'=>0,
+                    'c'=>0,
+                    'C++'=>1,
+                    'c++'=>1,
+                    'CPP'=>1,
+                    'cpp'=>1,
+                    'Java'=>2,
+                    'java'=>2,
+                    'Python3'=>3,
+                ];
+                $lang = ($langs[(string)($solu->attributes()->language)] ?? false);
+                //保存提交记录
                 if ($lang !== false) {
                     DB::table('solutions')->insert([
                         'problem_id'    => $pid,
