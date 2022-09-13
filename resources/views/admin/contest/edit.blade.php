@@ -159,11 +159,18 @@
                 {{--                    </label>--}}
                 {{--                </div>--}}
 
-                <div id="type_password" class="form-inline my-3">
-                    <label>
-                        参赛密码：
-                        <input type="text" name="contest[password]" value="{{isset($contest)?$contest->password:''}}" class="form-control">
-                    </label>
+                <div id="type_password">
+                    <div class="form-inline my-3">
+                        <label>
+                            参赛密码：
+                            <input type="text" name="contest[password]" value="{{isset($contest)?$contest->password:''}}" class="form-control">
+                        </label>
+                        <br>
+                    </div>
+                    <p class="alert-warning p-2">
+                        用户必须输入密码才能进入竞赛。
+                        若竞赛被加入{{trans('main.groups')}}，则成员必须输入密码才能进入！
+                    </p>
                 </div>
 
                 <div id="type_users" class="form-group my-3">
@@ -201,7 +208,7 @@
                     @foreach(config('oj.langJudge0Name') as $lang=>$name)
                         <div class="custom-control custom-checkbox mx-2">
                             <input type="checkbox" name="allow_lang" value="{{$lang}}" class="lang_checkbox custom-control-input" id="allow_lang{{$lang}}"
-                                   @if( !isset($contest) && $lang<=3 || ($contest->allow_lang>>1)&1 )checked @endif>
+                                   @if(!isset($contest) && $lang<=3 || (isset($contest) && ($contest->allow_lang>>1)&1))checked @endif>
                             <label class="custom-control-label pt-1" for="allow_lang{{$lang}}">{{$name}}</label>
                         </div>
                     @endforeach

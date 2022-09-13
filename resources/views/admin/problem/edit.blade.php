@@ -21,7 +21,7 @@
             <form id="form_problem" class="p-4 col-12 col-md-9" action="" method="post" onsubmit="return check_ckeditor_data();" enctype="multipart/form-data">
                 @csrf
                 <div class="form-inline mb-3">
-                    <font>题目类型：</font>
+                    <span>题目类型：</span>
                     <div class="custom-control custom-radio mx-3">
                         <input type="radio" name="problem[type]" value="0" class="custom-control-input" id="type0" checked
                                onchange="type_has_change(0)">
@@ -32,6 +32,19 @@
                                onchange="type_has_change(1)"
                                @if(isset($problem)&&$problem->type==1)checked @endif>
                         <label class="custom-control-label pt-1" for="type1">代码填空</label>
+                    </div>
+                </div>
+
+                <div class="form-inline mb-3">
+                    <span>是否发布：</span>
+                    <div class="custom-control custom-radio ml-3">
+                        <input type="radio" name="problem[hidden]" value="1" class="custom-control-input" id="hidden_yes" checked>
+                        <label class="custom-control-label pt-1" for="hidden_yes">隐藏（前台题库无法看到该题目）</label>
+                    </div>
+                    <div class="custom-control custom-radio ml-3">
+                        <input type="radio" name="problem[hidden]" value="0" class="custom-control-input" id="hidden_no"
+                               @if(isset($problem->hidden)&&$problem->hidden==0)checked @endif>
+                        <label class="custom-control-label pt-1" for="hidden_no">公开（前台题库可以看到该题目）</label>
                     </div>
                 </div>
 

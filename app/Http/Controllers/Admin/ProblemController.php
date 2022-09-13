@@ -29,11 +29,10 @@ class ProblemController extends Controller
                 'spj',
                 'problems.created_at',
                 'hidden',
-                'username as creator'
-                // 暂不查询做题数
-                // 'problems.solved',
-                // 'problems.accepted',
-                // 'problems.submitted'
+                'username as creator',
+                'problems.solved',
+                'problems.accepted',
+                'problems.submitted'
             )
             ->when(isset($_GET['pid']) && $_GET['pid'] != '', function ($q) {
                 return $q->where('problems.id', $_GET['pid']);
@@ -46,24 +45,6 @@ class ProblemController extends Controller
             })
             ->orderByDesc('problems.id')
             ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 100);
-            
-        foreach($problems as &$p){
-            // 提取提交记录
-            // $submissions = DB::table('solutions')
-            //     ->where('problem_id', $p->id)->count();
-            // $p->solved = 0;
-            // $p->accepted = 0;
-            // $p->submitted = 0;
-            $p->solved = DB::table('solutions')
-                ->where('problem_id', $p->id)
-                ->where('result', 4)
-                ->distinct('user_id')->count(); // 正确通过的人数（去重）
-            $p->accepted = DB::table('solutions')
-            ->where('problem_id', $p->id)
-            ->where('result', 4)->count(); // 正确通过的提交数
-            $p->submitted = DB::table('solutions')
-            ->where('problem_id', $p->id)->count(); // 总提交次数
-        }
         return view('admin.problem.list', compact('problems'));
     }
 
@@ -121,7 +102,7 @@ class ProblemController extends Controller
                 })
                 ->update($problem);
             if (!$update_ret)
-            return view('admin.fail', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem]，不能修改本题!']);
+                return view('admin.fail', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem]，不能修改本题!']);
 
             ///保存样例、spj
             $samp_ins = $request->input('sample_ins');
@@ -254,7 +235,7 @@ class ProblemController extends Controller
         $filename = str_replace('../', '', $filename);
         $filename = str_replace('/', '', $filename);
         $allowed_ext = ["in", "out", "ans", "txt"];
-        if(! in_array(pathinfo($filename,PATHINFO_EXTENSION), $allowed_ext)){
+        if (!in_array(pathinfo($filename, PATHINFO_EXTENSION), $allowed_ext)) {
             //文件后缀名不在允许的范围内，不执行上传逻辑。
             return 1;
         }
@@ -289,7 +270,7 @@ class ProblemController extends Controller
     {
         $problem = DB::table('problems')->find($request->input('pid'));  // 提取出要修改的题目
         if (!$problem || !privilege('admin.problem.data') && Auth::id() != $problem->creator) //不是超级管理员 && 不是出题人 => 禁止修改本题
-        return view('admin.fail', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem.data]，不能修改测试数据!']);
+            return view('admin.fail', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem.data]，不能修改测试数据!']);
 
         $pid = $request->input('pid');
         $filename = $request->input('filename');

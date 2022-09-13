@@ -67,8 +67,8 @@
                                             <a title="{{$item->source}}">{{$item->source}}</a>
                                         </td>
                                         <td nowrap>
-                                            {{$item->accepted}} / {{$item->submit}}
-                                            ({{round($item->accepted/max(1.0,$item->submit)*100)}}%)
+                                            {{$item->accepted}} / {{$item->submitted}}
+                                            ({{round($item->accepted/max(1.0,$item->submitted)*100)}}%)
                                         </td>
                                         <td nowrap>
                                             @foreach($item->tags as $tag)

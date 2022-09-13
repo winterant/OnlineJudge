@@ -270,7 +270,7 @@ class SolutionController extends Controller
             $post_data[] = $data;
         }
         $res = send_post(config('app.JUDGE0_SERVER') . '/submissions/batch?base64_encoded=true', ['submissions' => $post_data]);
-        $res[1] = json_decode($res[1], true); // [{'token':'**'}, ...]
+        $res[1] = json_decode($res[1], true) ?? []; // [{'token':'**'}, ...]
         // 保存测试文件名
         foreach ($res[1] as $i => &$r) {
             $r['testname'] = $testnames[$i]; // 记下测试数据名

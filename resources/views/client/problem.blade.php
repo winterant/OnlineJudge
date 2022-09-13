@@ -108,7 +108,7 @@
                             {{__('main.No')}}
                         @endif
                     </div>
-                    <div style="min-width: 300px">{{__("main.Solved")}}/{{__("main.Submitted")}}: {{$problem->solved}}/{{$problem->submit}}</div>
+                    <div style="min-width: 300px">{{__("main.Solved")}}/{{__("main.Submitted")}}: {{$problem->solved}}/{{$problem->submitted}}</div>
                     @if(count($tags)>0 && (!isset($contest)||time()>strtotime($contest->end_time)))
                         <div style="min-width: 300px">{{__("main.Tags")}}:
                             @foreach($tags as $item)

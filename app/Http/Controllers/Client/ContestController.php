@@ -124,17 +124,14 @@ class ContestController extends Controller
                 '*',
                 DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")
             ])->find($id);
-        if(!$contest)
+        if (!$contest)
             return abort(404);
         $problems = DB::table('problems')
-            ->join('contest_problems', 'contest_problems.problem_id', '=', 'problems.id')
+            ->join('contest_problems as cp', 'cp.problem_id', '=', 'problems.id')
             ->where('contest_id', $id)
             ->select([
-                'problems.id', 'problems.type', 'problems.title', 'contest_problems.index',
-                DB::raw("(select count(id) from solutions where contest_id=" . $contest->id . " and problem_id=problems.id and result=4) as accepted"),
-                DB::raw("(select count(distinct user_id) from solutions where contest_id=" . $contest->id . " and problem_id=problems.id and result=4) as solved"),
-                DB::raw("(select count(id) from solutions where contest_id=" . $contest->id . " and problem_id=problems.id) as submit"),
-
+                'problems.id', 'problems.type', 'problems.title', 'cp.index',
+                'cp.submitted', 'cp.accepted', 'cp.solved',
                 //查询本人是否通过此题；4:Accepted,6:Attempting,0:没做
                 DB::raw("case
                     when
@@ -151,7 +148,7 @@ class ContestController extends Controller
                     end as status
                     ")
             ])
-            ->orderBy('contest_problems.index')
+            ->orderBy('cp.index')
             ->get();
         //读取标签
         foreach ($problems as &$problem) {
@@ -197,30 +194,18 @@ class ContestController extends Controller
     {
         $contest = DB::table('contests')->find($id);
         $problem = DB::table('problems')
-            ->join('contest_problems', 'contest_problems.problem_id', '=', 'problems.id')
-            ->select(
-                'index',
-                'hidden',
-                'problem_id as id',
-                'title',
-                'description',
-                'input',
-                'output',
-                'hint',
-                'source',
-                'time_limit',
-                'memory_limit',
-                'spj',
-                'type',
-                'fill_in_blank',
-                DB::raw("(select count(id) from solutions where problem_id=problems.id and contest_id=" . $id . ") as submit"),
-                DB::raw("(select count(distinct user_id) from solutions where problem_id=problems.id and contest_id=" . $id . " and result=4) as solved")
-            )
+            ->join('contest_problems as cp', 'cp.problem_id', '=', 'problems.id')
+            ->select([
+                'index', 'hidden', 'problem_id as id', 'title', 'description',
+                'input', 'output', 'hint', 'source', 'time_limit', 'memory_limit', 'spj',
+                'type', 'fill_in_blank',
+                'cp.accepted', 'cp.solved', 'cp.submitted'
+            ])
             ->where('contest_id', $id)
             ->where('index', $pid)
             ->first();
-        
-        if(!$problem) // 题目不存在! 跳回前一页
+
+        if (!$problem) // 题目不存在! 跳回前一页
             return back();
 
         //读取所有的提交结果的数量统计
@@ -264,26 +249,30 @@ class ContestController extends Controller
             $tag_pool = [];
 
         // 可能指定了solution代码
-        $solution = DB::table('solutions')->find($_GET['solution']??-1);
-        if(Auth::check() && $solution && ( $solution->user_id==Auth::id()) || privilege('admin.problem.solution'))
-            $solution_code=$solution->code??null;
+        $solution = DB::table('solutions')->find($_GET['solution'] ?? -1);
+        if (Auth::check() && $solution && ($solution->user_id == Auth::id()) || privilege('admin.problem.solution'))
+            $solution_code = $solution->code ?? null;
         else
-            $solution_code=null;
+            $solution_code = null;
         return view('contest.problem', compact('contest', 'problem', 'results', 'samples', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool', 'solution_code'));
     }
 
     public function status($id)
     {
         $contest = DB::table('contests')->find($id);
-        if (!(privilege('admin.contest') || privilege('admin.problem.solution'))
-            && time() < strtotime($contest->end_time)) //比赛没结束，只能看自己
+        if (
+            !(privilege('admin.contest') || privilege('admin.problem.solution'))
+            && time() < strtotime($contest->end_time)
+        ) //比赛没结束，只能看自己
             $_GET['username'] = Auth::user()->username;
 
         $solutions = DB::table('solutions')
             ->join('users', 'solutions.user_id', '=', 'users.id')
             ->join('contest_problems', 'solutions.problem_id', '=', 'contest_problems.problem_id')
-            ->select(['solutions.id', 'index', 'user_id', 'username', 'nick', 'result', 'judge_type',
-                 'pass_rate', 'sim_rate', 'sim_sid', 'time', 'memory', 'language', 'submit_time', 'judger', 'ip', 'ip_loc'])
+            ->select([
+                'solutions.id', 'index', 'user_id', 'username', 'nick', 'result', 'judge_type',
+                'pass_rate', 'sim_rate', 'sim_sid', 'time', 'memory', 'language', 'submit_time', 'judger', 'ip', 'ip_loc'
+            ])
             ->where('solutions.contest_id', $id)
             ->where('contest_problems.contest_id', $id)
             ->when(isset($_GET['index']) && $_GET['index'] >= 0, function ($q) {
@@ -351,8 +340,7 @@ class ContestController extends Controller
         $contest = DB::table('contests')->find($id);
 
         // 首先判断榜单的可访问性。如果榜单未公开，则只允许参赛选手和管理员查看
-        if(!$contest->public_rank && Route::currentRouteName()=='contest.rank')
-        {
+        if (!$contest->public_rank && Route::currentRouteName() == 'contest.rank') {
             return redirect(route('contest.private_rank', $id));
         }
 

@@ -20,8 +20,8 @@ class ProblemController extends Controller
             'title',
             'source',
             'hidden',
-            DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
-            DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as accepted")
+            'accepted',
+            'submitted'
         )
             ->when(!isset($_GET['show_hidden']), function ($q) {
                 return $q->where('hidden', 0);
@@ -140,11 +140,11 @@ class ProblemController extends Controller
             $tag_pool = [];
 
         // 可能指定了solution代码
-        $solution = DB::table('solutions')->find($_GET['solution']??-1);
-        if(Auth::check() && $solution && ( $solution->user_id==Auth::id()) || privilege('admin.problem.solution'))
-            $solution_code=$solution->code??null;
+        $solution = DB::table('solutions')->find($_GET['solution'] ?? -1);
+        if (Auth::check() && $solution && ($solution->user_id == Auth::id()) || privilege('admin.problem.solution'))
+            $solution_code = $solution->code ?? null;
         else
-            $solution_code=null;
+            $solution_code = null;
         return view('client.problem', compact('problem', 'results', 'contests', 'samples', 'solutions', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool', 'solution_code'));
     }
 
