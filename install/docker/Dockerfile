@@ -1,13 +1,14 @@
 FROM --platform=linux/amd64 ubuntu:20.04
 
 # Required software and their configs
-RUN sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.163.com\/ubuntu/g' /etc/apt/sources.list &&\
+RUN set -ex &&\
+    sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.163.com\/ubuntu/g' /etc/apt/sources.list &&\
     apt update && apt upgrade -y &&\
     apt install -y software-properties-common &&\
     echo -e '\n' | apt-add-repository ppa:ondrej/php &&\
     apt update && apt-get -y upgrade &&\
-    apt install -y php7.2 php7.2-fpm php7.2-mysql &&\
-        php7.2-xml php7.2-mbstring &&\
+    apt install -y php7.2 php7.2-fpm php7.2-mysql \
+        php7.2-xml php7.2-mbstring \
         php7.2-gd php7.2-curl php7.2-zip &&\
     apt install -y nginx mysql-client=8.0.* composer zip unzip language-pack-en-base&&\
     sed -i "s/^;extension=gd.*/extension=gd/"                   /etc/php/7.2/fpm/php.ini &&\
@@ -29,7 +30,7 @@ RUN export LC_ALL=en_US.UTF-8 &&\
     cp -rf .env.example .env &&\
     # nginx
     rm -rf /etc/nginx/sites-enabled/default &&\
-    cp install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
+    ln -s /app/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
     # docker entrypoint
     cp install/docker/entrypoint.sh /entrypoint.sh &&\
     chmod +x /entrypoint.sh &&\

@@ -21,6 +21,7 @@ Auth::routes();
 // Client 用户前台各个页面
 Route::get('/', 'Client\HomeController@index')->name('home');
 Route::get('/home', 'Client\HomeController@index');
+Route::get('/test', 'Client\HomeController@test')->name('test'); // only for local test
 Route::post('/get_notice', 'Client\HomeController@get_notice')->name('get_notice');
 Route::get('/status', 'Client\StatusController@index')->name('status');
 Route::post('/ajax_get_status', 'Client\StatusController@ajax_get_status')->name('ajax_get_status');

@@ -72,9 +72,9 @@ bash LDUOnlineJudge/install/update.sh
     # 以下是在容器内执行的命令
     USER=$(cat /etc/mysql/debian.cnf |grep user|head -1|awk '{print $3}')
     PASSWORD=$(cat /etc/mysql/debian.cnf |grep password|head -1|awk '{print $3}')
-    mysqldump -u"${USER}" -p"${PASSWORD}" --no-create-info --complete-insert -B lduoj > data.sql
-    mysqldump -u"${USER}" -p"${PASSWORD}" --no-data -B lduoj > structure.sql
-    echo "Generated database structure.sql and data.sql"
+    mysqldump -u"${USER}" -p"${PASSWORD}" --no-create-info --complete-insert -B lduoj > /volume/data.sql
+    mysqldump -u"${USER}" -p"${PASSWORD}" --no-data -B lduoj > /volume/structure.sql
+    echo "Generated database /volume/structure.sql and /volume/data.sql"
     ```
 2. 一键部署2.0，但**先不要打开网页**；
 3. 将1.0的静态资源移动到2.0的挂载文件夹下；
