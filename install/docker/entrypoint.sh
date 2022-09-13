@@ -33,7 +33,7 @@ php artisan optimize
 yes|php artisan migrate
 yes|php artisan key:generate
 php artisan optimize
-php artisan queue:work
+php artisan queue:work --daemon
 
 # start nginx server
 service nginx start
