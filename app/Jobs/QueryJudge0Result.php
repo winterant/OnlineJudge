@@ -34,7 +34,12 @@ class QueryJudge0Result implements ShouldQueue
      */
     public function handle()
     {
-        $solution = DB::table('solutions')->select(['problem_id', 'judge0result'])->find($this->solution_id);
+        $solution = DB::table('solutions')->select([
+            'contest_id',
+            'problem_id',
+            'user_id',
+            'judge0result',
+        ])->find($this->solution_id);
         $problem = DB::table('problems')->select(['spj'])->find($solution->problem_id);
         $judge0result = json_decode($solution->judge0result, true);
         $tokens_str = implode(',', array_keys($judge0result));
@@ -111,10 +116,70 @@ class QueryJudge0Result implements ShouldQueue
         // 根据所有测试组，汇总出solution结果，并更新数据库
         $solution_result = $this->calculate_solution($judge0result);
         DB::table('solutions')->where('id', $this->solution_id)->update($solution_result);
+
         // 若判题还未结束，则持续更新
         if ($solution_result['result'] < 4) {
             usleep(800000); // sleeping for 800ms (800000us)
             dispatch(new QueryJudge0Result($this->solution_id));
+        } else {
+            // 判题结束，则刷新统计信息
+            $this->update_accepted_count($solution->user_id, $solution->problem_id, $solution->contest_id);
+        }
+    }
+    private function update_accepted_count($user_id, $problem_id, $contest_id)
+    {
+        // users
+        $accepted = DB::table('solutions')
+            ->where('result', 4)
+            ->where('user_id', $user_id)
+            ->get([
+                'count(distinct problem_id) as solved',
+                'count(*) as accpted'
+            ]);
+        $total = DB::table('solutions')->where('user_id', $user_id)->get('count(*) as submitted');
+        DB::table('users')->where('id', $user_id)
+            ->update([
+                'solved' => $accepted->solved,
+                'accpted' => $accepted->accepted,
+                'submitted' => $total->submitted
+            ]);
+        // problems
+        $accepted = DB::table('solutions')
+            ->where('result', 4)
+            ->where('problem_id', $problem_id)
+            ->get([
+                'count(distinct user_id) as solved',
+                'count(*) as accpted'
+            ]);
+        $total = DB::table('solutions')->where('problem_id', $problem_id)->get('count(*) as submitted');
+        DB::table('problems')->where('id', $problem_id)
+            ->update([
+                'solved' => $accepted->solved,
+                'accpted' => $accepted->accepted,
+                'submitted' => $total->submitted
+            ]);
+        // contest_problem
+        if ($contest_id > 0) {
+            $accepted = DB::table('solutions')
+                ->where('result', 4)
+                ->where('problem_id', $problem_id)
+                ->where('contest_id', $contest_id)
+                ->get([
+                    'count(distinct user_id) as solved',
+                    'count(*) as accpted'
+                ]);
+            $total = DB::table('solutions')
+                ->where('contest_id', $contest_id)
+                ->where('problem_id', $problem_id)
+                ->get('count(*) as submitted');
+            DB::table('contest_problems')
+                ->where('contest_id',  $contest_id)
+                ->where('problem_id', $problem_id)
+                ->update([
+                    'solved' => $accepted->solved,
+                    'accpted' => $accepted->accepted,
+                    'submitted' => $total->submitted
+                ]);
         }
     }
 

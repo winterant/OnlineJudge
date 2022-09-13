@@ -2,17 +2,10 @@
 
 set -ex
 
-APP_HOME=$(dirname $(dirname $(readlink -f "$0")))    # Path of old project (current)
-upgrade="$1"  # Path of new code
+APP_HOME="${1:-/app}"  # Path of production
+upgrade=$(dirname $(dirname $(readlink -f "$0")))    # Path of new code (current)
 echo "APP HOME: ${APP_HOME}"
 echo "Latest code: ${upgrade}"
-
-# Checking path error
-cd "${upgrade}" || { echo "No such folder ${upgrade}"; exit -1; }  # 检查新项目是否存在
-if [[ "${upgrade}" == "${APP_HOME}" ]]; then
-    echo "[Failure] path of old project and new project are the same one."
-    exit -1
-fi
 
 # Updating files, package, database and configs.
 cp -rf "${upgrade}"/. "${APP_HOME}"/
