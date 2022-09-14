@@ -27,7 +27,7 @@ mod_env "QUEUE_CONNECTION"  ${QUEUE_CONNECTION:-database}
 service nginx start
 
 # Change storage folders owner.
-chmod -R 777 storage bootstrap/cache
+chown www-data:www-data -R storage bootstrap/cache
 
 # Start php-fpm server and initialize laravel app.
 service php7.2-fpm start
