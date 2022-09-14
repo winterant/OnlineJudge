@@ -216,6 +216,7 @@
   createApp({
     data() {
       return {
+        judge0queryUUID: 1, // 现在是第几次查询评判结果，频繁提交时，只查询当前这次提交
         judge0processing: 0, // 0:没提交, 1:判题中, 2:判题完成
         judge0result: {},
         judge0result_error_info: null,
@@ -275,9 +276,11 @@
       },
       // 使用ajax提交代码
       submit_solution() {
+        console.log("Submit time: " + this.judge0queryUUID)
+        submitUUID = ++this.judge0queryUUID // 提交轮次
         this.judge0processing = 1 //判题中
         this.judge0result = {}
-        var max_query_times = 15; // 最大查询次数
+        var max_query_times = 600; // 最大查询次数
         $.ajax({
           type: 'post',
           url: '{{ route('api.solution.submit') }}',
@@ -302,11 +305,11 @@
                   url: '{{ route('api.solution.result') }}',
                   dataType: 'json',
                   success: (judge_ret) => {
-                    console.log('judge0 judgement:', judge_ret) // todo delete
+                    console.log('judge0 result:', judge_ret) // todo delete
                     if (judge_ret.ok) {
                       this.judge0result = judge_ret.data.judge0result //更新表单
                       this.judge0result_error_info = judge_ret.data.error_info
-                      if (max_query_times-- > 0 && judge_ret.data.result < 4) { // 4: web端判题结果代号正确
+                      if (submitUUID === this.judge0queryUUID && max_query_times-- > 0 && judge_ret.data.result < 4) { // 4: web端判题结果代号正确
                         setTimeout(query_judge_result, 1000) // 继续查询
                       } else {
                         this.judge0processing = 2 // 判题完成
