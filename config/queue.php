@@ -38,9 +38,9 @@ return [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
-            'retry_after' => 90,
+            'retry_after' => 600, // 10 minutes
             'after_commit' => false,
-            'timeout' => 90
+            'timeout' => 600
         ],
 
         'beanstalkd' => [
