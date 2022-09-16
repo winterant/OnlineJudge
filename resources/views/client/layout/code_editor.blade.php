@@ -157,7 +157,7 @@
             {{-- 3判题完成 --}}
             <div v-else>
               {{-- AC --}}
-              <p class="alert-success p-2" v-if="judge0result.result_id==4">
+              <p class="alert-success p-2" v-if="result_id==4">
                 {{ __('sentence.pass_all_test') }}
                 (@{{ judge0result_num_ac }}/@{{ judge0result_num_test }})
               </p>
