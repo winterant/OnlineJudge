@@ -36,13 +36,13 @@ sudo docker-compose up -d
 - 访问首页`http://ip:8080`；可在宿主机[配置域名](https://blog.csdn.net/winter2121/article/details/107783085)；
 - **注册账号admin自动成为管理员**；
 
-# 🚗 更新源码
+# 🚗 升级系统
 
-```bash
-docker exec -it lduoj_web bash  # 进入容器(使用实际容器名)
-git clone https://github.com/winterant/LDUOnlineJudge.git
-# git clone https://gitee.com/wrant/LDUOnlineJudge.git
-bash LDUOnlineJudge/install/update.sh
+```
+docker-compose down
+docker rmi winterant/lduoj:2.0
+docker pull winterant/lduoj:2.0
+sudo docker-compose up -d
 ```
 
 # 💿 备份/迁移
