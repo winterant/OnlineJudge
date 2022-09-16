@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class QueryJudge0Result implements ShouldQueue
+class Judger implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -21,39 +21,163 @@ class QueryJudge0Result implements ShouldQueue
      * @return void
      */
     private $solution_id;
+    private $judge0result;
+    private $tokens_tobe_query;
     public function __construct($solution_id)
     {
         $this->solution_id = $solution_id;
+        $this->judge0result = [];
+        $this->tokens_tobe_query = [];
     }
 
     /**
      * Execute the job.
-     * 根据solution id，轮询judge0，更新判题结果
+     * 根据solution id，发起判题请求
+     * 随后轮询judge0，更新判题结果
      *
      * @return void
      */
     public function handle()
     {
-        $solution = DB::table('solutions')->select([
-            'contest_id',
-            'problem_id',
-            'user_id',
-            'judge0result',
-        ])->find($this->solution_id);
-        $problem = DB::table('problems')->select(['spj'])->find($solution->problem_id);
-        $judge0result = json_decode($solution->judge0result, true);
-        $tokens_str = implode(',', array_keys($judge0result));
-        $fields_str = 'token,status_id,compile_output,stderr,message,time,memory,finished_at';
-        if ($problem->spj)
-            $fields_str .= ',stdout'; // spj需要拿到stdout，再去特判
+        $this->update_db_solution(['result' => 1]); // Queueing
+
+        // 1. 获取提交记录的属性
+        $solution = DB::table('solutions')
+            ->select(['contest_id', 'problem_id', 'user_id', 'language', 'code'])
+            ->find($this->solution_id);
+        $problem = DB::table('problems')
+            ->select(['time_limit', 'memory_limit', 'spj'])
+            ->find($solution->problem_id);
+
+        // 2. 向judge0发送判题请求
+        $judge0response = $this->send_solution_to_judge0(
+            $solution->problem_id,
+            $solution->language,
+            $solution->code,
+            $problem->time_limit,
+            $problem->memory_limit,
+            $problem->spj   // if spj is true, 则不对比标准答案
+        );
+        if (intdiv($judge0response[0], 10) == 20) {
+            foreach ($judge0response[1] as $res) {
+                $this->judge0result[$res['token']] = $res;
+                $this->tokens_tobe_query[] = $res['token'];
+            }
+            $this->update_db_solution([
+                'result' => 1, // Queueing
+                'judge0result' => $judge0response[1]
+            ]);
+        } else {
+            $this->update_db_solution([
+                'result' => 14, // System Error
+                'error_info' => '[Judger] Failed to send judge request to judge0: '
+                    . $judge0response[0] . '|'
+                    . $judge0response[1]['error']
+            ]);
+            return; // Over
+        }
+
+        // 3. 轮训查询判题结果，如需特判将会发起特判。全部运行完成后，退出轮训
+        while (count($this->tokens_tobe_query) > 0) {
+            $solution_result = $this->query_judge0_result($solution, $problem->spj);
+            $this->update_db_solution($solution_result);
+            foreach ($this->judge0result as $token => $one) // 从待查列表中清除已经运行完成的token
+                if ($one['result_id'] >= 4 && ($k = array_search($token, $this->tokens_tobe_query)) !== false)
+                    unset($this->tokens_tobe_query[$k]);
+            usleep(400000); // us
+        }
+
+        // 4. 根据结果刷新过题数信息
+        $this->update_submitted_count($solution->user_id, $solution->problem_id, $solution->contest_id);
+    }
+
+    // 向jduge0发送判题请求
+    private function send_solution_to_judge0($problem_id, $lang_id, $code, $time_limit_ms, $memory_limit_mb, $is_spj)
+    {
+        set_time_limit(600); // 秒
+        ini_set('memory_limit', '2G');
+        $prev_time = time(); // 用于计时，每秒刷新数据库
+        $judge0result = [];  // 收集jduge0结果
+
+        // 1. 扫描测试数据，保存于samples_path
+        $samples_path = [];
+        $temp_map = [];
+        $dir = testdata_path($problem_id . '/test');
+        foreach (readAllFilesPath($dir) as $item) {
+            $name = pathinfo($item, PATHINFO_FILENAME);  //文件名
+            $ext = pathinfo($item, PATHINFO_EXTENSION);  //拓展名
+            if ($ext === 'in')
+                $temp_map[$name]['in'] = $item;
+            if ($ext === 'out' || $ext === 'ans')
+                $temp_map[$name]['out'] = $item;
+            if (count($temp_map[$name]) == 2)
+                $samples_path[$name] = $temp_map[$name];
+        }
+
+        // 2. 遍历测试数据，发送判题请求
+        foreach ($samples_path as $sample) {
+            $data = [
+                'language_id'     => config('oj.langJudge0Id.' . $lang_id),
+                'source_code'     => base64_encode($code),
+                'stdin'           => base64_encode(file_get_contents($sample['in'])),
+                'cpu_time_limit'  => $time_limit_ms / 1000.0, //convert to S
+                'memory_limit'    => $memory_limit_mb * 1024, //convert to KB
+                'max_file_size'   => max(
+                    (filesize($sample['out']) / 1024.0) * 2 + 64, //convert B to KB and double add 64KB
+                    64 // at least 64KB
+                ),
+                'enable_network'  => false
+            ];
+            if ($lang_id == 1) //C++
+                $data['compiler_options'] = "-O2 -std=c++17";
+            if (!$is_spj) // 非特判，则严格对比答案
+                $data['expected_output'] = base64_encode(file_get_contents($sample['out']));
+
+            // 向judge0发送判题请求
+            $res = send_post(config('app.JUDGE0_SERVER') . '/submissions?base64_encoded=true', $data);
+
+            // 解析judge0返回token
+            if (intdiv($res[0], 10) == 20) {
+                $res[1] = json_decode($res[1], true);
+                $res[1] = $this->decode_base64_judge0_submission($res[1]);
+                // 收集判题token
+                $judge0result[] = [
+                    'token' => $res[1]['token'],
+                    'testname' => basename($sample['in'], '.in')
+                ];
+                // 如果超过1s，则及时更新一下数据库solutions表
+                if (time() - $prev_time >= 1) {
+                    $prev_time = time();
+                    $this->update_db_solution(['judge0result' => $judge0result]);
+                }
+            } else {
+                return [502, ['error' => 'Failed to send data and code to judge0!']];
+            }
+        }
+        if (count($judge0result) == 0)
+            return [502, ['error' => 'The problem has no testdata!']];
+        return [201, $judge0result];
+    }
+
+    public function query_judge0_result($solution, $is_spj)
+    {
+        // 1. 向judge0查询运行结果
+        $fields_str = 'token,status_id,time,memory,finished_at,compile_output,stderr,message';
         $res = send_get(
             config('app.JUDGE0_SERVER') . '/submissions/batch',
-            ['tokens' => $tokens_str, 'base64_encoded' => 'true', 'fields' => $fields_str]
+            [
+                'tokens' => implode(',', $this->tokens_tobe_query),
+                'base64_encoded' => 'true',
+                'fields' => $fields_str . ($is_spj ? ',stdout' : null) // spj需要拿到stdout，再去特判
+            ]
         );
-        foreach (json_decode($res[1], true)['submissions'] as $fields) {
-            $current = $this->decode_base64_judge0_submission($fields); // 本次查询到的结果
-            $one = &$judge0result[$fields['token']];  // 数据库中保存的结果（未更新）
-            $one = array_merge($one, $current);  // 把新结果$current合并到旧结果$one
+
+        // 2. 解析jduge0运行结果，分析结果
+        $submissions = json_decode($res[1], true)['submissions'];
+        foreach ($submissions as $fields) {
+            $one = &$this->judge0result[$fields['token']]; // 取到历史查询结果
+            $current = $this->decode_base64_judge0_submission($fields); // 解析本次查询到的结果
+            $one = array_merge($one ?? [], $current);  // 把新结果$current合并到历史结果$one
             // $one == array (
             //     'spj' => []    // 如果第一次运行到这，是没有的
             //     'time' => 4.0,
@@ -65,13 +189,14 @@ class QueryJudge0Result implements ShouldQueue
             //     'error_info' => '',
             //     'finished_at' => '2022-09-08T10:10:51.185Z',
             // );
-            // ================== 若用户程序运行成功，则考虑特判其stdout
+
+            // ================== 若用户程序运行成功，则考虑特判其stdout ===============
             $special_result_id = -1;
-            if ($problem->spj && $one['status_id'] == 3) {
+            if ($is_spj && $one['status_id'] == 3) {
                 // 1. 请求judge0，获取spj运行结果
                 if (!isset($one['spj']['token'])) {
                     // 发送特判请求
-                    $one['spj'] = $this->send_spj(
+                    $one['spj'] = $this->send_spj_to_judge0(
                         $this->solution_id,
                         $solution->problem_id,
                         $one['testname'],
@@ -109,47 +234,12 @@ class QueryJudge0Result implements ShouldQueue
                 $one['result_id'] = $special_result_id;
             else
                 $one['result_id'] = config('oj.judge02result.' . $one['status_id']);
-            // user stdout, judge0 token 不要保存到database
+            // user stdout, user judge0 token 没必要保存到database
             unset($one['stdout']);
             unset($one['token']);
         }
-        // 根据所有测试组，汇总出solution结果，并更新数据库
-        $solution_result = $this->calculate_solution($judge0result);
-        DB::table('solutions')->where('id', $this->solution_id)->update($solution_result);
 
-        // 若判题还未结束，则持续更新
-        if ($solution_result['result'] < 4) {
-            usleep(800000); // sleeping for 800ms (800000us)
-            dispatch(new QueryJudge0Result($this->solution_id));
-        } else {
-            // 判题结束，则刷新统计信息
-            $this->update_submitted_count($solution->user_id, $solution->problem_id, $solution->contest_id);
-        }
-    }
-
-    // 将judge0查询结果(base64)解码， 并汇总报错信息为error_info字段
-    private function decode_base64_judge0_submission($s)
-    {
-        if (isset($s['message'])) $s['message'] = base64_decode($s['message']);
-        if (isset($s['compile_output'])) $s['compile_output'] = base64_decode($s['compile_output']);
-        if (isset($s['stderr'])) $s['stderr'] = base64_decode($s['stderr']);
-        if (isset($s['stdout'])) $s['stdout'] = base64_decode($s['stdout']);
-        if (isset($s['time'])) $s['time'] *= 1000;  // convert to MS for lduoj_web
-        if (isset($s['memory'])) $s['memory'] = round($s['memory'] / 1024.0, 2); // convert to MB for lduoj_web
-        $s['error_info'] = implode(PHP_EOL, array_filter([
-            $s['message'] ?? null,
-            $s['compile_output'] ?? null,
-            $s['stderr'] ?? null,
-        ]));
-        unset($s['message']);
-        unset($s['compile_output']);
-        unset($s['stderr']);
-        return $s;
-    }
-
-    // 根据所有测试组的结果，汇总出solution结果；No database
-    private function calculate_solution($judge0result)
-    {
+        // 3. 根据所有测试组运行结果，汇总出solution结果
         $solution = [
             'result' => 100,  // web端判题结果代号，初始无状态
             'time' => 0,
@@ -157,22 +247,23 @@ class QueryJudge0Result implements ShouldQueue
             'pass_rate' => 0,
             'error_info' => null,
             'wrong_data' => null,
-            'judge0result' => $judge0result,
+            'judge0result' => $this->judge0result,
             'judge_time' => null,
         ];
         $num_tests = 0;    // 测试组数
         $num_ac_tests = 0; // 正确组数
-        foreach ($judge0result as $s) {
-            if ($s['result_id'] > 4) // 答案错误(或spj运行崩溃)
+        foreach ($this->judge0result as $s) {
+            if ($s['result_id'] > 4) // 答案错误(或spj运行崩溃)，记录错误信息
             {
                 if (!$solution['error_info']) // 记录错误信息
                     $solution['error_info'] = $s['error_info'];
                 if (!$solution['wrong_data']) // 记录出错数据文件名
                     $solution['wrong_data'] = $s['testname'] ?? null;
             }
+
             if ($s['result_id'] == 4) // AC
                 $num_ac_tests++;
-            else // 尚未AC，记录最小代号即可
+            else // 尚未AC，以最小结果代号为准
                 $solution['result'] = min($solution['result'], $s['result_id']);
             $num_tests++;
             $solution['time'] = max($solution['time'], $s['time']);
@@ -185,8 +276,9 @@ class QueryJudge0Result implements ShouldQueue
         return $solution;
     }
 
-    // 发起特判，return {token:*}; No database
-    private function send_spj($solution_id, $problem_id, $testname, $user_stdout)
+
+    // 发起特判，return {token:*};
+    private function send_spj_to_judge0($solution_id, $problem_id, $testname, $user_stdout)
     {
         $testfilename = Storage::path(sprintf('data/%s/test/%s', $problem_id, $testname));
         $testfilein = $testfilename . '.in';
@@ -221,6 +313,26 @@ class QueryJudge0Result implements ShouldQueue
 
         Storage::deleteDirectory($zip_dirname); // 删除临时文件夹
         return $res;
+    }
+
+    // 将judge0查询结果(base64)解码， 并汇总报错信息为error_info字段
+    private function decode_base64_judge0_submission($s)
+    {
+        if (isset($s['message'])) $s['message'] = base64_decode($s['message']);
+        if (isset($s['compile_output'])) $s['compile_output'] = base64_decode($s['compile_output']);
+        if (isset($s['stderr'])) $s['stderr'] = base64_decode($s['stderr']);
+        if (isset($s['stdout'])) $s['stdout'] = base64_decode($s['stdout']);
+        if (isset($s['time'])) $s['time'] *= 1000;  // convert to MS for lduoj_web
+        if (isset($s['memory'])) $s['memory'] = round($s['memory'] / 1024.0, 2); // convert to MB for lduoj_web
+        $s['error_info'] = implode(PHP_EOL, array_filter([
+            $s['message'] ?? null,
+            $s['compile_output'] ?? null,
+            $s['stderr'] ?? null,
+        ]));
+        unset($s['message']);
+        unset($s['compile_output']);
+        unset($s['stderr']);
+        return $s;
     }
 
     // 更新过题数
@@ -283,5 +395,11 @@ class QueryJudge0Result implements ShouldQueue
                     'submitted' => $total->submitted
                 ]);
         }
+    }
+
+    // 更新solution
+    private function update_db_solution($data)
+    {
+        DB::table('solutions')->where('id', $this->solution_id)->update($data);
     }
 }
