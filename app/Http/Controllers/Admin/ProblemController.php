@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\Input;
 
 use App\Http\Controllers\UploadController;
+use App\Jobs\Judger;
+
 use const http\Client\Curl\AUTH_ANY;
 
 class ProblemController extends Controller
@@ -312,7 +314,7 @@ class ProblemController extends Controller
             $sid = $request->input('sid');
             $date = $request->input('date');
             if ($pid || $cid || $sid || ($date[1] && $date[2])) {
-                $count = DB::table('solutions')
+                $solution_ids = DB::table('solutions')
                     ->when($pid, function ($q) use ($pid) {
                         $q->where('problem_id', $pid);
                     })
@@ -329,14 +331,21 @@ class ProblemController extends Controller
                         $q->where('submit_time', '>', str_replace('T', ' ', $date[1]))
                             ->where('submit_time', '<', str_replace('T', ' ', $date[2]));
                     })
-                    ->update(['result' => 0]);
+                    ->orderBy('id')
+                    ->pluck('id');
+                // 刷新状态
+                DB::table('solutions')
+                    ->whereIn('id', $solution_ids)
+                    ->update(['result' => 0]); // Waiting
+                // 发起判题任务
+                foreach ($solution_ids as $id)
+                    dispatch(new Judger($id));
             }
             $query = ['inc_contest' => 'on'];
             if ($pid) $query['pid'] = $pid;
             if ($cid) $query['cid'] = $cid;
             if ($sid) $query['sid'] = $sid;
             return redirect(route("status", $query));
-            //            return view('admin.success',['msg'=>sprintf('已重判%d条提交记录，可前往状态查看',isset($count)?$count:0)]);
         }
     }
 
@@ -404,15 +413,15 @@ class ProblemController extends Controller
                 $language = $solu->attributes()->language;
                 if ($language == 'Python') $language .= '3';  //本oj只支持python3
                 $langs = [
-                    'C'=>0,
-                    'c'=>0,
-                    'C++'=>1,
-                    'c++'=>1,
-                    'CPP'=>1,
-                    'cpp'=>1,
-                    'Java'=>2,
-                    'java'=>2,
-                    'Python3'=>3,
+                    'C' => 0,
+                    'c' => 0,
+                    'C++' => 1,
+                    'c++' => 1,
+                    'CPP' => 1,
+                    'cpp' => 1,
+                    'Java' => 2,
+                    'java' => 2,
+                    'Python3' => 3,
                 ];
                 $lang = ($langs[(string)($solu->attributes()->language)] ?? false);
                 //保存提交记录
