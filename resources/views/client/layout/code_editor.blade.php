@@ -18,8 +18,7 @@
         {{-- 编程题可以选择语言 --}}
         <div class="flex-nowrap mr-3 mb-1">
           <span class="mr-2">{{ __('main.Language') }}:</span>
-          <select id="lang_select" name="solution[language]" class="px-3 border"
-            style="text-align-last: center;border-radius: 4px;">
+          <select id="lang_select" name="solution[language]" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
             @foreach (config('oj.langJudge0Name') as $key => $res)
               @if (!isset($contest) || ($contest->allow_lang >> $key) & 1)
                 <option value="{{ $key }}">{{ $res }}</option>
@@ -30,12 +29,10 @@
         {{-- 编程题可以提交文件 --}}
         <div class="flex-nowrap mr-3 mb-1">
           <span class="mr-2">{{ __('main.Upload File') }}:</span>
-          <a id="selected_fname" href="javascript:" class="m-0 px-0" onclick="$('#code_file').click()"
-            title="{{ __('main.Upload File') }}">
+          <a id="selected_fname" href="javascript:" class="m-0 px-0" onclick="$('#code_file').click()" title="{{ __('main.Upload File') }}">
             <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
           </a>
-          <input type="file" class="form-control-file" id="code_file" accept=".txt .c, .cc, .cpp, .java, .py"
-            hidden />
+          <input type="file" class="form-control-file" id="code_file" accept=".txt .c, .cc, .cpp, .java, .py" hidden />
         </div>
 
         {{-- 编辑框主题 --}}
@@ -67,15 +64,11 @@
     {{-- 提交等按钮 --}}
     <div class="overflow-hidden">
       <div class="pull-right">
-        <button id="btn_local_test" type="button" data-target="#local-test-page" data-toggle="modal"
-          onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
+        <button id="btn_local_test" type="button" data-target="#local-test-page" data-toggle="modal" onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
           class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button>
-        <button id="btn_judge_result" type="button" data-target="#judge-result-page" data-toggle="modal"
-          class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
-        <button id="btn_submit_code" type="button"
-          onclick="disabledSubmitButton(this, '已提交'); $('#btn_judge_result').click()" v-on:click="submit_solution"
-          class="btn bg-success text-white m-2" style="min-width: 6rem"
-          @guest disabled @endguest>{{ trans('main.Submit') }}</button>
+        <button id="btn_judge_result" type="button" data-target="#judge-result-page" data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
+        <button id="btn_submit_code" type="button" onclick="disabledSubmitButton(this, '已提交'); $('#btn_judge_result').click()" v-on:click="submit_solution"
+          class="btn bg-success text-white m-2" style="min-width: 6rem" @guest disabled @endguest>{{ trans('main.Submit') }}</button>
       </div>
     </div>
     {{-- end of 提交等按钮 --}}
@@ -103,11 +96,10 @@
                 <textarea id="local_test_input" v-model="local_test.stdin" rows="6" class="w-100" required></textarea>
               </div>
               <div class="d-flex">
-                <button type="button" id="btn_submit_local_test" class="btn bg-success text-white"
-                  v-on:click="submit_local_test" @guest disabled @endguest>{{ __('main.Compile and Run') }}</button>
+                <button type="button" id="btn_submit_local_test" class="btn bg-success text-white" v-on:click="submit_local_test"
+                  @guest disabled @endguest>{{ __('main.Compile and Run') }}</button>
                 @foreach ($samples as $i => $sam)
-                  <button type="button" v-on:click="fill_in_sample('{{ $i }}')"
-                    class="btn bg-secondary text-white ml-2"
+                  <button type="button" v-on:click="fill_in_sample('{{ $i }}')" class="btn bg-secondary text-white ml-2"
                     @guest disabled @endguest>{{ __('sentence.Fill in the sample') }} {{ $i + 1 }}</button>
                 @endforeach
               </div>
@@ -151,21 +143,35 @@
             {{ __('sentence.please_submit_code') }}
           </p>
           <div v-else>
+            {{-- 1提交中 --}}
             <p class="alert-info p-2" v-if="judge0processing==1">
+              {{ __('sentence.submitting') }}
+            </p>
+            {{-- 2判题中 --}}
+            <p class="alert-info p-2" v-else-if="judge0processing==2">
               {{ __('sentence.judging') }}
-              (@{{ judge0result_num_ac }}/@{{ Object.keys(judge0result).length }})
+              <span v-if="judge0result_num_test>0">
+                (@{{ judge0result_num_ac }}/@{{ judge0result_num_test }})
+              </span>
             </p>
-            <div v-else-if="judge0result_num_ac < Object.keys(judge0result).length">
-              <p class="alert-danger p-2">
-                {{ __('sentence.WA') }}
-                (@{{ judge0result_num_ac }}/@{{ Object.keys(judge0result).length }})
+            {{-- 3判题完成 --}}
+            <div v-else>
+              {{-- AC --}}
+              <p class="alert-success p-2" v-if="judge0result.result_id==4">
+                {{ __('sentence.pass_all_test') }}
+                (@{{ judge0result_num_ac }}/@{{ judge0result_num_test }})
               </p>
-              <pre v-show="judge0result_error_info" class="alert-danger p-2 overflow-auto">@{{ judge0result_error_info }}</pre>
+              {{-- WA --}}
+              <div v-else>
+                <p class="alert-danger p-2">
+                  {{ __('sentence.WA') }}
+                  (@{{ judge0result_num_ac }}/@{{ judge0result_num_test }})
+                </p>
+                <pre v-show="judge0result_error_info" class="alert-danger p-2 overflow-auto">@{{ judge0result_error_info }}</pre>
+              </div>
             </div>
-            <p class="alert-success p-2" v-else>
-              {{ __('sentence.pass_all_test') }}
-            </p>
-            <div class="form-group mt-2 table-responsive">
+
+            <div class="form-group mt-2 table-responsive" v-if="judge0result_num_test>0">
               <table class="table table-sm table-hover">
                 <thead>
                   <tr>
@@ -216,8 +222,9 @@
   createApp({
     data() {
       return {
-        judge0queryUUID: 1, // 现在是第几次查询评判结果，频繁提交时，只查询当前这次提交
-        judge0processing: 0, // 0:没提交, 1:判题中, 2:判题完成
+        judge0queryUUID: 0, // 现在是第几次查询评判结果，频繁提交时，只查询当前这次提交
+        judge0processing: 0, // 0:没提交, 1:提交中, 2:判题中, 3:判题完成
+        result_id: 0,
         judge0result: {},
         judge0result_error_info: null,
         local_test: {}
@@ -231,6 +238,12 @@
           if (this.judge0result[k].result_id == 4)
             ac++
         return ac
+      },
+      judge0result_num_test: function() {
+        var total = 0;
+        for (var k in this.judge0result)
+          total++
+        return total;
       }
     },
     methods: {
@@ -278,7 +291,7 @@
       submit_solution() {
         console.log("Submit time: " + this.judge0queryUUID)
         submitUUID = ++this.judge0queryUUID // 提交轮次
-        this.judge0processing = 1 //判题中
+        this.judge0processing = 1 // 提交中
         this.judge0result = {}
         var max_query_times = 600; // 最大查询次数
         $.ajax({
@@ -293,6 +306,7 @@
             if (ret.ok) {
               // 收到回复，刷新判题结果
               Notiflix.Notify.Success(ret.msg)
+              this.judge0processing = 2 // 判题中
               this.judge0result = ret.data.judge0result //更新表单
               // 使用ajax不断查询判题结果，直到判题完成
               const query_judge_result = () => {
@@ -307,12 +321,13 @@
                   success: (judge_ret) => {
                     console.log('judge0 result:', judge_ret) // todo delete
                     if (judge_ret.ok) {
+                      this.result_id = judge_ret.data.result // 结果代号
                       this.judge0result = judge_ret.data.judge0result //更新表单
                       this.judge0result_error_info = judge_ret.data.error_info
                       if (submitUUID === this.judge0queryUUID && max_query_times-- > 0 && judge_ret.data.result < 4) { // 4: web端判题结果代号正确
                         setTimeout(query_judge_result, 1000) // 继续查询
                       } else {
-                        this.judge0processing = 2 // 判题完成
+                        this.judge0processing = 3 // 判题完成
                       }
                     } else {
                       Notiflix.Notify.Failure(judge_ret.msg)

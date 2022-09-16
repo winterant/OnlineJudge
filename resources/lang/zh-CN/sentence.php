@@ -50,7 +50,8 @@ return [
     "Fill in the sample"=> "填入样例",
     "please_submit_code"=> "请提交代码",
     "pass_all_test"     => "恭喜你通过了全部测试数据！",
-    "judging"           => "评测中...",
+    "submitting"        => "正在提交，请稍等片刻...",
+    "judging"           => "您的代码正在评测中, 请等待...",
     "WA"                => "很遗憾，你的程序没有通过全部测试数据.",
 
 //    contest.password

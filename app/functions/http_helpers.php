@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+
 function send_post(string $url, array $data)
 {
     $jsonStr = json_encode($data);
@@ -12,12 +15,17 @@ function send_post(string $url, array $data)
         $ch,
         CURLOPT_HTTPHEADER,
         array(
+            'Expect:',
             'Content-Type: application/json; charset=utf-8',
             'Content-Length: ' . strlen($jsonStr)
         )
     );
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if (intdiv($httpCode, 10) != 20) {
+        $response = array($response);
+        $response['error'] = curl_error($ch);
+    }
     curl_close($ch);
     return array($httpCode, $response);
 }

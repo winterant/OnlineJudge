@@ -50,6 +50,7 @@ return [
     "Fill in the sample"=> "Fill in the sample",
     "please_submit_code"=> "Please submit code",
     "pass_all_test"     => "Congratulations on passing all the test data!",
+    "submitting"        => "Submitting, wait a while...",
     "judging"           => "Judging...",
     "WA"                => "Unfortunately, your program can't pass all the test data.",
 

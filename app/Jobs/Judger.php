@@ -60,19 +60,23 @@ class Judger implements ShouldQueue
         );
         if (intdiv($judge0response[0], 10) == 20) {
             foreach ($judge0response[1] as $res) {
-                $this->judge0result[$res['token']] = $res;
-                $this->tokens_tobe_query[] = $res['token'];
+                $token = $res['token'];
+                unset($res['token']);
+                $this->judge0result[$token] = $res;
+                $this->tokens_tobe_query[] = $token;
             }
             $this->update_db_solution([
                 'result' => 1, // Queueing
-                'judge0result' => $judge0response[1]
+                'judge0result' => $this->judge0result
             ]);
         } else {
+            $error = '[Judger] ' . $judge0response[0] . ' | ' . $judge0response[1]['error'];
+            if($judge0response[0] == 0){
+                $error.='\njudge0服务器因压力过大崩溃';
+            }
             $this->update_db_solution([
                 'result' => 14, // System Error
-                'error_info' => '[Judger] Failed to send judge request to judge0: '
-                    . $judge0response[0] . '|'
-                    . $judge0response[1]['error']
+                'error_info' => $error
             ]);
             return; // Over
         }
@@ -123,7 +127,7 @@ class Judger implements ShouldQueue
                 'cpu_time_limit'  => $time_limit_ms / 1000.0, //convert to S
                 'memory_limit'    => $memory_limit_mb * 1024, //convert to KB
                 'max_file_size'   => max(
-                    (filesize($sample['out']) / 1024.0) * 2 + 64, //convert B to KB and double add 64KB
+                    intval(filesize($sample['out']) / 1024) * 2 + 64, //convert B to KB and double add 64KB
                     64 // at least 64KB
                 ),
                 'enable_network'  => false
@@ -151,7 +155,7 @@ class Judger implements ShouldQueue
                     $this->update_db_solution(['judge0result' => $judge0result]);
                 }
             } else {
-                return [502, ['error' => 'Failed to send data and code to judge0!']];
+                return [$res[0], ['error' => 'Failed to send data and code to judge0. ' . $res[1]]];
             }
         }
         if (count($judge0result) == 0)
