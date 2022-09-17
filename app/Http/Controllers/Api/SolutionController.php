@@ -84,7 +84,7 @@ class SolutionController extends Controller
         $solution['id'] = DB::table('solutions')->insertGetId($solution);
 
         // ===================== 使用任务队列 提交判题任务 =====================
-        dispatch(new Judger($solution['id']));
+        // dispatch(new Judger($solution['id']));
 
         // ===================== 给前台返回提交信息 ====================
         return [
@@ -112,7 +112,7 @@ class SolutionController extends Controller
                 return ['ok' => 0, 'msg' => '您没有权限查看别人的提交记录'];
 
         // ==================== 读取判题结果 =========================
-        $judge0result = json_decode($solution->judge0result, true)??[];
+        $judge0result = json_decode($solution->judge0result, true) ?? [];
         // if (!$judge0result) // 无效的提交记录
         //     return [
         //         'ok' => 0,
@@ -124,11 +124,19 @@ class SolutionController extends Controller
             $item['result_desc'] = trans('result.' . config("oj.result." . ($item["result_id"] ?? 0)));
             // unset($item['spj']); // spj没必要给用户看
         }
+
+        if ($solution->contest_id > 0) //竞赛提交
+            $redirect = route('contest.status', [$solution->contest_id, 'username' => Auth::user()->username, 'group' => $request->input('group') ?? null]);
+        else
+            $redirect = route('status', ['pid' => $solution->problem_id, 'username' => Auth::user()->username]);
+
         return [
             'ok' => 1,
             'msg' => 'OK',
             'data' => [
                 'result' => $solution->result,
+                'result_desc' => trans('result.' . config("oj.result." . $solution->result)),
+                'redirect'  => $redirect,
                 'error_info' => $solution->error_info,
                 'judge0result' => array_values($judge0result) // 不给用户看到 key (judge0 token)
             ]

@@ -3,8 +3,8 @@
 return [
     0 => 'Waiting',
     1 => 'Queueing',
-    2 => 'Running',
-    3 => 'Judging',
+    2 => 'Compiling',
+    3 => 'Running',
     4 => 'Accepted',
     5 => 'Presentation Error',
     6 => 'Wrong Answer',

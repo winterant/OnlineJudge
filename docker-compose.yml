@@ -2,17 +2,16 @@ version: '3'
 
 services:
   web:
-    image: winterant/lduoj:2.0
+    image: winterant/lduoj:1.1
     restart: always
     ports:
-      - 8080:80
+      - 8090:80
     environment:
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_DATABASE=lduoj
       - DB_USERNAME=oj_user
       - DB_PASSWORD=OurFuture2045
-      - JUDGE0_SERVER=judge0-server:2358
       - QUEUE_CONNECTION=database
       # [Production]
       # - HREF_FORCE_HTTPS=true  # If using https but web page can't fetch static files, open it.
@@ -25,6 +24,21 @@ services:
       # - ./data/web/public/favicon.ico:/app/public/favicon.ico:ro  # Customized favicon.ico
       # [Local]
       # - ./data/web:/app  # Mount entire project to host machine.
+
+  judge-server:
+    image: winterant/judge:1.1
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=lduoj
+      - DB_USERNAME=oj_user
+      - DB_PASSWORD=OurFuture2045
+      - JG_DATA_DIR=/testdata
+      - JG_NAME=judger
+      - JG_MAX_RUNNING=4
+    volumes:
+      - ./data/web/storage/app/data:/testdata:ro
 
   mysql:
     image: docker.io/mysql:8.0
@@ -45,38 +59,3 @@ services:
       MYSQL_DATABASE: lduoj
     volumes:
       - ./data/mysql:/var/lib/mysql
-
-  judge0-server:
-    image: judge0/judge0:1.13.0
-    restart: always
-    privileged: true
-    volumes:
-      - ./judge0.conf:/judge0.conf:ro
-    # ports:
-    #   - 2358:2358
-
-  jduge0-workers:
-    image: judge0/judge0:1.13.0
-    restart: always
-    privileged: true
-    command: ["./scripts/workers"]
-    volumes:
-      - ./judge0.conf:/judge0.conf:ro
-
-  judge0-db:
-    image: postgres:13.0
-    restart: always
-    env_file: ./judge0.conf
-    volumes:
-      - ./data/judge0/postgres:/var/lib/postgresql/data
-
-  judge0-redis:
-    image: redis:6.0
-    restart: always
-    env_file: ./judge0.conf
-    command: [
-      "bash", "-c",
-      'docker-entrypoint.sh --appendonly yes --requirepass "$$REDIS_PASSWORD"'
-    ]
-    volumes:
-      - ./data/judge0/redis:/data
