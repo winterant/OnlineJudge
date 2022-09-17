@@ -20,7 +20,8 @@
 <script src="{{asset('static/bootstrap-material-design-dist/js/bootstrap-material-design.min.js')}}" defer></script>
 
 {{-- vue3 --}}
-<script src="https://unpkg.com/vue@3"></script>
+{{-- <script src="{{asset('static/vue-3.2.39/vue.runtime.global.prod.js')}}"></script> --}}
+<script src="{{asset('static/vue-3.2.39/vue.global.prod.js')}}"></script>
 
 {{-- jquery.serializejson.js; form表单转json--}}
 <script src="{{asset('static/jquery-serializeJSON/jquery.serializejson.min.js')}}" defer></script>
@@ -88,7 +89,9 @@
 {{-- echart画图工具 --}}
 <script src="{{asset('static/echarts/echarts.min.js')}}" defer></script>
 
+
 {{-- mathjax翻译数学公式 --}}
+{{-- <script type="text/javascript" src="{{asset('static/MathJax-2.7.7/MathJax.js?config=TeX-AMS_HTML')}}" defer></script> --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML" defer></script>
 {{-- mathjax渲染latex公式; 初始会自动对elements渲染一次 --}}
 <script type="text/x-mathjax-config">
