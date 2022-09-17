@@ -30,13 +30,13 @@ RUN export LC_ALL=en_US.UTF-8 &&\
     cp -rf .env.example .env &&\
     # nginx
     rm -rf /etc/nginx/sites-enabled/default &&\
-    ln -s /app/install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
+    ln -s /app/nginx.conf /etc/nginx/conf.d/lduoj.conf &&\
     # docker entrypoint
-    cp install/docker/entrypoint.sh /entrypoint.sh &&\
-    chmod +x /entrypoint.sh &&\
+    cp docker-entrypoint.sh /docker-entrypoint.sh &&\
+    chmod +x /docker-entrypoint.sh &&\
     # Rename the project to prevent to conflict with existed `volume`
     mv /app /app_tmp
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 80

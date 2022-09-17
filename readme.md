@@ -40,8 +40,8 @@ sudo docker-compose up -d
 
 ```
 docker-compose down
-docker rmi winterant/lduoj:2.0
-docker pull winterant/lduoj:2.0
+docker rmi winterant/lduoj:version
+docker pull winterant/lduoj:version
 sudo docker-compose up -d
 ```
 
