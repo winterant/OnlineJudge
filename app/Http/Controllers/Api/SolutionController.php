@@ -108,7 +108,7 @@ class SolutionController extends Controller
         if (!$solution)
             return ['ok' => 0, 'msg' => '提交记录不存在'];
         if ($verify_auth)
-            if ((auth('api')->user()->id ?? -1) != $solution->user_id || !privilege('admin.problem.solution'))
+            if ((auth('api')->user()->id ?? -1) != $solution->user_id && !privilege('admin.problem.solution'))
                 return ['ok' => 0, 'msg' => '您没有权限查看别人的提交记录'];
 
         // ==================== 读取判题结果 =========================

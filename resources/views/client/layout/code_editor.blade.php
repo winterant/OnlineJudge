@@ -344,8 +344,16 @@
               Notiflix.Notify.Failure(ret.msg)
             }
           },
-          error: function() {
-            Notiflix.Notify.Failure('已掉线，请重新登录');
+          error: function(ret) {
+            console.log(ret)
+            if (ret.status == 401) { // 身份验证失败
+              Notiflix.Report.Failure('身份验证未通过',
+                '您的账号可能已在别处登陆，您已掉线。请退出当前账号，然后重新登录！',
+                '好的'
+              );
+            } else {
+              Notiflix.Notify.Failure('请求发送失败，请刷新页面后重试！');
+            }
           }
         })
       }
