@@ -33,8 +33,10 @@ chown www-data:www-data -R storage bootstrap/cache
 service php7.2-fpm start
 php artisan storage:link
 php artisan optimize
+if [[ "`cat .env|grep ^APP_KEY=$`" != "" ]]; then  # Lack of APP_KEY
+    yes|php artisan key:generate
+fi
 yes|php artisan migrate
-yes|php artisan key:generate
 php artisan optimize
 
 # Start laravel-queue
