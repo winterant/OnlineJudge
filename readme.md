@@ -40,8 +40,7 @@ sudo docker-compose up -d
 
 ```
 docker-compose down
-docker rmi winterant/lduoj:version
-docker pull winterant/lduoj:version
+# 自行删除镜像：lduoj, judge
 sudo docker-compose up -d
 ```
 
