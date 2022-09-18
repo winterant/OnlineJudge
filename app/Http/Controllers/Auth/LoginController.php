@@ -82,6 +82,8 @@ class LoginController extends Controller
             DB::table('users')->where('id', Auth::id())
                 ->update(['api_token'=> hash('sha256', $api_token = Str::random(64))]); // hash 64 bits
             Cookie::queue('api_token', $api_token, 5256000); // 10 years
+            // 退出其他设备的登陆信息
+            Auth::logoutOtherDevices($request->input('password'));
             return $this->sendLoginResponse($request);
         }
 
