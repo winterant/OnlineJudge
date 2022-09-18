@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('class', 50)->nullable()->index();
             $table->boolean('revise')->default(1)->comment('允许修改个人信息');
             $table->boolean('locked')->default(0)->comment('锁定：禁止用户访问网站');
+
             $table->integer('solved')->default(0);
             $table->integer('accepted')->default(0);
             $table->integer('submitted')->default(0);

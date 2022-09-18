@@ -131,7 +131,9 @@ class ContestController extends Controller
             ->where('contest_id', $id)
             ->select([
                 'problems.id', 'problems.type', 'problems.title', 'cp.index',
-                'cp.submitted', 'cp.accepted', 'cp.solved',
+                DB::raw("(select count(id) from solutions where contest_id={$id} and problem_id=problems.id and result=4) as accepted"),
+                DB::raw("(select count(distinct user_id) from solutions where contest_id={$id} and problem_id=problems.id and result=4) as solved"),
+                DB::raw("(select count(id) from solutions where contest_id={$id} and problem_id=problems.id) as submitted"),
                 //查询本人是否通过此题；4:Accepted,6:Attempting,0:没做
                 DB::raw("case
                     when
@@ -199,7 +201,9 @@ class ContestController extends Controller
                 'index', 'hidden', 'problem_id as id', 'title', 'description',
                 'input', 'output', 'hint', 'source', 'time_limit', 'memory_limit', 'spj',
                 'type', 'fill_in_blank',
-                'cp.accepted', 'cp.solved', 'cp.submitted'
+                DB::raw("(select count(id) from solutions where contest_id={$id} and problem_id=problems.id and result=4) as accepted"),
+                DB::raw("(select count(distinct user_id) from solutions where contest_id={$id} and problem_id=problems.id and result=4) as solved"),
+                DB::raw("(select count(id) from solutions where contest_id={$id} and problem_id=problems.id) as submitted")
             ])
             ->where('contest_id', $id)
             ->where('index', $pid)

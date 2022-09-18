@@ -29,11 +29,6 @@ class CreateProblemsTable extends Migration
             $table->boolean('spj')->default(0);
             $table->integer('time_limit')->default(1000)->comment('MS');
             $table->integer('memory_limit')->default(1000)->comment('MB');
-
-            $table->integer('solved')->default(0);
-            $table->integer('accepted')->default(0);
-            $table->integer('submitted')->default(0);
-
             $table->boolean('hidden')->index()->default(1);
             $table->bigInteger('creator')->nullable();
             $table->dateTime('created_at')->useCurrent();

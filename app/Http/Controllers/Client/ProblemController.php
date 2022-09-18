@@ -20,8 +20,8 @@ class ProblemController extends Controller
             'title',
             'source',
             'hidden',
-            'accepted',
-            'submitted'
+            DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as accepted"),
+            DB::raw("(select count(id) from solutions where problem_id=problems.id) as submitted")
         )
             ->when(!isset($_GET['show_hidden']), function ($q) {
                 return $q->where('hidden', 0);
@@ -65,8 +65,9 @@ class ProblemController extends Controller
         // 在网页展示一个问题
         $problem = DB::table('problems')->select(
             '*',
-            DB::raw("(select count(id) from solutions where problem_id=problems.id) as submit"),
-            DB::raw("(select count(distinct user_id) from solutions where problem_id=problems.id and result=4) as solved")
+            DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as accepted"),
+            DB::raw("(select count(distinct user_id) from solutions where problem_id=problems.id and result=4) as solved"),
+            DB::raw("(select count(id) from solutions where problem_id=problems.id) as submitted")
         )->find($id);
         if ($problem == null) //问题不存在
             return view('client.fail', ['msg' => trans('sentence.problem_not_found')]);

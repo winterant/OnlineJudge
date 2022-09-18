@@ -72,11 +72,6 @@ class CreateContestsTable extends Migration
             $table->bigInteger('contest_id')->index();
             $table->integer('index');
             $table->bigInteger('problem_id')->index();
-
-            $table->integer('solved')->default(0);
-            $table->integer('accepted')->default(0);
-            $table->integer('submitted')->default(0);
-
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();
         });
