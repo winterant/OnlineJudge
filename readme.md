@@ -40,7 +40,7 @@ sudo docker-compose up -d
 
 ```
 docker-compose down
-# 自行删除镜像：lduoj, judge
+docker-compose pull web judge-server
 sudo docker-compose up -d
 ```
 
