@@ -20,6 +20,7 @@ class CheckBlacklist
      */
     public function handle($request, Closure $next)
     {
+        // 检查已登陆用户是否被拉黑
         if(Auth::check())
         {   
             if(Auth::user()->locked && Auth::user()->username!='admin')
