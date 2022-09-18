@@ -32,8 +32,8 @@ class UserController extends Controller
                 $problem_ac[$item->problem_id] = ($problem_ac[$item->problem_id] ?? 0) + 1;
         }
 
+        //对访客隐藏部分信息
         if (!Auth::user() && !get_setting('display_complete_userinfo')) {
-            //对访客隐藏部分信息
             $user->email = null;
             $user->school = '****';
             $user->class = '****';
@@ -110,22 +110,20 @@ class UserController extends Controller
         $timediff = isset($_GET['range']) && $_GET['range'] != '0'
             ? sprintf(' and TIMESTAMPDIFF(%s,submit_time,now())=0', $_GET['range']) : '';
 
-        $columes = ['username', 'nick', 'solved', 'accepted', 'submitted'];
-        if ($timediff)
-            $columes = [
-                'username', 'nick',
-                DB::raw("(select count(distinct problem_id) from solutions where user_id=users.id and result=4" . $timediff . ") as solved"),
-                DB::raw("(select count(id) from solutions where user_id=users.id and result=4" . $timediff . ") as accepted"),
-                DB::raw("(select count(id) from solutions where user_id=users.id" . $timediff . ") as submitted")
-            ];
-
-        $users = DB::table('users')->select($columes)
-            ->when($_GET['username']??false, function ($q) {
+        $users = DB::table('users')->select([
+            'username', 'nick',
+            DB::raw("(select count(distinct problem_id) from solutions where user_id=users.id and result=4" . $timediff . ") as solved"),
+            DB::raw("(select count(id) from solutions where user_id=users.id and result=4" . $timediff . ") as accepted"),
+            DB::raw("(select count(id) from solutions where user_id=users.id" . $timediff . ") as submitted")
+        ])
+            ->when($_GET['username'] ?? false, function ($q) {
                 return $q->where('username', 'like', '%' . $_GET['username'] . '%');
             })
             ->orderByDesc('solved')
             ->orderBy('submitted')
             ->paginate($_GET['perPage'] ?? 50);
+        
+        // 对访客隐藏用户信息
         if (!Auth::check() && !get_setting('display_complete_standings')) {
             foreach ($users as &$user) {
                 for ($i = 3; $i < strlen($user->username) - 3 || $i < 6; $i++)
