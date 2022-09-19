@@ -43,14 +43,22 @@
 </head>
 
 <body>
+  {{-- 检查微信浏览器，不允许使用微信浏览器 --}}
   @if (stripos($_SERVER['HTTP_USER_AGENT'], 'wechat') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') === false)
     <div class="w-100 p-3">
-      <p class="p-3 alert-danger">请使用Edge浏览器或Google Chrome浏览器访问本站！否则部分功能将无法使用！</p>
-      <p class="p-3 alert-warning">
-        @if (isset($_SERVER['HTTP_HOST']))
-          本站网址 <a href="{{ $_SERVER['HTTP_HOST'] }}">{{ $_SERVER['HTTP_HOST'] }}</a>
-        @endif
+      <p class="p-3 alert-danger">
+        <strong>请使用Edge浏览器或Google Chrome浏览器访问本站！否则部分功能将无法使用！</strong>
         <br>
+        您可以将本站网址复制下来，输入到浏览器的地址栏中，按回车即可访问。
+      </p>
+      @if (isset($_SERVER['HTTP_HOST']))
+        <p class="p-3 alert-info">
+          本站网址 <a href="{{ $_SERVER['HTTP_HOST'] }}">{{ $_SERVER['HTTP_HOST'] }}</a>
+        </p>
+      @endif
+      <p class="p-3 alert-danger">
+        如果您还没有安装Edge浏览器或Google Chrome浏览器，请安装！
+        <br><br>
         Edge浏览器下载地址
         <a href="https://www.microsoft.com/zh-cn/edge">www.microsoft.com/zh-cn/edge</a>
         <br>
@@ -59,6 +67,7 @@
       </p>
     </div>
   @endif
+
 
   <nav class="navbar navbar-expand-lg navbar-light bg-white mb-3" style="z-index: 10">
 
@@ -80,7 +89,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link text-nowrap p-2" href="{{ route('status') }}">
-            <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;{{ trans('main.Solutions') }}</i>
+            <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;{{ trans('main.HomeStatus') }}</i>
           </a>
         </li>
         <li class="nav-item">

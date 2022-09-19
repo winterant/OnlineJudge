@@ -34,6 +34,7 @@ return [
     "Problem"       => "Problem",
     "Problem_timu"  => "Problem",
     "Status"        => "Status",
+    "HomeStatus"    => "Status",
     "Solutions"     => "Solutions",
     "Solution"      => "Solution",
     "Contest"       => "Contest",

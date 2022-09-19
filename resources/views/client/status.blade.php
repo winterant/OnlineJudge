@@ -18,7 +18,7 @@
             @endif
             <div class="col-12">
                 <div class="my-container bg-white">
-                    <form action="" method="get">
+                    <form id="form_status" action="" method="get">
                         @if(isset($_GET['group']))
                             <input name="group" value="{{$_GET['group']}}" hidden>
                         @endif
@@ -69,8 +69,9 @@
                                     </th>
                                     <th>
                                         <div class="form-group m-0 p-0 bmd-form-group">
-                                            <input type="text" class="form-control" placeholder="Username"
-                                                   name="username" value="{{$_GET['username'] ?? ''}}">
+                                            <input type="text" class="form-control" placeholder="{{trans('main.Username')}}"
+                                                onchange="this.form.submit();"
+                                                name="username" value="{{$_GET['username'] ?? ''}}">
                                         </div>
                                     </th>
                                     <th>
@@ -102,6 +103,7 @@
                                         @if(privilege('admin.problem.solution'))
                                             <div class="form-group m-0 p-0 bmd-form-group">
                                                 <input type="text" class="form-control" placeholder="IP"
+                                                    onchange="this.form.submit();"
                                                     name="ip" value="{{$_GET['ip'] ?? ''}}">
                                             </div>
                                         @else
@@ -201,7 +203,7 @@
             </div>
         </div>
     </div>
-{{-- 
+
     <script type="text/javascript">
         $(function () {
             var intervalID = setInterval(function () {
@@ -223,13 +225,13 @@
                         'sids':sids
                     },
                     function (ret) {
-                        ret=JSON.parse(ret);
+                        // ret=JSON.parse(ret);
                         for(var sol of ret){
                             $("#result_"+sol.id).prev().prev().html(sol.id);
                             $("#result_"+sol.id).prev().html(sol.result);
                             $("#result_"+sol.id).removeClass();
                             $("#result_"+sol.id).addClass('result_td');
-                            $("#result_"+sol.id).addClass(sol.color);
+                            $("#result_"+sol.id).addClass('judge-result-'+sol.result);
                             $("#result_"+sol.id).html(sol.text);
                             $("#result_"+sol.id).parent().next().html(sol.time);
                             $("#result_"+sol.id).parent().next().next().html(sol.memory);
@@ -238,5 +240,5 @@
                 );
             }, 1500); // 1.5S后基本都判完题了
         });
-    </script> --}}
+    </script>
 @endsection

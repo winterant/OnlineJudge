@@ -100,29 +100,28 @@ class StatusController extends Controller
     }
 
     // 状态页面使用ajax实时更新题目的判题结果 TODO Delete this function
-    // public function ajax_get_status(Request $request)
-    // {
-    //     if ($request->isMethod('post')) {
-    //         $sids = $request->input('sids');
-    //         $solutions = DB::table('solutions')
-    //             ->select(['id', 'judge_type', 'result', 'time', 'memory', 'pass_rate'])
-    //             ->whereIn('id', $sids)->get();
-    //         $ret = [];
-    //         foreach ($solutions as $item) {
-    //             $ret[] = [
-    //                 'id' => $item->id,
-    //                 'result' => $item->result,
-    //                 'color' => null,
-    //                 'text' => trans('result.' . config('oj.result.' . $item->result))
-    //                     . ($item->judge_type == 'oi' && $item->result >= 5 && $item->result <= 10 ? sprintf(' (%s%%)', round($item->pass_rate * 100)) : null),
-    //                 'time' => $item->time . 'MS',
-    //                 'memory' => round($item->memory, 2) . 'MB'
-    //             ];
-    //         }
-    //         return json_encode($ret);
-    //     }
-    //     return json_encode([]);
-    // }
+    public function ajax_get_status(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $sids = $request->input('sids');
+            $solutions = DB::table('solutions')
+                ->select(['id', 'judge_type', 'result', 'time', 'memory', 'pass_rate'])
+                ->whereIn('id', $sids)->get();
+            $ret = [];
+            foreach ($solutions as $item) {
+                $ret[] = [
+                    'id' => $item->id,
+                    'result' => $item->result,
+                    'text' => trans('result.' . config('oj.result.' . $item->result))
+                        . ($item->judge_type == 'oi' && $item->result >= 5 && $item->result <= 10 ? sprintf(' (%s%%)', round($item->pass_rate * 100)) : null),
+                    'time' => $item->time . 'MS',
+                    'memory' => round($item->memory, 2) . 'MB'
+                ];
+            }
+            return $ret;
+        }
+        return [];
+    }
 
     // web 查看一条提交记录
     public function solution($id)
