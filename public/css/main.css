@@ -1,22 +1,3 @@
-/*去掉mathjax的边框*/
-.MathJax {
-    outline: 0 !important;
-}
-.MathJax_Display {
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-}
-
-/* 代码高亮：行号样式调整 */
-.hljs ol li {
-    /*list-style: decimal-leading-zero;*/
-    border-left: 1px solid #ddd !important;
-    padding-left: 5px !important;
-}
-pre {
-    tab-size: 4; /* 制表符宽度 */
-}
-
 /* ======================================== 美化滚动条 ================================ */
 ::-webkit-scrollbar {
     width: 8px;
@@ -32,7 +13,7 @@ pre {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(144,147,153,.5);
+    background-color: rgba(144, 147, 153, .5);
     background-clip: padding-box;
     min-height: 28px;
     -webkit-border-radius: 2em;
@@ -43,17 +24,15 @@ pre {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(144,147,153,.3);
+    background-color: rgba(144, 147, 153, .3);
 }
-
-
-
 
 /* ========================= 自定义容器 ============================== */
 /*html*/
-html, body {
-    width:100%;
-    height:100%;
+html,
+body {
+    width: 100%;
+    height: 100%;
     margin: 0;
     background-color: #fafafa;
 }
@@ -71,123 +50,191 @@ html, body {
     margin-bottom: 1.2rem;
 }
 
+/* =========================== 导航栏以及按钮的全局样式 =============================== */
+.nav-link,
+.btn {
+    text-transform: none;
+    /* 不要自动大写 */
+}
+
+/*导航栏菜单项的最小宽度*/
+.nav-link {
+    min-width: 90px !important;
+    text-align: center;
+}
+
+/* 导航栏菜单项选中时的底部样式 */
+.nav-tabs .active {
+    /*border-color: #6599ff !important;*/
+    border-bottom: .214rem solid #6599ff !important;
+}
 
 /* ============================== table的全局设置 =========================== */
-.table-responsive{
+.table-responsive {
     overflow-y: hidden;
 }
+
 /* .table th, .table td{
     text-align: center;
 } */
-.table td{
+.table td {
     font-size: 0.85rem;
 }
 
-/* ========================================= 按钮 ========================================= */
-.nav-link, .btn {
-    text-transform: none; /* 不要自动大写 */
+th {
+    /*所有table的表头不换行*/
+    white-space: nowrap
 }
 
-/* ========================================= 字体颜色 ========================================= */
-.text-black{
+
+/* ============================= 字体颜色 ================================ */
+.text-black {
     color: black;
 }
-.text-gray{
+
+.text-gray {
     color: gray;
 }
-.text-yellow{
+
+.text-yellow {
     color: #faf800;
 }
-.text-orange{
+
+.text-orange {
     color: orange;
 }
-.text-green{
+
+.text-green {
     /*color: green;*/
     color: #05d400;
 }
-.text-blue{
+
+.text-blue {
     color: blue;
 }
-.text-red{
+
+.text-red {
     color: red;
 }
-.text-sky{
+
+.text-sky {
     color: #03a9f4;
 }
-.text-purple{
+
+.text-purple {
     color: purple;
 }
 
 /* ======================================== 判题结果样式 ==================================== */
-.judge-result-0{ 
+.judge-result-0 {
     /* Waiting */
-    color:black
+    color: black
 }
-.judge-result-1{ 
+
+.judge-result-1 {
     /* Queueing */
     color: #ffdd00;
 }
-.judge-result-2{ 
+
+.judge-result-2 {
     /* Compiling */
-    color:rgb(242, 160, 7)
+    color: rgb(242, 160, 7)
 }
-.judge-result-3{ 
+
+.judge-result-3 {
     /* Running */
-    color:orange
+    color: orange
 }
-.judge-result-4{ 
+
+.judge-result-4 {
     /* Accepted */
-    color:green
+    color: green
 }
-.judge-result-5{ 
+
+.judge-result-5 {
     /* Presentation Error */
-    color:blue
+    color: blue
 }
-.judge-result-6{ 
+
+.judge-result-6 {
     /* Wrong Answer */
-    color:red
+    color: red
 }
-.judge-result-7{ 
+
+.judge-result-7 {
     /* Time Limit Exceeded */
-    color:blue
+    color: blue
 }
-.judge-result-8{ 
+
+.judge-result-8 {
     /* Memory Limit Exceeded */
-    color:blue
+    color: blue
 }
-.judge-result-9{ 
+
+.judge-result-9 {
     /* Output Limit Exceeded */
-    color:blue
+    color: blue
 }
-.judge-result-10{ 
+
+.judge-result-10 {
     /* Runtime Error */
-    color:blue
+    color: blue
 }
-.judge-result-11{ 
+
+.judge-result-11 {
     /* Compile Error */
     color: red
 }
-.judge-result-12{ 
+
+.judge-result-12 {
     /* Test Completed */
-    color:black
+    color: black
 }
-.judge-result-13{ 
+
+.judge-result-13 {
     /* Skipped */
-    color:gray
+    color: gray
 }
-.judge-result-14{ 
+
+.judge-result-14 {
     /* System Error */
-    color:purple
+    color: purple
 }
-.judge-result-15{ 
+
+.judge-result-15 {
     /* Submitted */
-    color:black
+    color: black
 }
 
 /* ========================================= 背景颜色 ========================================= */
-.bg-sky{
+.bg-sky {
     background-color: #64ccff;
 }
-.bg-gray{
+
+.bg-gray {
     background-color: #dbdbdb;
+}
+
+/* ================================== Mathjax样式调整 =========================== */
+/*去掉mathjax的边框*/
+.MathJax {
+    outline: 0 !important;
+}
+
+.MathJax_Display {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+}
+
+/* ================================ 代码高亮样式 ========================== */
+/* 代码高亮：行号样式调整 */
+.hljs ol li {
+    /*list-style: decimal-leading-zero;*/
+    border-left: 1px solid #ddd !important;
+    padding-left: 5px !important;
+}
+
+pre {
+    tab-size: 4;
+    /* 制表符宽度 */
 }

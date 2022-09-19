@@ -2,7 +2,6 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-
   @include('layouts.head')
   <title>@yield('title')</title>
 
@@ -21,25 +20,7 @@
         @endif
       }
     }
-
-    /* 导航栏菜单项选中时的底部样式 */
-    .nav-tabs .active {
-      /*border-color: #6599ff !important;*/
-      border-bottom: .214rem solid #6599ff !important;
-    }
-
-    th {
-      /*所有table的表头不换行*/
-      white-space: nowrap
-    }
-
-    .nav-link {
-      /*导航栏菜单项的最小宽度*/
-      min-width: 90px !important;
-      text-align: center;
-    }
   </style>
-
 </head>
 
 <body>

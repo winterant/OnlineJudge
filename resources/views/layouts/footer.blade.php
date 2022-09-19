@@ -4,7 +4,7 @@
         <span id="localtime">{{date('Y-m-d H:i:s')}}</span>
         @if(get_setting('beian')!=null)
             &nbsp;&nbsp;|&nbsp;&nbsp;
-            <a href="http://www.beian.miit.gov.cn" target="_blank">{{get_setting('beian')}}</a>
+            {{get_setting('beian')}}
         @endif
     </div>
 
@@ -19,11 +19,11 @@
         setInterval(function () {
             now=new Date(now.getTime()+1000);
             var str=now.getFullYear();
-            str+='-'+(now.getMonth()<9?'0':'')   +(now.getMonth()+1);
-            str+='-'+(now.getDate()<10?'0':'')   +now.getDate();
-            str+=' '+(now.getHours()<10?'0':'')  +now.getHours();
-            str+=':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
-            str+=':'+(now.getSeconds()<10?'0':'')+now.getSeconds();
+            str+='-'+(now.getMonth()<9?'0':'')   +(now.getMonth()+1).toString();
+            str+='-'+(now.getDate()<10?'0':'')   +now.getDate().toString();
+            str+=' '+(now.getHours()<10?'0':'')  +now.getHours().toString();
+            str+=':'+(now.getMinutes()<10?'0':'')+now.getMinutes().toString();
+            str+=':'+(now.getSeconds()<10?'0':'')+now.getSeconds().toString();
             document.getElementById('localtime').innerHTML=str;
         },1000); //每秒刷新时间
     })
