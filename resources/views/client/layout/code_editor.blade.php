@@ -64,11 +64,9 @@
     {{-- 提交等按钮 --}}
     <div class="overflow-hidden">
       <div class="pull-right">
-        {{-- 
-        <button id="btn_local_test" type="button" data-target="#local-test-page" data-toggle="modal" onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
+        {{-- <button id="btn_local_test" type="button" data-target="#local-test-page" data-toggle="modal" onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
           class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button>
-        <button id="btn_judge_result" type="button" data-target="#judge-result-page" data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
-         --}}
+        <button id="btn_judge_result" type="button" data-target="#judge-result-page" data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button> --}}
         <button id="btn_submit_code" type="button" onclick="disabledSubmitButton(this, '已提交'); $('#btn_judge_result').click()" v-on:click="submit_solution"
           class="btn bg-success text-white m-2" style="min-width: 6rem" @guest disabled @endguest>{{ trans('main.Submit') }}</button>
       </div>
@@ -323,7 +321,7 @@
                   success: (judge_ret) => {
                     console.log('judge0 result:', judge_ret) // todo delete
                     if (judge_ret.ok) {
-                      window.location.href=judge_ret.data.redirect
+                      window.location.href = judge_ret.data.redirect
                       this.result_id = judge_ret.data.result // 结果代号
                       this.judge0result = judge_ret.data.judge0result //更新表单
                       this.judge0result_error_info = judge_ret.data.error_info
@@ -399,7 +397,7 @@
         localStorage.setItem('code_editor_theme', theme_name)
       })
 
-      //监听用户选中的语言，实时修改代码提示框
+      // ==================== 监听用户选中的语言，实时修改代码提示框
       function listen_lang_selected() {
         // var langs = JSON.parse('{!! json_encode(config('oj.langJudge0Name')) !!}') // 系统设定的语言候选列表
         var lang = $("#lang_select").children('option:selected').val(); // 当前选中的语言下标
@@ -415,9 +413,12 @@
           code_editor.setOption('mode', 'text/x-python')
         }
       }
-      if (localStorage.getItem('code_lang') !== null) // 切换为本地缓存的语言
+      // 初始切换为本地缓存的语言
+      // 情况1: 已缓存选中语言  且题目允许
+      if (localStorage.getItem('code_lang') !== null && $("option[value=" + localStorage.getItem('code_lang') + "]").length > 0)
         $("#lang_select").val(localStorage.getItem('code_lang'))
       listen_lang_selected()
+      // 情况2: 用户手动切换了语言
       $("#lang_select").change(function() {
         listen_lang_selected()
       });
