@@ -423,7 +423,7 @@
         listen_lang_selected()
       });
 
-      // 监听用户选中的文件，实时读取
+      // ======================== 监听用户选中的文件，实时读取
       $("#code_file").on("change", function() {
         $('#selected_fname').html(this.files[0].name);
         var reader = new FileReader();
@@ -437,12 +437,12 @@
         }
       })
 
-      // 初始化填充代码
-      if (code_editor.getValue() == '' && localStorage.getItem(
-          'solution_p{{ $problem->id }}_{{ $contest->id ?? 0 }}'))
-        code_editor.setValue(localStorage.getItem('solution_p{{ $problem->id }}_{{ $contest->id ?? 0 }}'))
+      // ======================== 初始化填充代码
+      var local_code_key = "solution_code_problem{{ $problem->id }}_contest{{ $contest->id ?? 0 }}"
+      if (code_editor.getValue() == '' && localStorage.getItem(local_code_key))
+        code_editor.setValue(localStorage.getItem(local_code_key))
 
-      //监听代码输入，自动补全代码：
+      // ===========================监听代码输入，自动补全代码：
       code_editor.on('change', (instance, change) => {
         // 自动补全的时候，也会触发change事件，所有判断一下，以免死循环，正则是为了不让空格，换行之类的也提示
         // 通过change对象你可以自定义一些规则去判断是否提示
@@ -451,7 +451,7 @@
           instance.showHint()
         }
         // 代码修改时顺便保存本地，防止丢失
-        localStorage.setItem('solution_p{{ $problem->id }}_{{ $contest->id ?? 0 }}', code_editor.getValue())
+        localStorage.setItem(local_code_key, code_editor.getValue())
       });
     })
   </script>
