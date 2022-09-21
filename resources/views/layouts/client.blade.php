@@ -35,7 +35,7 @@
       </p>
       @if (isset($_SERVER['HTTP_HOST']))
         <p class="p-3 alert-info">
-          本站网址 <a href="{{ $_SERVER['HTTP_HOST'] }}">{{ $_SERVER['HTTP_HOST'] }}</a>
+          本站网址 {{ $_SERVER['HTTP_HOST'] }}
         </p>
       @endif
       <p class="p-3 alert-danger">
