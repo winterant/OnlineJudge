@@ -57,6 +57,17 @@
         <div class="mt-3">
           @include('contest.menu')
         </div>
+
+        {{-- 题号链接 --}}
+        <div class="tabbable">
+          <div class="btn-group">
+            @foreach ($contest_pindex as $pindex)
+              <a class="btn btn-secondary @if($problem->index==$pindex) active @endif" href="{{ route('contest.problem', [$contest->id, $pindex]) }}">
+                {{ index2ch($pindex) }}
+              </a>
+            @endforeach
+          </div>
+        </div>
       @endif
 
       {{-- 题目内容 --}}

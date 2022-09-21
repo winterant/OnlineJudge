@@ -208,6 +208,11 @@ class ContestController extends Controller
             ->where('contest_id', $id)
             ->where('index', $pid)
             ->first();
+        // 读取当前竞赛所有题号
+        $contest_pindex = DB::table('contest_problems')
+                ->where('contest_id', $id)
+                ->orderBy('index')
+                ->pluck('index');
 
         if (!$problem) // 题目不存在! 跳回前一页
             return back();
@@ -258,7 +263,7 @@ class ContestController extends Controller
             $solution_code = $solution->code ?? null;
         else
             $solution_code = null;
-        return view('contest.problem', compact('contest', 'problem', 'results', 'samples', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool', 'solution_code'));
+        return view('contest.problem', compact('contest', 'problem', 'contest_pindex', 'results', 'samples', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool', 'solution_code'));
     }
 
     public function status($id)

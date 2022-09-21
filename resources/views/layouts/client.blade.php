@@ -25,7 +25,8 @@
 
 <body>
   {{-- 检查微信浏览器，不允许使用微信浏览器 --}}
-  @if (stripos($_SERVER['HTTP_USER_AGENT'], 'wechat') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') === false)
+  @if (stripos($_SERVER['HTTP_USER_AGENT'], 'wechat') !== false ||
+      (stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') === false && stripos($_SERVER['HTTP_USER_AGENT'], 'safari') === false))
     <div class="w-100 p-3">
       <p class="p-3 alert-danger">
         <strong>请使用Edge浏览器或Google Chrome浏览器访问本站！否则部分功能将无法使用！</strong>
