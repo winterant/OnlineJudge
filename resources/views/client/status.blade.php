@@ -3,7 +3,7 @@
 @if(isset($contest))
     @section('title',trans('main.Solutions').' | '.trans('main.Contest').' '.$contest->id.' | '.get_setting('siteName'))
 @else
-    @section('title',trans('main.Solutions').' | '.get_setting('siteName'))
+    @section('title',trans('main.HomeStatus').' | '.get_setting('siteName'))
 @endif
 
 @section('content')
