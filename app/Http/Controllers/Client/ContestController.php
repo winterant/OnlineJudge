@@ -427,11 +427,12 @@ class ContestController extends Controller
             }
         }
         //追加用户名、学校、昵称
-        $user_infos = DB::table('users')->whereIn('id', array_unique($uids))->get(['id', 'username', 'school', 'nick']);
+        $user_infos = DB::table('users')->whereIn('id', array_unique($uids))->get(['id', 'username', 'school', 'class', 'nick']);
         foreach ($user_infos as $u_info) {
             if (!isset($users[$u_info->id])) $users[$u_info->id] = ['score' => 0, 'penalty' => 0];
             $users[$u_info->id]['username'] = $u_info->username;
             if (get_setting('rank_show_school')) $users[$u_info->id]['school'] = $u_info->school;
+            if (get_setting('rank_show_class')) $users[$u_info->id]['class'] = $u_info->class;
             if (get_setting('rank_show_nick')) $users[$u_info->id]['nick'] = $u_info->nick;
         }
         //排序
