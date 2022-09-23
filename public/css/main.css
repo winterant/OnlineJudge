@@ -58,7 +58,7 @@ body {
 }
 
 /*导航栏菜单项的最小宽度*/
-.nav-link {
+.nav-tabs .nav-link {
     min-width: 90px !important;
     text-align: center;
 }

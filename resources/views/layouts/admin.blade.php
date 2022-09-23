@@ -130,7 +130,7 @@
       </button>
 
       <div class="collapse navbar-collapse bg-white" id="bs-example-navbar-collapse-1">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav nav-tabs">
           <li class="nav-item">
             <a id="link_home" class="nav-link text-nowrap p-2" href="{{ route('home') }}">
               <i class="fa fa-home" aria-hidden="true">&nbsp;{{ trans('main.Home') }}</i>
