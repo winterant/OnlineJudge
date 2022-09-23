@@ -46,6 +46,9 @@ services:
     security_opt:
       - seccomp:unconfined # docker取消安全验证
     command:
+      --max_connections=1024
+      --wait_timeout=60
+      --interactive_timeout=60
       --authentication_policy=mysql_native_password
       --lower_case_table_names=1
       --character-set-server=utf8mb4
