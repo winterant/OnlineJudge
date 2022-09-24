@@ -338,8 +338,8 @@ class ProblemController extends Controller
                     ->whereIn('id', $solution_ids)
                     ->update(['result' => 0]); // Waiting
                 // 发起判题任务
-                foreach ($solution_ids as $id)
-                    dispatch(new Judger($id));
+                // foreach ($solution_ids as $id)
+                //     dispatch(new Judger($id));
             }
             $query = ['inc_contest' => 'on'];
             if ($pid) $query['pid'] = $pid;
