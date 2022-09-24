@@ -30,7 +30,7 @@ class HomeController extends Controller
             ->select(['user_id', 'username', 'school', 'class', 'nick', DB::raw('count(distinct problem_id) as solved'),])
             ->where('submit_time', '>', date('Y-m-d 00:00:00', time() - 3600 * 24 * $day))
             ->where('result', 4)
-            ->whereRaw("(select count(*) from privileges P where solutions.user_id=P.user_id and authority='admin')=0")
+            // ->whereRaw("(select count(*) from privileges P where solutions.user_id=P.user_id and authority='admin')=0")
             ->groupBy(['user_id'])
             ->orderByDesc('solved')
             ->limit(10)->get();
@@ -40,7 +40,7 @@ class HomeController extends Controller
             ->where('submit_time', '>', date('Y-m-d 00:00:00', time() - 3600 * 24 * ($day + 7)))
             ->where('submit_time', '<', date('Y-m-d 00:00:00', time() - 3600 * 24 * $day))
             ->where('result', 4)
-            ->whereRaw("(select count(*) from privileges P where solutions.user_id=P.user_id and authority='admin')=0")
+            // ->whereRaw("(select count(*) from privileges P where solutions.user_id=P.user_id and authority='admin')=0")
             ->groupBy(['user_id'])
             ->orderByDesc('solved')
             ->limit(10)->get();

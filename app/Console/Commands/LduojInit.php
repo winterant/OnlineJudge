@@ -54,7 +54,7 @@ class LduojInit extends Command
         echo "--------------------- init_permission -----------------------" . PHP_EOL;
         //============= 创建权限
         // foreach (config('auth.guards') as $guard_name => $v)
-        foreach (config('oj.init.permissions') as $name => $attr)
+        foreach (config('init.permissions') as $name => $attr)
             Permission::findOrCreate($name, $guard_name ?? null);
         echo 'All Permissions: ';
         print_r(json_decode(json_encode(Permission::all()), true));
@@ -63,7 +63,7 @@ class LduojInit extends Command
         if (Role::count() > 0) // 已有角色，则不打扰了
             return false;
         // foreach (config('auth.guards') as $guard_name => $v)
-        foreach (config('oj.init.roles') as $name => $permissions) {
+        foreach (config('init.roles') as $name => $permissions) {
             $role = Role::findOrCreate($name, $guard_name ?? null);
             $role->syncPermissions($permissions);
             echo "--------------- Role [{$name}] ---------------" . PHP_EOL;

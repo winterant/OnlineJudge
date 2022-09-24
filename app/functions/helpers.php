@@ -140,7 +140,7 @@ function get_spj_code($problem_id): ?string
 function index2ch(int $index)
 {
     if ($index < 26)
-        return chr($index + 65);
+        return sprintf("%s (%d)", chr($index + 65), $index + 1);
     return $index + 1; //Z的下一题是27题
 }
 

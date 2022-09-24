@@ -123,7 +123,7 @@
                         <i class="fa fa-pencil text-red" aria-hidden="true"></i>
                       @endif
                     </td>
-                    <td>{{ index2ch($item->index) }}</td>
+                    <td nowrap>{{ index2ch($item->index) }}</td>
                     <td nowrap>
                       @if (privilege('admin.contest') || time() > strtotime($contest->end_time))
                         <span style="font-size: 0.85rem">
