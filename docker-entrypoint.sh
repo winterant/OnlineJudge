@@ -38,6 +38,7 @@ if [[ "`cat .env|grep ^APP_KEY=$`" != "" ]]; then  # Lack of APP_KEY
 fi
 yes|php artisan migrate
 php artisan optimize
+php artisan lduoj:init
 
 # Start laravel-queue
 php artisan queue:work

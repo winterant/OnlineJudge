@@ -186,7 +186,12 @@ return [
         /**
          * 验证码
          */
-        \Mews\Captcha\CaptchaServiceProvider::class,
+        Mews\Captcha\CaptchaServiceProvider::class,
+
+        /**
+         * 权限管理 https://spatie.be/docs/laravel-permission/v5/introduction
+         */
+        Spatie\Permission\PermissionServiceProvider::class
     ],
 
     /*

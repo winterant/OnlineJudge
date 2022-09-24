@@ -17,7 +17,8 @@
         "laravel/tinker": "^1.0",
         "laravel/ui": "^1.1",
         "league/flysystem": "1.1.4",
-        "mews/captcha": "^3.0"
+        "mews/captcha": "^3.0",
+        "spatie/laravel-permission": "^5.3"
     },
     "require-dev": {
         "filp/whoops": "^2.0",
@@ -66,11 +67,5 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer"
-        }
     }
 }
