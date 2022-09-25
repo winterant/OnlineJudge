@@ -74,7 +74,7 @@ class LduojInit extends Command
     }
 
     // 初始化超级管理员用户
-    private function init_user_admin($admin_name = 'admin3')
+    private function init_user_admin($admin_name = 'admin')
     {
         echo "--------------------- init_user_admin -----------------------" . PHP_EOL;
         //============= 尝试创建管理员账号
