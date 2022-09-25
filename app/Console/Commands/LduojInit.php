@@ -54,8 +54,9 @@ class LduojInit extends Command
         echo "--------------------- init_permission -----------------------" . PHP_EOL;
         //============= 创建权限
         // foreach (config('auth.guards') as $guard_name => $v)
-        foreach (config('init.permissions') as $name => $attr)
-            Permission::findOrCreate($name, $guard_name ?? null);
+        foreach (config('init.permissions') as $name => $attr) {
+            $permission = Permission::findOrCreate($name, $guard_name ?? null);
+        }
         echo 'All Permissions: ';
         print_r(json_decode(json_encode(Permission::all()), true));
 

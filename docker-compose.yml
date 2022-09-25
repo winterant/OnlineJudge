@@ -7,21 +7,28 @@ services:
     ports:
       - 8080:80
     environment:
+      # [/app/.env] for laravel
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_DATABASE=lduoj
       - DB_USERNAME=oj_user
       - DB_PASSWORD=OurFuture2045
       - QUEUE_CONNECTION=database
-      # [Production]
       # - HREF_FORCE_HTTPS=true  # If using https but web page can't fetch static files, open it.
-      # [Local]
-      # - APP_DEBUG=true  # Open debug mode for laravel
+      # - APP_DEBUG=true  # Open debug mode for laravel.
+      # [/etc/php/7.2/fpm/pool.d/www.conf] for php-fpm
+      # Example for server which has 32GB memory to be used steadily.
+      # default: pm=dynamic
+      # - pm=static
+      # - pm_max_children=1280
+
     volumes:
       # [Production]
-      - ./data/web/storage/app:/app/storage/app
-      - ./data/web/storage/logs:/app/storage/logs
       # - ./data/web/public/favicon.ico:/app/public/favicon.ico:ro  # Customized favicon.ico
+      - ./data/web/storage/app:/app/storage/app
+      - ./data/logs/laravel:/app/storage/logs
+      - ./data/logs/php7.2-fpm.log:/var/log/php7.2-fpm.log
+      - ./data/logs/nginx:/var/log/nginx
       # [Local]
       # - ./data/web:/app  # Mount entire project to host machine.
 
