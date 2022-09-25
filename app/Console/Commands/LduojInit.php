@@ -91,6 +91,8 @@ class LduojInit extends Command
         //============= 为admin赋予最高权限
         $user->givePermissionTo('admin');
         echo "Gave permision [admin] to user [admin]" . PHP_EOL;
+        // 临时旧版本权限表赋权
+        DB::table('privileges')->insert(['user_id'=>$user->id,'authority'=>'admin']);
         return true;
     }
 
