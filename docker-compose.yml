@@ -27,7 +27,6 @@ services:
       # - ./data/web/public/favicon.ico:/app/public/favicon.ico:ro  # Customized favicon.ico
       - ./data/web/storage/app:/app/storage/app
       - ./data/web/storage/logs:/app/storage/logs
-      - ./data/logs:/var/log
       # [Local]
       # - ./data/web:/app  # Mount entire project to host machine.
 

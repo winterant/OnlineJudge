@@ -30,7 +30,7 @@ gitee同步仓库: <https://gitee.com/wrant/LDUOnlineJudge>
 获取稳定版本[releases](https://github.com/winterant/LDUOnlineJudge/releases)，解压后进入文件夹；一键部署：
 
 ```bash
-sudo docker-compose up -d
+docker-compose up -d
 ```
 
 - 访问首页`http://ip:8080`；可在宿主机[配置域名](https://blog.csdn.net/winter2121/article/details/107783085)；
@@ -41,7 +41,7 @@ sudo docker-compose up -d
 ```
 docker-compose down
 docker-compose pull web judge-server
-sudo docker-compose up -d
+docker-compose up -d
 ```
 
 # 💿 备份/迁移
