@@ -62,7 +62,11 @@ class ContestController extends Controller
             ->orderBy('order')
             ->get();
         //拿到所有的一级类别
-        $categories = DB::table('contest_cate')->where('parent_id', 0)->orderBy('order')->get();
+        $categories = DB::table('contest_cate')
+            ->where('parent_id', 0)
+            ->orWhere('parent_id', null)
+            ->orderBy('order')
+            ->get();
 
         $contests = DB::table('contests as c')
             ->leftJoin('contest_cate as cc', 'cc.id', '=', 'c.cate_id')

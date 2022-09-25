@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -74,17 +75,17 @@ class LduojInit extends Command
     }
 
     // 初始化超级管理员用户
-    private function init_user_admin($admin_name = 'admin')
+    private function init_user_admin($admin_name = 'admin', $admin_passwd='adminadmin')
     {
         echo "--------------------- init_user_admin -----------------------" . PHP_EOL;
         //============= 尝试创建管理员账号
         $user = User::where('username', $admin_name)->first();
         if (!$user) {
-            $user = new User(['username' => $admin_name, 'password' => 'adminadmin']);
+            $user = new User(['username' => $admin_name, 'password' => Hash::make($admin_passwd)]);
             $user->save();
             echo "--------------- Created first user ---------" . PHP_EOL;
-            echo "Username:" . $user->username . PHP_EOL;
-            echo "Password:" . $user->password . PHP_EOL;
+            echo "Username:" . $admin_name . PHP_EOL;
+            echo "Password:" . $admin_passwd . PHP_EOL;
             echo "Please reset your password as soon as possible!" . PHP_EOL;
             echo "--------------------------------------------" . PHP_EOL;
         }
