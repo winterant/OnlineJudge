@@ -26,9 +26,8 @@ services:
       # [Production]
       # - ./data/web/public/favicon.ico:/app/public/favicon.ico:ro  # Customized favicon.ico
       - ./data/web/storage/app:/app/storage/app
-      - ./data/logs/laravel:/app/storage/logs
-      - ./data/logs/php7.2-fpm.log:/var/log/php7.2-fpm.log
-      - ./data/logs/nginx:/var/log/nginx
+      - ./data/web/storage/logs:/app/storage/logs
+      - ./data/logs:/var/log
       # [Local]
       # - ./data/web:/app  # Mount entire project to host machine.
 
