@@ -36,13 +36,15 @@ docker-compose up -d
 - 访问首页`http://ip:8080`；可在宿主机[配置域名](https://blog.csdn.net/winter2121/article/details/107783085)；
 - 默认管理员用户：`admin`，默认密码`adminadmin`，务必更改默认密码；
 
-# 🚗 升级系统
+# 🚗 更新
 
-```
-docker-compose down
-docker-compose pull web judge-server
-docker-compose up -d
-```
+- 版本内更新(docker tag不变)
+  ```
+  docker-compose pull web judge-server
+  docker-compose up -d
+  ```
+- 跨版本升级  
+  务必提前备份！获取稳定版本[releases](https://github.com/winterant/LDUOnlineJudge/releases)，解压后进入文件夹，一键部署即可。
 
 # 💿 备份/迁移
 
