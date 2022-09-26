@@ -45,11 +45,10 @@ mod_env "pm.max_spare_servers" ${pm_max_spare_servers:-1280} /etc/php/7.2/fpm/po
 # start nginx server
 service nginx start
 
-# Change storage folders owner.
-chown www-data:www-data -R storage bootstrap/cache
-
-# Start php-fpm server and initialize laravel app.
+# Start php-fpm server
 service php7.2-fpm start
+
+# Initialize laravel app.
 php artisan storage:link
 php artisan optimize
 if [[ "`cat .env|grep ^APP_KEY=$`" != "" ]]; then  # Lack of APP_KEY
@@ -58,6 +57,9 @@ fi
 yes|php artisan migrate
 php artisan optimize
 php artisan lduoj:init
+
+# Change storage folders owner.
+chown www-data:www-data -R storage bootstrap/cache
 
 # Start laravel-queue
 php artisan queue:work
