@@ -3,6 +3,7 @@ version: '3'
 services:
   web:
     image: winterant/lduoj:1.1
+    # container_name: lduoj-web
     restart: always
     ports:
       - 8080:80
@@ -33,6 +34,7 @@ services:
 
   judge-server:
     image: winterant/judge:1.1
+    # container_name: lduoj-judge
     restart: always
     environment:
       - TZ=Asia/Shanghai
@@ -49,6 +51,7 @@ services:
 
   mysql:
     image: docker.io/mysql:8.0
+    # container_name: lduoj-mysql
     restart: always
     security_opt:
       - seccomp:unconfined # docker取消安全验证
