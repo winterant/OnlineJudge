@@ -7,6 +7,7 @@ services:
     ports:
       - 8080:80
     environment:
+      - TZ=Asia/Shanghai
       # [/app/.env] for laravel
       - DB_HOST=mysql
       - DB_PORT=3306
@@ -34,6 +35,7 @@ services:
     image: winterant/judge:1.1
     restart: always
     environment:
+      - TZ=Asia/Shanghai
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_DATABASE=lduoj
@@ -60,10 +62,10 @@ services:
       --collation-server=utf8mb4_general_ci
       --explicit_defaults_for_timestamp=true
     environment:
-      TZ: Asia/Shanghai
-      MYSQL_ROOT_PASSWORD: OurFuture2099
-      MYSQL_USER: oj_user
-      MYSQL_PASSWORD: OurFuture2045
-      MYSQL_DATABASE: lduoj
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_PASSWORD=OurFuture2099
+      - MYSQL_USER=oj_user
+      - MYSQL_PASSWORD=OurFuture2045
+      - MYSQL_DATABASE=lduoj
     volumes:
       - ./data/mysql:/var/lib/mysql
