@@ -87,11 +87,17 @@ class SolutionController extends Controller
         // dispatch(new Judger($solution['id']));
 
         // ===================== 给前台返回提交信息 ====================
+        // if ($solution['contest_id'] > 0) //竞赛提交
+        //     $redirect = route('contest.status', [$solution['contest_id'], 'user_id' => Auth::id(), 'group' => $request->input('group') ?? null]);
+        // else
+        //     $redirect = route('status', ['pid' => $solution['problem_id'], 'user_id' => Auth::id()]);
+
         return [
             'ok' => 1,
             'msg' => '您已提交代码，正在评测中...',
             'data' => [
                 'solution_id' => $solution['id'],
+                // 'redirect'  => $redirect,
                 // 'judge0result' => $judge0result
             ]
         ];
@@ -111,6 +117,7 @@ class SolutionController extends Controller
             if ((auth('api')->user()->id ?? -1) != $solution->user_id && !privilege('admin.problem.solution'))
                 return ['ok' => 0, 'msg' => '您没有权限查看别人的提交记录'];
 
+        /*
         // ==================== 读取判题结果 =========================
         $judge0result = json_decode($solution->judge0result, true) ?? [];
         // if (!$judge0result) // 无效的提交记录
@@ -124,11 +131,17 @@ class SolutionController extends Controller
             $item['result_desc'] = trans('result.' . config("oj.result." . ($item["result_id"] ?? 0)));
             // unset($item['spj']); // spj没必要给用户看
         }
+        */
 
-        if ($solution->contest_id > 0) //竞赛提交
-            $redirect = route('contest.status', [$solution->contest_id, 'username' => Auth::user()->username, 'group' => $request->input('group') ?? null]);
-        else
-            $redirect = route('status', ['pid' => $solution->problem_id, 'username' => Auth::user()->username]);
+        // 临时代替。后期开发，所有测试数据的结果
+        $judge0result = [
+            0 => [
+                'result_id' => $solution->result,
+                'result_desc' => trans('result.' . config("oj.result." . $solution->result)),
+                'time' => $solution->time,
+                'memory' => $solution->memory,
+            ]
+        ];
 
         return [
             'ok' => 1,
@@ -136,7 +149,6 @@ class SolutionController extends Controller
             'data' => [
                 'result' => $solution->result,
                 'result_desc' => trans('result.' . config("oj.result." . $solution->result)),
-                'redirect'  => $redirect,
                 'error_info' => $solution->error_info,
                 'judge0result' => array_values($judge0result) // 不给用户看到 key (judge0 token)
             ]

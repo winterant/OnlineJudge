@@ -65,8 +65,8 @@
     <div class="overflow-hidden">
       <div class="pull-right">
         {{-- <button id="btn_local_test" type="button" data-target="#local-test-page" data-toggle="modal" onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
-          class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button>
-        <button id="btn_judge_result" type="button" data-target="#judge-result-page" data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button> --}}
+          class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button> --}}
+        <button id="btn_judge_result" type="button" data-target="#judge-result-page" data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
         <button id="btn_submit_code" type="button" onclick="disabledSubmitButton(this, '已提交'); $('#btn_judge_result').click()" v-on:click="submit_solution"
           class="btn bg-success text-white m-2" style="min-width: 6rem" @guest disabled @endguest>{{ trans('main.Submit') }}</button>
       </div>
@@ -306,6 +306,7 @@
             if (ret.ok) {
               // 收到回复，刷新判题结果
               Notiflix.Notify.Success(ret.msg)
+              // window.location.href = ret.data.redirect
               this.judge0processing = 2 // 判题中
               this.judge0result = ret.data.judge0result //更新表单
               // 使用ajax不断查询判题结果，直到判题完成
@@ -321,12 +322,11 @@
                   success: (judge_ret) => {
                     console.log('judge0 result:', judge_ret) // todo delete
                     if (judge_ret.ok) {
-                      window.location.href = judge_ret.data.redirect
                       this.result_id = judge_ret.data.result // 结果代号
                       this.judge0result = judge_ret.data.judge0result //更新表单
                       this.judge0result_error_info = judge_ret.data.error_info
                       if (submitUUID === this.judge0queryUUID && max_query_times-- > 0 && judge_ret.data.result < 4) { // 4: web端判题结果代号正确
-                        setTimeout(query_judge_result, 1000) // 继续查询
+                        setTimeout(query_judge_result, 800) // 继续查询
                       } else {
                         this.judge0processing = 3 // 判题完成
                       }
