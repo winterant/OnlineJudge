@@ -31,6 +31,11 @@ class CreateProblemsTable extends Migration
             $table->integer('memory_limit')->default(1000)->comment('MB');
             $table->boolean('hidden')->index()->default(1);
             $table->bigInteger('creator')->nullable();
+
+            $table->integer('solved')->default(0);
+            $table->integer('accepted')->default(0);
+            $table->integer('submitted')->default(0);
+
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();
         });

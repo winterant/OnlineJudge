@@ -3,52 +3,69 @@
 set -ex
 sleep 5 # Waiting for mysql being started.
 
+
+##########################################################################
+# Get App Files
+##########################################################################
 # If host machine has not files, give it files.
 if [ ! -d "/app/public" ];then
     echo "Copying files from /app_tmp to /app"
     yes|cp -rf /app_tmp/. /app/
 fi
 
-# Receive arguments and modify environment of laravel .env
+
+##########################################################################
+# Configuration
+##########################################################################
 function mod_env(){
     sed -i "s/^.\?$1\s\?=.*$/$1=${2//\//\\\/}/" $3
 }
-mod_env "APP_DEBUG"         ${APP_DEBUG:-false}              .env
-mod_env "DB_HOST"           ${DB_HOST:-host.docker.internal} .env
-mod_env "DB_PORT"           ${DB_PORT:-3306}                 .env
-mod_env "DB_DATABASE"       ${DB_DATABASE:-lduoj}            .env
-mod_env "DB_USERNAME"       ${DB_USERNAME:-oj_user}          .env
-mod_env "DB_PASSWORD"       ${DB_PASSWORD:-OurFutrue2045}    .env
-mod_env "JUDGE0_SERVER"     ${JUDGE0_SERVER:-host.docker.internal:2358} .env
-mod_env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false}       .env
-mod_env "QUEUE_CONNECTION"  ${QUEUE_CONNECTION:-database}    .env
+mod_env "APP_DEBUG"         ${APP_DEBUG:-false}                 .env
+mod_env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false}          .env
+mod_env "QUEUE_CONNECTION"  ${QUEUE_CONNECTION:-sync}           .env
+mod_env "DB_HOST"           ${MYSQL_HOST:-host.docker.internal} .env
+mod_env "DB_PORT"           ${MYSQL_PORT:-3306} .env
+mod_env "DB_DATABASE"       ${MYSQL_DATABASE}   .env
+mod_env "DB_USERNAME"       ${MYSQL_USER}       .env
+mod_env "DB_PASSWORD"       ${MYSQL_PASSWORD}   .env
+mod_env "REDIS_HOST"        ${REDIS_HOST:-host.docker.internal} .env
+mod_env "REDIS_PORT"        ${REDIS_PORT:-6379} .env
+mod_env "REDIS_PASSWORD"    ${REDIS_PASSWORD}   .env
 
-# config php, php-fpm
+## config php, php-fpm
 # open php extension
-sed -i "s/^;extension=gd.*/extension=gd/"     /etc/php/7.2/fpm/php.ini
-sed -i "s/^;extension=curl.*/extension=curl/" /etc/php/7.2/fpm/php.ini
-sed -i "s/^;extension=zip.*/extension=zip/"   /etc/php/7.2/fpm/php.ini
+sed -i "/^;extension=gettext.*/i extension=gd"    /etc/php/7.2/fpm/php.ini
+sed -i "/^;extension=gettext.*/i extension=curl"  /etc/php/7.2/fpm/php.ini
+sed -i "/^;extension=gettext.*/i extension=zip"   /etc/php/7.2/fpm/php.ini
+sed -i "/^;extension=gettext.*/i extension=redis" /etc/php/7.2/fpm/php.ini
 
 # file size
-mod_env "post_max_size"        ${post_max_size:-120M}       /etc/php/7.2/fpm/php.ini
-mod_env "upload_max_filesize"  ${upload_max_filesize:-120M} /etc/php/7.2/fpm/php.ini
+mod_env "post_max_size"        ${php_post_max_size:-64M}       /etc/php/7.2/fpm/php.ini
+mod_env "upload_max_filesize"  ${php_upload_max_filesize:-64M} /etc/php/7.2/fpm/php.ini
 
 # default php-fpm `pm` for server with 32GB max memory.
-mod_env "pm"                   ${pm:-dynamic}                /etc/php/7.2/fpm/pool.d/www.conf
-mod_env "pm.max_children"      ${pm_max_children:-1280}      /etc/php/7.2/fpm/pool.d/www.conf
-mod_env "pm.max_requests"      ${pm_max_requests:-1000}      /etc/php/7.2/fpm/pool.d/www.conf
+mod_env "pm"                   ${fpm_pm:-dynamic}                /etc/php/7.2/fpm/pool.d/www.conf
+mod_env "pm.max_children"      ${fpm_pm_max_children:-1024}      /etc/php/7.2/fpm/pool.d/www.conf
+mod_env "pm.max_requests"      ${fpm_pm_max_requests:-1000}      /etc/php/7.2/fpm/pool.d/www.conf
 # The following item is avaliable only if pm=dynamic.
-mod_env "pm.start_servers"     ${pm_start_servers:-10}       /etc/php/7.2/fpm/pool.d/www.conf
-mod_env "pm.min_spare_servers" ${pm_min_spare_servers:-10}   /etc/php/7.2/fpm/pool.d/www.conf
-mod_env "pm.max_spare_servers" ${pm_max_spare_servers:-1280} /etc/php/7.2/fpm/pool.d/www.conf
+mod_env "pm.start_servers"     ${fpm_pm_start_servers:-8}        /etc/php/7.2/fpm/pool.d/www.conf
+mod_env "pm.min_spare_servers" ${fpm_pm_min_spare_servers:-2}    /etc/php/7.2/fpm/pool.d/www.conf
+mod_env "pm.max_spare_servers" ${fpm_pm_max_spare_servers:-1024} /etc/php/7.2/fpm/pool.d/www.conf
 
+
+##########################################################################
+# Start Server
+##########################################################################
 # start nginx server
 service nginx start
 
 # Start php-fpm server
 service php7.2-fpm start
 
+
+##########################################################################
 # Initialize laravel app.
+##########################################################################
 php artisan storage:link
 php artisan optimize
 if [[ "`cat .env|grep ^APP_KEY=$`" != "" ]]; then  # Lack of APP_KEY

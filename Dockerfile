@@ -8,7 +8,7 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     apt install -y software-properties-common &&\
     echo -e '\n' | apt-add-repository ppa:ondrej/php &&\
     apt update && apt-get -y upgrade &&\
-    apt install -y php7.2 php7.2-fpm php7.2-mysql \
+    apt install -y php7.2 php7.2-fpm php7.2-mysql php7.2-redis \
         php7.2-xml php7.2-mbstring \
         php7.2-gd php7.2-curl php7.2-zip &&\
     apt install -y nginx mysql-client=8.0.* composer zip unzip language-pack-en-base
@@ -24,7 +24,7 @@ RUN export LC_ALL=en_US.UTF-8 &&\
     cp -rf .env.example .env &&\
     # nginx
     rm -rf /etc/nginx/sites-enabled/default &&\
-    ln -s /app/nginx.conf /etc/nginx/conf.d/lduoj.conf &&\
+    cp install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
     # docker entrypoint
     cp docker-entrypoint.sh /docker-entrypoint.sh &&\
     chmod +x /docker-entrypoint.sh &&\
