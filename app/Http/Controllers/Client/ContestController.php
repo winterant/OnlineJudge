@@ -35,66 +35,56 @@ class ContestController extends Controller
 
     public function contests($cate)
     {
-        /* 20220126 取消了初始化类别
-        if (DB::table('contest_cate')->count() == 0) {
-            //如果没有类别，即系统第一次使用竞赛，则创建默认的类别
-            $this->init_contest_categories();
-        }
-        */
         //可能有些比赛order值为0，因为以前的bug：添加比赛时没有填写order造成的
-        DB::table('contests')->where('order', '=', 0)->update(['order' => DB::raw('`id`')]);
+        // DB::table('contests')->where('order', '=', 0)->update(['order' => DB::raw('`id`')]);
 
         //获取类别
-        $current_cate = DB::table('contest_cate')->find($cate);
+        $current_cate = DB::table('contest_cate')->select(['id', 'parent_id', 'description'])->find($cate);
 
         //类别不存在，则自动跳转到默认竞赛
         if (!$current_cate) {
-            $first_contest = DB::table('contest_cate')->first();
-            if (!$first_contest)
+            $current_cate = DB::table('contest_cate')->select(['id', 'parent_id', 'description'])->first();
+            if (!$current_cate)
                 return view('client.fail', ['msg' => '竞赛中没有任何可用类别，请管理员前往后台添加类别！']);
-            return redirect(route('contests', $first_contest->id));
+            return redirect(route('contests', $current_cate->id));
         }
 
-        //拿到所有的二级类别
+        // 拿到当前所处类别的所有二级类别
         $sons = DB::table('contest_cate')
             ->where('parent_id', $current_cate->parent_id ?: $current_cate->id)
+            ->select(['id', 'title'])
             ->where('parent_id', '>', 0)
             ->orderBy('order')
             ->get();
-        //拿到所有的一级类别
+        // 拿到所有的一级类别
         $categories = DB::table('contest_cate')
+            ->select(['id', 'title'])
             ->where('parent_id', 0)
             ->orWhere('parent_id', null)
             ->orderBy('order')
             ->get();
 
         $contests = DB::table('contests as c')
-            ->leftJoin('contest_cate as cc', 'cc.id', '=', 'c.cate_id')
             ->select([
-                'c.id', 'judge_type', 'c.title', 'start_time', 'end_time', 'access', 'c.order', 'c.hidden', 'cate_id', 'cc.title as cate_title',
-                DB::raw("case when end_time<now() then 3 when start_time>now() then 2 else 1 end as stage"),
-                DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=c.id) as number")
+                'c.id', 'judge_type', 'c.title', 'start_time', 'end_time', 'access', 'c.order', 'c.hidden',
+                DB::raw("'Unknow' as number") //todo
             ])
             ->where('cate_id', $current_cate->id)
-
-            ->when(isset($_GET['state']) && $_GET['state'] != 'all', function ($q) {
+            ->when(in_array($_GET['state'] ?? null, ['waiting', 'running', 'ended']), function ($q) {
                 if ($_GET['state'] == 'ended') return $q->where('end_time', '<', date('Y-m-d H:i:s'));
                 else if ($_GET['state'] == 'waiting') return $q->where('start_time', '>', date('Y-m-d H:i:s'));
                 else return $q->where('start_time', '<', date('Y-m-d H:i:s'))->where('end_time', '>', date('Y-m-d H:i:s'));
             })
-            ->when(isset($_GET['judge_type']) && $_GET['judge_type'] != null, function ($q) {
+            ->when(in_array($_GET['judge_type'] ?? null, ['acm', 'oi']), function ($q) {
                 return $q->where('c.judge_type', $_GET['judge_type']);
             })
-            ->when(isset($_GET['title']), function ($q) {
+            ->when(isset($_GET['title']) && $_GET['title'] != null, function ($q) {
                 return $q->where('c.title', 'like', '%' . $_GET['title'] . '%');
             })
             ->when(!Auth::check() || !privilege('admin.contest'), function ($q) {
-                return $q->where('c.hidden', 0);
+                return $q->where('c.hidden', 0); // 没登陆 or 登陆了但没权限，则隐藏
             })
-
             ->orderByDesc('c.order')
-            ->orderBy('stage')
-            ->orderByDesc('c.id')
             ->paginate($_GET['perPage'] ?? 30);
 
         return view('contest.contests', compact('contests', 'categories', 'sons', 'current_cate'));
@@ -123,31 +113,35 @@ class ContestController extends Controller
 
     public function home($id)
     {
+        // 拿到竞赛
         $contest = DB::table('contests')
             ->select([
-                '*',
+                'id', 'title', 'description', 'cate_id',
+                'start_time', 'end_time',
+                'judge_type', 'access', 'public_rank',
                 DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")
             ])->find($id);
         if (!$contest)
             return abort(404);
-        $problems = DB::table('problems')
-            ->join('contest_problems as cp', 'cp.problem_id', '=', 'problems.id')
+
+        // 获取题目信息
+        $problems = DB::table('problems as p')
+            ->join('contest_problems as cp', 'cp.problem_id', '=', 'p.id')
             ->where('contest_id', $id)
             ->select([
-                'problems.id', 'problems.type', 'problems.title', 'cp.index',
-                DB::raw("(select count(id) from solutions where contest_id={$id} and problem_id=problems.id and result=4) as accepted"),
-                DB::raw("(select count(distinct user_id) from solutions where contest_id={$id} and problem_id=problems.id and result=4) as solved"),
-                DB::raw("(select count(id) from solutions where contest_id={$id} and problem_id=problems.id) as submitted"),
+                'p.id', 'p.type', 'p.title',
+                'cp.accepted', 'cp.solved', 'cp.submitted',
+                'cp.index',
                 //查询本人是否通过此题；4:Accepted,6:Attempting,0:没做
                 DB::raw("case
                     when
-                    (select count(id) from solutions where contest_id=" . $contest->id . "
-                        and problem_id=problems.id
+                    (select count(*) from solutions where contest_id=" . $contest->id . "
+                        and problem_id=p.id
                         and user_id=" . Auth::id() . " and result=4)>0
                     then 4
                     when
-                    (select count(id) from solutions where contest_id=" . $contest->id . "
-                        and problem_id=problems.id
+                    (select count(*) from solutions where contest_id=" . $contest->id . "
+                        and problem_id=p.id
                         and user_id=" . Auth::id() . ")>0
                     then 6
                     else 0
@@ -156,20 +150,19 @@ class ContestController extends Controller
             ])
             ->orderBy('cp.index')
             ->get();
-        //读取标签
+        // 读取标签
         foreach ($problems as &$problem) {
             $tag = DB::table('tag_marks')
                 ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
-                ->groupBy('tag_pool.id', 'name')
+                ->select('name', DB::raw('count(*) as count'))
                 ->where('problem_id', $problem->id)
                 ->where('hidden', 0)
-                ->select('tag_pool.id', 'name', DB::raw('count(name) as count'))
+                ->groupBy('tag_pool.id')
                 ->orderByDesc('count')
-                ->limit(2)
+                ->limit(3)
                 ->get();
             $problem->tags = $tag;
         }
-
 
         //读取附件，位于storage/app/public/contest/files/$cid/*
         $files = [];
@@ -183,8 +176,9 @@ class ContestController extends Controller
         // 读取群组
         $groups = DB::table('group_contests as gc')
             ->join('groups as g', 'g.id', '=', 'gc.group_id')
+            ->select(['g.id', 'g.name'])
             ->where('gc.contest_id', $id)
-            ->get(['g.*']);
+            ->get();
         return view('contest.home', compact('contest', 'problems', 'files', 'groups'));
     }
 
@@ -198,45 +192,61 @@ class ContestController extends Controller
 
     public function problem($id, $pid)
     {
-        $contest = DB::table('contests')->find($id);
-        $problem = DB::table('problems')
-            ->join('contest_problems as cp', 'cp.problem_id', '=', 'problems.id')
+        // 拿到竞赛信息
+        $contest = DB::table('contests')
             ->select([
-                'index', 'hidden', 'problem_id as id', 'title', 'description',
+                'id', 'title', 'cate_id',
+                'start_time', 'end_time',
+                'judge_type', 'public_rank',
+                'allow_lang',
+                'open_discussion'
+            ])->find($id);
+        // 拿到本题基本信息
+        $problem = DB::table('problems as p')
+            ->join('contest_problems as cp', 'cp.problem_id', '=', 'p.id')
+            ->select([
+                'cp.index', 'hidden', 'problem_id as id', 'title', 'description',
                 'input', 'output', 'hint', 'source', 'time_limit', 'memory_limit', 'spj',
                 'type', 'fill_in_blank',
-                DB::raw("(select count(id) from solutions where contest_id={$id} and problem_id=problems.id and result=4) as accepted"),
-                DB::raw("(select count(distinct user_id) from solutions where contest_id={$id} and problem_id=problems.id and result=4) as solved"),
-                DB::raw("(select count(id) from solutions where contest_id={$id} and problem_id=problems.id) as submitted")
+                // todo
+                DB::raw("(select count(*) from solutions where contest_id={$id} and problem_id=p.id and result=4) as accepted"),
+                DB::raw("(select count(distinct user_id) from solutions where contest_id={$id} and problem_id=p.id and result=4) as solved"),
+                DB::raw("(select count(*) from solutions where contest_id={$id} and problem_id=p.id) as submitted")
             ])
             ->where('contest_id', $id)
-            ->where('index', $pid)
+            ->where('cp.index', $pid)
             ->first();
-        // 读取当前竞赛所有题号
-        $contest_pindex = DB::table('contest_problems')
-                ->where('contest_id', $id)
-                ->orderBy('index')
-                ->pluck('index');
 
         if (!$problem) // 题目不存在! 跳回前一页
             return back();
 
-        //读取所有的提交结果的数量统计
-        $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
+        // 读取当前竞赛所有题号
+        $contest_pindex = DB::table('contest_problems')
             ->where('contest_id', $id)
-            ->where('problem_id', $problem->id)
-            ->groupBy('result')
-            ->get();
+            ->orderBy('index')
+            ->pluck('index');
+
+        //读取所有的提交结果的数量统计
+        $results = null;
+        // $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
+        //     ->where('contest_id', $id)
+        //     ->where('problem_id', $problem->id)
+        //     ->groupBy('result')
+        //     ->get();
 
         //读取这道题的样例数据
         $samples = read_problem_data($problem->id);
 
+        // 特判代码是否存在
         $hasSpj = (get_spj_code($problem->id) != null);
+
+        // 获取本题的tag
         $tags = DB::table('tag_marks')
             ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
-            ->groupBy('name')
+            ->select('name', DB::raw('count(*) as count'))
             ->where('problem_id', $problem->id)
-            ->select('name', DB::raw('count(name) as count'))
+            ->where('hidden', 0)
+            ->groupBy('tag_pool.id')
             ->orderByDesc('count')
             ->limit(3)
             ->get();
@@ -252,61 +262,84 @@ class ContestController extends Controller
             ->where('problem_id', '=', $problem->id)
             ->where('result', 4)
             ->exists();
+        $tag_pool = [];
         if ($tag_mark_enable)
             $tag_pool = DB::table('tag_pool')
                 ->select('id', 'name')
                 ->where('hidden', 0)
                 ->orderBy('id')
                 ->get();
-        else
-            $tag_pool = [];
 
         // 可能指定了solution代码
-        $solution = DB::table('solutions')->find($_GET['solution'] ?? -1);
+        $solution = DB::table('solutions')->select(['code', 'user_id'])->find($_GET['solution'] ?? -1);
         if (Auth::check() && $solution && ($solution->user_id == Auth::id()) || privilege('admin.problem.solution'))
             $solution_code = $solution->code ?? null;
         else
             $solution_code = null;
-        return view('contest.problem', compact('contest', 'problem', 'contest_pindex', 'results', 'samples', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool', 'solution_code'));
+        return view('contest.problem', compact(
+            'contest',
+            'problem',
+            'contest_pindex',
+            'results',
+            'samples',
+            'hasSpj',
+            'tags',
+            'tag_mark_enable',
+            'tag_pool',
+            'solution_code'
+        ));
     }
 
     public function status($id)
     {
-        $contest = DB::table('contests')->find($id);
+        // 拿到竞赛信息
+        $contest = DB::table('contests')
+            ->select([
+                'id', 'title', 'cate_id',
+                'start_time', 'end_time',
+                'judge_type', 'public_rank',
+                'allow_lang',
+                'open_discussion'
+            ])->find($id);
+
+        // 判断比赛状态
         if (
             !(privilege('admin.contest') || privilege('admin.problem.solution'))
             && time() < strtotime($contest->end_time)
         ) //比赛没结束，只能看自己
-            $_GET['username'] = Auth::user()->username;
+            $_GET['user_id'] = Auth::id();
 
-        $solutions = DB::table('solutions')
-            ->join('users', 'solutions.user_id', '=', 'users.id')
-            ->join('contest_problems', 'solutions.problem_id', '=', 'contest_problems.problem_id')
+        $solutions = DB::table('solutions as s')
+            ->join('users as u', 's.user_id', '=', 'u.id')
+            ->join('contest_problems as cp', 's.problem_id', '=', 'cp.problem_id')
             ->select([
-                'solutions.id', 'index', 'user_id', 'username', 'nick', 'result', 'judge_type',
+                's.id', 'index', 'user_id', 'username', 'nick', 'result', 'judge_type',
                 'pass_rate', 'sim_rate', 'sim_sid', 'time', 'memory', 'language', 'submit_time', 'judger', 'ip', 'ip_loc'
             ])
-            ->where('solutions.contest_id', $id)
-            ->where('contest_problems.contest_id', $id)
+            ->where('s.contest_id', $id)
+            ->where('cp.contest_id', $id)
             ->when(isset($_GET['index']) && $_GET['index'] >= 0, function ($q) {
                 return $q->where('index', $_GET['index']);
             })
-            ->when(isset($_GET['sim_rate']) && $_GET['sim_rate'] != 0, function ($q) {
-                return $q->where('sim_rate', '>=', $_GET['sim_rate']);
+            ->when(isset($_GET['user_id']) && $_GET['user_id'] >= 0, function ($q) {
+                return $q->where('user_id', $_GET['user_id']);
             })
-            ->when(isset($_GET['username']) && $_GET['username'] != '', function ($q) {
-                return $q->where('username', 'like', '%' . $_GET['username'] . '%');
+            ->when(intval($_GET['sim_rate'] ?? 0) > 0, function ($q) {
+                return $q->where('sim_rate', '>=', $_GET['sim_rate']); // 0~100
             })
-            ->when(isset($_GET['result']) && $_GET['result'] != '-1', function ($q) {
+            ->when(isset($_GET['username']) && $_GET['username'] != null, function ($q) {
+                return $q->where(sprintf("locate('%s', `username`)", $_GET['username']));
+            })
+            ->when(isset($_GET['result']) && $_GET['result'] >= 0, function ($q) {
                 return $q->where('result', $_GET['result']);
             })
-            ->when(isset($_GET['language']) && $_GET['language'] != '-1', function ($q) {
+            ->when(isset($_GET['language']) && $_GET['language'] >= 0, function ($q) {
                 return $q->where('language', $_GET['language']);
             })
-            ->when(isset($_GET['ip']) && $_GET['ip'] != '', function ($q) {
+            ->when(isset($_GET['ip']) && $_GET['ip'] != null, function ($q) {
                 return $q->where('ip', $_GET['ip']);
             })
-            ->orderByDesc('solutions.id')
+            ->orderByDesc('s.id')
             ->paginate(10);
 
         //获得[index=>真实题号]

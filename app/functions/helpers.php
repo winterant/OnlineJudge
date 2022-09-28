@@ -38,7 +38,7 @@ function getIpAddress(string $ip = '')
 // 获取测试数据保存路径
 function testdata_path($path = null): string
 {
-    $testdata_path = config('app.JG_DATA_DIR');
+    $testdata_path = config('app.JUDGE_DATA_DIR');
     if ($testdata_path[0] != '/')  # 如果是相对路径，那就加上当前项目的绝对路径
         $testdata_path = base_path($testdata_path);
     if ($path != null)

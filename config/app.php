@@ -5,10 +5,10 @@ return [
     'HREF_FORCE_HTTPS' => env('HREF_FORCE_HTTPS', false),
 
     // 测试数据的路径
-    'JG_DATA_DIR' => env('JG_DATA_DIR', 'storage/app/data'),
+    'JUDGE_DATA_DIR' => env('JUDGE_DATA_DIR', 'storage/app/data'),
     
     // judge0 host and port
-    'JUDGE0_SERVER' => env('JUDGE0_SERVER', 'localhost:2358'),
+    'JUDGE_SERVER' => env('JUDGE_SERVER', null),
 
     /*
     |--------------------------------------------------------------------------

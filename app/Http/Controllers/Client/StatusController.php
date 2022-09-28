@@ -21,20 +21,12 @@ class StatusController extends Controller
     {
         if (!isset($_GET['sim_rate']))
             $_GET['inc_contest'] = 'on';
-        //用户名模糊查询: 找出符合条件的用户
-        $users = null;
-        if (isset($_GET['username']) && $_GET['username'] != '') {
-            $query = DB::table('users')
-                ->select('id', 'username', 'nick')
-                ->where('username', 'like', '%' . $_GET['username'] . '%')
-                ->get();
-            foreach ($query as $u)
-                $users[$u->id] = $u;
-        }
+        $max_solution_id = DB::table('solutions')->max('id');
         //读取提交记录
-        $solutions = DB::table('solutions')
+        $solutions = DB::table('solutions as s')
+            ->join('users as u', 'u.id', '=', 's.user_id')
             ->select(
-                'id',
+                's.id',
                 'contest_id',
                 'problem_id',
                 'user_id',
@@ -49,37 +41,37 @@ class StatusController extends Controller
                 'sim_rate',
                 'sim_sid',
                 'ip',
-                'ip_loc',
-                'judge0result'
+                'ip_loc'
             )
             //普通用户只能查看非竞赛提交
             //关闭“包含竞赛”按钮时只能查看非竞赛提交
             ->when(!privilege('admin.problem.solution') || !isset($_GET['inc_contest']), function ($q) {
-                return $q->where('solutions.contest_id', -1);
+                return $q->where('s.contest_id', -1);
             })
 
-            ->when(isset($_GET['sim_rate']) && $_GET['sim_rate'] != 0, function ($q) {
-                return $q->where('sim_rate', '>=', $_GET['sim_rate']);
+            ->when(isset($_GET['sid']) && $_GET['sid'] != null, function ($q) {
+                return $q->where('s.id', $_GET['sid']);
             })
-            ->when(isset($_GET['sid']) && $_GET['sid'] != '', function ($q) {
-                return $q->where('solutions.id', $_GET['sid']);
+            ->when(isset($_GET['pid']) && $_GET['pid'] != null, function ($q) {
+                return $q->where('s.problem_id', $_GET['pid']);
             })
-            ->when(isset($_GET['pid']) && $_GET['pid'] != '', function ($q) {
-                return $q->where('solutions.problem_id', $_GET['pid']);
+
+            ->when(intval($_GET['sim_rate'] ?? 0) > 0, function ($q) {
+                return $q->where('sim_rate', '>=', $_GET['sim_rate']); // 0~100
             })
-            ->when($users != null, function ($q) use ($users) {
-                return $q->whereIn('user_id', array_keys($users));
+            ->when(isset($_GET['username']) && $_GET['username'] != null, function ($q) {
+                return $q->where('username', 'like', $_GET['username'] . '%');
             })
-            ->when(isset($_GET['result']) && $_GET['result'] != '-1', function ($q) {
+            ->when(isset($_GET['result']) && $_GET['result'] >= 0, function ($q) {
                 return $q->where('result', $_GET['result']);
             })
-            ->when(isset($_GET['language']) && $_GET['language'] != '-1', function ($q) {
+            ->when(isset($_GET['language']) && $_GET['language'] >= 0, function ($q) {
                 return $q->where('language', $_GET['language']);
             })
-            ->when(isset($_GET['ip']) && $_GET['ip'] != '', function ($q) {
+            ->when(isset($_GET['ip']) && $_GET['ip'] != null, function ($q) {
                 return $q->where('ip', $_GET['ip']);
             })
-            ->orderByDesc('solutions.id')
+            ->orderByDesc('s.id')
             ->paginate(10);
 
         foreach ($solutions as $s) {
@@ -196,7 +188,7 @@ class StatusController extends Controller
     //         $data['code'] = base64_decode($data['code']);
     //     $problem = DB::table('problems')->find($data['pid']); //找到题目
     //     $submitted_result = 0;
-        
+
     //     //判断提交的来源
     //     //如果有cid，说明实在竞赛中进行提交
     //     if (isset($data['cid'])) {

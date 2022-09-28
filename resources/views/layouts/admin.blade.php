@@ -147,7 +147,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-nowrap p-2" id="link_contests" href="{{ route('contests', '_') }}">
+            <a class="nav-link text-nowrap p-2" id="link_contests" href="{{ route('contests', 1) }}">
               <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{ trans('main.Contests') }}</i>
             </a>
           </li>
