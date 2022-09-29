@@ -7,7 +7,7 @@
     <h2>{{$pageTitle}}</h2>
     <hr>
     <div>
-        <form class="p-4 col-12 col-md-9" action="" method="post" enctype="multipart/form-data">
+        <form class="p-4 col-12" action="" method="post" enctype="multipart/form-data">
             @csrf
             <div class="input-group">
                 <div class="input-group-prepend">

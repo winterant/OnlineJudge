@@ -32,7 +32,9 @@ class ProblemController extends Controller
                 'p.created_at',
                 'hidden',
                 'username as creator',
-                'p.solved', 'p.accepted', 'p.submitted'
+                'p.solved',
+                'p.accepted',
+                'p.submitted'
             )
             ->when(isset($_GET['pid']) && $_GET['pid'] != '', function ($q) {
                 return $q->where('p.id', $_GET['pid']);
@@ -300,17 +302,18 @@ class ProblemController extends Controller
     //重判题目|竞赛|提交记录
     public function rejudge(Request $request)
     {
-
         if ($request->isMethod('get')) {
             $pageTitle = '重判';
             return view('admin.problem.rejudge', compact('pageTitle'));
         }
-
         if ($request->isMethod('post')) {
             $pid = $request->input('pid');
             $cid = $request->input('cid');
             $sid = $request->input('sid');
             $date = $request->input('date');
+
+            if ($sid) // 若指定了“提交记录编号”，则其余项自动忽略
+                $pid = $cid = $date[0] = $date[1] = null;
             if ($pid || $cid || $sid || ($date[1] && $date[2])) {
                 $solution_ids = DB::table('solutions')
                     ->when($pid, function ($q) use ($pid) {
@@ -323,15 +326,13 @@ class ProblemController extends Controller
                         $q->where('id', $sid);
                     })
                     ->when($date[1], function ($q) use ($date) {
-                        foreach ($date as &$d) {
-                            $d = str_replace('T', ' ', $d);
-                        }
                         $q->where('submit_time', '>', str_replace('T', ' ', $date[1]))
                             ->where('submit_time', '<', str_replace('T', ' ', $date[2]));
                     })
                     ->orderBy('id')
                     ->pluck('id');
-                // 刷新状态
+
+                // 更新为Waiting等待判题
                 DB::table('solutions')
                     ->whereIn('id', $solution_ids)
                     ->update(['result' => 0]); // Waiting

@@ -8,7 +8,7 @@
     <hr>
     <div>
         @if(isset($lack_id)?$lack_id:false)
-            <form class="p-4 col-12 col-md-9" action="" method="get">
+            <form class="p-4 col-12" action="" method="get">
                 <div class="form-inline">
                     <label>
                         请输入要修改的题号：
