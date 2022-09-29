@@ -19,34 +19,22 @@ class StatusController extends Controller
      */
     public function index(Request $request)
     {
-        if (!isset($_GET['sim_rate']))
+        if (privilege('admin.problem.solution') && !isset($_GET['inc_contest']))
             $_GET['inc_contest'] = 'on';
-        $max_solution_id = DB::table('solutions')->max('id');
+
         //读取提交记录
         $solutions = DB::table('solutions as s')
             ->join('users as u', 'u.id', '=', 's.user_id')
-            ->select(
-                's.id',
-                'contest_id',
-                'problem_id',
-                'user_id',
-                'result',
-                'time',
-                'memory',
-                'language',
-                'submit_time',
-                'judge_type',
-                'pass_rate',
-                'judger',
-                'sim_rate',
-                'sim_sid',
-                'ip',
-                'ip_loc'
-            )
+            ->select([
+                'user_id', 'username', 'nick', // 用户信息
+                's.id', 'contest_id', 'problem_id', 'ip', 'ip_loc',
+                'judge_type', 'language', 'submit_time',
+                'result', 'time', 'memory', 'pass_rate', 'judger', 'sim_rate', 'sim_sid',
+            ])
             //普通用户只能查看非竞赛提交
             //关闭“包含竞赛”按钮时只能查看非竞赛提交
             ->when(!privilege('admin.problem.solution') || !isset($_GET['inc_contest']), function ($q) {
-                return $q->where('s.contest_id', -1);
+                $q->whereIn('s.contest_id', [-1, null]);
             })
 
             ->when(isset($_GET['sid']) && $_GET['sid'] != null, function ($q) {
@@ -69,21 +57,20 @@ class StatusController extends Controller
                 return $q->where('language', $_GET['language']);
             })
             ->when(isset($_GET['ip']) && $_GET['ip'] != null, function ($q) {
-                return $q->where('ip', $_GET['ip']);
+                return $q->where('ip', $_GET['ip'] . '%');
+            })
+            ->when(isset($_GET['top_id']) && $_GET['top_id'] != null, function ($q) {
+                return $q->where('s.id', '<=', $_GET['top_id']);
             })
             ->orderByDesc('s.id')
-            ->paginate(10);
+            ->limit(10)
+            ->get();
 
+        // ======== 处理显示信息 ==========
         foreach ($solutions as $s) {
-            // ======== 处理显示信息 ==========
-            $u = DB::table('users')->find($s->user_id);
-            //所有人都能看到用户名
-            $s->username = $u->username ?? null;
-            //管理员能看到昵称、ip及其属地
-            if (privilege('admin.problem.solution')) {
-                $s->nick = $u->nick ?? null;
-            } else {
-                // 非管理员，抹掉ip信息
+            // 非管理员，抹掉重要信息
+            if (!privilege('admin.problem.solution')) {
+                $s->nick = null;
                 $s->ip = '-';
                 $s->ip_loc = '';
             }

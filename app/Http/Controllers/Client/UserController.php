@@ -111,10 +111,7 @@ class UserController extends Controller
             ? sprintf(' and TIMESTAMPDIFF(%s,submit_time,now())=0', $_GET['range']) : '';
 
         $users = DB::table('users')->select([
-            'username', 'nick',
-            DB::raw("(select count(distinct problem_id) from solutions where user_id=users.id and result=4" . $timediff . ") as solved"),
-            DB::raw("(select count(id) from solutions where user_id=users.id and result=4" . $timediff . ") as accepted"),
-            DB::raw("(select count(id) from solutions where user_id=users.id" . $timediff . ") as submitted")
+            'username', 'nick', 'solved', 'accepted', 'submitted'
         ])
             ->when($_GET['username'] ?? false, function ($q) {
                 return $q->where('username', 'like', '%' . $_GET['username'] . '%');
@@ -122,7 +119,7 @@ class UserController extends Controller
             ->orderByDesc('solved')
             ->orderBy('submitted')
             ->paginate($_GET['perPage'] ?? 50);
-        
+
         // 对访客隐藏用户信息
         if (!Auth::check() && !get_setting('display_complete_standings')) {
             foreach ($users as &$user) {

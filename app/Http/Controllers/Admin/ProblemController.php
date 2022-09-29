@@ -21,23 +21,21 @@ class ProblemController extends Controller
     //管理员显示题目列表
     public function list()
     {
-        $problems = DB::table('problems')
+        $problems = DB::table('problems as p')
             ->leftJoin('users', 'creator', '=', 'users.id')
             ->select(
-                'problems.id',
+                'p.id',
                 'title',
                 'type',
                 'source',
                 'spj',
-                'problems.created_at',
+                'p.created_at',
                 'hidden',
                 'username as creator',
-                DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as accepted"),
-                DB::raw("(select count(distinct user_id) from solutions where problem_id=problems.id and result=4) as solved"),
-                DB::raw("(select count(id) from solutions where problem_id=problems.id) as submitted")
+                'p.solved', 'p.accepted', 'p.submitted'
             )
             ->when(isset($_GET['pid']) && $_GET['pid'] != '', function ($q) {
-                return $q->where('problems.id', $_GET['pid']);
+                return $q->where('p.id', $_GET['pid']);
             })
             ->when(isset($_GET['title']) && $_GET['title'] != '', function ($q) {
                 return $q->where('title', 'like', '%' . $_GET['title'] . '%');
@@ -45,7 +43,7 @@ class ProblemController extends Controller
             ->when(isset($_GET['source']) && $_GET['source'] != '', function ($q) {
                 return $q->where('source', 'like', '%' . $_GET['source'] . '%');
             })
-            ->orderByDesc('problems.id')
+            ->orderByDesc('p.id')
             ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 100);
         return view('admin.problem.list', compact('problems'));
     }

@@ -140,7 +140,7 @@
                 @if (strtotime(date('Y-m-d H:i:s')) > strtotime($item->start_time))
                   <li class="px-2">
                     <i class="fa fa-user-o text-sky" aria-hidden="true"></i>
-                    ×{{ $item->number }}
+                    ×{{ $item->num_members }}
                   </li>
                 @endif
               </ul>

@@ -29,6 +29,7 @@ class CreateContestsTable extends Migration
             $table->string('access', 10)->default('public')->comment('public,password,private');
             $table->string('password', 40)->nullable();
             $table->bigInteger('user_id')->index()->nullable();
+            $table->int('num_members')->default(0); // 添加字段 参与成员数
             $table->boolean('hidden')->index()->default(0);
             $table->bigInteger('order')->index()->default(0);
             $table->bigInteger('cate_id')->index()->nullable();

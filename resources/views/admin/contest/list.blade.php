@@ -93,6 +93,7 @@
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                     </a>
                 </th>
+                <th>参与人数</th>
                 <th>封榜比例
                     <a href="javascript:" style="color: #838383"
                        onclick="whatisthis('数值范围0~1<br>比赛时长*封榜比例=比赛封榜时间。<br>如：时长5小时，比例0.2，则第4小时开始榜单不更新。<br><br>值为0表示不封榜。<br>管理员不受影响')">
@@ -137,6 +138,7 @@
                     <td nowrap>{{$item->start_time}}</td>
                     <td nowrap>{{$item->end_time}}</td>
                     <td nowrap>{{$item->access}}</td>
+                    <td nowrap>{{$item->num_members}}</td>
                     <td nowrap>{{$item->lock_rate}}</td>
                     <td nowrap>
                         {{-- {{$item->public_rank}} --}}

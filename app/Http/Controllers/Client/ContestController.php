@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class ContestController extends Controller
@@ -35,6 +37,7 @@ class ContestController extends Controller
 
     public function contests($cate)
     {
+        $start_time = microtime(true);
         //可能有些比赛order值为0，因为以前的bug：添加比赛时没有填写order造成的
         // DB::table('contests')->where('order', '=', 0)->update(['order' => DB::raw('`id`')]);
 
@@ -66,8 +69,9 @@ class ContestController extends Controller
 
         $contests = DB::table('contests as c')
             ->select([
-                'c.id', 'judge_type', 'c.title', 'start_time', 'end_time', 'access', 'c.order', 'c.hidden',
-                DB::raw("'Unknow' as number") //todo
+                'c.id', 'judge_type', 'c.title', 'start_time', 'end_time',
+                'access', 'c.order', 'c.hidden',
+                'num_members'
             ])
             ->where('cate_id', $current_cate->id)
             ->when(in_array($_GET['state'] ?? null, ['waiting', 'running', 'ended']), function ($q) {
@@ -113,13 +117,14 @@ class ContestController extends Controller
 
     public function home($id)
     {
+        $start_time = microtime(true);
         // 拿到竞赛
         $contest = DB::table('contests')
             ->select([
                 'id', 'title', 'description', 'cate_id',
                 'start_time', 'end_time',
                 'judge_type', 'access', 'public_rank',
-                DB::raw("(select count(DISTINCT B.user_id) from solutions B where B.contest_id=contests.id) as number")
+                'num_members'
             ])->find($id);
         if (!$contest)
             return abort(404);
@@ -132,37 +137,29 @@ class ContestController extends Controller
                 'p.id', 'p.type', 'p.title',
                 'cp.accepted', 'cp.solved', 'cp.submitted',
                 'cp.index',
-                //查询本人是否通过此题；4:Accepted,6:Attempting,0:没做
-                DB::raw("case
-                    when
-                    (select count(*) from solutions where contest_id=" . $contest->id . "
-                        and problem_id=p.id
-                        and user_id=" . Auth::id() . " and result=4)>0
-                    then 4
-                    when
-                    (select count(*) from solutions where contest_id=" . $contest->id . "
-                        and problem_id=p.id
-                        and user_id=" . Auth::id() . ")>0
-                    then 6
-                    else 0
-                    end as status
-                    ")
+                //查询本人是否通过此题；4:Accepted, >4:Attempting, 0:没做
+                DB::raw('(select min(result) from solutions where contest_id=' . $contest->id . '
+                            and problem_id=p.id
+                            and user_id=' . Auth::id() . '
+                            and result>=4) as result')
             ])
             ->orderBy('cp.index')
             ->get();
-        // 读取标签
-        foreach ($problems as &$problem) {
-            $tag = DB::table('tag_marks')
-                ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
-                ->select('name', DB::raw('count(*) as count'))
-                ->where('problem_id', $problem->id)
-                ->where('hidden', 0)
-                ->groupBy('tag_pool.id')
-                ->orderByDesc('count')
-                ->limit(3)
-                ->get();
-            $problem->tags = $tag;
-        }
+
+        // 读取标签 （todo 效率低）
+        if (privilege('admin.contest') || time() == strtotime($contest->end_time))
+            foreach ($problems as &$problem) {
+                $tag = DB::table('tag_marks')
+                    ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
+                    ->select('name', DB::raw('count(*) as count'))
+                    ->where('problem_id', $problem->id)
+                    ->where('hidden', 0)
+                    ->groupBy('tag_pool.id')
+                    ->orderByDesc('count')
+                    ->limit(3)
+                    ->get();
+                $problem->tags = $tag;
+            }
 
         //读取附件，位于storage/app/public/contest/files/$cid/*
         $files = [];
@@ -179,6 +176,7 @@ class ContestController extends Controller
             ->select(['g.id', 'g.name'])
             ->where('gc.contest_id', $id)
             ->get();
+
         return view('contest.home', compact('contest', 'problems', 'files', 'groups'));
     }
 
@@ -192,6 +190,7 @@ class ContestController extends Controller
 
     public function problem($id, $pid)
     {
+        $start_time = microtime(true);
         // 拿到竞赛信息
         $contest = DB::table('contests')
             ->select([
@@ -206,12 +205,10 @@ class ContestController extends Controller
             ->join('contest_problems as cp', 'cp.problem_id', '=', 'p.id')
             ->select([
                 'cp.index', 'hidden', 'problem_id as id', 'title', 'description',
+                'language', // 代码填空的语言
                 'input', 'output', 'hint', 'source', 'time_limit', 'memory_limit', 'spj',
                 'type', 'fill_in_blank',
-                // todo
-                DB::raw("(select count(*) from solutions where contest_id={$id} and problem_id=p.id and result=4) as accepted"),
-                DB::raw("(select count(distinct user_id) from solutions where contest_id={$id} and problem_id=p.id and result=4) as solved"),
-                DB::raw("(select count(*) from solutions where contest_id={$id} and problem_id=p.id) as submitted")
+                'cp.accepted', 'cp.solved', 'cp.submitted'
             ])
             ->where('contest_id', $id)
             ->where('cp.index', $pid)
@@ -302,24 +299,28 @@ class ContestController extends Controller
                 'open_discussion'
             ])->find($id);
 
+        // 获得题号映射数组 [problem_id => index]
+        $pid2index = DB::table('contest_problems')->where('contest_id', $id)
+            ->orderBy('index')
+            ->pluck('index', 'problem_id')
+            ->toArray();
+
         // 判断比赛状态
         if (
             !(privilege('admin.contest') || privilege('admin.problem.solution'))
             && time() < strtotime($contest->end_time)
-        ) //比赛没结束，只能看自己
-            $_GET['user_id'] = Auth::id();
+        ) $_GET['user_id'] = Auth::id(); //比赛没结束，只能看自己
 
         $solutions = DB::table('solutions as s')
             ->join('users as u', 's.user_id', '=', 'u.id')
-            ->join('contest_problems as cp', 's.problem_id', '=', 'cp.problem_id')
             ->select([
-                's.id', 'index', 'user_id', 'username', 'nick', 'result', 'judge_type',
-                'pass_rate', 'sim_rate', 'sim_sid', 'time', 'memory', 'language', 'submit_time', 'judger', 'ip', 'ip_loc'
+                'user_id', 'username', 'nick', // 用户信息
+                's.id', 'problem_id', 'judge_type', 'language', 'submit_time', 'ip', 'ip_loc',
+                'result', 'pass_rate', 'sim_rate', 'sim_sid', 'time', 'memory', 'judger'
             ])
             ->where('s.contest_id', $id)
-            ->where('cp.contest_id', $id)
-            ->when(isset($_GET['index']) && $_GET['index'] >= 0, function ($q) {
-                return $q->where('index', $_GET['index']);
+            ->when(isset($_GET['index']) && $_GET['index'] >= 0, function ($q) use ($pid2index) {
+                return $q->where('problem_id', array_search($_GET['index'], $pid2index));
             })
             ->when(isset($_GET['user_id']) && $_GET['user_id'] >= 0, function ($q) {
                 return $q->where('user_id', $_GET['user_id']);
@@ -328,7 +329,7 @@ class ContestController extends Controller
                 return $q->where('sim_rate', '>=', $_GET['sim_rate']); // 0~100
             })
             ->when(isset($_GET['username']) && $_GET['username'] != null, function ($q) {
-                return $q->where(sprintf("locate('%s', `username`)", $_GET['username']));
+                return $q->where('username', 'like', $_GET['username'] . '%');
             })
             ->when(isset($_GET['result']) && $_GET['result'] >= 0, function ($q) {
                 return $q->where('result', $_GET['result']);
@@ -339,14 +340,17 @@ class ContestController extends Controller
             ->when(isset($_GET['ip']) && $_GET['ip'] != null, function ($q) {
                 return $q->where('ip', $_GET['ip']);
             })
+            ->when(isset($_GET['top_id']) && $_GET['top_id'] != null, function ($q) {
+                return $q->where('s.id', '<=', $_GET['top_id']);
+            })
             ->orderByDesc('s.id')
-            ->paginate(10);
+            ->limit(10)->get();
 
-        //获得[index=>真实题号]
-        $index_map = DB::table('contest_problems')->where('contest_id', $id)
-            ->orderBy('index')
-            ->pluck('problem_id', 'index');
-        return view('contest.status', compact('contest', 'solutions', 'index_map'));
+        // 计算题目在竞赛中的题号[0,1,2,...]
+        foreach ($solutions as &$s) {
+            $s->index = $pid2index[$s->problem_id];
+        }
+        return view('contest.status', compact('contest', 'solutions', 'pid2index'));
     }
 
 

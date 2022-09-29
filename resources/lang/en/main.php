@@ -14,6 +14,8 @@ return [
     "Type"          => "Type",
     "Reason"        => "Reason",
     "Close"         => "Close",
+    "Previous Page" => "Previous",
+    "Next Page"     => "Next",
 
     //home.blade
     "Notice Board"  => "Notice Board",

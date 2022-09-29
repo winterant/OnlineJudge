@@ -108,18 +108,16 @@
                   <th>{{ trans('main.Problem_timu') }}</th>
                   <th>{{ trans('main.Type') }}</th>
                   <th>{{ trans('main.AC/Submitted') }}</th>
-                  @if (privilege('admin.contest') || time() > strtotime($contest->end_time))
-                    <th>{{ __('main.Tag') }}</th>
-                  @endif
+                  <th>{{ __('main.Tag') }}</th>
                 </tr>
               </thead>
               <tbody>
                 @foreach ($problems as $item)
                   <tr>
                     <td>
-                      @if ($item->status == 4)
+                      @if ($item->result == 4)
                         <i class="fa fa-check text-green" aria-hidden="true"></i>
-                      @elseif($item->status == 6)
+                      @elseif($item->result > 0)
                         <i class="fa fa-pencil text-red" aria-hidden="true"></i>
                       @endif
                     </td>
@@ -134,8 +132,7 @@
                         </span>
                       @endif
                       @if (privilege('admin.contest') || time() > strtotime($contest->start_time))
-                        <a
-                          href="{{ route('contest.problem', [$contest->id, $item->index, 'group' => $_GET['group'] ?? null]) }}">{{ $item->title }}</a>
+                        <a href="{{ route('contest.problem', [$contest->id, $item->index, 'group' => $_GET['group'] ?? null]) }}">{{ $item->title }}</a>
                       @else
                         -
                       @endif
@@ -144,23 +141,20 @@
                     <td nowrap>
                       @if ($item->submitted > 0)
                         {{ $item->accepted }}
-                        (<i class="fa fa-user-o text-sky" aria-hidden="true"
-                          style="padding:0 1px"></i>{{ $item->solved }})
+                        (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>{{ $item->solved }})
                         /
                         {{ $item->submitted }}
                       @else
                         - / -
                       @endif
                     </td>
-                    @if (privilege('admin.contest') || time() > strtotime($contest->end_time))
-                      <td nowrap>
-                        @foreach ($item->tags as $tag)
-                          <div class="d-inline text-nowrap mr-1">
-                            <i class="fa fa-tag" aria-hidden="true"></i><span>{{ $tag->name }}</span>
-                          </div>
-                        @endforeach
-                      </td>
-                    @endif
+                    <td nowrap>
+                      @foreach ($item->tags ?? [] as $tag)
+                        <div class="d-inline text-nowrap mr-1">
+                          <i class="fa fa-tag" aria-hidden="true"></i><span>{{ $tag->name }}</span>
+                        </div>
+                      @endforeach
+                    </td>
                   </tr>
                 @endforeach
               </tbody>

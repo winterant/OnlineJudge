@@ -20,8 +20,9 @@ class ProblemController extends Controller
             'title',
             'source',
             'hidden',
-            DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as accepted"),
-            DB::raw("(select count(id) from solutions where problem_id=problems.id) as submitted")
+            'solved',
+            'accepted',
+            'submitted'
         )
             ->when(!isset($_GET['show_hidden']), function ($q) {
                 return $q->where('hidden', 0);
@@ -63,12 +64,13 @@ class ProblemController extends Controller
         if (!Auth::check() && !get_setting('guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
             return redirect(route('login'));
         // 在网页展示一个问题
-        $problem = DB::table('problems')->select(
-            '*',
-            DB::raw("(select count(id) from solutions where problem_id=problems.id and result=4) as accepted"),
-            DB::raw("(select count(distinct user_id) from solutions where problem_id=problems.id and result=4) as solved"),
-            DB::raw("(select count(id) from solutions where problem_id=problems.id) as submitted")
-        )->find($id);
+        $problem = DB::table('problems')->select([
+            'hidden', 'id', 'title', 'description',
+            'language', // 代码填空的语言
+            'input', 'output', 'hint', 'source', 'time_limit', 'memory_limit', 'spj',
+            'type', 'fill_in_blank',
+            'accepted', 'solved', 'submitted'
+        ])->find($id);
         if ($problem == null) //问题不存在
             return view('client.fail', ['msg' => trans('sentence.problem_not_found')]);
 

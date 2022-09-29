@@ -14,6 +14,8 @@ return [
     "Type"          => "类型",
     "Reason"        => "原因",
     "Close"         => "关闭",
+    "Previous Page" => "上一页",
+    "Next Page"     => "下一页",
 
     //home.blade
     "Notice Board"  => "公告板",
@@ -126,7 +128,7 @@ return [
 
     "local_test"    => "本地测试",
     "judge_result"  => "评测结果",
-    "Compile and Run"=>"编译运行",
+    "Compile and Run" => "编译运行",
     "Run Error"     => "运行出错",
 
     //    standing
@@ -148,7 +150,7 @@ return [
     "Special Judge" => "特判(Special Judge)",
     "Submit"        => "提交",
     "Submitted"     => "提交",
-    "Submission Time"=> "提交时间",
+    "Submission Time" => "提交时间",
     "Judge Time"    => "判题时间",
     "Code Length"   => "代码长度",
     "Code"          => "代码",
@@ -187,7 +189,7 @@ return [
 
     "New Notice"    => "新告示",
     "Content"       => "内容",
-    
+
     // Groups
     "Group"         => "课程(群组)",
     "Groups"        => "课程(群组)",
