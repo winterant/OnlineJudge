@@ -59,9 +59,11 @@ class SolutionController extends Controller
             }
         }
 
-        //检测过短的代码
+        //检测代码长度
         if (strlen($data['code']) < 3)
             return ['ok' => 0, 'msg' => '代码长度过短！'];
+        if (strlen($data['code']) > 50000)
+            return ['ok' => 0, 'msg' => '代码长度不能超过50000! 请适当缩减冗余代码。'];
 
         // 构造提交记录
         $solution = [

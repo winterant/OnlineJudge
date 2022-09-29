@@ -19,7 +19,7 @@ class StatusController extends Controller
      */
     public function index(Request $request)
     {
-        if (privilege('admin.problem.solution') && !isset($_GET['inc_contest']))
+        if (privilege('admin.problem.solution') && empty($_GET))
             $_GET['inc_contest'] = 'on';
 
         //读取提交记录
@@ -57,7 +57,7 @@ class StatusController extends Controller
                 return $q->where('language', $_GET['language']);
             })
             ->when(isset($_GET['ip']) && $_GET['ip'] != null, function ($q) {
-                return $q->where('ip', $_GET['ip'] . '%');
+                return $q->where('ip', $_GET['ip']);
             })
             ->when(isset($_GET['top_id']) && $_GET['top_id'] != null, function ($q) {
                 return $q->where('s.id', '<=', $_GET['top_id']);
