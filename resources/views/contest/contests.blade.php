@@ -66,15 +66,15 @@
           <div class="form-inline mx-1">
             <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
               <option value="5" @if (isset($_GET['perPage']) && $_GET['perPage'] == 5) selected @endif>5</option>
-              <option value="10" @if (isset($_GET['perPage']) && $_GET['perPage'] == 10) selected @endif>10</option>
-              <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
-              <option value="50" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 50) selected @endif>50</option>
+              <option value="10" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 10) selected @endif>10</option>
+              <option value="30" @if (isset($_GET['perPage']) && $_GET['perPage'] == 30) selected @endif>30</option>
+              <option value="50" @if (isset($_GET['perPage']) && $_GET['perPage'] == 50) selected @endif>50</option>
               <option value="100" @if (isset($_GET['perPage']) && $_GET['perPage'] == 100) selected @endif>100</option>
             </select>
           </div>
           <div class="form-inline mx-1">
             <select name="state" class="form-control px-3" onchange="this.form.submit();">
-              <option value="all">{{ __('main.All') }}</option>
+              <option value="">{{ __('main.All') }}</option>
               <option value="waiting" @if (isset($_GET['state']) && $_GET['state'] == 'waiting') selected @endif>{{ __('main.Waiting') }}</option>
               <option value="running" @if (isset($_GET['state']) && $_GET['state'] == 'running') selected @endif>{{ __('main.Running') }}</option>
               <option value="ended" @if (isset($_GET['state']) && $_GET['state'] == 'ended') selected @endif>{{ __('main.Ended') }}</option>

@@ -89,7 +89,7 @@ class ContestController extends Controller
                 return $q->where('c.hidden', 0); // 没登陆 or 登陆了但没权限，则隐藏
             })
             ->orderByDesc('c.order')
-            ->paginate($_GET['perPage'] ?? 30);
+            ->paginate($_GET['perPage'] ?? 10);
 
         return view('contest.contests', compact('contests', 'categories', 'sons', 'current_cate'));
     }
