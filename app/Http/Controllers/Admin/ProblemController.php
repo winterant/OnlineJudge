@@ -315,7 +315,7 @@ class ProblemController extends Controller
             if ($sid) // 若指定了“提交记录编号”，则其余项自动忽略
                 $pid = $cid = $date[0] = $date[1] = null;
             if ($pid || $cid || $sid || ($date[1] && $date[2])) {
-                $solution_ids = DB::table('solutions')
+                $num_updated = DB::table('solutions')
                     ->when($pid, function ($q) use ($pid) {
                         $q->where('problem_id', $pid);
                     })
@@ -329,13 +329,7 @@ class ProblemController extends Controller
                         $q->where('submit_time', '>', str_replace('T', ' ', $date[1]))
                             ->where('submit_time', '<', str_replace('T', ' ', $date[2]));
                     })
-                    ->orderBy('id')
-                    ->pluck('id');
-
-                // 更新为Waiting等待判题
-                DB::table('solutions')
-                    ->whereIn('id', $solution_ids)
-                    ->update(['result' => 0]); // Waiting
+                    ->update(['result' => 0]);
                 // 发起判题任务
                 // foreach ($solution_ids as $id)
                 //     dispatch(new Judger($id));
