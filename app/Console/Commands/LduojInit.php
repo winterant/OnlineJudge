@@ -47,10 +47,15 @@ class LduojInit extends Command
         $this->init_user_admin();
         $this->init_contest_cate();
         $this->correct_contest_order();
+        $this->correct_contest_cate_order();
         echo "Done!" . PHP_EOL;
     }
 
-    // 初始化权限管理 spatie/laravel-permission
+    /**
+     * 新部署的Online Judge没有任何权限项，初始化必要的权限。
+     * 如果版本迭代过程中，配置文件init/permissions新增了权限项，此处会自动在数据库中增加它们
+     * 权限管理第三方包： spatie/laravel-permission
+     */
     private function init_permission()
     {
         echo "--------------------- init_permission -----------------------" . PHP_EOL;
@@ -75,7 +80,9 @@ class LduojInit extends Command
         return true;
     }
 
-    // 初始化超级管理员用户
+    /**
+     * 新部署的Online Judge没有任何用户，生成一个用户，并设为超级管理员
+     */
     private function init_user_admin($admin_name = 'admin', $admin_passwd = 'adminadmin')
     {
         echo "--------------------- init_user_admin -----------------------" . PHP_EOL;
@@ -98,7 +105,9 @@ class LduojInit extends Command
         return true;
     }
 
-    // 初始化竞赛类别
+    /**
+     * 新部署的Online Judge没有任何竞赛类别，初始化几个必要的竞赛类别
+     *  */
     private function init_contest_cate()
     {
         echo "--------------------- init_contest_cate -----------------------" . PHP_EOL;
@@ -126,7 +135,7 @@ class LduojInit extends Command
     private function correct_contest_order()
     {
         // 拿到所有的类别（一级/二级）
-        $categories = DB::table('contest_cate')->orderByDesc('id')->pluck('id');
+        $categories = DB::table('contest_cate')->pluck('id');
         // 每个类别内部单独处理order
         foreach ($categories as $cate_id) {
             $info = DB::table('contests')
@@ -136,7 +145,6 @@ class LduojInit extends Command
                     DB::raw('max(`order`) as max_order')
                 ])
                 ->where('cate_id', $cate_id)
-                ->orderByDesc('id')
                 ->first();
             // 检查order字段是否已经全部处于[1,n]且无重复，否则重排
             if ($info->num_contests == $info->num_distinct_order && $info->num_contests == $info->max_order) {
@@ -145,8 +153,47 @@ class LduojInit extends Command
                 echo "[Wrong] Contests of category " . $cate_id . " have incorrect order. Correct them to 1,2,3,...," . $info->num_contests . PHP_EOL;
                 // 对order字段赋值为(1,2,3,...,n)，update默认按主键升序依次赋值
                 $updated = DB::table('contests')
-                    ->join(DB::raw('(SELECT @row_num := 0) as row_num_table'), DB::raw('1'), DB::raw('1'))
+                    ->leftJoin(DB::raw('(SELECT @row_num := 0) as row_num_table'), DB::raw('1'), DB::raw('1'))
                     ->where('cate_id', $cate_id)
+                    ->update(['order' => DB::raw('(@row_num:=@row_num+1)')]);
+            }
+        }
+    }
+
+    /**
+     * 竞赛类别order字段用于类别的顺序排序，一级类别单独排序，内部二级类别之间单独排order
+     * 在每个一级类别内部，order的取值范围是[1,n]，n表示一级类别内部二级类别个数。
+     * 前后台展示时，均采用升序排序
+     *
+     * lduoj-v1.2中新增了该排序方法，对于老版本，将使用此函数进行矫正
+     * 默认以id字段顺序重写order字段：1,2,3,...,n
+     */
+    private function correct_contest_cate_order()
+    {
+        // 父类的parent_id统一矫正为0
+        DB::table('contest_cate')->where('parent_id', null)->update(['parent_id' => 0]);
+
+        // 拿到所有的类别（一级/二级）的父类别编号
+        $parent_ids = DB::table('contest_cate')->select('parent_id')->distinct()->pluck('parent_id');
+
+        // 每个大类内部排序。所有一级类别视为同一类
+        foreach ($parent_ids as $parent_id) {
+            $info = DB::table('contest_cate')
+                ->select([
+                    DB::raw('count(*) as count'),
+                    DB::raw('count(distinct `order`) as num_distinct_order'),
+                    DB::raw('max(`order`) as max_order')
+                ])
+                ->where('parent_id', $parent_id)
+                ->first();
+            if ($info->count == $info->num_distinct_order && $info->count == $info->max_order) {
+                echo "[OK] Parent categories with `parent_id` " . $parent_id . " have correct order." . PHP_EOL;
+            } else {
+                echo "[Wrong] Parent categories with `parent_id` " . $parent_id . " have incorrect order. Correct them to 1,2,3,...," . $info->count . PHP_EOL;
+                // 对order字段赋值为(1,2,3,...,n)，update默认按主键升序依次赋值
+                $updated = DB::table('contest_cate')
+                    ->leftJoin(DB::raw('(SELECT @row_num := 0) as row_num_table'), DB::raw('1'), DB::raw('1'))
+                    ->where('parent_id', $parent_id)
                     ->update(['order' => DB::raw('(@row_num:=@row_num+1)')]);
             }
         }

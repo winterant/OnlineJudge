@@ -191,9 +191,6 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
 
         Route::middleware(['Privilege:admin.contest.category'])->group(function () {
             Route::get('/categories', 'Admin\ContestController@categories')->name('categories');
-            Route::post('/update_cate', 'Admin\ContestController@update_cate')->name('update_cate');
-            Route::post('/update_cate_order', 'Admin\ContestController@update_cate_order')->name('update_cate_order');
-            Route::post('/delete_cate/{id}', 'Admin\ContestController@delete_cate')->name('delete_cate');
         });
     });
 

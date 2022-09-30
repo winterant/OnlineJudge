@@ -13,18 +13,19 @@ class ContestController extends Controller
     private function get_categories()
     {
         $categories = DB::table('contest_cate as cc')
-            ->leftJoin('contest_cate as other', 'other.id', '=', 'cc.parent_id')
-            ->select('cc.*')
-            ->orderBy('cc.order')->get();
-
-        //找出父分类的名字
-        $cate_titles = [];
-        foreach ($categories as $cate) {
-            $cate_titles[$cate->id] = $cate->title;
-        }
-        foreach ($categories as &$cate) {
-            $cate->parent_title = $cate_titles[$cate->parent_id] ?? null;
-        }
+            ->leftJoin('contest_cate as father', 'father.id', 'cc.parent_id')
+            ->select([
+                'cc.id', 'cc.title', 'cc.description', 'cc.hidden',
+                'cc.order', 'cc.parent_id',
+                'cc.updated_at', 'cc.created_at',
+                'father.title as parent_title',
+                DB::raw('(case ifnull(cc.parent_id, 0) when 0 then 1 else 0 end) as is_parent')
+            ])
+            ->orderBy(DB::raw('ifnull(father.order,cc.order)')) // 1 全局，统一按一级类别的order，同一大类挨在一起
+            ->orderByDesc('is_parent') // 2 同一父类下，父类排在首位
+            ->orderBy('cc.order') // 3 同一父类下的二级类别，按自身order排序
+            ->get();
+        // dd($categories);
         return $categories;
     }
 
@@ -102,12 +103,12 @@ class ContestController extends Controller
             $pids = [];
             foreach (explode(PHP_EOL, $problem_ids) as &$item) {
                 $item = trim($item);
-                if(strlen($item)==0)
+                if (strlen($item) == 0)
                     continue;
                 $line = explode('-', $item);
 
                 if (count($line) == 1) $pids[] = intval($line[0]);
-                else if(count($line) == 2)
+                else if (count($line) == 2)
                     foreach (range(intval($line[0]), intval(($line[1]))) as $i) $pids[] = $i;
             }
 
@@ -292,7 +293,7 @@ class ContestController extends Controller
                     DB::table('contests')->where('id', $contests[0]->id)->update(['order' => $contests[1]->order]);
                     DB::table('contests')->where('id', $contests[1]->id)->update(['order' => $contests[0]->order]);
                 });
-            }else{
+            } else {
                 return json_encode([
                     'ret' => false,
                     'msg' => sprintf('到顶了，不能再上移了')
@@ -316,7 +317,7 @@ class ContestController extends Controller
                     DB::table('contests')->where('id', $contests[0]->id)->update(['order' => $contests[1]->order]);
                     DB::table('contests')->where('id', $contests[1]->id)->update(['order' => $contests[0]->order]);
                 });
-            }else{
+            } else {
                 return json_encode([
                     'ret' => false,
                     'msg' => sprintf('到底了，不能再下移了')
@@ -324,7 +325,7 @@ class ContestController extends Controller
             }
             return json_encode([
                 'ret' => true,
-                'msg' => sprintf('竞赛%d已下移', $contest_id).$contests
+                'msg' => sprintf('竞赛%d已下移', $contest_id) . $contests
             ]);
         }
     }
@@ -335,101 +336,5 @@ class ContestController extends Controller
     {
         $categories = $this->get_categories();
         return view('admin.contest.categories', compact('categories'));
-    }
-
-    //修改类别信息
-    public function update_cate(Request $request)
-    {
-        $id = $request->input('id');
-        $values = $request->input('values');
-        if ($id == null || $id == -1) //视为插入新记录
-        {
-            $id = DB::table('contest_cate')->insertGetId($values);
-            DB::table('contest_cate')->where('id', $id)->update(['order' => $id]);
-            return back();
-        }
-
-        //以下处理修改记录
-        if (isset($values['parent_id'])) //拦截非法的父级类别修改
-        {
-            $parent = DB::table('contest_cate')->find($values['parent_id']); // 欲指定的父类别
-            if ($values['parent_id'] > 0 && !$parent) {
-                return json_encode([
-                    'ret' => false,
-                    'msg' => '指定的父级类别不存在！'
-                ]);
-            }
-            if ($values['parent_id'] == $id) {
-                return json_encode([
-                    'ret' => false,
-                    'msg' => '不能作为自身的子类别！'
-                ]);
-            }
-            if ($values['parent_id'] > 0 && $parent->parent_id > 0) {
-                return json_encode([
-                    'ret' => false,
-                    'msg' => '指定的父级类别必须是一级类别！请刷新页面后重试！'
-                ]);
-            }
-        }
-
-        //执行修改
-        DB::table('contest_cate')->where('id', $id)->update($values);
-        return json_encode([
-            'ret' => true,
-            'msg' => '已修改'
-        ]);
-    }
-
-    public function delete_cate($id)
-    {
-        if (DB::table('contest_cate')->where('parent_id', $id)->exists()) {
-            return json_encode([
-                'ret' => false,
-                'msg' => '一级分类下包含子类别，请先删除或移走所有子类别再删除当前类别'
-            ]);
-        }
-        DB::table('contest_cate')->where('id', $id)->delete();
-        return json_encode([
-            'ret' => true,
-            'msg' => '已删除; 请刷新页面'
-        ]);
-    }
-
-    //修改竞赛类别的顺序，即order字段
-    public function update_cate_order(Request $request)
-    {
-        $id = (int)$request->input('id');
-        $mode = $request->input('mode');
-        assert(in_array($mode, ['to_up', 'to_down']));
-        $cate = DB::table('contest_cate')->find($id);
-        if ($mode == 'to_up') {
-            $cates = DB::table('contest_cate')->select(['id', 'order'])
-                ->where('order', '<=', $cate->order)
-                ->orderBy('order')
-                ->get();
-            if (($len = count($cates)) >= 2) {
-                DB::table('contest_cate')->where('id', $cates[$len - 1]->id)->update(['order' => $cates[$len - 2]->order]);
-                DB::table('contest_cate')->where('id', $cates[$len - 2]->id)->update(['order' => $cates[$len - 1]->order]);
-            }
-            return json_encode([
-                'ret' => true,
-                'msg' => sprintf('类别%s已上移', $cate->title)
-            ]);
-        } else //下移
-        {
-            $cates = DB::table('contest_cate')->select(['id', 'order'])
-                ->where('order', '>=', $cate->order)
-                ->orderBy('order')
-                ->get();
-            if (($len = count($cates)) >= 2) {
-                DB::table('contest_cate')->where('id', $cates[0]->id)->update(['order' => $cates[1]->order]);
-                DB::table('contest_cate')->where('id', $cates[1]->id)->update(['order' => $cates[0]->order]);
-            }
-            return json_encode([
-                'ret' => true,
-                'msg' => sprintf('类别%s已下移', $cate->title)
-            ]);
-        }
     }
 }

@@ -22,12 +22,14 @@
 
       <select name="cate_id" class="form-control px-3" onchange="this.form.submit();">
         <option value="">所有类别</option>
-        @foreach ($categories as $item)
-          <option value="{{ $item->id }}" @if (isset($_GET['cate_id']) && $_GET['cate_id'] == $item->id) selected @endif>
-            @if ($item->parent_title)
-              {{ $item->parent_title }} =>
+        @foreach ($categories as $cate)
+          <option value="{{ $cate->id }}" @if (isset($_GET['cate_id']) && $_GET['cate_id'] == $cate->id) selected @endif>
+            @if ($cate->is_parent)
+              ----- {{ $cate->title }} -----
+            @else
+              {{-- 【{{ $cate->parent_title }}】 --}}
+              &nbsp;&nbsp;&nbsp;&nbsp;{{ $cate->title }}
             @endif
-            {{ $item->title }}
           </option>
         @endforeach
       </select>
@@ -120,22 +122,16 @@
             <td>
               <div class="form-inline">
                 <select class="" onchange="update_contest_cate_id('{{ $item->id }}',$(this).val())">
-                  <option value="0">--- 未分类 ---</option>
-                  @foreach ($categories as $father)
-                    @if ($father->parent_id < 1)
-                      {{-- 一级类别 --}}
-                      <option value="{{ $father->id }}" @if ($item->cate_id == $father->id) selected @endif>
-                        【{{ $father->title }}】
-                      </option>
-                      {{-- 二级类别 --}}
-                      @foreach ($categories as $son)
-                        @if ($son->parent_id == $father->id)
-                          <option value="{{ $son->id }}" @if ($item->cate_id == $son->id) selected @endif>
-                            【{{ $father->title }}】{{ $son->title }}
-                          </option>
-                        @endif
-                      @endforeach
-                    @endif
+                  <option value="0">----- 未分类 -----</option>
+                  @foreach ($categories as $cate)
+                    <option value="{{ $cate->id }}" @if ($item->cate_id == $cate->id) selected @endif>
+                      @if ($cate->is_parent)
+                        ----- {{ $cate->title }} -----
+                      @else
+                        {{-- 【{{ $cate->parent_title }}】 --}}
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{ $cate->title }}
+                      @endif
+                    </option>
                   @endforeach
                 </select>
               </div>
