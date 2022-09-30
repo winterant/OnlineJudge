@@ -132,7 +132,7 @@ class StatusController extends Controller
             ->select('solutions.problem_id', 'solutions.user_id', 'contests.end_time', 'solutions.wrong_data')
             ->where('solutions.id', $id)
             ->first();
-        if (!$solution || !$solution->wrong_data)
+        if (!$solution || $solution->wrong_data === null)
             return view('client.fail', ['msg' => '没有记录出错数据']);
         $allow_get = false;
         if (privilege('admin.problem.solution')) // 管理员可以直接看
