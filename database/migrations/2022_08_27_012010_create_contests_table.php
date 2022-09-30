@@ -32,7 +32,7 @@ class CreateContestsTable extends Migration
             $table->int('num_members')->default(0); // 添加字段 参与成员数
             $table->boolean('hidden')->index()->default(0);
             $table->bigInteger('order')->index()->default(0);
-            $table->bigInteger('cate_id')->index()->nullable();
+            $table->bigInteger('cate_id')->index()->default(0);
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();
         });

@@ -132,10 +132,15 @@ class LduojInit extends Command
      * lduoj-v1.2中新增了该排序方法，对于老版本，将使用此函数进行矫正
      * 默认以id字段顺序重写order字段：1,2,3,...,n
      */
-    private function correct_contest_order()
+    private function correct_contest_order($categories = null)
     {
-        // 拿到所有的类别（一级/二级）
-        $categories = DB::table('contest_cate')->pluck('id');
+        if ($categories == null) {
+            // 修正未分类竞赛为0类
+            DB::table('contests')->where('cate_id', null)->update(['cate_id' => 0]);
+            // 拿到所有的类别（一级/二级）
+            $categories = DB::table('contest_cate')->pluck('id')->toArray();
+            $categories[] = 0; // 未分类的竞赛也要排序
+        }
         // 每个类别内部单独处理order
         foreach ($categories as $cate_id) {
             $info = DB::table('contests')

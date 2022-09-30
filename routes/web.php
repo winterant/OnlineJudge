@@ -180,18 +180,14 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
         Route::get('/list', 'Admin\ContestController@list')->name('list');
         Route::any('/add', 'Admin\ContestController@add')->name('add');
         Route::any('/update/{id}', 'Admin\ContestController@update')->name('update');
-        Route::post('/delete', 'Admin\ContestController@delete')->name('delete');
         Route::post('/delete/file/{id}', 'Admin\ContestController@delete_file')->name('delete_file');
         Route::post('/update/hidden', 'Admin\ContestController@update_hidden')->name('update_hidden');
         Route::post('/update/public_rank', 'Admin\ContestController@update_public_rank')->name('update_public_rank');
         Route::post('/clone', 'Admin\ContestController@clone')->name('clone');
-        // Route::post('/set_top','Admin\ContestController@set_top')->name('set_top');
-        Route::post('/update_order', 'Admin\ContestController@update_order')->name('update_order');
-        Route::post('/update_contest_cate_id', 'Admin\ContestController@update_contest_cate_id')->name('update_contest_cate_id');
-
-        Route::middleware(['Privilege:admin.contest.category'])->group(function () {
-            Route::get('/categories', 'Admin\ContestController@categories')->name('categories');
-        });
+    });
+    // 竞赛类别
+    Route::middleware(['Privilege:admin.contest.category'])->prefix('contest')->name('contest.')->group(function () {
+        Route::get('/categories', 'Admin\ContestController@categories')->name('categories');
     });
 
     // manage group

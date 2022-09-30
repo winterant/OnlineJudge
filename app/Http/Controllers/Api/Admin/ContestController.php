@@ -8,6 +8,64 @@ use Illuminate\Support\Facades\DB;
 
 class ContestController extends Controller
 {
+    /**
+     * 修改竞赛的类别号
+     * 注意order字段需要变动
+     */
+    public function update_contest_cate_id($contest_id, $cate_id)
+    {
+        $contest = DB::table('contests')->find($contest_id);
+        // 原类别下的order需要缩减
+        DB::table('contests')->where('cate_id', $contest->cate_id)->where('order', '>', $contest->order)->decrement('order');
+        // 新类别下的order自然增长
+        $max_order = DB::table('contests')->where('cate_id', $cate_id)->max('order');
+        DB::table('contests')->where('id', $contest_id)->update([
+            'cate_id' => $cate_id,
+            'order' => $max_order + 1
+        ]);
+        return [
+            'ok' => 1,
+            'msg' => sprintf('竞赛[%d]已修改类别', $contest_id)
+        ];
+    }
+    /**
+     * 修改竞赛的顺序，即order字段
+     * 注意！竞赛order是倒序展示的
+     * 输入：
+     *      id: 竞赛编号
+     *      mode: 'up' or 'down' 表示上移或下移
+     */
+    public function update_contest_order($id, $mode)
+    {
+        assert(in_array($mode, ['up', 'down']));
+        $contest = DB::table('contests')->find($id);
+        if ($mode == 'down' && $contest->order > 1) {
+            DB::table('contests')
+                ->where('cate_id', $contest->cate_id)
+                ->whereBetween('order', [$contest->order - 1, $contest->order])
+                ->update(['order' => DB::raw(sprintf("%d-`order`", $contest->order * 2 - 1))]);
+            return [
+                'ok' => 1,
+                'msg' => sprintf('竞赛[%s]已下移', $contest->title)
+            ];
+        }
+        if ($mode == 'up' && $contest->order < DB::table('contests')->where('cate_id', $contest->cate_id)->max('order')) {
+            DB::table('contests')
+                ->where('cate_id', $contest->cate_id)
+                ->whereBetween('order', [$contest->order, $contest->order + 1])
+                ->update(['order' => DB::raw(sprintf("%d-`order`", $contest->order * 2 + 1))]);
+            return [
+                'ok' => 1,
+                'msg' => sprintf('竞赛[%s]已上移', $contest->title)
+            ];
+        }
+        return [
+            'ok' => 0,
+            'msg' => sprintf('竞赛[%s]已处于开头或末尾，无法继续移动', $contest->title)
+        ];
+    }
+
+
     /*****************************  类别   ***********************************/
 
     /**
@@ -18,8 +76,8 @@ class ContestController extends Controller
     public function add_contest_cate(Request $request)
     {
         $values = $request->input('values');
-        $max_order = DB::table('contest_cate')->where('parent_id', $values['parent_id'])->max('order')+1;
-        $values['order'] = $max_order;
+        $max_order = DB::table('contest_cate')->where('parent_id', $values['parent_id'])->max('order');
+        $values['order'] = $max_order + 1;
         $id = DB::table('contest_cate')->insertGetId($values);
         return [
             'ok' => 1,
@@ -113,22 +171,22 @@ class ContestController extends Controller
                 ->update(['order' => DB::raw(sprintf("%d-`order`", $cate->order * 2 - 1))]);
             return [
                 'ok' => 1,
-                'msg' => sprintf('类别%s已上移', $cate->title)
+                'msg' => sprintf('类别[%s]已上移', $cate->title)
             ];
         }
-        if ($mode == 'down' && $cate->order < DB::table('contest_cate')->where('parent_id', $cate->parent_id)->count()) {
+        if ($mode == 'down' && $cate->order < DB::table('contest_cate')->where('parent_id', $cate->parent_id)->max('order')) {
             DB::table('contest_cate')
                 ->where('parent_id', $cate->parent_id)
                 ->whereBetween('order', [$cate->order, $cate->order + 1])
                 ->update(['order' => DB::raw(sprintf("%d-`order`", $cate->order * 2 + 1))]);
             return [
                 'ok' => 1,
-                'msg' => sprintf('类别%s已下移', $cate->title)
+                'msg' => sprintf('类别[%s]已下移', $cate->title)
             ];
         }
         return [
             'ok' => 0,
-            'msg' => sprintf('类别%s已处于开头或末尾，无法继续移动', $cate->title)
+            'msg' => sprintf('类别[%s]已处于开头或末尾，无法继续移动', $cate->title)
         ];
     }
 }

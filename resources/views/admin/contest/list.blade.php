@@ -22,6 +22,7 @@
 
       <select name="cate_id" class="form-control px-3" onchange="this.form.submit();">
         <option value="">所有类别</option>
+        <option value="0" @if (isset($_GET['cate_id']) && $_GET['cate_id'] === '0') selected @endif>----- 未分类 -----</option>
         @foreach ($categories as $cate)
           <option value="{{ $cate->id }}" @if (isset($_GET['cate_id']) && $_GET['cate_id'] == $cate->id) selected @endif>
             @if ($cate->is_parent)
@@ -121,10 +122,10 @@
             <td>{{ $item->id }}</td>
             <td>
               <div class="form-inline">
-                <select class="" onchange="update_contest_cate_id('{{ $item->id }}',$(this).val())">
+                <select class="" onchange="update_contest_cate_id($(this).val())">
                   <option value="0">----- 未分类 -----</option>
                   @foreach ($categories as $cate)
-                    <option value="{{ $cate->id }}" @if ($item->cate_id == $cate->id) selected @endif>
+                    <option value="{{ route('api.admin.contest.update_contest_cate_id', [$item->id, $cate->id]) }}" @if ($item->cate_id == $cate->id) selected @endif>
                       @if ($cate->is_parent)
                         ----- {{ $cate->title }} -----
                       @else
@@ -153,10 +154,18 @@
             </td>
             <td nowrap>{{ $item->username }}</td>
             <td nowrap>
-              {{ $item->order }}暂未开发
+              @if ($_GET['cate_id'] ?? '' !== '')
+                <a href="javascript:" onclick="update_contest_order('{{ route('api.admin.contest.update_contest_order', [$item->id, 'up']) }}')" class="mx-1" title="改变顺序">
+                  <i class="fa fa-arrow-up" aria-hidden="true"></i> 上移
+                </a>
+                <a href="javascript:" onclick="update_contest_order('{{ route('api.admin.contest.update_contest_order', [$item->id, 'down']) }}')" class="mx-1" title="改变顺序">
+                  <i class="fa fa-arrow-down" aria-hidden="true"></i> 下移
+                </a>
+              @endif
+              {{--
               @if ($_GET['cate_id'] ?? null)
                 <div class="form-inline">
-                  {{--
+
                   <select onchange="update_order_todo('{{ $item->id }}',$(this).val())">
                     @foreach ($categories as $cate)
                       <option value="{{ $cate->id }}" @if ($item->cate_id == $cate->id) selected @endif>
@@ -165,16 +174,17 @@
                     @endforeach
                     <option value="0">待开发order</option>
                   </select>
-                  --}}
+
                 </div>
               @endif
+               --}}
             </td>
             <td nowrap>
               <a href="{{ route('admin.contest.update', $item->id) }}" class="mx-1" target="_blank" title="修改">
                 <i class="fa fa-edit" aria-hidden="true"></i> 编辑
               </a>
-              <a href="javascript:" onclick="delete_contest({{ $item->id }})" class="mx-1" title="删除">
-                <i class="fa fa-trash" aria-hidden="true"></i> 删除
+              {{-- <a href="javascript:" onclick="delete_contest({{ $item->id }})" class="mx-1" title="删除">
+                <i class="fa fa-trash" aria-hidden="true"></i> 删除 --}}
               </a>
               <a href="javascript:" onclick="clone_contest({{ $item->id }})" class="mx-1" title="克隆该竞赛">
                 <i class="fa fa-clone" aria-hidden="true"></i> 克隆
@@ -188,6 +198,7 @@
   </div>
 
   <script type="text/javascript">
+    const api_token = '{{ request()->cookie('api_token') }}'
     // 由于修改hidden、public_rank等字段时会修改开关，出发开关递归调用onchange
     // 所以在js函数内操作开关前，先加锁，防止递归调用。
     var lock_single_call = false
@@ -255,7 +266,7 @@
   </script>
 
   <script type="text/javascript">
-    // 修改竞赛公开榜单字段 todo api
+    // 修改竞赛公开榜单字段 api
     function update_public_rank(public_rank, id = -1) {
       if (lock_single_call) // 已加锁，禁止执行，会发生递归
         return;
@@ -291,69 +302,32 @@
       );
     }
 
-    // 修改竞赛的位置顺序，todo重做 api
-    function update_order(cid, mode) {
+    // 修改竞赛的位置顺序 api
+    function update_contest_order(url) {
       $.post(
-        '{{ route('admin.contest.update_order') }}', {
-          '_token': '{{ csrf_token() }}',
-          'contest_id': cid,
-          'mode': mode
+        url, {
+          'api_token': api_token
         },
         function(ret) {
-          ret = JSON.parse(ret)
-          console.log(ret)
-          location.reload()
+          if (ret.ok)
+            location.reload()
+          else
+            Notiflix.Notify.Failure(ret.msg);
         }
       );
     }
 
-    //修改竞赛的类别 todo api
-    function update_contest_cate_id(contest_id, cate_id) {
+    //修改竞赛的类别 api
+    function update_contest_cate_id(url) {
       $.post(
-        '{{ route('admin.contest.update_contest_cate_id') }}', {
-          '_token': '{{ csrf_token() }}',
-          'contest_id': contest_id,
-          'cate_id': cate_id
+        url, {
+          'api_token': api_token
         },
         function(ret) {
-          ret = JSON.parse(ret)
           console.log(ret)
           Notiflix.Notify.Success(ret.msg)
         }
       );
-    }
-
-    // 删除竞赛
-    function delete_contest(id = -1) {
-      var cids = [];
-      if (id !== -1) { ///单独删除一个
-        cids = [id]
-      } else {
-        $('.cb input[type=checkbox]:checked').each(function() {
-          cids.push($(this).val());
-        });
-      }
-      Notiflix.Confirm.Show('高危操作', `确定删除${cids.length}个竞赛?（如果你不是超级管理员，则只能删除你自己创建的竞赛）`, '确认', '取消', function() {
-        $.post(
-          '{{ route('admin.contest.delete') }}', {
-            '_token': '{{ csrf_token() }}',
-            'cids': cids,
-          },
-          function(ret) {
-            if (id === -1) {
-              Notiflix.Report.Success('删除成功', ret + '条数据已删除', 'confirm', function() {
-                location.reload();
-              });
-            } else {
-              if (ret > 0) {
-                Notiflix.Report.Success('删除成功', '该场竞赛已删除', 'confirm', function() {
-                  location.reload();
-                });
-              } else Notiflix.Report.Failure('删除失败', '只有全局管理员(admin)或创建者可以删除', 'confirm')
-            }
-          }
-        );
-      });
     }
 
     // 复制竞赛
@@ -361,7 +335,6 @@
       Notiflix.Confirm.Show('克隆竞赛', '您即将克隆这场比赛，是否继续？', '继续', '取消', function() {
         $.post(
           '{{ route('admin.contest.clone') }}', {
-            '_token': '{{ csrf_token() }}',
             'cid': cid,
           },
           function(ret) {

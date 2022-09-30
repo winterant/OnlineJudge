@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Api\Admin\ContestController as ApiAdminContestController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,8 +49,7 @@ class ContestController extends Controller
             ->when(isset($_GET['title']), function ($q) {
                 return $q->where('c.title', 'like', '%' . $_GET['title'] . '%');
             })
-            ->orderByDesc('c.order')
-            ->orderByDesc('c.id')
+            ->orderByDesc(isset($_GET['cate_id']) && $_GET['cate_id'] !== '' ? 'c.order' : 'c.id')
             ->paginate($_GET['perPage'] ?? 10);
 
         $categories = $this->get_categories();
@@ -64,9 +64,11 @@ class ContestController extends Controller
             return view('admin.contest.edit', compact('pageTitle', 'categories'));
         }
         if ($request->isMethod('post')) {
-            $cid = DB::table('contests')->insertGetId(['user_id' => Auth::id()]);
+            $cid = DB::table('contests')->insertGetId([
+                'user_id' => Auth::id(),
+                'order' => 0 // 先默认不分类，修改时再调整
+            ]);
             $this->update($request, $cid);
-            DB::table('contests')->update(['order' => $cid]); //设置顺序
             $msg = sprintf('成功创建竞赛：<a href="%s" target="_blank">%d</a>', route('contest.home', $cid), $cid);
             return view('admin.success', compact('msg'));
         }
@@ -99,7 +101,12 @@ class ContestController extends Controller
             $contest = $request->input('contest');
             $problem_ids = $request->input('problems');
             $c_users = $request->input('contest_users'); //指定用户
-            //数据格式处理
+
+            // 竞赛类别单独处理。竞赛类别改动时，涉及order的变动
+            (new ApiAdminContestController())->update_contest_cate_id($id, $contest['cate_id']);
+            unset($contest['cate_id']);
+
+            // 题目列表数据格式处理
             $pids = [];
             foreach (explode(PHP_EOL, $problem_ids) as &$item) {
                 $item = trim($item);
@@ -116,16 +123,16 @@ class ContestController extends Controller
             $contest['end_time'] = str_replace('T', ' ', $contest['end_time']);
             if ($contest['access'] != 'password') unset($contest['password']);
 
-            //数据库
+            // 数据库
             $contest['public_rank'] = isset($contest['public_rank']) ? 1 : 0; // 公开榜单
-            $contest['order'] = $id; // 竞赛初始order=id
             DB::table('contests')->where('id', $id)->update($contest);
             DB::table('contest_problems')->where('contest_id', $id)->delete(); //舍弃原来的题目
             foreach ($pids as $i => $pid) {
                 if (DB::table('problems')->find($pid))
                     DB::table('contest_problems')->insert(['contest_id' => $id, 'problem_id' => $pid, 'index' => $i]);
             }
-            //可参与用户
+
+            // 可参与用户
             DB::table('contest_users')->where('contest_id', $id)->delete();
             if ($contest['access'] == 'private') {
                 $unames = explode(PHP_EOL, $c_users);
@@ -136,7 +143,7 @@ class ContestController extends Controller
                 }
             }
 
-            //附件
+            // 附件
             $files = $request->file('files') ?: [];
             $allowed_ext = ["txt", "pdf", "doc", "docx", "xls", "xlsx", "csv", "ppt", "pptx"];
             foreach ($files as $file) {     //保存附件
@@ -180,35 +187,6 @@ class ContestController extends Controller
         return json_encode(['cloned' => false]);
     }
 
-    /*
-    public function set_top(Request $request)
-    {
-        $cid = $request->input('cid');
-        $way = $request->input('way');
-        if ($way == 0)
-            $new_top = 0;
-        else
-            $new_top = DB::table('contests')->max('top') + 1;
-        DB::table('contests')->where('id', $cid)->update(['top' => $new_top]);
-        return $new_top;
-    }
-    */
-
-    public function delete(Request $request)
-    {
-        $cids = $request->input('cids') ?: [];
-        if (privilege('admin')) //超管，直接进行
-            $ret = DB::table('contests')->whereIn('id', $cids)->delete();
-        else
-            $ret = DB::table('contests')->whereIn('id', $cids)->where('user_id', Auth::id())->delete(); //创建者
-        if ($ret > 0) {
-            foreach ($cids as $cid) {
-                Storage::deleteDirectory('public/contest/files/' . $cid); //删除附件
-            }
-        }
-        return $ret;
-    }
-
     public function delete_file(Request $request, $id)
     {  //$id:竞赛id
         $filename = $request->input('filename');
@@ -237,99 +215,6 @@ class ContestController extends Controller
         return DB::table('contests')->whereIn('id', $cids)
             ->where('user_id', Auth::id())->update(['public_rank' => $public_rank]);
     }
-
-
-    //修改竞赛的类别号
-    public function update_contest_cate_id(Request $request)
-    {
-        $contest_id = $request->input('contest_id');
-        $new_cate_id = $request->input('cate_id');
-        DB::table('contests')->where('id', $contest_id)->update(['cate_id' => $new_cate_id]);
-        $new_cate = DB::table('contest_cate')->find($new_cate_id);
-        return json_encode([
-            'ret' => true,
-            'msg' => sprintf('竞赛%d已修改类别为：%s', $contest_id, $new_cate ? $new_cate->title : '未分类')
-        ]);
-    }
-
-    //修改竞赛的顺序，即order字段
-    public function update_order(Request $request)
-    {
-        $contest_id = (int)$request->input('contest_id');
-        $mode = $request->input('mode');
-        assert(in_array($mode, ['to_top', 'to_up', 'to_down']));
-        $contest = DB::table('contests')->find($contest_id);
-        if ($mode == 'to_top') //置顶
-        {
-            $contests = DB::table('contests')->select(['id', 'order'])
-                ->where('cate_id', $contest->cate_id)
-                ->where('order', '>=', $contest->order)
-                ->orderByDesc('order')
-                ->limit(2)
-                ->get();
-            if ($contests) {
-                $top_order = $contests[0]->order;
-                $len = count($contests);
-                for ($i = 0; $i < $len - 1; $i++) {
-                    $contests[$i]->order = $contests[$i + 1]->order;
-                }
-                $contests[$len - 1]->order = $top_order;
-                foreach ($contests as $item)
-                    DB::table('contests')->where('id', $item->id)->update(['order' => $item->order]);
-            }
-            return json_encode([
-                'ret' => true,
-                'msg' => sprintf('竞赛%d已置顶', $contest_id)
-            ]);
-        } else if ($mode == 'to_up') {
-            $contests = DB::table('contests')->select(['id', 'order'])
-                ->where('cate_id', $contest->cate_id)
-                ->where('order', '>=', $contest->order)
-                ->orderBy('order')
-                ->limit(2)
-                ->get();
-            if (($len = count($contests)) >= 2) {
-                DB::transaction(function () use ($contests) {
-                    DB::table('contests')->where('id', $contests[0]->id)->update(['order' => $contests[1]->order]);
-                    DB::table('contests')->where('id', $contests[1]->id)->update(['order' => $contests[0]->order]);
-                });
-            } else {
-                return json_encode([
-                    'ret' => false,
-                    'msg' => sprintf('到顶了，不能再上移了')
-                ]);
-            }
-            return json_encode([
-                'ret' => true,
-                'msg' => sprintf('竞赛%d已上移', $contest_id)
-            ]);
-        } else //下移
-        {
-            $contests = DB::table('contests')->select(['id', 'order'])
-                ->where('cate_id', $contest->cate_id)
-                ->where('order', '<=', $contest->order)
-                ->orderByDesc('order')
-                ->limit(2)
-                ->get();
-            if (($len = count($contests)) >= 2) {
-                // 执行以下事务
-                DB::transaction(function () use ($contests) {
-                    DB::table('contests')->where('id', $contests[0]->id)->update(['order' => $contests[1]->order]);
-                    DB::table('contests')->where('id', $contests[1]->id)->update(['order' => $contests[0]->order]);
-                });
-            } else {
-                return json_encode([
-                    'ret' => false,
-                    'msg' => sprintf('到底了，不能再下移了')
-                ]);
-            }
-            return json_encode([
-                'ret' => true,
-                'msg' => sprintf('竞赛%d已下移', $contest_id) . $contests
-            ]);
-        }
-    }
-
 
     /*****************************  类别   ***********************************/
     public function categories(Request $request)
