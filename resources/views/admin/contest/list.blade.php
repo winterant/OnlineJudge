@@ -123,7 +123,7 @@
             <td>
               <div class="form-inline">
                 <select class="" onchange="update_contest_cate_id($(this).val())">
-                  <option value="0">----- 未分类 -----</option>
+                  <option value="{{ route('api.admin.contest.update_contest_cate_id', [$item->id, 0]) }}">----- 未分类 -----</option>
                   @foreach ($categories as $cate)
                     <option value="{{ route('api.admin.contest.update_contest_cate_id', [$item->id, $cate->id]) }}" @if ($item->cate_id == $cate->id) selected @endif>
                       @if ($cate->is_parent)
@@ -154,7 +154,7 @@
             </td>
             <td nowrap>{{ $item->username }}</td>
             <td nowrap>
-              @if ($_GET['cate_id'] ?? '' !== '')
+              @if (isset($_GET['cate_id']) && $_GET['cate_id'] !== '')
                 <a href="javascript:" onclick="update_contest_order('{{ route('api.admin.contest.update_contest_order', [$item->id, 'up']) }}')" class="mx-1" title="改变顺序">
                   <i class="fa fa-arrow-up" aria-hidden="true"></i> 上移
                 </a>
