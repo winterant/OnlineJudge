@@ -29,7 +29,7 @@ function get_setting($key, $default = null)
     return $val;
 }
 
-
+// todo 要区分web和api获取user的方式不同
 //查询用户权限: 查询user是否具有power权限
 function privilege($power, $user = null)
 {

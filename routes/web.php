@@ -26,14 +26,14 @@ Route::post('/get_notice', 'Client\HomeController@get_notice')->name('get_notice
 Route::get('/status', 'Client\StatusController@index')->name('status');
 Route::post('/ajax_get_status', 'Client\StatusController@ajax_get_status')->name('ajax_get_status');
 Route::get('/problems', 'Client\ProblemController@problems')->name('problems');
-Route::get('/problem/{id}', 'Client\ProblemController@problem')->middleware('CheckBlacklist')->where(['id' => '[0-9]+'])->name('problem');
+Route::get('/problem/{id}', 'Client\ProblemController@problem')->middleware('CheckUserLocked')->where(['id' => '[0-9]+'])->name('problem');
 Route::get('/contests', 'Client\ContestController@contests')->name('contests');
 Route::get('/contests/{cate}', 'Client\ContestController@contests')->name('contests');
 
 Route::get('/standings', 'Client\UserController@standings')->name('standings');
 Route::get('/user/{username}', 'Client\UserController@user')->name('user');
 Route::get('/change_language/{lang}', 'Client\UserController@change_language')->name('change_language');
-Route::middleware(['auth', 'CheckBlacklist'])->where(['id' => '[0-9]+'])->group(function () {
+Route::middleware(['auth', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group(function () {
     Route::get('/solution/{id}', 'Client\StatusController@solution')->name('solution');
     Route::get('/solution/{id}/wrong_data/{type}', 'Client\StatusController@solution_wrong_data')
         ->where(['type' => '(in|out)'])->name('solution_wrong_data');
@@ -49,10 +49,10 @@ Route::middleware(['auth', 'CheckBlacklist'])->where(['id' => '[0-9]+'])->group(
 
 //  题目页面讨论板模块
 Route::post('/load_discussion', 'Client\ProblemController@load_discussion')->name('load_discussion');
-Route::middleware(['auth', 'CheckBlacklist'])->group(function () {
+Route::middleware(['auth', 'CheckUserLocked'])->group(function () {
     Route::post('/edit_discussion/{pid}', 'Client\ProblemController@edit_discussion')->name('edit_discussion');
 });
-Route::middleware(['auth', 'CheckBlacklist', 'Privilege:admin.problem.discussion'])->group(function () {
+Route::middleware(['auth', 'CheckUserLocked', 'Permission:admin.problem.discussion'])->group(function () {
     Route::post('/delete_discussion', 'Client\ProblemController@delete_discussion')->name('delete_discussion');
     Route::post('/top_discussion', 'Client\ProblemController@top_discussion')->name('top_discussion');
     Route::post('/hidden_discussion', 'Client\ProblemController@hidden_discussion')->name('hidden_discussion');
@@ -62,7 +62,7 @@ Route::middleware(['auth', 'CheckBlacklist', 'Privilege:admin.problem.discussion
 // Contest，用户前台竞赛页面所有路由
 Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->where(['pid' => '[0-9]+'])->group(function () {
 
-    Route::middleware(['auth', 'CheckContest', 'CheckBlacklist'])->group(function () {
+    Route::middleware(['auth', 'CheckContest', 'CheckUserLocked'])->group(function () {
         Route::get('/', 'Client\ContestController@home')->name('home');
         Route::get('/problem/{pid}', 'Client\ContestController@problem')->name('problem');
         Route::get('/status', 'Client\ContestController@status')->name('status');
@@ -70,14 +70,14 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->wher
         Route::post('/get_notice', 'Client\ContestController@get_notice')->name('get_notice'); //获取一条公告
         Route::get('/private_rank', 'Client\ContestController@rank')->name('private_rank'); // 私有榜单
 
-        Route::middleware(['Privilege:admin.contest'])->group(function () {
+        Route::middleware(['Permission:admin.contest'])->group(function () {
             Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->name('cancel_lock'); //取消封榜
             Route::post('/edit_notice', 'Client\ContestController@edit_notice')->name('edit_notice'); //编辑/添加一条公告
             Route::post('/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('delete_notice'); //删除一条公告
             Route::post('/start_to_judge', 'Client\ContestController@start_to_judge')->name('start_to_judge');
         });
 
-        Route::middleware(['Privilege:admin.contest.balloon'])->group(function () { //气球,需要权限
+        Route::middleware(['Permission:admin.contest.balloon'])->group(function () { //气球,需要权限
             Route::get('/balloons', 'Client\ContestController@balloons')->name('balloons');
             Route::post('/deliver_ball/{bid}', 'Client\ContestController@deliver_ball')->name('deliver_ball');
         });
@@ -95,7 +95,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/groups/joinin/{id}', 'Client\GroupController@joinin')->name('groups.joinin');
 });
 Route::prefix('group/{id}')->name('group.')->where(['id' => '[0-9]+'])->where(['pid' => '[0-9]+'])->group(function () {
-    Route::middleware(['auth', 'CheckGroup', 'CheckBlacklist'])->group(function () {
+    Route::middleware(['auth', 'CheckGroup', 'CheckUserLocked'])->group(function () {
         Route::get('/', 'Client\GroupController@home')->name('home');
         Route::get('/members', 'Client\GroupController@members')->name('members');
     });
@@ -103,14 +103,14 @@ Route::prefix('group/{id}')->name('group.')->where(['id' => '[0-9]+'])->where(['
 
 
 // Administration 管理员后台页面所有路由
-Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->where(['id' => '[0-9]+'])->group(function () {
+Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')->where(['id' => '[0-9]+'])->group(function () {
 
-    Route::middleware(['Privilege:admin.home'])->group(function () {
+    Route::middleware(['Permission:admin.home'])->group(function () {
         Route::get('/', 'Admin\HomeController@index')->name('home');
     });
 
     //    manage notice
-    Route::middleware(['Privilege:admin.notice'])->prefix('notice')->name('notice.')->group(function () {
+    Route::middleware(['Permission:admin.notice'])->prefix('notice')->name('notice.')->group(function () {
         Route::get('/list', 'Admin\NoticeController@list')->name('list');
         Route::any('/add', 'Admin\NoticeController@add')->name('add');
         Route::any('/update/{id}', 'Admin\NoticeController@update')->name('update');
@@ -119,7 +119,7 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
     });
 
     //   manage user
-    Route::middleware(['Privilege:admin.user'])->prefix('user')->name('user.')->group(function () {
+    Route::middleware(['Permission:admin.user'])->prefix('user')->name('user.')->group(function () {
         Route::get('/list', 'Admin\UserController@list')->name('list');
         Route::get('/privileges', 'Admin\UserController@privileges')->name('privileges');
         Route::any('/create', 'Admin\UserController@create')->name('create');
@@ -132,12 +132,12 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
     });
 
     //   manage problem list
-    Route::middleware(['Privilege:admin.problem.list'])->prefix('problem')->name('problem.')->group(function () {
+    Route::middleware(['Permission:admin.problem.list'])->prefix('problem')->name('problem.')->group(function () {
         Route::get('/list', 'Admin\ProblemController@list')->name('list');
     });
 
     //   manage problem editor
-    Route::middleware(['Privilege:admin.problem.edit'])->prefix('problem')->name('problem.')->group(function () {
+    Route::middleware(['Permission:admin.problem.edit'])->prefix('problem')->name('problem.')->group(function () {
         Route::any('/add', 'Admin\ProblemController@add')->name('add');
         // Route::get('/update', 'Admin\ProblemController@update')->name('update');
         Route::any('/update/{id}', 'Admin\ProblemController@update')->name('update_withId');
@@ -146,7 +146,7 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
     });
 
     //   manage problem tag
-    Route::middleware(['Privilege:admin.problem.tag'])->prefix('problem')->name('problem.')->group(function () {
+    Route::middleware(['Permission:admin.problem.tag'])->prefix('problem')->name('problem.')->group(function () {
         Route::get('/tags', 'Admin\ProblemController@tags')->name('tags');
         Route::post('/tag_delete', 'Admin\ProblemController@tag_delete')->name('tag_delete');
         Route::get('/tag_pool', 'Admin\ProblemController@tag_pool')->name('tag_pool');
@@ -155,7 +155,7 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
     });
 
     //   manage problem data
-    Route::middleware(['Privilege:admin.problem.data'])->prefix('problem')->name('problem.')->group(function () {
+    Route::middleware(['Permission:admin.problem.data'])->prefix('problem')->name('problem.')->group(function () {
         Route::get('/test_data', 'Admin\ProblemController@test_data')->name('test_data');
         Route::post('/upload/data', 'Admin\ProblemController@upload_data')->name('upload_data');
         Route::post('/get_data', 'Admin\ProblemController@get_data')->name('get_data');
@@ -164,19 +164,19 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
     });
 
     //   manage problem rejudge
-    Route::middleware(['Privilege:admin.problem.rejudge'])->prefix('problem')->name('problem.')->group(function () {
+    Route::middleware(['Permission:admin.problem.rejudge'])->prefix('problem')->name('problem.')->group(function () {
         Route::any('/rejudge', 'Admin\ProblemController@rejudge')->name('rejudge');
     });
 
     //   manage problem import export
-    Route::middleware(['Privilege:admin.problem.import_export'])->prefix('problem')->name('problem.')->group(function () {
+    Route::middleware(['Permission:admin.problem.import_export'])->prefix('problem')->name('problem.')->group(function () {
         Route::get('/import_export', 'Admin\ProblemController@import_export')->name('import_export');
         Route::any('/import', 'Admin\ProblemController@import')->name('import');
         Route::any('/export', 'Admin\ProblemController@export')->name('export');
     });
 
     //   manage contest
-    Route::middleware(['Privilege:admin.contest'])->prefix('contest')->name('contest.')->group(function () {
+    Route::middleware(['Permission:admin.contest'])->prefix('contest')->name('contest.')->group(function () {
         Route::get('/list', 'Admin\ContestController@list')->name('list');
         Route::any('/add', 'Admin\ContestController@add')->name('add');
         Route::any('/update/{id}', 'Admin\ContestController@update')->name('update');
@@ -186,12 +186,12 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
         Route::post('/clone', 'Admin\ContestController@clone')->name('clone');
     });
     // 竞赛类别
-    Route::middleware(['Privilege:admin.contest.category'])->prefix('contest')->name('contest.')->group(function () {
+    Route::middleware(['Permission:admin.contest.category'])->prefix('contest')->name('contest.')->group(function () {
         Route::get('/categories', 'Admin\ContestController@categories')->name('categories');
     });
 
     // manage group
-    Route::middleware(['Privilege:admin.group'])->prefix('group')->name('group.')->group(function () {
+    Route::middleware(['Permission:admin.group'])->prefix('group')->name('group.')->group(function () {
         Route::get('/list', 'Admin\GroupController@list')->name('list');
         Route::any('/edit', 'Admin\GroupController@edit')->name('edit');
         Route::get('/delete/{id}', 'Admin\GroupController@delete')->name('delete');
@@ -201,9 +201,7 @@ Route::middleware(['auth', 'CheckBlacklist'])->prefix('admin')->name('admin.')->
     });
 
     // settings
-    Route::middleware(['Privilege:admin.setting'])->group(function () {
+    Route::middleware(['Permission:admin.setting'])->group(function () {
         Route::any('/settings', 'Admin\SettingController@settings')->name('settings');
-        // Route::get('/upgrade', 'Admin\SettingController@upgrade')->name('upgrade');
-        // Route::post('/upgrade_oj', 'Admin\SettingController@upgrade_oj')->name('upgrade_oj');
     });
 });

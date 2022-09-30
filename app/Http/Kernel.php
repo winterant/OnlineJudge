@@ -35,6 +35,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             // \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
             \App\Http\Middleware\SetGlobalVariable::class,
             \App\Http\Middleware\CheckFormDecode::class,
         ],
@@ -44,6 +45,7 @@ class Kernel extends HttpKernel
             'bindings',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+
             \App\Http\Middleware\SetGlobalVariable::class,
             \App\Http\Middleware\CheckFormDecode::class,
         ],
@@ -67,10 +69,11 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        'Privilege' => \App\Http\Middleware\Privilege::class,
+        // 自定义路由中间件
+        'CheckUserLocked' => \App\Http\Middleware\CheckUserLocked::class,
+        'Permission' => \App\Http\Middleware\Permission::class,
         'CheckContest' => \App\Http\Middleware\CheckContest::class,
         'CheckGroup' => \App\Http\Middleware\CheckGroup::class,
-        'CheckBlacklist' => \App\Http\Middleware\CheckBlacklist::class
     ];
 
     /**
