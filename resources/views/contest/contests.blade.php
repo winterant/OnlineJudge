@@ -103,7 +103,7 @@
             <div class="p-xs-0 px-3 text-center align-self-center">
               <img height="45px"
                 @if (strtotime($item->start_time) < time() && time() < strtotime($item->end_time)) src="{{ asset('images/trophy/running.png') }}"
-                @else src="{{asset('images/trophy/gold.png')}}" @endif
+                @else src="{{ asset('images/trophy/gold.png') }}" @endif
                 alt="pic">
             </div>
             <div class="col-9 col-sm-8 pr-0">
@@ -132,8 +132,7 @@
                 </li>
                 <li class="px-2">
                   <div class="border bg-light px-1" style="border-radius: 12px">
-                    <font @if ($item->access == 'public') style="color: #00c000"
-                                              @else style="color: #ff573e" @endif>
+                    <font @if ($item->access == 'public') style="color: #00c000" @else style="color: #ff573e" @endif>
                       {{ ucfirst($item->access) }}</font>
                   </div>
                 </li>
@@ -155,11 +154,6 @@
                   <i class="fa fa-hourglass text-green pr-1" aria-hidden="true"></i>{{ __('main.Running') }}
                 @endif
               </a>
-              <span>
-                <a href="javascript:update_order('{{ $item->id }}', 'to_top')" class="mx-1">置顶</a>
-                <a href="javascript:update_order('{{ $item->id }}', 'to_up')" class="mx-1">上移</a>
-                <a href="javascript:update_order('{{ $item->id }}', 'to_down')" class="mx-1">下移</a>
-              </span>
             </div>
           </li>
         @endforeach
@@ -174,24 +168,6 @@
   </div>
 
   <script type="text/javascript">
-    function update_order(cid, mode) {
-      $.post(
-        '{{ route('admin.contest.update_order') }}', {
-          '_token': '{{ csrf_token() }}',
-          'contest_id': cid,
-          'mode': mode
-        },
-        function(ret) {
-          ret = JSON.parse(ret)
-          console.log(ret)
-          if (ret.ret)
-            location.reload()
-          else
-            Notiflix.Notify.Failure(ret.msg);
-        }
-      );
-    }
-
     // 设置竞赛类别菜单高亮active
     $(function() {
       const uri = location.pathname
