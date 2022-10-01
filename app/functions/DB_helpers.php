@@ -3,30 +3,38 @@
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Schema;
 
 /************************ 前台 ***********************************/
-//查询一条最置顶的系统公告的id和title
-function get_top_notice()
-{
-    return DB::table('notices')
-        ->select('id', 'title')
-        ->where('state', '!=', 0)
-        ->orderByDesc('state')
-        ->orderByDesc('id')
-        ->first();
-}
+
 
 /************************* 后台管理 *****************************/
 //获取配置值
-function get_setting($key, $default = null)
+function get_setting($key, $setdefault = null, $update=false)
 {
-    $val = DB::table('settings')->where('key', $key)->value('value');
-    if ($val == null) {
-        $sys_conf = config('oj.main.' . $key, $default);
-        DB::table('settings')->updateOrInsert(['key' => $key, 'value' => $sys_conf]);
-        return $sys_conf;
+    $redis_key = 'website:' . $key;
+    // 强制修改值
+    if($update){
+        Redis::set($redis_key, $setdefault);
+        return $setdefault;
     }
-    return $val;
+    // 从缓存中取值
+    if (($val = Redis::get($redis_key)) !== null) {
+        return $val;
+    } else if (Schema::hasTable('settings') && ($val = DB::table('settings')->where('key', $key)->value('value')) !== null) {
+        // 兼容老版本的settings表，新版已经移除该表
+        Redis::set($redis_key, $val);
+        return $val;
+    } else if (($val = config('init.settings.' . $key)) !== null) {
+        // 尝试从配置文件中读取配置项
+        Redis::set($redis_key, $val);
+        return $val;
+    }
+    // 不存在的配置项，以默认值保存并返回
+    if ($setdefault !== null)
+        Redis::set($redis_key, $setdefault);
+    return $setdefault;
 }
 
 // todo 要区分web和api获取user的方式不同
@@ -40,7 +48,7 @@ function privilege($power, $user = null)
     if (!$user || !isset($user->id))
         return false;
     // 验证权限代号的有效性
-    if (!array_key_exists($power, config('oj.authority')))
+    if (!array_key_exists($power, config('init.authority')))
         abort(502, '[系统错误] 不存在的权限：' . $power);
     /*
     权限说明：

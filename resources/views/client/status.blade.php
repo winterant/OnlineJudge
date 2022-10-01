@@ -76,7 +76,7 @@
                       <div class="form-group m-0 p-0 bmd-form-group">
                         <select name="result" class="px-2 form-control" onchange="this.form.submit();">
                           <option class="form-control" value="-1">{{ __('main.All Result') }}</option>
-                          @foreach (config('oj.result') as $key => $res)
+                          @foreach (config('oj.judge_result') as $key => $res)
                             <option value="{{ $key }}" class="judge-result-{{ $key }}" @if (isset($_GET['result']) && $key == $_GET['result']) selected @endif>
                               {{ __('result.' . $res) }}
                             </option>
@@ -90,7 +90,7 @@
                       <div class="form-group m-0 p-0 bmd-form-group">
                         <select name="language" class="px-2 form-control" onchange="this.form.submit();">
                           <option class="form-control" value="-1">{{ __('main.All Language') }}</option>
-                          @foreach (config('oj.langJudge0Name') as $key => $res)
+                          @foreach (config('oj.judge_lang') as $key => $res)
                             <option value="{{ $key }}" @if (isset($_GET['language']) && $key == $_GET['language']) selected @endif>{{ $res }}</option>
                           @endforeach
                         </select>
@@ -149,7 +149,7 @@
                         <span hidden>{{ $sol->id }}</span>
                         <span hidden>{{ $sol->result }}</span>
                         <span id="result_{{ $sol->id }}" class="result_td judge-result-{{ $sol->result }}">
-                          {{ __('result.' . config('oj.result.' . $sol->result)) }}
+                          {{ __('result.' . config('oj.judge_result.' . $sol->result)) }}
                           @if ($sol->judge_type == 'oi' && $sol->result >= 5 && $sol->result <= 10)
                             ({{ round($sol->pass_rate * 100) }}%)
                           @endif
@@ -165,7 +165,7 @@
                       <td nowrap>{{ round($sol->memory, 2) }}MB</td>
                       <td nowrap>
                         @if (privilege('admin.problem.solution') || Auth::id() == $sol->user_id)
-                          <a href="{{ route('solution', $sol->id) }}">{{ config('oj.langJudge0Name.' . $sol->language) }}</a>
+                          <a href="{{ route('solution', $sol->id) }}">{{ config('oj.judge_lang.' . $sol->language) }}</a>
                           /
                           @if (isset($contest))
                             <a
@@ -174,7 +174,7 @@
                             <a href="{{ route('problem', [$sol->problem_id, 'solution' => $sol->id]) }}">{{ __('main.Edit') }}</a>
                           @endif
                         @else
-                          {{ config('oj.langJudge0Name.' . $sol->language) }}
+                          {{ config('oj.judge_lang.' . $sol->language) }}
                         @endif
                       </td>
                       <td nowrap>{{ $sol->submit_time }}</td>

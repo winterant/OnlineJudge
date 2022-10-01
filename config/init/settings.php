@@ -3,11 +3,10 @@
 // 该文件为系统默认配置，后台设置会将新配置保存在数据库中。
 return [
 	"siteName"	                => "Online Judge",  //网站名称
-	"beian"                     => "",      //备案信息
+	"footer_info"               => "QQ群：529507453", //页脚信息
     "APP_LOCALE"                => "en",    //网站前台默认语言
 
 	"web_page_display_wide" 	=> true,    //宽屏模式
-	"show_home_notice_marquee"  => true,    //首页顶部滚动显示一条公告
 
 	"allow_register"	        => true,    //允许访客注册账号
 	"login_reg_captcha"			=> true,    //登陆和注册时使用验证码

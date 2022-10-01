@@ -130,7 +130,7 @@ class SolutionController extends Controller
         //     ];
         // ================= 给前台返回结果 =================
         foreach ($judge0result as &$item) {
-            $item['result_desc'] = trans('result.' . config("oj.result." . ($item["result_id"] ?? 0)));
+            $item['result_desc'] = trans('result.' . config("oj.judge_result." . ($item["result_id"] ?? 0)));
             // unset($item['spj']); // spj没必要给用户看
         }
         */
@@ -139,7 +139,7 @@ class SolutionController extends Controller
         $judge0result = [
             0 => [
                 'result_id' => $solution->result,
-                'result_desc' => trans('result.' . config("oj.result." . $solution->result)),
+                'result_desc' => trans('result.' . config("oj.judge_result." . $solution->result)),
                 'time' => $solution->time,
                 'memory' => $solution->memory,
             ]
@@ -150,7 +150,7 @@ class SolutionController extends Controller
             'msg' => 'OK',
             'data' => [
                 'result' => $solution->result,
-                'result_desc' => trans('result.' . config("oj.result." . $solution->result)),
+                'result_desc' => trans('result.' . config("oj.judge_result." . $solution->result)),
                 'error_info' => $solution->error_info,
                 'judge0result' => array_values($judge0result) // 不给用户看到 key (judge0 token)
             ]

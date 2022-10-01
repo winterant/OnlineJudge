@@ -9,20 +9,20 @@ use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
-    public function settings(Request $request){
-        if ($request->isMethod('get')){
+    public function settings(Request $request)
+    {
+        if ($request->isMethod('get')) {
             return view('admin.settings');
-        }else{
-            $modified=$request->all();
-            foreach($modified as $key=>$val) {
-                if($val==='true')$val=true;
-                if($val==='false')$val=false;
-                if(is_numeric($val))$val=intval($val);
-
-                DB::table('settings')->updateOrInsert(['key'=>$key],['value'=>$val]);
+        } else {
+            $modified = $request->all();
+            foreach ($modified as $key => $val) {
+                if ($val === 'true') $val = true;
+                if ($val === 'false') $val = false;
+                if (is_numeric($val)) $val = intval($val);
+                get_setting($key, $val, true);
             }
-            system('php '.base_path('artisan').' optimize',$out);
-            return "OK";
+            system('php ' . base_path('artisan') . ' optimize', $out);
+            return 1;
         }
     }
 
@@ -45,7 +45,7 @@ class SettingController extends Controller
     // }
 
     // 执行：升级系统
-    // public function upgrade_oj(Request $request){  
+    // public function upgrade_oj(Request $request){
     //           Log::info('----------------------------------------------------------------');
     //     Log::info('Start to upgrade LDUOnlineJudge!');
     //     $source = $request->input('upgrade_source');

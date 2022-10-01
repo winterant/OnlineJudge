@@ -137,7 +137,7 @@
                         -
                       @endif
                     </td>
-                    <td>{{ config('oj.problemType.' . $item->type) }}</td>
+                    <td>{{ __($item->type === 0 ? 'main.Programing' : 'main.Blank Filling') }}</td>
                     <td nowrap>
                       @if ($item->submitted > 0)
                         {{ $item->accepted }}

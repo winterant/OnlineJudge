@@ -91,7 +91,7 @@ class StatusController extends Controller
                 $ret[] = [
                     'id' => $item->id,
                     'result' => $item->result,
-                    'text' => trans('result.' . config('oj.result.' . $item->result))
+                    'text' => trans('result.' . config('oj.judge_result.' . $item->result))
                         . ($item->judge_type == 'oi' && $item->result >= 5 && $item->result <= 10 ? sprintf(' (%s%%)', round($item->pass_rate * 100)) : null),
                     'time' => $item->time . 'MS',
                     'memory' => round($item->memory, 2) . 'MB'

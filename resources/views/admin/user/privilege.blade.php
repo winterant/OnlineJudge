@@ -78,7 +78,7 @@
                     <label class="form-inline">
                         权限：
                         <select id="privi" class="form-control border border-bottom-0 px-3 bg-white" name="privilege[authority]">
-                            @foreach(config('oj.authority') as $power=>$desc)
+                            @foreach(config('init.authority') as $power=>$desc)
                                 <option value="{{$power}}">{{$power}}</option>
                             @endforeach
                         </select>
@@ -99,7 +99,7 @@
                         <th>权限解释</th>
                     </thead>
                     <tbody>
-                        @foreach(config('oj.authority') as $power=>$desc)
+                        @foreach(config('init.authority') as $power=>$desc)
                             <tr>
                                 <td>{{$power}}</td>
                                 <td>{!!$desc!!}</td>

@@ -28,7 +28,7 @@ return [
     "This Week"     => "This Week",
     "Last Week"     => "Last Week",
 
-//    menu
+    //    menu
     "ID"            => "ID",
     "Id"            => "Id",
     "Home"          => "Home",
@@ -64,7 +64,7 @@ return [
     "group"         => "group",
     "groups"        => "groups",
 
-//    user
+    //    user
     "Confirm"       => "Confirm",
     "Cancel"        => "Cancel",
     "Delete"        => "Delete",
@@ -73,14 +73,14 @@ return [
     "Login"         => "Login",
     "Logout"         => "Logout",
     "Username"      => "Username",
-    "E-Mail Address"=> "E-Mail Address",
+    "E-Mail Address" => "E-Mail Address",
     "Password"      => "Password",
     "New Password"  => "New Password",
     "Old Password"  => "Old Password",
     "Confirm Password" => "Confirm Password",
     "Remember Me"   => "Remember Me",
     "Profile"       => "Profile",
-    "Administration"=> "Administration",
+    "Administration" => "Administration",
     "Name"          => "Name",
     "School"        => "School",
     "Class"         => "Class",
@@ -92,7 +92,7 @@ return [
     "Accepted"      => "Accepted",
     "Attempting"    => "Attempting",
 
-//problem
+    //problem
     "Title"         => "Title",
     "PDescription"  => "Problem Description",
     "IDescription"  => "Input Description",
@@ -129,21 +129,25 @@ return [
     "replies"       => "replies",
     "Reply"         => "Reply",
     "reply to"      => "reply to",
-    "New Discussion"=> "New Discussion",
+    "New Discussion" => "New Discussion",
 
     "local_test"    => "Local Test",
     "judge_result"  => "Judge Result",
-    "Compile and Run"=>"Compile and Run",
+    "Compile and Run" => "Compile and Run",
     "Run Error"     => "Run Error",
 
-//    standing
+    // 题目类型
+    "Programing"    => "Programing",
+    "Blank Filling" => "Blank Filling",
+
+    //    standing
     "All"           => "All",
     "Year"          => "Year",
     "Month"         => "Month",
     "Week"          => "Week",
     "Day"           => "Day",
 
-//solution
+    //solution
     "include contest"   => "include contest",
     "Time"          => "Time",
     "Memory"        => "Memory",
@@ -155,7 +159,7 @@ return [
     "Special Judge" => "Special Judge",
     "Submit"        => "Submit",
     "Submitted"      => "Submitted",
-    "Submission Time"=> "Submission Time",
+    "Submission Time" => "Submission Time",
     "Judge Time"    => "Judge Time",
     "Code Length"   => "Code Length",
     "Code"          => "Code",
@@ -169,7 +173,7 @@ return [
     "Result"    => "Result",
 
 
-//    contest
+    //    contest
     "Score"         => "Score",
     "Solved"        => "Solved",
     "Penalty"       => "Penalty",

@@ -131,6 +131,9 @@ return [
     "Compile and Run" => "编译运行",
     "Run Error"     => "运行出错",
 
+    // 题目类型
+    "Programing"    => "程序设计",
+    "Blank Filling" => "代码填空",
     //    standing
     "All"           => "所有",
     "Year"          => "年",
