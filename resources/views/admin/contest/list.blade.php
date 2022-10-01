@@ -20,16 +20,16 @@
     </div>
     <div class="form-inline mx-3">
 
-      <select name="cate_id" class="form-control px-3" onchange="this.form.submit();">
+      <select name="cate_id" class="form-control px-3" onchange="this.form.submit();" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
         <option value="">所有类别</option>
-        <option value="0" @if (isset($_GET['cate_id']) && $_GET['cate_id'] === '0') selected @endif>----- 未分类 -----</option>
+        <option value="0" @if (isset($_GET['cate_id']) && $_GET['cate_id'] === '0') selected @endif>--- 未分类 ---</option>
         @foreach ($categories as $cate)
           <option value="{{ $cate->id }}" @if (isset($_GET['cate_id']) && $_GET['cate_id'] == $cate->id) selected @endif>
             @if ($cate->is_parent)
-              ----- {{ $cate->title }} -----
+              --- [{{ $cate->title }}] ---
             @else
-              {{-- 【{{ $cate->parent_title }}】 --}}
-              &nbsp;&nbsp;&nbsp;&nbsp;{{ $cate->title }}
+              [{{ $cate->parent_title }}]
+              {{ $cate->title }}
             @endif
           </option>
         @endforeach
@@ -122,15 +122,15 @@
             <td>{{ $item->id }}</td>
             <td>
               <div class="form-inline">
-                <select class="" onchange="update_contest_cate_id($(this).val())">
-                  <option value="{{ route('api.admin.contest.update_contest_cate_id', [$item->id, 0]) }}">----- 未分类 -----</option>
+                <select class="" onchange="update_contest_cate_id($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
+                  <option value="{{ route('api.admin.contest.update_contest_cate_id', [$item->id, 0]) }}">--- 未分类 ---</option>
                   @foreach ($categories as $cate)
                     <option value="{{ route('api.admin.contest.update_contest_cate_id', [$item->id, $cate->id]) }}" @if ($item->cate_id == $cate->id) selected @endif>
                       @if ($cate->is_parent)
-                        ----- {{ $cate->title }} -----
+                        --- [{{ $cate->title }}] ---
                       @else
-                        {{-- 【{{ $cate->parent_title }}】 --}}
-                        &nbsp;&nbsp;&nbsp;&nbsp;{{ $cate->title }}
+                        [{{ $cate->parent_title }}]
+                        {{ $cate->title }}
                       @endif
                     </option>
                   @endforeach
