@@ -146,7 +146,7 @@
             <td nowrap>{{ sprintf('%.2f', $item->lock_rate) }}</td>
             <td nowrap>
               {{-- {{$item->public_rank}} --}}
-              <input id="switch_prank{{ $item->id }}" type="checkbox" @if (!$item->public_rank) checked @endif>
+              <input id="switch_prank{{ $item->id }}" type="checkbox" @if ($item->public_rank) checked @endif>
             </td>
             <td nowrap>
               {{-- {{$item->hidden}} --}}
@@ -201,7 +201,7 @@
     const api_token = '{{ request()->cookie('api_token') }}'
     // 由于修改hidden、public_rank等字段时会修改开关，出发开关递归调用onchange
     // 所以在js函数内操作开关前，先加锁，防止递归调用。
-    var lock_single_call = false
+    var lock_switch_onchange = false
     // 收集switch开关对象
     var switchs_hidden = {}
     var switchs_prank = {}
@@ -210,7 +210,6 @@
         // 初始化public_rank开关
         var s = new Switch($("#switch_prank{{ $item->id }}")[0], {
           size: 'small',
-          checked: "{{ $item->public_rank }}" == "1",
           onChange: function() {
             update_public_rank(this.getChecked() ? 1 : 0, "{{ $item->id }}")
           }
@@ -230,13 +229,13 @@
 
     // 切换hidden开关
     function update_hidden(hidden, id = -1) {
-      if (lock_single_call) // 已加锁，禁止执行，会发生递归
+      if (lock_switch_onchange) // 已加锁，禁止执行，否则会发生递归
         return;
       var cids = [];
       if (id != -1) { ///单独一个
         cids = [id]
       } else {
-        lock_single_call = true
+        lock_switch_onchange = true
         $('.cb input[type=checkbox]:checked').each(function() {
           cids.push($(this).val());
           if (hidden)
@@ -244,7 +243,7 @@
           else
             switchs_hidden[$(this).val()].on()
         });
-        lock_single_call = false
+        lock_switch_onchange = false
       }
       $.post(
         '{{ route('admin.contest.update_hidden') }}', {
@@ -268,13 +267,13 @@
   <script type="text/javascript">
     // 修改竞赛公开榜单字段 api
     function update_public_rank(public_rank, id = -1) {
-      if (lock_single_call) // 已加锁，禁止执行，会发生递归
+      if (lock_switch_onchange) // 已加锁，禁止执行，否则会发生递归
         return;
       var cids = [];
       if (id != -1) {
         cids = [id]
       } else {
-        lock_single_call = true
+        lock_switch_onchange = true
         $('.cb input[type=checkbox]:checked').each(function() {
           cids.push($(this).val());
           if (public_rank)
@@ -282,7 +281,7 @@
           else
             switchs_prank[$(this).val()].off()
         });
-        lock_single_call = false
+        lock_switch_onchange = false
       }
       $.post(
         '{{ route('admin.contest.update_public_rank') }}', {
