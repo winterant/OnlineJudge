@@ -133,7 +133,7 @@
 
         <!-- 模态框头部 -->
         <div class="modal-header">
-          <h4 class="modal-title">{{ __('oj.judge_result') }}</h4>
+          <h4 class="modal-title">{{ __('main.judge_result') }}</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
 
