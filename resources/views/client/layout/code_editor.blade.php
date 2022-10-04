@@ -222,7 +222,7 @@
   createApp({
     data() {
       return {
-        judge0queryUUID: 0, // 现在是第几次查询评判结果，频繁提交时，只查询当前这次提交
+        query_solution_id: 0, // 当前正在查询的solution id, 频繁提交时，只查询当前这次提交
         judge0processing: 0, // 0:没提交, 1:提交中, 2:判题中, 3:判题完成
         result_id: 0,
         judge0result: {},
@@ -289,8 +289,6 @@
       },
       // 使用ajax提交代码
       submit_solution() {
-        console.log("Submit time: " + this.judge0queryUUID)
-        submitUUID = ++this.judge0queryUUID // 提交轮次
         this.judge0processing = 1 // 提交中
         this.judge0result = {}
         var max_query_times = 600; // 最大查询次数
@@ -307,6 +305,7 @@
               // 收到回复，刷新判题结果
               Notiflix.Notify.Success(ret.msg)
               // window.location.href = ret.data.redirect
+              this.query_solution_id = ret.data.solution_id
               this.judge0processing = 2 // 判题中
               this.judge0result = ret.data.judge0result //更新表单
               // 使用ajax不断查询判题结果，直到判题完成
@@ -320,12 +319,14 @@
                   url: '{{ route('api.solution.result') }}',
                   dataType: 'json',
                   success: (judge_ret) => {
-                    console.log('judge0 result:', judge_ret) // todo delete
+                    console.log('judge result:', judge_ret) // todo delete
                     if (judge_ret.ok) {
+                      if (ret.data.solution_id !== this.query_solution_id)
+                        return  // 已经提交了新代码，solution id已变更，不再更新当前solution
                       this.result_id = judge_ret.data.result // 结果代号
                       this.judge0result = judge_ret.data.judge0result //更新表单
                       this.judge0result_error_info = judge_ret.data.error_info
-                      if (submitUUID === this.judge0queryUUID && max_query_times-- > 0 && judge_ret.data.result < 4) { // 4: web端判题结果代号正确
+                      if (max_query_times-- > 0 && judge_ret.data.result < 4) { // 4: web端判题结果代号正确
                         setTimeout(query_judge_result, 800) // 继续查询
                       } else {
                         this.judge0processing = 3 // 判题完成
