@@ -17,7 +17,7 @@
       #container {
         width: 100%;
         height: 93vh;
-        margin-top: -0.7rem;
+        margin-top: -1rem;
         display: flex;
         flex-wrap: nowrap;
         align-items: stretch;
