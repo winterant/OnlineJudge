@@ -119,7 +119,7 @@
   </div>
 
   <script type="text/javascript">
-    const api_token = '{{ request()->cookie('api_token') }}'
+    const api_token = '{{ FacadesRedis::get('user:' . Auth::id() . ':api_token') }}'
 
     function add_contest_cate(url, json_data) {
       $.post(

@@ -6,7 +6,7 @@ return [
 
     // 测试数据的路径
     'JUDGE_DATA_DIR' => env('JUDGE_DATA_DIR', 'storage/app/data'),
-    
+
     // judge0 host and port
     'JUDGE_SERVER' => env('JUDGE_SERVER', null),
 
@@ -231,7 +231,7 @@ return [
         'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
-        'Redis' => Illuminate\Support\Facades\Redis::class,
+        'FacadesRedis' => Illuminate\Support\Facades\Redis::class,
         'Request' => Illuminate\Support\Facades\Request::class,
         'Response' => Illuminate\Support\Facades\Response::class,
         'Route' => Illuminate\Support\Facades\Route::class,

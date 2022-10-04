@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Redis;
 
 class RegisterController extends Controller
 {
@@ -89,9 +90,8 @@ class RegisterController extends Controller
             'nick'   => $data['nick'],
             'api_token' => hash('sha256', $api_token = Str::random(64)), // hash 64 bits
         ]);
-        Cookie::queue('api_token', $api_token, 5256000); // 10 years
-        if($data['username']=='admin')//默认管理员
-            DB::table('privileges')->insert(['user_id'=>$user->getAttributes()['id'],'authority'=>'admin']);
+        // Cookie::queue('api_token', $api_token, 5256000); // 10 years
+        Redis::set('user:' . $user->getAttributes()['id'] . ':api_token', $api_token);
         return $user;
     }
 }
