@@ -1,5 +1,5 @@
 <div id="code_editor_app">
-  <form id="code_form">
+  <form id="code_form" class="mb-0">
     @csrf
 
     @if (isset($_GET['group']))
