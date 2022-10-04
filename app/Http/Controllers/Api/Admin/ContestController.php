@@ -15,6 +15,11 @@ class ContestController extends Controller
     public function update_contest_cate_id($contest_id, $cate_id)
     {
         $contest = DB::table('contests')->find($contest_id);
+        if ($contest->cate_id == $cate_id)
+            return [
+                'ok' => 0,
+                'msg' => sprintf('竞赛[%d]的类别没有发生改变', $contest_id)
+            ];
         // 原类别下的order需要缩减
         DB::table('contests')->where('cate_id', $contest->cate_id)->where('order', '>', $contest->order)->decrement('order');
         // 新类别下的order自然增长
