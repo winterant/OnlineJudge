@@ -16,7 +16,7 @@
     @if ($problem->type == 0)
       <div class="form-inline m-2">
         {{-- 编程题可以选择语言 --}}
-        <div class="flex-nowrap mr-3 mb-1">
+        <div class="flex-nowrap">
           <span class="mr-2">{{ __('main.Language') }}:</span>
           <select id="lang_select" name="solution[language]" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
             @foreach (config('oj.judge_lang') as $key => $res)
@@ -27,7 +27,7 @@
           </select>
         </div>
         {{-- 编程题可以提交文件 --}}
-        <div class="flex-nowrap mr-3 mb-1">
+        <div class="flex-nowrap ml-3">
           <span class="mr-2">{{ __('main.Upload File') }}:</span>
           <a id="selected_fname" href="javascript:" class="m-0 px-0" onclick="$('#code_file').click()" title="{{ __('main.Upload File') }}">
             <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
@@ -36,7 +36,7 @@
         </div>
 
         {{-- 编辑框主题 --}}
-        <div class="flex-nowrap mr-3 mb-1">
+        <div class="flex-nowrap ml-3">
           <span class="mr-2">{{ __('main.Theme') }}:</span>
           <select id="theme_select" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
             <option value="idea">idea</option>
@@ -380,7 +380,11 @@
       });
 
       // 代码编辑框高度
-      code_editor.setSize("auto", (document.documentElement.clientHeight - 200) + "px")
+      function resize_code_editor() {
+        code_editor.setSize("auto", (document.documentElement.clientHeight - 180) + "px")
+      }
+      resize_code_editor()
+      window.addEventListener("resize", resize_code_editor)
 
       // 监听代码改动
       code_editor.on("change", function() {
