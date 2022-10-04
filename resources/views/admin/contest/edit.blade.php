@@ -3,7 +3,6 @@
 @section('title', $pageTitle . ' | 后台')
 
 @section('content')
-
   <h2>{{ $pageTitle }}</h2>
   <hr>
   <div>
@@ -13,13 +12,14 @@
         <span>竞赛分类：</span>
 
         <select name="contest[cate_id]" class="form-control px-3">
-          <option value="0">----- 不分类 -----</option>
-          @foreach ($categories as $item)
-            <option value="{{ $item->id }}" @if (isset($contest->cate_id) && $contest->cate_id == $item->id) selected @endif>
-              @if ($item->is_parent)
-                ----- {{ $item->title }} -----
+          <option value="0">--- 不分类 ---</option>
+          @foreach ($categories as $cate)
+            <option value="{{ $cate->id }}" @if (isset($contest->cate_id) && $contest->cate_id == $cate->id) selected @endif>
+              @if ($cate->is_parent)
+                --- [{{ $cate->title }}] ---
               @else
-                &nbsp;&nbsp;&nbsp;&nbsp;{{ $item->title }}
+                [{{ $cate->parent_title }}]
+                {{ $cate->title }}
               @endif
             </option>
           @endforeach
@@ -110,7 +110,8 @@
 
         <div class="form-group mt-2">
           <label class="form-inline">封榜比例：
-            <input type="number" step="0.01" max="1" min="0" name="contest[lock_rate]" value="{{ isset($contest) ? $contest->lock_rate : 0 }}" class="form-control">
+            <input type="number" step="0.01" max="1" min="0" name="contest[lock_rate]" value="{{ isset($contest) ? $contest->lock_rate : 0 }}"
+              class="form-control">
             <a href="javascript:" class="ml-1" style="color: #838383"
               onclick="whatisthis('封榜时长=比赛时长×封榜比例；<br>数值范围0.0~1.0' +
                              '<br><br>例如：封榜比例0.2，比赛总时长5小时，则比赛达到4小时后榜单停止更新' +
@@ -172,7 +173,8 @@
           <div class="float-left">指定用户：</div>
           <label>
             <textarea name="contest_users" class="form-control-plaintext border bg-white" rows="8" cols="26"
-              placeholder="user1&#13;&#10;user2&#13;&#10;每行一个用户登录名&#13;&#10;你可以将表格的整列粘贴到这里">@foreach (isset($unames) ? $unames : [] as $item){{ $item }}&#13;&#10; @endforeach</textarea>
+              placeholder="user1&#13;&#10;user2&#13;&#10;每行一个用户登录名&#13;&#10;你可以将表格的整列粘贴到这里"
+              >@foreach (isset($unames) ? $unames : [] as $item){{ $item }}&#13;&#10;@endforeach</textarea>
           </label>
         </div>
       </div>
@@ -186,9 +188,8 @@
             @if (isset($_GET['pids']))
               {{ null, $pids[] = $_GET['pids'] }}
             @endif
-            <textarea name="problems" class="form-control-plaintext border bg-white" autoHeight cols="26" placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间">
-@foreach (isset($pids) ? $pids : [] as $item)
-{{ $item }}&#13;&#10; @endforeach</textarea>
+            <textarea name="problems" class="form-control-plaintext border bg-white" autoHeight cols="26" placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间"
+            >@foreach (isset($pids) ? $pids : [] as $item){{ $item }}&#13;&#10;@endforeach</textarea>
           </label>
           <a href="javascript:" class="text-gray" style="vertical-align: top" onclick="whatisthis('填写方法：<br>每行一个题号（如1024），或每行一个区间（如1024-1036）')">
             <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
