@@ -217,11 +217,12 @@ class ContestController extends Controller
         if (!$problem) // 题目不存在! 跳回前一页
             return back();
 
-        // 读取当前竞赛所有题号
+        // 读取当前竞赛所有题号、标题
         $contest_pindex = DB::table('contest_problems')
+            ->join('problems', 'problems.id', 'problem_id')
             ->where('contest_id', $id)
             ->orderBy('index')
-            ->pluck('index');
+            ->pluck('title', 'index');
 
         //读取所有的提交结果的数量统计
         $results = null;

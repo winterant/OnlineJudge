@@ -61,11 +61,17 @@
         {{-- 题号链接 --}}
         <div class="tabbable">
           <div class="btn-group d-flex flex-wrap">
-            @foreach ($contest_pindex as $pindex)
-              <a class="btn btn-secondary border @if ($problem->index == $pindex) active @endif" href="{{ route('contest.problem', [$contest->id, $pindex]) }}" style="flex: none;width:5rem;">
+            @foreach ($contest_pindex as $pindex => $title)
+              <a class="btn btn-secondary border @if ($problem->index == $pindex) active @endif" href="{{ route('contest.problem', [$contest->id, $pindex]) }}"
+                style="flex: none;width:5rem;" data-toggle="tooltip" data-placement="bottom" title="{{$title}}">
                 {{ index2ch($pindex) }}
               </a>
             @endforeach
+            <script>
+              $(function() {
+                $("[data-toggle='tooltip']").tooltip();
+              });
+            </script>
           </div>
         </div>
       @endif
