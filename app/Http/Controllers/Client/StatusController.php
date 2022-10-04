@@ -19,7 +19,7 @@ class StatusController extends Controller
      */
     public function index(Request $request)
     {
-        if (privilege('admin.problem.solution') && empty($_GET))
+        if (privilege('admin.problem.solution') && !isset($_GET['sim_rate']))
             $_GET['inc_contest'] = 'on';
 
         //读取提交记录
