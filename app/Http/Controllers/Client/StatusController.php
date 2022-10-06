@@ -116,6 +116,9 @@ class StatusController extends Controller
                 'code', 'code_length', 'language', 'error_info', 'wrong_data'
             ])
             ->where('solutions.id', $id)->first();
+
+        if ($solution->index === null) // 竞赛中已经把这道题删除了
+                $solution->contest_id = -1;
         if (
             privilege('admin.problem.solution') ||
             (Auth::id() == $solution->user_id && $solution->submit_time > Auth::user()->created_at)
