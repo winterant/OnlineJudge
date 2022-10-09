@@ -16,3 +16,9 @@ features:
 ::: slot footer
 GPL3.0 Licensed | Copyright © 2020-present [Winterant](https://github.com/winterant)
 :::
+
+---
+
+<div align="center">
+<img src="./img/qqgroup.jpg" width="300">
+</div>
