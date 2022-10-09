@@ -3,7 +3,7 @@ home: true
 heroImage: /img/gold.png
 heroText: Ludong University Online Judge
 tagline: 鲁东大学程序设计在线评测系统
-actionText: 直接安装 →
+actionText: 现在安装 →
 actionLink: /deploy/deploy.md
 features:
 - title: 网页端
