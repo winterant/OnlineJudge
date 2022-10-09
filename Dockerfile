@@ -24,7 +24,7 @@ RUN export LC_ALL=en_US.UTF-8 &&\
     cp -rf .env.example .env &&\
     # nginx
     rm -rf /etc/nginx/sites-enabled/default &&\
-    cp install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
+    cp public/nginx-lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
     # docker entrypoint
     cp docker-entrypoint.sh /docker-entrypoint.sh &&\
     chmod +x /docker-entrypoint.sh &&\
