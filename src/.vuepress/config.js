@@ -24,12 +24,15 @@ module.exports = {
                 ]
             },
             {
-                title: '网站使用',
+                title: '使用说明',
                 path: '/web/',
                 collapsable: true,
                 sidebarDepth: 1,
                 children: [
                     '/web/',
+                    '/web/judge.md',
+                    '/web/result.md',
+                    '/web/admin.md',
                     '/web/spj.md'
                 ]
             },
