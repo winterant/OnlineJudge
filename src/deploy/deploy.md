@@ -20,7 +20,8 @@
 ## 🔨 一键部署
 
 ```bash
-
+git clone -b deploy https://github.com/winterant/OnlineJudge.git
+cd OnlineJudge
 docker-compose up -d
 ```
 

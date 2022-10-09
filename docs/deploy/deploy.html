@@ -8,8 +8,8 @@
     
     <meta name="description" content="Ludong University Online Judge">
     
-    <link rel="preload" href="/OnlineJudge/assets/css/0.styles.f8b8e28e.css" as="style"><link rel="preload" href="/OnlineJudge/assets/js/app.71c47291.js" as="script"><link rel="preload" href="/OnlineJudge/assets/js/2.1b68d8b3.js" as="script"><link rel="preload" href="/OnlineJudge/assets/js/8.a617718b.js" as="script"><link rel="prefetch" href="/OnlineJudge/assets/js/10.cfafc664.js"><link rel="prefetch" href="/OnlineJudge/assets/js/11.e6ce99a2.js"><link rel="prefetch" href="/OnlineJudge/assets/js/12.4f65ed40.js"><link rel="prefetch" href="/OnlineJudge/assets/js/13.51a87fa8.js"><link rel="prefetch" href="/OnlineJudge/assets/js/3.138b3dca.js"><link rel="prefetch" href="/OnlineJudge/assets/js/4.d7f187e8.js"><link rel="prefetch" href="/OnlineJudge/assets/js/5.5122c797.js"><link rel="prefetch" href="/OnlineJudge/assets/js/6.d5b6c658.js"><link rel="prefetch" href="/OnlineJudge/assets/js/7.a8d9cda9.js"><link rel="prefetch" href="/OnlineJudge/assets/js/9.d599e161.js">
-    <link rel="stylesheet" href="/OnlineJudge/assets/css/0.styles.f8b8e28e.css">
+    <link rel="preload" href="/OnlineJudge/assets/css/0.styles.ca2382ec.css" as="style"><link rel="preload" href="/OnlineJudge/assets/js/app.c841aaa2.js" as="script"><link rel="preload" href="/OnlineJudge/assets/js/2.1b68d8b3.js" as="script"><link rel="preload" href="/OnlineJudge/assets/js/8.60b81e3b.js" as="script"><link rel="prefetch" href="/OnlineJudge/assets/js/10.455a5e03.js"><link rel="prefetch" href="/OnlineJudge/assets/js/11.2225d35f.js"><link rel="prefetch" href="/OnlineJudge/assets/js/12.a1a081ed.js"><link rel="prefetch" href="/OnlineJudge/assets/js/13.51a87fa8.js"><link rel="prefetch" href="/OnlineJudge/assets/js/3.138b3dca.js"><link rel="prefetch" href="/OnlineJudge/assets/js/4.18ad9197.js"><link rel="prefetch" href="/OnlineJudge/assets/js/5.0232ed1e.js"><link rel="prefetch" href="/OnlineJudge/assets/js/6.694a6e89.js"><link rel="prefetch" href="/OnlineJudge/assets/js/7.a8d9cda9.js"><link rel="prefetch" href="/OnlineJudge/assets/js/9.d599e161.js">
+    <link rel="stylesheet" href="/OnlineJudge/assets/css/0.styles.ca2382ec.css">
   </head>
   <body>
     <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/OnlineJudge/" class="home-link router-link-active"><img src="/OnlineJudge/favicon.ico" alt="LDUOJ" class="logo"> <span class="site-name can-hide">LDUOJ</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/OnlineJudge/" class="nav-link">
@@ -32,7 +32,8 @@
 <span class="token function">sudo</span> <span class="token function">chmod</span> +x /usr/local/bin/docker-compose
 <span class="token function">sudo</span> <span class="token function">ln</span> <span class="token parameter variable">-s</span> /usr/local/bin/docker-compose /usr/bin/docker-compose
 <span class="token function">docker-compose</span> version
-</code></pre></div><h2 id="🔨-一键部署"><a href="#🔨-一键部署" class="header-anchor">#</a> 🔨 一键部署</h2> <div class="language-bash extra-class"><pre class="language-bash"><code>
+</code></pre></div><h2 id="🔨-一键部署"><a href="#🔨-一键部署" class="header-anchor">#</a> 🔨 一键部署</h2> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">git</span> clone <span class="token parameter variable">-b</span> deploy https://github.com/winterant/OnlineJudge.git
+<span class="token builtin class-name">cd</span> OnlineJudge
 <span class="token function">docker-compose</span> up <span class="token parameter variable">-d</span>
 </code></pre></div><ul><li>访问首页<code>http://ip:8080</code>；可在宿主机<a href="/OnlineJudge/deploy/network.html">配置域名</a>；</li> <li>默认管理员用户：<code>admin</code>，默认密码<code>adminadmin</code>，务必更改默认密码；</li></ul> <h2 id="🚗-升级"><a href="#🚗-升级" class="header-anchor">#</a> 🚗 升级</h2> <ul><li>版本内更新(docker tag不变)<div class="language- extra-class"><pre class="language-text"><code>docker-compose pull web judge-server
 docker-compose up -d
@@ -41,7 +42,7 @@ docker-compose up -d
 </code></pre></div></li></ol> <h3 id="恢复"><a href="#恢复" class="header-anchor">#</a> 恢复</h3> <ol><li>解压备份包<div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">tar</span> <span class="token parameter variable">-zxvf</span> lduoj_bak.tar.gz
 </code></pre></div></li> <li>一键部署<div class="language-bash extra-class"><pre class="language-bash"><code><span class="token builtin class-name">cd</span> lduoj_bak
 <span class="token function">sudo</span> <span class="token function">docker-compose</span> up <span class="token parameter variable">-d</span>
-</code></pre></div></li></ol></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+</code></pre></div></li></ol></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">上次更新: :</span> <span class="time">10/9/2022, 4:27:11 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
       ←
       <a href="/OnlineJudge/deploy/" class="prev router-link-active">
         快速了解
@@ -50,6 +51,6 @@ docker-compose up -d
       </a>
       →
     </span></p></div> </main></div><div class="global-ui"></div></div>
-    <script src="/OnlineJudge/assets/js/app.71c47291.js" defer></script><script src="/OnlineJudge/assets/js/2.1b68d8b3.js" defer></script><script src="/OnlineJudge/assets/js/8.a617718b.js" defer></script>
+    <script src="/OnlineJudge/assets/js/app.c841aaa2.js" defer></script><script src="/OnlineJudge/assets/js/2.1b68d8b3.js" defer></script><script src="/OnlineJudge/assets/js/8.60b81e3b.js" defer></script>
   </body>
 </html>
