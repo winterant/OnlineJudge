@@ -1,0 +1,16 @@
+{
+  "name": "lduoj-docs",
+  "version": "1.0.0",
+  "description": "Docs for LDUOJ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "src:dev": "vuepress dev src",
+    "src:build": "vuepress build src"
+  },
+  "author": "Jinglong",
+  "license": "ISC",
+  "devDependencies": {
+    "vuepress": "^1.9.7"
+  }
+}
