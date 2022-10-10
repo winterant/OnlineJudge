@@ -55,7 +55,7 @@ class SolutionController extends Controller
         if ($problem->type == 1) {
             $data['code'] = $problem->fill_in_blank;
             foreach ($request->input('filled') as $ans) {
-                $data['code'] = preg_replace("/\?\?/", base64_decode($ans), $data['code'], 1);
+                $data['code'] = preg_replace("/\?\?/", $ans, $data['code'], 1);
             }
         }
 
