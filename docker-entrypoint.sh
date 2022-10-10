@@ -8,7 +8,7 @@ sleep 5 # Waiting for mysql being started.
 # Get App Files
 ##########################################################################
 # If host machine has not files, give it files.
-if [ ! -d "/app/public" ];then
+if [ ! -d "/app/app" ];then
     echo "Copying files from /app_tmp to /app"
     yes|cp -rf /app_tmp/. /app/
 fi
