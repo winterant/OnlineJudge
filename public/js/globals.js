@@ -1,7 +1,8 @@
 // ==============  json 值编码 =================
 function json_value_base64(data, additional_data, recursive = false) {
     for (var k in data)
-        if (Object.prototype.toString.call(data[k]) === '[object Object]')
+        if (Object.prototype.toString.call(data[k]) === '[object Object]'
+            || Object.prototype.toString.call(data[k]) === '[object Array]')
             data[k] = json_value_base64(data[k], null, true)
         else
             data[k] = Base64.encode(data[k]);
