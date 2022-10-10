@@ -20,5 +20,5 @@ GPL3.0 Licensed | Copyright © 2020-present [Winterant](https://github.com/winte
 ---
 
 <div align="center">
-<img src="./img/qqgroup.jpg" width="300">
+<img src="./.vuepress/public/img/qqgroup.jpg" width="300">
 </div>

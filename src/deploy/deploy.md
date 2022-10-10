@@ -31,7 +31,7 @@ docker-compose up -d
 ## 🚗 升级
 
 - 版本内更新(docker tag不变)
-  ```
+  ```bash
   docker-compose pull web judge-server
   docker-compose up -d
   ```
@@ -54,5 +54,5 @@ docker-compose up -d
 2. 一键部署
     ```bash
     cd lduoj_bak
-    sudo docker-compose up -d
+    docker-compose up -d
     ```

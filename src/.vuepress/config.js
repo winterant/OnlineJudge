@@ -14,8 +14,8 @@ module.exports = {
         sidebar: [
             {
                 title: '入门',
-                path: '/deploy/',
-                collapsable: true,
+                // path: '/deploy/',  // 点击标题时展示的页面
+                collapsable: false,
                 sidebarDepth: 1,
                 children: [
                     '/deploy/',
@@ -25,19 +25,20 @@ module.exports = {
             },
             {
                 title: '使用说明',
-                path: '/web/',
-                collapsable: true,
-                sidebarDepth: 1,
+                collapsable: false,
+                sidebarDepth: 0,
                 children: [
-                    '/web/',
+                    // '/web/',
                     '/web/judge.md',
+                    '/web/spj.md',
                     '/web/result.md',
                     '/web/admin.md',
-                    '/web/spj.md'
                 ]
             },
             {
                 title: '开发',
+                collapsable: false,
+                sidebarDepth: 1,
                 children: [
                     '/develop/'
                 ],

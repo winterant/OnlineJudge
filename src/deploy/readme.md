@@ -2,9 +2,7 @@
 
 >Ludong University Online Judge  
 鲁东大学程序设计在线测评系统与考试平台  
-github主仓库: <https://github.com/winterant/LDUOnlineJudge>  
-gitee同步仓库: <https://gitee.com/wrant/LDUOnlineJudge>  
-官方网站：[https://icpc.ldu.edu.cn](http://icpc.ldu.edu.cn)；
+官方网站：[https://icpc.ldu.edu.cn](http://icpc.ldu.edu.cn)
 
 ## 💻 前台
 
@@ -25,4 +23,66 @@ gitee同步仓库: <https://gitee.com/wrant/LDUOnlineJudge>
 
 ## 🏞 截屏展示
 
-等老年人有空截个图...
+- 网站首页
+
+![](./img/home.png)
+
+- 评测
+
+![](./img/status.png)
+
+- 题库
+
+![](./img/problems.png)
+
+- 竞赛
+
+![](./img/contests.png)
+
+- 群组
+
+![](./img/groups.png)
+
+- 全站排名
+
+![](./img/standings.png)
+
+- 后台管理
+
+![](./img/admin.png)
+
+- 用户管理
+
+![](./img/admin-users.png)
+
+- 题目管理
+
+![](./img/admin-problems.png)
+
+- 添加/编辑题目
+
+![](./img/admin-add-problem.png)
+
+![](./img/admin-add-problem2.png)
+
+- 重判提交记录
+
+![](./img/admin-rejudge.png)
+
+- 竞赛列表
+
+![](./img/admin-contests.png)
+
+- 添加/编辑竞赛
+
+![](./img/admin-add-contest.png)
+
+![](./img/admin-add-contest2.png)
+
+- 竞赛类别管理
+
+![](./img/admin-contest-cate.png)
+
+- 全站全局设置
+
+![](./img/admin-settings.png)
