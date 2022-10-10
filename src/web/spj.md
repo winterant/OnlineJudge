@@ -4,7 +4,8 @@
 
 程序设计题有时答案不唯一，因此需要编写一个特判程序，对用户输出的答案进行鉴别，是否符合题意。special judge以下简称spj。下面用案例说明spj使用方法，出题人只需要修改judge函数。
 
->下面的spj编写方法同时适用于hustoj，具体方法见文末。
+>下面的spj编写方法同时适用于hustoj，具体方法见文末。<br>
+>本oj兼容[testlib.h](https://github.com/MikeMirzayanov/testlib)的特判程序，具体方法见文末。
 
 ## 案例
 
@@ -139,3 +140,8 @@ cd /home/judge/data/题号/
 g++ spj.cpp -o spj
 chmod +x spj
 ```
+
+### 兼容带有testlib.h的特判程序
+1.将check.cpp中的#include "testlib.h"去掉；<br>
+2.将testlib.h和check.cpp拼接到一个.cpp文件中；<br>
+3.按照启用特判的步骤上传拼接好的cpp文件到后台即可启用该题特判；
