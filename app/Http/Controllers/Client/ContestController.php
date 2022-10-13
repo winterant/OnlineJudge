@@ -14,33 +14,8 @@ use Illuminate\Support\Facades\Storage;
 
 class ContestController extends Controller
 {
-    //系统第一次使用时初始化默认类别
-    /*
-    public function init_contest_categories()
-    {
-        $order_index = 0;
-        //一级默认类别
-        $ids[] = DB::table('contest_cate')->insertGetId(['title' => '竞赛', 'description' => '程序设计竞赛', 'order' => ++$order_index]);
-        $ids[] = DB::table('contest_cate')->insertGetId(['title' => '训练', 'description' => '日常训练', 'order' => ++$order_index]);
-        $ids[] = DB::table('contest_cate')->insertGetId(['title' => '类别示例', 'description' => '这是一级类别，你可以在后台创建新的一级类别，也可以创建二级类别。', 'order' => ++$order_index]);
-
-        //二级默认类别
-        DB::table('contest_cate')->insert(['title' => '二级类别示例1', 'order' => ++$order_index, 'parent_id' => $ids[2]]);
-        DB::table('contest_cate')->insert(['title' => '二级类别示例2', 'order' => ++$order_index, 'parent_id' => $ids[2]]);
-        DB::table('contest_cate')->insert(['title' => '二级类别示例3', 'order' => ++$order_index, 'parent_id' => $ids[2]]);
-
-        //初始化所有竞赛的order字段为id值
-        DB::update("update contests set `order`=`id`");
-        //初始化所有类别的order
-        DB::update("update contest_cate set `order`=`id`");
-    }*/
-
     public function contests($cate)
     {
-        $start_time = microtime(true);
-        //可能有些比赛order值为0，因为以前的bug：添加比赛时没有填写order造成的
-        // DB::table('contests')->where('order', '=', 0)->update(['order' => DB::raw('`id`')]);
-
         //获取类别
         $current_cate = DB::table('contest_cate')->select(['id', 'parent_id', 'description'])->find($cate);
 
@@ -115,9 +90,9 @@ class ContestController extends Controller
         }
     }
 
+    // 竞赛首页概览 题目列表
     public function home($id)
     {
-        $start_time = microtime(true);
         // 拿到竞赛
         $contest = DB::table('contests')
             ->select([
@@ -180,14 +155,7 @@ class ContestController extends Controller
         return view('contest.home', compact('contest', 'problems', 'files', 'groups'));
     }
 
-    public function start_to_judge($id)
-    {
-        DB::table('solutions')->where('contest_id', $id)
-            ->where('result', 15)
-            ->update(['result' => 0]);
-        return redirect(route('contest.status', $id));
-    }
-
+    // 题目详情
     public function problem($id, $pid)
     {
         $start_time = microtime(true);
@@ -224,7 +192,7 @@ class ContestController extends Controller
             ->orderBy('index')
             ->pluck('title', 'index');
 
-        //读取所有的提交结果的数量统计
+        // 读取所有的提交结果的数量统计
         $results = null;
         // $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
         //     ->where('contest_id', $id)
@@ -232,7 +200,7 @@ class ContestController extends Controller
         //     ->groupBy('result')
         //     ->get();
 
-        //读取这道题的样例数据
+        // 读取这道题的样例数据
         $samples = read_problem_data($problem->id);
 
         // 特判代码是否存在
@@ -274,6 +242,8 @@ class ContestController extends Controller
             $solution_code = $solution->code ?? null;
         else
             $solution_code = null;
+
+        // 返回页面
         return view('contest.problem', compact(
             'contest',
             'problem',
@@ -288,6 +258,7 @@ class ContestController extends Controller
         ));
     }
 
+    // 竞赛提交记录
     public function status($id)
     {
         // 拿到竞赛信息
@@ -312,6 +283,7 @@ class ContestController extends Controller
             && time() < strtotime($contest->end_time)
         ) $_GET['user_id'] = Auth::id(); //比赛没结束，只能看自己
 
+        // 获取提交记录
         $solutions = DB::table('solutions as s')
             ->join('users as u', 's.user_id', '=', 'u.id')
             ->select([
@@ -354,7 +326,7 @@ class ContestController extends Controller
         return view('contest.status', compact('contest', 'solutions', 'pid2index'));
     }
 
-
+    // 在生成榜单时，计算封榜时间
     private static function get_rank_end_date($contest)
     {
         //rank的辅助函数，获取榜单的截止时间
@@ -375,6 +347,7 @@ class ContestController extends Controller
         return date('Y-m-d H:i:s', $end);
     }
 
+    // 将秒数转为字符串格式的时间（小时:分钟:秒）
     private static function seconds_to_clock($seconds)
     {
         //rank的辅助函数，根据秒数转化为HH:mm:ss
@@ -386,6 +359,7 @@ class ContestController extends Controller
         return $clock;
     }
 
+    // 获取榜单 (需要优化)
     public function rank($id)
     {
         $contest = DB::table('contests')->find($id);
@@ -496,11 +470,12 @@ class ContestController extends Controller
 
     public function cancel_lock($id)
     {
-        //管理员取消封榜
+        // 管理员取消封榜
         DB::table('contests')->where('id', $id)->update(['lock_rate' => 0]);
         return back();
     }
 
+    // 竞赛公告
     public function notices($id)
     {
         $notices = DB::table('contest_notices')
@@ -511,6 +486,7 @@ class ContestController extends Controller
         return view('contest.notices', compact('contest', 'notices'));
     }
 
+    // 读取竞赛公告内容
     public function get_notice(Request $request, $id)
     {
         //post
@@ -518,6 +494,7 @@ class ContestController extends Controller
         return json_encode($notice);
     }
 
+    // 编辑公告
     public function edit_notice(Request $request, $id)
     {
         //post
@@ -533,6 +510,7 @@ class ContestController extends Controller
         return back();
     }
 
+    // 删除竞赛公告
     public function delete_notice($id, $nid)
     {
         //post
@@ -540,7 +518,7 @@ class ContestController extends Controller
         return back();
     }
 
-
+    // 显示气球列表
     public function balloons($id)
     {
         $contest = DB::table('contests')->find($id);
@@ -574,6 +552,7 @@ class ContestController extends Controller
         return view('contest.balloons', compact('contest', 'balloons'));
     }
 
+    // 动作：派送气球
     public function deliver_ball($id, $bid)
     {
         //送一个气球，更新一条气球记录

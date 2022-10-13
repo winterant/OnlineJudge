@@ -26,11 +26,10 @@ reponse return {
 Route::namespace('Api')->name('api.')->group(function () {
     // =========================== Solution =================================
     Route::name('solution.')->where(['id' => '[0-9]+'])->group(function () {
-        Route::middleware(['auth:api', 'CheckUserLocked'])->prefix('/solution')->group(function () {
-            Route::post('/submit', 'SolutionController@submit')->name('submit');
-            Route::post('/submit_local_test', 'SolutionController@submit_local_test')->name('submit_local_test');
-            Route::get('/result', 'SolutionController@result')->name('result');
-            // Route::get('/solution/result_by_tokens', 'SolutionController@result_by_tokens')->name('result_by_tokens');
+        Route::middleware(['auth:api', 'CheckUserLocked'])->group(function () {
+            Route::post('/solutions', 'SolutionController@submit_solution')->name('submit_solution');
+            Route::post('/solutions/test', 'SolutionController@submit_local_test')->name('submit_local_test');
+            Route::get('/solutions/{id}', 'SolutionController@solution_result')->name('solution_result');
         });
     });
 
@@ -47,6 +46,8 @@ Route::namespace('Api')->name('api.')->group(function () {
             // Route::post('/update/public_rank', 'Admin\ContestController@update_public_rank')->name('update_public_rank');
             Route::post('/update_contest_order/{id}/{mode}', 'Admin\ContestController@update_contest_order')->name('update_contest_order');
             Route::post('/update_contest_cate_id/{id}/{cate_id}', 'Admin\ContestController@update_contest_cate_id')->name('update_contest_cate_id');
+
+            Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->name('cancel_lock'); //取消封榜
         });
         // contest category
         Route::middleware(['Permission:admin.contest.category'])->prefix('contest')->name('contest.')->group(function () {

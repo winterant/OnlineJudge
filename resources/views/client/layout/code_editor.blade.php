@@ -295,7 +295,7 @@
         var max_query_times = 600; // 最大查询次数
         $.ajax({
           type: 'post',
-          url: '{{ route('api.solution.submit') }}',
+          url: '{{ route('api.solution.submit_solution') }}',
           dataType: 'json',
           data: json_value_base64($("#code_form").serializeJSON(), {
             'api_token': api_token
@@ -314,10 +314,9 @@
                 $.ajax({
                   type: 'get',
                   data: {
-                    'solution_id': ret.data.solution_id,
                     'api_token': api_token
                   },
-                  url: '{{ route('api.solution.result') }}',
+                  url: '/api/solutions/' + ret.data.solution_id,
                   dataType: 'json',
                   success: (judge_ret) => {
                     console.log('judge result:', judge_ret) // todo delete

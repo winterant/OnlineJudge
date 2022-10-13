@@ -71,10 +71,8 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->wher
         Route::get('/private_rank', 'Client\ContestController@rank')->name('private_rank'); // 私有榜单
 
         Route::middleware(['Permission:admin.contest'])->group(function () {
-            Route::post('/cancel_lock', 'Client\ContestController@cancel_lock')->name('cancel_lock'); //取消封榜
             Route::post('/edit_notice', 'Client\ContestController@edit_notice')->name('edit_notice'); //编辑/添加一条公告
             Route::post('/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('delete_notice'); //删除一条公告
-            Route::post('/start_to_judge', 'Client\ContestController@start_to_judge')->name('start_to_judge');
         });
 
         Route::middleware(['Permission:admin.contest.balloon'])->group(function () { //气球,需要权限

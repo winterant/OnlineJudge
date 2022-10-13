@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 class SolutionController extends Controller
 {
     // api：提交一份代码; Affect database
-    public function submit(Request $request)
+    public function submit_solution(Request $request)
     {
         //======================= 拦截非管理员的频繁提交 =================================
         if (!privilege('admin.problem.list') || !privilege('admin.problem.solution')) {
@@ -106,18 +106,17 @@ class SolutionController extends Controller
     }
 
     // api 从数据库查询一条提交记录的判题结果; No update Database.
-    public function result(Request $request, $verify_auth = true)
+    public function solution_result($solution_id)
     {
         // $request 传入参数：
         // solution_id: solution id
         // return judge0result:{token1:{'result_id':, 'result_desc':, ...}, ...}
         // ==================== 根据solution id，查询结果 ====================
-        $solution = DB::table('solutions')->find($request->input('solution_id'));
+        $solution = DB::table('solutions')->find($solution_id);
         if (!$solution)
             return ['ok' => 0, 'msg' => '提交记录不存在'];
-        if ($verify_auth)
-            if ((auth('api')->user()->id ?? -1) != $solution->user_id && !privilege('admin.problem.solution'))
-                return ['ok' => 0, 'msg' => '您没有权限查看别人的提交记录'];
+        if ((auth('api')->user()->id ?? -1) != $solution->user_id && !privilege('admin.problem.solution'))
+            return ['ok' => 0, 'msg' => '您没有权限查看别人的提交记录'];
 
         /*
         // ==================== 读取判题结果 =========================
