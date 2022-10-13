@@ -11,8 +11,9 @@ class ContestController extends Controller
     /**
      * 修改竞赛的类别号
      * 注意order字段需要变动
+     * （注意修改竞赛时，该方法会被调用！Controllers/Admin/ContestController.php）
      */
-    public function update_contest_cate_id($contest_id, $cate_id)
+    public function update_cate_id($contest_id, $cate_id)
     {
         $contest = DB::table('contests')->find($contest_id);
         if ($contest->cate_id == $cate_id)
@@ -38,35 +39,48 @@ class ContestController extends Controller
      * 注意！竞赛order是倒序展示的
      * 输入：
      *      id: 竞赛编号
-     *      mode: 'up' or 'down' 表示上移或下移
+     *      shift: 对order字段的偏移量，整数范围
      */
-    public function update_contest_order($id, $mode)
+    public function update_order($id, $shift)
     {
-        assert(in_array($mode, ['up', 'down']));
+        // 获取当前竞赛
         $contest = DB::table('contests')->find($id);
-        if ($mode == 'down' && $contest->order > 1) {
-            DB::table('contests')
-                ->where('cate_id', $contest->cate_id)
-                ->whereBetween('order', [$contest->order - 1, $contest->order])
-                ->update(['order' => DB::raw(sprintf("%d-`order`", $contest->order * 2 - 1))]);
+        if ($shift > 0) {
+            // order增加，上移
+            $count_updated = 0;
+            DB::transaction(function () use ($contest, $shift) {
+                $count_updated = DB::table('contests')
+                    ->where('cate_id', $contest->cate_id)
+                    ->whereBetween('order', [$contest->order + 1, $contest->order + $shift])
+                    ->decrement('order');
+                DB::table('contests')
+                    ->where('id', $contest->id)
+                    ->increment('order', $count_updated);
+            });
             return [
                 'ok' => 1,
-                'msg' => sprintf('竞赛[%s]已下移', $contest->title)
+                'msg' => sprintf('竞赛[%s]已向上移动%d项', $contest->title, $count_updated)
             ];
-        }
-        if ($mode == 'up' && $contest->order < DB::table('contests')->where('cate_id', $contest->cate_id)->max('order')) {
-            DB::table('contests')
-                ->where('cate_id', $contest->cate_id)
-                ->whereBetween('order', [$contest->order, $contest->order + 1])
-                ->update(['order' => DB::raw(sprintf("%d-`order`", $contest->order * 2 + 1))]);
+        } else {
+            // order降低，下移
+            $count_updated = 0;
+            DB::transaction(function () use ($contest, $shift) {
+                $count_updated = DB::table('contests')
+                    ->where('cate_id', $contest->cate_id)
+                    ->whereBetween('order', [$contest->order + $shift, $contest->order - 1])
+                    ->increment('order');
+                DB::table('contests')
+                    ->where('id', $contest->id)
+                    ->decrement('order', $count_updated);
+            });
             return [
                 'ok' => 1,
-                'msg' => sprintf('竞赛[%s]已上移', $contest->title)
+                'msg' => sprintf('竞赛[%s]已向下移动%d项', $contest->title, $count_updated)
             ];
         }
         return [
             'ok' => 0,
-            'msg' => sprintf('竞赛[%s]已处于开头或末尾，无法继续移动', $contest->title)
+            'msg' => '移动失败'
         ];
     }
 
@@ -127,8 +141,23 @@ class ContestController extends Controller
             }
         }
 
-        //执行修改
-        DB::table('contest_cate')->where('id', $id)->update($values);
+        // 开始执行修改事务
+        $cate = DB::table('contest_cate')->find($id);
+        DB::transaction(function () use ($cate, $values) {
+            // 修改了类别，则一定要矫正order字段
+            if (isset($values['parent_id']) && $values['parent_id'] != $cate->parent_id) {
+                $count_updated = DB::table('contest_cate')
+                    ->where('parent_id', $cate->parent_id)
+                    ->where('order', '>', $cate->order)
+                    ->decrement('order');
+                // 在新类别中order默认处于末尾
+                $values['order'] = DB::table('contest_cate')
+                    ->where('parent_id', $values['parent_id'])->max('order') + 1;
+            }
+            // 执行修改
+            DB::table('contest_cate')->where('id', $cate->id)->update($values);
+        });
+
         return [
             'ok' => 1,
             'msg' => '已修改'
@@ -163,35 +192,48 @@ class ContestController extends Controller
      * 修改竞赛类别的顺序，即order字段
      * 输入：
      *      id: 类别编号
-     *      mode: 'up' or 'down' 表示上移或下移
+     *      shift: 偏移量，整数
      */
-    public function update_cate_order($id, $mode)
+    public function update_cate_order($id, $shift)
     {
-        assert(in_array($mode, ['up', 'down']));
+        // 获取当前类别
         $cate = DB::table('contest_cate')->find($id);
-        if ($mode == 'up' && $cate->order > 1) {
-            DB::table('contest_cate')
-                ->where('parent_id', $cate->parent_id)
-                ->whereBetween('order', [$cate->order - 1, $cate->order])
-                ->update(['order' => DB::raw(sprintf("%d-`order`", $cate->order * 2 - 1))]);
+        if ($shift > 0) {
+            // order增加，下移
+            $count_updated = 0;
+            DB::transaction(function () use ($cate, $shift) {
+                $count_updated = DB::table('contest_cate')
+                    ->where('parent_id', $cate->parent_id)
+                    ->whereBetween('order', [$cate->order + 1, $cate->order + $shift])
+                    ->decrement('order');
+                DB::table('contest_cate')
+                    ->where('id', $cate->id)
+                    ->increment('order', $count_updated);
+            });
             return [
                 'ok' => 1,
-                'msg' => sprintf('类别[%s]已上移', $cate->title)
+                'msg' => sprintf('类别[%s]已向下移动%d项', $cate->title, $count_updated)
             ];
-        }
-        if ($mode == 'down' && $cate->order < DB::table('contest_cate')->where('parent_id', $cate->parent_id)->max('order')) {
-            DB::table('contest_cate')
-                ->where('parent_id', $cate->parent_id)
-                ->whereBetween('order', [$cate->order, $cate->order + 1])
-                ->update(['order' => DB::raw(sprintf("%d-`order`", $cate->order * 2 + 1))]);
+        } else {
+            // order降低，上移
+            $count_updated = 0;
+            DB::transaction(function () use ($cate, $shift) {
+                $count_updated = DB::table('contest_cate')
+                    ->where('parent_id', $cate->parent_id)
+                    ->whereBetween('order', [$cate->order + $shift, $cate->order - 1])
+                    ->increment('order');
+                DB::table('contest_cate')
+                    ->where('id', $cate->id)
+                    ->decrement('order', $count_updated);
+            });
             return [
                 'ok' => 1,
-                'msg' => sprintf('类别[%s]已下移', $cate->title)
+                'msg' => sprintf('类别[%s]已向上移动%d项', $cate->title, $count_updated)
             ];
         }
         return [
             'ok' => 0,
-            'msg' => sprintf('类别[%s]已处于开头或末尾，无法继续移动', $cate->title)
+            'msg' => '移动失败'
         ];
     }
 }

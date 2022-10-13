@@ -55,6 +55,7 @@
           <th nowrap width="10%">名称</th>
           <th nowrap width="10%">父级类别</th>
           <th nowrap>描述</th>
+          <th nowrap>顺序</th>
           <th nowrap>操作</th>
         </tr>
       </thead>
@@ -101,12 +102,31 @@
                 </div>
               </td>
               <td nowrap>
-                <a href="javascript:" onclick="update_cate_order('{{ route('api.admin.contest.update_cate_order', [$item->id, 'up']) }}')" class="mx-1" title="改变顺序">
-                  <i class="fa fa-arrow-up" aria-hidden="true"></i> 上移
-                </a>
-                <a href="javascript:" onclick="update_cate_order('{{ route('api.admin.contest.update_cate_order', [$item->id, 'down']) }}')" class="mx-1" title="改变顺序">
-                  <i class="fa fa-arrow-down" aria-hidden="true"></i> 下移
-                </a>
+                <select class="px-1" onchange="update_cate_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
+                  <option value="{{ route('api.admin.contest.update_cate_order', [$item->id, -1000000000]) }}">置顶</option>
+                  @for ($shift = 32; $shift > 0; $shift >>= 1)
+                    @if ($item->order - $shift > 0)
+                      <option value="{{ route('api.admin.contest.update_cate_order', [$item->id, -$shift]) }}">
+                        <i class="fa fa-arrow-up" aria-hidden="true"></i>上移{{ $shift }}项
+                      </option>
+                    @endif
+                  @endfor
+                  <option selected>
+                    @if ($item->parent_id > 0)
+                      [子类] {{ $item->order }}
+                    @else
+                      {{ $item->order }}
+                    @endif
+                  </option>
+                  @for ($shift = 1; $shift <= 32; $shift <<= 1)
+                    <option onchange="alert('ok')" value="{{ route('api.admin.contest.update_cate_order', [$item->id, $shift]) }}">
+                      <i class="fa fa-arrow-down" aria-hidden="true"></i>下移{{ $shift }}项
+                    </option>
+                  @endfor
+                  <option value="{{ route('api.admin.contest.update_cate_order', [$item->id, 1000000000]) }}">置底</option>
+                </select>
+              </td>
+              <td nowrap>
                 <a href="javascript:" onclick="delete_contest_cate('{{ route('api.admin.contest.delete_contest_cate', $item->id) }}')" class="mx-1" title="删除">
                   <i class="fa fa-trash" aria-hidden="true"></i> 删除
                 </a>
@@ -118,6 +138,7 @@
     </table>
   </div>
 
+  {{-- API --}}
   <script type="text/javascript">
     const api_token = '{{ FacadesRedis::get('user:' . Auth::id() . ':api_token') }}'
 
@@ -139,53 +160,62 @@
     }
 
     function update_contest_cate(url, values) {
-      $.post(
-        url, {
+      $.ajax({
+        method: 'patch',
+        url: url,
+        data: {
           'api_token': api_token,
           'values': values
         },
-        function(ret) {
+        success: function(ret) {
           if (ret.ok)
             Notiflix.Notify.Success(ret.msg);
           else
             Notiflix.Notify.Failure(ret.msg);
         }
-      );
+      });
     }
 
     function delete_contest_cate(url) {
       Notiflix.Confirm.Show('删除', '删除该类别后，属于该类别的竞赛将被设为【未分类】状态，确定删除？', '确定', '取消', function() {
-        $.post(
-          url, {
-            'api_token': api_token
+        $.ajax({
+          method: 'delete',
+          url: url,
+          data: {
+            'api_token': api_token,
           },
-          function(ret) {
+          success: function(ret) {
             if (ret.ok) {
               Notiflix.Notify.Success(ret.msg);
               location.reload()
             } else
               Notiflix.Report.Failure('删除失败', ret.msg, '确认')
           }
-        );
+        });
       })
     }
 
     // 移动类别的位置
     function update_cate_order(url) {
-      $.post(
-        url, {
-          'api_token': api_token
+      $.ajax({
+        method: 'patch',
+        url: url,
+        data: {
+          'api_token': api_token,
         },
-        function(ret) {
-          if (ret.ok)
+        success: function(ret) {
+          if (ret.ok) {
+            Notiflix.Notify.Success(ret.msg);
             location.reload()
-          else
+          } else
             Notiflix.Notify.Failure(ret.msg);
         }
-      );
+      });
     }
+  </script>
 
-
+  {{-- 页面元素操作 --}}
+  <script type="text/javascript">
     // textarea自动高度
     $(function() {
       $.fn.autoHeight = function() {

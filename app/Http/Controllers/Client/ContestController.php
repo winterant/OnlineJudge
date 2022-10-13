@@ -468,13 +468,6 @@ class ContestController extends Controller
         return view('contest.rank', compact('contest', 'end_time', 'users', 'problem_count'));
     }
 
-    public function cancel_lock($id)
-    {
-        // 管理员取消封榜
-        DB::table('contests')->where('id', $id)->update(['lock_rate' => 0]);
-        return back();
-    }
-
     // 竞赛公告
     public function notices($id)
     {

@@ -102,9 +102,11 @@ class ContestController extends Controller
             $problem_ids = $request->input('problems');
             $c_users = $request->input('contest_users'); //指定用户
 
+            // ======================= 特别注意 =============================
             // 竞赛类别单独处理。竞赛类别改动时，涉及order的变动
-            (new ApiAdminContestController())->update_contest_cate_id($id, $contest['cate_id']);
+            (new ApiAdminContestController())->update_cate_id($id, $contest['cate_id']);
             unset($contest['cate_id']);
+            // =============================================================
 
             // 题目列表数据格式处理
             $pids = [];

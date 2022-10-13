@@ -26,20 +26,12 @@
           </div>
           @if ($contest->lock_rate > 0 && time() > $end_time) {{-- 封榜了 --}}
             <div class="float-left">
-              <font class="btn btn-sm">
+              <span class="btn btn-sm">
                 <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: red"></i>
                 {{ trans('sentence.rank_end_time', ['time' => date('Y-m-d H:i:s', $end_time)]) }}
-              </font>
-
-              @if (Auth::check() && privilege('admin.contest')) {{-- 管理员可以取消封榜 --}}
-                <form class="d-inline" action="{{ route('contest.cancel_lock', $contest->id) }}" method="post" onsubmit="return confirm('当前处于封榜状态，确认开放榜单？')" hidden>
-                  @csrf
-                  <button class="btn btn-sm btn-warning">{{ trans('main.Cancel') }}</button>
-                </form>
-              @endif
+              </span>
             </div>
           @endif
-
 
           <form id="form_rank" action="" method="get">
 

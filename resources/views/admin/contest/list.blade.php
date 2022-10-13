@@ -105,7 +105,7 @@
           </th>
           <th>前台可见</th>
           <th>创建人</th>
-          <th>移动位置
+          <th>顺序
             <a href="javascript:" style="color: #838383" onclick="whatisthis('当您浏览某具体类别的竞赛时，您可以移动竞赛的位置以改变顺序。<br>后台与前台将保持同步顺序，唯一的区别是前台不向普通用户展示隐藏的竞赛。')">
               <i class="fa fa-question-circle-o" aria-hidden="true"></i>
             </a>
@@ -123,9 +123,9 @@
             <td>
               <div class="form-inline">
                 <select class="" onchange="update_contest_cate_id($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
-                  <option value="{{ route('api.admin.contest.update_contest_cate_id', [$item->id, 0]) }}">--- 未分类 ---</option>
+                  <option value="{{ route('api.admin.contest.update_cate_id', [$item->id, 0]) }}">--- 未分类 ---</option>
                   @foreach ($categories as $cate)
-                    <option value="{{ route('api.admin.contest.update_contest_cate_id', [$item->id, $cate->id]) }}" @if ($item->cate_id == $cate->id) selected @endif>
+                    <option value="{{ route('api.admin.contest.update_cate_id', [$item->id, $cate->id]) }}" @if ($item->cate_id == $cate->id) selected @endif>
                       @if ($cate->is_parent)
                         --- [{{ $cate->title }}] ---
                       @else
@@ -155,29 +155,22 @@
             <td nowrap>{{ $item->username }}</td>
             <td nowrap>
               @if (isset($_GET['cate_id']) && $_GET['cate_id'] !== '')
-                <a href="javascript:" onclick="update_contest_order('{{ route('api.admin.contest.update_contest_order', [$item->id, 'up']) }}')" class="mx-1" title="改变顺序">
-                  <i class="fa fa-arrow-up" aria-hidden="true"></i> 上移
-                </a>
-                <a href="javascript:" onclick="update_contest_order('{{ route('api.admin.contest.update_contest_order', [$item->id, 'down']) }}')" class="mx-1" title="改变顺序">
-                  <i class="fa fa-arrow-down" aria-hidden="true"></i> 下移
-                </a>
+                <select onchange="update_contest_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
+                  <option value="{{ route('api.admin.contest.update_order', [$item->id, 1000000000]) }}">置顶</option>
+                  @for ($shift = 256; $shift > 0; $shift >>= 1)
+                    <option value="{{ route('api.admin.contest.update_order', [$item->id, $shift]) }}">
+                      <i class="fa fa-arrow-up" aria-hidden="true"></i>上移{{ $shift }}项
+                    </option>
+                  @endfor
+                  <option value="" selected>{{ $item->order }}</option>
+                  @for ($shift = 1; $shift <= 128 && $item->order - $shift > 0; $shift <<= 1)
+                    <option onchange="alert('ok')" value="{{ route('api.admin.contest.update_order', [$item->id, -$shift]) }}">
+                      <i class="fa fa-arrow-down" aria-hidden="true"></i>下移{{ $shift }}项
+                    </option>
+                  @endfor
+                  <option value="{{ route('api.admin.contest.update_order', [$item->id, -1000000000]) }}">置底</option>
+                </select>
               @endif
-              {{--
-              @if ($_GET['cate_id'] ?? null)
-                <div class="form-inline">
-
-                  <select onchange="update_order_todo('{{ $item->id }}',$(this).val())">
-                    @foreach ($categories as $cate)
-                      <option value="{{ $cate->id }}" @if ($item->cate_id == $cate->id) selected @endif>
-                        【待开发order】
-                      </option>
-                    @endforeach
-                    <option value="0">待开发order</option>
-                  </select>
-
-                </div>
-              @endif
-               --}}
             </td>
             <td nowrap>
               <a href="{{ route('admin.contest.update', $item->id) }}" class="mx-1" target="_blank" title="修改">
@@ -303,30 +296,36 @@
 
     // 修改竞赛的位置顺序 api
     function update_contest_order(url) {
-      $.post(
-        url, {
+      $.ajax({
+        method: 'patch',
+        url: url,
+        data: {
           'api_token': api_token
         },
-        function(ret) {
+        success: function(ret) {
           if (ret.ok)
             location.reload()
           else
             Notiflix.Notify.Failure(ret.msg);
         }
-      );
+      });
     }
 
     //修改竞赛的类别 api
     function update_contest_cate_id(url) {
-      $.post(
-        url, {
+      $.ajax({
+        method: 'patch',
+        url: url,
+        data: {
           'api_token': api_token
         },
-        function(ret) {
-          console.log(ret)
-          Notiflix.Notify.Success(ret.msg)
+        success: function(ret) {
+          if (ret.ok)
+            Notiflix.Notify.Success(ret.msg);
+          else
+            Notiflix.Notify.Failure(ret.msg);
         }
-      );
+      });
     }
 
     // 复制竞赛
