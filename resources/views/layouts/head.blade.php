@@ -56,7 +56,7 @@
 {{-- ckeditor5 --}}
 <script type="text/javascript">
     $(function (){
-        ck_config.ckfinder.uploadUrl = "{{route('api.ck_upload_image')}}"
+        ck_config.ckfinder.uploadUrl = "{{route('api.ckeditor_files')}}"
     })
 </script>
 <script src="{{asset('static/ckeditor5/build/ckeditor.js?v=220706')}}" defer></script>

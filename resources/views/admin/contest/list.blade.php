@@ -164,7 +164,7 @@
                   @endfor
                   <option value="" selected>{{ $item->order }}</option>
                   @for ($shift = 1; $shift <= 128 && $item->order - $shift > 0; $shift <<= 1)
-                    <option onchange="alert('ok')" value="{{ route('api.admin.contest.update_order', [$item->id, -$shift]) }}">
+                    <option value="{{ route('api.admin.contest.update_order', [$item->id, -$shift]) }}">
                       <i class="fa fa-arrow-down" aria-hidden="true"></i>下移{{ $shift }}项
                     </option>
                   @endfor

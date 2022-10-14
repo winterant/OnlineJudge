@@ -102,11 +102,11 @@
                 </div>
               </td>
               <td nowrap>
-                <select class="px-1" onchange="update_cate_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
-                  <option value="{{ route('api.admin.contest.update_cate_order', [$item->id, -1000000000]) }}">置顶</option>
+                <select class="px-1" onchange="update_contest_cate_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
+                  <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, -1000000000]) }}">置顶</option>
                   @for ($shift = 32; $shift > 0; $shift >>= 1)
                     @if ($item->order - $shift > 0)
-                      <option value="{{ route('api.admin.contest.update_cate_order', [$item->id, -$shift]) }}">
+                      <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, -$shift]) }}">
                         <i class="fa fa-arrow-up" aria-hidden="true"></i>上移{{ $shift }}项
                       </option>
                     @endif
@@ -119,11 +119,11 @@
                     @endif
                   </option>
                   @for ($shift = 1; $shift <= 32; $shift <<= 1)
-                    <option onchange="alert('ok')" value="{{ route('api.admin.contest.update_cate_order', [$item->id, $shift]) }}">
+                    <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, $shift]) }}">
                       <i class="fa fa-arrow-down" aria-hidden="true"></i>下移{{ $shift }}项
                     </option>
                   @endfor
-                  <option value="{{ route('api.admin.contest.update_cate_order', [$item->id, 1000000000]) }}">置底</option>
+                  <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, 1000000000]) }}">置底</option>
                 </select>
               </td>
               <td nowrap>
@@ -161,7 +161,7 @@
 
     function update_contest_cate(url, values) {
       $.ajax({
-        method: 'patch',
+        method: 'put',
         url: url,
         data: {
           'api_token': api_token,
@@ -196,7 +196,7 @@
     }
 
     // 移动类别的位置
-    function update_cate_order(url) {
+    function update_contest_cate_order(url) {
       $.ajax({
         method: 'patch',
         url: url,

@@ -194,7 +194,7 @@ class ContestController extends Controller
      *      id: 类别编号
      *      shift: 偏移量，整数
      */
-    public function update_cate_order($id, $shift)
+    public function update_contest_cate_order($id, $shift)
     {
         // 获取当前类别
         $cate = DB::table('contest_cate')->find($id);

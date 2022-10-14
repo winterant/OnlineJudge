@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class UploadController extends Controller
 {
     // CKeditor 上传图片
-    public function ck_upload_image(Request $request)
+    public function ckeditor_files(Request $request)
     {
         $image = $request->file('upload'); //ckeditor传过来的文件 upload
         $allowed_ext = ["jfif", "pjpeg", "jpeg", "pjp", "jpg", "png", "gif", "bmp", "dib", "webp", "tiff", "tif"];
