@@ -69,7 +69,7 @@
                 <div class="card">
                     <div class="card-header pt-2 pb-0" style="border-top: 5px solid #fcc700;">
                         <a href="javascript:" class="pull-right" style="color: #838383"
-                           onclick="whatisthis('This list is updating in real time. It shows some users who solved most problems this week')">
+                           onclick="whatisthis('自本周一以来的AC题目数量排行榜。每天更新一次。')">
                             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                         </a>
                         <h3 class="text-center mb-0">{{__("main.Top 10")}} {{__("main.This Week")}}</h3>
@@ -107,7 +107,7 @@
                 <div class="card">
                     <div class="card-header pt-2 pb-0" style="border-top: 5px solid #ff0023;">
                         <a href="javascript:" class="pull-right" style="color: #838383"
-                           onclick="whatisthis('The list was updating at this Monday 00:00. It shows some users who solved most problems last week')">
+                           onclick="whatisthis('上周一至上周日七天内AC题目数量排行榜。每周一0点更新。')">
                             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
                         </a>
                         <h3 class="text-center mb-0">{{__("main.Top 10")}} {{__("main.Last Week")}}</h3>
