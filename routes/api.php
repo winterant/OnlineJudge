@@ -38,6 +38,11 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+'])->group(function
      *   }
      */
 
+    // =========================== notice ===================================
+    Route::name('notice.')->group(function () {
+        Route::get('/notices/{id}', 'NoticeController@get_notice')->name('get_notice');
+    });
+
     // =========================== solution =================================
     Route::name('solution.')->group(function () {
         Route::middleware(['auth:api', 'CheckUserLocked'])->group(function () {

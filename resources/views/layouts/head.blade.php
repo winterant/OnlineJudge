@@ -32,7 +32,7 @@
 
 {{-- =================================== 自定义部分 ========================= --}}
 {{-- 自定义全局js脚本 --}}
-<script src="{{asset('js/globals.js')}}?v=3" defer></script>
+<script src="{{asset('js/globals.js')}}?v=20221015" defer></script>
 
 {{-- 大文件上传 --}}
 <script src="{{asset('js/uploadBig.js')}}?v=08.11" defer></script>

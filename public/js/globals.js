@@ -35,3 +35,12 @@ function disabledSubmitButton(dom, disabledText, second = 10) {
     }
     var intervalObj = setInterval(f(), 1000);
 }
+
+// 将指定dom的文本复制到系统剪贴板
+function copy_text(dom) {
+    $("body").append('<textarea id="copy_temp">' + $(dom).html() + '</textarea>');
+    $("#copy_temp").select();
+    document.execCommand("Copy");
+    $("#copy_temp").remove();
+    Notiflix.Notify.Success('Replicated');
+}

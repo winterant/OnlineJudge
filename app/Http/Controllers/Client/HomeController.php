@@ -12,19 +12,15 @@ class HomeController extends Controller
 {
     public function test(Request $request)
     {
-        // Redis::setex('test', 60, 'oooo');
-        dump(Redis::get('test'));
-        dump(Redis::info());
-        return intdiv(10, 3);
+        return 'test api';
     }
 
-    //home page
-    public function index()
+    public function home()
     {
         $notices = DB::table('notices')
             ->leftJoin('users', 'users.id', '=', 'user_id')
             ->select(['notices.id', 'title', 'state', 'notices.created_at', 'username'])
-            ->where('state', '!=', 0)
+            ->where('state', '>', 0)
             ->orderByDesc('state')
             ->orderByDesc('id')->paginate(6);
 
@@ -60,13 +56,5 @@ class HomeController extends Controller
             Redis::setex('home:cache:last_week_top', strtotime('next monday') - time(), json_encode($last_week));
         }
         return view('client.home', compact('notices', 'this_week', 'last_week'));
-    }
-
-    public function get_notice(Request $request)
-    {
-        $notice = DB::table('notices')->select(['title', 'content', 'created_at'])->find($request->input('id'));
-        if ($notice && $notice->content == null)
-            $notice->content = '';
-        return json_encode($notice);
     }
 }

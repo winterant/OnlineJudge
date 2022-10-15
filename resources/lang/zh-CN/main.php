@@ -93,7 +93,7 @@ return [
     "PDescription"  => "题目描述",
     "IDescription"  => "输入描述",
     "ODescription"  => "输出描述",
-    "Samples"       => "示例 (仅举例,不是测试数据)",
+    "Samples"       => "样例",
     "Input"         => "输入",
     "Output"        => "输出",
     "Hint"          => "提示",

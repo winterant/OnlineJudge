@@ -63,7 +63,7 @@
           <div class="btn-group d-flex flex-wrap">
             @foreach ($contest_pindex as $pindex => $title)
               <a class="btn btn-secondary border @if ($problem->index == $pindex) active @endif" href="{{ route('contest.problem', [$contest->id, $pindex]) }}"
-                style="flex: none;width:5rem;" data-toggle="tooltip" data-placement="bottom" title="{{$title}}">
+                style="flex: none;width:5rem;" data-toggle="tooltip" data-placement="bottom" title="{{ $title }}">
                 {{ index2ch($pindex) }}
               </a>
             @endforeach
@@ -163,21 +163,22 @@
             <div class="ck-content">{!! $problem->output !!}</div>
           @endif
 
-          @if (count($samples) > 0)
+          @if (!empty($samples))
             <h4 class="mt-2 text-sky">{{ __('main.Samples') }}</h4>
+            <p class="p-1 alert-info">{{ trans('sentence.explain_sample') }}</p>
           @endif
           @foreach ($samples as $i => $sam)
             <div class="border mb-4 not_math">
               {{-- 样例输入 --}}
               <div class="border-bottom pl-2 bg-light">
                 {{ __('main.Input') }}
-                <a href="javascript:" onclick="copy('sam_in{{ $i }}')">{{ __('main.Copy') }}</a>
+                <a href="javascript:" onclick="copy_text($('#sam_in{{ $i }}'))">{{ __('main.Copy') }}</a>
               </div>
               <pre class="m-1" id="sam_in{{ $i }}">{{ $sam[0] }}</pre>
               {{-- 样例输出 --}}
               <div class="border-top border-bottom pl-2 bg-light">
                 {{ __('main.Output') }}
-                <a href="javascript:" onclick="copy('sam_out{{ $i }}')">{{ __('main.Copy') }}</a>
+                <a href="javascript:" onclick="copy_text($('#sam_out{{ $i }}'))">{{ __('main.Copy') }}</a>
               </div>
               <pre class="m-1" id="sam_out{{ $i }}">{{ $sam[1] }}</pre>
             </div>
@@ -274,16 +275,5 @@
         }
       };
     })
-  </script>
-
-  {{-- copy --}}
-  <script type="text/javascript">
-    function copy(tag_id) {
-      $("body").append('<textarea id="copy_temp">' + $('#' + tag_id).html() + '</textarea>');
-      $("#copy_temp").select();
-      document.execCommand("Copy");
-      $("#copy_temp").remove();
-      Notiflix.Notify.Success('{{ __('sentence.copy') }}');
-    }
   </script>
 @endsection
