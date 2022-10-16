@@ -22,5 +22,6 @@ return [
 	"rank_show_nick"	        => true,    //榜单显示昵称（姓名）
 
 	"penalty_acm"	            => 1200,    //竞赛acm模式错误一次的罚时，1200秒=20分钟
+	"compile_error_submit_interval"	=> 300, //编译错误后，在此时间内不能再次提交，300秒=5分钟
 	"submit_interval"	        => 20,      //同一用户两次提交最小间隔，20秒
 ];

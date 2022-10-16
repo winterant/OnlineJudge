@@ -21,7 +21,7 @@ class SettingController extends Controller
                 if (is_numeric($val)) $val = intval($val);
                 get_setting($key, $val, true);
             }
-            system('php ' . base_path('artisan') . ' optimize', $out);
+            // system('php ' . base_path('artisan') . ' optimize', $out);
             return 1;
         }
     }

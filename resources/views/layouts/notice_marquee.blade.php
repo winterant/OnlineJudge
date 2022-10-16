@@ -1,7 +1,7 @@
 @if ($marquee_notice = DB::table('notices')->select(['id', 'title'])->find(get_setting('marquee_notice_id')))
   <marquee id="marquee_notice" align="left" behavior="scroll" class="mx-0 mt-0 mb-2" direction="left" height="" width="" hspace="50" vspace="20" loop="-1"
     scrollamount="10" scrolldelay="100" onMouseOut="this.start()" onMouseOver="this.stop()">
-    <a href="javascript:" onclick="get_notice('{{ route('api.notice.get_notice', $marquee_notice->id) }}')" data-toggle="modal" data-target="#home_notice">
+    <a href="javascript:" onclick="get_marq_notice('{{ route('api.notice.get_notice', $marquee_notice->id) }}')" data-toggle="modal" data-target="#home_notice">
       {!! $marquee_notice->title !!}
     </a>
   </marquee>
@@ -29,7 +29,7 @@
     </div>
   </div>
   <script>
-    function get_notice(url) {
+    function get_marq_notice(url) {
       $.get(
         url, {},
         function(ret) {

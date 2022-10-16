@@ -16,6 +16,7 @@ class SolutionController extends Controller
     {
         //======================= 拦截非管理员的频繁提交 =================================
         if (!privilege('admin.problem.list') || !privilege('admin.problem.solution')) {
+            // 规定时间内，不允许多次提交
             $last_submit_time = DB::table('solutions')
                 ->where('user_id', Auth::id())
                 ->orderByDesc('submit_time')
@@ -24,6 +25,21 @@ class SolutionController extends Controller
                 return [
                     'ok' => 0,
                     'msg' => trans('sentence.submit_frequently', ['sec' => get_setting('submit_interval')])
+                ];
+
+            // 编译错误，单独惩罚，规定时间内直接不允许提交！
+            $last_ce_time = DB::table('solutions')
+                ->where('user_id', Auth::id())
+                ->where('result', 11) // 编译错误
+                ->orderByDesc('submit_time')
+                ->value('submit_time');
+            if (time() - strtotime($last_ce_time) < intval(get_setting('compile_error_submit_interval')))
+                return [
+                    'ok' => 0,
+                    'msg' => trans('sentence.submit_ce_frequently', [
+                        'dt' => $last_ce_time,
+                        'sec' => get_setting('compile_error_submit_interval')
+                    ])
                 ];
         }
 

@@ -38,6 +38,7 @@ return [
     "Choose Language"   => "----Choose Language----",
     "Input Code"        => "Input your code to solve this problem...",
     "submit_frequently" => "Submit frequently! You are not allowed to submit twice in :sec seconds",
+    "submit_ce_frequently" => "You have a compilation error in the code you submitted at :dt. As a punishment, you can't continue to submit the code in :sec seconds!",
     "Congratulations"   => "Congratulations! You have solved the problem, so we invite you to mark the problem! Attention,you cannot modify it after you submitted.",
     "tag_marked"        => "You have successfully marked tag of the problem",
     "tag_marked_exceed" => "You cannot add more than 5 Tags!",

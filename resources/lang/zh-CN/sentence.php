@@ -38,6 +38,7 @@ return [
     "Choose Language"   => "----选择语言----",
     "Input Code"        => "输入你的代码...",
     "submit_frequently" => "提交频繁! 请在 :sec 秒后尝试再次提交！",
+    "submit_ce_frequently" => "你在 :dt 提交的代码发生了编译错误,作为惩罚,你在 :sec 秒内无法继续提交代码!",
     "Congratulations"   => "祝贺! 你解决了这个问题, 因此我们邀请你为本题进行标记！注意，一经提交不可修改.",
     "tag_marked"        => "标记成功！",
     "tag_marked_exceed" => "最多添加5个标签!",

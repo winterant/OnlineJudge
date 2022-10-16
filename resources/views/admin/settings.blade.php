@@ -138,20 +138,22 @@
       <form onsubmit="return submit_settings(this)" method="post">
         @csrf
         <div class="form-inline">
-          <label>提交间隔：
+          <label>提交时间限制：
             <input type="number" name="submit_interval" value="{{ get_setting('submit_interval') }}" required class="form-control">秒（防止恶意提交，两次提交之间的最小间隔；管理员不受限制）
           </label>
-          <button class="btn text-white ml-4 bg-success">保存</button>
         </div>
-      </form>
-      <form onsubmit="return submit_settings(this)" method="post">
-        @csrf
         <div class="form-inline">
-          <label>错误罚时：
+          <label>编译错误限制：
+            <input type="number" name="compile_error_submit_interval" value="{{ get_setting('compile_error_submit_interval') }}" required class="form-control">
+            秒（用户提交编译错误后，在此时间内不允许再次提交）
+          </label>
+        </div>
+        <div class="form-inline">
+          <label>竞赛错误罚时：
             <input type="number" name="penalty_acm" value="{{ get_setting('penalty_acm') }}" required class="form-control">秒（竞赛在ACM模式下每次错误提交的罚时，建议1200秒，即20分钟）
           </label>
-          <button class="btn text-white ml-4 bg-success">保存</button>
         </div>
+        <button class="mt-4 btn text-white bg-success">保存</button>
       </form>
     </div>
   </div>

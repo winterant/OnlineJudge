@@ -343,7 +343,7 @@
               }
               query_judge_result() // 开始查询
             } else {
-              Notiflix.Notify.Failure(ret.msg)
+              Notiflix.Report.Failure('{{__("main.Failed")}}', ret.msg, '{{__("main.Confirm")}}')
             }
           },
           error: function(ret) {
