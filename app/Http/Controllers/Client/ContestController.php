@@ -38,7 +38,6 @@ class ContestController extends Controller
         $categories = DB::table('contest_cate')
             ->select(['id', 'title'])
             ->where('parent_id', 0)
-            ->orWhere('parent_id', null)
             ->orderBy('order')
             ->get();
 

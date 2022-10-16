@@ -52,6 +52,9 @@ mod_env "pm.start_servers"     ${fpm_pm_start_servers:-8}        /etc/php/7.2/fp
 mod_env "pm.min_spare_servers" ${fpm_pm_min_spare_servers:-2}    /etc/php/7.2/fpm/pool.d/www.conf
 mod_env "pm.max_spare_servers" ${fpm_pm_max_spare_servers:-1024} /etc/php/7.2/fpm/pool.d/www.conf
 
+## nginx config
+sed -i "s/worker_connections [0-9]*;$/worker_connections 51200;/" /etc/nginx/nginx.conf
+
 
 ##########################################################################
 # Start Server
@@ -69,17 +72,17 @@ service php7.2-fpm start
 php artisan storage:link
 php artisan optimize
 if [[ "`cat .env|grep ^APP_KEY=$`" != "" ]]; then  # Lack of APP_KEY
-    yes|php artisan key:generate
+    php artisan key:generate --force
 fi
-yes|php artisan migrate
+php artisan migrate --force
 php artisan optimize
 php artisan lduoj:init
 
 # Change storage folders owner.
 chown www-data:www-data -R storage bootstrap/cache
 
-# Start laravel-queue
-php artisan queue:work
+# Start laravel-queue. Although there are more than one queue they still execute one by one
+php artisan queue:work --queue=default,CorrectSubmittedCount
 
 # Sleep forever to keep container alives.
 sleep infinity

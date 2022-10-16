@@ -44,7 +44,7 @@ class CreateContestsTable extends Migration
             $table->text('description')->nullable();
             $table->boolean('hidden')->default(0);
             $table->bigInteger('order')->index()->default(0);
-            $table->bigInteger('parent_id')->index()->nullable();
+            $table->bigInteger('parent_id')->index()->default(0);
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();
         });

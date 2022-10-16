@@ -27,7 +27,7 @@ class CreateSolutionsTable extends Migration
             $table->dateTime('submit_time')->useCurrent();
             $table->dateTime('judge_time')->useCurrent();
             $table->json('judge0result')->nullable();
-            $table->float('pass_rate')->default(1.0);
+            $table->float('pass_rate')->default(0.0);
             $table->text('error_info')->nullable();
             $table->text('wrong_data')->nullable();
             $table->string('ip', 16)->index()->nullable();

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\CorrectSubmittedCount;
 use Illuminate\Console\Command;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -48,6 +49,7 @@ class LduojInit extends Command
         $this->init_contest_cate();
         $this->correct_contest_order();
         $this->correct_contest_cate_order();
+        dispatch(new CorrectSubmittedCount())->onQueue('CorrectSubmittedCount'); // 矫正过题数字段
         echo "Done!" . PHP_EOL;
     }
 
@@ -111,7 +113,7 @@ class LduojInit extends Command
     private function init_contest_cate()
     {
         echo "--------------------- init_contest_cate -----------------------" . PHP_EOL;
-        if (DB::table('contest_cate')->count() > 0) // 已有类别则不要创建
+        if (DB::table('contest_cate')->exists()) // 已有类别则不要创建
             return false;
         echo "Create some default contest categary..." . PHP_EOL;
         //一级默认类别
@@ -175,9 +177,6 @@ class LduojInit extends Command
      */
     private function correct_contest_cate_order()
     {
-        // 父类的parent_id统一矫正为0
-        DB::table('contest_cate')->where('parent_id', null)->update(['parent_id' => 0]);
-
         // 拿到所有的类别（一级/二级）的父类别编号
         $parent_ids = DB::table('contest_cate')->select('parent_id')->distinct()->pluck('parent_id');
 

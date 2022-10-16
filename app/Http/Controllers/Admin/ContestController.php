@@ -20,9 +20,10 @@ class ContestController extends Controller
                 'cc.order', 'cc.parent_id',
                 'cc.updated_at', 'cc.created_at',
                 'father.title as parent_title',
-                DB::raw('(case ifnull(cc.parent_id, 0) when 0 then 1 else 0 end) as is_parent')
+                DB::raw('(case cc.parent_id when 0 then 1 else 0 end) as is_parent'),
+                DB::raw('(case cc.parent_id when 0 then cc.id else cc.parent_id end) as l1_cate')
             ])
-            ->orderBy(DB::raw('ifnull(father.order,cc.order)')) // 1 全局，统一按一级类别的order，同一大类挨在一起
+            ->orderBy('l1_cate') // 1 全局，统一按一级类别的order，同一大类挨在一起
             ->orderByDesc('is_parent') // 2 同一父类下，父类排在首位
             ->orderBy('cc.order') // 3 同一父类下的二级类别，按自身order排序
             ->get();
