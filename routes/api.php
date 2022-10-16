@@ -54,6 +54,13 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+'])->group(function
 
     // ============================ admin ==================================
     Route::prefix('admin')->name('admin.')->middleware(['auth:api', 'CheckUserLocked'])->group(function () {
+        // Manage solution: route('api.admin.solution.*')
+        Route::name('solution.')->group(function () {
+            Route::middleware(['Permission:admin'])->group(function () {
+                Route::post('/solutions/statistics', 'Admin\SolutionController@correct_submitted_count')->name('correct_submitted_count');
+            });
+        });
+
         // Manage contest: route('api.admin.contest.*')
         Route::name('contest.')->middleware(['Permission:admin.contest'])->group(function () {
             Route::patch('/contests/{id}/order/{shift}', 'Admin\ContestController@update_order')->name('update_order')->where(['shift' => '^(\-|\+)?[0-9]+']);
