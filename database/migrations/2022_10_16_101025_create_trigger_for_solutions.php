@@ -36,13 +36,13 @@ class CreateTriggerForSolutions extends Migration
             BEGIN
                 UPDATE problems set accepted=accepted+1 where id=new.problem_id and old.result!=4 and new.result=4;
                 UPDATE problems set solved=solved+1 where id=new.problem_id and old.result!=4 and new.result=4
-                    and not exists(select 1 from solutions where id<new.id and problem_id=new.problem_id and result=4 limit 1);
+                    and not exists(select 1 from solutions where id<new.id and problem_id=new.problem_id and `user_id`=new.user_id and result=4 limit 1);
                 UPDATE users set accepted=accepted+1 where id=new.user_id and old.result!=4 and new.result=4;
                 UPDATE users set solved=solved+1 where id=new.user_id and old.result!=4 and new.result=4
-                    and not exists(select 1 from solutions where id<new.id and `user_id`=new.user_id and result=4 limit 1);
+                    and not exists(select 1 from solutions where id<new.id and problem_id=new.problem_id and `user_id`=new.user_id and result=4 limit 1);
                 UPDATE contest_problems set accepted=accepted+1 where problem_id=new.problem_id and contest_id=new.contest_id and old.result!=4 and new.result=4;
                 UPDATE contest_problems set solved=solved+1 where problem_id=new.problem_id and contest_id=new.contest_id and old.result!=4 and new.result=4
-                    and not exists(select 1 from solutions where id<new.id and problem_id=new.problem_id and contest_id=new.contest_id and result=4 limit 1);
+                    and not exists(select 1 from solutions where id<new.id and contest_id=new.contest_id and problem_id=new.problem_id and `user_id`=new.user_id and result=4 limit 1);
             END"
         );
         // 一些其它更新: 竞赛类别的父类别默认为0而不是null

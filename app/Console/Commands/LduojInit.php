@@ -49,7 +49,8 @@ class LduojInit extends Command
         $this->init_contest_cate();
         $this->correct_contest_order();
         $this->correct_contest_cate_order();
-        dispatch(new CorrectSubmittedCount())->onQueue('CorrectSubmittedCount'); // 矫正过题数字段
+        // 矫正过题数字段，延迟2分钟执行（待服务器稳定运行）
+        dispatch(new CorrectSubmittedCount())->delay(120)->onQueue('CorrectSubmittedCount');
         echo "Done!" . PHP_EOL;
     }
 
