@@ -13,6 +13,8 @@ class CorrectSubmittedCount implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $timeout = 1000; // 最长执行时间
+
     /**
      * Create a new job instance.
      *
