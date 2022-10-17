@@ -193,13 +193,36 @@
             </div>
             <nav aria-label="Page navigation example">
               <ul class="pagination">
-                <li class="page-item" @if (!isset($_GET['top_id'])) disabled @endif>
-                  <a class="page-link px-2" href="javascript:window.history.go(-1);">{{ __('main.Previous Page') }}</a>
-                </li>
-                @if (count($solutions) > 0)
-                  <li class="page-item"><a class="page-link px-2"
-                      href="{{ route(request()->route()->getName(),array_merge(isset($contest) ? array_merge([$contest->id], $_GET) : $_GET, ['top_id' => $solutions[count($solutions) - 1]->id - 1])) }}">{{ __('main.Next Page') }}</a>
+                @if (count($solutions) == 0)
+                  <li class="page-item">
+                    <a class="page-link px-2" href="javascript:window.history.go(-1);">{{ __('main.Back') }}</a>
                   </li>
+                @endif
+                @if (count($solutions) >= 1 && isset($_GET['top_id']))
+                  @php($last_top_id = max($solutions[0]->id, $solutions[count($solutions) - 1]->id) + 1)
+                  @if (isset($contest))
+                    <li class="page-item">
+                      <a class="page-link px-2"
+                        href="{{ route('contest.status', array_merge(array_merge([$contest->id], $_GET), ['top_id' => $last_top_id, 'reverse' => 1])) }}">{{ __('main.Previous Page') }}</a>
+                    </li>
+                  @else
+                    <li class="page-item">
+                      <a class="page-link px-2" href="{{ route('status', array_merge($_GET, ['top_id' => $last_top_id, 'reverse' => 1])) }}">{{ __('main.Previous Page') }}</a>
+                    </li>
+                  @endif
+                @endif
+                @if (count($solutions) >= 1)
+                  @php($next_top_id = min($solutions[0]->id, $solutions[count($solutions) - 1]->id) - 1)
+                  @if (isset($contest))
+                    <li class="page-item">
+                      <a class="page-link px-2"
+                        href="{{ route('contest.status', array_merge(array_merge([$contest->id], $_GET), ['top_id' => $next_top_id, 'reverse' => 0])) }}">{{ __('main.Next Page') }}</a>
+                    </li>
+                  @else
+                    <li class="page-item">
+                      <a class="page-link px-2" href="{{ route('status', array_merge($_GET, ['top_id' => $next_top_id, 'reverse' => 0])) }}">{{ __('main.Next Page') }}</a>
+                    </li>
+                  @endif
                 @endif
               </ul>
             </nav>

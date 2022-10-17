@@ -3,6 +3,7 @@ return [
     "My"            => "My ",
     "Yes"           => "Yes",
     "No"            => "No",
+    "Back"          => "Back",
     "Copy"          => "Copy",
     "Download"      => "Download",
     "Edit"          => "Edit",

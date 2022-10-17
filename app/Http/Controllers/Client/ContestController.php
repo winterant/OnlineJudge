@@ -313,10 +313,15 @@ class ContestController extends Controller
                 return $q->where('ip', $_GET['ip']);
             })
             ->when(isset($_GET['top_id']) && $_GET['top_id'] != null, function ($q) {
+                if (isset($_GET['reverse']) && $_GET['reverse'] == 1)
+                    return $q->where('s.id', '>=', $_GET['top_id']);
                 return $q->where('s.id', '<=', $_GET['top_id']);
             })
-            ->orderByDesc('s.id')
+            ->orderBy('s.id', (isset($_GET['reverse']) && $_GET['reverse'] == 1) ? 'asc' : 'desc')
             ->limit(10)->get();
+
+        if (isset($_GET['reverse']) && $_GET['reverse'] == 1)
+            $solutions = $solutions->reverse();
 
         // 计算题目在竞赛中的题号[0,1,2,...]
         foreach ($solutions as &$s) {

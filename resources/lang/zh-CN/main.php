@@ -4,6 +4,7 @@ return [
     "Yes"           => "是",
     "No"            => "否",
     "Copy"          => "复制",
+    "Back"          => "返回",
     "Download"      => "下载",
     "Edit"          => "编辑",
     "Test Data"     => "测试数据",

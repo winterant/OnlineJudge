@@ -60,11 +60,16 @@ class StatusController extends Controller
                 return $q->where('ip', $_GET['ip']);
             })
             ->when(isset($_GET['top_id']) && $_GET['top_id'] != null, function ($q) {
+                if (isset($_GET['reverse']) && $_GET['reverse'] == 1)
+                    return $q->where('s.id', '>=', $_GET['top_id']);
                 return $q->where('s.id', '<=', $_GET['top_id']);
             })
-            ->orderByDesc('s.id')
+            ->orderBy('s.id', (isset($_GET['reverse']) && $_GET['reverse'] == 1) ? 'asc' : 'desc')
             ->limit(10)
             ->get();
+
+        if (isset($_GET['reverse']) && $_GET['reverse'] == 1)
+            $solutions = $solutions->reverse();
 
         // ======== 处理显示信息 ==========
         foreach ($solutions as $s) {
@@ -118,7 +123,7 @@ class StatusController extends Controller
             ->where('solutions.id', $id)->first();
 
         if ($solution->index === null) // 竞赛中已经把这道题删除了
-                $solution->contest_id = -1;
+            $solution->contest_id = -1;
         if (
             privilege('admin.problem.solution') ||
             (Auth::id() == $solution->user_id && $solution->submit_time > Auth::user()->created_at)
