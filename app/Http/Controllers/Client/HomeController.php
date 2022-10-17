@@ -29,7 +29,7 @@ class HomeController extends Controller
         $last_monday_time = $monday_time - 3600 * 24 * 7;
         $next_monday_time = $monday_time + 3600 * 24 * 7;
         if (Redis::exists('home:cache:this_week_top10')) {
-            $this_week = json_decode(Redis::get('home:cache:this_week_top'));
+            $this_week = json_decode(Redis::get('home:cache:this_week_top10'));
         } else {
             $this_week = DB::table('solutions')
                 ->join('users', 'users.id', '=', 'solutions.user_id')
@@ -43,7 +43,7 @@ class HomeController extends Controller
             Redis::setex('home:cache:this_week_top10', 3600, json_encode($this_week));
         }
 
-        if (Redis::exists('home:cache:last_week_top')) {
+        if (Redis::exists('home:cache:last_week_top10')) {
             $last_week = json_decode(Redis::get('home:cache:last_week_top10'));
         } else {
             $last_week = DB::table('solutions')
