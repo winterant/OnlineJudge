@@ -140,14 +140,10 @@
 
   {{-- API --}}
   <script type="text/javascript">
-    const api_token = '{{ FacadesRedis::get('user:' . Auth::id() . ':api_token') }}'
-
     function add_contest_cate(url, json_data) {
       $.post(
-        url, {
-          ...json_data,
-          'api_token': api_token,
-        },
+        url,
+        json_data,
         function(ret) {
           console.log(ret)
           if (ret.ok) {
@@ -164,7 +160,6 @@
         method: 'put',
         url: url,
         data: {
-          'api_token': api_token,
           'values': values
         },
         success: function(ret) {
@@ -181,9 +176,6 @@
         $.ajax({
           method: 'delete',
           url: url,
-          data: {
-            'api_token': api_token,
-          },
           success: function(ret) {
             if (ret.ok) {
               Notiflix.Notify.Success(ret.msg);
@@ -200,9 +192,6 @@
       $.ajax({
         method: 'patch',
         url: url,
-        data: {
-          'api_token': api_token,
-        },
         success: function(ret) {
           if (ret.ok) {
             Notiflix.Notify.Success(ret.msg);
@@ -216,25 +205,6 @@
 
   {{-- 页面元素操作 --}}
   <script type="text/javascript">
-    // textarea自动高度
-    $(function() {
-      $.fn.autoHeight = function() {
-        function autoHeight(elem) {
-          elem.style.height = 'auto';
-          elem.scrollTop = 0; //防抖动
-          elem.style.height = elem.scrollHeight + 2 + 'px';
-        }
-
-        this.each(function() {
-          autoHeight(this);
-          $(this).on('input', function() {
-            autoHeight(this);
-          });
-        });
-      }
-      $('textarea[autoHeight]').autoHeight();
-    })
-
     //初次加载页面，隐藏添加新纪录的表单
     $(function() {
       $('#form_create_cate').hide();

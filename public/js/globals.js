@@ -1,5 +1,5 @@
 // ==============  json 值编码 =================
-function json_value_base64(data, additional_data, recursive = false) {
+function json_value_base64(data, additional_data = {}, recursive = false) {
     for (var k in data)
         if (Object.prototype.toString.call(data[k]) === '[object Object]'
             || Object.prototype.toString.call(data[k]) === '[object Array]')
@@ -36,7 +36,7 @@ function disabledSubmitButton(dom, disabledText, second = 10) {
     var intervalObj = setInterval(f(), 1000);
 }
 
-// 将指定dom的文本复制到系统剪贴板
+// ====================== 将指定dom的文本复制到系统剪贴板 ====================
 function copy_text(dom) {
     $("body").append('<textarea id="copy_temp">' + $(dom).html() + '</textarea>');
     $("#copy_temp").select();
@@ -44,3 +44,23 @@ function copy_text(dom) {
     $("#copy_temp").remove();
     Notiflix.Notify.Success('Replicated');
 }
+
+// ==================== textarea自动高度 ================
+// For example: <textarea autoheight></textarea>
+$(function () {
+    $.fn.autoHeight = function () {
+        function autoHeight(elem) {
+            elem.style.height = 'auto';
+            elem.scrollTop = 0; //防抖动
+            elem.style.height = elem.scrollHeight + 2 + 'px';
+        }
+
+        this.each(function () {
+            autoHeight(this);
+            $(this).on('input', function () {
+                autoHeight(this);
+            });
+        });
+    }
+    $('textarea[autoHeight]').autoHeight();
+})

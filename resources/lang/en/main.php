@@ -16,6 +16,7 @@ return [
     "Close"         => "Close",
     "Previous Page" => "Previous",
     "Next Page"     => "Next",
+    "View details"  => "View details",
 
     //home.blade
     "Notice Board"  => "Notice Board",

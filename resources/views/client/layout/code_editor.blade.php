@@ -160,12 +160,14 @@
               <p class="alert-success p-2" v-if="result_id==4">
                 {{ __('sentence.pass_all_test') }}
                 (@{{ judge0result_num_ac }}/@{{ judge0result_num_test }})
+                <a class="ml-3" target="_blank" :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
               </p>
               {{-- WA --}}
               <div v-else>
                 <p class="alert-danger p-2">
                   {{ __('sentence.WA') }}
                   (@{{ judge0result_num_ac }}/@{{ judge0result_num_test }})
+                  <a class="ml-3" target="_blank" :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
                 </p>
                 <pre v-show="judge0result_error_info" class="alert-danger p-2 overflow-auto">@{{ judge0result_error_info }}</pre>
               </div>
@@ -215,8 +217,6 @@
 </div>
 
 <script>
-  const api_token = '{{ FacadesRedis::get('user:' . Auth::id() . ':api_token') }}'
-
   const {
     createApp
   } = Vue
@@ -264,8 +264,6 @@
         const post_data = json_value_base64({
           ...$("#code_form").serializeJSON(),
           'stdin': this.local_test.stdin,
-        }, {
-          'api_token': api_token
         })
         $.ajax({
           type: 'post',
@@ -297,9 +295,7 @@
           type: 'post',
           url: '{{ route('api.solution.submit_solution') }}',
           dataType: 'json',
-          data: json_value_base64($("#code_form").serializeJSON(), {
-            'api_token': api_token
-          }),
+          data: json_value_base64($("#code_form").serializeJSON()),
           success: (ret) => {
             console.log(ret) // todo delete
             if (ret.ok) {
@@ -313,21 +309,19 @@
               const query_judge_result = () => {
                 $.ajax({
                   type: 'get',
-                  data: {
-                    'api_token': api_token
-                  },
+                  data: {},
                   url: '/api/solutions/' + ret.data.solution_id,
                   dataType: 'json',
                   success: (judge_ret) => {
                     console.log('judge result:', judge_ret) // todo delete
                     if (judge_ret.ok) {
                       if (ret.data.solution_id !== this.query_solution_id)
-                        return  // 已经提交了新代码，solution id已变更，不再更新当前solution
+                        return // 已经提交了新代码，solution id已变更，不再更新当前solution
                       this.result_id = judge_ret.data.result // 结果代号
                       this.judge0result = judge_ret.data.judge0result //更新表单
                       this.judge0result_error_info = judge_ret.data.error_info
                       if (max_query_times-- > 0 && judge_ret.data.result < 4) { // 4: web端判题结果代号正确
-                        setTimeout(query_judge_result, 800) // 继续查询
+                        setTimeout(query_judge_result, 1000) // 继续查询
                       } else {
                         this.judge0processing = 3 // 判题完成
                       }
@@ -343,7 +337,7 @@
               }
               query_judge_result() // 开始查询
             } else {
-              Notiflix.Report.Failure('{{__("main.Failed")}}', ret.msg, '{{__("main.Confirm")}}')
+              Notiflix.Report.Failure('{{ __('main.Failed') }}', ret.msg, '{{ __('main.Confirm') }}')
             }
           },
           error: function(ret) {

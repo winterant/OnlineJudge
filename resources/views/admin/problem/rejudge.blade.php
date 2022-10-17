@@ -71,15 +71,11 @@
   </div>
 
   <script type="text/javascript">
-    const api_token = '{{ FacadesRedis::get('user:' . Auth::id() . ':api_token') }}'
     //修改竞赛的类别 api
     function correct_submitted_count() {
       $.ajax({
         method: 'post',
         url: "{{ route('api.admin.solution.correct_submitted_count') }}",
-        data: {
-          'api_token': api_token
-        },
         success: function(ret) {
           if (ret.ok)
             Notiflix.Notify.Success(ret.msg);

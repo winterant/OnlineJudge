@@ -17,7 +17,7 @@
                     @endif
                 </h3>
                 <hr>
-                
+
                 <div class="form-inline mb-3">
                     <span>是否公开：</span>
                     <div class="custom-control custom-radio ml-3">
@@ -43,8 +43,8 @@
                 <div class="border p-2">
                     <div class="input-group mb-3">
                         <span style="margin: auto">群组名称：</span>
-                        <input type="text" name="group[name]" 
-                            value="{{isset($group->name)?$group->name:''}}" 
+                        <input type="text" name="group[name]"
+                            value="{{isset($group->name)?$group->name:''}}"
                             required class="form-control" style="color: black"
                             placeholder="如：数据结构公开课"
                             >
@@ -88,7 +88,7 @@
                         autoHeight>{{isset($group->description)?$group->description:''}}</textarea>
                 </div>
 
-                {{-- 
+                {{--
                 <div class="mt-4 p-2 bg-sky">为群组上传附件（仅支持如下类型：txt, pdf, doc, docx, xls, xlsx, csv, ppt, pptx）</div>
                 <div class="border p-2">
                     <div class="form-group">
@@ -133,9 +133,6 @@
     </div>
 
     <script type="text/javascript">
-
-        //删除附件
-
         //编辑框配置
         $(function () {
             ClassicEditor.create(document.querySelector('#description'), ck_config).then(editor => {
@@ -145,27 +142,8 @@
                 console.log(error);
             });
         })
-
-        // textarea自动高度
-        $(function () {
-            $.fn.autoHeight = function () {
-                function autoHeight(elem) {
-                    elem.style.height = 'auto';
-                    elem.scrollTop = 0; //防抖动
-                    elem.style.height = elem.scrollHeight + 2 + 'px';
-                }
-
-                this.each(function () {
-                    autoHeight(this);
-                    $(this).on('input', function () {
-                        autoHeight(this);
-                    });
-                });
-            }
-            $('textarea[autoHeight]').autoHeight();
-        })
-
     </script>
+
     <script type="text/javascript">
         window.onbeforeunload = function () {
             return "确认离开当前页面吗？未保存的数据将会丢失！";

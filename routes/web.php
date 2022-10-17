@@ -34,8 +34,8 @@ Route::get('/standings', 'Client\UserController@standings')->name('standings');
 Route::get('/user/{username}', 'Client\UserController@user')->name('user');
 Route::get('/change_language/{lang}', 'Client\UserController@change_language')->name('change_language');
 Route::middleware(['auth', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group(function () {
-    Route::get('/solution/{id}', 'Client\StatusController@solution')->name('solution');
-    Route::get('/solution/{id}/wrong_data/{type}', 'Client\StatusController@solution_wrong_data')
+    Route::get('/solutions/{id}', 'Client\StatusController@solution')->name('solution');
+    Route::get('/solutions/{id}/wrong_data/{type}', 'Client\StatusController@solution_wrong_data')
         ->where(['type' => '(in|out)'])->name('solution_wrong_data');
     Route::any('/user/{username}/edit', 'Client\UserController@user_edit')->name('user_edit');
     Route::any('/user/{username}/password_reset', 'Client\UserController@password_reset')->name('password_reset');

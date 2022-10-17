@@ -84,6 +84,11 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewarePriority = [
+        // 业务需要，优先解密cookie以及设定全局配置
+        \App\Http\Middleware\EncryptCookies::class,
+        \App\Http\Middleware\SetGlobalVariable::class,
+
+        // laravel 默认中间件顺序
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         \App\Http\Middleware\Authenticate::class,

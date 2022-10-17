@@ -191,7 +191,6 @@
   </div>
 
   <script type="text/javascript">
-    const api_token = '{{ FacadesRedis::get('user:' . Auth::id() . ':api_token') }}'
     // 由于修改hidden、public_rank等字段时会修改开关，出发开关递归调用onchange
     // 所以在js函数内操作开关前，先加锁，防止递归调用。
     var lock_switch_onchange = false
@@ -299,9 +298,6 @@
       $.ajax({
         method: 'patch',
         url: url,
-        data: {
-          'api_token': api_token
-        },
         success: function(ret) {
           if (ret.ok)
             location.reload()
@@ -316,9 +312,6 @@
       $.ajax({
         method: 'patch',
         url: url,
-        data: {
-          'api_token': api_token
-        },
         success: function(ret) {
           if (ret.ok)
             Notiflix.Notify.Success(ret.msg);

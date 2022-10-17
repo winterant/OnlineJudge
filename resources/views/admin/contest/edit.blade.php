@@ -305,26 +305,8 @@
         console.log(error);
       });
     })
-
-    // textarea自动高度
-    $(function() {
-      $.fn.autoHeight = function() {
-        function autoHeight(elem) {
-          elem.style.height = 'auto';
-          elem.scrollTop = 0; //防抖动
-          elem.style.height = elem.scrollHeight + 2 + 'px';
-        }
-
-        this.each(function() {
-          autoHeight(this);
-          $(this).on('input', function() {
-            autoHeight(this);
-          });
-        });
-      }
-      $('textarea[autoHeight]').autoHeight();
-    })
   </script>
+
   <script type="text/javascript">
     window.onbeforeunload = function() {
       return "确认离开当前页面吗？未保存的数据将会丢失！";

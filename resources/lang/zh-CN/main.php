@@ -16,6 +16,7 @@ return [
     "Close"         => "关闭",
     "Previous Page" => "上一页",
     "Next Page"     => "下一页",
+    "View details"  => "查看详情",
 
     //home.blade
     "Notice Board"  => "公告板",
