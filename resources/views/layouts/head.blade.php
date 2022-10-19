@@ -4,10 +4,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-{{-- CSRF Token --}}
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-
 {{-- styles--}}
 <link href="{{asset('static/bootstrap-material-design-dist/css/bootstrap-material-design.min.css')}}" rel="stylesheet">
 <link href="{{asset('static/font-awesome-4.7.0/css/font-awesome.min.css')}}" rel="stylesheet">
@@ -20,14 +16,13 @@
 <script src="{{asset('static/bootstrap-material-design-dist/js/bootstrap-material-design.min.js')}}" defer></script>
 
 {{-- vue3 --}}
-{{-- <script src="{{asset('static/vue-3.2.39/vue.runtime.global.prod.js')}}"></script> --}}
 <script src="{{asset('static/vue-3.2.39/vue.global.prod.js')}}"></script>
 
 {{-- jquery.serializejson.js; form表单转json--}}
 <script src="{{asset('static/jquery-serializeJSON/jquery.serializejson.min.js')}}" defer></script>
 
 {{-- base64编码工具 https://github.com/dankogai/js-base64 --}}
-<script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.2/base64.min.js?v=1" defer></script>
+<script src="{{asset('static/js-base64/base64.min.js')}}" defer></script>
 
 
 {{-- =================================== 自定义部分 ========================= --}}
@@ -100,7 +95,7 @@
         messageStyle: "none",          //不显示信息
         jax: ["input/TeX", "output/HTML-CSS"],
         tex2jax: {
-            inlineMath: [["\\$", "\\$"], ["\\(", "\\)"]], //行内公式选择符
+            inlineMath: [["$", "$"], ["\\$", "\\$"], ["\\(", "\\)"]], //行内公式选择符
             displayMath: [["$$", "$$"], ["\\[", "\\]"]],  //段内公式选择符
             skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a", "tips"], //避开某些标签
             ignoreClass:"not_math"  // 避开class
