@@ -151,25 +151,6 @@ class ProblemController extends Controller
         return view('client.problem', compact('problem', 'results', 'contests', 'samples', 'solutions', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool', 'solution_code'));
     }
 
-    function tag_mark(Request $request)
-    {
-        $problem_id = $request->input('problem_id');
-        $tag_names = $request->input('tag_names');
-        $tag_names = array_unique($tag_names);
-        $tag_marks = [];
-        foreach ($tag_names as $tag_name) {
-            if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
-                $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name]);
-            else
-                $tid = DB::table('tag_pool')->where('name', $tag_name)->first()->id;
-            $tag_marks[] = ['problem_id' => $problem_id, 'user_id' => Auth::id(), 'tag_id' => $tid];
-        }
-        DB::table('tag_marks')->insert($tag_marks);
-        return back()->with('tag_marked', true);
-    }
-
-
-
     public function load_discussion(Request $request)
     {
         $problem_id = $request->input('problem_id');

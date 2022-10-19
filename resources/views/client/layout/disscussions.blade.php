@@ -1,5 +1,5 @@
 @if(!isset($contest)||$contest->open_discussion||time()>strtotime($contest->end_time))
-    <div id="discussion_block" class="my-5 ck-content">
+    <div id="discussion_block" class="ck-content">
         <div class="d-flex p-2" style="background-color: rgb(162, 212, 255)">
             <h4 class="flex-row mb-0">{{__('main.Discussions')}}</h4>
             {{-- 发表按钮 --}}

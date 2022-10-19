@@ -39,14 +39,13 @@
         </div>
     </div>
 
-    <div class="my-5">
+    <div id="div_submit_tag">
 
         <div class="p-2" style="background-color: rgb(162, 212, 255)">
             <h4 class="m-0">{{trans('main.Tag Marking')}}</h4>
         </div>
 
-        <form class="p-3" action="{{route('tag_mark')}}" method="post" onsubmit="return check_tag_count();">
-            @csrf
+        <form id="form_submit_tag" class="p-3" onsubmit="submit_problem_tag();return false;">
             <input name="problem_id" value="{{$problem->id}}" hidden>
 
             <div class="alert alert-success">
@@ -93,7 +92,7 @@
             })
         @endif
         var tag_input_count = 0;
-        
+
         function add_tag_input(that, defa = null) {
             if (tag_input_count >= 5) {
                 Notiflix.Notify.Failure("{{__('sentence.tag_marked_exceed')}}")
@@ -137,5 +136,23 @@
             sensor.remove();
             $(that).css('width', (width + 30) + 'px');
         }
+    </script>
+    {{-- 提交表单 --}}
+    <script type="text/javascript">
+      function submit_problem_tag(){
+        $.ajax({
+          method:'post',
+          url:"{{route('api.problem.submit_problem_tag')}}",
+          data:$("#form_submit_tag").serializeJSON(),
+          success:function(ret){
+            if(ret.ok){
+              Notiflix.Notify.Success(ret.msg)
+              $("#div_submit_tag").hide()
+            }else{
+              Notiflix.Report.Failure("{{__('main.Failure')}}", ret.msg, "{{__('main.Confirm')}}")
+            }
+          }
+        })
+      }
     </script>
 @endif

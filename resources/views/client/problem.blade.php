@@ -200,15 +200,19 @@
 
       {{-- 讨论版 --}}
       @if (get_setting('show_disscussions'))
-        @include('client.layout.disscussions')
+        <div class="mt-3">
+          @include('client.layout.disscussions')
+        </div>
       @endif
 
       {{-- 已经AC的用户进行标签标记 --}}
-      @include('client.layout.problem_tag')
+      <div class="mt-3">
+        @include('client.layout.problem_tag')
+      </div>
 
       {{-- 题库中查看题目时，显示涉及到的竞赛 --}}
       @if (!isset($contest) && count($contests) > 0)
-        <div class="my-5">
+        <div class="mt-3">
 
           <div class="p-2" style="background-color: rgb(162, 212, 255)">
             <h4 class="m-0">{{ __('main.Contests involved') }}</h5>
