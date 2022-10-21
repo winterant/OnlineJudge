@@ -128,6 +128,17 @@ class CorrectSubmittedCount implements ShouldQueue
                     'solved' => $c->solved
                 ]);
         }
+        // `contests`.`num_members`
+        $num_members = DB::table('solutions')
+            ->select(['contest_id', DB::raw('count(distinct `user_id`) as num_members')])
+            ->where('contest_id', '>', 0)
+            ->groupBy(['contest_id'])
+            ->get()->toArray();
+        foreach ($num_members as $item) {
+            DB::table('contests')
+                ->where('id', $item->contest_id)
+                ->update(['num_members' => $item->num_members]);
+        }
         // Done
     }
 }
