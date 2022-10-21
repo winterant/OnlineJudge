@@ -82,6 +82,13 @@
         <tr>
           <th></th>
           <th>编号</th>
+          @if (isset($_GET['cate_id']) && $_GET['cate_id'] !== '')
+            <th>顺序
+              <a href="javascript:" style="color: #838383" onclick="whatisthis('当您浏览某具体类别的竞赛时，您可以移动竞赛的位置以改变顺序。<br>后台与前台将保持同步顺序，唯一的区别是前台不向普通用户展示隐藏的竞赛。')">
+                <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+              </a>
+            </th>
+          @endif
           <th>类别</th>
           <th>标题</th>
           <th>赛制</th>
@@ -105,11 +112,6 @@
           </th>
           <th>前台可见</th>
           <th>创建人</th>
-          <th>顺序
-            <a href="javascript:" style="color: #838383" onclick="whatisthis('当您浏览某具体类别的竞赛时，您可以移动竞赛的位置以改变顺序。<br>后台与前台将保持同步顺序，唯一的区别是前台不向普通用户展示隐藏的竞赛。')">
-              <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-            </a>
-          </th>
           <th>操作</th>
         </tr>
       </thead>
@@ -120,6 +122,25 @@
               <input type="checkbox" value="{{ $item->id }}" onclick="window.event.stopPropagation();" style="vertical-align:middle;zoom: 140%">
             </td>
             <td>{{ $item->id }}</td>
+            @if (isset($_GET['cate_id']) && $_GET['cate_id'] !== '')
+              <td nowrap>
+                <select onchange="update_contest_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
+                  <option value="{{ route('api.admin.contest.update_order', [$item->id, 1000000000]) }}">置顶</option>
+                  @for ($shift = 256; $shift > 0; $shift >>= 1)
+                    <option value="{{ route('api.admin.contest.update_order', [$item->id, $shift]) }}">
+                      <i class="fa fa-arrow-up" aria-hidden="true"></i>上移{{ $shift }}项
+                    </option>
+                  @endfor
+                  <option value="" selected>{{ $item->order }}</option>
+                  @for ($shift = 1; $shift <= 128 && $item->order - $shift > 0; $shift <<= 1)
+                    <option value="{{ route('api.admin.contest.update_order', [$item->id, -$shift]) }}">
+                      <i class="fa fa-arrow-down" aria-hidden="true"></i>下移{{ $shift }}项
+                    </option>
+                  @endfor
+                  <option value="{{ route('api.admin.contest.update_order', [$item->id, -1000000000]) }}">置底</option>
+                </select>
+              </td>
+            @endif
             <td>
               <div class="form-inline">
                 <select class="" onchange="update_contest_cate_id($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
@@ -153,25 +174,6 @@
               <input id="switch_hidden{{ $item->id }}" type="checkbox" @if (!$item->hidden) checked @endif>
             </td>
             <td nowrap>{{ $item->username }}</td>
-            <td nowrap>
-              @if (isset($_GET['cate_id']) && $_GET['cate_id'] !== '')
-                <select onchange="update_contest_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
-                  <option value="{{ route('api.admin.contest.update_order', [$item->id, 1000000000]) }}">置顶</option>
-                  @for ($shift = 256; $shift > 0; $shift >>= 1)
-                    <option value="{{ route('api.admin.contest.update_order', [$item->id, $shift]) }}">
-                      <i class="fa fa-arrow-up" aria-hidden="true"></i>上移{{ $shift }}项
-                    </option>
-                  @endfor
-                  <option value="" selected>{{ $item->order }}</option>
-                  @for ($shift = 1; $shift <= 128 && $item->order - $shift > 0; $shift <<= 1)
-                    <option value="{{ route('api.admin.contest.update_order', [$item->id, -$shift]) }}">
-                      <i class="fa fa-arrow-down" aria-hidden="true"></i>下移{{ $shift }}项
-                    </option>
-                  @endfor
-                  <option value="{{ route('api.admin.contest.update_order', [$item->id, -1000000000]) }}">置底</option>
-                </select>
-              @endif
-            </td>
             <td nowrap>
               <a href="{{ route('admin.contest.update', $item->id) }}" class="mx-1" target="_blank" title="修改">
                 <i class="fa fa-edit" aria-hidden="true"></i> 编辑

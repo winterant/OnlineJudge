@@ -51,11 +51,11 @@
       <thead>
         <tr>
           <th nowrap width="1%">编号</th>
-          <th nowrap width="10%">备注</th>
-          <th nowrap width="10%">名称</th>
-          <th nowrap width="10%">父级类别</th>
+          <th nowrap width="1%">顺序</th>
+          <th nowrap width="1%">备注</th>
+          <th nowrap width="1%">名称</th>
+          <th nowrap width="1%">父级类别</th>
           <th nowrap>描述</th>
-          <th nowrap>顺序</th>
           <th nowrap>操作</th>
         </tr>
       </thead>
@@ -64,12 +64,37 @@
           @if (!isset($_GET['title']) || $_GET['title'] == null || strpos($item->title, $_GET['title']) !== false)
             <tr>
               <td>{{ $item->id }}</td>
-              <td>
+              <td nowrap>
+                <select class="px-1" onchange="update_contest_cate_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
+                  <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, -1000000000]) }}">置顶</option>
+                  @for ($shift = 32; $shift > 0; $shift >>= 1)
+                    @if ($item->order - $shift > 0)
+                      <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, -$shift]) }}">
+                        <i class="fa fa-arrow-up" aria-hidden="true"></i>上移{{ $shift }}项
+                      </option>
+                    @endif
+                  @endfor
+                  <option selected>
+                    @if ($item->parent_id > 0)
+                      [子类] {{ $item->order }}
+                    @else
+                      {{ $item->order }}
+                    @endif
+                  </option>
+                  @for ($shift = 1; $shift <= 32; $shift <<= 1)
+                    <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, $shift]) }}">
+                      <i class="fa fa-arrow-down" aria-hidden="true"></i>下移{{ $shift }}项
+                    </option>
+                  @endfor
+                  <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, 1000000000]) }}">置底</option>
+                </select>
+              </td>
+              <td nowrap>
                 @if ($item->is_parent)
                   一级类别
                 @endif
               </td>
-              <td>
+              <td nowrap>
                 <div class="form-inline">
                   <input class="form-control" type="text" name="title" value="{{ $item->title }}"
                     onchange="update_contest_cate('{{ route('api.admin.contest.update_contest_cate', $item->id) }}',{'title':$(this).val()})">
@@ -100,31 +125,6 @@
                   <textarea class="form-control-plaintext border bg-white mr-3"
                     onchange="update_contest_cate('{{ route('api.admin.contest.update_contest_cate', $item->id) }}',{'description':$(this).val()})" autoheight>{{ $item->description }}</textarea>
                 </div>
-              </td>
-              <td nowrap>
-                <select class="px-1" onchange="update_contest_cate_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
-                  <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, -1000000000]) }}">置顶</option>
-                  @for ($shift = 32; $shift > 0; $shift >>= 1)
-                    @if ($item->order - $shift > 0)
-                      <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, -$shift]) }}">
-                        <i class="fa fa-arrow-up" aria-hidden="true"></i>上移{{ $shift }}项
-                      </option>
-                    @endif
-                  @endfor
-                  <option selected>
-                    @if ($item->parent_id > 0)
-                      [子类] {{ $item->order }}
-                    @else
-                      {{ $item->order }}
-                    @endif
-                  </option>
-                  @for ($shift = 1; $shift <= 32; $shift <<= 1)
-                    <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, $shift]) }}">
-                      <i class="fa fa-arrow-down" aria-hidden="true"></i>下移{{ $shift }}项
-                    </option>
-                  @endfor
-                  <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, 1000000000]) }}">置底</option>
-                </select>
               </td>
               <td nowrap>
                 <a href="javascript:" onclick="delete_contest_cate('{{ route('api.admin.contest.delete_contest_cate', $item->id) }}')" class="mx-1" title="删除">
