@@ -139,41 +139,41 @@
 
         <!-- 模态框主体 -->
         <div class="modal-body">
-          <p class="alert-info p-2" v-if="judge0processing==0">
+          <p class="alert-info p-2" v-if="judge_processing==0">
             {{ __('sentence.please_submit_code') }}
           </p>
           <div v-else>
             {{-- 1提交中 --}}
-            <p class="alert-info p-2" v-if="judge0processing==1">
+            <p class="alert-info p-2" v-if="judge_processing==1">
               {{ __('sentence.submitting') }}
             </p>
             {{-- 2判题中 --}}
-            <p class="alert-info p-2" v-else-if="judge0processing==2">
+            <p class="alert-info p-2" v-else-if="judge_processing==2">
               {{ __('sentence.judging') }}
-              <span v-if="judge0result_num_test>0">
-                (@{{ judge0result_num_ac }}/@{{ judge0result_num_test }})
+              <span v-if="judge_num_test>0">
+                (@{{ judge_num_ac }}/@{{ judge_num_test }})
               </span>
             </p>
             {{-- 3判题完成 --}}
             <div v-else>
               {{-- AC --}}
-              <p class="alert-success p-2" v-if="result_id==4">
+              <p class="alert-success p-2" v-if="judge_result.result==4">
                 {{ __('sentence.pass_all_test') }}
-                (@{{ judge0result_num_ac }}/@{{ judge0result_num_test }})
+                (@{{ judge_num_ac }}/@{{ judge_num_test }})
                 <a class="ml-3" target="_blank" :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
               </p>
               {{-- WA --}}
               <div v-else>
                 <p class="alert-danger p-2">
                   {{ __('sentence.WA') }}
-                  (@{{ judge0result_num_ac }}/@{{ judge0result_num_test }})
+                  (@{{ judge_num_ac }}/@{{ judge_num_test }})
                   <a class="ml-3" target="_blank" :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
                 </p>
-                <pre v-show="judge0result_error_info" class="alert-danger p-2 overflow-auto">@{{ judge0result_error_info }}</pre>
+                <pre v-show="judge_result.error_info" class="alert-danger p-2 overflow-auto">@{{ judge_result.error_info }}</pre>
               </div>
             </div>
 
-            <div class="form-group mt-2 table-responsive" v-if="judge0result_num_test>0">
+            <div class="form-group mt-2 table-responsive" v-if="judge_num_test>0">
               <table class="table table-sm table-hover">
                 <thead>
                   <tr>
@@ -184,9 +184,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(item, index) in judge0result">
+                  <tr v-for="(item, index) in judge_result.details">
                     <td>@{{ index + 1 }}</td>
-                    <td><span :class="'judge-result-' + item.result_id">@{{ item.result_desc }}</span></td>
+                    <td><span :class="'judge-result-' + item.result">@{{ item.result_desc }}</span></td>
                     <td>
                       <span v-if="item.time!=null">@{{ item.time }}MS</span>
                       <span v-else>-</span>
@@ -224,25 +224,23 @@
     data() {
       return {
         query_solution_id: 0, // 当前正在查询的solution id, 频繁提交时，只查询当前这次提交
-        judge0processing: 0, // 0:没提交, 1:提交中, 2:判题中, 3:判题完成
-        result_id: 0,
-        judge0result: {},
-        judge0result_error_info: null,
+        judge_processing: 0, // 0:没提交, 1:提交中, 2:判题中, 3:判题完成
+        judge_result: {},
         local_test: {}
       }
     },
     computed: {
       // 计算正确通过组数
-      judge0result_num_ac: function() {
+      judge_num_ac: function() {
         var ac = 0;
-        for (var k in this.judge0result)
-          if (this.judge0result[k].result_id == 4)
+        for (var k in this.judge_result.details)
+          if (this.judge_result.details[k].result == 4)
             ac++
         return ac
       },
-      judge0result_num_test: function() {
+      judge_num_test: function() {
         var total = 0;
-        for (var k in this.judge0result)
+        for (var k in this.judge_result.details)
           total++
         return total;
       }
@@ -275,7 +273,7 @@
             if (ret.ok) {
               Notiflix.Notify.Success(ret.msg)
               stdin_temp = this.local_test.stdin // 暂存下当前stdin
-              this.local_test = ret.data.judge0result
+              this.local_test = ret.data.details
               this.local_test.stdin = stdin_temp;
             } else {
               Notiflix.Notify.Failure(ret.msg)
@@ -288,8 +286,8 @@
       },
       // 使用ajax提交代码
       submit_solution() {
-        this.judge0processing = 1 // 提交中
-        this.judge0result = {}
+        this.judge_processing = 1 // 提交中
+        this.judge_result = {}
         var max_query_times = 600; // 最大查询次数
         $.ajax({
           type: 'post',
@@ -303,8 +301,8 @@
               Notiflix.Notify.Success(ret.msg)
               // window.location.href = ret.data.redirect
               this.query_solution_id = ret.data.solution_id
-              this.judge0processing = 2 // 判题中
-              this.judge0result = ret.data.judge0result //更新表单
+              this.judge_processing = 2 // 判题中
+              this.judge_result = ret.data //更新表单
               // 使用ajax不断查询判题结果，直到判题完成
               const query_judge_result = () => {
                 $.ajax({
@@ -317,13 +315,11 @@
                     if (judge_ret.ok) {
                       if (ret.data.solution_id !== this.query_solution_id)
                         return // 已经提交了新代码，solution id已变更，不再更新当前solution
-                      this.result_id = judge_ret.data.result // 结果代号
-                      this.judge0result = judge_ret.data.judge0result //更新表单
-                      this.judge0result_error_info = judge_ret.data.error_info
+                      this.judge_result = judge_ret.data
                       if (max_query_times-- > 0 && judge_ret.data.result < 4) { // 4: web端判题结果代号正确
                         setTimeout(query_judge_result, 1000) // 继续查询
                       } else {
-                        this.judge0processing = 3 // 判题完成
+                        this.judge_processing = 3 // 判题完成
                       }
                     } else {
                       Notiflix.Notify.Failure(judge_ret.msg)

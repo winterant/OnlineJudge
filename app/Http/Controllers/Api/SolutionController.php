@@ -151,9 +151,9 @@ class SolutionController extends Controller
         */
 
         // 临时代替。后期开发，所有测试数据的结果
-        $judge0result = [
+        $judge_result = [
             0 => [
-                'result_id' => $solution->result,
+                'result' => $solution->result,
                 'result_desc' => trans('result.' . config("oj.judge_result." . $solution->result)),
                 'time' => $solution->time,
                 'memory' => $solution->memory,
@@ -166,8 +166,10 @@ class SolutionController extends Controller
             'data' => [
                 'result' => $solution->result,
                 'result_desc' => trans('result.' . config("oj.judge_result." . $solution->result)),
+                'time' => $solution->time,
+                'memory' => $solution->memory,
                 'error_info' => $solution->error_info,
-                'judge0result' => array_values($judge0result) // 不给用户看到 key (judge0 token)
+                'details' => array_values($judge_result) // 不给用户看到 key (judge0 token)
             ]
         ];
     }
