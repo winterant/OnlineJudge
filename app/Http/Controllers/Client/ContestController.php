@@ -50,7 +50,7 @@ class ContestController extends Controller
         if (isset($_GET['perPage'])) {
             Cookie::queue('view-contests-perpage', $_GET['perPage'], 5256000); // 10 years
         } else {
-            $_GET['perPage'] = intval(request()->cookie('view-contests-perpage'));
+            $_GET['perPage'] = intval(request()->cookie('view-contests-perpage') ?? 10);
         }
 
         $contests = DB::table('contests as c')
