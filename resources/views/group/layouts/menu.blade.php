@@ -1,10 +1,10 @@
 {{-- 菜单 --}}
 
-<div class="d-flex"> 
+<div class="d-flex">
     {{-- 父级目录 --}}
     <ul class="breadcrumb">
         <li class="mx-2">
-            <a href="{{route('groups')}}">{{__('main.My')}}{{__('main.Groups')}}</a>
+            <a href="{{route('groups.home')}}">{{__('main.My')}}{{__('main.Groups')}}</a>
         </li>
             /
         <li class="mx-2 active">

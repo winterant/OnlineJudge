@@ -62,8 +62,9 @@
         <div class="tabbable">
           <div class="btn-group d-flex flex-wrap">
             @foreach ($contest_pindex as $pindex => $title)
-              <a class="btn btn-secondary border @if ($problem->index == $pindex) active @endif" href="{{ route('contest.problem', [$contest->id, $pindex]) }}"
-                style="flex: none;width:5rem;" data-toggle="tooltip" data-placement="bottom" title="{{ $title }}">
+              <a class="btn btn-secondary border @if ($problem->index == $pindex) active @endif"
+                href="{{ route('contest.problem', [$contest->id, $pindex, 'group' => $_GET['group'] ?? null]) }}" style="flex: none;width:5rem;" data-toggle="tooltip"
+                data-placement="bottom" title="{{ $title }}">
                 {{ index2ch($pindex) }}
               </a>
             @endforeach

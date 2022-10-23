@@ -1,5 +1,5 @@
-<div id="footer" class="text-center mb-2">
-  <hr>
+<hr>
+<div id="footer" class="text-center pb-3">
   <div>
     <span id="localtime">{{ date('Y-m-d H:i:s') }}</span>
     @if (get_setting('footer_info') !== '')

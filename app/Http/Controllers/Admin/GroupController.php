@@ -15,7 +15,7 @@ class GroupController extends Controller
     public function list()
     {
         // todo
-        return view('admin.success', ['msg' => '请在前台查看和管理群组']);
+        return view('admin.success', ['msg' => '待开发，请暂时在前台查看和管理课程']);
     }
 
     public function edit(Request $request)

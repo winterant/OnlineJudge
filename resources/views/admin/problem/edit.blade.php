@@ -25,7 +25,7 @@
                     <div class="custom-control custom-radio mx-3">
                         <input type="radio" name="problem[type]" value="0" class="custom-control-input" id="type0" checked
                                onchange="type_has_change(0)">
-                        <label class="custom-control-label pt-1" for="type0">编程设计</label>
+                        <label class="custom-control-label pt-1" for="type0">程序设计</label>
                     </div>
                     <div class="custom-control custom-radio mx-3">
                         <input type="radio" name="problem[type]" value="1" class="custom-control-input" id="type1"

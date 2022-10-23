@@ -61,10 +61,6 @@ return [
     "Notification"  => "Notification",
     "Discussion"    => "Discussion",
     "Discussions"   => "Discussions",
-    "Group"         => "Group",
-    "Groups"        => "Groups",
-    "group"         => "group",
-    "groups"        => "groups",
 
     //    user
     "Confirm"       => "Confirm",
@@ -202,6 +198,9 @@ return [
     "Content"       => "Content",
 
     // Groups
+    "Group"         => "Course", //"Group",
+    "Groups"        => "Courses", //"Groups",
+    "Related Courses"=>"Related Courses",
     "Creator"       => "Creator",
     "Grade"         => "Grade",
     "Major"         => "Major",
@@ -211,4 +210,8 @@ return [
     "Date Added"    => "Date Added",
     "Identity"      => "Identity",
     "Operate"       => "Operate",
+
+    // team
+    "Team"          => "Team",
+    "Teams"         => "Teams",
 ];

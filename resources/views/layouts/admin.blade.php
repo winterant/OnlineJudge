@@ -117,79 +117,18 @@
 
   <div class="h-100" style="padding-top: 70px;">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="z-index: 5">
-
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="z-index: 10">
+      {{-- 移动端 左侧菜单按钮 --}}
       <button id="btn-left-menu" class="btn border m-0" onclick="$('#left-menu').css('display')=='none'?$('#left-menu').slideLeftShow():$('#left-menu').slideLeftHide()">
         <span class="navbar-toggler-icon"></span>
       </button>
-
+      {{-- 标题 --}}
       <a class="navbar-brand pl-2" href="{{ route('admin.home') }}">后台管理</a>
-
+      {{-- 移动端按钮 --}}
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
         <span class="navbar-toggler-icon"></span>
       </button>
-
-      <div class="collapse navbar-collapse bg-white" id="bs-example-navbar-collapse-1">
-        <ul class="navbar-nav nav-tabs">
-          <li class="nav-item">
-            <a id="link_home" class="nav-link text-nowrap p-2" href="{{ route('home') }}">
-              <i class="fa fa-home" aria-hidden="true">&nbsp;{{ trans('main.Home') }}</i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-nowrap p-2" href="{{ route('status') }}">
-              <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;{{ trans('main.HomeStatus') }}</i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-nowrap p-2" href="{{ route('problems') }}">
-              <i class="fa fa-list" aria-hidden="true">&nbsp;{{ trans('main.Problems') }}</i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-nowrap p-2" id="link_contests" href="{{ route('contests', 1) }}">
-              <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{ trans('main.Contests') }}</i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-nowrap p-2" id="link_groups" href="{{ route('groups') }}">
-              <i class="fa fa-users" aria-hidden="true"></i>&nbsp;{{ trans('main.Groups') }}</i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-nowrap p-2" href="{{ route('standings') }}">
-              <i class="fa fa-sort-amount-desc" aria-hidden="true">&nbsp;{{ trans('main.Standings') }}</i>
-            </a>
-          </li>
-        </ul>
-
-        <ul class="navbar-nav ml-auto">
-          <!-- Authentication Links -->
-          <li class="nav-item dropdown" style="text-align:right">
-            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-              <i class="fa fa-user" aria-hidden="true"></i>
-              {{ Auth::user()->username }} <span class="caret"></span>
-            </a>
-
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-
-              <a class="dropdown-item" style="margin-left: auto" href="{{ route('user', Auth::user()->username) }}">{{ trans('main.Profile') }}</a>
-              <a class="dropdown-item" style="margin-left: auto" href="{{ route('password_reset', Auth::user()->username) }}">{{ trans('sentence.Reset Password') }}</a>
-
-              <div class="dropdown-divider"></div>
-
-              <a class="dropdown-item" style="margin-left: auto" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                {{ __('main.Logout') }}
-              </a>
-              <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-              </form>
-            </div>
-          </li>
-
-        </ul>
-
-      </div>
+      @include('layouts.navbar')
     </nav>
 
     <nav id="left-menu" class="col-10 col-sm-6 col-md-2 sidebar border">
@@ -250,13 +189,13 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse" data-target="#menu-groups" aria-expanded="false">
-              <i class="fa fa-users fa-lg mr-2" aria-hidden="true"></i>群组管理
+            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse" data-target="#menu-teams" aria-expanded="false">
+              <i class="fa fa-users fa-lg mr-2" aria-hidden="true"></i>团队管理
             </a>
-            <ul id="menu-groups" class="collapse">
+            <ul id="menu-teams" class="collapse">
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.group.list') }}">
-                  <i class="fa fa-list" aria-hidden="true"></i> 群组列表</a>
+                <a class="nav-link border-top" href="#">
+                  <i class="fa fa-list" aria-hidden="true"></i> 团队列表</a>
               </li>
               {{-- todo --}}
             </ul>
@@ -275,10 +214,6 @@
                 <a class="nav-link border-top" href="{{ route('admin.problem.add') }}">
                   <i class="fa fa-plus" aria-hidden="true"></i> 添加题目</a>
               </li>
-              {{-- <li class="nav-item">
-                            <a class="nav-link border-top" href="{{route('admin.problem.update')}}">
-                                <i class="fa fa-edit" aria-hidden="true"></i> 修改题目</a>
-                        </li> --}}
               <li class="nav-item">
                 <a class="nav-link border-top" href="{{ route('admin.problem.tags') }}">
                   <i class="fa fa-tag" aria-hidden="true"></i> 标签管理</a>
@@ -317,28 +252,34 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link border-top" href="{{ route('admin.contest.categories') }}">
-                  <i class="fa fa-tags" aria-hidden="true"></i> 分类管理</a>
+                  <i class="fa fa-tags" aria-hidden="true"></i> 类别管理</a>
               </li>
             </ul>
           </li>
 
+          <li class="nav-item">
+            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse" data-target="#menu-groups" aria-expanded="false">
+              <i class="fa fa-folder-open fa-lg mr-2" aria-hidden="true"></i>课程管理
+            </a>
+            <ul id="menu-groups" class="collapse">
+              <li class="nav-item">
+                <a class="nav-link border-top" href="{{ route('admin.group.list') }}">
+                  <i class="fa fa-list" aria-hidden="true"></i> 课程列表</a>
+              </li>
+              {{-- todo --}}
+            </ul>
+          </li>
 
           <li class="nav-item">
             <a class="nav-link border-top" href="{{ route('admin.settings') }}">
               <i class="fa fa-cogs fa-lg" aria-hidden="true"></i> 系统设置
             </a>
-            {{-- <a class="nav-link border-top" href="{{route('admin.upgrade')}}">
-                        <i class="fa fa-arrow-up fa-lg" aria-hidden="true"></i> 系统升级
-                    </a> --}}
-          </li>
-
         </ul>
       </div>
     </nav>
 
-
+    {{-- 主体 --}}
     <main class="col-12 col-sm-12 col-md-10  ml-auto">
-
       @yield('content')
       @include('layouts.footer')
     </main>

@@ -10,21 +10,22 @@
   </div>
 @endif
 
+@if (count($groups) > 0)
+  <div class="my-container bg-white">
 
-<div class="my-container bg-white">
+    <h5>{{ trans('main.Related Courses') }}</h5>
+    <hr class="mt-0">
 
-  <h5>{{ trans('main.Groups') }}</h5>
-  <hr class="mt-0">
-
-  <ul class="list-unstyled">
-    @foreach ($groups as $g)
-      <li>
-        <i class="fa fa-users pr-2 text-sky" aria-hidden="true"></i>
-        <a href="{{ route('group.home', $g->id) }}">{{ $g->id }}. {{ $g->name }}</a>
-      </li>
-    @endforeach
-  </ul>
-</div>
+    <ul class="list-unstyled">
+      @foreach ($groups as $g)
+        <li>
+          <i class="fa fa-users pr-2 text-sky" aria-hidden="true"></i>
+          <a href="{{ route('group.home', $g->id) }}">{{ $g->id }}. {{ $g->name }}</a>
+        </li>
+      @endforeach
+    </ul>
+  </div>
+@endif
 
 <div class="my-container bg-white">
 

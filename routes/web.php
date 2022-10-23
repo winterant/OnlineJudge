@@ -11,40 +11,41 @@
 |
 */
 
-// Authorization
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // 用户认证模块，包括登录注册等
 Auth::routes();
 
-// Client 用户前台各个页面
-Route::get('/', 'Client\HomeController@home')->name('home');
-Route::get('/home', 'Client\HomeController@home');
+// ================================ 测试路由 ================================
 Route::get('/test', 'Client\HomeController@test')->name('test'); // only for local test
 
+// ================================ 主页 ================================
+Route::get('/', 'Client\HomeController@home')->name('home');
+Route::get('/home', 'Client\HomeController@home');
+
+// ================================ 修改语言 ================================
+Route::get('/change_language/{lang}', 'Client\UserController@change_language')->name('change_language');
+
+
+// ================================ 提交记录 ================================
 Route::get('/status', 'Client\StatusController@index')->name('status');
 Route::post('/ajax_get_status', 'Client\StatusController@ajax_get_status')->name('ajax_get_status');
-Route::get('/problems', 'Client\ProblemController@problems')->name('problems');
-Route::get('/problem/{id}', 'Client\ProblemController@problem')->middleware('CheckUserLocked')->where(['id' => '[0-9]+'])->name('problem');
-Route::get('/contests', 'Client\ContestController@contests')->name('contests');
-Route::get('/contests/{cate}', 'Client\ContestController@contests')->name('contests');
-
-Route::get('/standings', 'Client\UserController@standings')->name('standings');
-Route::get('/user/{username}', 'Client\UserController@user')->name('user');
-Route::get('/change_language/{lang}', 'Client\UserController@change_language')->name('change_language');
 Route::middleware(['auth', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group(function () {
     Route::get('/solutions/{id}', 'Client\StatusController@solution')->name('solution');
     Route::get('/solutions/{id}/wrong_data/{type}', 'Client\StatusController@solution_wrong_data')
         ->where(['type' => '(in|out)'])->name('solution_wrong_data');
-    Route::any('/user/{username}/edit', 'Client\UserController@user_edit')->name('user_edit');
-    Route::any('/user/{username}/password_reset', 'Client\UserController@password_reset')->name('password_reset');
 });
 
+// ================================ 题目 ================================
+Route::get('/problems', 'Client\ProblemController@problems')->name('problems');
+Route::get('/problem/{id}', 'Client\ProblemController@problem')->middleware('CheckUserLocked')->where(['id' => '[0-9]+'])->name('problem');
+Route::get('/contests', 'Client\ContestController@contests')->name('contests');
+Route::get('/contests/{cate}', 'Client\ContestController@contests')->name('contests');
 //  题目页面讨论板模块
 Route::post('/load_discussion', 'Client\ProblemController@load_discussion')->name('load_discussion');
 Route::middleware(['auth', 'CheckUserLocked'])->group(function () {
-    Route::post('/edit_discussion/{pid}', 'Client\ProblemController@edit_discussion')->name('edit_discussion');
+    Route::post('/edit_discussion/{pid}', 'Client\ProblemController@edit_discussion')->name('edit_discussion')->where(['pid' => '[0-9]+']);
 });
 Route::middleware(['auth', 'CheckUserLocked', 'Permission:admin.problem.discussion'])->group(function () {
     Route::post('/delete_discussion', 'Client\ProblemController@delete_discussion')->name('delete_discussion');
@@ -53,12 +54,12 @@ Route::middleware(['auth', 'CheckUserLocked', 'Permission:admin.problem.discussi
 });
 
 
-// Contest，用户前台竞赛页面所有路由
-Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->where(['pid' => '[0-9]+'])->group(function () {
+// ================================ 竞赛 ================================
+Route::prefix('contest/{id}')->name('contest.')->group(function () {
 
     Route::middleware(['auth', 'CheckContest', 'CheckUserLocked'])->group(function () {
         Route::get('/', 'Client\ContestController@home')->name('home');
-        Route::get('/problem/{pid}', 'Client\ContestController@problem')->name('problem');
+        Route::get('/problem/{pid}', 'Client\ContestController@problem')->name('problem')->where(['pid' => '[0-9]+']);
         Route::get('/status', 'Client\ContestController@status')->name('status');
         Route::get('/notices', 'Client\ContestController@notices')->name('notices'); //公告
         Route::post('/get_notice', 'Client\ContestController@get_notice')->name('get_notice'); //获取一条公告
@@ -66,12 +67,12 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->wher
 
         Route::middleware(['Permission:admin.contest'])->group(function () {
             Route::post('/edit_notice', 'Client\ContestController@edit_notice')->name('edit_notice'); //编辑/添加一条公告
-            Route::post('/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('delete_notice'); //删除一条公告
+            Route::post('/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('delete_notice')->where(['nid' => '[0-9]+']); //删除一条公告
         });
 
         Route::middleware(['Permission:admin.contest.balloon'])->group(function () { //气球,需要权限
             Route::get('/balloons', 'Client\ContestController@balloons')->name('balloons');
-            Route::post('/deliver_ball/{bid}', 'Client\ContestController@deliver_ball')->name('deliver_ball');
+            Route::post('/deliver_ball/{bid}', 'Client\ContestController@deliver_ball')->name('deliver_ball')->where(['bid' => '[0-9]+']);
         });
     });
 
@@ -79,22 +80,38 @@ Route::prefix('contest/{id}')->name('contest.')->where(['id' => '[0-9]+'])->wher
     Route::get('/rank', 'Client\ContestController@rank')->name('rank');
 });
 
-// group，用户前台group页面所有路由
+// ================================ groups (courses) 课程 ================================
 Route::middleware(['auth'])->group(function () {
-    Route::get('/groups', 'Client\GroupController@groups')->name('groups');
-    Route::get('/groups/my', 'Client\GroupController@mygroups')->name('groups.my');
-    Route::get('/groups/all', 'Client\GroupController@allgroups')->name('groups.all');
-    Route::get('/groups/joinin/{id}', 'Client\GroupController@joinin')->name('groups.joinin');
-});
-Route::prefix('group/{id}')->name('group.')->where(['id' => '[0-9]+'])->where(['pid' => '[0-9]+'])->group(function () {
+    Route::prefix('courses')->name('groups.')->group(function () {
+        Route::get('/', 'Client\GroupController@groups')->name('home');
+        Route::get('/my', 'Client\GroupController@mygroups')->name('my');
+        Route::get('/all', 'Client\GroupController@allgroups')->name('all');
+        Route::get('/joinin/{id}', 'Client\GroupController@joinin')->name('joinin');
+    });
+    // 具体的一门课程
     Route::middleware(['auth', 'CheckGroup', 'CheckUserLocked'])->group(function () {
-        Route::get('/', 'Client\GroupController@home')->name('home');
-        Route::get('/members', 'Client\GroupController@members')->name('members');
+        Route::prefix('course/{id}')->name('group.')->where(['id' => '[0-9]+'])->group(function () {
+            Route::get('/', 'Client\GroupController@home')->name('home');
+            Route::get('/members', 'Client\GroupController@members')->name('members');
+        });
     });
 });
 
+// ================================ 团队（teams） ================================
+Route::middleware(['auth'])->prefix('teams')->name('teams.')->group(function () {
+    Route::get('/', 'Client\TeamController@teams')->name('home');
+});
 
-// Administration 管理员后台页面所有路由
+// ================================ 用户（users） ================================
+Route::get('/standings', 'Client\UserController@standings')->name('standings');
+Route::get('/user/{username}', 'Client\UserController@user')->name('user');
+Route::middleware(['auth', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group(function () {
+    Route::any('/user/{username}/edit', 'Client\UserController@user_edit')->name('user_edit');
+    Route::any('/user/{username}/password_reset', 'Client\UserController@password_reset')->name('password_reset');
+});
+
+
+// ================================ Administration 后台管理 ================================
 Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')->where(['id' => '[0-9]+'])->group(function () {
 
     Route::middleware(['Permission:admin.home'])->group(function () {
