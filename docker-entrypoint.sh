@@ -9,8 +9,8 @@ sleep 5 # Waiting for mysql being started.
 ##########################################################################
 # If host machine has not files, give it files.
 if [ ! -d "/app/app" ];then
-    echo "Copying files from /app_tmp to /app"
-    yes|cp -rf /app_tmp/. /app/
+    echo "Copying files from /app_src to /app"
+    yes|cp -rf /app_src/. /app/
 fi
 
 

@@ -3,33 +3,32 @@ FROM --platform=linux/amd64 ubuntu:20.04
 # Required software and their configs
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     echo 'Asia/Shanghai' > /etc/timezone &&\
-    sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.163.com\/ubuntu/g' /etc/apt/sources.list &&\
     apt update && apt upgrade -y &&\
     apt install -y software-properties-common &&\
-    echo -e '\n' | apt-add-repository ppa:ondrej/php &&\
-    apt update && apt-get -y upgrade &&\
-    apt install -y php7.2 php7.2-fpm php7.2-mysql php7.2-redis \
+    yes | apt-add-repository ppa:ondrej/php &&\
+    apt update &&\
+    apt install -y php7.2 php7.2-fpm \
+        php7.2-mysql php7.2-redis \
         php7.2-xml php7.2-mbstring \
         php7.2-gd php7.2-curl php7.2-zip &&\
-    apt install -y nginx mysql-client=8.0.* composer zip unzip language-pack-en-base
+    apt install -y nginx mysql-client=8.0.* composer zip unzip language-pack-en-base &&\
+    export LC_ALL=en_US.UTF-8 &&\
+    export LANG=en_US.UTF-8
 
-# Deploy laravel app
-COPY . /app/
+# Deploy laravel application.
+COPY . /app_src/
 
-WORKDIR /app
-
-RUN export LC_ALL=en_US.UTF-8 &&\
-    export LANG=en_US.UTF-8 &&\
-    composer install --ignore-platform-reqs &&\
+RUN cd /app_src &&\
     cp -rf .env.example .env &&\
-    # nginx
-    rm -rf /etc/nginx/sites-enabled/default &&\
-    cp public/nginx-lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
+    composer install --ignore-platform-reqs &&\
     # docker entrypoint
     cp docker-entrypoint.sh /docker-entrypoint.sh &&\
     chmod +x /docker-entrypoint.sh &&\
-    # Rename the project to prevent to conflict with existed `volume`
-    mv /app /app_tmp
+    # nginx
+    rm -rf /etc/nginx/sites-enabled/default &&\
+    cp public/nginx-lduoj.conf /etc/nginx/conf.d/lduoj.conf
+
+WORKDIR /app
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
