@@ -41,11 +41,11 @@
         <i class="fa fa-folder-open" aria-hidden="true"></i>&nbsp;{{ trans('main.Groups') }}</i>
       </a>
     </li>
-    <li class="nav-item">
+    {{-- <li class="nav-item">
       <a class="nav-link text-nowrap p-2" id="link_teams" href="{{ route('teams.home') }}">
         <i class="fa fa-users" aria-hidden="true"></i>&nbsp;{{ trans('main.Teams') }}</i>
       </a>
-    </li>
+    </li> --}}
     <li class="nav-item">
       <a class="nav-link text-nowrap p-2" href="{{ route('standings') }}">
         <i class="fa fa-sort-amount-desc" aria-hidden="true">&nbsp;{{ trans('main.Standings') }}</i>
