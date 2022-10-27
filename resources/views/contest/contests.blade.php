@@ -108,13 +108,28 @@
             </div>
             <div class="col-9 col-sm-8 pr-0">
               <h5 style="font-size: 1.15rem">
-                <a href="{{ route('contest.home', $item->id) }}" class="text-black">{{ $item->title }}</a>
-                @if ($item->hidden)
-                  <font class="text-blue" style="font-size: 0.9rem;vertical-align: top;">{{ __('main.Hidden') }}</font>
-                @endif
+                <a href="{{ route('contest.home', $item->id) }}" class="text-black">111{{ $item->title }}</a>
+                <span style="font-size: 0.9rem; vertical-align: top;">
+                  <span class="border bg-light px-1 text-{{ $item->access == 'public' ? 'green' : 'red' }}" style="border-radius: 12px;">
+                    @if ($item->access != 'public')
+                      <i class="fa fa-lock" aria-hidden="true"></i>
+                    @endif
+                    {{ trans('main.access_' . $item->access) }}
+                  </span>
+                  @if ($item->hidden)
+                    <i class="fa fa-eye-slash ml-2" aria-hidden="true"></i>
+                    <span class="text-gray">{{ __('main.Hidden') }}</span>
+                  @endif
+                </span>
               </h5>
-              <ul class="d-flex flex-wrap list-unstyled" style="font-size: .9rem;color: #484f56">
+              <ul class="d-flex flex-wrap list-unstyled" style="font-size: 0.9rem;color: #484f56">
                 <li>{{ $item->id }}</li>
+                <li class="px-2">
+                  <div class="border bg-light px-1" style="border-radius: 12px; font-size: 0.8rem;">
+                    {{ __('main.ranking_rule') }}:
+                    {{ $item->judge_type == 'acm' ? 'ACM/ICPC' : 'OI/IOI' }}
+                  </div>
+                </li>
                 <li class="px-2"><i class="fa fa-calendar pr-1 text-sky" aria-hidden="true"></i>{{ $item->start_time }}</li>
                 <li class="px-2">
                   <i class="fa fa-clock-o text-sky" aria-hidden="true"></i>
@@ -128,20 +143,9 @@
                   @endif
                 </li>
                 <li class="px-2">
-                  <div class="border bg-light px-1" style="border-radius: 12px">{{ strtoupper($item->judge_type) }}</div>
+                  <i class="fa fa-user-o text-sky" aria-hidden="true"></i>
+                  {{ $item->num_members }}
                 </li>
-                <li class="px-2">
-                  <div class="border bg-light px-1" style="border-radius: 12px">
-                    <font @if ($item->access == 'public') style="color: #00c000" @else style="color: #ff573e" @endif>
-                      {{ ucfirst($item->access) }}</font>
-                  </div>
-                </li>
-                @if (strtotime(date('Y-m-d H:i:s')) > strtotime($item->start_time))
-                  <li class="px-2">
-                    <i class="fa fa-user-o text-sky" aria-hidden="true"></i>
-                    ×{{ $item->num_members }}
-                  </li>
-                @endif
               </ul>
             </div>
             <div class="col-12 col-sm-3 m-auto">

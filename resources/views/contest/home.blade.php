@@ -137,7 +137,7 @@
                         -
                       @endif
                     </td>
-                    <td>{{ __($item->type === 0 ? 'main.Programing' : 'main.Blank Filling') }}</td>
+                    <td nowrap>{{ __($item->type === 0 ? 'main.Programing' : 'main.Blank Filling') }}</td>
                     <td nowrap>
                       @if ($item->submitted > 0)
                         {{ $item->accepted }}

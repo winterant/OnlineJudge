@@ -389,42 +389,51 @@ class ContestController extends Controller
         if ($contest->hidden && !privilege('admin.contest')) {
             return view('client.fail', ['msg' => '该竞赛处于隐藏状态，不可查看榜单。']);
         }
+
+        // 查询所有提交记录(重量级)
         $solutions = DB::table('solutions')
-            ->join('contest_problems', function ($join) {
-                $join->on('contest_problems.contest_id', '=', 'solutions.contest_id')
+            ->join('contest_problems', function ($q) {
+                $q->on('contest_problems.contest_id', '=', 'solutions.contest_id')
                     ->on('contest_problems.problem_id', '=', 'solutions.problem_id');
             })
             ->join('users', 'solutions.user_id', '=', 'users.id')
-            ->select('user_id', 'index', 'result', 'pass_rate', 'time', 'memory', 'submit_time', 'school', 'username', 'nick')
+            ->select('user_id', 'index', 'result', 'pass_rate', 'time', 'memory', 'submit_time', 'school', 'class', 'username', 'nick')
             ->where('solutions.contest_id', $contest->id)
-            ->whereIn('result', [4, 5, 6, 7, 8, 9, 10])
+            // ->whereIn('result', [4, 5, 6, 7, 8, 9, 10])
+            ->whereBetween('result', [4, 10])
             ->where('submit_time', '>', $contest->start_time)
             ->where('submit_time', '<', self::get_rank_end_date($contest))
             ->when(isset($_GET['school']) && $_GET['school'] != '', function ($q) {
-                return $q->where('school', 'like', '%' . $_GET['school'] . '%');
+                return $q->where('school', 'like', $_GET['school'] . '%');
             })
             ->when(isset($_GET['username']) && $_GET['username'] != '', function ($q) {
-                return $q->where('username', 'like', '%' . $_GET['username'] . '%');
+                return $q->where('username', 'like', $_GET['username'] . '%');
             })
             ->when(isset($_GET['nick']) && $_GET['nick'] != '', function ($q) {
-                return $q->where('nick', 'like', '%' . $_GET['nick'] . '%');
+                return $q->where('nick', 'like', $_GET['nick'] . '%');
             })
             ->get();
-        $uids = isset($_GET['school']) ? [] :
-            DB::table('contest_users')->where('contest_id', $contest->id)->pluck('user_id')->toArray();  //用户id
+
+        // 生成榜单（重量级）
         $users = [];
-        $has_ac = []; //标记每道题是否已经被AC
+        $has_ac = []; // 标记每道题是否已经被AC
         foreach ($solutions as $solution) {
-            if (!isset($users[$solution->user_id])) { //用户首次提交
-                $users[$solution->user_id] = ['score' => 0, 'penalty' => 0];
-                $uids[] = $solution->user_id;
+            if (!isset($users[$solution->user_id])) { // 用户首次提交
+                $users[$solution->user_id] = [
+                    'score' => 0,
+                    'penalty' => 0,
+                    'username'=>$solution->username,
+                    'school'=>$solution->school,
+                    'class'=>$solution->class,
+                    'nick'=>$solution->nick,
+                ];
             }
             $user = &$users[$solution->user_id];
             if (!isset($user[$solution->index])) //该用户首次提交该题
                 $user[$solution->index] = ['AC' => false, 'AC_time' => 0, 'wrong' => 0, 'score' => 0, 'penalty' => 0];
             if (!$user[$solution->index]['AC']) {  //尚未AC该题
                 if ($solution->result == 4) {
-                    $solution->pass_rate = 1; //若竞赛中途从acm改为oi，会出现oi没分的情况，故AC比满分
+                    $solution->pass_rate = 1; //若竞赛中途从acm改为oi，会出现oi没分的情况，故AC必满分
                     $user[$solution->index]['AC'] = true;
                     $user[$solution->index]['AC_time'] = $solution->submit_time;
                     if (!isset($has_ac[$solution->index])) {  //第一滴血
@@ -436,20 +445,20 @@ class ContestController extends Controller
                 }
                 if ($contest->judge_type == 'acm') {
                     $user[$solution->index]['AC_info'] = null;
-                    if ($solution->result == 4) {  //ACM模式下只有AC了才计成绩
+                    if ($solution->result == 4) {  // ACM模式下只有AC了才计成绩
                         $user['score']++;
                         $user['penalty'] += strtotime($solution->submit_time) - strtotime($contest->start_time) + $user[$solution->index]['wrong'] * intval(get_setting('penalty_acm'));
                         $user[$solution->index]['AC_info'] = self::seconds_to_clock(strtotime($solution->submit_time) - strtotime($contest->start_time));
                     }
                     if ($user[$solution->index]['wrong'] > 0)
                         $user[$solution->index]['AC_info'] .= sprintf("(-%d)", $user[$solution->index]['wrong']);
-                } else {  //oi
+                } else {  // oi
                     $new_score = max($user[$solution->index]['score'], round($solution->pass_rate * 100));
                     if ($user[$solution->index]['score'] < $new_score) {  //获得了更高分
-                        //score
+                        // score
                         $user['score'] += $new_score - $user[$solution->index]['score'];
                         $user[$solution->index]['score'] = $new_score;
-                        //penalty
+                        // penalty
                         $new_penalty = strtotime($solution->submit_time) - strtotime($contest->start_time);
                         $user['penalty'] += $new_penalty - $user[$solution->index]['penalty'];
                         $user[$solution->index]['penalty'] = $new_penalty;
@@ -458,27 +467,21 @@ class ContestController extends Controller
                 }
             }
         }
-        //追加用户名、学校、昵称
-        $user_infos = DB::table('users')->whereIn('id', array_unique($uids))->get(['id', 'username', 'school', 'class', 'nick']);
-        foreach ($user_infos as $u_info) {
-            if (!isset($users[$u_info->id])) $users[$u_info->id] = ['score' => 0, 'penalty' => 0];
-            $users[$u_info->id]['username'] = $u_info->username;
-            if (get_setting('rank_show_school')) $users[$u_info->id]['school'] = $u_info->school;
-            if (get_setting('rank_show_class')) $users[$u_info->id]['class'] = $u_info->class;
-            if (get_setting('rank_show_nick')) $users[$u_info->id]['nick'] = $u_info->nick;
-        }
-        //排序
+
+        // 排序
         uasort($users, function ($x, $y) {
-            if ($x['score'] == $y['score']) {
-                return $x['penalty'] > $y['penalty'];
-            }
-            return $x['score'] < $y['score'];
+            if ($x['score'] != $y['score'])
+                return $x['score'] < $y['score'];
+            return $x['penalty'] > $y['penalty'];
         });
+
         //罚时由秒转为H:i:s
         foreach ($users as $uid => &$user)
             $user['penalty'] = self::seconds_to_clock($user['penalty']);
+
         //题目总数
         $problem_count = DB::table('contest_problems')->where('contest_id', $contest->id)->count('id');
+
         //封榜时间
         $end_time = strtotime($contest->end_time) - (strtotime($contest->end_time) - strtotime($contest->start_time)) * $contest->lock_rate;
         return view('contest.rank', compact('contest', 'end_time', 'users', 'problem_count'));

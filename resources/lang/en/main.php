@@ -111,7 +111,6 @@ return [
     "Private"       => "Private",
 
     "Theme"         => "Theme",
-
     "Analysis"      => "Analysis",
 
     "months"        => "[*,1] month|[2,*] months",
@@ -196,6 +195,12 @@ return [
 
     "New Notice"    => "New Notification",
     "Content"       => "Content",
+
+    "access_public" => "Public",
+    "access_private"=> "Private",
+    "access_password"=> "Password",
+
+    "ranking_rule"  => "Ranking Rule",
 
     // Groups
     "Group"         => "Course", //"Group",

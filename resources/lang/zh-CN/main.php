@@ -136,6 +136,7 @@ return [
     // 题目类型
     "Programing"    => "程序设计",
     "Blank Filling" => "代码填空",
+
     //    standing
     "All"           => "所有",
     "Year"          => "年",
@@ -194,6 +195,12 @@ return [
 
     "New Notice"    => "新告示",
     "Content"       => "内容",
+
+    "access_public" => "公开参加",
+    "access_private"=> "仅受邀用户",
+    "access_password"=> "加密验证",
+
+    "ranking_rule"  => "得分规则",
 
     // Groups
     "Group"         => "课程",
