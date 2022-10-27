@@ -6,7 +6,7 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     apt update && apt upgrade -y &&\
     apt install -y software-properties-common &&\
     yes | apt-add-repository ppa:ondrej/php &&\
-    apt update &&\
+    apt update && apt upgrade -y &&\
     apt install -y php7.2 php7.2-fpm \
         php7.2-mysql php7.2-redis \
         php7.2-xml php7.2-mbstring \
@@ -26,7 +26,7 @@ RUN cd /app_src &&\
     chmod +x /docker-entrypoint.sh &&\
     # nginx
     rm -rf /etc/nginx/sites-enabled/default &&\
-    cp public/nginx-lduoj.conf /etc/nginx/conf.d/lduoj.conf
+    cp storage/scripts/nginx-lduoj.conf /etc/nginx/conf.d/lduoj.conf
 
 WORKDIR /app
 

@@ -81,7 +81,16 @@ php artisan lduoj:init
 # Change storage folders owner.
 chown www-data:www-data -R storage bootstrap/cache
 
+
+##########################################################################
+# Background running
+##########################################################################
+bash storage/auto-clear-log.sh 2>&1 &
+
+
+##########################################################################
 # Start laravel-queue. Although there are more than one queue they still execute one by one
+##########################################################################
 php artisan queue:work --queue=default,CorrectSubmittedCount
 
 # Sleep forever to keep container alives.
