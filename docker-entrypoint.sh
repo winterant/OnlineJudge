@@ -85,7 +85,7 @@ chown www-data:www-data -R storage bootstrap/cache
 ##########################################################################
 # Background running
 ##########################################################################
-bash storage/auto-clear-log.sh 2>&1 &
+bash storage/scripts/auto-clear-log.sh 2>&1 &
 
 
 ##########################################################################
