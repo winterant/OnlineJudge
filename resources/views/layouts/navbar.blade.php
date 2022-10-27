@@ -67,7 +67,7 @@
       <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
         <i class="fa fa-language" aria-hidden="true"></i>
         @php($langs = ['en' => 'English', 'zh-CN' => '简体中文'])
-        {{ $langs[request()->cookie('client_language') ?? get_setting('APP_LOCALE', 'en')] }}
+        {{ $langs[request()->cookie('unencrypted_client_language') ?? get_setting('APP_LOCALE', 'en')] }}
         <span class="caret"></span>
       </a>
 
