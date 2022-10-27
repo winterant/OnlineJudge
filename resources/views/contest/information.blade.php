@@ -52,20 +52,21 @@
       @endif
     </li>
     <li>
-      <i class="fa fa-tags pr-2 text-sky" aria-hidden="true"></i>
-      {{--            <div class="d-inline border bg-light pl-2 pr-2" style="border-radius: 12px"> --}}
-      {{--                {{trans('main.'.ucfirst(config('oj.contestType.'.$contest->type)))}} --}}
-      {{--            </div> --}}
-      <div class="d-inline border bg-light px-2" style="border-radius: 12px">
-        {{ strtoupper($contest->judge_type) }}
+      <i class="fa fa-sort-amount-desc pr-1 text-sky" aria-hidden="true"></i>
+      <div class="d-inline border bg-light px-1" style="border-radius: 12px; font-size: 0.9rem">
+        {{ __('main.ranking_rule') }}:
+        {{ $contest->judge_type == 'acm' ? 'ACM/ICPC' : 'OI/IOI' }}
       </div>
-      <div class="d-inline border bg-light px-2 ml-2" style="border-radius: 12px">
-        {{ ucfirst($contest->access) }}
+    </li>
+    <li>
+      <i class="fa fa-unlock-alt pr-2 text-sky" aria-hidden="true"></i>
+      <div class="d-inline border bg-light px-1" style="border-radius: 12px; font-size: 0.9rem">
+        {{ trans('main.access_' . $contest->access) }}
       </div>
     </li>
     <li>
       <i class="fa fa-user-o pr-2 text-sky" aria-hidden="true"></i>
-      ×{{ $contest->num_members }}
+      {{ $contest->num_members }}
     </li>
   </ul>
 </div>

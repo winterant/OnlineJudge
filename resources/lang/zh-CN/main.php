@@ -200,7 +200,7 @@ return [
     "access_private"=> "仅受邀用户",
     "access_password"=> "加密验证",
 
-    "ranking_rule"  => "得分规则",
+    "ranking_rule"  => "排名规则",
 
     // Groups
     "Group"         => "课程",
