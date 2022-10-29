@@ -8,8 +8,17 @@
     @endif
   </div>
 
-  © 2020-{{ date('Y') }} <a target="_blank" href="https://github.com/winterant/OnlineJudge">Online Judge</a>.
-  All Rights Reserved.
+  <span>
+    © 2020-{{ date('Y') }} <a target="_blank" href="https://github.com/winterant/OnlineJudge">Online Judge</a>.
+  </span>
+  <span>
+    All Rights Reserved.
+  </span>
+  @if (file_exists(storage_path('app/.version')))
+    <span>
+      Version: {{ file_get_contents(storage_path('app/.version')) }}
+    </span>
+  @endif
 </div>
 
 <script type="text/javascript">
