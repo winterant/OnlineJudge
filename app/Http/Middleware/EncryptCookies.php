@@ -12,6 +12,19 @@ class EncryptCookies extends Middleware
      * @var array
      */
     protected $except = [
-        'unencrypted_*' // 不加密字段, 如no_encrypt_example
+        '^unencrypted.*$' // 不加密字段(正则表达式)
     ];
+
+    public function isDisabled($name)
+    {
+        if (in_array($name, $this->except)) {
+            return true;
+        }
+        foreach ($this->except as $pattern) {
+            if (preg_match('/' . $pattern . '/', $name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

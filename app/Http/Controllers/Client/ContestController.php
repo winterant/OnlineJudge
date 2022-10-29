@@ -22,7 +22,7 @@ class ContestController extends Controller
         //类别不存在，则自动跳转到默认竞赛(可能是cookie保存的)
         if (!$current_cate) {
             $current_cate = DB::table('contest_cate')->select(['id', 'parent_id', 'description'])
-                ->find(request()->cookie('unencrypted_view-default-contest-cate'));
+                ->find(request()->cookie('unencrypted_contests_default_cate'));
             if (!$current_cate)
                 $current_cate = DB::table('contest_cate')->select(['id', 'parent_id', 'description'])->first();
             if (!$current_cate)
@@ -30,7 +30,7 @@ class ContestController extends Controller
             return redirect(route('contests', $current_cate->id));
         }
         // cookie记下上次访问的类别，下次默认直接访问它
-        Cookie::queue('unencrypted_view-default-contest-cate', $cate, 5256000); // 10 years
+        Cookie::queue('unencrypted_contests_default_cate', $cate, 5256000); // 10 years
 
         // 拿到当前所处类别的所有二级类别
         $sons = DB::table('contest_cate')
@@ -48,9 +48,9 @@ class ContestController extends Controller
 
         //cookie记下默认每页显示的条数
         if (isset($_GET['perPage'])) {
-            Cookie::queue('unencrypted_view-contests-perpage', $_GET['perPage'], 5256000); // 10 years
+            Cookie::queue('unencrypted_contests_default_perpage', $_GET['perPage'], 5256000); // 10 years
         } else {
-            $_GET['perPage'] = (request()->cookie('unencrypted_view-contests-perpage') ?? 10);
+            $_GET['perPage'] = (request()->cookie('unencrypted_contests_default_perpage') ?? 10);
         }
 
         $contests = DB::table('contests as c')
