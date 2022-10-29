@@ -62,6 +62,9 @@
       <i class="fa fa-unlock-alt pr-2 text-sky" aria-hidden="true"></i>
       <div class="d-inline border bg-light px-1" style="border-radius: 12px; font-size: 0.9rem">
         {{ trans('main.access_' . $contest->access) }}
+        @if (privilege('admin.contest') && $contest->access == 'password')
+          [{{ __('main.Password') }}:{{ $contest->password }}]
+        @endif
       </div>
     </li>
     <li>

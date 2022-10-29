@@ -115,6 +115,9 @@
                       <i class="fa fa-lock" aria-hidden="true"></i>
                     @endif
                     {{ trans('main.access_' . $item->access) }}
+                    @if (privilege('admin.contest') && $item->access == 'password')
+                      [{{ __('main.Password') }}:{{ $item->password }}]
+                    @endif
                   </span>
                   @if ($item->hidden)
                     <i class="fa fa-eye-slash ml-2" aria-hidden="true"></i>
