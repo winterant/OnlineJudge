@@ -108,7 +108,9 @@
                   <th>{{ trans('main.Problem_timu') }}</th>
                   <th>{{ trans('main.Type') }}</th>
                   <th>{{ trans('main.AC/Submitted') }}</th>
-                  <th>{{ __('main.Tag') }}</th>
+                  @if (isset($problems[0]->tags))
+                    <th>{{ __('main.Tag') }}</th>
+                  @endif
                 </tr>
               </thead>
               <tbody>
@@ -148,13 +150,15 @@
                         - / -
                       @endif
                     </td>
-                    <td nowrap>
-                      @foreach ($item->tags ?? [] as $tag)
-                        <div class="d-inline text-nowrap mr-1">
-                          <i class="fa fa-tag" aria-hidden="true"></i><span>{{ $tag->name }}</span>
-                        </div>
-                      @endforeach
-                    </td>
+                    @if (isset($item->tags))
+                      <td nowrap>
+                        @foreach ($item->tags as $tag)
+                          <div class="d-inline text-nowrap mr-1">
+                            <i class="fa fa-tag" aria-hidden="true"></i><span>{{ $tag->name }}</span>
+                          </div>
+                        @endforeach
+                      </td>
+                    @endif
                   </tr>
                 @endforeach
               </tbody>

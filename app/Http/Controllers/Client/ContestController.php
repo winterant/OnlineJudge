@@ -57,6 +57,7 @@ class ContestController extends Controller
             ->select([
                 'c.id', 'judge_type', 'c.title', 'start_time', 'end_time',
                 'access', 'c.order', 'c.hidden',
+                'password',
                 'num_members'
             ])
             ->where('cate_id', $current_cate->id)
@@ -109,7 +110,9 @@ class ContestController extends Controller
             ->select([
                 'id', 'title', 'description', 'cate_id',
                 'start_time', 'end_time',
-                'judge_type', 'access', 'public_rank',
+                'judge_type',
+                'access', 'password',
+                'public_rank',
                 'num_members'
             ])->find($id);
         if (!$contest)
@@ -133,7 +136,7 @@ class ContestController extends Controller
             ->get();
 
         // 读取标签 （todo 效率低）
-        if (privilege('admin.contest') || time() == strtotime($contest->end_time))
+        if (privilege('admin.contest') || time() > strtotime($contest->end_time))
             foreach ($problems as &$problem) {
                 $tag = DB::table('tag_marks')
                     ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
@@ -144,7 +147,7 @@ class ContestController extends Controller
                     ->orderByDesc('count')
                     ->limit(3)
                     ->get();
-                $problem->tags = $tag;
+                $problem->tags = ($tag ?? []);
             }
 
         //读取附件，位于storage/app/public/contest/files/$cid/*
