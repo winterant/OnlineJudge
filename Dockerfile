@@ -28,6 +28,7 @@ RUN cd /app_src &&\
     rm -rf /etc/nginx/sites-enabled/default &&\
     cp storage/scripts/nginx-lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
     # version
+    mkdir -p storage/app &&\
     echo 1.2.$(date "+%Y%m%d") > storage/app/.version
 
 WORKDIR /app
