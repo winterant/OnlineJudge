@@ -128,7 +128,7 @@
                       @if (privilege('admin.contest') || time() > strtotime($contest->end_time))
                         <span style="font-size: 0.85rem">
                           [
-                          <a href="{{ route('problem', $item->id) }}">{{ $item->id }}</a>
+                          <a href="{{ route('problem', $item->id) }}" target="_blank">{{ $item->id }}</a>
                           <i class="fa fa-external-link text-sky" aria-hidden="true"></i>
                           ]
                         </span>

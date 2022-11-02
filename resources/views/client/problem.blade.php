@@ -101,7 +101,7 @@
           @if (isset($contest) && (privilege('admin.problem.list') || $contest->end_time < date('Y-m-d H:i:s')))
             <span style="font-size: 0.85rem">
               [
-              <a href="{{ route('problem', $problem->id) }}">{{ __('main.Problem') }} {{ $problem->id }}</a>
+              <a href="{{ route('problem', $problem->id) }}" target="_blank">{{ __('main.Problem') }} {{ $problem->id }}</a>
               <i class="fa fa-external-link text-sky" aria-hidden="true"></i>
               ]
             </span>
