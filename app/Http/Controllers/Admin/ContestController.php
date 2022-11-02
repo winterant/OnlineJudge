@@ -99,17 +99,17 @@ class ContestController extends Controller
             return view('admin.contest.edit', compact('pageTitle', 'contest', 'unames', 'pids', 'files', 'categories'));
         }
         if ($request->isMethod('post')) {
+            $old_contest = DB::table('contests')->find($id);
             $contest = $request->input('contest');
             $problem_ids = $request->input('problems');
             $c_users = $request->input('contest_users'); //指定用户
 
-            // ======================= 特别注意 =============================
+            // ======================= 类别 特别注意 =============================
             // 竞赛类别单独处理。竞赛类别改动时，涉及order的变动
             (new ApiAdminContestController())->update_cate_id($id, $contest['cate_id']);
             unset($contest['cate_id']);
-            // =============================================================
 
-            // 题目列表数据格式处理
+            // ======================= 题号列表 注意格式处理 =======================
             $pids = [];
             foreach (explode(PHP_EOL, $problem_ids) as &$item) {
                 $item = trim($item);
@@ -122,31 +122,43 @@ class ContestController extends Controller
                     foreach (range(intval($line[0]), intval(($line[1]))) as $i) $pids[] = $i;
             }
 
+            // ======================= 必要的字段处理 =======================
             $contest['start_time'] = str_replace('T', ' ', $contest['start_time']);
             $contest['end_time'] = str_replace('T', ' ', $contest['end_time']);
-            if ($contest['access'] != 'password') unset($contest['password']);
-
-            // 数据库
+            if ($contest['access'] != 'password')
+                unset($contest['password']);
             $contest['public_rank'] = isset($contest['public_rank']) ? 1 : 0; // 公开榜单
-            DB::table('contests')->where('id', $id)->update($contest);
-            DB::table('contest_problems')->where('contest_id', $id)->delete(); //舍弃原来的题目
-            foreach ($pids as $i => $pid) {
-                if (DB::table('problems')->find($pid))
-                    DB::table('contest_problems')->insert(['contest_id' => $id, 'problem_id' => $pid, 'index' => $i]);
-            }
 
-            // 可参与用户
-            DB::table('contest_users')->where('contest_id', $id)->delete();
+            // ======================= 更新contests =======================
+            DB::table('contests')->where('id', $id)->update($contest);
+
+            // ======================= 更新题号列表 =======================
+            DB::table('contest_problems')->where('contest_id', $id)->update(['index' => -1]); //标记原来的题目为无效
+            foreach ($pids as $i => $pid) {
+                if (DB::table('problems')->find($pid)) // 更新index或插入新纪录
+                    DB::table('contest_problems')->updateOrInsert(['contest_id' => $id, 'problem_id' => $pid], ['index' => $i]);
+            }
+            DB::table('contest_problems')->where('contest_id', $id)->where('index', -1)->delete(); // 删除无效纪录
+
+            // ======================= 更新可参与用户 =======================
             if ($contest['access'] == 'private') {
+                DB::table('contest_users')->where('contest_id', $id)->update(['updated_at' => date('Y-m-d H:i:s', 0)]); // 标记所有选手为无效
                 $unames = explode(PHP_EOL, $c_users);
-                foreach ($unames as &$item) $item = trim($item); //去除多余空白符号\r
+                foreach ($unames as &$item)
+                    $item = trim($item); //去除多余空白符号\r
                 $uids = DB::table('users')->whereIn('username', $unames)->pluck('id');
                 foreach ($uids as &$uid) {
-                    DB::table('contest_users')->updateOrInsert(['contest_id' => $id, 'user_id' => $uid]);
+                    DB::table('contest_users')->updateOrInsert(['contest_id' => $id, 'user_id' => $uid], ['updated_at' => date('Y-m-d H:i:s')]);
                 }
+                DB::table('contest_users')->where('contest_id', $id)->where(['updated_at' => date('Y-m-d H:i:s', 0)])->delete(); // 删除无效选手
+            }
+            // 修改了密码 或者 从其它方式变为密码验证方式，则清空参赛选手
+            if ($contest['access'] == 'password') {
+                if ($contest['password'] != $old_contest->password || $old_contest->access != 'password')
+                    DB::table('contest_users')->where('contest_id', $id)->delete();
             }
 
-            // 附件
+            // =========================== 附件 =============================
             $files = $request->file('files') ?: [];
             $allowed_ext = ["txt", "pdf", "doc", "docx", "xls", "xlsx", "csv", "ppt", "pptx"];
             foreach ($files as $file) {     //保存附件
