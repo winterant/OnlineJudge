@@ -32,25 +32,28 @@ mod_env "REDIS_HOST"        ${REDIS_HOST:-host.docker.internal} .env
 mod_env "REDIS_PORT"        ${REDIS_PORT:-6379} .env
 mod_env "REDIS_PASSWORD"    ${REDIS_PASSWORD}   .env
 
-## config php, php-fpm
+########### config php
+php_config_file=/etc/php/8.1/fpm/php.ini
 # open php extension
-sed -i "/^;extension=gettext.*/i extension=gd"    /etc/php/7.2/fpm/php.ini
-sed -i "/^;extension=gettext.*/i extension=curl"  /etc/php/7.2/fpm/php.ini
-sed -i "/^;extension=gettext.*/i extension=zip"   /etc/php/7.2/fpm/php.ini
-sed -i "/^;extension=gettext.*/i extension=redis" /etc/php/7.2/fpm/php.ini
+sed -i "/^;extension=gettext.*/i extension=gd"    ${php_config_file}
+sed -i "/^;extension=gettext.*/i extension=curl"  ${php_config_file}
+sed -i "/^;extension=gettext.*/i extension=zip"   ${php_config_file}
+sed -i "/^;extension=gettext.*/i extension=redis" ${php_config_file}
 
 # file size
-mod_env "post_max_size"        ${php_post_max_size:-64M}       /etc/php/7.2/fpm/php.ini
-mod_env "upload_max_filesize"  ${php_upload_max_filesize:-64M} /etc/php/7.2/fpm/php.ini
+mod_env "post_max_size"        ${php_post_max_size:-64M}       ${php_config_file}
+mod_env "upload_max_filesize"  ${php_upload_max_filesize:-64M} ${php_config_file}
 
+########### config php-fpm
+php_fpm_config_file=/etc/php/8.1/fpm/pool.d/www.conf
 # default php-fpm `pm` for server with 32GB max memory.
-mod_env "pm"                   ${fpm_pm:-dynamic}                /etc/php/7.2/fpm/pool.d/www.conf
-mod_env "pm.max_children"      ${fpm_pm_max_children:-1024}      /etc/php/7.2/fpm/pool.d/www.conf
-mod_env "pm.max_requests"      ${fpm_pm_max_requests:-1000}      /etc/php/7.2/fpm/pool.d/www.conf
+mod_env "pm"                   ${fpm_pm:-dynamic}                ${php_fpm_config_file}
+mod_env "pm.max_children"      ${fpm_pm_max_children:-1024}      ${php_fpm_config_file}
+mod_env "pm.max_requests"      ${fpm_pm_max_requests:-1000}      ${php_fpm_config_file}
 # The following item is avaliable only if pm=dynamic.
-mod_env "pm.start_servers"     ${fpm_pm_start_servers:-8}        /etc/php/7.2/fpm/pool.d/www.conf
-mod_env "pm.min_spare_servers" ${fpm_pm_min_spare_servers:-2}    /etc/php/7.2/fpm/pool.d/www.conf
-mod_env "pm.max_spare_servers" ${fpm_pm_max_spare_servers:-1024} /etc/php/7.2/fpm/pool.d/www.conf
+mod_env "pm.start_servers"     ${fpm_pm_start_servers:-16}       ${php_fpm_config_file}
+mod_env "pm.min_spare_servers" ${fpm_pm_min_spare_servers:-8}    ${php_fpm_config_file}
+mod_env "pm.max_spare_servers" ${fpm_pm_max_spare_servers:-1024} ${php_fpm_config_file}
 
 ## nginx config
 sed -i "s/worker_connections [0-9]*;$/worker_connections 51200;/" /etc/nginx/nginx.conf
@@ -63,7 +66,7 @@ sed -i "s/worker_connections [0-9]*;$/worker_connections 51200;/" /etc/nginx/ngi
 service nginx start
 
 # Start php-fpm server
-service php7.2-fpm start
+service php8.1-fpm start
 
 
 ##########################################################################

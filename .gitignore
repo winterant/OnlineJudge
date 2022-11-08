@@ -2,7 +2,7 @@
 .idea
 .vscode
 node_modules
-vendor
+/vendor
 .env
 .env.backup
 .phpunit.result.cache

@@ -7,10 +7,10 @@
     <div class="container">
 
         <div class="my-container bg-white">
-            <h4>服务器内存使用情况（单位：MB）</h4>
+            <h4>服务器内存使用情况</h4>
             <hr>
             <div class="overflow-auto px-2">
-                <pre>@php(system('free -m'))</pre>
+                <pre>@php(system('free -h'))</pre>
             </div>
             <hr>
         </div>

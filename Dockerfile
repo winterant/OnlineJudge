@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 ubuntu:20.04
+FROM --platform=linux/amd64 ubuntu:22.04
 
 # Required software and their configs
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
@@ -7,11 +7,12 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     apt install -y software-properties-common &&\
     yes | apt-add-repository ppa:ondrej/php &&\
     apt update && apt upgrade -y &&\
-    apt install -y php7.2 php7.2-fpm \
-        php7.2-mysql php7.2-redis \
-        php7.2-xml php7.2-mbstring \
-        php7.2-gd php7.2-curl php7.2-zip &&\
-    apt install -y nginx mysql-client=8.0.* composer zip unzip language-pack-en-base &&\
+    apt install -y php8.1 php8.1-fpm php8.1-mysql php8.1-redis \
+        php8.1-xml php8.1-mbstring \
+        php8.1-gd php8.1-curl php8.1-zip &&\
+    apt install -y nginx mysql-client=8.0.* curl zip unzip language-pack-en-base &&\
+    curl -sS https://getcomposer.org/installer | php &&\
+    mv composer.phar /usr/bin/composer &&\
     export LC_ALL=en_US.UTF-8 &&\
     export LANG=en_US.UTF-8
 
@@ -29,7 +30,7 @@ RUN cd /app_src &&\
     cp storage/scripts/nginx-lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
     # version
     mkdir -p storage/app &&\
-    echo 1.2.$(date "+%Y%m%d") > storage/app/.version
+    echo 1.3.$(date "+%Y%m%d") > storage/app/.version
 
 WORKDIR /app
 

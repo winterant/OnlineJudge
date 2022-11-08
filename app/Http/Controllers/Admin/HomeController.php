@@ -31,6 +31,6 @@ class HomeController extends Controller
             '服务器解译引擎'  => $_SERVER['SERVER_SOFTWARE'],
             '通信协议'       =>$_SERVER['SERVER_PROTOCOL']
         ];
-        return view('admin.home',compact('run','info','systemInfo'));
+        return view('admin.home',compact('systemInfo'));
     }
 }
