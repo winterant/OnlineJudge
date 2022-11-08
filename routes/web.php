@@ -29,19 +29,16 @@ Route::get('/change_language/{lang}', 'Client\UserController@change_language')->
 
 
 // ================================ 提交记录 ================================
-Route::get('/status', 'Client\StatusController@index')->name('status');
-Route::post('/ajax_get_status', 'Client\StatusController@ajax_get_status')->name('ajax_get_status');
+Route::get('/status', 'Client\StatusController@status')->name('status');
+// Route::post('/ajax_get_status', 'Client\StatusController@ajax_get_status')->name('ajax_get_status');
 Route::middleware(['auth', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group(function () {
-    Route::get('/solutions/{id}', 'Client\StatusController@solution')->name('solution');
-    Route::get('/solutions/{id}/wrong_data/{type}', 'Client\StatusController@solution_wrong_data')
-        ->where(['type' => '(in|out)'])->name('solution_wrong_data');
+    Route::get('/solution/{id}', 'Client\StatusController@solution')->name('solution');
+    Route::get('/solution/{id}/wrong_data/{type}', 'Client\StatusController@solution_wrong_data')->name('solution_wrong_data')->where(['type' => '(in|out)']);
 });
 
 // ================================ 题目 ================================
 Route::get('/problems', 'Client\ProblemController@problems')->name('problems');
 Route::get('/problem/{id}', 'Client\ProblemController@problem')->middleware('CheckUserLocked')->where(['id' => '[0-9]+'])->name('problem');
-Route::get('/contests', 'Client\ContestController@contests')->name('contests');
-Route::get('/contests/{cate}', 'Client\ContestController@contests')->name('contests');
 //  题目页面讨论板模块
 Route::post('/load_discussion', 'Client\ProblemController@load_discussion')->name('load_discussion');
 Route::middleware(['auth', 'CheckUserLocked'])->group(function () {
@@ -55,8 +52,9 @@ Route::middleware(['auth', 'CheckUserLocked', 'Permission:admin.problem.discussi
 
 
 // ================================ 竞赛 ================================
-Route::prefix('contest/{id}')->name('contest.')->group(function () {
+Route::get('/contests/{cate}', 'Client\ContestController@contests')->name('contests');
 
+Route::prefix('contest/{id}')->name('contest.')->group(function () {
     Route::middleware(['auth', 'CheckContest', 'CheckUserLocked'])->group(function () {
         Route::get('/', 'Client\ContestController@home')->name('home');
         Route::get('/problem/{pid}', 'Client\ContestController@problem')->name('problem')->where(['pid' => '[0-9]+']);
@@ -64,20 +62,17 @@ Route::prefix('contest/{id}')->name('contest.')->group(function () {
         Route::get('/notices', 'Client\ContestController@notices')->name('notices'); //公告
         Route::post('/get_notice', 'Client\ContestController@get_notice')->name('get_notice'); //获取一条公告
         Route::get('/private_rank', 'Client\ContestController@rank')->name('private_rank'); // 私有榜单
-
         Route::middleware(['Permission:admin.contest'])->group(function () {
             Route::post('/edit_notice', 'Client\ContestController@edit_notice')->name('edit_notice'); //编辑/添加一条公告
             Route::post('/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('delete_notice')->where(['nid' => '[0-9]+']); //删除一条公告
         });
-
         Route::middleware(['Permission:admin.contest.balloon'])->group(function () { //气球,需要权限
             Route::get('/balloons', 'Client\ContestController@balloons')->name('balloons');
             Route::post('/deliver_ball/{bid}', 'Client\ContestController@deliver_ball')->name('deliver_ball')->where(['bid' => '[0-9]+']);
         });
     });
-
     Route::any('/password', 'Client\ContestController@password')->middleware(['auth'])->name('password');
-    Route::get('/rank', 'Client\ContestController@rank')->name('rank');
+    Route::get('/rank', 'Client\ContestController@rank')->name('rank'); // 公开榜单
 });
 
 // ================================ groups (courses) 课程 ================================

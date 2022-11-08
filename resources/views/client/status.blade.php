@@ -227,7 +227,7 @@
       </div>
     </div>
   </div>
-
+{{--
   <script type="text/javascript">
     $(function() {
       var intervalID = setInterval(function() {
@@ -264,4 +264,5 @@
       }, 1500); // 1.5S后基本都判完题了
     });
   </script>
+--}}
 @endsection
