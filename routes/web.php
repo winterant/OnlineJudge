@@ -32,8 +32,8 @@ Route::get('/change_language/{lang}', 'Client\UserController@change_language')->
 Route::get('/status', 'Client\StatusController@status')->name('status');
 // Route::post('/ajax_get_status', 'Client\StatusController@ajax_get_status')->name('ajax_get_status');
 Route::middleware(['auth', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group(function () {
-    Route::get('/solution/{id}', 'Client\StatusController@solution')->name('solution');
-    Route::get('/solution/{id}/wrong_data/{type}', 'Client\StatusController@solution_wrong_data')->name('solution_wrong_data')->where(['type' => '(in|out)']);
+    Route::get('/solutions/{id}', 'Client\StatusController@solution')->name('solution');
+    Route::get('/solutions/{id}/wrong_data/{type}', 'Client\StatusController@solution_wrong_data')->name('solution_wrong_data')->where(['type' => '(in|out)']);
 });
 
 // ================================ 题目 ================================
