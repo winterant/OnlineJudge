@@ -1,5 +1,5 @@
 {{-- 导航栏项 --}}
-<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+<div class="collapse navbar-collapse navbar-active" id="bs-example-navbar-collapse-1">
   <ul class="navbar-nav nav-tabs">
     <li class="nav-item">
       <a id="link_home" class="nav-link text-nowrap p-2" href="{{ route('home') }}">
@@ -16,23 +16,26 @@
         <i class="fa fa-list" aria-hidden="true">&nbsp;{{ trans('main.Problems') }}</i>
       </a>
     </li>
+
+    {{-- 下拉菜单 --}}
     {{-- <li class="nav-item dropdown">
-               <a class="nav-link dropdown-toggle text-nowrap p-2" href="#" id="contestDropdown" data-toggle="dropdown">
-                   <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{trans('main.Contests')}}</i>
-               </a>
-               <div class="dropdown-menu" aria-labelledby="contestDropdown">
-                   @foreach (config('oj.contestType') as $i => $ctype)
-                       <a class="dropdown-item text-nowrap" href="{{route('contests',$ctype)}}">
-                           <i class="fa fa-book px-1" aria-hidden="true"></i>
-                           {{__('main.'.$ctype)}}
-                       </a>
-                   @endforeach
-                   <div class="dropdown-divider"></div>
-                   <a class="dropdown-item" href="#">Separated link</a>
-               </div>
-           </li> --}}
+      <a class="nav-link dropdown-toggle text-nowrap p-2" href="#" id="contestDropdown" data-toggle="dropdown">
+        <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{ trans('main.Contests') }}</i>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="contestDropdown">
+        @foreach ([1, 2, 3] as $i)
+          <a class="dropdown-item text-nowrap" href="#">
+            <i class="fa fa-book px-1" aria-hidden="true"></i>
+            1111111
+          </a>
+        @endforeach
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">Separated link</a>
+      </div>
+    </li> --}}
+
     <li class="nav-item">
-      <a class="nav-link text-nowrap p-2" id="link_contests" href="{{ route('contests', 0) }}">
+      <a class="nav-link text-nowrap p-2" id="link_contests" href="{{ route('contests') }}">
         <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{ trans('main.Contests') }}</i>
       </a>
     </li>
@@ -117,5 +120,36 @@
     @endguest
   </ul>
   {{-- end of 个人信息按钮 --}}
+
+
+  {{-- 导航栏js控制 --}}
+  <script type="text/javascript">
+    // 遍历导航栏按钮，如果href与当前位置相等，就active
+    $(function() {
+      const uri = location.pathname;
+      //主导航栏, 竞赛菜单
+      $(".navbar-active ul li").find("a").each(function() {
+        if ($(this).attr("href").split('?')[0].endsWith(uri)) {
+          $(this).addClass("active");
+        }
+      });
+      //特判home
+      if (uri === "/") {
+        $("#link_home").addClass('active')
+      }
+      //特判contests
+      if (uri.indexOf('/contest') !== -1) {
+        // 先特判从group进来的contest
+        if (location.search.indexOf('group=') !== -1)
+          $('#link_groups').addClass('active')
+        else
+          $('#link_contests').addClass('active')
+      }
+      //特判groups(已改名为courses)
+      if (uri.indexOf('/course') !== -1) {
+        $('#link_groups').addClass('active')
+      }
+    })
+  </script>
 
 </div>

@@ -59,7 +59,10 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
       <span class="navbar-toggler-icon"></span>
     </button>
+
+    {{-- 导航栏菜单项 --}}
     @include('layouts.navbar')
+
   </nav>
 
   {{-- 除了题目页面外，都要滚动显示公告 --}}
@@ -74,36 +77,6 @@
 
   {{-- 页脚 --}}
   @include('layouts.footer')
-
-  {{-- 导航栏js控制 --}}
-  <script type="text/javascript">
-    // 遍历导航栏按钮，如果href与当前位置相等，就active
-    $(function() {
-      const uri = location.pathname;
-      //主导航栏
-      $("ul li").find("a").each(function() {
-        if ($(this).attr("href").split('?')[0].endsWith(uri)) {
-          $(this).addClass("active");
-        }
-      });
-      //特判home
-      if (uri === "/") {
-        $("#link_home").addClass('active')
-      }
-      //特判contests
-      if (uri.indexOf('/contest') !== -1) {
-        // 先特判从group进来的contest
-        if (location.search.indexOf('group=') !== -1)
-          $('#link_groups').addClass('active')
-        else
-          $('#link_contests').addClass('active')
-      }
-      //特判groups(已改名为courses)
-      if (uri.indexOf('/course') !== -1) {
-        $('#link_groups').addClass('active')
-      }
-    })
-  </script>
 
 </body>
 

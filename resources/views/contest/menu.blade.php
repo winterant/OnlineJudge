@@ -3,7 +3,7 @@
 {{-- @php($menu_cate = DB::table('contest_cate')->find($contest->cate_id)) --}}
 
 
-<div class="d-flex flex-wrap">
+<div class="d-flex flex-wrap navbar-active">
     <ul class="breadcrumb text-nowrap">
         @if($group = DB::table('groups')->find($_GET['group']??null))
             {{-- 如果是从group过来的，输出一下group链接 --}}
@@ -16,12 +16,12 @@
             @php($son_cate = DB::table('contest_cate')->find($menu_cate->parent_id))
             @if($son_cate)
                 <li class="">
-                    <a href="{{route('contests', $son_cate->id)}}">{{$son_cate->title}}</a>
+                    <a href="{{route('contests', ['cate' => $son_cate->id])}}">{{$son_cate->title}}</a>
                 </li>
                 <span class="mx-1">/</span>
             @endif
             <li class="">
-                <a href="{{route('contests', $menu_cate->id)}}">{{$menu_cate->title}}</a>
+                <a href="{{route('contests', ['cate' => $menu_cate->id])}}">{{$menu_cate->title}}</a>
             </li>
             <span class="mx-1">/</span>
         @endif

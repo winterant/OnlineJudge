@@ -15,36 +15,50 @@ use Illuminate\Support\Facades\Storage;
 
 class ContestController extends Controller
 {
-    public function contests($cate)
+    public function contests()
     {
         //获取类别
-        $current_cate = DB::table('contest_cate')->select(['id', 'parent_id', 'description'])->find($cate);
+        $current_cate = DB::table('contest_cate')->find($_GET['cate'] ?? 0);
 
         //类别不存在，则自动跳转到默认竞赛(可能是cookie保存的)
         if (!$current_cate) {
-            $current_cate = DB::table('contest_cate')->select(['id', 'parent_id', 'description'])
+            $current_cate = DB::table('contest_cate')
                 ->find(request()->cookie('unencrypted_contests_default_cate'));
-            if (!$current_cate)
-                $current_cate = DB::table('contest_cate')->select(['id', 'parent_id', 'description'])->first();
+            if (!$current_cate) // cookie保存的类别也不存在，则直接取第一个类别
+                $current_cate = DB::table('contest_cate')->first();
             if (!$current_cate)
                 return view('client.fail', ['msg' => '竞赛中没有任何可用类别，请管理员前往后台添加类别！']);
-            return redirect(route('contests', $current_cate->id));
         }
         // cookie记下上次访问的类别，下次默认直接访问它
-        Cookie::queue('unencrypted_contests_default_cate', $cate, 5256000); // 10 years
+        Cookie::queue('unencrypted_contests_default_cate', $current_cate->id, 5256000); // 10 years
 
         // 拿到当前所处类别的所有二级类别
-        $sons = DB::table('contest_cate')
-            ->where('parent_id', $current_cate->parent_id ?: $current_cate->id)
-            ->select(['id', 'title'])
-            ->where('parent_id', '>', 0)
-            ->orderBy('order')
-            ->get();
-        // 拿到所有的一级类别
-        $categories = DB::table('contest_cate')
-            ->select(['id', 'title'])
-            ->where('parent_id', 0)
-            ->orderBy('order')
+        // $sons = DB::table('contest_cate')
+        //     ->where('parent_id', $current_cate->parent_id ?: $current_cate->id)
+        //     ->select(['id', 'title'])
+        //     ->where('parent_id', '>', 0)
+        //     ->orderBy('order')
+        //     ->get();
+        // // 拿到所有的一级类别
+        // $categories = DB::table('contest_cate')
+        //     ->select(['id', 'title'])
+        //     ->where('parent_id', 0)
+        //     ->orderBy('order')
+        //     ->get();
+        // 拿到所有的类别
+        $categories = DB::table('contest_cate as cc')
+            ->leftJoin('contest_cate as father', 'father.id', 'cc.parent_id')
+            ->select([
+                'cc.id', 'cc.title', 'cc.description', 'cc.hidden',
+                'cc.order', 'cc.parent_id',
+                'cc.updated_at', 'cc.created_at',
+                'father.title as parent_title',
+                DB::raw('(case cc.parent_id when 0 then 1 else 0 end) as is_parent'),
+                DB::raw('(case cc.parent_id when 0 then cc.id else cc.parent_id end) as l1_cate')
+            ])
+            ->orderBy('l1_cate') // 1 全局，统一按一级类别的order，同一大类挨在一起
+            ->orderByDesc('is_parent') // 2 同一父类下，父类排在首位
+            ->orderBy('cc.order') // 3 同一父类下的二级类别，按自身order排序
             ->get();
 
         //cookie记下默认每页显示的条数
@@ -79,7 +93,7 @@ class ContestController extends Controller
             ->orderByDesc('c.order')
             ->paginate($_GET['perPage'] ?? 10);
 
-        return view('contest.contests', compact('contests', 'categories', 'sons', 'current_cate'));
+        return view('contest.contests', compact('contests', 'categories', 'current_cate'));
     }
 
     public function password(Request $request, $id)

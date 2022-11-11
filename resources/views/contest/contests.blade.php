@@ -20,48 +20,67 @@
 
   <div class="container">
 
-    {{--        <div class="my-container bg-white pt-2 pb-1"> --}}
-    {{--            <ul class="nav nav-tabs nav-justified"> --}}
-    {{--                @foreach (config('oj.contestType') as $i => $ctype) --}}
-    {{--                    <li class="nav-item"> --}}
-    {{--                        <a class="nav-link p-2" href="{{route('contests',['type'=>$i])}}">{{ucfirst($ctype)}}</a> --}}
-    {{--                    </li> --}}
-    {{--                @endforeach --}}
-    {{--            </ul> --}}
-    {{--        </div> --}}
-
     <div class="tabbable">
       <ul class="nav nav-tabs border-bottom">
         @foreach ($categories as $cate)
-          <li class="nav-item">
-            <a class="nav-link text-center py-3" href="{{ route('contests', $cate->id) }}">
-              {{ ucfirst($cate->title) }}
-            </a>
-          </li>
+          @if ($cate->is_parent)
+            <li class="nav-item dropdown">
+
+              {{-- 不可点击的下拉菜单按钮 --}}
+              <a id="contestCateDropdown{{ $cate->id }}" class="nav-link dropdown-toggle text-nowrap py-3 @if ($current_cate->parent_id == $cate->id || $current_cate->id == $cate->id) active @endif" href="#"
+                data-toggle="dropdown">
+                <i class="fa fa-trophy" aria-hidden="true"></i>
+                {{ ucfirst($cate->title) }}
+              </a>
+
+              {{-- <a class="nav-link text-center py-3 @if ($current_cate->parent_id == $cate->id || $current_cate->id == $cate->id) active @endif" href="{{ route('contests', ['cate' => $cate->id]) }}">
+                {{ ucfirst($cate->title) }}
+              </a> --}}
+
+              {{-- 下拉菜单 --}}
+              <div class="dropdown-menu" aria-labelledby="contestCateDropdown{{ $cate->id }}">
+                <div class="btn-group d-flex flex-wrap">
+                  <a class="dropdown-item flex-nowrap" href="{{ route('contests', ['cate' => $cate->id]) }}">
+                    <i class="fa fa-trophy px-1" aria-hidden="true"></i>
+                    {{ ucfirst($cate->title) }}
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  @foreach ($categories as $c)
+                    @if ($c->parent_id == $cate->id)
+                      <a class="btn btn-secondary dropdown-item flex-nowrap @if ($current_cate->id == $c->id) active @endif" href="{{ route('contests', ['cate' => $c->id]) }}">
+                        <i class="fa fa-book px-1" aria-hidden="true"></i>
+                        {{ ucfirst($c->title) }}
+                      </a>
+                    @endif
+                  @endforeach
+                </div>
+              </div>
+            </li>
+          @endif
         @endforeach
       </ul>
-      {{-- <ul class="nav nav-tabs ml-3">
-                @foreach ($sons as $cate)
-                    <li class="nav-item">
-                        <a class="nav-link text-center" href="{{route('contests',$cate->id)}}">
-                            {{ucfirst($cate->title)}}
-                        </a>
-                    </li>
-                @endforeach
-            </ul> --}}
-      <div class="btn-group ml-5">
+
+      {{-- <div class="btn-group d-flex flex-wrap">
         @foreach ($sons as $cate)
-          <a class="btn btn-secondary" href="{{ route('contests', $cate->id) }}">
+          <a class="btn btn-secondary border @if ($current_cate->id == $cate->id) active @endif" href="{{ route('contests', ['cate' => $cate->id]) }}">
             {{ ucfirst($cate->title) }}
           </a>
         @endforeach
-      </div>
+      </div> --}}
+
     </div>
 
-
-    <div class="my-container bg-white">
+    <div class="my-container bg-white mt-3">
       <div class="overflow-hidden mb-2">
+
+        <div class="d-flex flex-wrap float-left mr-3">
+          <ul class="breadcrumb text-nowrap">
+            <li>{{ $current_cate->title }}</li>
+          </ul>
+        </div>
+
         <p class="pull-left">{{ $current_cate->description }}</p>
+
         <form action="" method="get" class="mb-2 pull-right form-inline">
           <div class="form-inline mx-1">
             <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
@@ -174,24 +193,4 @@
     </div>
   </div>
 
-  <script type="text/javascript">
-    // 设置竞赛类别菜单高亮active
-    $(function() {
-      const uri = location.pathname
-      //当处于二级类别下时，设置一级类别的高亮
-      $("ul.nav-tabs").find("a").each(function() {
-        const parent_cate_uri = uri.substr(0, uri.lastIndexOf('/')) + '/{{ $current_cate->parent_id }}'
-        if ($(this).attr("href").split('?')[0].endsWith(parent_cate_uri)) {
-          $(this).addClass("active");
-        }
-      });
-
-      //二级菜单栏
-      $(".btn-group").find("a").each(function() {
-        if ($(this).attr("href").split('?')[0].endsWith(uri)) {
-          $(this).addClass("active");
-        }
-      });
-    })
-  </script>
 @endsection

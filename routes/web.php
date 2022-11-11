@@ -52,7 +52,7 @@ Route::middleware(['auth', 'CheckUserLocked', 'Permission:admin.problem.discussi
 
 
 // ================================ 竞赛 ================================
-Route::get('/contests/{cate}', 'Client\ContestController@contests')->name('contests');
+Route::get('/contests', 'Client\ContestController@contests')->name('contests');
 
 Route::prefix('contest/{id}')->name('contest.')->group(function () {
     Route::middleware(['auth', 'CheckContest', 'CheckUserLocked'])->group(function () {

@@ -18,6 +18,7 @@ return [
     "Previous Page" => "Previous",
     "Next Page"     => "Next",
     "View details"  => "View details",
+    "Default"       => "Default",
 
     //home.blade
     "Notice Board"  => "Notice Board",

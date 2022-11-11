@@ -188,7 +188,7 @@ class ContestController extends Controller
                 ->orderBy('index')->get();
             $cps = [];
             foreach ($con_problems as $i => $item)
-                $cps[] = ['contest_id' => $cloned_cid, 'problem_id' => $item->problem_id, 'index' => $i + 1];
+                $cps[] = ['contest_id' => $cloned_cid, 'problem_id' => $item->problem_id, 'index' => intval($i) + 1];
             DB::table('contest_problems')->insert($cps);
             //            复制附件
             foreach (Storage::allFiles('public/contest/files/' . $cid) as $fp) {

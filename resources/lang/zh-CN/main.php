@@ -18,6 +18,7 @@ return [
     "Previous Page" => "上一页",
     "Next Page"     => "下一页",
     "View details"  => "查看详情",
+    "Default"       => "默认",
 
     //home.blade
     "Notice Board"  => "公告板",
@@ -197,15 +198,15 @@ return [
     "Content"       => "内容",
 
     "access_public" => "公开参加",
-    "access_private"=> "仅受邀用户",
-    "access_password"=> "加密验证",
+    "access_private" => "仅受邀用户",
+    "access_password" => "加密验证",
 
     "ranking_rule"  => "排名规则",
 
     // Groups
     "Group"         => "课程",
     "Groups"        => "课程",
-    "Related Courses"=>"相关课程",
+    "Related Courses" => "相关课程",
     "Creator"       => "创建者",
     "Grade"         => "年级",
     "Major"         => "专业",
