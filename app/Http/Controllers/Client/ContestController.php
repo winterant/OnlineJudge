@@ -549,15 +549,23 @@ class ContestController extends Controller
         $max_added_sid = DB::table('contest_balloons')
             ->join('solutions', 'solutions.id', '=', 'solution_id')
             ->where('contest_id', $id)->max('solution_id');
-        $new_sids = DB::table('solutions')
+        $new_solutions = DB::table('solutions')
             ->where('contest_id', $id)
             ->where('result', 4)
             ->where('id', '>', $max_added_sid ?: 0)
-            ->pluck('id');
-        $format_sids = [];
-        foreach ($new_sids as $item)
-            $format_sids[] = ['solution_id' => $item];
-        DB::table('contest_balloons')->insert($format_sids);
+            ->get();
+        $new_balloons = [];
+        foreach ($new_solutions as $item) {
+            $q = DB::table('contest_balloons')
+                ->join('solutions', 'solutions.id', '=', 'solution_id')
+                ->where('contest_id', $item->contest_id)
+                ->where('problem_id', $item->problem_id)
+                ->where('user_id', $item->user_id)
+                ->exists();
+            if (!$q) // 气球已存在，无需重复添加
+                $new_balloons[] = ['solution_id' => $item->id];
+        }
+        DB::table('contest_balloons')->insert($new_balloons);
 
         //读取气球队列
         $balloons = DB::table('contest_balloons')
