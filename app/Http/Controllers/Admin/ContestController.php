@@ -142,16 +142,20 @@ class ContestController extends Controller
 
             // ======================= 更新可参与用户 =======================
             if ($contest['access'] == 'private') {
-                DB::table('contest_users')->where('contest_id', $id)->update(['updated_at' => date('Y-m-d H:i:s', 0)]); // 标记所有选手为无效
                 $unames = explode(PHP_EOL, $c_users);
                 foreach ($unames as &$item)
                     $item = trim($item); //去除多余空白符号\r
-                $uids = DB::table('users')->whereIn('username', $unames)->pluck('id');
-                foreach ($uids as &$uid) {
-                    DB::table('contest_users')->updateOrInsert(['contest_id' => $id, 'user_id' => $uid], ['updated_at' => date('Y-m-d H:i:s')]);
-                }
-                DB::table('contest_users')->where('contest_id', $id)->where(['updated_at' => date('Y-m-d H:i:s', 0)])->delete(); // 删除无效选手
+                $new_uids = DB::table('users')->whereIn('username', $unames)->pluck('id')->toArray();
+                $old_uids = DB::table('contest_users')->where('contest_id', $id)->pluck('id')->toArray();
+                // 删除无效选手
+                DB::table('contest_users')->where('contest_id', $id)->whereIn('id', array_diff($old_uids, $new_uids))->delete();
+                // 添加新增选手
+                $new_uids = array_diff($new_uids, $old_uids);
+                foreach ($new_uids as &$u)
+                    $u = ['contest_id' => $id, 'user_id' => $u];
+                DB::table('contest_users')->insert($new_uids);
             }
+
             // 修改了密码 或者 从其它方式变为密码验证方式，则清空参赛选手
             if ($contest['access'] == 'password') {
                 if ($contest['password'] != $old_contest->password || $old_contest->access != 'password')
