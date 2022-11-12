@@ -273,7 +273,10 @@
                 <a class="nav-link border-top" href="{{ route('admin.group.list') }}">
                   <i class="fa fa-list" aria-hidden="true"></i> 课程列表</a>
               </li>
-              {{-- todo --}}
+              <li class="nav-item">
+                <a class="nav-link border-top" href="{{ route('admin.group.edit') }}">
+                  <i class="fa fa-plus" aria-hidden="true"></i> 新建课程</a>
+              </li>
             </ul>
           </li>
 

@@ -35,7 +35,7 @@ class GroupController extends Controller
         if (!isset($_GET['id'])) // 新建
         {
             if ($request->isMethod('get')) {
-                return view('group.edit'); //提供界面
+                return view('admin.group.edit'); //提供界面
             } else {
                 // 处理请求; 新建一条数据，跳转到修改
                 $_GET['id'] = DB::table('groups')->insertGetId([
@@ -62,7 +62,7 @@ class GroupController extends Controller
                 ->where('gc.group_id', $_GET['id'])
                 ->orderBy('gc.id')
                 ->pluck('c.id');
-            return view('group.edit', compact('group', 'contest_ids'));
+            return view('admin.group.edit', compact('group', 'contest_ids'));
         } else {
             // 接收修改请求
             $group = $request->input('group');

@@ -19,7 +19,8 @@
       项
     </div>
     <div class="form-inline mx-3">
-      <input type="text" class="form-control text-center" placeholder="标题" onchange="this.form.submit();" name="name" value="{{ $_GET['name'] ?? '' }}">
+      <input type="text" class="form-control text-center" placeholder="标题" onchange="this.form.submit();"
+        name="name" value="{{ $_GET['name'] ?? '' }}">
     </div>
     <button class="btn border">查找</button>
   </form>
@@ -62,22 +63,25 @@
       <tbody>
         @foreach ($groups as $item)
           <tr>
-            <td class="cb" onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
-              <input type="checkbox" value="{{ $item->id }}" onclick="window.event.stopPropagation();" style="vertical-align:middle;zoom: 140%">
+            <td class="cb"
+              onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
+              <input type="checkbox" value="{{ $item->id }}" onclick="window.event.stopPropagation();"
+                style="vertical-align:middle;zoom: 140%">
             </td>
             <td>{{ $item->id }}</td>
-            <td nowrap><a href="{{ route('contest.home', $item->id) }}" target="_blank">{{ $item->name }}</a></td>
+            <td nowrap><a href="{{ route('group.home', $item->id) }}" target="_blank">{{ $item->name }}</a></td>
             <td nowrap>{{ $item->grade }}</td>
             <td nowrap>{{ $item->class }}</td>
             <td nowrap>{{ $item->major }}</td>
-            <td nowrap>{{ $item->private?'private':'public' }}</td>
+            <td nowrap>{{ $item->private ? 'private' : 'public' }}</td>
             <td nowrap>
               {{-- {{$item->hidden}} --}}
-              <input id="switch_hidden{{ $item->id }}" type="checkbox" @if (!$item->hidden) checked @endif>
+              <input id="switch_hidden{{ $item->id }}" type="checkbox"
+                @if (!$item->hidden) checked @endif>
             </td>
             <td nowrap>{{ $item->username }}</td>
             <td nowrap>
-              <a href="{{ route('admin.group.edit', $item->id) }}" class="mx-1" target="_blank" title="修改">
+              <a href="{{ route('admin.group.edit', ['id' => $item->id]) }}" class="mx-1" target="_blank" title="修改">
                 <i class="fa fa-edit" aria-hidden="true"></i> 编辑
               </a>
               {{-- <a href="javascript:" onclick="delete_contest({{ $item->id }})" class="mx-1" title="删除">
@@ -130,13 +134,15 @@
         lock_switch_onchange = false
       }
       $.ajax({
-        type:'patch',
-        url:'{{ route('api.admin.group.update_batch') }}',
-        data:{
+        type: 'patch',
+        url: '{{ route('api.admin.group.update_batch') }}',
+        data: {
           'ids': cids,
-          'value': {'hidden':hidden},
+          'value': {
+            'hidden': hidden
+          },
         },
-        success:function(ret) {
+        success: function(ret) {
           if (ret.ok) {
             Notiflix.Notify.Success(ret.msg);
           } else {
@@ -151,7 +157,5 @@
     }
   </script>
 
-  <script type="text/javascript">
-
-  </script>
+  <script type="text/javascript"></script>
 @endsection
