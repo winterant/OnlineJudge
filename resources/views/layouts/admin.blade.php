@@ -119,7 +119,8 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="z-index: 10">
       {{-- 移动端 左侧菜单按钮 --}}
-      <button id="btn-left-menu" class="btn border m-0" onclick="$('#left-menu').css('display')=='none'?$('#left-menu').slideLeftShow():$('#left-menu').slideLeftHide()">
+      <button id="btn-left-menu" class="btn border m-0"
+        onclick="$('#left-menu').css('display')=='none'?$('#left-menu').slideLeftShow():$('#left-menu').slideLeftHide()">
         <span class="navbar-toggler-icon"></span>
       </button>
       {{-- 标题 --}}
@@ -141,10 +142,11 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse" data-target="#menu-notice" aria-expanded="false">
+            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
+              data-target="#menu-notice" aria-expanded="false">
               <i class="fa fa-sticky-note-o fa-lg mr-2" aria-hidden="true"></i> 公告管理
             </a>
-            <ul id="menu-notice" class="collapse">
+            <ul id="menu-notice" class="collapse @if (preg_match('/^admin\.notice\S*$/', Route::currentRouteName())) show @endif">
 
               <li class="nav-item">
                 <a class="nav-link border-top" href="{{ route('admin.notice.list') }}">
@@ -160,11 +162,12 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse" data-target="#menu-user" aria-expanded="false">
+            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
+              data-target="#menu-user" aria-expanded="false">
               <i class="fa fa-user-circle-o fa-lg mr-1" aria-hidden="true"></i>
               账号管理
             </a>
-            <ul id="menu-user" class="collapse">
+            <ul id="menu-user" class="collapse @if (preg_match('/^admin\.user\S*$/', Route::currentRouteName())) show @endif">
 
               <li class="nav-item">
                 <a class="nav-link border-top" href="{{ route('admin.user.list') }}">
@@ -189,10 +192,11 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse" data-target="#menu-teams" aria-expanded="false">
+            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
+              data-target="#menu-teams" aria-expanded="false">
               <i class="fa fa-users fa-lg mr-2" aria-hidden="true"></i>团队管理
             </a>
-            <ul id="menu-teams" class="collapse">
+            <ul id="menu-teams" class="collapse @if (preg_match('/^admin\.team\S*$/', Route::currentRouteName())) show @endif">
               <li class="nav-item">
                 <a class="nav-link border-top" href="#">
                   <i class="fa fa-list" aria-hidden="true"></i> 团队列表</a>
@@ -202,10 +206,11 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse" data-target="#menu-problem" aria-expanded="false">
+            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
+              data-target="#menu-problem" aria-expanded="false">
               <i class="fa fa-file-text-o fa-lg mr-2" aria-hidden="true"></i>题库管理
             </a>
-            <ul id="menu-problem" class="collapse">
+            <ul id="menu-problem" class="collapse @if (preg_match('/^admin\.problem\S*$/', Route::currentRouteName())) show @endif">
               <li class="nav-item">
                 <a class="nav-link border-top" href="{{ route('admin.problem.list') }}">
                   <i class="fa fa-list" aria-hidden="true"></i> 题库</a>
@@ -238,10 +243,11 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse" data-target="#menu-contest" aria-expanded="false">
+            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
+              data-target="#menu-contest" aria-expanded="false">
               <i class="fa fa-trophy fa-lg mr-2" aria-hidden="true"></i>竞赛管理
             </a>
-            <ul id="menu-contest" class="collapse">
+            <ul id="menu-contest" class="collapse @if (preg_match('/^admin\.contest\S*$/', Route::currentRouteName())) show @endif">
               <li class="nav-item">
                 <a class="nav-link border-top" href="{{ route('admin.contest.list') }}">
                   <i class="fa fa-list" aria-hidden="true"></i> 竞赛列表</a>
@@ -258,10 +264,11 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse" data-target="#menu-groups" aria-expanded="false">
+            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
+              data-target="#menu-groups" aria-expanded="false">
               <i class="fa fa-folder-open fa-lg mr-2" aria-hidden="true"></i>课程管理
             </a>
-            <ul id="menu-groups" class="collapse">
+            <ul id="menu-groups" class="collapse @if (preg_match('/^admin\.group\S*$/', Route::currentRouteName())) show @endif">
               <li class="nav-item">
                 <a class="nav-link border-top" href="{{ route('admin.group.list') }}">
                   <i class="fa fa-list" aria-hidden="true"></i> 课程列表</a>
@@ -319,7 +326,7 @@
           uri = uri.substring(0, uri.lastIndexOf('/')); //去掉编号参数
         if (href.endsWith(uri)) {
           $(a).addClass("active");
-          $(this).parent().prev().click();
+          // $(this).parent().prev().click();
           $('.sidebar-sticky').animate({
             scrollTop: $(this).parent().position().top - 50 + 'px'
           });
