@@ -81,7 +81,7 @@
             </td>
             <td nowrap>{{ $item->username }}</td>
             <td nowrap>
-              <a href="{{ route('admin.group.edit', ['id' => $item->id]) }}" class="mx-1" target="_blank" title="修改">
+              <a href="{{ route('admin.group.edit', [$item->id]) }}" class="mx-1" target="_blank" title="修改">
                 <i class="fa fa-edit" aria-hidden="true"></i> 编辑
               </a>
               {{-- <a href="javascript:" onclick="delete_contest({{ $item->id }})" class="mx-1" title="删除">

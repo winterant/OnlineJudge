@@ -80,6 +80,8 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+'])->group(function
 
         // Manage group: route('api.admin.group.*')
         Route::middleware(['Permission:admin.group'])->group(function () {
+            Route::post('/groups', 'Admin\GroupController@create')->name('group.create');
+            Route::put('/groups/{id}', 'Admin\GroupController@update')->name('group.update');
             Route::patch('/groups/batch', 'Admin\GroupController@update_batch')->name('group.update_batch');
         });
     });

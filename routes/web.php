@@ -191,13 +191,15 @@ Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')-
     });
 
     // manage group
-    Route::middleware(['Permission:admin.group'])->prefix('group')->name('group.')->group(function () {
-        Route::get('/list', 'Admin\GroupController@list')->name('list');
-        Route::any('/edit', 'Admin\GroupController@edit')->name('edit');
-        Route::get('/delete/{id}', 'Admin\GroupController@delete')->name('delete');
-        Route::post('/add_member/{id}', 'Admin\GroupController@add_member')->name('add_member');
-        Route::get('/del_member/{id}/{uid}', 'Admin\GroupController@del_member')->name('del_member');
-        Route::get('/member_iden/{id}/{uid}/{iden}', 'Admin\GroupController@member_iden')->name('member_iden');
+    Route::middleware(['Permission:admin.group'])->group(function () {
+        Route::get('group/list', 'Admin\GroupController@list')->name('group.list');
+        Route::get('group/create', 'Admin\GroupController@create')->name('group.create');
+        Route::get('group/edit/{id}', 'Admin\GroupController@edit')->name('group.edit');
+        // 以下url不规范，待调整
+        Route::get('group/delete/{id}', 'Admin\GroupController@delete')->name('group.delete');
+        Route::post('group/add_member/{id}', 'Admin\GroupController@add_member')->name('group.add_member');
+        Route::get('group/del_member/{id}/{uid}', 'Admin\GroupController@del_member')->name('group.del_member');
+        Route::get('group/member_iden/{id}/{uid}/{iden}', 'Admin\GroupController@member_iden')->name('group.member_iden');
     });
 
     // settings

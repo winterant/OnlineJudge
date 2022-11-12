@@ -1,10 +1,10 @@
 @extends('layouts.admin')
 
-@section('title', (isset($_GET['id']) ? '修改课程信息' : '新建课程') . ' | 后台')
+@section('title', (isset($group) ? '修改课程信息' : '新建课程') . ' | 后台')
 
 @section('content')
   <h2>
-    @if (isset($_GET['id']))
+    @if (isset($group))
       修改课程信息
     @else
       新建课程
@@ -12,7 +12,7 @@
   </h2>
   <hr>
   <div>
-    <form class="p-4 col-12" action="" method="post" enctype="multipart/form-data">
+    <form class="p-4 col-12" onsubmit="return submit_group(this)" enctype="multipart/form-data">
 
       <div class="form-inline mb-3">
         <span>是否公开：</span>
@@ -135,6 +135,31 @@
         console.log(error);
       });
     })
+  </script>
+
+  <script type="text/javascript">
+    function submit_group(that) {
+      $.ajax({
+        type: '{{ isset($group) ? 'put' : 'post' }}',
+        url: '{{ isset($group) ? route('api.admin.group.update', $group->id) : route('api.admin.group.create') }}',
+        data: $(that).serializeJSON(),
+        success: function(ret) {
+          if (ret.ok) {
+            Notiflix.Confirm.Show('提交成功', ret.msg, '查看', '返回', function() {
+              window.location.href = ret.redirect
+            }, function() {
+
+            });
+          } else {
+            Notiflix.Report.Failure('提交失败', ret.msg, '确定')
+          }
+        },
+        error: function(err) {
+          Notiflix.Report.Failure('提交失败', '服务器执行出错', '确定')
+        }
+      })
+      return false
+    }
   </script>
 
   <script type="text/javascript">
