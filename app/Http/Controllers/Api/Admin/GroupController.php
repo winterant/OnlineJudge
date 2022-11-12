@@ -99,9 +99,7 @@ class GroupController extends Controller
     public function update_batch(Request $request)
     {
         $updated = 0;
-        $ids = $request->input('ids');
-        Log::info($request->all());
-
+        $ids = $request->input('ids') ?? [];
         // 多条数据各自更新，将执行多条sql
         if ($request->has('values')) {
             $values = $request->input('values');
