@@ -27,9 +27,10 @@
             <li class="nav-item dropdown">
 
               {{-- 不可点击的下拉菜单按钮 --}}
-              <a id="contestCateDropdown{{ $cate->id }}" class="nav-link dropdown-toggle text-nowrap py-3 @if ($current_cate->parent_id == $cate->id || $current_cate->id == $cate->id) active @endif" href="#"
-                data-toggle="dropdown">
-                <i class="fa fa-trophy" aria-hidden="true"></i>
+              <a id="contestCateDropdown{{ $cate->id }}"
+                class="nav-link dropdown-toggle text-nowrap py-3 @if ($current_cate->parent_id == $cate->id || $current_cate->id == $cate->id) active @endif"
+                href="#" data-toggle="dropdown">
+                {{-- <i class="fa fa-trophy" aria-hidden="true"></i> --}}
                 {{ ucfirst($cate->title) }}
               </a>
 
@@ -40,14 +41,16 @@
               {{-- 下拉菜单 --}}
               <div class="dropdown-menu" aria-labelledby="contestCateDropdown{{ $cate->id }}">
                 <div class="btn-group d-flex flex-wrap">
-                  <a class="dropdown-item flex-nowrap" href="{{ route('contests', ['cate' => $cate->id]) }}">
+                  <a class="dropdown-item flex-nowrap border-bottom"
+                    href="{{ route('contests', ['cate' => $cate->id]) }}">
                     <i class="fa fa-trophy px-1" aria-hidden="true"></i>
                     {{ ucfirst($cate->title) }}
                   </a>
                   <div class="dropdown-divider"></div>
                   @foreach ($categories as $c)
                     @if ($c->parent_id == $cate->id)
-                      <a class="btn btn-secondary dropdown-item flex-nowrap @if ($current_cate->id == $c->id) active @endif" href="{{ route('contests', ['cate' => $c->id]) }}">
+                      <a class="btn btn-secondary dropdown-item flex-nowrap @if ($current_cate->id == $c->id) active @endif"
+                        href="{{ route('contests', ['cate' => $c->id]) }}">
                         <i class="fa fa-book px-1" aria-hidden="true"></i>
                         {{ ucfirst($c->title) }}
                       </a>
@@ -95,7 +98,8 @@
             <select name="state" class="form-control px-3" onchange="this.form.submit();">
               <option value="">{{ __('main.All') }}</option>
               <option value="waiting" @if (isset($_GET['state']) && $_GET['state'] == 'waiting') selected @endif>{{ __('main.Waiting') }}</option>
-              <option value="running" @if (isset($_GET['state']) && $_GET['state'] == 'running') selected @endif>{{ __('main.Running') }}</option>
+              <option value="running" @if (isset($_GET['state']) && $_GET['state'] == 'running') selected @endif> {{ __('main.Running') }}
+              </option>
               <option value="ended" @if (isset($_GET['state']) && $_GET['state'] == 'ended') selected @endif>{{ __('main.Ended') }}</option>
             </select>
           </div>
@@ -107,8 +111,8 @@
             </select>
           </div>
           <div class="form-inline mx-1">
-            <input type="text" class="form-control text-center" placeholder="{{ __('main.Title') }}" onchange="this.form.submit();" name="title"
-              value="{{ $_GET['title'] ?? '' }}">
+            <input type="text" class="form-control text-center" placeholder="{{ __('main.Title') }}"
+              onchange="this.form.submit();" name="title" value="{{ $_GET['title'] ?? '' }}">
           </div>
           <button class="btn border">{{ __('main.Find') }}</button>
         </form>
@@ -129,7 +133,8 @@
               <h5 style="font-size: 1.15rem">
                 <a href="{{ route('contest.home', $item->id) }}" class="text-black">{{ $item->title }}</a>
                 <span style="font-size: 0.9rem; vertical-align: top;">
-                  <span class="border bg-light px-1 text-{{ $item->access == 'public' ? 'green' : 'red' }}" style="border-radius: 12px;">
+                  <span class="border bg-light px-1 text-{{ $item->access == 'public' ? 'green' : 'red' }}"
+                    style="border-radius: 12px;">
                     @if ($item->access != 'public')
                       <i class="fa fa-lock" aria-hidden="true"></i>
                     @endif
@@ -152,14 +157,17 @@
                     {{ $item->judge_type == 'acm' ? 'ACM/ICPC' : 'OI/IOI' }}
                   </div>
                 </li>
-                <li class="px-2"><i class="fa fa-calendar pr-1 text-sky" aria-hidden="true"></i>{{ $item->start_time }}</li>
+                <li class="px-2"><i class="fa fa-calendar pr-1 text-sky" aria-hidden="true"></i>{{ $item->start_time }}
+                </li>
                 <li class="px-2">
                   <i class="fa fa-clock-o text-sky" aria-hidden="true"></i>
                   {{ null, $time_len = strtotime($item->end_time) - strtotime($item->start_time) }}
                   @if ($time_len > 3600 * 24 * 30)
-                    {{ round($time_len / (3600 * 24 * 30), 1) }} {{ trans_choice('main.months', round($time_len / (3600 * 24 * 30), 1)) }}
+                    {{ round($time_len / (3600 * 24 * 30), 1) }}
+                    {{ trans_choice('main.months', round($time_len / (3600 * 24 * 30), 1)) }}
                   @elseif($time_len > 3600 * 24)
-                    {{ round($time_len / (3600 * 24), 1) }} {{ trans_choice('main.days', round($time_len / (3600 * 24), 1)) }}
+                    {{ round($time_len / (3600 * 24), 1) }}
+                    {{ trans_choice('main.days', round($time_len / (3600 * 24), 1)) }}
                   @else
                     {{ round($time_len / 3600, 1) }} {{ trans_choice('main.hours', round($time_len / 3600, 1)) }}
                   @endif
