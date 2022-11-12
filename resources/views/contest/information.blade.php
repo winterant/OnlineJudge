@@ -13,7 +13,7 @@
 @if (count($groups) > 0)
   <div class="my-container bg-white">
 
-    <h5>{{ trans('main.Related Courses') }}</h5>
+    <h5>{{ trans('main.Related Groups') }}</h5>
     <hr class="mt-0">
 
     <ul class="list-unstyled">

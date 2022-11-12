@@ -27,7 +27,7 @@
 
     <div class="container">
 
-        @include('group.layouts.header_menu')
+        @include('group.layouts.groups_menu')
 
         <div class="my-container bg-white">
             <div class="overflow-hidden mb-2">
@@ -118,9 +118,9 @@
                             <div class="pull-right">
                                 @if(isset($item->user_in_group) && $item->user_in_group<=1)
                                     @if($item->user_in_group==1)
-                                        <a class="btn btn-info">已申请加入</a>
+                                        <a class="btn btn-info">申请中</a>
                                     @else
-                                        <a class="btn btn-info" href="{{route('groups.joinin',['id'=>$item->id])}}">申请加入</a>
+                                        {{-- <a class="btn btn-info" href="{{route('groups.joinin',['id'=>$item->id])}}">申请加入</a> --}}
                                     @endif
                                 @endif
                                 @if(privilege('admin.group'))

@@ -40,7 +40,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-nowrap p-2" id="link_groups" href="{{ route('groups.home') }}">
+      <a class="nav-link text-nowrap p-2" id="link_groups" href="{{ route('groups.my') }}">
         <i class="fa fa-folder-open" aria-hidden="true"></i>&nbsp;{{ trans('main.Groups') }}</i>
       </a>
     </li>
@@ -145,8 +145,8 @@
         else
           $('#link_contests').addClass('active')
       }
-      //特判groups(已改名为courses)
-      if (uri.indexOf('/course') !== -1) {
+      //特判groups
+      if (uri.indexOf('/group') !== -1) {
         $('#link_groups').addClass('active')
       }
     })

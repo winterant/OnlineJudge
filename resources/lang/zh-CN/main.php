@@ -45,7 +45,6 @@ return [
     "Contest"       => "竞赛",
     "contest"       => "竞赛",
     "Contests"      => "竞赛",
-    "Course"        => "课程",
     "Training"      => "训练",
     "exam"          => "考试",
     "Exam"          => "考试",
@@ -206,7 +205,7 @@ return [
     // Groups
     "Group"         => "课程",
     "Groups"        => "课程",
-    "Related Courses" => "相关课程",
+    "Related Groups"=> "相关课程",
     "Creator"       => "创建者",
     "Grade"         => "年级",
     "Major"         => "专业",

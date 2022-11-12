@@ -36,6 +36,7 @@ Route::middleware(['auth', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group
     Route::get('/solutions/{id}/wrong_data/{type}', 'Client\StatusController@solution_wrong_data')->name('solution_wrong_data')->where(['type' => '(in|out)']);
 });
 
+
 // ================================ 题目 ================================
 Route::get('/problems', 'Client\ProblemController@problems')->name('problems');
 Route::get('/problem/{id}', 'Client\ProblemController@problem')->middleware('CheckUserLocked')->where(['id' => '[0-9]+'])->name('problem');
@@ -75,20 +76,15 @@ Route::prefix('contest/{id}')->name('contest.')->group(function () {
     Route::get('/rank', 'Client\ContestController@rank')->name('rank'); // 公开榜单
 });
 
-// ================================ groups (courses) 课程 ================================
+// ================================ groups 课程/群组 ================================
 Route::middleware(['auth'])->group(function () {
-    Route::prefix('courses')->name('groups.')->group(function () {
-        Route::get('/', 'Client\GroupController@groups')->name('home');
-        Route::get('/my', 'Client\GroupController@mygroups')->name('my');
-        Route::get('/all', 'Client\GroupController@allgroups')->name('all');
-        Route::get('/joinin/{id}', 'Client\GroupController@joinin')->name('joinin');
-    });
-    // 具体的一门课程
-    Route::middleware(['auth', 'CheckGroup', 'CheckUserLocked'])->group(function () {
-        Route::prefix('course/{id}')->name('group.')->where(['id' => '[0-9]+'])->group(function () {
-            Route::get('/', 'Client\GroupController@home')->name('home');
-            Route::get('/members', 'Client\GroupController@members')->name('members');
-        });
+    // 群组列表
+    Route::get('my-groups', 'Client\GroupController@mygroups')->name('groups.my');
+    Route::get('groups', 'Client\GroupController@allgroups')->name('groups');
+    // 具体的一门课程/群组
+    Route::middleware(['auth', 'CheckGroup', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group(function () {
+        Route::get('groups/{id}', 'Client\GroupController@home')->name('group.home');
+        Route::get('groups/{id}/members', 'Client\GroupController@members')->name('group.members');
     });
 });
 

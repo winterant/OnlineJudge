@@ -5,7 +5,7 @@
 @section('content')
 
     <div class="container">
-        @include('group.layouts.header_menu')
+        @include('group.layouts.groups_menu')
         <div class="my-container bg-white">
             <form class="" action="" method="post" enctype="multipart/form-data" onsubmit="presubmit()">
                 @csrf
