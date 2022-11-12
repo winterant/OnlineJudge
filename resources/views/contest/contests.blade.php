@@ -78,6 +78,10 @@
 
         <div class="d-flex flex-wrap float-left mr-3">
           <ul class="breadcrumb text-nowrap">
+            @if ($current_cate->parent)
+              <li><i class="fa fa-trophy mr-1" aria-hidden="true"></i>{{ $current_cate->parent->title }}</li>
+              <li class="mx-1">/</li>
+            @endif
             <li>{{ $current_cate->title }}</li>
           </ul>
         </div>
@@ -97,7 +101,8 @@
           <div class="form-inline mx-1">
             <select name="state" class="form-control px-3" onchange="this.form.submit();">
               <option value="">{{ __('main.All') }}</option>
-              <option value="waiting" @if (isset($_GET['state']) && $_GET['state'] == 'waiting') selected @endif>{{ __('main.Waiting') }}</option>
+              <option value="waiting" @if (isset($_GET['state']) && $_GET['state'] == 'waiting') selected @endif>{{ __('main.Waiting') }}
+              </option>
               <option value="running" @if (isset($_GET['state']) && $_GET['state'] == 'running') selected @endif> {{ __('main.Running') }}
               </option>
               <option value="ended" @if (isset($_GET['state']) && $_GET['state'] == 'ended') selected @endif>{{ __('main.Ended') }}</option>

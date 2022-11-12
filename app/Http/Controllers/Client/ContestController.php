@@ -29,6 +29,10 @@ class ContestController extends Controller
             if (!$current_cate)
                 return view('client.fail', ['msg' => '竞赛中没有任何可用类别，请管理员前往后台添加类别！']);
         }
+
+        // 获取父类别（有可能不存在，则为null）
+        $current_cate->parent = DB::table('contest_cate')->select(['title'])->find($current_cate->parent_id);
+
         // cookie记下上次访问的类别，下次默认直接访问它
         Cookie::queue('unencrypted_contests_default_cate', $current_cate->id, 5256000); // 10 years
 

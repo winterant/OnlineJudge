@@ -114,7 +114,7 @@ class UserController extends Controller
             'username', 'nick', 'solved', 'accepted', 'submitted'
         ])
             ->when($_GET['username'] ?? false, function ($q) {
-                return $q->where('username', 'like', '%' . $_GET['username'] . '%');
+                return $q->where('username', 'like', $_GET['username'] . '%');
             })
             ->orderByDesc('solved')
             ->orderBy('submitted')
