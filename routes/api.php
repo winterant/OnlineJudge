@@ -39,45 +39,48 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+'])->group(function
      */
 
     // =========================== notice ===================================
-    Route::name('notice.')->group(function () {
-        Route::get('/notices/{id}', 'NoticeController@get_notice')->name('get_notice');
+    Route::middleware([])->group(function () {
+        Route::get('/notices/{id}', 'NoticeController@get_notice')->name('notice.get_notice');
     });
 
     // =========================== problem ===================================
-    Route::name('problem.')->group(function () {
-        Route::post('/problem-tags', 'ProblemController@submit_problem_tag')->name('submit_problem_tag');
+    Route::middleware([])->group(function () {
+        Route::post('/problem-tags', 'ProblemController@submit_problem_tag')->name('problem.submit_problem_tag');
     });
 
     // =========================== solution =================================
-    Route::name('solution.')->group(function () {
-        Route::middleware(['auth:api', 'CheckUserLocked'])->group(function () {
-            Route::post('/solutions', 'SolutionController@submit_solution')->name('submit_solution');
-            Route::post('/solutions/test', 'SolutionController@submit_local_test')->name('submit_local_test');
-            Route::get('/solutions/{id}', 'SolutionController@solution_result')->name('solution_result');
-        });
+    Route::middleware(['auth:api', 'CheckUserLocked'])->group(function () {
+        Route::post('/solutions', 'SolutionController@submit_solution')->name('solution.submit_solution');
+        Route::post('/solutions/test', 'SolutionController@submit_local_test')->name('solution.submit_local_test');
+        Route::get('/solutions/{id}', 'SolutionController@solution_result')->name('solution.solution_result');
     });
 
+
+    // =====================================================================
     // ============================ admin ==================================
     Route::prefix('admin')->name('admin.')->middleware(['auth:api', 'CheckUserLocked'])->group(function () {
         // Manage solution: route('api.admin.solution.*')
-        Route::name('solution.')->group(function () {
-            Route::middleware(['Permission:admin'])->group(function () {
-                Route::post('/solutions/statistics', 'Admin\SolutionController@correct_submitted_count')->name('correct_submitted_count');
-            });
+        Route::middleware(['Permission:admin'])->group(function () {
+            Route::post('/solutions/statistics', 'Admin\SolutionController@correct_submitted_count')->name('solution.correct_submitted_count');
         });
 
         // Manage contest: route('api.admin.contest.*')
-        Route::name('contest.')->middleware(['Permission:admin.contest'])->group(function () {
-            Route::patch('/contests/{id}/order/{shift}', 'Admin\ContestController@update_order')->name('update_order')->where(['shift' => '^(\-|\+)?[0-9]+']);
-            Route::patch('/contests/{id}/cate_id/{cate_id}', 'Admin\ContestController@update_cate_id')->name('update_cate_id');
+        Route::middleware(['Permission:admin.contest'])->group(function () {
+            Route::patch('/contests/{id}/order/{shift}', 'Admin\ContestController@update_order')->name('contest.update_order')->where(['shift' => '^(\-|\+)?[0-9]+']);
+            Route::patch('/contests/{id}/cate_id/{cate_id}', 'Admin\ContestController@update_cate_id')->name('contest.update_cate_id');
         });
 
         // Manage contest category: route('api.admin.contest.*')
-        Route::name('contest.')->middleware(['Permission:admin.contest.category'])->group(function () {
-            Route::post('/contest-categaries', 'Admin\ContestController@add_contest_cate')->name('add_contest_cate');
-            Route::put('/contest-categaries/{id}', 'Admin\ContestController@update_contest_cate')->name('update_contest_cate');
-            Route::delete('/contest-categaries/{id}', 'Admin\ContestController@delete_contest_cate')->name('delete_contest_cate');
-            Route::patch('/contest-categaries/{id}/order/{shift}', 'Admin\ContestController@update_contest_cate_order')->name('update_contest_cate_order')->where(['shift' => '^(\-|\+)?[0-9]+']);
+        Route::middleware(['Permission:admin.contest.category'])->group(function () {
+            Route::post('/contest-categaries', 'Admin\ContestController@add_contest_cate')->name('contest.add_contest_cate');
+            Route::put('/contest-categaries/{id}', 'Admin\ContestController@update_contest_cate')->name('contest.update_contest_cate');
+            Route::delete('/contest-categaries/{id}', 'Admin\ContestController@delete_contest_cate')->name('contest.delete_contest_cate');
+            Route::patch('/contest-categaries/{id}/order/{shift}', 'Admin\ContestController@update_contest_cate_order')->name('contest.update_contest_cate_order')->where(['shift' => '^(\-|\+)?[0-9]+']);
+        });
+
+        // Manage group: route('api.admin.group.*')
+        Route::middleware(['Permission:admin.group'])->group(function () {
+            Route::patch('/groups/batch', 'Admin\GroupController@update_batch')->name('group.update_batch');
         });
     });
 });

@@ -12,12 +12,22 @@ use Illuminate\Support\Facades\Hash;
 
 class GroupController extends Controller
 {
+    // 后台管理 group列表
     public function list()
     {
-        // todo
-        return view('admin.success', ['msg' => '待开发，请暂时在前台查看和管理课程']);
+        $groups = DB::table('groups as c')
+            ->leftJoin('users', 'users.id', '=', 'creator')
+            ->select(['c.*', 'username'])
+            ->when(isset($_GET['name']), function ($q) {
+                return $q->where('c.name', 'like', '%' . $_GET['name'] . '%');
+            })
+            ->orderByDesc('id')
+            ->paginate($_GET['perPage'] ?? 10);
+
+        return view('admin.group.list', compact('groups'));
     }
 
+    // 编辑group
     public function edit(Request $request)
     {
         // 用isset($_GET['id'])区分新建和修改
