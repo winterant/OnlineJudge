@@ -1,18 +1,19 @@
 {{-- 导航栏项 --}}
-<div class="collapse navbar-collapse navbar-active" id="bs-example-navbar-collapse-1">
+<div class="collapse navbar-collapse">
   <ul class="navbar-nav nav-tabs">
     <li class="nav-item">
-      <a id="link_home" class="nav-link text-nowrap p-2" href="{{ route('home') }}">
+      <a class="nav-link text-nowrap p-2 @if (Route::currentRouteName() == 'home') active @endif" href="{{ route('home') }}">
         <i class="fa fa-home" aria-hidden="true">&nbsp;{{ trans('main.Home') }}</i>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-nowrap p-2" href="{{ route('status') }}">
+      <a class="nav-link text-nowrap p-2 @if (Route::currentRouteName() == 'status') active @endif" href="{{ route('status') }}">
         <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;{{ trans('main.HomeStatus') }}</i>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-nowrap p-2" href="{{ route('problems') }}">
+      <a class="nav-link text-nowrap p-2 @if (preg_match('/^problem\S*$/', Route::currentRouteName())) active @endif"
+        href="{{ route('problems') }}">
         <i class="fa fa-list" aria-hidden="true">&nbsp;{{ trans('main.Problems') }}</i>
       </a>
     </li>
@@ -35,22 +36,25 @@
     </li> --}}
 
     <li class="nav-item">
-      <a class="nav-link text-nowrap p-2" id="link_contests" href="{{ route('contests') }}">
+      <a class="nav-link text-nowrap p-2 @if (preg_match('/^contest\S*$/', Route::currentRouteName())) active @endif"
+        href="{{ route('contests') }}">
         <i class="fa fa-trophy" aria-hidden="true">&nbsp;{{ trans('main.Contests') }}</i>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-nowrap p-2" id="link_groups" href="{{ route('groups.my') }}">
+      <a class="nav-link text-nowrap p-2 @if (preg_match('/^group\S*$/', Route::currentRouteName())) active @endif"
+        href="{{ route('groups.my') }}">
         <i class="fa fa-folder-open" aria-hidden="true"></i>&nbsp;{{ trans('main.Groups') }}</i>
       </a>
     </li>
     {{-- <li class="nav-item">
-      <a class="nav-link text-nowrap p-2" id="link_teams" href="{{ route('teams.home') }}">
+      <a class="nav-link text-nowrap p-2 @if (preg_match('/^team\S*$/', Route::currentRouteName())) active @endif" href="{{ route('teams.home') }}">
         <i class="fa fa-users" aria-hidden="true"></i>&nbsp;{{ trans('main.Teams') }}</i>
       </a>
     </li> --}}
     <li class="nav-item">
-      <a class="nav-link text-nowrap p-2" href="{{ route('standings') }}">
+      <a class="nav-link text-nowrap p-2 @if (Route::currentRouteName() == 'standings') active @endif"
+        href="{{ route('standings') }}">
         <i class="fa fa-sort-amount-desc" aria-hidden="true">&nbsp;{{ trans('main.Standings') }}</i>
       </a>
     </li>
@@ -67,7 +71,8 @@
   <ul class="navbar-nav ml-auto">
     {{-- 语言切换 --}}
     <li class="nav-item dropdown mr-3">
-      <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+      <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false" v-pre>
         <i class="fa fa-language" aria-hidden="true"></i>
         @php($langs = ['en' => 'English', 'zh-CN' => '简体中文'])
         {{ $langs[request()->cookie('unencrypted_client_language') ?? get_setting('APP_LOCALE', 'en')] }}
@@ -93,7 +98,8 @@
       @endif
     @else
       <li class="nav-item dropdown">
-        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false" v-pre>
           <i class="fa fa-user" aria-hidden="true"></i>
           {{ Auth::user()->username }} <span class="caret"></span>
         </a>
@@ -101,7 +107,8 @@
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 
           <a class="dropdown-item" href="{{ route('user', Auth::user()->username) }}">{{ trans('main.Profile') }}</a>
-          <a class="dropdown-item" href="{{ route('password_reset', Auth::user()->username) }}">{{ trans('sentence.Reset Password') }}</a>
+          <a class="dropdown-item"
+            href="{{ route('password_reset', Auth::user()->username) }}">{{ trans('sentence.Reset Password') }}</a>
 
           @if (privilege('admin.home'))
             <a class="dropdown-item" href="{{ route('admin.home') }}">{{ trans('main.Administration') }}</a>
@@ -109,7 +116,8 @@
 
           <div class="dropdown-divider"></div>
 
-          <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+          <a class="dropdown-item" href="{{ route('logout') }}"
+            onclick="event.preventDefault();document.getElementById('logout-form').submit();">
             {{ __('main.Logout') }}
           </a>
           <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -120,36 +128,4 @@
     @endguest
   </ul>
   {{-- end of 个人信息按钮 --}}
-
-
-  {{-- 导航栏js控制 --}}
-  <script type="text/javascript">
-    // 遍历导航栏按钮，如果href与当前位置相等，就active
-    $(function() {
-      const uri = location.pathname;
-      //主导航栏, 竞赛菜单
-      $(".navbar-active ul li").find("a").each(function() {
-        if ($(this).attr("href").split('?')[0].endsWith(uri)) {
-          $(this).addClass("active");
-        }
-      });
-      //特判home
-      if (uri === "/") {
-        $("#link_home").addClass('active')
-      }
-      //特判contests
-      if (uri.indexOf('/contest') !== -1) {
-        // 先特判从group进来的contest
-        if (location.search.indexOf('group=') !== -1)
-          $('#link_groups').addClass('active')
-        else
-          $('#link_contests').addClass('active')
-      }
-      //特判groups
-      if (uri.indexOf('/group') !== -1) {
-        $('#link_groups').addClass('active')
-      }
-    })
-  </script>
-
 </div>

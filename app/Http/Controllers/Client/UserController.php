@@ -22,6 +22,8 @@ class UserController extends Controller
         $submissions = DB::table('solutions')
             ->where('user_id', $user->id)
             ->get();
+
+        // ============== 提交统计 ============
         $results = []; // 按提交结果统计
         $problem_submitted = []; // 每个题目的提交次数
         $problem_ac = []; // 每个题目的ac次数
@@ -39,7 +41,7 @@ class UserController extends Controller
             $user->class = '****';
             $user->nick = '***';
         }
-        return view('auth.user', compact('user', 'result', 'problem_submitted', 'problem_ac'));
+        return view('auth.user', compact('user', 'problem_submitted', 'problem_ac'));
     }
 
     public function user_edit(Request $request, $username)
