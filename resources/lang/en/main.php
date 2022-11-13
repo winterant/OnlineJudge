@@ -216,6 +216,7 @@ return [
     "Identity"      => "Identity",
     "Operate"       => "Operate",
     "My Studies"    => "My Studies",
+    "Study Schedule"=> "Study Schedule",
     "Join"          => "Join",
 
     // team

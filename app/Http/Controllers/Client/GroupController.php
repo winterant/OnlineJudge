@@ -105,6 +105,7 @@ class GroupController extends Controller
             ->select('g.*', 'u.username as creator_username')
             ->where('g.id', $group_id)
             ->first();
-        return view('group.member', compact('group'));
+        $user = DB::table('users')->find($user_id);
+        return view('group.member', compact('group', 'user'));
     }
 }

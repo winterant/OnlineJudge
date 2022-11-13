@@ -22,10 +22,12 @@
         <a class="nav-link py-3 @if (Route::currentRouteName() == 'group.members') active @endif"
           href="{{ route('group.members', $group->id) }}">{{ trans('main.Members') }}</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link py-3 @if (Route::currentRouteName() == 'group.member') active @endif"
-          href="{{ route('group.member', [$group->id, Auth::id()]) }}">{{ trans('main.My Studies') }}</a>
-      </li>
+      @if (Auth::check())
+        <li class="nav-item">
+          <a class="nav-link py-3 @if (Route::currentRouteName() == 'group.member') active @endif"
+            href="{{ route('group.member', [$group->id, Auth::id()]) }}">{{ trans('main.Study Schedule') }}</a>
+        </li>
+      @endif
     </ul>
   </div>
 </div>
