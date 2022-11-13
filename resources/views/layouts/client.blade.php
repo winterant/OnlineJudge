@@ -24,6 +24,14 @@
 </head>
 
 <body>
+  {{-- 判断如果是从404重定向过来的，则显示提示窗口 --}}
+  @if (($_GET['http_error'] ?? 0) == 404)
+    <script type="text/javascript">
+      $(function() {
+        Notiflix.Report.Failure('404', '您访问的页面不存在，可能相应的资源已被删除或者迁移，已为您跳转到首页。', '好的')
+      })
+    </script>
+  @endif
   {{-- 检查微信浏览器，不允许使用微信浏览器 --}}
   @if (stripos($_SERVER['HTTP_USER_AGENT'], 'wechat') !== false ||
       (stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') === false &&
