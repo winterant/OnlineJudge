@@ -1,5 +1,10 @@
+{{-- 移动端按钮 --}}
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+  <span class="navbar-toggler-icon"></span>
+</button>
+
 {{-- 导航栏项 --}}
-<div class="collapse navbar-collapse">
+<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
   <ul class="navbar-nav nav-tabs">
     <li class="nav-item">
       <a class="nav-link text-nowrap p-2 @if (Route::currentRouteName() == 'home') active @endif" href="{{ route('home') }}">
@@ -68,7 +73,7 @@
        </form> --}}
 
   {{-- 登陆按钮 --}}
-  <ul class="navbar-nav ml-auto">
+  <ul class="navbar-nav ml-auto float-right">
     {{-- 语言切换 --}}
     <li class="nav-item dropdown mr-3">
       <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"

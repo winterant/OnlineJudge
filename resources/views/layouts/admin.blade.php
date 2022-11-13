@@ -118,18 +118,19 @@
   <div class="h-100" style="padding-top: 70px;">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="z-index: 10">
+
       {{-- 移动端 左侧菜单按钮 --}}
       <button id="btn-left-menu" class="btn border m-0"
         onclick="$('#left-menu').css('display')=='none'?$('#left-menu').slideLeftShow():$('#left-menu').slideLeftHide()">
         <span class="navbar-toggler-icon"></span>
       </button>
-      {{-- 标题 --}}
+
+      {{-- 网页大标题 --}}
       <a class="navbar-brand pl-2" href="{{ route('admin.home') }}">后台管理</a>
-      {{-- 移动端按钮 --}}
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+
+      {{-- 导航栏项 --}}
       @include('layouts.navbar')
+
     </nav>
 
     <nav id="left-menu" class="col-10 col-sm-6 col-md-2 sidebar border">

@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-12 col-sm-12">
                 {{-- 菜单 --}}
-                @include('group.layouts.menu')
+                @include('group.layouts.group_menu')
             </div>
             <div class="col-lg-9 col-md-8 col-sm-12 col-12">
                 @php($ident=[0=>'已退出', 1=>'申请加入', 2=>'普通成员', 3=>'班长', 4=>'管理员'])
@@ -40,11 +40,11 @@
                                                 <td nowrap>
                                                     {{-- <a href="javascript:alert('暂不支持备注')">备注</a> --}}
                                                     <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 2])}}" >设为普通成员</a>
-                                                    <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 3])}}" 
+                                                    <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 3])}}"
                                                         class="ml-3">设为班长</a>
-                                                    <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 4])}}" 
+                                                    <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 4])}}"
                                                         class="ml-3">设为管理员</a>
-                                                    <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 0])}}" 
+                                                    <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 0])}}"
                                                         class="ml-3">移除</a>
                                                 </td>
                                             @endif
@@ -83,7 +83,7 @@
                                                     <td nowrap>{{$u->created_at}}</td>
                                                     @if(privilege('admin.group') || $group->creator == Auth::id())
                                                         <td nowrap>
-                                                            <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 2])}}" 
+                                                            <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 2])}}"
                                                                 class="ml-3">通过</a>
                                                         </td>
                                                     @endif
@@ -121,9 +121,9 @@
                                                     <td nowrap>{{$u->created_at}}</td>
                                                     @if(privilege('admin.group') || $group->creator == Auth::id())
                                                         <td nowrap>
-                                                            <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 2])}}" 
+                                                            <a href="{{route('admin.group.member_iden', [$group->id, $u->id, 2])}}"
                                                                 class="">重新邀入</a>
-                                                            <a href="{{route('admin.group.del_member', [$group->id, $u->id])}}" 
+                                                            <a href="{{route('admin.group.del_member', [$group->id, $u->id])}}"
                                                                 onclick="return confirm('彻底删除该用户将丢失用户在该群组中的备注等所有信息，确定删除？')"
                                                                 class="ml-3">彻底删除</a>
                                                         </td>
@@ -165,7 +165,7 @@
 
             <div class="col-lg-3 col-md-4 col-sm-12 col-12">
                  {{-- 侧边栏信息 --}}
-                @include('group.layouts.info')
+                @include('group.layouts.group_info')
             </div>
         </div>
     </div>
