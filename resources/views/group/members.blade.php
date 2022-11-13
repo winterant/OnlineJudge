@@ -61,7 +61,7 @@
                         <div class="form-inline">
                           <select class="border"
                             onchange="update_member_identity('{{ route('api.admin.group.update_members_batch') }}', [{{ $u->id }}], $(this).val())"
-                            style="width:auto;padding:0 1%;text-align:center;text-align-last:center;border-radius: 0.2rem">
+                            style="width:auto;padding:0 1%;text-align:center;text-align-last:center;border-radius: 0.2rem;min-width:6rem">
                             @foreach ($mod_ident as $k => $i)
                               <option value="{{ $k }}" @if ($u->identity == $k) selected @endif>
                                 @if ($u->identity == $k)
