@@ -8,7 +8,7 @@
     <div class="row">
       <div class="col-12 col-sm-12">
         {{-- 菜单 --}}
-        @include('contest.menu')
+        @include('contest.components.contest_menu')
       </div>
       @if (isset($msg))
         <div class="col-12 col-sm-12">

@@ -56,7 +56,7 @@ class ProblemController extends Controller
             ->where('hidden', 0)
             ->orderBy('id')
             ->get();
-        return view('client.problems', compact('problems', 'tag_pool'));
+        return view('problem.problems', compact('problems', 'tag_pool'));
     }
 
     public function problem($id)
@@ -72,7 +72,7 @@ class ProblemController extends Controller
             'accepted', 'solved', 'submitted'
         ])->find($id);
         if ($problem == null) //问题不存在
-            return view('client.fail', ['msg' => trans('sentence.problem_not_found')]);
+            return view('layouts.failure', ['msg' => trans('sentence.problem_not_found')]);
 
         //读取所有的提交结果的数量统计
         $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
@@ -95,7 +95,7 @@ class ProblemController extends Controller
                 foreach ($contests as $item)
                     $msg .= sprintf('[%s. %s]; ', $item->id, $item->title);
             }
-            return view('client.fail', compact('msg'));
+            return view('layouts.failure', compact('msg'));
         }
 
         //读取样例文件
@@ -148,7 +148,7 @@ class ProblemController extends Controller
             $solution_code = $solution->code ?? null;
         else
             $solution_code = null;
-        return view('client.problem', compact('problem', 'results', 'contests', 'samples', 'solutions', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool', 'solution_code'));
+        return view('problem.problem', compact('problem', 'results', 'contests', 'samples', 'solutions', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool', 'solution_code'));
     }
 
     public function load_discussion(Request $request)

@@ -29,7 +29,7 @@
 
   <div class="container">
 
-    @include('group.layouts.groups_menu')
+    @include('group.components.groups_menu')
 
     <div class="my-container bg-white">
       <div class="overflow-hidden mb-2">

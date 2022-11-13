@@ -26,7 +26,7 @@ class CheckContest
             return abort(404, '竞赛不存在'); // 竞赛不存在
 
         //contest管理员直接进入
-        if(privilege('admin.contest')) 
+        if(privilege('admin.contest'))
             return $next($request);
 
         //============== 剩余情况均为普通用户 ==============
@@ -46,13 +46,13 @@ class CheckContest
 
         // 隐藏的竞赛不允许访问
         if($contest->hidden)
-            return response()->view('client.fail',['msg'=>trans('sentence.hidden')]);
+            return response()->view('layouts.failure',['msg'=>trans('sentence.hidden')]);
 
         // 私有的竞赛检查用户是否被邀请为参赛成员
         if($contest->access=='private'
                 && DB::table('contest_users')->where('contest_id',$contest->id)
                 ->where('user_id',Auth::id())->doesntExist()) //私有竞赛，没有邀请该用户
-            return response()->view('client.fail',['msg'=>trans('sentence.not_invited')]);
+            return response()->view('layouts.failure',['msg'=>trans('sentence.not_invited')]);
 
         // 加密的竞赛需要验证参赛密码
         if($contest->access=='password') {

@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
-    public function test(Request $request)
-    {
-        return 'test api';
-    }
-
     public function home()
     {
         $notices = DB::table('notices')
@@ -59,6 +54,6 @@ class HomeController extends Controller
             // 缓存有效期至下周一
             Redis::setex('home:cache:last_week_top10', $next_monday_time - time(), json_encode($last_week));
         }
-        return view('client.home', compact('notices', 'this_week', 'last_week'));
+        return view('layouts.home', compact('notices', 'this_week', 'last_week'));
     }
 }

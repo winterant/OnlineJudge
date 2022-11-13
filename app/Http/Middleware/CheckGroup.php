@@ -30,6 +30,6 @@ class CheckGroup
         )
             return $next($request);
 
-        return response()->view('client.fail', ['msg' => '你不是该群组成员或当前群组已隐藏']);
+        return response()->view('layouts.failure', ['msg' => '你不是该群组成员或当前群组已隐藏']);
     }
 }

@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         $user = DB::table('users')->where('username', $username)->first();
         if ($user == null)
-            return view('client.fail', ['msg' => trans('sentence.User not found', ['un' => $username])]);
+            return view('layouts.failure', ['msg' => trans('sentence.User not found', ['un' => $username])]);
 
         $submissions = DB::table('solutions')
             ->where('user_id', $user->id)
@@ -47,7 +47,7 @@ class UserController extends Controller
     public function user_edit(Request $request, $username)
     {
         if (!privilege('admin.user.edit') && Auth::user()->username != $username) //不是管理员&&不是本人
-            return view('client.fail', ['msg' => trans('sentence.Permission denied')]);
+            return view('layouts.failure', ['msg' => trans('sentence.Permission denied')]);
 
         $user = DB::table('users')->where('username', $username)->first();
         // 提供修改界面
@@ -58,13 +58,13 @@ class UserController extends Controller
         // 提交修改资料
         if ($request->isMethod('post')) {
             if (Auth::user()->id == $user->id && $user->revise <= 0)     // 是本人&&没有修改次数
-                return view('client.fail', ['msg' => trans('sentence.forbid_edit')]); // 不允许本人修改
+                return view('layouts.failure', ['msg' => trans('sentence.forbid_edit')]); // 不允许本人修改
 
             $user = $request->input('user');
             $user['updated_at'] = date('Y-m-d H:i:s');
             $ret = DB::table('users')->where('username', $username)->update($user);
             if ($ret != 1) //失败
-                return view('client.fail', ['msg' => trans('sentence.Operation failed')]);
+                return view('layouts.failure', ['msg' => trans('sentence.Operation failed')]);
 
             // if (Auth::user()->username == $username) //是本人则次数减一
             //     DB::table('users')->where('username', $username)->decrement('revise');
@@ -75,7 +75,7 @@ class UserController extends Controller
     public function password_reset(Request $request, $username)
     {
         if (!privilege('admin.user.edit') && Auth::user()->username != $username) //不是管理员&&不是本人
-            return view('client.fail', ['msg' => trans('sentence.Permission denied')]);
+            return view('layouts.failure', ['msg' => trans('sentence.Permission denied')]);
 
         // 提供界面
         if ($request->isMethod('get')) {
@@ -100,9 +100,9 @@ class UserController extends Controller
             $ret = DB::table('users')->where('username', $username)
                 ->update(['password' => Hash::make($user['new_password']), 'updated_at' => date('Y-m-d H:i:s')]);
             if ($ret != 1) //失败
-                return view('client.fail', ['msg' => trans('sentence.Operation failed')]);
+                return view('layouts.failure', ['msg' => trans('sentence.Operation failed')]);
             Auth::logoutOtherDevices($user['new_password']); //其他设备全部失效
-            return view('client.success', ['msg' => 'Password modified successfully']);
+            return view('layouts.success', ['msg' => 'Password modified successfully']);
         }
     }
 
@@ -129,7 +129,7 @@ class UserController extends Controller
                     $user->username[$i] = '*';
             }
         }
-        return view('client.standings', compact('users'));
+        return view('user.standings', compact('users'));
     }
 
     public function change_language(Request $request, $user_lang)

@@ -17,9 +17,6 @@ use Illuminate\Support\Facades\Route;
 // 用户认证模块，包括登录注册等
 Auth::routes();
 
-// ================================ 测试路由 ================================
-Route::get('/test', 'Client\HomeController@test')->name('test'); // only for local test
-
 // ================================ 主页 ================================
 Route::get('/', 'Client\HomeController@home')->name('home');
 Route::get('/home', 'Client\HomeController@home');

@@ -1,8 +1,4 @@
 {{-- 菜单 --}}
-
-{{-- @php($menu_cate = DB::table('contest_cate')->find($contest->cate_id)) --}}
-
-
 <div class="d-flex flex-wrap">
   <ul class="breadcrumb text-nowrap">
     @if ($group = DB::table('groups')->find($_GET['group'] ?? null))

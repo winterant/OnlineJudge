@@ -8,7 +8,7 @@
     <div class="row">
       <div class="col-12 col-sm-12">
         {{-- 菜单 --}}
-        @include('group.layouts.group_menu')
+        @include('group.components.group_menu')
       </div>
       <div class="col-lg-9 col-md-8 col-sm-12 col-12">
         <div class="my-container bg-white">
@@ -50,7 +50,7 @@
       </div>
 
       <div class="col-lg-3 col-md-4 col-sm-12 col-12">
-        @include('group.layouts.group_info')
+        @include('group.components.group_info')
       </div>
     </div>
   </div>

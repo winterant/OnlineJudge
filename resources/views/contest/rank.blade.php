@@ -8,7 +8,7 @@
     <div class="row">
       {{-- 菜单 --}}
       <div class="col-sm-12 col-12">
-        @include('contest.menu')
+        @include('contest.components.contest_menu')
       </div>
     </div>
   </div>

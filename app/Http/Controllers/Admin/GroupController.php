@@ -37,9 +37,9 @@ class GroupController extends Controller
     public function edit(Request $request, $group_id)
     {
         if (!($group = DB::table('groups')->find($group_id)))
-            return view('client.fail', ['msg' => '群组不存在!']);
+            return view('layouts.failure', ['msg' => '群组不存在!']);
         if (!privilege('admin.group') && Auth::id() != $group->creator)
-            return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!']);
+            return view('layouts.failure', ['msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!']);
         // 提供界面
         $contest_ids = DB::table('group_contests as gc')
             ->join('contests as c', 'c.id', '=', 'gc.contest_id')
@@ -60,9 +60,9 @@ class GroupController extends Controller
     public function add_member(Request $request, $id)
     {
         if (!($group = DB::table('groups')->find($id)))
-            return view('client.fail', ['msg' => '群组不存在!']);
+            return view('layouts.failure', ['msg' => '群组不存在!']);
         if (!privilege('admin.group') && Auth::id() != $group->creator)
-            return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!']);
+            return view('layouts.failure', ['msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!']);
         // 开始处理
         $unames = explode(PHP_EOL, $request->input('usernames'));
         $iden = $request->input('identity');
@@ -84,9 +84,9 @@ class GroupController extends Controller
     public function del_member(Request $request, $id, $uid)
     {
         if (!($group = DB::table('groups')->find($id)))
-            return view('client.fail', ['msg' => '群组不存在!']);
+            return view('layouts.failure', ['msg' => '群组不存在!']);
         if (!privilege('admin.group') && Auth::id() != $group->creator)
-            return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!']);
+            return view('layouts.failure', ['msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!']);
         // 开始处理
         DB::table('group_users')
             ->where('group_id', $id)
@@ -99,9 +99,9 @@ class GroupController extends Controller
     public function member_iden(Request $request, $id, $uid, $iden)
     {
         if (!($group = DB::table('groups')->find($id)))
-            return view('client.fail', ['msg' => '群组不存在!']);
+            return view('layouts.failure', ['msg' => '群组不存在!']);
         if (!privilege('admin.group') && Auth::id() != $group->creator)
-            return view('client.fail', ['msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!']);
+            return view('layouts.failure', ['msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!']);
         // 开始处理
         DB::table('group_users')
             ->where('group_id', $id)

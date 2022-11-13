@@ -27,7 +27,7 @@ class ContestController extends Controller
             if (!$current_cate) // cookie保存的类别也不存在，则直接取第一个类别
                 $current_cate = DB::table('contest_cate')->first();
             if (!$current_cate)
-                return view('client.fail', ['msg' => '竞赛中没有任何可用类别，请管理员前往后台添加类别！']);
+                return view('layouts.failure', ['msg' => '竞赛中没有任何可用类别，请管理员前往后台添加类别！']);
         }
 
         // 获取父类别（有可能不存在，则为null）
@@ -277,7 +277,7 @@ class ContestController extends Controller
             $solution_code = null;
 
         // 返回页面
-        return view('contest.problem', compact(
+        return view('problem.problem', compact(
             'contest',
             'problem',
             'contest_pindex',
@@ -361,7 +361,7 @@ class ContestController extends Controller
         foreach ($solutions as &$s) {
             $s->index = $pid2index[$s->problem_id];
         }
-        return view('contest.status', compact('contest', 'solutions', 'pid2index'));
+        return view('solution.status', compact('contest', 'solutions', 'pid2index'));
     }
 
     // 在生成榜单时，计算封榜时间
@@ -409,7 +409,7 @@ class ContestController extends Controller
 
         //对于隐藏的竞赛，普通用户不能查看榜单
         if ($contest->hidden && !privilege('admin.contest')) {
-            return view('client.fail', ['msg' => '该竞赛处于隐藏状态，不可查看榜单。']);
+            return view('layouts.failure', ['msg' => '该竞赛处于隐藏状态，不可查看榜单。']);
         }
 
         // ===================== 计算榜单，每10秒刷新一次 ====================

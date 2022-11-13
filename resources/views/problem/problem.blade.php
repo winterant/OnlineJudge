@@ -55,7 +55,7 @@
       {{-- 竞赛下，显示菜单 --}}
       @if (isset($contest))
         <div class="mt-3">
-          @include('contest.menu')
+          @include('contest.components.contest_menu')
         </div>
 
         {{-- 题号链接 --}}
@@ -202,13 +202,13 @@
       {{-- 讨论版 --}}
       @if (get_setting('show_disscussions'))
         <div class="mt-3">
-          @include('client.layout.disscussions')
+          @include('problem.components.disscussions')
         </div>
       @endif
 
       {{-- 已经AC的用户进行标签标记 --}}
       <div class="mt-3">
-        @include('client.layout.problem_tag')
+        @include('problem.components.problem_tag')
       </div>
 
       {{-- 题库中查看题目时，显示涉及到的竞赛 --}}
@@ -242,7 +242,7 @@
     </div>
     <div id="resize"></div>
     <div id="right">
-      @include('client.layout.code_editor')
+      @include('problem.components.code_editor')
     </div>
   </div>
 

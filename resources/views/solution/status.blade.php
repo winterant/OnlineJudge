@@ -13,7 +13,7 @@
       {{-- 竞赛菜单 --}}
       @if (isset($contest))
         <div class="col-12 col-sm-12">
-          @include('contest.menu')
+          @include('contest.components.contest_menu')
         </div>
       @endif
       <div class="col-12">

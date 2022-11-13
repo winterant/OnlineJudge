@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-  @include('layouts.head')
+  @include('layouts.components.head')
   <title>@yield('title')</title>
 
   <style type="text/css">
@@ -57,20 +57,20 @@
     <a class="navbar-brand text-center" style="min-width: 200px">{{ get_setting('siteName') }}</a>
 
     {{-- 导航栏菜单项 --}}
-    @include('layouts.navbar')
+    @include('layouts.components.navbar')
 
   </nav>
 
   {{-- 除了题目页面外，都要滚动显示公告 --}}
   @if (!in_array(Route::currentRouteName(), ['problem', 'contest.problem']))
-    <div class="container">@include('layouts.notice_marquee')</div>
+    <div class="container">@include('layouts.components.notice_marquee')</div>
   @endif
 
   {{-- 主界面 --}}
   @yield('content')
 
   {{-- 页脚 --}}
-  @include('layouts.footer')
+  @include('layouts.components.footer')
 
 </body>
 

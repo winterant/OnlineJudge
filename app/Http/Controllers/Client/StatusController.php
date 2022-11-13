@@ -80,7 +80,7 @@ class StatusController extends Controller
                 $s->ip_loc = '';
             }
         }
-        return view('client.status', compact('solutions'));
+        return view('solution.status', compact('solutions'));
     }
 
     // 状态页面使用ajax实时更新题目的判题结果 TODO Delete this function
@@ -128,8 +128,8 @@ class StatusController extends Controller
             privilege('admin.problem.solution') ||
             (Auth::id() == $solution->user_id && $solution->submit_time > Auth::user()->created_at)
         )
-            return view('client.solution', compact('solution'));
-        return view('client.fail', ['msg' => trans('sentence.Permission denied')]);
+            return view('solution.solution', compact('solution'));
+        return view('layouts.failure', ['msg' => trans('sentence.Permission denied')]);
     }
 
     // web 读取出错数据
@@ -141,14 +141,14 @@ class StatusController extends Controller
             ->where('solutions.id', $id)
             ->first();
         if (!$solution || $solution->wrong_data === null)
-            return view('client.fail', ['msg' => '没有记录出错数据']);
+            return view('layouts.failure', ['msg' => '没有记录出错数据']);
         $allow_get = false;
         if (privilege('admin.problem.solution')) // 管理员可以直接看
             $allow_get = true;
         else if (Auth::id() == $solution->user_id) // 普通用户
         {
             if ($solution->end_time && date('Y-m-d H:i:s') < $solution->end_time) // 比赛未结束
-                return view('client.fail', ['msg' => trans('sentence.not_end')]);
+                return view('layouts.failure', ['msg' => trans('sentence.not_end')]);
             $allow_get = true;
         }
         if ($allow_get) {
@@ -158,9 +158,9 @@ class StatusController extends Controller
                 $text = file_get_contents(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.out'));
             else
                 $text = file_get_contents(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.ans'));
-            return view('client.solution_wrong_data', compact('text'));
+            return view('solution.solution_wrong_data', compact('text'));
         }
-        return view('client.fail', ['msg' => trans('sentence.Permission denied')]);
+        return view('layouts.failure', ['msg' => trans('sentence.Permission denied')]);
     }
 
     //将用户解决方案提交到数据库
@@ -173,7 +173,7 @@ class StatusController extends Controller
     //             ->orderByDesc('submit_time')
     //             ->value('submit_time');
     //         if (time() - strtotime($last_submit_time) < intval(get_setting('submit_interval')))
-    //             return view('client.fail', ['msg' => trans('sentence.submit_frequently', ['sec' => get_setting('submit_interval')])]);
+    //             return view('layouts.failure', ['msg' => trans('sentence.submit_frequently', ['sec' => get_setting('submit_interval')])]);
     //     }
 
     //     //============================= 预处理提交记录的字段 =================================
@@ -189,7 +189,7 @@ class StatusController extends Controller
     //     if (isset($data['cid'])) {
     //         $contest = DB::table("contests")->select('judge_type', 'allow_lang', 'end_time')->find($data['cid']);
     //         if (!((1 << $data['language']) & $contest->allow_lang)) //使用了不允许的代码语言
-    //             return view('client.fail', ['msg' => 'Using a programming language that is not allowed!']);
+    //             return view('layouts.failure', ['msg' => 'Using a programming language that is not allowed!']);
     //     } else { //else 从题库中进行提交，需要判断一下用户权限
     //         $hidden = $problem->hidden;
     //         if (
@@ -197,7 +197,7 @@ class StatusController extends Controller
     //             !privilege('admin.problem.list') &&
     //             $hidden == 1
     //         ) //不是管理员&&问题隐藏 => 不允许提交
-    //             return view('client.fail', ['msg' => trans('main.Problem') . $data['pid'] . '：' . trans('main.Hidden')]);
+    //             return view('layouts.failure', ['msg' => trans('main.Problem') . $data['pid'] . '：' . trans('main.Hidden')]);
     //     }
 
     //     //如果是填空题，填充用户的答案
@@ -211,7 +211,7 @@ class StatusController extends Controller
 
     //     //检测过短的代码
     //     if (strlen($data['code']) < 3)
-    //         return view('client.fail', ['msg' => '代码长度过短！']);
+    //         return view('layouts.failure', ['msg' => '代码长度过短！']);
 
     //     $solution = [
     //         'problem_id'    => $data['pid'],
