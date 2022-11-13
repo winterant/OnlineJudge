@@ -80,10 +80,8 @@
                     <td nowrap>{{ $u->created_at }}</td>
                     @if (privilege('admin.group') || $group->creator == Auth::id())
                       <td nowrap>
-                        @if ($u->identity <= 1)
-                          <a href="{{ route('admin.group.del_member', [$group->id, $u->user_id]) }}"
-                            onclick="return confirm('删除该用户将丢失其在当前课程中的所有信息，确定删除？')">删除</a>
-                        @endif
+                        <a href="{{ route('admin.group.del_member', [$group->id, $u->user_id]) }}"
+                          onclick="return confirm('删除该用户将丢失其在当前课程中的所有信息，确定删除？')">删除</a>
                       </td>
                     @endif
                   </tr>

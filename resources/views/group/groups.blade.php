@@ -68,9 +68,15 @@
       <div class="row row-eq-height">
         @foreach ($groups as $item)
           <div class="col-12 col-sm-6 col-md-3">
-            <div class="my-3 p-3 border">
+            <div class="my-3 p-3 border position-relative">
               {{-- <img class="" src="" alt="" /> --}}
-              <h5>
+              @if ($item->hidden)
+                <span class="text-nowrap position-absolute" style="font-size: 0.9rem; right:1rem; top:1rem;">
+                  <i class="fa fa-eye-slash ml-2" aria-hidden="true"></i>
+                  <span class="text-gray">{{ __('main.Hidden') }}</span>
+                </span>
+              @endif
+              <h5 style="@if ($item->hidden) width: 80% @endif">
                 <a href="{{ route('group.home', $item->id) }}">
                   {{ $item->name }}
                 </a>
@@ -102,40 +108,53 @@
                       <td nowrap><a href="{{ route('user', $item->creator) }}" target="_blank">{{ $item->creator }}</a>
                       </td>
                     </tr>
+                    <tr>
+                      <td nowrap>{{ __('main.Join') }}:</td>
+                      <td nowrap>
+                        @if ($item->hidden)
+                          <i class="fa fa-lock" aria-hidden="true"></i>
+                          <span>{{ __('main.Private') }}</span>
+                        @else
+                          <i class="fa fa-unlock" aria-hidden="true"></i>
+                          <span>{{ __('main.Public') }}</span>
+                        @endif
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
               {{-- <p style="font-size: 0.85rem">
-                                @php($max_desc=120)
-                                @if (strlen($item->description) > $max_desc)
-                                    @php($item->description=substr($item->description, 0, $max_desc))
-                                @endif
-                                {{$item->description}}
-                            </p> --}}
-              <div class="my-2">
-                @if ($item->private)
-                  <i class="fa fa-tag text-sky" aria-hidden="true"></i>
-                  <span style="font-size: 0.75rem;color:red">{{ __('main.Private') }}</span>
-                @endif
-                @if ($item->hidden)
-                  <i class="fa fa-tag text-sky" aria-hidden="true"></i>
-                  <span style="font-size: 0.75rem;color:red">{{ __('main.Hidden') }}</span>
-                @endif
-              </div>
-              <div class="pull-right">
+                      @php($max_desc=120)
+                      @if (strlen($item->description) > $max_desc)
+                          @php($item->description=substr($item->description, 0, $max_desc))
+                      @endif
+                      {{$item->description}}
+                  </p> --}}
+
+              {{-- 操作按钮 --}}
+              <div class="position-absolute" style="bottom:1rem; right:1rem;">
                 @if (isset($item->user_in_group) && $item->user_in_group <= 1)
+                  @php($has_btn = true)
                   @if ($item->user_in_group == 1)
-                    <a class="btn btn-info">申请中</a>
+                    <a class="btn btn-info border">申请中</a>
                   @else
-                    {{-- <a class="btn btn-info" href="{{route('groups.joinin',['id'=>$item->id])}}">申请加入</a> --}}
+                    {{-- <a class="btn btn-info border" href="{{route('groups.joinin',['id'=>$item->id])}}">申请加入</a> --}}
                   @endif
                 @endif
                 @if (privilege('admin.group'))
-                  <a class="btn btn-info" href="{{ route('admin.group.edit', [$item->id]) }}" target="_blank">编辑</a>
-                  <a class="btn btn-danger" href="{{ route('admin.group.delete', $item->id) }}"
+                  @php($has_btn = true)
+                  <a class="btn btn-info border" href="{{ route('admin.group.edit', [$item->id]) }}"
+                    target="_blank">编辑</a>
+                  <a class="btn btn-danger border" href="{{ route('admin.group.delete', $item->id) }}"
                     onclick="return confirm('数据宝贵! 确定删除吗？')">删除</a>
                 @endif
               </div>
+
+              {{-- 一个虚拟按钮撑起高度 --}}
+              @if (isset($has_btn))
+                <a class="btn my-2" style="z-index: -1000">&nbsp;</a>
+              @endif
+
             </div>
           </div>
         @endforeach

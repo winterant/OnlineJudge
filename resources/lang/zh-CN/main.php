@@ -216,6 +216,7 @@ return [
     "Identity"      => "身份",
     "Operate"       => "操作",
     "My Studies"    => "我的学习",
+    "Join"          => "加入",
 
     // team
     "Team"          => "团队",
