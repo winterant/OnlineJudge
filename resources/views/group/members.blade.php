@@ -55,9 +55,9 @@
                     <td nowrap>{{ $u->school }} &nbsp; {{ $u->class }}</td>
                     <td nowrap>{{ $u->nick }}</td>
                     <td nowrap>
+                      @php($ident = [0 => '已退出', 1 => '申请加入', 2 => '学生', 3 => '学生班长', 4 => '管理员'])
+                      @php($mod_ident = [0 => '移除', 1 => '设为申请中', 2 => '设为学生', 3 => '设为学生班长', 4 => '设为管理员'])
                       @if (privilege('admin.group') || $group->creator == Auth::id())
-                        @php($ident = [0 => '已退出', 1 => '申请加入', 2 => '学生', 3 => '学生班长', 4 => '管理员'])
-                        @php($mod_ident = [0 => '移除', 1 => '设为申请中', 2 => '设为学生', 3 => '设为学生班长', 4 => '设为管理员'])
                         <div class="form-inline">
                           <select class="border"
                             onchange="update_member_identity('{{ route('api.admin.group.update_members_batch') }}', [{{ $u->id }}], $(this).val())"
@@ -78,13 +78,13 @@
                       @endif
                     </td>
                     <td nowrap>{{ $u->created_at }}</td>
-                    @if (privilege('admin.group') || $group->creator == Auth::id())
-                      <td nowrap>
-                        <a href="{{route('group.member',[$group->id,$u->user_id])}}">{{__('查看')}}</a>
+                    <td nowrap>
+                      <a href="{{ route('group.member', [$group->id, $u->user_id]) }}">{{ __('查看Ta的学习') }}</a>
+                      @if (privilege('admin.group') || $group->creator == Auth::id())
                         <a class="ml-3" href="{{ route('admin.group.del_member', [$group->id, $u->user_id]) }}"
                           onclick="return confirm('删除该用户将丢失其在当前课程中的所有信息，确定删除？')">删除</a>
-                      </td>
-                    @endif
+                      @endif
+                    </td>
                   </tr>
                 @endforeach
               </tbody>
