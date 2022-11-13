@@ -68,22 +68,43 @@ class GroupController extends Controller
     }
 
     // 具体的某一群组的成员列表
-    public function members(Request $request, $id)
+    public function members(Request $request, $group_id)
     {
         $group = DB::table('groups as g')
             ->leftJoin('users as u', 'u.id', '=', 'g.creator')
             ->select('g.*', 'u.username as creator_username')
-            ->where('g.id', $id)
+            ->where('g.id', $group_id)
             ->first();
+
+        // $identities = [0 => '已退出', 1 => '申请加入', 2 => '学生', 3 => '班长', 4 => '管理员'];
+        if (!isset($_GET['identity']))
+            $_GET['identity'] = '2,3,4'; // 以逗号分隔的数字,身份代号
+
         $members = DB::table('group_users as gu')
             ->join('users as u', 'u.id', '=', 'gu.user_id')
-            ->where('gu.group_id', $id)
+            ->select(['u.username', 'u.nick', 'u.school', 'u.class', 'u.id as user_id', 'gu.id', 'gu.identity', 'gu.created_at'])
+            ->where('gu.group_id', $group_id)
+            ->when(isset($_GET['username']) && $_GET['username'] != '', function ($q) {
+                return $q->where('u.username', 'like', $_GET['username'] . '%');
+            })
+            ->whereIn('identity', explode(',', $_GET['identity']))
             ->orderByDesc('gu.identity')
-            ->orderBy('u.username')
-            ->get(['u.*', 'gu.identity', 'gu.created_at']);
+            // ->orderBy('u.username')
+            ->paginate();
         $member_count = [];
         for ($i = 0; $i <= 4; $i++) $member_count[$i] = 0;
         foreach ($members as $m) $member_count[$m->identity]++;
         return view('group.members', compact('group', 'members', 'member_count'));
+    }
+
+    // 学习报告
+    public function member(Request $request, $group_id, $user_id)
+    {
+        $group = DB::table('groups as g')
+            ->leftJoin('users as u', 'u.id', '=', 'g.creator')
+            ->select('g.*', 'u.username as creator_username')
+            ->where('g.id', $group_id)
+            ->first();
+        return view('group.member', compact('group'));
     }
 }

@@ -83,7 +83,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
 });
 
 // ================================ groups 课程/群组 ================================
-Route::middleware(['auth'])->where(['id' => '[0-9]+'])->group(function () {
+Route::middleware(['auth'])->where(['id' => '[0-9]+', 'uid' => '[0-9]+'])->group(function () {
     // 群组列表
     Route::get('my-groups', 'Client\GroupController@mygroups')->name('groups.my');
     Route::get('groups', 'Client\GroupController@allgroups')->name('groups');
@@ -91,6 +91,7 @@ Route::middleware(['auth'])->where(['id' => '[0-9]+'])->group(function () {
     Route::middleware(['auth', 'CheckGroup', 'CheckUserLocked'])->group(function () {
         Route::get('groups/{id}', 'Client\GroupController@home')->name('group.home');
         Route::get('groups/{id}/members', 'Client\GroupController@members')->name('group.members');
+        Route::get('groups/{id}/members/{uid}', 'Client\GroupController@member')->name('group.member');
     });
 });
 
@@ -205,7 +206,6 @@ Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')-
         Route::get('groups/{id}/delete', 'Admin\GroupController@delete')->name('group.delete');
         Route::post('groups/{id}/add_member', 'Admin\GroupController@add_member')->name('group.add_member');
         Route::get('groups/{id}/members/{uid}/delete', 'Admin\GroupController@del_member')->name('group.del_member');
-        Route::get('groups/{id}/members/{uid}/update_iden/{iden}', 'Admin\GroupController@member_iden')->name('group.member_iden');
     });
 
     // settings

@@ -95,18 +95,4 @@ class GroupController extends Controller
         return back();
     }
 
-    // get 修改用户身份
-    public function member_iden(Request $request, $id, $uid, $iden)
-    {
-        if (!($group = DB::table('groups')->find($id)))
-            return view('layouts.failure', ['msg' => '群组不存在!']);
-        if (!privilege('admin.group') && Auth::id() != $group->creator)
-            return view('layouts.failure', ['msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!']);
-        // 开始处理
-        DB::table('group_users')
-            ->where('group_id', $id)
-            ->where('user_id', $uid)
-            ->update(['identity' => $iden]);
-        return back();
-    }
 }

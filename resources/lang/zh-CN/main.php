@@ -215,6 +215,7 @@ return [
     "Date Added"    => "加入时间",
     "Identity"      => "身份",
     "Operate"       => "操作",
+    "My Studies"    => "我的学习",
 
     // team
     "Team"          => "团队",

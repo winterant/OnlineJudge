@@ -215,6 +215,7 @@ return [
     "Date Added"    => "Date Added",
     "Identity"      => "Identity",
     "Operate"       => "Operate",
+    "My Studies"    => "My Studies",
 
     // team
     "Team"          => "Team",
