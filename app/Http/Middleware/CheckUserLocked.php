@@ -20,7 +20,7 @@ class CheckUserLocked
      */
     public function handle($request, Closure $next)
     {
-        // 检查已登陆用户是否被拉黑
+        // 检查已登陆用户是否已被拉黑？（不登陆用户将不会被阻止，直接跳过该中间件）
         if (request()->is('api/*') && auth('api')->check()) {
             if (auth('api')->user()->locked && auth('api')->user()->username != 'admin')
                 return response()->json([

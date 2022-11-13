@@ -21,6 +21,7 @@ Auth::routes();
 Route::get('/', 'Client\HomeController@home')->name('home');
 Route::get('/home', 'Client\HomeController@home');
 
+
 // ================================ 修改语言 ================================
 Route::get('/change_language/{lang}', 'Client\UserController@change_language')->name('change_language');
 
@@ -36,8 +37,13 @@ Route::middleware(['auth', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group
 
 // ================================ 题目 ================================
 Route::get('/problems', 'Client\ProblemController@problems')->name('problems');
-Route::get('/problem/{id}', 'Client\ProblemController@problem')->middleware('CheckUserLocked')->where(['id' => '[0-9]+'])->name('problem');
-//  题目页面讨论板模块
+Route::middleware(['CheckUserLocked'])->where(['id' => '[0-9]+'])->group(function () {
+    Route::get('/problems/{id}', 'Client\ProblemController@problem')->name('problem');
+});
+
+
+// =============================== 题目 > 讨论板模块 ======================
+// todo: 开发计划：取消讨论版功能，改为网站全局文章功能，每篇文章可以是题解、博文、知识讲解等。）
 Route::post('/load_discussion', 'Client\ProblemController@load_discussion')->name('load_discussion');
 Route::middleware(['auth', 'CheckUserLocked'])->group(function () {
     Route::post('/edit_discussion/{pid}', 'Client\ProblemController@edit_discussion')->name('edit_discussion')->where(['pid' => '[0-9]+']);
@@ -50,52 +56,55 @@ Route::middleware(['auth', 'CheckUserLocked', 'Permission:admin.problem.discussi
 
 
 // ================================ 竞赛 ================================
-Route::get('/contests', 'Client\ContestController@contests')->name('contests');
-
-Route::prefix('contest/{id}')->name('contest.')->group(function () {
+Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-9]+', 'bid' => '[0-9]+'])->group(function () {
+    // 竞赛列表
+    Route::get('contests', 'Client\ContestController@contests')->name('contests');
+    // 竞赛详情
     Route::middleware(['auth', 'CheckContest', 'CheckUserLocked'])->group(function () {
-        Route::get('/', 'Client\ContestController@home')->name('home');
-        Route::get('/problem/{pid}', 'Client\ContestController@problem')->name('problem')->where(['pid' => '[0-9]+']);
-        Route::get('/status', 'Client\ContestController@status')->name('status');
-        Route::get('/notices', 'Client\ContestController@notices')->name('notices'); //公告
-        Route::post('/get_notice', 'Client\ContestController@get_notice')->name('get_notice'); //获取一条公告
-        Route::get('/private_rank', 'Client\ContestController@rank')->name('private_rank'); // 私有榜单
+        Route::get('contests/{id}', 'Client\ContestController@home')->name('contest.home');
+        Route::get('contests/{id}/problems/{pid}', 'Client\ContestController@problem')->name('contest.problem');
+        Route::get('contests/{id}/status', 'Client\ContestController@status')->name('contest.status');
+        Route::get('contests/{id}/notices', 'Client\ContestController@notices')->name('contest.notices'); //公告
+        Route::post('contests/{id}/get_notice', 'Client\ContestController@get_notice')->name('contest.get_notice'); //获取一条公告
+        Route::get('contests/{id}/private_rank', 'Client\ContestController@rank')->name('contest.private_rank'); // 私有榜单
+        // todo: 公告、气球 需要定制api
         Route::middleware(['Permission:admin.contest'])->group(function () {
-            Route::post('/edit_notice', 'Client\ContestController@edit_notice')->name('edit_notice'); //编辑/添加一条公告
-            Route::post('/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('delete_notice')->where(['nid' => '[0-9]+']); //删除一条公告
+            Route::post('contests/{id}/edit_notice', 'Client\ContestController@edit_notice')->name('contest.edit_notice'); //编辑/添加一条公告
+            Route::post('contests/{id}/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('contest.delete_notice'); //删除一条公告
         });
         Route::middleware(['Permission:admin.contest.balloon'])->group(function () { //气球,需要权限
-            Route::get('/balloons', 'Client\ContestController@balloons')->name('balloons');
-            Route::post('/deliver_ball/{bid}', 'Client\ContestController@deliver_ball')->name('deliver_ball')->where(['bid' => '[0-9]+']);
+            Route::get('contests/{id}/balloons', 'Client\ContestController@balloons')->name('contest.balloons');
+            Route::post('contests/{id}/deliver_ball/{bid}', 'Client\ContestController@deliver_ball')->name('contest.deliver_ball');
         });
     });
-    Route::any('/password', 'Client\ContestController@password')->middleware(['auth'])->name('password');
-    Route::get('/rank', 'Client\ContestController@rank')->name('rank'); // 公开榜单
+    Route::get('contests/{id}/rank', 'Client\ContestController@rank')->name('contest.rank'); // 公开榜单
+    // todo: 提交密码需要定制api
+    Route::any('contests/{id}/password', 'Client\ContestController@password')->middleware(['auth'])->name('contest.password');
 });
 
 // ================================ groups 课程/群组 ================================
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->where(['id' => '[0-9]+'])->group(function () {
     // 群组列表
     Route::get('my-groups', 'Client\GroupController@mygroups')->name('groups.my');
     Route::get('groups', 'Client\GroupController@allgroups')->name('groups');
     // 具体的一门课程/群组
-    Route::middleware(['auth', 'CheckGroup', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group(function () {
+    Route::middleware(['auth', 'CheckGroup', 'CheckUserLocked'])->group(function () {
         Route::get('groups/{id}', 'Client\GroupController@home')->name('group.home');
         Route::get('groups/{id}/members', 'Client\GroupController@members')->name('group.members');
     });
 });
 
 // ================================ 团队（teams） ================================
-Route::middleware(['auth'])->prefix('teams')->name('teams.')->group(function () {
-    Route::get('/', 'Client\TeamController@teams')->name('home');
+Route::middleware(['auth'])->where(['id' => '[0-9]+'])->group(function () {
+    Route::get('teams', 'Client\TeamController@teams')->name('teams');
 });
 
 // ================================ 用户（users） ================================
 Route::get('/standings', 'Client\UserController@standings')->name('standings');
-Route::get('/user/{username}', 'Client\UserController@user')->name('user');
+Route::get('/users/{username}', 'Client\UserController@user')->name('user');
 Route::middleware(['auth', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group(function () {
-    Route::any('/user/{username}/edit', 'Client\UserController@user_edit')->name('user_edit');
-    Route::any('/user/{username}/password_reset', 'Client\UserController@password_reset')->name('password_reset');
+    Route::any('/users/{username}/edit', 'Client\UserController@user_edit')->name('user_edit');
+    Route::any('/users/{username}/reset-password', 'Client\UserController@password_reset')->name('password_reset');
 });
 
 
@@ -107,96 +116,96 @@ Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')-
     });
 
     //    manage notice
-    Route::middleware(['Permission:admin.notice'])->prefix('notice')->name('notice.')->group(function () {
-        Route::get('/list', 'Admin\NoticeController@list')->name('list');
-        Route::any('/add', 'Admin\NoticeController@add')->name('add');
-        Route::any('/update/{id}', 'Admin\NoticeController@update')->name('update');
-        Route::post('/delete', 'Admin\NoticeController@delete')->name('delete');
-        Route::post('/update/state', 'Admin\NoticeController@update_state')->name('update_state');
+    Route::middleware(['Permission:admin.notice'])->group(function () {
+        Route::get('notices', 'Admin\NoticeController@list')->name('notice.list');
+        Route::any('notices/add', 'Admin\NoticeController@add')->name('notice.add');
+        Route::any('notices/update/{id}', 'Admin\NoticeController@update')->name('notice.update');
+        Route::post('notices/delete', 'Admin\NoticeController@delete')->name('notice.delete');
+        Route::post('notices/update-state', 'Admin\NoticeController@update_state')->name('notice.update_state');
     });
 
     //   manage user
-    Route::middleware(['Permission:admin.user'])->prefix('user')->name('user.')->group(function () {
-        Route::get('/list', 'Admin\UserController@list')->name('list');
-        Route::get('/privileges', 'Admin\UserController@privileges')->name('privileges');
-        Route::any('/create', 'Admin\UserController@create')->name('create');
-        Route::post('/delete', 'Admin\UserController@delete')->name('delete');
-        Route::post('/update/revise', 'Admin\UserController@update_revise')->name('update_revise');
-        Route::post('/update/locked', 'Admin\UserController@update_locked')->name('update_locked');
-        Route::post('/privilege/create', 'Admin\UserController@privilege_create')->name('privilege_create');
-        Route::post('/privilege/delete', 'Admin\UserController@privilege_delete')->name('privilege_delete');
-        Route::any('/reset_pwd', 'Admin\UserController@reset_pwd')->name('reset_pwd');
+    Route::middleware(['Permission:admin.user'])->group(function () {
+        Route::get('users', 'Admin\UserController@list')->name('user.list');
+        Route::get('users/privileges', 'Admin\UserController@privileges')->name('user.privileges');
+        Route::any('users/create', 'Admin\UserController@create')->name('user.create');
+        Route::post('users/delete', 'Admin\UserController@delete')->name('user.delete');
+        Route::post('users/update-revise', 'Admin\UserController@update_revise')->name('user.update_revise');
+        Route::post('users/update-locked', 'Admin\UserController@update_locked')->name('user.update_locked');
+        Route::post('user/privileges/create', 'Admin\UserController@privilege_create')->name('user.privilege_create');
+        Route::post('user/privileges/delete', 'Admin\UserController@privilege_delete')->name('user.privilege_delete');
+        Route::any('user/reset_pwd', 'Admin\UserController@reset_pwd')->name('user.reset_pwd');
     });
 
     //   manage problem list
-    Route::middleware(['Permission:admin.problem.list'])->prefix('problem')->name('problem.')->group(function () {
-        Route::get('/list', 'Admin\ProblemController@list')->name('list');
+    Route::middleware(['Permission:admin.problem.list'])->group(function () {
+        Route::get('problems', 'Admin\ProblemController@list')->name('problem.list');
     });
 
     //   manage problem editor
-    Route::middleware(['Permission:admin.problem.edit'])->prefix('problem')->name('problem.')->group(function () {
-        Route::any('/add', 'Admin\ProblemController@add')->name('add');
+    Route::middleware(['Permission:admin.problem.edit'])->group(function () {
+        Route::any('problems/add', 'Admin\ProblemController@add')->name('problem.add');
         // Route::get('/update', 'Admin\ProblemController@update')->name('update');
-        Route::any('/update/{id}', 'Admin\ProblemController@update')->name('update_withId');
-        Route::post('/update/hidden', 'Admin\ProblemController@update_hidden')->name('update_hidden');
-        Route::get('/get_spj/{pid}', 'Admin\ProblemController@get_spj')->name('get_spj');
+        Route::any('problems/{id}/update', 'Admin\ProblemController@update')->name('problem.update_withId');
+        Route::post('problems/update-hidden', 'Admin\ProblemController@update_hidden')->name('problem.update_hidden');
+        Route::get('problems/{id}/get_spj', 'Admin\ProblemController@get_spj')->name('problem.get_spj');
     });
 
     //   manage problem tag
-    Route::middleware(['Permission:admin.problem.tag'])->prefix('problem')->name('problem.')->group(function () {
-        Route::get('/tags', 'Admin\ProblemController@tags')->name('tags');
-        Route::post('/tag_delete', 'Admin\ProblemController@tag_delete')->name('tag_delete');
-        Route::get('/tag_pool', 'Admin\ProblemController@tag_pool')->name('tag_pool');
-        Route::post('/tag_pool_delete', 'Admin\ProblemController@tag_pool_delete')->name('tag_pool_delete');
-        Route::post('/tag_pool_hidden', 'Admin\ProblemController@tag_pool_hidden')->name('tag_pool_hidden');
+    Route::middleware(['Permission:admin.problem.tag'])->group(function () {
+        Route::get('problem/tags', 'Admin\ProblemController@tags')->name('problem.tags');
+        Route::post('problem/tags/delete', 'Admin\ProblemController@tag_delete')->name('problem.tag_delete');
+        Route::get('problem/tag_pool', 'Admin\ProblemController@tag_pool')->name('problem.tag_pool');
+        Route::post('problem/tag_pool/delete', 'Admin\ProblemController@tag_pool_delete')->name('problem.tag_pool_delete');
+        Route::post('problem/tag_pool/hidden', 'Admin\ProblemController@tag_pool_hidden')->name('problem.tag_pool_hidden');
     });
 
     //   manage problem data
-    Route::middleware(['Permission:admin.problem.data'])->prefix('problem')->name('problem.')->group(function () {
-        Route::get('/test_data', 'Admin\ProblemController@test_data')->name('test_data');
-        Route::post('/upload/data', 'Admin\ProblemController@upload_data')->name('upload_data');
-        Route::post('/get_data', 'Admin\ProblemController@get_data')->name('get_data');
-        Route::post('/update/data', 'Admin\ProblemController@update_data')->name('update_data');
-        Route::post('/delete/data', 'Admin\ProblemController@delete_data')->name('delete_data');
+    Route::middleware(['Permission:admin.problem.data'])->group(function () {
+        Route::get('problem/test-data', 'Admin\ProblemController@test_data')->name('problem.test_data');
+        Route::post('problem/upload-data', 'Admin\ProblemController@upload_data')->name('problem.upload_data');
+        Route::post('problem/get-data', 'Admin\ProblemController@get_data')->name('problem.get_data');
+        Route::post('problem/update-data', 'Admin\ProblemController@update_data')->name('problem.update_data');
+        Route::post('problem/delete-data', 'Admin\ProblemController@delete_data')->name('problem.delete_data');
     });
 
     //   manage problem rejudge
-    Route::middleware(['Permission:admin.problem.rejudge'])->prefix('problem')->name('problem.')->group(function () {
-        Route::any('/rejudge', 'Admin\ProblemController@rejudge')->name('rejudge');
+    Route::middleware(['Permission:admin.problem.rejudge'])->group(function () {
+        Route::any('problem/rejudge', 'Admin\ProblemController@rejudge')->name('problem.rejudge');
     });
 
     //   manage problem import export
-    Route::middleware(['Permission:admin.problem.import_export'])->prefix('problem')->name('problem.')->group(function () {
-        Route::get('/import_export', 'Admin\ProblemController@import_export')->name('import_export');
-        Route::any('/import', 'Admin\ProblemController@import')->name('import');
-        Route::any('/export', 'Admin\ProblemController@export')->name('export');
+    Route::middleware(['Permission:admin.problem.import_export'])->group(function () {
+        Route::get('problem/import_export', 'Admin\ProblemController@import_export')->name('problem.import_export');
+        Route::any('problem/import', 'Admin\ProblemController@import')->name('problem.import');
+        Route::any('problem/export', 'Admin\ProblemController@export')->name('problem.export');
     });
 
     //   manage contest
-    Route::middleware(['Permission:admin.contest'])->prefix('contest')->name('contest.')->group(function () {
-        Route::get('/list', 'Admin\ContestController@list')->name('list');
-        Route::any('/add', 'Admin\ContestController@add')->name('add');
-        Route::any('/update/{id}', 'Admin\ContestController@update')->name('update');
-        Route::post('/delete/file/{id}', 'Admin\ContestController@delete_file')->name('delete_file');
-        Route::post('/update/hidden', 'Admin\ContestController@update_hidden')->name('update_hidden');
-        Route::post('/update/public_rank', 'Admin\ContestController@update_public_rank')->name('update_public_rank');
-        Route::post('/clone', 'Admin\ContestController@clone')->name('clone');
+    Route::middleware(['Permission:admin.contest'])->group(function () {
+        Route::get('contests', 'Admin\ContestController@list')->name('contest.list');
+        Route::any('contests/add', 'Admin\ContestController@add')->name('contest.add');
+        Route::any('contests/{id}/update', 'Admin\ContestController@update')->name('contest.update');
+        Route::post('contests/{id}/delete-file', 'Admin\ContestController@delete_file')->name('contest.delete_file');
+        Route::post('contests/update-hidden', 'Admin\ContestController@update_hidden')->name('contest.update_hidden');
+        Route::post('contests/update-public_rank', 'Admin\ContestController@update_public_rank')->name('contest.update_public_rank');
+        Route::post('contests/clone', 'Admin\ContestController@clone')->name('contest.clone');
     });
     // 竞赛类别
-    Route::middleware(['Permission:admin.contest.category'])->prefix('contest')->name('contest.')->group(function () {
-        Route::get('/categories', 'Admin\ContestController@categories')->name('categories');
+    Route::middleware(['Permission:admin.contest.category'])->group(function () {
+        Route::get('contest-categories', 'Admin\ContestController@categories')->name('contest.categories');
     });
 
     // manage group
     Route::middleware(['Permission:admin.group'])->group(function () {
-        Route::get('group/list', 'Admin\GroupController@list')->name('group.list');
-        Route::get('group/create', 'Admin\GroupController@create')->name('group.create');
-        Route::get('group/edit/{id}', 'Admin\GroupController@edit')->name('group.edit');
+        Route::get('groups', 'Admin\GroupController@list')->name('group.list');
+        Route::get('groups/create', 'Admin\GroupController@create')->name('group.create');
+        Route::get('groups/{id}/edit', 'Admin\GroupController@edit')->name('group.edit');
         // 以下url不规范，待调整
-        Route::get('group/delete/{id}', 'Admin\GroupController@delete')->name('group.delete');
-        Route::post('group/add_member/{id}', 'Admin\GroupController@add_member')->name('group.add_member');
-        Route::get('group/del_member/{id}/{uid}', 'Admin\GroupController@del_member')->name('group.del_member');
-        Route::get('group/member_iden/{id}/{uid}/{iden}', 'Admin\GroupController@member_iden')->name('group.member_iden');
+        Route::get('groups/{id}/delete', 'Admin\GroupController@delete')->name('group.delete');
+        Route::post('groups/{id}/add_member', 'Admin\GroupController@add_member')->name('group.add_member');
+        Route::get('groups/{id}/members/{uid}/delete', 'Admin\GroupController@del_member')->name('group.del_member');
+        Route::get('groups/{id}/members/{uid}/update_iden/{iden}', 'Admin\GroupController@member_iden')->name('group.member_iden');
     });
 
     // settings
