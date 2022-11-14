@@ -59,8 +59,7 @@
                       @php($mod_ident = [0 => '移除', 1 => '设为申请中', 2 => '设为学生', 3 => '设为学生班长', 4 => '设为管理员'])
                       @if (privilege('admin.group') || $group->creator == Auth::id())
                         <div class="form-inline">
-                          <select class="border"
-                            onchange="update_member_identity('{{ route('api.admin.group.update_members_batch') }}', [{{ $u->id }}], $(this).val())"
+                          <select class="border" onchange="update_members_identity([{{ $u->id }}], $(this).val())"
                             style="width:auto;padding:0 1%;text-align:center;text-align-last:center;border-radius: 0.2rem;min-width:6rem">
                             @foreach ($mod_ident as $k => $i)
                               <option value="{{ $k }}" @if ($u->identity == $k) selected @endif>
@@ -81,8 +80,11 @@
                     <td nowrap>
                       <a href="{{ route('group.member', [$group->id, $u->user_id]) }}">{{ __('查看Ta的学习') }}</a>
                       @if (privilege('admin.group') || $group->creator == Auth::id())
-                        <a class="ml-3" href="{{ route('admin.group.del_member', [$group->id, $u->user_id]) }}"
-                          onclick="return confirm('删除该用户将丢失其在当前课程中的所有信息，确定删除？')">删除</a>
+                        <a class="ml-3" href="javascript:"
+                          onclick="if(confirm('删除该用户将丢失其在当前课程中的所有信息，确定删除？')){
+                            delete_members_batch([{{ $u->user_id }}]);
+                            $(this).parent().parent().remove();
+                          }">删除</a>
                       @endif
                     </td>
                   </tr>
@@ -102,7 +104,7 @@
           <div class="my-container bg-white">
             <h5>添加成员</h5>
             <hr class="mt-0">
-            <form method="post" action="{{ route('admin.group.add_member', $group->id) }}">
+            <form onsubmit="create_members(this); return false">
               <div class="form-group my-3">
                 <label>
                   <textarea name="usernames" class="form-control-plaintext border bg-white" rows="8" cols="64"
@@ -130,10 +132,11 @@
   </div>
 
   <script type="text/javascript">
-    function update_member_identity(url, ids, ident) {
+    // 批量修改成员的身份
+    function update_members_identity(ids, ident) {
       $.ajax({
         type: 'patch',
-        url: url,
+        url: '{{ route('api.admin.group.update_members_batch') }}',
         data: {
           'ids': ids,
           'value': {
@@ -150,6 +153,52 @@
         error: function(err) {
           console.log(err)
           Notiflix.Notify.Failure("请求失败");
+        }
+      })
+    }
+
+    // 批量插入新成员
+    function create_members(dom) {
+      $.ajax({
+        type: 'post',
+        url: '{{ route('api.admin.group.create_members', $group->id) }}',
+        data: $(dom).serializeJSON(),
+        success: function(ret) {
+          console.log(ret)
+          if (ret.ok) {
+            Notiflix.Notify.Success(ret.msg);
+          } else {
+            Notiflix.Report.Failure('添加失败', ret.msg, '确定')
+          }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          console.log(XMLHttpRequest.status);
+          console.log(XMLHttpRequest.readyState);
+          console.log(textStatus);
+        }
+      })
+    }
+
+    // 批量删除group成员
+    function delete_members_batch(user_ids) {
+      $.ajax({
+        type: 'delete',
+        url: '{{ route('api.admin.group.delete_members_batch', $group->id) }}',
+        data: {
+          'user_ids': user_ids
+        },
+        success: function(ret) {
+          console.log(ret)
+          if (ret.ok) {
+            Notiflix.Notify.Success(ret.msg);
+          } else {
+            Notiflix.Report.Failure('删除失败', ret.msg, '确定')
+          }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          console.log(XMLHttpRequest.status);
+          console.log(XMLHttpRequest.readyState);
+          console.log(textStatus);
         }
       })
     }

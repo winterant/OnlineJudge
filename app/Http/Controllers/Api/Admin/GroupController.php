@@ -31,6 +31,29 @@ class GroupController extends Controller
     }
 
     /**
+     * 删除group
+     * delete request:{
+     *   group:{...}
+     * }
+     */
+    public function delete($id)
+    {
+        $group = DB::table('groups')->find($id);
+        if ($group) {
+            DB::table('groups')->delete($id);
+            return [
+                'ok' => 1,
+                'msg' => '已成功删除 ' . $group->name
+            ];
+        } else {
+            return [
+                'ok' => 0,
+                'msg' => '要删除的项目不存在！请刷新页面后重试'
+            ];
+        }
+    }
+
+    /**
      * 修改group信息
      * put request:{
      *   group:{...}
@@ -130,5 +153,82 @@ class GroupController extends Controller
             return TemplateController::update_batch('group_users', $ids, $request->input('values'));
         else
             return TemplateController::update_batch('group_users', $ids, $request->input('value'), true);
+    }
+
+
+    /**
+     * 批量添加group_members
+     *
+     * post request:{
+     *   usernames:[user1,user2,...],
+     *   identity: int(^[0-4].$)
+     * }
+     *
+     * response:{
+     *   ok:(0|1),
+     *   msg:string,
+     *   data:{
+     *     updated:int
+     *   }
+     * }
+     */
+    public function create_members(Request $request, $group_id)
+    {
+        if (!($group = DB::table('groups')->find($group_id)))
+            return [
+                'ok' => 0,
+                'msg' => '群组不存在！'
+            ];
+        if (!privilege('admin.group') && Auth::id() != $group->creator)
+            return [
+                'ok' => 0,
+                'msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!'
+            ];
+
+        // 开始处理
+        $unames = explode(PHP_EOL, $request->input('usernames'));
+        $iden = $request->input('identity');
+        foreach ($unames as &$item)
+            $item = trim($item);
+        $uids = DB::table('users')->whereIn('username', $unames)->pluck('id')->toArray(); // 欲添加用户id
+        $existed_uids = DB::table('group_users')->where('group_id', $group->id)->whereIn('user_id', $uids)->pluck('user_id')->toArray(); // 已存在的用户id
+        $uids = array_diff($uids, $existed_uids); // 去掉已存在用户id，求出需要新增的用户id
+        // 插入新用户
+        DB::table('group_users')->insert(array_map(function ($v) use ($group, $iden) {
+            return ['group_id' => $group->id, 'user_id' => $v, 'identity' => $iden ?: 2];
+        }, $uids));
+        return [
+            'ok' => 1,
+            'msg' => sprintf("已成功新增%d个成员: %s", count($uids), $request->input('usernames'))
+        ];
+    }
+    /**
+     * 批量删除group_members
+     *
+     * delete request:{
+     *   ids:[1,2,...],
+     * }
+     *
+     * response:{
+     *   ok:(0|1),
+     *   msg:string,
+     * }
+     */
+    public function delete_members_batch(Request $request, $group_id)
+    {
+        if (!($group = DB::table('groups')->find($group_id)))
+            return ['ok' => 0, 'msg' => '群组不存在!'];
+        if (!privilege('admin.group') && Auth::id() != $group->creator)
+            return ['ok' => 0, 'msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!'];
+        // 开始处理
+        $deleted = DB::table('group_users')
+            ->where('group_id', $group_id)
+            ->whereIn('user_id', $request->input('user_ids'))
+            ->delete();
+        return [
+            'ok' => 1,
+            'msg' => sprintf("已删除%d个成员", $deleted),
+            'data'=>$request->all(),
+        ];
     }
 }

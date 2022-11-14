@@ -84,8 +84,10 @@
               <a href="{{ route('admin.group.edit', [$item->id]) }}" class="mx-1" target="_blank" title="修改">
                 <i class="fa fa-edit" aria-hidden="true"></i> 编辑
               </a>
-              {{-- <a href="javascript:" onclick="delete_contest({{ $item->id }})" class="mx-1" title="删除">
-                <i class="fa fa-trash" aria-hidden="true"></i> 删除 --}}
+              <a class="mx-1" href="javascript:delete_group({{ $item->id }})"
+                onclick="return confirm('数据宝贵! 确定删除吗？')">
+                <i class="fa fa-trash" aria-hidden="true"></i> 删除
+              </a>
               </a>
             </td>
           </tr>
@@ -157,5 +159,26 @@
     }
   </script>
 
-  <script type="text/javascript"></script>
+  <script type="text/javascript">
+    // 删除group
+    function delete_group(group_id) {
+      $.ajax({
+        type: 'delete',
+        url: '{{ route('api.admin.group.delete', '??') }}'.replace('??', group_id),
+        success: function(ret) {
+          console.log(ret)
+          if (ret.ok) {
+            Notiflix.Notify.Success(ret.msg);
+          } else {
+            Notiflix.Report.Failure('删除失败', ret.msg, '确定')
+          }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          console.log(XMLHttpRequest.status);
+          console.log(XMLHttpRequest.readyState);
+          console.log(textStatus);
+        }
+      })
+    }
+  </script>
 @endsection

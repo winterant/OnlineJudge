@@ -202,10 +202,6 @@ Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')-
         Route::get('groups', 'Admin\GroupController@list')->name('group.list');
         Route::get('groups/create', 'Admin\GroupController@create')->name('group.create');
         Route::get('groups/{id}/edit', 'Admin\GroupController@edit')->name('group.edit');
-        // 以下url不规范，待调整
-        Route::get('groups/{id}/delete', 'Admin\GroupController@delete')->name('group.delete');
-        Route::post('groups/{id}/add_member', 'Admin\GroupController@add_member')->name('group.add_member');
-        Route::get('groups/{id}/members/{uid}/delete', 'Admin\GroupController@del_member')->name('group.del_member');
     });
 
     // settings
