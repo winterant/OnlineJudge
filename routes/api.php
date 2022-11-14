@@ -51,8 +51,8 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+','uid' => '[0-9]+'
     // =========================== solution =================================
     Route::middleware(['auth:api', 'CheckUserLocked'])->group(function () {
         Route::post('/solutions', 'SolutionController@submit_solution')->name('solution.submit_solution');
-        Route::post('/solutions/test', 'SolutionController@submit_local_test')->name('solution.submit_local_test');
         Route::get('/solutions/{id}', 'SolutionController@solution_result')->name('solution.solution_result');
+        Route::post('/solution/test', 'SolutionController@submit_local_test')->name('solution.submit_local_test');
     });
 
 
@@ -61,7 +61,7 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+','uid' => '[0-9]+'
     Route::prefix('admin')->name('admin.')->middleware(['auth:api', 'CheckUserLocked'])->group(function () {
         // Manage solution: route('api.admin.solution.*')
         Route::middleware(['Permission:admin'])->group(function () {
-            Route::post('/solutions/statistics', 'Admin\SolutionController@correct_submitted_count')->name('solution.correct_submitted_count');
+            Route::post('/solution/correct-submitted-count', 'Admin\SolutionController@correct_submitted_count')->name('solution.correct_submitted_count');
         });
 
         // Manage contest: route('api.admin.contest.*')
