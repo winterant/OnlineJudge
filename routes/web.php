@@ -119,23 +119,25 @@ Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')-
     //    manage notice
     Route::middleware(['Permission:admin.notice'])->group(function () {
         Route::get('notices', 'Admin\NoticeController@list')->name('notice.list');
-        Route::any('notices/add', 'Admin\NoticeController@add')->name('notice.add');
-        Route::any('notices/update/{id}', 'Admin\NoticeController@update')->name('notice.update');
-        Route::post('notices/delete', 'Admin\NoticeController@delete')->name('notice.delete');
-        Route::post('notices/update-state', 'Admin\NoticeController@update_state')->name('notice.update_state');
+        Route::any('notices/{id}/update', 'Admin\NoticeController@update')->name('notice.update');
+        Route::any('notice/add', 'Admin\NoticeController@add')->name('notice.add');
+        Route::post('notice/delete', 'Admin\NoticeController@delete')->name('notice.delete');
+        Route::post('notice/update-state', 'Admin\NoticeController@update_state')->name('notice.update_state');
     });
 
     //   manage user
     Route::middleware(['Permission:admin.user'])->group(function () {
+        // users
         Route::get('users', 'Admin\UserController@list')->name('user.list');
-        Route::get('users/privileges', 'Admin\UserController@privileges')->name('user.privileges');
-        Route::any('users/create', 'Admin\UserController@create')->name('user.create');
-        Route::post('users/delete', 'Admin\UserController@delete')->name('user.delete');
-        Route::post('users/update-revise', 'Admin\UserController@update_revise')->name('user.update_revise');
-        Route::post('users/update-locked', 'Admin\UserController@update_locked')->name('user.update_locked');
-        Route::post('user/privileges/create', 'Admin\UserController@privilege_create')->name('user.privilege_create');
-        Route::post('user/privileges/delete', 'Admin\UserController@privilege_delete')->name('user.privilege_delete');
+        Route::any('user/create', 'Admin\UserController@create')->name('user.create');
         Route::any('user/reset_pwd', 'Admin\UserController@reset_pwd')->name('user.reset_pwd');
+        Route::post('user/delete', 'Admin\UserController@delete')->name('user.delete');
+        Route::post('user/update-revise', 'Admin\UserController@update_revise')->name('user.update_revise');
+        Route::post('user/update-locked', 'Admin\UserController@update_locked')->name('user.update_locked');
+        // privileges
+        Route::get('user/privileges', 'Admin\UserController@privileges')->name('user.privileges');
+        Route::post('user/privilege/create', 'Admin\UserController@privilege_create')->name('user.privilege_create');
+        Route::post('user/privilege/delete', 'Admin\UserController@privilege_delete')->name('user.privilege_delete');
     });
 
     //   manage problem list
@@ -145,10 +147,9 @@ Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')-
 
     //   manage problem editor
     Route::middleware(['Permission:admin.problem.edit'])->group(function () {
-        Route::any('problems/add', 'Admin\ProblemController@add')->name('problem.add');
-        // Route::get('/update', 'Admin\ProblemController@update')->name('update');
+        Route::any('problem/add', 'Admin\ProblemController@add')->name('problem.add');
+        Route::post('problem/update-hidden', 'Admin\ProblemController@update_hidden')->name('problem.update_hidden');
         Route::any('problems/{id}/update', 'Admin\ProblemController@update')->name('problem.update_withId');
-        Route::post('problems/update-hidden', 'Admin\ProblemController@update_hidden')->name('problem.update_hidden');
         Route::get('problems/{id}/get_spj', 'Admin\ProblemController@get_spj')->name('problem.get_spj');
     });
 
@@ -156,6 +157,7 @@ Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')-
     Route::middleware(['Permission:admin.problem.tag'])->group(function () {
         Route::get('problem/tags', 'Admin\ProblemController@tags')->name('problem.tags');
         Route::post('problem/tags/delete', 'Admin\ProblemController@tag_delete')->name('problem.tag_delete');
+        // tag_pool
         Route::get('problem/tag_pool', 'Admin\ProblemController@tag_pool')->name('problem.tag_pool');
         Route::post('problem/tag_pool/delete', 'Admin\ProblemController@tag_pool_delete')->name('problem.tag_pool_delete');
         Route::post('problem/tag_pool/hidden', 'Admin\ProblemController@tag_pool_hidden')->name('problem.tag_pool_hidden');
@@ -185,12 +187,12 @@ Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')-
     //   manage contest
     Route::middleware(['Permission:admin.contest'])->group(function () {
         Route::get('contests', 'Admin\ContestController@list')->name('contest.list');
-        Route::any('contests/add', 'Admin\ContestController@add')->name('contest.add');
         Route::any('contests/{id}/update', 'Admin\ContestController@update')->name('contest.update');
         Route::post('contests/{id}/delete-file', 'Admin\ContestController@delete_file')->name('contest.delete_file');
-        Route::post('contests/update-hidden', 'Admin\ContestController@update_hidden')->name('contest.update_hidden');
-        Route::post('contests/update-public_rank', 'Admin\ContestController@update_public_rank')->name('contest.update_public_rank');
-        Route::post('contests/clone', 'Admin\ContestController@clone')->name('contest.clone');
+        Route::any('contest/add', 'Admin\ContestController@add')->name('contest.add');
+        Route::post('contest/update-hidden', 'Admin\ContestController@update_hidden')->name('contest.update_hidden');
+        Route::post('contest/update-public_rank', 'Admin\ContestController@update_public_rank')->name('contest.update_public_rank');
+        Route::post('contest/clone', 'Admin\ContestController@clone')->name('contest.clone');
     });
     // 竞赛类别
     Route::middleware(['Permission:admin.contest.category'])->group(function () {
@@ -200,8 +202,8 @@ Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')-
     // manage group
     Route::middleware(['Permission:admin.group'])->group(function () {
         Route::get('groups', 'Admin\GroupController@list')->name('group.list');
-        Route::get('groups/create', 'Admin\GroupController@create')->name('group.create');
         Route::get('groups/{id}/edit', 'Admin\GroupController@edit')->name('group.edit');
+        Route::get('group/create', 'Admin\GroupController@create')->name('group.create');
     });
 
     // settings
