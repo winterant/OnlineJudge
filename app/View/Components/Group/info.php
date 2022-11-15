@@ -1,11 +1,11 @@
 <?php
 
-namespace App\View\Components\group;
+namespace App\View\Components\Group;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\Component;
 
-class info extends Component
+class Info extends Component
 {
     public $group;
     /**
