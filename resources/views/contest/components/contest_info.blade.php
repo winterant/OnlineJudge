@@ -20,7 +20,7 @@
       @foreach ($groups as $g)
         <li>
           <i class="fa fa-users pr-2 text-sky" aria-hidden="true"></i>
-          <a href="{{ route('group.home', $g->id) }}">{{ $g->id }}. {{ $g->name }}</a>
+          <a href="{{ route('group', $g->id) }}">{{ $g->id }}. {{ $g->name }}</a>
         </li>
       @endforeach
     </ul>

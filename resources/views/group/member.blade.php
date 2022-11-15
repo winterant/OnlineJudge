@@ -7,8 +7,8 @@
   <div class="container">
     <div class="row">
       <div class="col-12 col-sm-12">
-        {{-- 菜单 --}}
-        @include('group.components.group_menu')
+        {{-- group导航栏 --}}
+        <x-group.navbar :group-id="$group->id" :group-name="$group->name" />
       </div>
       <div class="col-lg-9 col-md-8 col-sm-12 col-12">
 
@@ -32,8 +32,7 @@
       </div>
 
       <div class="col-lg-3 col-md-4 col-sm-12 col-12">
-        {{-- 侧边栏信息 --}}
-        @include('group.components.group_info')
+        <x-group.info :group-id="$group->id" />
       </div>
     </div>
   </div>

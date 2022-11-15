@@ -97,7 +97,7 @@ class GroupController extends Controller
         return [
             'ok' => 1,
             'msg' => '修改成功',
-            'redirect' => route('group.home', $group->id)
+            'redirect' => route('group', $group->id)
         ];
     }
 

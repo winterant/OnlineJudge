@@ -69,7 +69,7 @@
                 style="vertical-align:middle;zoom: 140%">
             </td>
             <td>{{ $item->id }}</td>
-            <td nowrap><a href="{{ route('group.home', $item->id) }}" target="_blank">{{ $item->name }}</a></td>
+            <td nowrap><a href="{{ route('group', $item->id) }}" target="_blank">{{ $item->name }}</a></td>
             <td nowrap>{{ $item->grade }}</td>
             <td nowrap>{{ $item->class }}</td>
             <td nowrap>{{ $item->major }}</td>

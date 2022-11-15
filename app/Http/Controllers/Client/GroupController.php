@@ -50,13 +50,9 @@ class GroupController extends Controller
     }
 
     // 具体的某一个群组（课程）的首页
-    public function home(Request $request, $group_id)
+    public function group(Request $request, $group_id)
     {
-        $group = DB::table('groups as g')
-            ->leftJoin('users as u', 'u.id', '=', 'g.creator')
-            ->select('g.*', 'u.username as creator_username')
-            ->where('g.id', $group_id)
-            ->first();
+        $group = DB::table('groups as g')->find($group_id);
         if (!$group)
             return abort(404);
         $contests = DB::table('group_contests as gc')
@@ -64,17 +60,13 @@ class GroupController extends Controller
             ->where('gc.group_id', $group->id)
             ->orderBy('gc.id')
             ->get('c.*');
-        return view('group.home', compact('group', 'contests'));
+        return view('group.group', compact('group', 'contests'));
     }
 
     // 具体的某一群组的成员列表
     public function members(Request $request, $group_id)
     {
-        $group = DB::table('groups as g')
-            ->leftJoin('users as u', 'u.id', '=', 'g.creator')
-            ->select('g.*', 'u.username as creator_username')
-            ->where('g.id', $group_id)
-            ->first();
+        $group = DB::table('groups as g')->find($group_id);
 
         // $identities = [0 => '已退出', 1 => '申请加入', 2 => '学生', 3 => '班长', 4 => '管理员'];
         if (!isset($_GET['identity']))
@@ -100,11 +92,7 @@ class GroupController extends Controller
     // 学习报告
     public function member(Request $request, $group_id, $user_id)
     {
-        $group = DB::table('groups as g')
-            ->leftJoin('users as u', 'u.id', '=', 'g.creator')
-            ->select('g.*', 'u.username as creator_username')
-            ->where('g.id', $group_id)
-            ->first();
+        $group = DB::table('groups as g')->find($group_id);
         $user = DB::table('users')->find($user_id);
         return view('group.member', compact('group', 'user'));
     }

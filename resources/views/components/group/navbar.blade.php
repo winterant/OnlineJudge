@@ -1,5 +1,4 @@
-{{-- 菜单 --}}
-
+{{-- group导航栏 --}}
 <div class="d-flex">
   {{-- 父级目录 --}}
   <ul class="breadcrumb">
@@ -8,24 +7,24 @@
     </li>
     /
     <li class="mx-2 active">
-      <span>{{ $group->name }}</span>
+      <span>{{ $groupName }}</span>
     </li>
   </ul>
   {{-- 导航栏 --}}
   <div class="tabbable border-bottom ml-2 mb-3">
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link py-3 @if (Route::currentRouteName() == 'group.home') active @endif"
-          href="{{ route('group.home', $group->id) }}">{{ trans('main.Overview') }}</a>
+        <a class="nav-link py-3 @if (Route::currentRouteName() == 'group') active @endif"
+          href="{{ route('group', $groupId) }}">{{ trans('main.Overview') }}</a>
       </li>
       <li class="nav-item">
         <a class="nav-link py-3 @if (Route::currentRouteName() == 'group.members') active @endif"
-          href="{{ route('group.members', $group->id) }}">{{ trans('main.Members') }}</a>
+          href="{{ route('group.members', $groupId) }}">{{ trans('main.Members') }}</a>
       </li>
       @if (Auth::check())
         <li class="nav-item">
           <a class="nav-link py-3 @if (Route::currentRouteName() == 'group.member') active @endif"
-            href="{{ route('group.member', [$group->id, Auth::id()]) }}">{{ trans('main.Study Schedule') }}</a>
+            href="{{ route('group.member', [$groupId, Auth::id()]) }}">{{ trans('main.Study Schedule') }}</a>
         </li>
       @endif
     </ul>

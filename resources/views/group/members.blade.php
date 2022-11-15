@@ -7,8 +7,8 @@
   <div class="container">
     <div class="row">
       <div class="col-12 col-sm-12">
-        {{-- 菜单 --}}
-        @include('group.components.group_menu')
+        {{-- group导航栏 --}}
+        <x-group.navbar :group-id="$group->id" :group-name="$group->name" />
       </div>
       <div class="col-lg-9 col-md-8 col-sm-12 col-12">
 
@@ -20,7 +20,7 @@
               <div class="form-inline mx-3">
                 {{ __('main.Identity') }}:
                 <select name="identity" class="form-control px-2" onchange="this.form.submit();">
-                  <option value="2,3,4">现有成员</option>
+                  <option value="2,3,4">正式成员</option>
                   <option value="2,3" @if (($_GET['identity'] ?? -1) == '2,3') selected @endif>仅学生</option>
                   <option value="4" @if (($_GET['identity'] ?? -1) == 4) selected @endif>仅管理员</option>
                   <option value="1" @if (($_GET['identity'] ?? -1) == 1) selected @endif>申请中</option>
@@ -55,24 +55,21 @@
                     <td nowrap>{{ $u->school }} &nbsp; {{ $u->class }}</td>
                     <td nowrap>{{ $u->nick }}</td>
                     <td nowrap>
-                      @php($ident = [0 => '已退出', 1 => '申请加入', 2 => '学生', 3 => '学生班长', 4 => '管理员'])
-                      @php($mod_ident = [0 => '移除', 1 => '设为申请中', 2 => '设为学生', 3 => '设为学生班长', 4 => '设为管理员'])
                       @if (privilege('admin.group') || $group->creator == Auth::id())
                         <div class="form-inline">
                           <select class="border" onchange="update_members_identity([{{ $u->id }}], $(this).val())"
-                            style="width:auto;padding:0 1%;text-align:center;text-align-last:center;border-radius: 0.2rem;min-width:6rem">
+                            style="width:auto; padding:0 1%;text-align:center;text-align-last:center;border-radius: 0.2rem;min-width:6rem">
+                            <option disabled>修改成员身份</option>
+                            @php($mod_ident = [0 => '移除(保留信息)', 1 => '设为申请中', 2 => '学生', 3 => '学生班长', 4 => '管理员'])
                             @foreach ($mod_ident as $k => $i)
                               <option value="{{ $k }}" @if ($u->identity == $k) selected @endif>
-                                @if ($u->identity == $k)
-                                  {{ $ident[$k] }}
-                                @else
-                                  {{ $i }}
-                                @endif
+                                {{ $i }}
                               </option>
                             @endforeach
                           </select>
                         </div>
                       @else
+                        @php($ident = [0 => '已退出', 1 => '申请加入', 2 => '学生', 3 => '学生班长', 4 => '管理员'])
                         {{ $ident[intval($u->identity)] }}
                       @endif
                     </td>
@@ -98,7 +95,7 @@
 
       <div class="col-lg-3 col-md-4 col-sm-12 col-12">
         {{-- 侧边栏信息 --}}
-        @include('group.components.group_info')
+        <x-group.info :group-id="$group->id" />
         {{-- 管理员添加成员 --}}
         @if (privilege('admin.group') || $group->creator == Auth::id())
           <div class="my-container bg-white">
@@ -114,10 +111,9 @@
               <div class="form-inline mb-3">
                 <span>成员身份：</span>
                 <select name="identity" class="form-control px-3">
-                  <option value="2">普通成员</option>
-                  <option value="3">班长</option>
+                  <option value="2">学生</option>
+                  <option value="3">学生班长</option>
                   <option value="4">管理员</option>
-                  <option value="1">设为申请中</option>
                 </select>
               </div>
               <div class="form-group text-center">

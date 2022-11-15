@@ -4,7 +4,7 @@
     @if ($group = DB::table('groups')->find($_GET['group'] ?? null))
       {{-- 如果是从group过来的，输出一下group链接 --}}
       <li class="">
-        <a href="{{ route('group.home', $_GET['group']) }}">{{ $group->name }}</a>
+        <a href="{{ route('group', $_GET['group']) }}">{{ $group->name }}</a>
       </li>
       <span class="mx-1">/</span>
     @elseif($menu_cate = DB::table('contest_cate')->find($contest->cate_id))

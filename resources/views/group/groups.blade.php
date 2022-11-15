@@ -29,7 +29,7 @@
 
   <div class="container">
 
-    @include('group.components.groups_menu')
+    <x-group.groups.navbar />
 
     <div class="my-container bg-white">
       <div class="overflow-hidden mb-2">
@@ -77,7 +77,7 @@
                 </span>
               @endif
               <h5 style="@if ($item->hidden) width: 80% @endif">
-                <a href="{{ route('group.home', $item->id) }}">
+                <a href="{{ route('group', $item->id) }}">
                   {{ $item->name }}
                 </a>
               </h5>

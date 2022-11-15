@@ -90,7 +90,7 @@ Route::middleware(['auth'])->where(['id' => '[0-9]+', 'uid' => '[0-9]+'])->group
     Route::get('groups', 'Client\GroupController@allgroups')->name('groups');
     // 具体的一门课程/群组
     Route::middleware(['auth', 'CheckGroup', 'CheckUserLocked'])->group(function () {
-        Route::get('groups/{id}', 'Client\GroupController@home')->name('group.home');
+        Route::get('groups/{id}', 'Client\GroupController@group')->name('group');
         Route::get('groups/{id}/members', 'Client\GroupController@members')->name('group.members');
         Route::get('groups/{id}/members/{uid}', 'Client\GroupController@member')->name('group.member');
     });
