@@ -60,7 +60,7 @@
                           <select class="border" onchange="update_members_identity([{{ $u->id }}], $(this).val())"
                             style="width:auto; padding:0 1%;text-align:center;text-align-last:center;border-radius: 0.2rem;min-width:6rem">
                             <option disabled>修改成员身份</option>
-                            @php($mod_ident = [0 => '移除(保留信息)', 1 => '设为申请中', 2 => '学生', 3 => '学生班长', 4 => '管理员'])
+                            @php($mod_ident = [2 => '学生', 3 => '学生班长', 4 => '管理员'])
                             @foreach ($mod_ident as $k => $i)
                               <option value="{{ $k }}" @if ($u->identity == $k) selected @endif>
                                 {{ $i }}
@@ -78,10 +78,15 @@
                       <a href="{{ route('group.member', [$group->id, $u->user_id]) }}">{{ __('查看Ta的学习') }}</a>
                       @if (privilege('admin.group') || $group->creator == Auth::id())
                         <a class="ml-3" href="javascript:"
-                          onclick="if(confirm('删除该用户将丢失其在当前课程中的所有信息，确定删除？')){
+                          onclick="if(confirm('该用户被移除后，无法进入该课程。您仍然可以从【已退出】成员页面看到该成员，并且可以查看其所有学习信息。确定移除？')){
+                            update_members_identity([{{ $u->id }}], 0)
+                            $(this).parent().parent().remove();
+                          }">移除</a>
+                        <a class="ml-3" href="javascript:"
+                          onclick="if(confirm('该用户被彻底删除后，无法进入该课程。除提交记录外，该用户在该课程中的学习规划信息将会丢失。建议您优先考虑【移除】该成员来代替【彻底删除】。确定彻底删除？')){
                             delete_members_batch([{{ $u->user_id }}]);
                             $(this).parent().parent().remove();
-                          }">删除</a>
+                          }">彻底删除</a>
                       @endif
                     </td>
                   </tr>

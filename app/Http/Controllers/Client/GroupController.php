@@ -81,7 +81,7 @@ class GroupController extends Controller
             })
             ->whereIn('identity', explode(',', $_GET['identity']))
             ->orderByDesc('gu.identity')
-            // ->orderBy('u.username')
+            ->orderBy('u.username')
             ->paginate();
         $member_count = [];
         for ($i = 0; $i <= 4; $i++) $member_count[$i] = 0;

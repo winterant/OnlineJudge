@@ -191,17 +191,18 @@ class GroupController extends Controller
         foreach ($unames as &$item)
             $item = trim($item);
         $uids = DB::table('users')->whereIn('username', $unames)->pluck('id')->toArray(); // 欲添加用户id
-        $existed_uids = DB::table('group_users')->where('group_id', $group->id)->whereIn('user_id', $uids)->pluck('user_id')->toArray(); // 已存在的用户id
-        $uids = array_diff($uids, $existed_uids); // 去掉已存在用户id，求出需要新增的用户id
-        // 插入新用户
-        DB::table('group_users')->insert(array_map(function ($v) use ($group, $iden) {
-            return ['group_id' => $group->id, 'user_id' => $v, 'identity' => $iden ?: 2];
-        }, $uids));
+        foreach ($uids as $uid) {
+            DB::table('group_users')->updateOrInsert(
+                ['group_id' => $group->id, 'user_id' => $uid],
+                ['identity' => $iden ?: 2]
+            );
+        }
         return [
             'ok' => 1,
             'msg' => sprintf("已成功新增%d个成员: %s", count($uids), $request->input('usernames'))
         ];
     }
+
     /**
      * 批量删除group_members
      *
@@ -228,7 +229,7 @@ class GroupController extends Controller
         return [
             'ok' => 1,
             'msg' => sprintf("已删除%d个成员", $deleted),
-            'data'=>$request->all(),
+            'data' => $request->all(),
         ];
     }
 }
