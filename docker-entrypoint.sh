@@ -22,7 +22,6 @@ function mod_env(){
 }
 mod_env "APP_DEBUG"         ${APP_DEBUG:-false}                 .env
 mod_env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false}          .env
-mod_env "QUEUE_CONNECTION"  ${QUEUE_CONNECTION:-sync}           .env
 mod_env "DB_HOST"           ${MYSQL_HOST:-host.docker.internal} .env
 mod_env "DB_PORT"           ${MYSQL_PORT:-3306} .env
 mod_env "DB_DATABASE"       ${MYSQL_DATABASE}   .env
@@ -49,11 +48,12 @@ php_fpm_config_file=/etc/php/8.1/fpm/pool.d/www.conf
 # default php-fpm `pm` for server with 32GB max memory.
 mod_env "pm"                   ${fpm_pm:-dynamic}                ${php_fpm_config_file}
 mod_env "pm.max_children"      ${fpm_pm_max_children:-1024}      ${php_fpm_config_file}
-mod_env "pm.max_requests"      ${fpm_pm_max_requests:-1000}      ${php_fpm_config_file}
 # The following item is avaliable only if pm=dynamic.
 mod_env "pm.start_servers"     ${fpm_pm_start_servers:-16}       ${php_fpm_config_file}
 mod_env "pm.min_spare_servers" ${fpm_pm_min_spare_servers:-8}    ${php_fpm_config_file}
 mod_env "pm.max_spare_servers" ${fpm_pm_max_spare_servers:-1024} ${php_fpm_config_file}
+# php-fpm will be recreated after has processed for `pm.max_request` times.
+mod_env "pm.max_requests"      ${fpm_pm_max_requests:-1000}      ${php_fpm_config_file}
 
 ## nginx config
 sed -i "s/worker_connections [0-9]*;$/worker_connections 51200;/" /etc/nginx/nginx.conf
@@ -74,15 +74,13 @@ service php8.1-fpm start
 ##########################################################################
 php artisan storage:link
 php artisan optimize
-if [[ "`cat .env|grep ^APP_KEY=$`" != "" ]]; then  # Lack of APP_KEY
-    php artisan key:generate --force
-fi
+php artisan key:generate --force
 php artisan migrate --force
 php artisan optimize
 php artisan lduoj:init
 
 # Change storage folders owner.
-chown www-data:www-data -R storage bootstrap/cache
+chown -R www-data:www-data .
 
 
 ##########################################################################
