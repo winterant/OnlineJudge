@@ -27,11 +27,10 @@ Route::get('/change_language/{lang}', 'Client\UserController@change_language')->
 
 
 // ================================ 提交记录 ================================
-Route::get('/status', 'Client\StatusController@status')->name('status');
-// Route::post('/ajax_get_status', 'Client\StatusController@ajax_get_status')->name('ajax_get_status');
+Route::get('/solutions', 'Client\SolutionController@solutions')->name('solutions');
 Route::middleware(['auth', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group(function () {
-    Route::get('/solutions/{id}', 'Client\StatusController@solution')->name('solution');
-    Route::get('/solutions/{id}/wrong_data/{type}', 'Client\StatusController@solution_wrong_data')->name('solution_wrong_data')->where(['type' => '(in|out)']);
+    Route::get('/solutions/{id}', 'Client\SolutionController@solution')->name('solution');
+    Route::get('/solutions/{id}/wrong_data/{type}', 'Client\SolutionController@solution_wrong_data')->name('solution_wrong_data')->where(['type' => '(in|out)']);
 });
 
 
@@ -63,7 +62,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
     Route::middleware(['auth', 'CheckContest', 'CheckUserLocked'])->group(function () {
         Route::get('contests/{id}', 'Client\ContestController@home')->name('contest.home');
         Route::get('contests/{id}/problems/{pid}', 'Client\ContestController@problem')->name('contest.problem');
-        Route::get('contests/{id}/status', 'Client\ContestController@status')->name('contest.status');
+        Route::get('contests/{id}/solutions', 'Client\ContestController@solutions')->name('contest.solutions');
         Route::get('contests/{id}/notices', 'Client\ContestController@notices')->name('contest.notices'); //公告
         // todo 获取公告 需要定制api
         Route::post('contests/{id}/get_notice', 'Client\ContestController@get_notice')->name('contest.get_notice'); //获取一条公告

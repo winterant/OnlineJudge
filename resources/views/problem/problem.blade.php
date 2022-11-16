@@ -89,11 +89,11 @@
           {{-- 该题提交记录连接 --}}
           @if (isset($contest))
             <span style="font-size: 0.85rem">
-              [ <a href="{{ route('contest.status', [$contest->id, 'group' => $_GET['group'] ?? null, 'index' => $problem->index]) }}">{{ __('main.Solutions') }}</a> ]
+              [ <a href="{{ route('contest.solutions', [$contest->id, 'group' => $_GET['group'] ?? null, 'index' => $problem->index]) }}">{{ __('main.Solutions') }}</a> ]
             </span>
           @else
             <span style="font-size: 0.85rem">
-              [ <a href="{{ route('status', ['pid' => $problem->id]) }}">{{ __('main.Solutions') }}</a> ]
+              [ <a href="{{ route('solutions', ['pid' => $problem->id]) }}">{{ __('main.Solutions') }}</a> ]
             </span>
           @endif
 

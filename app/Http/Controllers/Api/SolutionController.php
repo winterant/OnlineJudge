@@ -106,9 +106,9 @@ class SolutionController extends Controller
 
         // ===================== 给前台返回提交信息 ====================
         // if ($solution['contest_id'] > 0) //竞赛提交
-        //     $redirect = route('contest.status', [$solution['contest_id'], 'user_id' => Auth::id(), 'group' => $request->input('group') ?? null]);
+        //     $redirect = route('contest.solutions', [$solution['contest_id'], 'user_id' => Auth::id(), 'group' => $request->input('group') ?? null]);
         // else
-        //     $redirect = route('status', ['pid' => $solution['problem_id'], 'user_id' => Auth::id()]);
+        //     $redirect = route('solutions', ['pid' => $solution['problem_id'], 'user_id' => Auth::id()]);
 
         return [
             'ok' => 1,

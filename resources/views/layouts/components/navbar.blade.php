@@ -12,7 +12,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link text-nowrap p-2 @if (Route::currentRouteName() == 'status') active @endif" href="{{ route('status') }}">
+      <a class="nav-link text-nowrap p-2 @if (Route::currentRouteName() == 'solutions') active @endif" href="{{ route('solutions') }}">
         <i class="fa fa-paper-plane-o" aria-hidden="true">&nbsp;{{ trans('main.HomeStatus') }}</i>
       </a>
     </li>

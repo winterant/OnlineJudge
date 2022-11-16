@@ -292,7 +292,7 @@ class ContestController extends Controller
     }
 
     // 竞赛提交记录
-    public function status($id)
+    public function solutions($id)
     {
         // 拿到竞赛信息
         $contest = DB::table('contests')
@@ -361,7 +361,7 @@ class ContestController extends Controller
         foreach ($solutions as &$s) {
             $s->index = $pid2index[$s->problem_id];
         }
-        return view('solution.status', compact('contest', 'solutions', 'pid2index'));
+        return view('solution.solutions', compact('contest', 'solutions', 'pid2index'));
     }
 
     // 在生成榜单时，计算封榜时间

@@ -34,8 +34,8 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link py-3 @if (Route::currentRouteName() == 'contest.status') active @endif"
-          href="{{ route('contest.status', [$contest->id, 'group' => $_GET['group'] ?? null]) }}">{{ trans('main.Solutions') }}</a>
+        <a class="nav-link py-3 @if (Route::currentRouteName() == 'contest.solutions') active @endif"
+          href="{{ route('contest.solutions', [$contest->id, 'group' => $_GET['group'] ?? null]) }}">{{ trans('main.Solutions') }}</a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-nowrap py-3 @if (preg_match('/^contest\.\S*rank$/', Route::currentRouteName())) active @endif"

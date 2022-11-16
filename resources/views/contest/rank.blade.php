@@ -124,10 +124,10 @@
                         <td nowrap>{{ $user['nick'] }}</td>
                       @endif
                       <td class="text-center"
-                        onclick="window.open('{{ route('contest.status', [$contest->id, 'username' => $user['username'], 'group' => $_GET['group'] ?? null]) }}','_blank')">
+                        onclick="window.open('{{ route('contest.solutions', [$contest->id, 'username' => $user['username'], 'group' => $_GET['group'] ?? null]) }}','_blank')">
                         {{ $user['score'] }}</td>
                       <td class="text-center"
-                        onclick="window.open('{{ route('contest.status', [$contest->id, 'username' => $user['username'], 'group' => $_GET['group'] ?? null]) }}','_blank')">
+                        onclick="window.open('{{ route('contest.solutions', [$contest->id, 'username' => $user['username'], 'group' => $_GET['group'] ?? null]) }}','_blank')">
                         {{ $user['penalty'] }}</td>
                       {{-- 下面是每一道题的情况 --}}
                       @for ($i = 0; $i < $problem_count; $i++)
@@ -140,7 +140,7 @@
                                                         @else
                                                             style="background-color: #87ec97" @endif
                         @else style="background-color: #ffafa7" @endif
-                          onclick="window.open('{{ route('contest.status', [$contest->id, 'username' => $user['username'], 'index' => $i, 'group' => $_GET['group'] ?? null]) }}','_blank')"
+                          onclick="window.open('{{ route('contest.solutions', [$contest->id, 'username' => $user['username'], 'index' => $i, 'group' => $_GET['group'] ?? null]) }}','_blank')"
                       @endif
                       class="border text-center">
                       {{ isset($user[$i]) ? $user[$i]['AC_info'] : null }}

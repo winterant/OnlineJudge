@@ -201,9 +201,9 @@
                   {{-- 上一页 --}}
                   @php($last_top_id = max($solutions[0]->id, $solutions[count($solutions) - 1]->id) + 1)
                   @if (isset($contest))
-                    @php($href = route('contest.status', array_merge(array_merge([$contest->id], $_GET), ['top_id' => $last_top_id, 'reverse' => 1])))
+                    @php($href = route('contest.solutions', array_merge(array_merge([$contest->id], $_GET), ['top_id' => $last_top_id, 'reverse' => 1])))
                   @else
-                    @php($href = route('status', array_merge($_GET, ['top_id' => $last_top_id, 'reverse' => 1])))
+                    @php($href = route('solutions', array_merge($_GET, ['top_id' => $last_top_id, 'reverse' => 1])))
                   @endif
                   <li class="page-item">
                     <a class="page-link px-2" href="{{ $href }}">{{ __('main.Previous Page') }}</a>
@@ -212,9 +212,9 @@
                   {{-- 下一页 --}}
                   @php($next_top_id = min($solutions[0]->id, $solutions[count($solutions) - 1]->id) - 1)
                   @if (isset($contest))
-                    @php($href = route('contest.status', array_merge(array_merge([$contest->id], $_GET), ['top_id' => $next_top_id, 'reverse' => null])))
+                    @php($href = route('contest.solutions', array_merge(array_merge([$contest->id], $_GET), ['top_id' => $next_top_id, 'reverse' => null])))
                   @else
-                    @php($href = route('status', array_merge($_GET, ['top_id' => $next_top_id, 'reverse' => null])))
+                    @php($href = route('solutions', array_merge($_GET, ['top_id' => $next_top_id, 'reverse' => null])))
                   @endif
                   <li class="page-item">
                     <a class="page-link px-2" href="{{ $href }}">{{ __('main.Next Page') }}</a>
