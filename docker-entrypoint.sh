@@ -43,7 +43,10 @@ sed -i "/^;extension=gettext.*/i extension=redis" ${php_config_file}
 mod_env "post_max_size"        ${php_post_max_size:-64M}       ${php_config_file}
 mod_env "upload_max_filesize"  ${php_upload_max_filesize:-64M} ${php_config_file}
 
-########### config php-fpm
+########## config php-fpm
+mod_env "error_log" /app/storage/logs/php-fpm.log /etc/php/8.1/fpm/php-fpm.conf
+
+########### config php-fpm pool
 php_fpm_config_file=/etc/php/8.1/fpm/pool.d/www.conf
 # default php-fpm `pm` for server with 32GB max memory.
 mod_env "pm"                   ${fpm_pm:-dynamic}                ${php_fpm_config_file}
@@ -54,21 +57,15 @@ mod_env "pm.min_spare_servers" ${fpm_pm_min_spare_servers:-8}    ${php_fpm_confi
 mod_env "pm.max_spare_servers" ${fpm_pm_max_spare_servers:-1024} ${php_fpm_config_file}
 # php-fpm will be recreated after has processed for `pm.max_request` times.
 mod_env "pm.max_requests"      ${fpm_pm_max_requests:-1000}      ${php_fpm_config_file}
-# Set pm.status_path which is the URI of php-fpm status page.
-mod_env "pm.status_path"       ${fpm_pm_status_path:-null}       ${php_fpm_config_file}
+# Set pm.status_path which is the URI of php-fpm status page. Must be started with /
+if [[ ${fpm_pm_status_path} == "" ]]; then
+    sed -i "s/^pm\.status_path\s\?=.*$/;pm\.status_path=/" ${php_fpm_config_file}
+else
+    mod_env "pm.status_path"  ${fpm_pm_status_path}  ${php_fpm_config_file}
+fi
 
-## nginx config
+########### nginx config
 sed -i "s/worker_connections [0-9]*;$/worker_connections 51200;/" /etc/nginx/nginx.conf
-
-
-##########################################################################
-# Start Server
-##########################################################################
-# start nginx server
-service nginx start
-
-# Start php-fpm server
-service php8.1-fpm start
 
 
 ##########################################################################
@@ -81,14 +78,26 @@ php artisan migrate --force
 php artisan optimize
 php artisan lduoj:init
 
-# Change storage folders owner.
+# Change project owner.
 chown -R www-data:www-data .
+
+
+##########################################################################
+# Start Server
+##########################################################################
+# start nginx server
+echo "Start" >> /app/storage/logs/nginx/access.log
+echo "Start" >> /app/storage/logs/nginx/error.log
+service nginx start
+
+# Start php-fpm server
+service php8.1-fpm start
 
 
 ##########################################################################
 # Background running
 ##########################################################################
-bash storage/scripts/auto-clear-log.sh 2>&1 &
+bash storage/logs/nginx/auto-clear-log.sh 2>&1 &
 
 
 ##########################################################################

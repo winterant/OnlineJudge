@@ -27,7 +27,7 @@ RUN cd /app_src &&\
     chmod +x /docker-entrypoint.sh &&\
     # nginx
     rm -rf /etc/nginx/sites-enabled/default &&\
-    cp storage/scripts/nginx-lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
+    cp nginx-lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
     # version
     mkdir -p storage/app &&\
     echo 1.3.$(date "+%Y%m%d") > storage/app/.version
