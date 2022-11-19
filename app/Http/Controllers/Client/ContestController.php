@@ -311,7 +311,7 @@ class ContestController extends Controller
         if (!isset($_GET['buti'])) $_GET['buti'] = "true"; //默认打开补题开关
 
         if (privilege('admin.contest')) {
-            if (isset($_GET['buti']) ? $_GET['buti'] == 'true' : false) //实时榜
+            if ($_GET['buti'] == 'true') //实时榜
                 $end = time();
             else //终榜
                 $end = strtotime($contest->end_time);
@@ -353,7 +353,15 @@ class ContestController extends Controller
         }
 
         // ===================== 计算榜单，每10秒刷新一次 ====================
-        $redis_key = sprintf("contest:%d:rank_users", $id);
+        $redis_key = sprintf(
+            "contest:%d:rank_users:%s,%s,%s,%s,%s",
+            $id,
+            $_GET['buti'] ?? 'true',
+            $_GET['username'] ?? '',
+            $_GET['school'] ?? '',
+            $_GET['class'] ?? '',
+            $_GET['nick'] ?? '',
+        );
         if (Redis::exists($redis_key)) {
             $users = json_decode(Redis::get($redis_key), true);
         } else {
