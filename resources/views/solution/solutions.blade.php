@@ -13,7 +13,7 @@
       {{-- 竞赛菜单 --}}
       @if (isset($contest))
         <div class="col-12 col-sm-12">
-          @include('contest.components.contest_menu')
+          <x-contest.navbar :contest="$contest" :group-id="$_GET['group'] ?? null" />
         </div>
       @endif
       <div class="col-12">

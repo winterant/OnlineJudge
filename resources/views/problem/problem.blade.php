@@ -55,7 +55,7 @@
       {{-- 竞赛下，显示菜单 --}}
       @if (isset($contest))
         <div class="mt-3">
-          @include('contest.components.contest_menu')
+          <x-contest.navbar :contest="$contest" :group-id="$_GET['group'] ?? null" />
         </div>
 
         {{-- 题号链接 --}}

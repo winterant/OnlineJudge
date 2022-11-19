@@ -32,6 +32,7 @@
       })
     </script>
   @endif
+
   {{-- 检查微信浏览器，不允许使用微信浏览器 --}}
   @if (stripos($_SERVER['HTTP_USER_AGENT'], 'wechat') !== false ||
       (stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') === false &&
@@ -71,7 +72,9 @@
 
   {{-- 除了题目页面外，都要滚动显示公告 --}}
   @if (!in_array(Route::currentRouteName(), ['problem', 'contest.problem']))
-    <div class="container">@include('layouts.components.notice_marquee')</div>
+    <div class="container">
+      <x-marquee />
+    </div>
   @endif
 
   {{-- 主界面 --}}
