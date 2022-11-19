@@ -219,7 +219,6 @@ class ContestController extends Controller
             ->pluck('title', 'index');
 
         // 读取所有的提交结果的数量统计
-        $results = null;
         // $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
         //     ->where('contest_id', $id)
         //     ->where('problem_id', $problem->id)
@@ -243,25 +242,6 @@ class ContestController extends Controller
             ->limit(3)
             ->get();
 
-        //是否显示窗口：对题目进行打标签
-        $tag_mark_enable = Auth::check()
-            && !DB::table('tag_marks')
-                ->where('user_id', '=', Auth::id())
-                ->where('problem_id', '=', $problem->id)
-                ->exists()
-            && DB::table('solutions')
-            ->where('user_id', '=', Auth::id())
-            ->where('problem_id', '=', $problem->id)
-            ->where('result', 4)
-            ->exists();
-        $tag_pool = [];
-        if ($tag_mark_enable)
-            $tag_pool = DB::table('tag_pool')
-                ->select('id', 'name')
-                ->where('hidden', 0)
-                ->orderBy('id')
-                ->get();
-
         // 可能指定了solution代码
         $solution = DB::table('solutions')->select(['code', 'user_id'])->find($_GET['solution'] ?? -1);
         if (Auth::check() && $solution && ($solution->user_id == Auth::id()) || privilege('admin.problem.solution'))
@@ -274,12 +254,9 @@ class ContestController extends Controller
             'contest',
             'problem',
             'contest_pindex',
-            'results',
             'samples',
             'hasSpj',
             'tags',
-            'tag_mark_enable',
-            'tag_pool',
             'solution_code'
         ));
     }

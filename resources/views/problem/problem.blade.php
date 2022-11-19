@@ -1,8 +1,9 @@
 @extends('layouts.client')
 
 @if (isset($contest))
-  @section('title', trans('main.Problem') . ' ' . index2ch($problem->index) . ' | ' . trans('main.Contest') . ' ' . $contest->id . ' | ' . get_setting('siteName'))
-@else
+  @section('title', trans('main.Problem') . ' ' . index2ch($problem->index) . ' | ' . trans('main.Contest') . ' ' .
+    $contest->id . ' | ' . get_setting('siteName'))
+  @else
   @section('title', trans('main.Problem') . ' ' . $problem->id . ' | ' . get_setting('siteName'))
 @endif
 
@@ -63,8 +64,8 @@
           <div class="btn-group d-flex flex-wrap">
             @foreach ($contest_pindex as $pindex => $title)
               <a class="btn btn-secondary border @if ($problem->index == $pindex) active @endif"
-                href="{{ route('contest.problem', [$contest->id, $pindex, 'group' => $_GET['group'] ?? null]) }}" style="flex: none;width:5rem;" data-toggle="tooltip"
-                data-placement="bottom" title="{{ $title }}">
+                href="{{ route('contest.problem', [$contest->id, $pindex, 'group' => $_GET['group'] ?? null]) }}"
+                style="flex: none;width:5rem;" data-toggle="tooltip" data-placement="bottom" title="{{ $title }}">
                 {{ index2ch($pindex) }}
               </a>
             @endforeach
@@ -89,7 +90,9 @@
           {{-- 该题提交记录连接 --}}
           @if (isset($contest))
             <span style="font-size: 0.85rem">
-              [ <a href="{{ route('contest.solutions', [$contest->id, 'group' => $_GET['group'] ?? null, 'index' => $problem->index]) }}">{{ __('main.Solutions') }}</a> ]
+              [ <a
+                href="{{ route('contest.solutions', [$contest->id, 'group' => $_GET['group'] ?? null, 'index' => $problem->index]) }}">{{ __('main.Solutions') }}</a>
+              ]
             </span>
           @else
             <span style="font-size: 0.85rem">
@@ -101,7 +104,8 @@
           @if (isset($contest) && (privilege('admin.problem.list') || $contest->end_time < date('Y-m-d H:i:s')))
             <span style="font-size: 0.85rem">
               [
-              <a href="{{ route('problem', $problem->id) }}" target="_blank">{{ __('main.Problem') }} {{ $problem->id }}</a>
+              <a href="{{ route('problem', $problem->id) }}" target="_blank">{{ __('main.Problem') }}
+                {{ $problem->id }}</a>
               <i class="fa fa-external-link text-sky" aria-hidden="true"></i>
               ]
             </span>
@@ -110,8 +114,10 @@
           {{-- 编辑链接 --}}
           @if (privilege('admin.problem.edit'))
             <span style="font-size: 0.85rem">
-              [ <a href="{{ route('admin.problem.update_withId', $problem->id) }}" target="_blank">{{ __('main.Edit') }}</a> ]
-              [ <a href="{{ route('admin.problem.test_data', ['pid' => $problem->id]) }}" target="_blank">{{ __('main.Test Data') }}</a> ]
+              [ <a href="{{ route('admin.problem.update_withId', $problem->id) }}"
+                target="_blank">{{ __('main.Edit') }}</a> ]
+              [ <a href="{{ route('admin.problem.test_data', ['pid' => $problem->id]) }}"
+                target="_blank">{{ __('main.Test Data') }}</a> ]
             </span>
           @endif
         </h4>
@@ -199,48 +205,29 @@
 
       <hr>
 
-      {{-- 讨论版 --}}
-      @if (get_setting('show_disscussions'))
+      {{-- 讨论版（题库、开启讨论的竞赛、已结束的竞赛） --}}
+      @if (!isset($contest) || $contest->open_discussion || time() > strtotime($contest->end_time))
         <div class="mt-3">
-          @include('problem.components.disscussions')
+          <x-problem.disscussions :problem-id="$problem->id" />
         </div>
       @endif
 
       {{-- 已经AC的用户进行标签标记 --}}
       <div class="mt-3">
-        @include('problem.components.problem_tag')
+        <x-problem.tag-collection :problem-id="$problem->id" :tags="$tags" />
       </div>
 
       {{-- 题库中查看题目时，显示涉及到的竞赛 --}}
-      @if (!isset($contest) && count($contests) > 0)
+      @if (!isset($contest))
         <div class="mt-3">
-
-          <div class="p-2" style="background-color: rgb(162, 212, 255)">
-            <h4 class="m-0">{{ __('main.Contests involved') }}</h5>
-          </div>
-
-          <div class="table-responsive p-2">
-            <table id="table-overview" class="table table-sm">
-              <tbody>
-                <style type="text/css">
-                  #table-overview td {
-                    border: 0;
-                    text-align: left
-                  }
-                </style>
-                @foreach ($contests as $item)
-                  <tr>
-                    <td><a href="{{ route('contest.home', $item->id) }}">{{ $item->id }}. {{ $item->title }}</a></td>
-                  </tr>
-                @endforeach
-              </tbody>
-            </table>
-          </div>
-
+          <x-problem.involved-contests :problem-id="$problem->id" />
         </div>
       @endif
+
     </div>
+
     <div id="resize"></div>
+
     <div id="right">
       @include('problem.components.code_editor')
     </div>

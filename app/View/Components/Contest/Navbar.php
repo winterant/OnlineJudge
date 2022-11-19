@@ -20,9 +20,10 @@ class Navbar extends Component
         // 指定要显示的群组
         $this->group = DB::table('groups')->find($groupId); //不存在则为null
         // 如果群组不存在，则显示竞赛类别
-        if(!$this->group){
+        if (!$this->group) {
             $this->category = DB::table('contest_cate')->find($contest->cate_id);
-            $this->father_category=DB::table('contest_cate')->find($this->category->parent_id);
+            if (!$this->category)
+                $this->father_category = DB::table('contest_cate')->find($this->category->parent_id ?? -1);
         }
     }
 

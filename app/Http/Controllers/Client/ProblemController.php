@@ -74,40 +74,20 @@ class ProblemController extends Controller
         if ($problem == null) //问题不存在
             return view('layouts.message', ['msg' => trans('sentence.problem_not_found')]);
 
-        //读取所有的提交结果的数量统计
-        $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
-            ->where('problem_id', $id)
-            ->groupBy('result')
-            ->get();
-        //查询引入这道题的竞赛
-        $contests = DB::table('contest_problems')
-            ->join('contests', 'contests.id', '=', 'contest_id')
-            ->select('contest_id as id', 'title')
-            ->distinct()
-            ->where('problem_id', $id)
-            ->get();
-
         if ($problem->hidden && !privilege('admin.problem.list')) // 问题是隐藏的，那么不登录或无权限是不可以看题的
         {
             $msg = trans('main.Problem') . $id . ': ' . trans('main.Hidden') . '; ';
-            if ($contests) {
-                $msg .= trans('main.Contests involved') . ": ";
-                foreach ($contests as $item)
-                    $msg .= sprintf('[%s. %s]; ', $item->id, $item->title);
-            }
             return view('layouts.message', compact('msg'));
         }
 
+        //读取所有的提交结果的数量统计
+        // $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
+        //     ->where('problem_id', $id)
+        //     ->groupBy('result')
+        //     ->get();
+
         //读取样例文件
         $samples = read_problem_data($id);
-
-        //读取历史提交
-        $solutions = DB::table('solutions')
-            ->select('id', 'result', 'time', 'memory', 'language')
-            ->where('user_id', '=', Auth::id())
-            ->where('problem_id', '=', $problem->id)
-            ->orderByDesc('id')
-            ->limit(8)->get();
 
         $hasSpj = (get_spj_code($problem->id) != null);
 
@@ -121,36 +101,18 @@ class ProblemController extends Controller
             ->limit(3)
             ->get();
 
-        //是否显示窗口：对题目进行打标签
-        //        $tag_mark_enable = (!isset($contest)||time()>strtotime($contest->end_time))
-        $tag_mark_enable = Auth::check()
-            && !DB::table('tag_marks')
-                ->where('user_id', '=', Auth::id())
-                ->where('problem_id', '=', $problem->id)
-                ->exists()
-            && DB::table('solutions')
-            ->where('user_id', '=', Auth::id())
-            ->where('problem_id', '=', $problem->id)
-            ->where('result', 4)
-            ->exists();
-        if ($tag_mark_enable)
-            $tag_pool = DB::table('tag_pool')
-                ->select('id', 'name')
-                ->where('hidden', 0)
-                ->orderBy('id')
-                ->get();
-        else
-            $tag_pool = [];
-
         // 可能指定了solution代码
         $solution = DB::table('solutions')->find($_GET['solution'] ?? -1);
         if (Auth::check() && $solution && ($solution->user_id == Auth::id()) || privilege('admin.problem.solution'))
             $solution_code = $solution->code ?? null;
         else
             $solution_code = null;
-        return view('problem.problem', compact('problem', 'results', 'contests', 'samples', 'solutions', 'hasSpj', 'tags', 'tag_mark_enable', 'tag_pool', 'solution_code'));
+        return view('problem.problem', compact('problem', 'samples', 'hasSpj', 'tags', 'solution_code'));
     }
 
+    /**
+     * @deprecated 未来版本中将重构讨论版功能，此方法将废弃。
+     */
     public function load_discussion(Request $request)
     {
         $problem_id = $request->input('problem_id');
@@ -194,6 +156,9 @@ class ProblemController extends Controller
         return json_encode([$discussions, $replies]);
     }
 
+    /**
+     * @deprecated 未来版本中将重构讨论版功能，此方法将废弃。
+     */
     public function edit_discussion(Request $request, $pid)
     {
         if (!privilege('admin.problem.tag')) {
@@ -216,11 +181,17 @@ class ProblemController extends Controller
         return back()->with("discussion_added", true);
     }
 
+    /**
+     * @deprecated 未来版本中将重构讨论版功能，此方法将废弃。
+     */
     public function delete_discussion(Request $request)
     {
         return DB::table('discussions')->delete($request->input('id'));
     }
 
+    /**
+     * @deprecated 未来版本中将重构讨论版功能，此方法将废弃。
+     */
     public function top_discussion(Request $request)
     {
         if ($request->input('way') == 0)
@@ -231,6 +202,9 @@ class ProblemController extends Controller
         return 1;
     }
 
+    /**
+     * @deprecated 未来版本中将重构讨论版功能，此方法将废弃。
+     */
     public function hidden_discussion(Request $request)
     {
         return DB::table('discussions')

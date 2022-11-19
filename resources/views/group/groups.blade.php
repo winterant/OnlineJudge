@@ -125,7 +125,7 @@
                     <tr>
                       <td nowrap>{{ __('main.Join') }}:</td>
                       <td nowrap>
-                        @if ($item->hidden)
+                        @if ($item->private)
                           <i class="fa fa-lock" aria-hidden="true"></i>
                           <span>{{ __('main.Private') }}</span>
                         @else
