@@ -80,12 +80,6 @@ class ProblemController extends Controller
             return view('layouts.message', compact('msg'));
         }
 
-        //读取所有的提交结果的数量统计
-        // $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
-        //     ->where('problem_id', $id)
-        //     ->groupBy('result')
-        //     ->get();
-
         //读取样例文件
         $samples = read_problem_data($id);
 

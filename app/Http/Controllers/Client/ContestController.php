@@ -184,7 +184,6 @@ class ContestController extends Controller
     // 题目详情
     public function problem($id, $pid)
     {
-        $start_time = microtime(true);
         // 拿到竞赛信息
         $contest = DB::table('contests')
             ->select([
@@ -211,20 +210,6 @@ class ContestController extends Controller
         if (!$problem) // 题目不存在! 跳回前一页
             return back();
 
-        // 读取当前竞赛所有题号、标题
-        $contest_pindex = DB::table('contest_problems')
-            ->join('problems', 'problems.id', 'problem_id')
-            ->where('contest_id', $id)
-            ->orderBy('index')
-            ->pluck('title', 'index');
-
-        // 读取所有的提交结果的数量统计
-        // $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
-        //     ->where('contest_id', $id)
-        //     ->where('problem_id', $problem->id)
-        //     ->groupBy('result')
-        //     ->get();
-
         // 读取这道题的样例数据
         $samples = read_problem_data($problem->id);
 
@@ -243,14 +228,7 @@ class ContestController extends Controller
             ->get();
 
         // 返回页面
-        return view('problem.problem', compact(
-            'contest',
-            'contest_pindex',
-            'problem',
-            'samples',
-            'hasSpj',
-            'tags'
-        ));
+        return view('problem.problem', compact('contest', 'problem', 'samples', 'hasSpj', 'tags'));
     }
 
     // 竞赛提交记录
