@@ -178,14 +178,7 @@ class ContestController extends Controller
             ];
         }
 
-        // 读取群组
-        $groups = DB::table('group_contests as gc')
-            ->join('groups as g', 'g.id', '=', 'gc.group_id')
-            ->select(['g.id', 'g.name'])
-            ->where('gc.contest_id', $id)
-            ->get();
-
-        return view('contest.home', compact('contest', 'problems', 'files', 'groups'));
+        return view('contest.home', compact('contest', 'problems', 'files'));
     }
 
     // 题目详情

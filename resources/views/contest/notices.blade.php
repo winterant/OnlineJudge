@@ -8,7 +8,7 @@
     <div class="row">
       <div class="col-12 col-sm-12">
         {{-- 菜单 --}}
-        @include('contest.components.contest_menu')
+        <x-contest.navbar :contest="$contest" :group-id="$_GET['group'] ?? null" />
       </div>
       <div class="col-12">
         <div class="my-container bg-white">

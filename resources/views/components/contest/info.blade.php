@@ -35,8 +35,8 @@
   <ul class="list-unstyled">
     <li>
       <i class="fa fa-list-ol pr-1 text-sky" aria-hidden="true"></i>
-      {{ count($problems) }}
-      {{ trans_choice('main.problems', count($problems)) }}
+      {{ $num_problems }}
+      {{ trans_choice('main.problems', $num_problems) }}
     </li>
     <li><i class="fa fa-calendar pr-2 text-sky" aria-hidden="true"></i>{{ $contest->start_time }}</li>
     <li><i class="fa fa-calendar-times-o pr-2 text-sky" aria-hidden="true"></i>{{ $contest->end_time }}</li>

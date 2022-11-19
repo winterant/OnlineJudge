@@ -7,8 +7,8 @@
   <div class="container">
     <div class="row">
       <div class="col-12 col-sm-12">
-        {{-- 菜单 --}}
-        @include('contest.components.contest_menu')
+        {{-- 导航栏 --}}
+        <x-contest.navbar :contest="$contest" :group-id="$_GET['group'] ?? null" />
       </div>
       <div class="col-lg-9 col-md-8 col-sm-12 col-12">
         <div class="my-container bg-white">
@@ -143,7 +143,8 @@
                     <td nowrap>
                       @if ($item->submitted > 0)
                         {{ $item->accepted }}
-                        (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>{{ $item->solved }})
+                        (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>
+                        {{ $item->solved }})
                         /
                         {{ $item->submitted }}
                       @else
@@ -168,10 +169,8 @@
       </div>
 
       <div class="col-lg-3 col-md-4 col-sm-12 col-12">
-
         {{-- 竞赛信息 --}}
-        @include('contest.components.contest_info')
-
+        <x-contest.info :contest="$contest" />
       </div>
     </div>
   </div>
