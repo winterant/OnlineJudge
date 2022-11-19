@@ -3,11 +3,12 @@ return [
 
     "Whats this"     => "这是什么?",
     "delete"         => "确定删除?",
-    "copy"          => "已复制到剪贴板!",
+    "copy"           => "已复制到剪贴板!",
 
     "No data"           => "没有数据!",
     "Permission denied" => "权限不足",
     "Operation failed"  => "操作失败",
+    "Operation successed"=> "操作成功",
 
 //    auth/register.blade.php
     "Must fill"         => "必填. a-z,A-Z or 0-9",

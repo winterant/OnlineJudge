@@ -18,14 +18,13 @@ class Permission
      */
     public function handle($request, $next, $permission)
     {
-        if (!privilege($permission)) {
-            if (request()->is('api/*'))
-                return response()->json(['ok' => 0, 'msg' => 'api 权限不足']);
-            else if (request()->is('admin/*') && DB::table('privileges')->where('user_id', Auth::id())->limit(1)->exists()) //管理员在后台页面访问时，权限不足
-                return response()->view('admin.fail', ['msg' => '权限不足！如果您需要访问该页面，请联系管理员索要权限：' . $permission]);
-            else
-                return response()->view('layouts.failure', ['msg' => '权限不足！']);
-        }
-        return $next($request);
+        if (privilege($permission))
+            return $next($request);
+        if (request()->is('api/*'))
+            return response()->json(['ok' => 0, 'msg' => 'api 权限不足']);
+        else if (request()->is('admin/*') && DB::table('privileges')->where('user_id', Auth::id())->exists()) // 管理员在后台页面访问时，权限不足
+            return response()->view('layouts.message', ['msg' => '权限不足！如果您需要访问该页面，请联系管理员索要权限：' . $permission, 'success' => false, 'is_admin' => true]);
+        else
+            return response()->view('layouts.message', ['msg' => '权限不足！']);
     }
 }

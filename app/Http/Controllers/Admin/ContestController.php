@@ -71,7 +71,7 @@ class ContestController extends Controller
             ]);
             $this->update($request, $cid);
             $msg = sprintf('成功创建竞赛：<a href="%s" target="_blank">%d</a>', route('contest.home', $cid), $cid);
-            return view('admin.success', compact('msg'));
+            return view('layouts.message', ['msg' => $msg, 'success' => true, 'is_admin' => true]);
         }
         return abort(404);
     }
@@ -79,7 +79,7 @@ class ContestController extends Controller
     public function update(Request $request, $id)
     {
         if (!privilege('admin') && Auth::id() != DB::table('contests')->where('id', $id)->value('id'))
-            return view('admin.fail', ['msg' => '权限不足！您不是这场比赛的创建者']);
+            return view('layouts.message', ['msg' => '权限不足！您不是这场比赛的创建者', 'success' => false, 'is_admin' => true]);
 
         if ($request->isMethod('get')) {
             $contest = DB::table('contests')->find($id);
@@ -171,7 +171,7 @@ class ContestController extends Controller
                 }
             }
             $msg = sprintf('成功更新竞赛：<a href="%s">%d</a>', route('contest.home', $id), $id);
-            return view('admin.success', compact('msg'));
+            return view('layouts.message', ['msg' => $msg, 'success' => true, 'is_admin' => true]);
         }
     }
 

@@ -3,11 +3,12 @@ return [
 
     "Whats this"     => "What\'s this?",
     "delete"         => "Are you sure to delete it?",
-    "copy"          => "Copied to clipboard!",
+    "copy"           => "Copied to clipboard!",
 
     "No data"           => "No data!",
     "Permission denied" => "Permission denied",
     "Operation failed"  => "Operation failed",
+    "Operation successed"=> "Operation successed",
 
 //    auth/register.blade.php
     "Must fill"         => "Must fill, use to login. a-z,A-Z or 0-9",

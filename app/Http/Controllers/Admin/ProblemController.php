@@ -80,9 +80,9 @@ class ProblemController extends Controller
 
             $problem = DB::table('problems')->find($id);  // 提取出要修改的题目
             if ($problem == null)
-                return view('admin.fail', ['msg' => '该题目不存在或操作有误!']);
+                return view('layouts.message', ['msg' => '该题目不存在或操作有误!', 'success' => false, 'is_admin' => true]);
             if (!privilege('admin.problem') && Auth::id() != $problem->creator) //不是管理员 && 也不是出题人 ==> 禁止修改本题
-                return view('admin.fail', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem]，不能修改本题!']);
+                return view('layouts.message', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem]，不能修改本题!', 'success' => false, 'is_admin' => true]);
 
             $samples = read_problem_data($problem->id);
             //看看有没有特判文件
@@ -104,7 +104,7 @@ class ProblemController extends Controller
                 })
                 ->update($problem);
             if (!$update_ret)
-                return view('admin.fail', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem]，不能修改本题!']);
+                return view('layouts.message', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem]，不能修改本题!', 'success' => false, 'is_admin' => true]);
 
             ///保存样例、spj
             $samp_ins = $request->input('sample_ins');
@@ -124,7 +124,7 @@ class ProblemController extends Controller
                 // $spj_compile = compile_cpp(testdata_path($id . '/spj/spj.cpp'), testdata_path($id . '/spj/spj')); //编译特判代码
                 // $msg .= '<br><br>[ 特判程序编译信息 ]:<br>' . $spj_compile;
             }
-            return view('admin.success', ['msg' => $msg]);
+            return view('layouts.message', ['msg' => $msg, 'success' => true, 'is_admin' => true]);
         }
     }
 
@@ -210,7 +210,7 @@ class ProblemController extends Controller
         $tests = [];
         if (isset($_GET['pid'])) {
             if (!DB::table('problems')->where('id', $_GET['pid'])->exists())
-                return view('admin.fail', ['msg' => '题目' . $_GET['pid'] . '不存在']);
+                return view('layouts.message', ['msg' => '题目' . $_GET['pid'] . '不存在', 'success' => false, 'is_admin' => true]);
             foreach (readAllFilesPath(testdata_path($_GET['pid'] . '/test')) as $filepath) {
                 $name = pathinfo($filepath, PATHINFO_FILENAME);  //文件名
                 $ext = pathinfo($filepath, PATHINFO_EXTENSION);    //拓展名
@@ -272,7 +272,7 @@ class ProblemController extends Controller
     {
         $problem = DB::table('problems')->find($request->input('pid'));  // 提取出要修改的题目
         if (!$problem || !privilege('admin.problem.data') && Auth::id() != $problem->creator) //不是超级管理员 && 不是出题人 => 禁止修改本题
-            return view('admin.fail', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem.data]，不能修改测试数据!']);
+            return view('layouts.message', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem.data]，不能修改测试数据!', 'success' => false, 'is_admin' => true]);
 
         $pid = $request->input('pid');
         $filename = $request->input('filename');

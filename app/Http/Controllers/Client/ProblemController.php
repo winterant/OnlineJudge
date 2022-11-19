@@ -72,7 +72,7 @@ class ProblemController extends Controller
             'accepted', 'solved', 'submitted'
         ])->find($id);
         if ($problem == null) //问题不存在
-            return view('layouts.failure', ['msg' => trans('sentence.problem_not_found')]);
+            return view('layouts.message', ['msg' => trans('sentence.problem_not_found')]);
 
         //读取所有的提交结果的数量统计
         $results = DB::table('solutions')->select(DB::raw('result, count(*) as result_count'))
@@ -95,7 +95,7 @@ class ProblemController extends Controller
                 foreach ($contests as $item)
                     $msg .= sprintf('[%s. %s]; ', $item->id, $item->title);
             }
-            return view('layouts.failure', compact('msg'));
+            return view('layouts.message', compact('msg'));
         }
 
         //读取样例文件
