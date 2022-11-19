@@ -52,11 +52,6 @@
         <i class="fa fa-folder-open" aria-hidden="true"></i>&nbsp;{{ trans('main.Groups') }}</i>
       </a>
     </li>
-    {{-- <li class="nav-item">
-      <a class="nav-link text-nowrap p-2 @if (preg_match('/^team\S*$/', Route::currentRouteName())) active @endif" href="{{ route('teams.home') }}">
-        <i class="fa fa-users" aria-hidden="true"></i>&nbsp;{{ trans('main.Teams') }}</i>
-      </a>
-    </li> --}}
     <li class="nav-item">
       <a class="nav-link text-nowrap p-2 @if (Route::currentRouteName() == 'standings') active @endif"
         href="{{ route('standings') }}">

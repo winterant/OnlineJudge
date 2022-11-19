@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', (isset($group) ? '修改课程信息' : '新建课程') . ' | 后台')
+@section('title', (isset($group) ? '修改' : '新建') . ' | 后台')
 
 @section('content')
   <h2>
     @if (isset($group))
-      修改课程信息
+      修改{{__('main.Group')}}
     @else
-      新建课程
+      新建{{__('main.Group')}}
     @endif
   </h2>
   <hr>
@@ -107,7 +107,7 @@
           <div class="float-left">竞赛列表：</div>
           <label>
             <textarea id="text-group-ids" name="contest_ids" class="form-control-plaintext border bg-white" rows="8"
-              cols="26" placeholder="1000&#13;&#10;1001&#13;&#10;每行一个课程编号&#13;&#10;你可以将表格的整列粘贴到这里" autoHeight></textarea>
+              cols="26" placeholder="1000&#13;&#10;1001&#13;&#10;每行一个{{__('main.Group')}}编号&#13;&#10;你可以将表格的整列粘贴到这里" autoHeight></textarea>
           </label>
           <script type="text/javascript">
             $(function() {

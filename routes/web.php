@@ -82,22 +82,17 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
     Route::any('contests/{id}/password', 'Client\ContestController@password')->middleware(['auth'])->name('contest.password');
 });
 
-// ================================ groups 课程/群组 ================================
+// ================================ groups 群组/团队 ================================
 Route::middleware(['auth'])->where(['id' => '[0-9]+', 'uid' => '[0-9]+'])->group(function () {
     // 群组列表
     Route::get('my-groups', 'Client\GroupController@mygroups')->name('groups.my');
     Route::get('groups', 'Client\GroupController@allgroups')->name('groups');
-    // 具体的一门课程/群组
+    // 具体的群组
     Route::middleware(['auth', 'CheckGroup', 'CheckUserLocked'])->group(function () {
         Route::get('groups/{id}', 'Client\GroupController@group')->name('group');
         Route::get('groups/{id}/members', 'Client\GroupController@members')->name('group.members');
         Route::get('groups/{id}/members/{uid}', 'Client\GroupController@member')->name('group.member');
     });
-});
-
-// ================================ 团队（teams） ================================
-Route::middleware(['auth'])->where(['id' => '[0-9]+'])->group(function () {
-    Route::get('teams', 'Client\TeamController@teams')->name('teams');
 });
 
 // ================================ 用户（users） ================================

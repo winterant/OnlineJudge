@@ -194,20 +194,6 @@
 
           <li class="nav-item">
             <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
-              data-target="#menu-teams" aria-expanded="false">
-              <i class="fa fa-users fa-lg mr-2" aria-hidden="true"></i>团队管理
-            </a>
-            <ul id="menu-teams" class="collapse @if (preg_match('/^admin\.team\S*$/', Route::currentRouteName())) show @endif">
-              <li class="nav-item">
-                <a class="nav-link border-top" href="#">
-                  <i class="fa fa-list" aria-hidden="true"></i> 团队列表</a>
-              </li>
-              {{-- todo --}}
-            </ul>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
               data-target="#menu-problem" aria-expanded="false">
               <i class="fa fa-file-text-o fa-lg mr-2" aria-hidden="true"></i>题库管理
             </a>
@@ -267,16 +253,16 @@
           <li class="nav-item">
             <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
               data-target="#menu-groups" aria-expanded="false">
-              <i class="fa fa-folder-open fa-lg mr-2" aria-hidden="true"></i>课程管理
+              <i class="fa fa-users fa-lg mr-2" aria-hidden="true"></i>{{__('main.Group')}}管理
             </a>
             <ul id="menu-groups" class="collapse @if (preg_match('/^admin\.group\S*$/', Route::currentRouteName())) show @endif">
               <li class="nav-item">
                 <a class="nav-link border-top" href="{{ route('admin.group.list') }}">
-                  <i class="fa fa-list" aria-hidden="true"></i> 课程列表</a>
+                  <i class="fa fa-list" aria-hidden="true"></i> {{__('main.Group')}}列表</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link border-top" href="{{ route('admin.group.create') }}">
-                  <i class="fa fa-plus" aria-hidden="true"></i> 新建课程</a>
+                  <i class="fa fa-plus" aria-hidden="true"></i> 新建{{__('main.Group')}}</a>
               </li>
             </ul>
           </li>

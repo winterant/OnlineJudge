@@ -1,10 +1,10 @@
 @extends('layouts.admin')
 
-@section('title', '课程管理 | 后台')
+@section('title', __('main.Group').'管理 | 后台')
 
 @section('content')
 
-  <h2>课程管理</h2>
+  <h2>{{__('main.Group')}}管理</h2>
   <hr>
   <form action="" method="get" class="pull-right form-inline">
     <div class="form-inline mx-3">
@@ -46,7 +46,7 @@
         <tr>
           <th></th>
           <th>编号</th>
-          <th>课程名</th>
+          <th>{{__('main.Group')}}</th>
           <th>年级</th>
           <th>班级</th>
           <th>专业</th>
