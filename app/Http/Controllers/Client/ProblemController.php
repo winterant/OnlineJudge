@@ -107,7 +107,7 @@ class ProblemController extends Controller
             $solution_code = $solution->code ?? null;
         else
             $solution_code = null;
-        return view('problem.problem', compact('problem', 'samples', 'hasSpj', 'tags', 'solution_code'));
+        return view('problem.problem', compact('problem', 'samples', 'hasSpj', 'tags'));
     }
 
     /**

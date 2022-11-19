@@ -242,22 +242,14 @@ class ContestController extends Controller
             ->limit(3)
             ->get();
 
-        // 可能指定了solution代码
-        $solution = DB::table('solutions')->select(['code', 'user_id'])->find($_GET['solution'] ?? -1);
-        if (Auth::check() && $solution && ($solution->user_id == Auth::id()) || privilege('admin.problem.solution'))
-            $solution_code = $solution->code ?? null;
-        else
-            $solution_code = null;
-
         // 返回页面
         return view('problem.problem', compact(
             'contest',
-            'problem',
             'contest_pindex',
+            'problem',
             'samples',
             'hasSpj',
-            'tags',
-            'solution_code'
+            'tags'
         ));
     }
 

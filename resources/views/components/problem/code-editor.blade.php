@@ -1,6 +1,5 @@
 <div id="code_editor_app">
   <form id="code_form" class="mb-0">
-    @csrf
 
     @if (isset($_GET['group']))
       <input name="group" value="{{ $_GET['group'] }}" hidden>
@@ -18,7 +17,8 @@
         {{-- 编程题可以选择语言 --}}
         <div class="flex-nowrap">
           <span class="mr-2">{{ __('main.Language') }}:</span>
-          <select id="lang_select" name="solution[language]" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
+          <select id="lang_select" name="solution[language]" class="px-3 border"
+            style="text-align-last: center;border-radius: 4px;">
             @foreach (config('oj.judge_lang') as $key => $res)
               @if (!isset($contest) || ($contest->allow_lang >> $key) & 1)
                 <option value="{{ $key }}">{{ $res }}</option>
@@ -29,10 +29,12 @@
         {{-- 编程题可以提交文件 --}}
         <div class="flex-nowrap ml-3">
           <span class="mr-2">{{ __('main.Upload File') }}:</span>
-          <a id="selected_fname" href="javascript:" class="m-0 px-0" onclick="$('#code_file').click()" title="{{ __('main.Upload File') }}">
+          <a id="selected_fname" href="javascript:" class="m-0 px-0" onclick="$('#code_file').click()"
+            title="{{ __('main.Upload File') }}">
             <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
           </a>
-          <input type="file" class="form-control-file" id="code_file" accept=".txt .c, .cc, .cpp, .java, .py" hidden />
+          <input type="file" class="form-control-file" id="code_file" accept=".txt .c, .cc, .cpp, .java, .py"
+            hidden />
         </div>
 
         {{-- 编辑框主题 --}}
@@ -66,9 +68,12 @@
       <div class="pull-right">
         {{-- <button id="btn_local_test" type="button" data-target="#local-test-page" data-toggle="modal" onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
           class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button> --}}
-        <button id="btn_judge_result" type="button" data-target="#judge-result-page" data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
-        <button id="btn_submit_code" type="button" onclick="disabledSubmitButton(this, '已提交'); $('#btn_judge_result').click()" v-on:click="submit_solution"
-          class="btn bg-success text-white m-2" style="min-width: 6rem" @guest disabled @endguest>{{ trans('main.Submit') }}</button>
+        <button v-show="judge_processing>0" id="btn_judge_result" type="button" data-target="#judge-result-page"
+          data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
+        <button id="btn_submit_code" type="button"
+          onclick="disabledSubmitButton(this, '已提交'); $('#btn_judge_result').click()" v-on:click="submit_solution"
+          class="btn bg-success text-white m-2" style="min-width: 6rem"
+          @guest disabled @endguest>{{ trans('main.Submit') }}</button>
       </div>
     </div>
     {{-- end of 提交等按钮 --}}
@@ -96,12 +101,13 @@
                 <textarea id="local_test_input" v-model="local_test.stdin" rows="6" class="w-100" required></textarea>
               </div>
               <div class="d-flex">
-                <button type="button" id="btn_submit_local_test" class="btn bg-success text-white" v-on:click="submit_local_test"
-                  @guest disabled @endguest>{{ __('main.Compile and Run') }}</button>
-                @foreach ($samples as $i => $sam)
-                  <button type="button" v-on:click="fill_in_sample('{{ $i }}')" class="btn bg-secondary text-white ml-2"
+                <button type="button" id="btn_submit_local_test" class="btn bg-success text-white"
+                  v-on:click="submit_local_test" @guest disabled @endguest>{{ __('main.Compile and Run') }}</button>
+                @for ($i = 0; $i < $num_samples; $i++)
+                  <button type="button" v-on:click="fill_in_sample('{{ $i }}')"
+                    class="btn bg-secondary text-white ml-2"
                     @guest disabled @endguest>{{ __('sentence.Fill in the sample') }} {{ $i + 1 }}</button>
-                @endforeach
+                @endfor
               </div>
               <hr>
               <div v-show="local_test.error_info">
@@ -160,14 +166,16 @@
               <p class="alert-success p-2" v-if="judge_result.result==4">
                 {{ __('sentence.pass_all_test') }}
                 (@{{ judge_num_ac }}/@{{ judge_num_test }})
-                <a class="ml-3" target="_blank" :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
+                <a class="ml-3" target="_blank"
+                  :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
               </p>
               {{-- WA --}}
               <div v-else>
                 <p class="alert-danger p-2">
                   {{ __('sentence.WA') }}
                   (@{{ judge_num_ac }}/@{{ judge_num_test }})
-                  <a class="ml-3" target="_blank" :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
+                  <a class="ml-3" target="_blank"
+                    :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
                 </p>
                 <pre v-show="judge_result.error_info" class="alert-danger p-2 overflow-auto">@{{ judge_result.error_info }}</pre>
               </div>
@@ -216,7 +224,8 @@
 
 </div>
 
-<script>
+{{-- ==================== 使用vue展示提交结果 ================== --}}
+<script type="text/javascript">
   const {
     createApp
   } = Vue
@@ -410,7 +419,8 @@
       }
       // 初始切换为本地缓存的语言
       // 情况1: 已缓存选中语言  且题目允许
-      if (localStorage.getItem('code_lang') !== null && $("option[value=" + localStorage.getItem('code_lang') + "]").length > 0)
+      if (localStorage.getItem('code_lang') !== null && $("option[value=" + localStorage.getItem('code_lang') + "]")
+        .length > 0)
         $("#lang_select").val(localStorage.getItem('code_lang'))
       listen_lang_selected()
       // 情况2: 用户手动切换了语言
