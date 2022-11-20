@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProblemController extends Controller
@@ -86,15 +87,22 @@ class ProblemController extends Controller
         // 是否存在特判代码
         $hasSpj = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));
 
-        $tags = DB::table('tag_marks')
-            ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
-            ->groupBy('name')
-            ->where('problem_id', $problem->id)
-            ->where('hidden', 0)
-            ->select('name', DB::raw('count(name) as count'))
-            ->orderByDesc('count')
-            ->limit(3)
-            ->get();
+        // 获取本题的tag（缓存10分钟）
+        $tags = Cache::remember(
+            sprintf('problem:%d:tags', $problem->id),
+            600,
+            function () use ($problem) {
+                return DB::table('tag_marks')
+                    ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
+                    ->select('name', DB::raw('count(*) as count'))
+                    ->where('problem_id', $problem->id)
+                    ->where('hidden', 0)
+                    ->groupBy('tag_pool.id')
+                    ->orderByDesc('count')
+                    ->limit(3)
+                    ->get();
+            }
+        );
 
         // 可能指定了solution代码
         $solution = DB::table('solutions')->find($_GET['solution'] ?? -1);
