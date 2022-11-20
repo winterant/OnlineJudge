@@ -59,11 +59,7 @@ mod_env "pm.max_spare_servers" ${fpm_pm_max_spare_servers:-1024} ${php_fpm_confi
 # php-fpm will be recreated after has processed for `pm.max_request` times.
 mod_env "pm.max_requests"      ${fpm_pm_max_requests:-1000}      ${php_fpm_config_file}
 # Set pm.status_path which is the URI of php-fpm status page. Must be started with /
-if [[ ${fpm_pm_status_path} == "" ]]; then
-    sed -i "s/^pm\.status_path\s\?=.*$/;pm\.status_path=/" ${php_fpm_config_file}
-else
-    mod_env "pm.status_path"  ${fpm_pm_status_path}  ${php_fpm_config_file}
-fi
+mod_env "pm.status_path"  "/fpm-status"  ${php_fpm_config_file}
 
 ########### nginx config
 sed -i "s/worker_connections [0-9]*;$/worker_connections 51200;/" /etc/nginx/nginx.conf
