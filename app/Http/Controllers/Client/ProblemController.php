@@ -83,7 +83,8 @@ class ProblemController extends Controller
         //读取样例文件
         $samples = read_problem_data($id);
 
-        $hasSpj = (get_spj_code($problem->id) != null);
+        // 是否存在特判代码
+        $hasSpj = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));
 
         $tags = DB::table('tag_marks')
             ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')

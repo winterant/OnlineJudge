@@ -105,37 +105,6 @@ function save_problem_data($problem_id, $ins, $outs, $from_sample = true)
         file_put_contents(sprintf('%s/%s.out', $dir, $i), $out);
 }
 
-// /**
-//  * @param $cpp_path
-//  * @param $out_path
-//  * @return string
-//  *  编译c++文件；该功能在后期开发中即将废弃，应当通过linux终端编译，或判题端编译
-//  */
-// function compile_cpp($cpp_path, $out_path): string
-// {
-//     $cmd = sprintf("sudo g++ %s -o %s -lm -std=c++17 2>&1", $cpp_path, $out_path);
-//     $out[] = $cmd;
-//     exec($cmd, $out);
-//     if (count($out) == 1)
-//         $out[] = "Compiled successfully!";
-//     else
-//         $out[] = "Compilation failed!";
-//     return implode('<br>', $out);
-// }
-
-/**
- * 获取本题的特判代码
- * @param $problem_id
- * @return string
- */
-function get_spj_code($problem_id): ?string
-{
-    $filepath = testdata_path($problem_id . '/spj/spj.cpp');
-    if (is_file($filepath))
-        return file_get_contents($filepath);
-    return null;
-}
-
 //将一个数字题号转为大写字母 A~Z(0~25), 27, 28, 29, ...
 function index2ch(int $index)
 {

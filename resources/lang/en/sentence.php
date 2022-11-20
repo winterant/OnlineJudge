@@ -35,7 +35,7 @@ return [
     "discussion_added"  => "You have successfully published a discussion!",
 
 //   problem
-    "Wrong spj"=> "Wrong spj",
+    "missing_spj"       => "Missing spj.cpp",
     "Choose Language"   => "----Choose Language----",
     "Input Code"        => "Input your code to solve this problem...",
     "submit_frequently" => "Submit frequently! You are not allowed to submit twice in :sec seconds",

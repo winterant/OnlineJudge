@@ -215,7 +215,7 @@ class ContestController extends Controller
         $samples = read_problem_data($problem->id);
 
         // 特判代码是否存在
-        $hasSpj = (get_spj_code($problem->id) != null);
+        $hasSpj = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));
 
         // 获取本题的tag
         $tags = DB::table('tag_marks')

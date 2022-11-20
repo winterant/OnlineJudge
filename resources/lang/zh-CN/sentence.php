@@ -35,7 +35,7 @@ return [
     "discussion_added"  => "成功发表了一条讨论！",
 
 //   problem
-    "Wrong spj"=> "spj.cpp错误",
+    "missing_spj"       => "缺少spj.cpp",
     "Choose Language"   => "----选择语言----",
     "Input Code"        => "输入你的代码...",
     "submit_frequently" => "提交频繁! 请在 :sec 秒后尝试再次提交！",

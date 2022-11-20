@@ -112,14 +112,16 @@
         <div class="alert-info p-2 mb-2 d-flex flex-wrap" style="font-size: 0.9rem">
           <div style="min-width: 300px">{{ __('main.Time Limit') }}: {{ $problem->time_limit }}MS</div>
           <div style="min-width: 300px">{{ __('main.Memory Limit') }}: {{ $problem->memory_limit }}MB</div>
-          <div style="min-width: 300px">{{ __('main.Special Judge') }}:
+          <div style="min-width: 300px">{{ __('main.Result Judgement') }}:
             @if ($problem->spj == 1)
-              <span class="text-red">{{ __('main.Yes') }}</span>
-              @if (!$hasSpj)
-                ({{ __('sentence.Wrong spj') }})
-              @endif
+              <span class="text-red">
+                {{ __('main.Special Judge') }}
+                @if (!$hasSpj)
+                  ({{ __('sentence.missing_spj') }})
+                @endif
+              </span>
             @else
-              {{ __('main.No') }}
+              {{ __('main.Text Comparison') }}
             @endif
           </div>
           <div style="min-width: 300px">

@@ -86,7 +86,7 @@ class ProblemController extends Controller
 
             $samples = read_problem_data($problem->id);
             //看看有没有特判文件
-            $spj_exist = Storage::exists('data/' . $problem->id . '/spj/spj.cpp');
+            $spj_exist = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));
             return view('admin.problem.edit', compact('pageTitle', 'problem', 'samples', 'spj_exist'));
         }
 
@@ -132,7 +132,9 @@ class ProblemController extends Controller
     {
         header('Content-type: text/plain; charset=UTF-8');
         header("Content-Disposition:attachement;filename=spj" . $pid . ".cpp"); //提示下载
-        return get_spj_code($pid);
+        $filepath = testdata_path($pid . '/spj/spj.cpp');
+        $spj_code = is_file($filepath) ? file_get_contents($filepath) : null;
+        return $spj_code;
     }
 
     //管理员修改题目状态  0密封 or 1公开
@@ -533,11 +535,14 @@ class ProblemController extends Controller
             }
             //spj language
             if ($problem->spj) {
+                $filepath = testdata_path($problem->id . '/spj/spj.cpp');
+                $spj_code = is_file($filepath) ? file_get_contents($filepath) : '';
+
                 $cpp = $dom->createElement('spj');
                 $attr = $dom->createAttribute('language');
                 $attr->appendChild($dom->createTextNode('C++'));
                 $cpp->appendChild($attr);
-                $cpp->appendChild($dom->createCDATASection(get_spj_code($problem->id)));
+                $cpp->appendChild($dom->createCDATASection($spj_code));
                 $item->appendChild($cpp);
             }
             //solution language
