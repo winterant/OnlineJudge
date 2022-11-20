@@ -24,14 +24,13 @@ RUN cd /app_src &&\
     composer install --ignore-platform-reqs &&\
     composer dump-autoload --optimize &&\
     # docker entrypoint
-    cp docker-entrypoint.sh /docker-entrypoint.sh &&\
+    cp install/docker/entrypoint.sh /docker-entrypoint.sh &&\
     chmod +x /docker-entrypoint.sh &&\
     # nginx
     rm -rf /etc/nginx/sites-enabled/default &&\
-    cp nginx-lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
-    # version
-    mkdir -p storage/app &&\
-    echo 1.3.$(date "+%Y%m%d") > storage/app/.version
+    cp install/nginx/lduoj.conf /etc/nginx/conf.d/lduoj.conf &&\
+    # version. --build-arg V=1.x
+    echo ${V:-dev}.$(date "+%Y%m%d") > install/.version
 
 WORKDIR /app
 

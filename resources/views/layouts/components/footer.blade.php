@@ -14,9 +14,9 @@
   <span>
     All Rights Reserved.
   </span>
-  @if (file_exists(storage_path('app/.version')))
+  @if (file_exists(base_path('install/.version')))
     <span>
-      Version: {{ file_get_contents(storage_path('app/.version')) }}
+      Version: {{ file_get_contents(base_path('install/.version')) }}
     </span>
   @endif
 </div>
