@@ -7,6 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
@@ -362,9 +363,7 @@ class ContestController extends Controller
             $_GET['class'] ?? '',
             $_GET['nick'] ?? '',
         );
-        if (Redis::exists($redis_key)) {
-            $users = json_decode(Redis::get($redis_key), true);
-        } else {
+        $users = Cache::remember($redis_key, 10, function () use ($contest) {
             // 查询所有提交记录(重量级)
             $solutions = DB::table('solutions')
                 ->join('contest_problems', function ($q) {
@@ -390,6 +389,7 @@ class ContestController extends Controller
                 ->get();
 
             // 生成榜单（重量级）
+
             $users = [];
             $has_ac = []; // 标记每道题是否已经被AC
             foreach ($solutions as $solution) {
@@ -453,8 +453,9 @@ class ContestController extends Controller
             //罚时由秒转为H:i:s
             foreach ($users as $uid => &$user)
                 $user['penalty'] = self::seconds_to_clock($user['penalty']);
-            Redis::setex($redis_key, 10, json_encode($users)); // 榜单数据缓存10秒，应对高并发
-        }
+
+            return $users;
+        });
 
         //题目总数
         $problem_count = DB::table('contest_problems')->where('contest_id', $contest->id)->count('id');

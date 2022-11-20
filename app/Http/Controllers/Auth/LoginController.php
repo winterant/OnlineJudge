@@ -7,8 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class LoginController extends Controller
@@ -82,8 +81,7 @@ class LoginController extends Controller
             // 登陆成功，刷新api_token
             DB::table('users')->where('id', Auth::id())
                 ->update(['api_token'=> hash('sha256', $api_token = Str::random(64))]); // hash 64 bits
-            // Cookie::queue('api_token', $api_token, 5256000); // 10 years
-            Redis::set('user:' . Auth::id() . ':api_token', $api_token);
+            Cache::forever('user:' . Auth::id() . ':api_token', $api_token);
             // 退出其他设备的登陆信息
             // Auth::logoutOtherDevices($request->input('password'));
             return $this->sendLoginResponse($request);

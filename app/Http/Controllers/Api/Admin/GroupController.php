@@ -123,9 +123,9 @@ class GroupController extends Controller
     {
         $ids = $request->input('ids') ?? [];
         if ($request->has('values'))
-            return TemplateController::update_batch('groups', $ids, $request->input('values'));
+            return HomeController::update_batch('groups', $ids, $request->input('values'));
         else
-            return TemplateController::update_batch('groups', $ids, $request->input('value'), true);
+            return HomeController::update_batch('groups', $ids, $request->input('value'), true);
     }
 
     /**
@@ -150,9 +150,9 @@ class GroupController extends Controller
     {
         $ids = $request->input('ids') ?? [];
         if ($request->has('values'))
-            return TemplateController::update_batch('group_users', $ids, $request->input('values'));
+            return HomeController::update_batch('group_users', $ids, $request->input('values'));
         else
-            return TemplateController::update_batch('group_users', $ids, $request->input('value'), true);
+            return HomeController::update_batch('group_users', $ids, $request->input('value'), true);
     }
 
 

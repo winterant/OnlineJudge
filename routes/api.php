@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+','uid' => '[0-9]+'])->group(function () {
+Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+'])->group(function () {
     // ========================= CK editor upload image API =========================
     /**
      * Usage Example
@@ -88,6 +88,10 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+','uid' => '[0-9]+'
             Route::post('/groups/{id}/members', 'Admin\GroupController@create_members')->name('group.create_members');
             Route::delete('/groups/{id}/members/batch', 'Admin\GroupController@delete_members_batch')->name('group.delete_members_batch');
             Route::patch('/group/members/batch', 'Admin\GroupController@update_members_batch')->name('group.update_members_batch');
+        });
+        // settings
+        Route::middleware(['Permission:admin.setting'])->group(function () {
+            Route::patch('/settings', 'Admin\HomeController@settings')->name('settings');
         });
     });
 });

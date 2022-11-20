@@ -108,7 +108,7 @@ Route::middleware(['auth', 'CheckUserLocked'])->where(['id' => '[0-9]+'])->group
 Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')->where(['id' => '[0-9]+'])->group(function () {
 
     Route::middleware(['Permission:admin.home'])->group(function () {
-        Route::get('/', 'Admin\HomeController@index')->name('home');
+        Route::get('/', 'Admin\HomeController@home')->name('home');
     });
 
     //    manage notice
@@ -211,6 +211,6 @@ Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')-
 
     // settings
     Route::middleware(['Permission:admin.setting'])->group(function () {
-        Route::any('/settings', 'Admin\SettingController@settings')->name('settings');
+        Route::get('/settings', 'Admin\HomeController@settings')->name('settings');
     });
 });

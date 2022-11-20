@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Schema;
 
@@ -11,30 +12,24 @@ use Illuminate\Support\Facades\Schema;
 
 /************************* 后台管理 *****************************/
 //获取配置值
-function get_setting($key, $setdefault = null, $update=false)
+function get_setting($key, $setvalue = null)
 {
     $redis_key = 'website:' . $key;
-    // 强制修改值
-    if($update){
-        Redis::set($redis_key, $setdefault);
-        return $setdefault;
-    }
-    // 从缓存中取值
-    if (($val = Redis::get($redis_key)) !== null) {
-        return $val;
-    } else if (Schema::hasTable('settings') && ($val = DB::table('settings')->where('key', $key)->value('value')) !== null) {
+
+    if ($setvalue !== null) // 设置配置项
+        Cache::forever($redis_key, $setvalue);
+
+    return Cache::rememberForever($redis_key, function () use ($key, $setvalue) {
         // 兼容老版本的settings表，新版已经移除该表
-        Redis::set($redis_key, $val);
-        return $val;
-    } else if (($val = config('init.settings.' . $key)) !== null) {
+        if (Schema::hasTable('settings') && ($val = DB::table('settings')->where('key', $key)->value('value')) !== null) {
+            Schema::dropIfExists('settings'); // settings表作废，删除
+            return $val;
+        }
         // 尝试从配置文件中读取配置项
-        Redis::set($redis_key, $val);
-        return $val;
-    }
-    // 不存在的配置项，以默认值保存并返回
-    if ($setdefault !== null)
-        Redis::set($redis_key, $setdefault);
-    return $setdefault;
+        if (($val = config('init.settings.' . $key)) !== null)
+            return $val;
+        return null; // 不存在的配置项
+    });
 }
 
 // todo 要区分web和api获取user的方式不同

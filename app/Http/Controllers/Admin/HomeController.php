@@ -9,13 +9,14 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    public function index(Request $request){
-        if (!DB::table('privileges')->where('user_id',Auth::id())->exists())
+    public function home(Request $request)
+    {
+        if (!DB::table('privileges')->where('user_id', Auth::id())->exists())
             abort(404);
 
         //服务器相关信息
         $systemInfo = [
-            '网站域名'      =>$_SERVER["HTTP_HOST"],
+            '网站域名'      => $_SERVER["HTTP_HOST"],
             '服务器主机名'   =>  $_SERVER['SERVER_NAME'],
             '服务器IP地址'   =>  $_SERVER['SERVER_ADDR'],
             '服务器Web端口'  =>  $_SERVER['SERVER_PORT'],
@@ -25,12 +26,20 @@ class HomeController extends Controller
             'PHP安装路径'    =>  DEFAULT_INCLUDE_PATH,
             'PHP运行方式'    =>  php_sapi_name(),
             'Laravel版本'   =>  $laravel = app()::VERSION,
-            '最大上传限制'   => get_cfg_var ("upload_max_filesize"),
-            '最大执行时间'   => get_cfg_var("max_execution_time")."秒",
-            '脚本运行最大内存' => get_cfg_var ("memory_limit"),
+            '最大上传限制'   => get_cfg_var("upload_max_filesize"),
+            '最大执行时间'   => get_cfg_var("max_execution_time") . "秒",
+            '脚本运行最大内存' => get_cfg_var("memory_limit"),
             '服务器解译引擎'  => $_SERVER['SERVER_SOFTWARE'],
-            '通信协议'       =>$_SERVER['SERVER_PROTOCOL']
+            '通信协议'       => $_SERVER['SERVER_PROTOCOL']
         ];
-        return view('admin.home',compact('systemInfo'));
+        return view('admin.home', compact('systemInfo'));
+    }
+
+    /**
+     * 系统设置
+     */
+    public function settings(Request $request)
+    {
+        return view('admin.settings');
     }
 }

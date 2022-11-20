@@ -6,8 +6,29 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TemplateController extends Controller
+class HomeController extends Controller
 {
+    /**
+     * patch request:{
+     *   `key`:`value`,
+     *   ...
+     * }
+     */
+    public function settings(Request $request)
+    {
+        $modified = $request->all();
+        foreach ($modified as $key => $val) {
+            if ($val === null) $val = ''; // 前端传过来的空串会被laravel转为null，此处还原为空串
+            if ($val === 'true') $val = true;
+            if ($val === 'false') $val = false;
+            if (is_numeric($val)) $val = intval($val);
+            get_setting($key, $val);
+        }
+        return ['ok' => 1, 'msg' => 'Settings have updated.'];
+    }
+
+
+    // ======================== 以下方法是通用的常用静态方法，以便在其他控制器中调用 =============
     /**
      * 对于某张表，批量更新部分字段
      *

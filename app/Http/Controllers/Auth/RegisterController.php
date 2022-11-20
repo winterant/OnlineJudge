@@ -6,13 +6,12 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
+
 
 class RegisterController extends Controller
 {
@@ -90,8 +89,7 @@ class RegisterController extends Controller
             'nick'   => $data['nick'],
             'api_token' => hash('sha256', $api_token = Str::random(64)), // hash 64 bits
         ]);
-        // Cookie::queue('api_token', $api_token, 5256000); // 10 years
-        Redis::set('user:' . $user->getAttributes()['id'] . ':api_token', $api_token);
+        Cache::forever('user:' . $user->getAttributes()['id'] . ':api_token', $api_token);
         return $user;
     }
 }
