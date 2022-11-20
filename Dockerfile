@@ -22,6 +22,7 @@ COPY . /app_src/
 RUN cd /app_src &&\
     cp -rf .env.example .env &&\
     composer install --ignore-platform-reqs &&\
+    composer dump-autoload --optimize &&\
     # docker entrypoint
     cp docker-entrypoint.sh /docker-entrypoint.sh &&\
     chmod +x /docker-entrypoint.sh &&\

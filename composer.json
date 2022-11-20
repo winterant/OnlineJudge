@@ -52,8 +52,7 @@
         ],
         "files": [
             "app/functions/DB_helpers.php",
-            "app/functions/helpers.php",
-            "app/functions/http_helpers.php"
+            "app/functions/helpers.php"
         ]
     },
     "autoload-dev": {

@@ -20,6 +20,7 @@ fi
 function mod_env(){
     sed -i "s/^.\?$1\s\?=.*$/$1=${2//\//\\\/}/" $3
 }
+mod_env "TIMEZONE"          ${TZ:-Asia/Shanghai}                .env
 mod_env "APP_DEBUG"         ${APP_DEBUG:-false}                 .env
 mod_env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false}          .env
 mod_env "DB_HOST"           ${MYSQL_HOST:-host.docker.internal} .env
