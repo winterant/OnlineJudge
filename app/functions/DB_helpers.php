@@ -1,10 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Schema;
 
 /************************ 前台 ***********************************/
@@ -19,16 +17,8 @@ function get_setting($key, $setvalue = null)
     if ($setvalue !== null) // 设置配置项
         Cache::forever($redis_key, $setvalue);
 
-    return Cache::rememberForever($redis_key, function () use ($key, $setvalue) {
-        // 兼容老版本的settings表，新版已经移除该表
-        if (Schema::hasTable('settings') && ($val = DB::table('settings')->where('key', $key)->value('value')) !== null) {
-            Schema::dropIfExists('settings'); // settings表作废，删除
-            return $val;
-        }
-        // 尝试从配置文件中读取配置项
-        if (($val = config('init.settings.' . $key)) !== null)
-            return $val;
-        return null; // 不存在的配置项
+    return Cache::rememberForever($redis_key, function () use ($key) {
+        return config('init.settings.' . $key);   // 尝试从配置文件中读取初始配置项
     });
 }
 

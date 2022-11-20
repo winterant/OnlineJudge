@@ -458,7 +458,7 @@ class ContestController extends Controller
         );
 
         //题目总数
-        $problem_count = DB::table('contest_problems')->where('contest_id', $contest->id)->count('id');
+        $problem_count = DB::table('contest_problems')->where('contest_id', $contest->id)->count();
 
         //封榜时间
         $end_time = strtotime($contest->end_time) - (strtotime($contest->end_time) - strtotime($contest->start_time)) * $contest->lock_rate;
