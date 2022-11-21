@@ -56,7 +56,7 @@
         </div>
         <div class="form-group">
           <label class="form-inline">班级编号：
-            <input class="form-control" name="group[class]" placeholder="如：1"
+            <input class="form-control" type="number" name="group[class]" placeholder="如：1"
               value="{{ isset($group->class) ? $group->class : '' }}">
           </label>
         </div>
@@ -130,7 +130,7 @@
     $(function() {
       ClassicEditor.create(document.querySelector('#description'), ck_config).then(editor => {
         window.editor = editor;
-        console.log(editor.getData());
+        // console.log(editor.getData());
       }).catch(error => {
         console.log(error);
       });

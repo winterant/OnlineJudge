@@ -67,6 +67,8 @@ class GroupController extends Controller
             return view('layouts.message', ['msg' => '您没有管理权限，也不是该群组的创建者!']);
 
         $request_group = $request->input('group');
+        if ($request_group['class'] == '') // class是integer，无法赋值空串
+            $request_group['class'] = null;
         $request_group['updated_at'] = date('Y-m-d H:i:s');
         DB::table('groups')->where('id', $group->id)->update($request_group);
 
