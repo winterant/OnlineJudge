@@ -29,7 +29,7 @@
 
             {{-- 提交记录折线图 --}}
             <div>
-              <x-solution.line-chart default-past="300i" :contest-id="$contest->id" />
+              <x-solution.line-chart :default-past="$_GET['past'] ?? '300i'" :contest-id="$contest->id" />
             </div>
 
             <div class="float-left">
@@ -46,10 +46,12 @@
 
             {{-- 实时更新榜单的按钮 --}}
             <div class="pull-right">
-              @if (strtotime($contest->end_time) < time() && ((Auth::check() && privilege('admin.contest')) || $contest->lock_rate == 0))
+              @if (strtotime($contest->end_time) < time() &&
+                  ((Auth::check() && privilege('admin.contest')) || $contest->lock_rate == 0))
                 <span title="{{ __('sentence.Up to now') }}">{{ trans('main.Up to now') }}：</span>
                 <input id="switch_buti" type="checkbox">
-                <input type="text" name="buti" onchange="this.form.submit()" value="{{ isset($_GET['buti']) ? $_GET['buti'] : 'false' }}" hidden>
+                <input type="text" name="buti" onchange="this.form.submit()"
+                  value="{{ isset($_GET['buti']) ? $_GET['buti'] : 'false' }}" hidden>
               @endif
               <script>
                 $(function() {
@@ -71,31 +73,39 @@
                 <thead>
                   <tr>
                     <th width="5%" class="text-center">{{ trans('main.Rank') }}</th>
-                    <th width="5%"><input type="text" class="form-control" placeholder="{{ trans('main.Username') }}" style="height: auto;font-size: 0.9rem"
-                        onchange="this.form.submit()" name="username" value="{{ isset($_GET['username']) ? $_GET['username'] : '' }}">
+                    <th width="5%"><input type="text" class="form-control"
+                        placeholder="{{ trans('main.Username') }}" style="height: auto;font-size: 0.9rem"
+                        onchange="this.form.submit()" name="username"
+                        value="{{ isset($_GET['username']) ? $_GET['username'] : '' }}">
                     </th>
                     @if (get_setting('rank_show_school'))
                       <th width="5%" class="text-center">
-                        <input type="text" class="form-control" placeholder="{{ trans('main.School') }}" style="height: auto;font-size: 0.9rem" onchange="this.form.submit()"
-                          name="school" value="{{ isset($_GET['school']) ? $_GET['school'] : '' }}">
+                        <input type="text" class="form-control" placeholder="{{ trans('main.School') }}"
+                          style="height: auto;font-size: 0.9rem" onchange="this.form.submit()" name="school"
+                          value="{{ isset($_GET['school']) ? $_GET['school'] : '' }}">
                       </th>
                     @endif
                     @if (get_setting('rank_show_class'))
                       <th width="5%" class="text-center">
-                        <input type="text" class="form-control" placeholder="{{ trans('main.Class') }}" style="height: auto;font-size: 0.9rem" onchange="this.form.submit()"
-                          name="class" value="{{ isset($_GET['class']) ? $_GET['class'] : '' }}">
+                        <input type="text" class="form-control" placeholder="{{ trans('main.Class') }}"
+                          style="height: auto;font-size: 0.9rem" onchange="this.form.submit()" name="class"
+                          value="{{ isset($_GET['class']) ? $_GET['class'] : '' }}">
                       </th>
                     @endif
                     @if (get_setting('rank_show_nick'))
                       <th width="5%" class="text-center">
-                        <input type="text" class="form-control" placeholder="{{ trans('main.Name') }}" style="height: auto;font-size: 0.9rem" onchange="this.form.submit()"
-                          name="nick" value="{{ isset($_GET['nick']) ? $_GET['nick'] : '' }}">
+                        <input type="text" class="form-control" placeholder="{{ trans('main.Name') }}"
+                          style="height: auto;font-size: 0.9rem" onchange="this.form.submit()" name="nick"
+                          value="{{ isset($_GET['nick']) ? $_GET['nick'] : '' }}">
                       </th>
                     @endif
-                    <th width="5%" class="text-center">{{ $contest->judge_type == 'acm' ? trans('main.Solved') : trans('main.Score') }}</th>
+                    <th width="5%" class="text-center">
+                      {{ $contest->judge_type == 'acm' ? trans('main.Solved') : trans('main.Score') }}</th>
                     <th width="5%" class="text-center">{{ trans('main.Penalty') }}</th>
                     @for ($i = 0; $i < $problem_count; $i++)
-                      <th class="text-center"><a href="{{ route('contest.problem', [$contest->id, $i, 'group' => $_GET['group'] ?? null]) }}">{{ index2ch($i) }}</a></th>
+                      <th class="text-center"><a
+                          href="{{ route('contest.problem', [$contest->id, $i, 'group' => $_GET['group'] ?? null]) }}">{{ index2ch($i) }}</a>
+                      </th>
                     @endfor
                   </tr>
                 </thead>
@@ -160,11 +170,15 @@
           </form>
 
           <div>
-            <div><i class="fa fa-square" aria-hidden="true" style="color: #12d000"></i> {{ __('sentence.firstAC') }}</div>
-            <div><i class="fa fa-square" aria-hidden="true" style="color: #87ec97"></i> {{ __('sentence.normalAC') }}</div>
-            <div><i class="fa fa-square" aria-hidden="true" style="color: #ffafa7"></i> {{ __('sentence.normalWA') }}</div>
+            <div><i class="fa fa-square" aria-hidden="true" style="color: #12d000"></i> {{ __('sentence.firstAC') }}
+            </div>
+            <div><i class="fa fa-square" aria-hidden="true" style="color: #87ec97"></i> {{ __('sentence.normalAC') }}
+            </div>
+            <div><i class="fa fa-square" aria-hidden="true" style="color: #ffafa7"></i> {{ __('sentence.normalWA') }}
+            </div>
             <div><i class="fa fa-square-o" aria-hidden="true"></i> {{ __('sentence.noSubmit') }}</div>
-            <div><i class="fa fa-square" aria-hidden="true" style="color: #99d7ff"></i> {{ __('sentence.endedAC') }}</div>
+            <div><i class="fa fa-square" aria-hidden="true" style="color: #99d7ff"></i> {{ __('sentence.endedAC') }}
+            </div>
           </div>
 
         </div>
