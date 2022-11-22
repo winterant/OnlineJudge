@@ -45,7 +45,7 @@ class LineChart extends Component
 
         // 查询数据库
         $solutions = Cache::remember(
-            sprintf('solution:line_chart:%s,%s,%s,%s', $defaultPast, $userId, $contestId, $groupId),
+            sprintf('solution:line_chart:%s,%s,%s,%s', $_GET['past'], $userId, $contestId, $groupId),
             30, // 缓存30秒
             function () use ($userId, $contestId, $groupId, $option) {
                 return DB::table('solutions as s')
