@@ -24,8 +24,7 @@
           </h5>
           <hr>
           <div>
-            此功能正在开发中，请您耐心等待~<br>
-            通过该页面，您可以看到您个人在本课程当中的学习记录！
+            <x-solution.line-chart :user-id="$user->id" :group-id="$group->id" />
           </div>
         </div>
 

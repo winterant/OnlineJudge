@@ -29,7 +29,7 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-12 mb-4">
+      <div class="col-12">
         <div class="card">
           <div class="card-header pt-2 pb-0" style="border-top: 5px solid #2b15ff;">
             <h3 class="text-center mb-0">{{ __('main.Notice Board') }}</h3>
@@ -65,7 +65,17 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-6 mb-5">
+
+      <div class="col-12 mt-4">
+        <div class="card">
+          <div class="card-header pt-2 pb-0" style="border-top: 5px solid #31bb1f;">
+            <h3 class="text-center mb-0">{{ __('main.Solutions') }}</h3>
+          </div>
+          <x-solution.line-chart />
+        </div>
+      </div>
+
+      <div class="col-sm-6 mt-4">
         <div class="card">
           <div class="card-header pt-2 pb-0" style="border-top: 5px solid #fcc700;">
             <a href="javascript:" class="pull-right" style="color: #838383"
@@ -104,7 +114,8 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-6 mb-5">
+
+      <div class="col-sm-6 mt-4">
         <div class="card">
           <div class="card-header pt-2 pb-0" style="border-top: 5px solid #ff0023;">
             <a href="javascript:" class="pull-right" style="color: #838383"

@@ -116,6 +116,7 @@ return [
     "months"        => "[*]个月",
     "days"          => "[*]天",
     "hours"         => "[*]小时",
+    "minutes"       => "[*]分钟",
     "problems"      => "[*]个问题",
     "Tag Marking"   => "标签收集",
     "Tag"           => "标签",
@@ -171,6 +172,11 @@ return [
     "All Result"    => "所有结果",
     "Result"        => "结果",
 
+    // Echarts for solution
+    "num_submitted" => "提交数量",
+    "num_accepted"  => "正确提交数量",
+    "num_solved"    => "解决题目数量",
+    "Recent"        => "最近",
 
     //    contest
     "Score"         => "分值",

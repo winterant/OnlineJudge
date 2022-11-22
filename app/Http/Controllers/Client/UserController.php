@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -19,20 +20,17 @@ class UserController extends Controller
         if ($user == null)
             return view('layouts.message', ['msg' => trans('sentence.User not found', ['un' => $username])]);
 
-        $submissions = DB::table('solutions')
-            ->where('user_id', $user->id)
-            ->get();
-
-        // ============== 提交统计 ============
-        $results = []; // 按提交结果统计
-        $problem_submitted = []; // 每个题目的提交次数
-        $problem_ac = []; // 每个题目的ac次数
-        foreach ($submissions as $item) {
-            $results[$item->result] = ($results[$item->result] ?? 0) + 1;
-            $problem_submitted[$item->problem_id] = ($problem_submitted[$item->problem_id] ?? 0) + 1;
-            if ($item->result == 4)
-                $problem_ac[$item->problem_id] = ($problem_ac[$item->problem_id] ?? 0) + 1;
-        }
+        $problems_solved = Cache::remember(
+            'problems:solved:user:' . $username,
+            30, // 缓存
+            function () use ($user) {
+                return DB::table('solutions')
+                    ->where('user_id', $user->id)
+                    ->where('result', 4)
+                    ->distinct()
+                    ->pluck('problem_id');
+            }
+        );
 
         //对访客隐藏部分信息
         if (!Auth::user() && !get_setting('display_complete_userinfo')) {
@@ -41,7 +39,7 @@ class UserController extends Controller
             $user->class = '****';
             $user->nick = '***';
         }
-        return view('auth.user', compact('user', 'problem_submitted', 'problem_ac'));
+        return view('auth.user', compact('user', 'problems_solved'));
     }
 
     public function user_edit(Request $request, $username)

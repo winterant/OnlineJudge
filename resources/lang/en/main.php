@@ -116,6 +116,7 @@ return [
     "months"        => "[*,1] month|[2,*] months",
     "days"          => "[*,1] day|[2,*] days",
     "hours"         => "[*,1] hour|[2,*] hours",
+    "minutes"       => "[*,1] minute|[2,*] minutes",
     "problems"      => "[*,1] problem|[2,*] problems",
     "Tag Marking"   => "Tag Marking",
     "Tag"           => "Tag",
@@ -169,8 +170,13 @@ return [
     "Similarity Check" => "Similarity Check",
     "Wrong Data"    => "Wrong Data",
     "All Result"    => "All Result",
-    "Result"    => "Result",
+    "Result"        => "Result",
 
+    // Echart for solution
+    "num_submitted" => "Number Of Submissions",
+    "num_accepted"  => "Number Of Accepted Submissions",
+    "num_solved"    => "Number Of Solved Problems",
+    "Recent"        => "Recent",
 
     //    contest
     "Score"         => "Score",

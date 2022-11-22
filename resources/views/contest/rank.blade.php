@@ -21,28 +21,33 @@
           <h4 class="text-center">{{ $contest->id }}. {{ $contest->title }}</h4>
           <hr class="mt-0">
 
-          <div class="float-left">
-            <button class="btn btn-sm" onclick="down_rank()">{{ __('main.Download') }}</button>
-          </div>
-          @if ($contest->lock_rate > 0 && time() > $end_time) {{-- 封榜了 --}}
-            <div class="float-left">
-              <span class="btn btn-sm">
-                <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: red"></i>
-                {{ trans('sentence.rank_end_time', ['time' => date('Y-m-d H:i:s', $end_time)]) }}
-              </span>
-            </div>
-          @endif
-
           <form id="form_rank" action="" method="get">
 
             @if (isset($_GET['group']))
               <input name="group" value="{{ $_GET['group'] }}" hidden>
             @endif
 
+            {{-- 提交记录折线图 --}}
+            <div>
+              <x-solution.line-chart default-past="300i" :contest-id="$contest->id" />
+            </div>
+
+            <div class="float-left">
+              <button class="btn btn-sm" onclick="down_rank()">{{ __('main.Download') }}</button>
+            </div>
+            @if ($contest->lock_rate > 0 && time() > $end_time) {{-- 封榜了 --}}
+              <div class="float-left">
+                <span class="btn btn-sm">
+                  <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: red"></i>
+                  {{ trans('sentence.rank_end_time', ['time' => date('Y-m-d H:i:s', $end_time)]) }}
+                </span>
+              </div>
+            @endif
+
             {{-- 实时更新榜单的按钮 --}}
             <div class="pull-right">
               @if (strtotime($contest->end_time) < time() && ((Auth::check() && privilege('admin.contest')) || $contest->lock_rate == 0))
-                <font title="{{ __('sentence.Up to now') }}">{{ trans('main.Up to now') }}：</font>
+                <span title="{{ __('sentence.Up to now') }}">{{ trans('main.Up to now') }}：</span>
                 <input id="switch_buti" type="checkbox">
                 <input type="text" name="buti" onchange="this.form.submit()" value="{{ isset($_GET['buti']) ? $_GET['buti'] : 'false' }}" hidden>
               @endif
