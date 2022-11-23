@@ -22,7 +22,7 @@ class HomeController extends Controller
             if ($val === 'true') $val = true;
             if ($val === 'false') $val = false;
             if (is_numeric($val)) $val = intval($val);
-            get_setting($key, $val);
+            get_setting($key, $val, true);
         }
         return ['ok' => 1, 'msg' => 'Settings have updated.'];
     }

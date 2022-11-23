@@ -4,39 +4,40 @@ namespace App\View\Components\Solution;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\View\Component;
 
 class LineChart extends Component
 {
-    public string $dom_id;
     public $x, $submitted, $accepted, $solved;
 
     public function __construct($defaultPast = '30d', $userId = null, $contestId = null, $groupId = null)
     {
-        $this->dom_id = Str::random(64);
-
         // 筛选的起始时间
         $sub_sql = [
             '300i' => [
                 'column' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d %H:%i:00') AS dt"),
-                'start_time' => date("Y-m-d H:i:00", strtotime("-300 minute"))
+                'start_time' => date("Y-m-d H:i:00", strtotime("-300 minute")),
+                'cache_time' => 15, // 缓存30秒
             ],
             '24h' => [
                 'column' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d %H:00') AS dt"),
-                'start_time' => date("Y-m-d H:00:00", strtotime("-24 hour"))
+                'start_time' => date("Y-m-d H:00:00", strtotime("-24 hour")),
+                'cache_time' => 600, // 缓存10分钟
             ],
             '30d' => [
                 'column' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d') AS dt"),
-                'start_time' => date("Y-m-d 00:00:00", strtotime("-30 day"))
+                'start_time' => date("Y-m-d 00:00:00", strtotime("-30 day")),
+                'cache_time' => 3600, // 缓存1小时
             ],
             '180d' => [
                 'column' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d') AS dt"),
-                'start_time' => date("Y-m-d 00:00:00", strtotime("-30 day"))
+                'start_time' => date("Y-m-d 00:00:00", strtotime("-30 day")),
+                'cache_time' => 3600 * 12, // 缓存12小时
             ],
             '12m' => [
                 'column' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m') AS dt"),
-                'start_time' => date("Y-m-d 00:00:00", strtotime("-12 month"))
+                'start_time' => date("Y-m-d 00:00:00", strtotime("-12 month")),
+                'cache_time' => 3600 * 24, // 缓存1天
             ],
         ];
         if (!isset($_GET['past']))
@@ -46,13 +47,13 @@ class LineChart extends Component
         // 查询数据库
         $solutions = Cache::remember(
             sprintf('solution:line_chart:%s,%s,%s,%s', $_GET['past'], $userId, $contestId, $groupId),
-            30, // 缓存30秒
+            $option['cache_time'],
             function () use ($userId, $contestId, $groupId, $option) {
                 return DB::table('solutions as s')
                     ->select([
                         DB::raw('count(*) as submitted'),
                         DB::raw('count(result=4 or null) as accepted'),
-                        DB::raw('count(distinct ((result=4 or null) * 10 + problem_id)) as solved'),
+                        DB::raw('count(distinct (problem_id * 10 + (result=4 or null))) as solved'),
                         $option['column']
                     ])
                     ->when($userId !== null, function ($q) use ($userId) {

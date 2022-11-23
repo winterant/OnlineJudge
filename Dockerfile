@@ -23,8 +23,8 @@ RUN cd /app_src &&\
     cp -rf .env.example .env &&\
     composer install --ignore-platform-reqs &&\
     composer dump-autoload --optimize &&\
-    # version. --build-arg V=1.x
-    echo ${V:-dev}.$(date "+%Y%m%d") > install/.version
+    # lduoj version
+    echo 1.4-beta.$(date "+%Y%m%d") > install/.version
 
 RUN cd /app_src &&\
     # docker entrypoint

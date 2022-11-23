@@ -63,8 +63,9 @@
       <div>
         <h6 class="text-center">{{ __('main.Solved') }} {{ __('main.Problems') }}</h6>
         <div>
+          @php($link = route('problems')) {{-- 优化 避免因route多次调用而速度缓慢 --}}
           @foreach ($problems_solved as $i)
-            <a href="{{ route('problem', $i) }}">{{ $i }}</a>,
+            <a href="{{ $link }}/{{ $i }}">{{ $i }}</a>,
           @endforeach
         </div>
       </div>

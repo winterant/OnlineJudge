@@ -1,6 +1,7 @@
 <div class="">
-  <div class="float-right mr-5" style="position:relative;z-index:99">
-    <select id="past-select" name="past" class="form-control px-2">
+  <div class="float-right mr-4" style="position:relative;z-index:99">
+    <select id="past-select" name="past" class="px-2"
+      style="font-size: 0.85rem; text-align-last: center; border-radius: 2px;">
       <option value="300i" @if (($_GET['past'] ?? null) == '300i') selected @endif>
         @lang('main.Recent') 300 {{ trans_choice('main.minutes', 2) }}
       </option>
@@ -19,7 +20,7 @@
     </select>
   </div>
 
-  <div id="{{ $dom_id }}" style="height:300px"></div>
+  <div id="{{ $dom_id = Str::random(64) }}" style="height:300px"></div>
 
 </div>
 

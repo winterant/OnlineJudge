@@ -9,13 +9,15 @@ use Illuminate\Support\Facades\Cache;
 
 /************************* 后台管理 *****************************/
 //获取配置值
-function get_setting($key, $setvalue = null)
+function get_setting($key, $default = null, bool $update = false)
 {
     $redis_key = 'website:' . $key;
-
-    if ($setvalue !== null) // 设置配置项
-        Cache::forever($redis_key, $setvalue);
-
+    // 有默认值
+    if ($default !== null) {
+        if ($update)
+            Cache::forever($redis_key, $default);
+        return $default;
+    }
     return Cache::rememberForever($redis_key, function () use ($key) {
         return config('init.settings.' . $key);   // 尝试从配置文件中读取初始配置项
     });
