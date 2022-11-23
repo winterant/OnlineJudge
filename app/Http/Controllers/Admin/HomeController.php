@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {
@@ -32,7 +33,8 @@ class HomeController extends Controller
             '服务器解译引擎'  => $_SERVER['SERVER_SOFTWARE'],
             '通信协议'       => $_SERVER['SERVER_PROTOCOL']
         ];
-        return view('admin.home', compact('systemInfo'));
+        $fpm_status = Http::get('http://localhost:8088/fpm-status', $_GET); // php-fpm实时状态
+        return view('admin.home', compact('systemInfo', 'fpm_status'));
     }
 
     /**
