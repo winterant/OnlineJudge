@@ -1,4 +1,4 @@
-<div class="">
+<div class="p-2">
   <div class="float-right mr-4" style="position:relative;z-index:99">
     <select id="past-select" name="past" class="px-2"
       style="font-size: 0.85rem; text-align-last: center; border-radius: 2px;">
