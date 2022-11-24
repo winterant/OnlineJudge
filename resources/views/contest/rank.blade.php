@@ -138,26 +138,23 @@
                       @if (get_setting('rank_show_nick'))
                         <td nowrap>{{ $user['nick'] }}</td>
                       @endif
-                      <td class="text-center"
-                        onclick="window.open('{{ route('contest.solutions', [$contest->id, 'username' => $user['username'], 'group' => $_GET['group'] ?? null]) }}','_blank')">
+                      <td class="text-center">
                         {{ $user['score'] }}</td>
-                      <td class="text-center"
-                        onclick="window.open('{{ route('contest.solutions', [$contest->id, 'username' => $user['username'], 'group' => $_GET['group'] ?? null]) }}','_blank')">
+                      <td class="text-center">
                         {{ $user['penalty'] }}</td>
                       {{-- 下面是每一道题的情况 --}}
                       @for ($i = 0; $i < $problem_count; $i++)
-                        <td
+                        <td class="border text-center"
                           @if (isset($user[$i])) @if ($user[$i]['AC'])
-                                                        @if ($user[$i]['AC_time'] > $contest->end_time)
-                                                            style="background-color: #99d7ff"
-                                                        @elseif(isset($user[$i]['first_AC']))
-                                                            style="background-color: #12d000"
-                                                        @else
-                                                            style="background-color: #87ec97" @endif
+                              @if ($user[$i]['AC_time'] > $contest->end_time)
+                                  style="background-color: #99d7ff"
+                              @elseif(isset($user[$i]['first_AC']))
+                                  style="background-color: #12d000"
+                              @else
+                                  style="background-color: #87ec97" @endif
                         @else style="background-color: #ffafa7" @endif
-                          onclick="window.open('{{ route('contest.solutions', [$contest->id, 'username' => $user['username'], 'index' => $i, 'group' => $_GET['group'] ?? null]) }}','_blank')"
                       @endif
-                      class="border text-center">
+                      >
                       {{ isset($user[$i]) ? $user[$i]['AC_info'] : null }}
                       </td>
                   @endfor

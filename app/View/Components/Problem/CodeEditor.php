@@ -9,7 +9,8 @@ use Illuminate\View\Component;
 class CodeEditor extends Component
 {
     public $problem;
-    public $contest = null;
+    public $contest_id = null; // 竞赛编号，若为null则是在题库中
+    public $allow_lang = null; // 允许使用的编程语言
     public $num_samples = 0; // 记下样例个数，本地测试时根据样例序号快速填入样例
     public $solution_code = null; // 可能请求了库中的代码
     /**
@@ -17,10 +18,11 @@ class CodeEditor extends Component
      *
      * @return void
      */
-    public function __construct($problem, $contest = null, $numSamples = 0)
+    public function __construct($problem, $contestId = null, $allowLang = null, $numSamples = 0)
     {
         $this->problem = $problem;
-        $this->contest = $contest;
+        $this->contest_id = $contestId;
+        $this->allow_lang = $allowLang;
         $this->num_samples = $numSamples;
 
         // 用户可能请求了已提交的代码

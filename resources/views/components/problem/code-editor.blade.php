@@ -7,9 +7,9 @@
 
     <input name="solution[pid]" value="{{ $problem->id }}" hidden>
 
-    @if (isset($contest))
+    @if (isset($contest_id))
       <input name="solution[index]" value="{{ $problem->index }}" hidden>
-      <input name="solution[cid]" value="{{ $contest->id }}" hidden>
+      <input name="solution[cid]" value="{{ $contest_id }}" hidden>
     @endif
 
     @if ($problem->type == 0)
@@ -20,7 +20,7 @@
           <select id="lang_select" name="solution[language]" class="px-3 border"
             style="text-align-last: center;border-radius: 4px;">
             @foreach (config('oj.judge_lang') as $key => $res)
-              @if (!isset($contest) || ($contest->allow_lang >> $key) & 1)
+              @if (!isset($allow_lang) || ($allow_lang >> $key) & 1)
                 <option value="{{ $key }}">{{ $res }}</option>
               @endif
             @endforeach
@@ -443,7 +443,7 @@
       })
 
       // ======================== 初始化填充代码
-      var local_code_key = "solution_code_problem{{ $problem->id }}_contest{{ $contest->id ?? 0 }}"
+      var local_code_key = "solution_code_problem{{ $problem->id }}_contest{{ $contest_id ?? 0 }}"
       if (code_editor.getValue() == '' && localStorage.getItem(local_code_key))
         code_editor.setValue(localStorage.getItem(local_code_key))
 

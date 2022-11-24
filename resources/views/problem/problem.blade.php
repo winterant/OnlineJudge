@@ -213,12 +213,12 @@
 
     </div>
 
+    {{-- 中轴线 分割线 --}}
     <div id="resize"></div>
 
     <div id="right">
       {{-- 代码编辑框 --}}
-      {{-- @include('problem.components.code_editor') --}}
-      <x-problem.code-editor :problem="$problem" :contest="$contest ?? null" :num-samples="count($samples ?? [])" />
+      <x-problem.code-editor :problem="$problem" :contest-id="$contest->id ?? null" :allow-lang="$contest->allow_lang ?? null" :num-samples="count($samples ?? [])" />
     </div>
   </div>
 

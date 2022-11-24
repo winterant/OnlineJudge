@@ -31,7 +31,7 @@ class LineChart extends Component
             ],
             '180d' => [
                 'column' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d') AS dt"),
-                'start_time' => date("Y-m-d 00:00:00", strtotime("-30 day")),
+                'start_time' => date("Y-m-d 00:00:00", strtotime("-180 day")),
                 'cache_time' => 3600 * 12, // 缓存12小时
             ],
             '12m' => [
