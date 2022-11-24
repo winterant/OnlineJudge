@@ -15,29 +15,29 @@ class LineChart extends Component
         // 筛选的起始时间
         $sub_sql = [
             '300i' => [
-                'column' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d %H:%i:00') AS dt"),
-                'start_time' => date("Y-m-d H:i:00", strtotime("-300 minute")),
-                'cache_time' => 15, // 缓存30秒
+                'groupby' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d %H:%i:00') AS groupby"),
+                'start_date' => date("Y-m-d H:i:00", strtotime("-300 minute")),
+                'cache_seconds' => 30, // 缓存30秒
             ],
             '24h' => [
-                'column' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d %H:00') AS dt"),
-                'start_time' => date("Y-m-d H:00:00", strtotime("-24 hour")),
-                'cache_time' => 600, // 缓存10分钟
+                'groupby' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d %H:00') AS groupby"),
+                'start_date' => date("Y-m-d H:00:00", strtotime("-24 hour")),
+                'cache_seconds' => 600, // 缓存10分钟
             ],
             '30d' => [
-                'column' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d') AS dt"),
-                'start_time' => date("Y-m-d 00:00:00", strtotime("-30 day")),
-                'cache_time' => 3600, // 缓存1小时
+                'groupby' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d') AS groupby"),
+                'start_date' => date("Y-m-d 00:00:00", strtotime("-30 day")),
+                'cache_seconds' => 3600, // 缓存1小时
             ],
             '180d' => [
-                'column' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d') AS dt"),
-                'start_time' => date("Y-m-d 00:00:00", strtotime("-180 day")),
-                'cache_time' => 3600 * 12, // 缓存12小时
+                'groupby' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d') AS groupby"),
+                'start_date' => date("Y-m-d 00:00:00", strtotime("-180 day")),
+                'cache_seconds' => 3600 * 12, // 缓存12小时
             ],
             '12m' => [
-                'column' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m') AS dt"),
-                'start_time' => date("Y-m-d 00:00:00", strtotime("-12 month")),
-                'cache_time' => 3600 * 24, // 缓存1天
+                'groupby' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m') AS groupby"),
+                'start_date' => date("Y-m-d 00:00:00", strtotime("-12 month")),
+                'cache_seconds' => 3600 * 24, // 缓存1天
             ],
         ];
         if (!isset($_GET['past']))
@@ -46,15 +46,15 @@ class LineChart extends Component
 
         // 查询数据库
         $solutions = Cache::remember(
-            sprintf('solution:line_chart:%s,%s,%s,%s', $_GET['past'], $userId, $contestId, $groupId),
-            $option['cache_time'],
+            sprintf('solution:line-chart:%s,%s,%s,%s', $_GET['past'], $userId, $contestId, $groupId),
+            $option['cache_seconds'],
             function () use ($userId, $contestId, $groupId, $option) {
                 return DB::table('solutions as s')
                     ->select([
                         DB::raw('count(*) as submitted'),
                         DB::raw('count(result=4 or null) as accepted'),
                         DB::raw('count(distinct (problem_id * 10 + (result=4 or null))) as solved'),
-                        $option['column']
+                        $option['groupby']
                     ])
                     ->when($userId !== null, function ($q) use ($userId) {
                         return $q->where('user_id', $userId);
@@ -66,15 +66,15 @@ class LineChart extends Component
                         return $q->join('group_contests as gc', 'gc.contest_id', 's.contest_id')
                             ->where('group_id', $groupId);
                     })
-                    ->where('submit_time', '>', $option['start_time'])
-                    ->groupBy('dt')
+                    ->where('submit_time', '>', $option['start_date'])
+                    ->groupBy('groupby')
                     ->get()->toArray();
             }
         );
 
         // 汇总数据
         $this->x = array_map(function ($v) {
-            return $v->dt;
+            return $v->groupby;
         }, $solutions);
         $this->submitted = array_map(function ($v) {
             return $v->submitted;
