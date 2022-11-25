@@ -3,6 +3,7 @@
 namespace App\View\Components\Contest;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\Component;
 
@@ -23,17 +24,29 @@ class ProblemsLink extends Component
         $this->problem_index = $problemIndex;
         $this->problems = DB::table('contest_problems as cp')
             ->join('problems as p', 'p.id', 'problem_id')
-            ->select([
-                'cp.index', 'p.title',
-                //查询本人是否通过此题；4:Accepted, >4:Attempting, 0:没做
-                DB::raw('(select min(result) from solutions where contest_id=' . $contestId . '
-                    and problem_id=p.id
-                    and user_id=' . Auth::id() . '
-                    and result>=4) as result')
-            ])
+            ->select(['cp.index', 'p.title', 'p.id'])
             ->where('contest_id', $contestId)
             ->orderBy('index')
             ->get();
+
+        foreach ($this->problems as &$item) {
+            // null,0，1，2，3都视为没做； 4视为Accepted；其余视为答案错误（尝试中）
+            $key = sprintf('contest:%d:problem:%d:user:%s:result', $contestId, $item->id, Auth::id());
+            if (!Cache::has($key)) {
+                $result = DB::table('solutions')
+                    ->where('contest_id', $contestId)
+                    ->where('problem_id', $item->id)
+                    ->where('user_id', Auth::id())
+                    ->where('result', '>=', 4)
+                    ->min('result');
+                if ($result >= 4) // 有结果了，放进Cache，永久缓存
+                    Cache::put($key, $result);
+                else // 没结果，则视为0（Waiting）并缓存1分钟
+                    Cache::put($key, 0, 60);
+                $item->result = $result;
+            } else
+                $item->result = Cache::get($key);
+        }
     }
 
     /**

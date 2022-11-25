@@ -8,7 +8,7 @@
 
         @if ($item->result == 4)
           <i class="fa fa-check text-green" aria-hidden="true"></i>
-        @elseif($item->result > 0)
+        @elseif($item->result > 4)
           <i class="fa fa-pencil text-red" aria-hidden="true"></i>
         @endif
         {{ index2ch($item->index) }}

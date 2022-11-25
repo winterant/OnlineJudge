@@ -143,15 +143,28 @@ class ContestController extends Controller
                 'p.id', 'p.type', 'p.title',
                 'cp.accepted', 'cp.solved', 'cp.submitted',
                 'cp.index',
-                //查询本人是否通过此题；4:Accepted, >4:Attempting, 0:没做
-                DB::raw(sprintf('(select min(result) from solutions
-                            where contest_id=%d
-                            and problem_id=p.id
-                            and user_id=%d
-                            and result>=4) as result', $id, Auth::id()))
             ])
             ->orderBy('cp.index')
             ->get();
+
+        foreach ($problems as &$item) {
+            // null,0，1，2，3都视为没做； 4视为Accepted；其余视为答案错误（尝试中）
+            $key = sprintf('contest:%d:problem:%d:user:%s:result', $id, $item->id, Auth::id());
+            if (!Cache::has($key)) {
+                $result = DB::table('solutions')
+                    ->where('contest_id', $id)
+                    ->where('problem_id', $item->id)
+                    ->where('user_id', Auth::id())
+                    ->where('result', '>=', 4)
+                    ->min('result');
+                if ($result >= 4) // 有结果了，放进Cache，永久缓存
+                    Cache::put($key, $result);
+                else // 没结果，则视为0（Waiting）并缓存1分钟
+                    Cache::put($key, 0, 60);
+                $item->result = $result;
+            } else
+                $item->result = Cache::get($key);
+        }
 
         // 读取标签（缓存10分钟）
         if (privilege('admin.contest') || time() > strtotime($contest->end_time))
