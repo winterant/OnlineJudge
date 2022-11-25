@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Jobs\CorrectSolutionsStatistics;
 use Illuminate\Console\Command;
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;

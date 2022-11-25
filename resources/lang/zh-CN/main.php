@@ -211,14 +211,14 @@ return [
     "ranking_rule"  => "排名规则",
 
     // Groups
-    "Group"         => "课程",
-    "Groups"        => "课程",
-    "Related Groups"=> "相关课程",
+    "Group"         => "课程(群组)",
+    "Groups"        => "课程(群组)",
+    "Related Groups"=> "相关课程(群组)",
     "Creator"       => "创建者",
     "Grade"         => "年级",
     "Major"         => "专业",
     "Class"         => "班级",
-    "New Group"     => "新建课程",
+    "New Group"     => "新建课程(群组)",
     "Members"       => "成员",
     "Date Added"    => "加入时间",
     "Identity"      => "身份",

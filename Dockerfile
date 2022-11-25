@@ -10,9 +10,10 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     apt install -y php8.1 php8.1-fpm php8.1-mysql php8.1-redis \
         php8.1-xml php8.1-mbstring \
         php8.1-gd php8.1-curl php8.1-zip &&\
-    apt install -y nginx mysql-client=8.0.* curl zip unzip language-pack-en-base &&\
+    apt install -y nginx mysql-client=8.0.* curl zip unzip &&\
     curl -sS https://getcomposer.org/installer | php &&\
     mv composer.phar /usr/bin/composer &&\
+    apt install -y vim language-pack-en-base &&\
     export LC_ALL=en_US.UTF-8 &&\
     export LANG=en_US.UTF-8
 

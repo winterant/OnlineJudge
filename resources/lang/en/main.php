@@ -211,14 +211,14 @@ return [
     "ranking_rule"  => "Ranking Rule",
 
     // Groups
-    "Group"         => "Course", //"Group",
-    "Groups"        => "Courses", //"Groups",
-    "Related Groups"=> "Related Courses",
+    "Group"         => "Group",
+    "Groups"        => "Groups",
+    "Related Groups"=> "Related Groups",
     "Creator"       => "Creator",
     "Grade"         => "Grade",
     "Major"         => "Major",
     "Class"         => "Class",
-    "New Group"     => "New Course",
+    "New Group"     => "New Group",
     "Members"       => "Members",
     "Date Added"    => "Date Added",
     "Identity"      => "Identity",
