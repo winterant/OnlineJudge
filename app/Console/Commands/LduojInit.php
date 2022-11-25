@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\CorrectSubmittedCount;
+use App\Jobs\CorrectSolutionsStatistics;
 use Illuminate\Console\Command;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -50,8 +50,8 @@ class LduojInit extends Command
         $this->correct_contest_order();
         $this->correct_contest_cate_order();
         // 矫正过题数字段，延迟2分钟执行（待服务器稳定运行）
-        dispatch(new CorrectSubmittedCount())->delay(120)->onQueue('CorrectSubmittedCount');
-        echo "Done!" . PHP_EOL;
+        dispatch(new CorrectSolutionsStatistics())->delay(120);
+        echo "Command `php artisan lduoj:init` done!" . PHP_EOL;
     }
 
     /**
@@ -103,7 +103,7 @@ class LduojInit extends Command
         //============= 为admin赋予最高权限
         $user->givePermissionTo('admin');
         echo "Gave permision [admin] to user [admin]" . PHP_EOL;
-        // 临时旧版本权限表赋权
+        // 临时旧版本权限表赋权 to be deleted
         DB::table('privileges')->insert(['user_id' => $user->id, 'authority' => 'admin']);
         return true;
     }

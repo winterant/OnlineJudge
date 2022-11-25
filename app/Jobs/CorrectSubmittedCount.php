@@ -9,11 +9,12 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 
-class CorrectSubmittedCount implements ShouldQueue
+class CorrectSolutionsStatistics implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $timeout = 600; // 最长执行时间10分钟
+    public $tries = 3;     // 最多尝试3次
 
     /**
      * Create a new job instance.

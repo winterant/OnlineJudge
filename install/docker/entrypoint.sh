@@ -78,9 +78,12 @@ bash storage/logs/nginx/auto-clear-log.sh 2>&1 &
 
 
 ##########################################################################
-# Start laravel-queue. Although there are more than one queue they still execute one by one
+# Start laravel-queue.
+# Attention, One command `queue:work` only start one process.
+# Although there are more than one queue their jobs are still executed one by one.
+# TODO: Using supervisor to start more processes to run jobs of queues.
 ##########################################################################
-php artisan queue:work --queue=default,CorrectSubmittedCount
+php artisan queue:work --queue=default
 
 # Sleep forever to keep container alives.
 sleep infinity
