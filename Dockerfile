@@ -1,19 +1,23 @@
 FROM --platform=linux/amd64 ubuntu:22.04
 
 # Required software and their configs
-RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
+RUN set -ex &&\
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     echo 'Asia/Shanghai' > /etc/timezone &&\
+    sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.aliyun.com\/ubuntu/g' /etc/apt/sources.list &&\
     apt update && apt upgrade -y &&\
+    # php, composer
     apt install -y software-properties-common &&\
     yes | apt-add-repository ppa:ondrej/php &&\
     apt update && apt upgrade -y &&\
     apt install -y php8.1 php8.1-fpm php8.1-mysql php8.1-redis \
         php8.1-xml php8.1-mbstring \
-        php8.1-gd php8.1-curl php8.1-zip &&\
-    apt install -y nginx mysql-client=8.0.* curl zip unzip &&\
+        php8.1-gd php8.1-curl php8.1-zip \
+        curl zip unzip &&\
     curl -sS https://getcomposer.org/installer | php &&\
     mv composer.phar /usr/bin/composer &&\
-    apt install -y vim language-pack-en-base &&\
+    # nginx, mysql-client, ...
+    apt install -y nginx mysql-client=8.0.* vim language-pack-en-base &&\
     export LC_ALL=en_US.UTF-8 &&\
     export LANG=en_US.UTF-8
 
