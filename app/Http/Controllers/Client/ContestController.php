@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\View\Components\Contest\ProblemsLink;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -136,42 +137,15 @@ class ContestController extends Controller
             return abort(404);
 
         // 获取题目信息
-        $problems = DB::table('problems as p')
-            ->join('contest_problems as cp', 'cp.problem_id', '=', 'p.id')
-            ->where('contest_id', $id)
-            ->select([
-                'p.id', 'p.type', 'p.title',
-                'cp.accepted', 'cp.solved', 'cp.submitted',
-                'cp.index',
-            ])
-            ->orderBy('cp.index')
-            ->get();
+        $problem_link = new ProblemsLink($id, null);
+        $problems = $problem_link->problems;
 
-        foreach ($problems as &$item) {
-            // null,0，1，2，3都视为没做； 4视为Accepted；其余视为答案错误（尝试中）
-            $key = sprintf('contest:%d:problem:%d:user:%s:result', $id, $item->id, Auth::id());
-            if (!Cache::has($key)) {
-                $result = DB::table('solutions')
-                    ->where('contest_id', $id)
-                    ->where('problem_id', $item->id)
-                    ->where('user_id', Auth::id())
-                    ->where('result', '>=', 4)
-                    ->min('result');
-                if ($result >= 4) // 有结果了，放进Cache，永久缓存
-                    Cache::put($key, $result);
-                else // 没结果，则视为0（Waiting）并缓存1分钟
-                    Cache::put($key, 0, 60);
-                $item->result = $result;
-            } else
-                $item->result = Cache::get($key);
-        }
-
-        // 读取标签（缓存10分钟）
+        // 读取标签（缓存）
         if (privilege('admin.contest') || time() > strtotime($contest->end_time))
             foreach ($problems as &$problem) {
                 $tags = Cache::remember(
                     sprintf('problem:%d:tags', $problem->id),
-                    600, // 缓存10分钟
+                    1200, // 缓存20分钟
                     function () use ($problem) {
                         return DB::table('tag_marks')
                             ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
