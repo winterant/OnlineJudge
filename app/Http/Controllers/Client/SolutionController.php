@@ -80,20 +80,19 @@ class SolutionController extends Controller
     // web 查看一条提交记录
     public function solution($id)
     {
-        $solution = DB::table('solutions')
-            ->join('users', 'solutions.user_id', '=', 'users.id')
-            ->leftJoin('contest_problems', function ($q) {
-                $q->on('solutions.contest_id', '=', 'contest_problems.contest_id')->on('solutions.problem_id', '=', 'contest_problems.problem_id');
-            })
-            ->select([
-                'solutions.id', 'solutions.problem_id', 'index', 'solutions.contest_id', 'user_id', 'username',
-                'result', 'pass_rate', 'time', 'memory', 'judge_type', 'submit_time', 'judge_time',
-                'code', 'code_length', 'language', 'error_info', 'wrong_data'
-            ])
-            ->where('solutions.id', $id)->first();
+        $solution = DB::table('solutions')->find($id);
+        $solution->username = DB::table('users')->find($solution->user_id)->username ?? null;
+        if ($solution->contest_id > 0) {
+            $cp = DB::table('contest_problems')
+                ->where('contest_id', $solution->contest_id)
+                ->where('problem_id', $solution->problem_id)
+                ->first();
+            if ($cp)
+                $solution->index = $cp->index;
+            else
+                $solution->contest_id = -1; // 这条solution以前是竞赛中的，但题目现在被从竞赛中删除了
+        }
 
-        if ($solution->index === null) // 竞赛中已经把这道题删除了
-            $solution->contest_id = -1;
         if (
             privilege('admin.problem.solution') ||
             (Auth::id() == $solution->user_id && $solution->submit_time > Auth::user()->created_at)
