@@ -63,6 +63,7 @@ return [
     "Discussions"   => "Discussions",
 
     //    user
+    "Captcha"       => "Captcha",
     "Confirm"       => "Confirm",
     "Cancel"        => "Cancel",
     "Delete"        => "Delete",
@@ -113,6 +114,7 @@ return [
     "Theme"         => "Theme",
     "Analysis"      => "Analysis",
 
+    "tries"        => "[*,1] try|[2,*] tries",
     "months"        => "[*,1] month|[2,*] months",
     "days"          => "[*,1] day|[2,*] days",
     "hours"         => "[*,1] hour|[2,*] hours",

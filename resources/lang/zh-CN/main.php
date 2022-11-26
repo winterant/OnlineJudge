@@ -63,6 +63,7 @@ return [
     "Discussions"   => "讨论板",
 
     //    user
+    "Captcha"       => "验证码",
     "Confirm"       => "确认",
     "Cancel"        => "取消",
     "Delete"        => "删除",
@@ -113,6 +114,7 @@ return [
     "Theme"         => "主题",
     "Analysis"      => "分析",
 
+    "tries"         => "[*]次",
     "months"        => "[*]个月",
     "days"          => "[*]天",
     "hours"         => "[*]小时",
@@ -213,7 +215,7 @@ return [
     // Groups
     "Group"         => "课程(群组)",
     "Groups"        => "课程(群组)",
-    "Related Groups"=> "相关课程(群组)",
+    "Related Groups" => "相关课程(群组)",
     "Creator"       => "创建者",
     "Grade"         => "年级",
     "Major"         => "专业",
@@ -224,7 +226,7 @@ return [
     "Identity"      => "身份",
     "Operate"       => "操作",
     "My Studies"    => "我的学习",
-    "Study Schedule"=> "学习进度",
+    "Study Schedule" => "学习进度",
     "Join"          => "加入",
 
     // team

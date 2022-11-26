@@ -348,134 +348,172 @@ class ContestController extends Controller
             return view('layouts.message', ['msg' => '该竞赛处于隐藏状态，不可查看榜单。']);
         }
 
-        // ===================== 辅助函数 =============================
-        // 秒数转化为HH:mm:ss
-        $seconds2clock = function ($seconds) {
-            $clock = floor($seconds / 3600);
-            $seconds %= 3600;
-            $clock .= ':' . ($seconds / 60 < 10 ? '0' : '') . floor($seconds / 60);
-            $seconds %= 60;
-            $clock .= ':' . ($seconds < 10 ? '0' : '') . $seconds;
-            return $clock;
-        };
+        // ======================= 计算榜单结束时间 ======================
+        // 注意：普通用户在封榜后受限制
+        $rank_time = [
+            'locked_time' => [],
+            'final_time' => [],
+            'real_time' => [],
+        ];
+        // 封榜时间；time: 时刻, date: 日期格式, able: 是否有效, show是否展示按钮
+        $rank_time['locked_time']['time'] = strtotime($contest->start_time) + (1 - $contest->lock_rate) * (strtotime($contest->end_time) - strtotime($contest->start_time));
+        $rank_time['locked_time']['date'] = date('Y-m-d H:i:s', $rank_time['locked_time']['time']);
+        if ($contest->lock_rate > 0 && $rank_time['locked_time']['time'] < time()) {
+            $rank_time['locked_time']['able'] = true; // 允许查看封榜榜单
+        } else {
+            $rank_time['locked_time']['able'] = false;
+        }
+        $rank_time['locked_time']['show'] = $contest->lock_rate > 0; // 是否显示封榜按钮
 
-        // 计算榜单的截止时间
-        $rank_end_date = function ($contest) {
-            // 计算出封榜时间（若不封榜则结果为比赛结束时间）
-            $end_time = strtotime($contest->start_time) + (1 - $contest->lock_rate) * (strtotime($contest->end_time) - strtotime($contest->start_time));
-            // 如果希望查看补题榜（实时榜），仅两种情况允许：不封榜、封榜但是管理员
-            if (($_GET['buti'] ?? null) == 'true') {
-                if ($contest->lock_rate == 0 || privilege('admin.contest'))
-                    $end_time = time();
-            }
-            return date('Y-m-d H:i:s', $end_time);
-        };
+        // 终榜时间
+        $rank_time['final_time']['time'] = strtotime($contest->end_time);
+        $rank_time['final_time']['date'] = $contest->end_time;
+        if ($rank_time['final_time']['time'] < time()) // 竞赛已结束
+        {
+            $rank_time['final_time']['show'] = true;
+            $rank_time['final_time']['able'] = true;
+        } else {
+            $rank_time['final_time']['able'] = false;
+        }
+        $rank_time['final_time']['show'] = true; // 始终显示终榜按钮
 
-        // ===================== 计算榜单，每10秒刷新一次 ====================
-        $redis_key = sprintf('contest:%d:rank_users:%s', $id, implode(',', $_GET)); // 注意考虑查询
-        $users = Cache::remember(
-            $redis_key,
-            10,
-            function () use ($contest, $seconds2clock, $rank_end_date) {
-                // 查询所有提交记录(重量级)
-                $solutions = DB::table('solutions')
-                    ->join('contest_problems', function ($q) {
-                        $q->on('contest_problems.contest_id', '=', 'solutions.contest_id')
-                            ->on('contest_problems.problem_id', '=', 'solutions.problem_id');
-                    })
-                    ->join('users', 'solutions.user_id', '=', 'users.id')
-                    ->select('user_id', 'index', 'result', 'pass_rate', 'time', 'memory', 'submit_time', 'school', 'class', 'username', 'nick')
-                    ->where('solutions.contest_id', $contest->id)
-                    // ->whereIn('result', [4, 5, 6, 7, 8, 9, 10])
-                    ->whereBetween('result', [4, 10])
-                    ->where('submit_time', '>', $contest->start_time)
-                    ->where('submit_time', '<', $rank_end_date($contest))
-                    ->when(isset($_GET['school']) && $_GET['school'] != '', function ($q) {
-                        return $q->where('school', 'like', $_GET['school'] . '%');
-                    })
-                    ->when(isset($_GET['username']) && $_GET['username'] != '', function ($q) {
-                        return $q->where('username', 'like', $_GET['username'] . '%');
-                    })
-                    ->when(isset($_GET['nick']) && $_GET['nick'] != '', function ($q) {
-                        return $q->where('nick', 'like', $_GET['nick'] . '%');
-                    })
-                    ->get();
+        // 实时时间
+        $rank_time['real_time']['time'] = time();
+        $rank_time['real_time']['date'] = date('Y-m-d H:i:s');
+        $rank_time['real_time']['show'] = true;
+        $rank_time['real_time']['able'] = true;
 
-                // 生成榜单（重量级）
-                $users = [];
-                $has_ac = []; // 标记每道题是否已经被AC
-                foreach ($solutions as $solution) {
-                    if (!isset($users[$solution->user_id])) { // 用户首次提交
-                        $users[$solution->user_id] = [
-                            'score' => 0,
-                            'penalty' => 0,
-                            'username' => $solution->username,
-                            'school' => $solution->school,
-                            'class' => $solution->class,
-                            'nick' => $solution->nick,
-                        ];
-                    }
-                    $user = &$users[$solution->user_id];
-                    if (!isset($user[$solution->index])) //该用户首次提交该题
-                        $user[$solution->index] = ['AC' => false, 'AC_time' => 0, 'wrong' => 0, 'score' => 0, 'penalty' => 0];
-                    if (!$user[$solution->index]['AC']) {  //尚未AC该题
-                        if ($solution->result == 4) {
-                            $solution->pass_rate = 1; //若竞赛中途从acm改为oi，会出现oi没分的情况，故AC必满分
-                            $user[$solution->index]['AC'] = true;
-                            $user[$solution->index]['AC_time'] = $solution->submit_time;
-                            if (!isset($has_ac[$solution->index])) {  //第一滴血
-                                $has_ac[$solution->index] = true;
-                                $user[$solution->index]['first_AC'] = true;
-                            }
-                        } else {
-                            $user[$solution->index]['wrong']++;
-                        }
-                        if ($contest->judge_type == 'acm') {
-                            $user[$solution->index]['AC_info'] = null;
-                            if ($solution->result == 4) {  // ACM模式下只有AC了才计成绩
-                                $user['score']++;
-                                $user['penalty'] += strtotime($solution->submit_time) - strtotime($contest->start_time) + $user[$solution->index]['wrong'] * intval(get_setting('penalty_acm'));
-                                $user[$solution->index]['AC_info'] = $seconds2clock(strtotime($solution->submit_time) - strtotime($contest->start_time));
-                            }
-                            if ($user[$solution->index]['wrong'] > 0)
-                                $user[$solution->index]['AC_info'] .= sprintf("(-%d)", $user[$solution->index]['wrong']);
-                        } else {  // oi
-                            $new_score = max($user[$solution->index]['score'], round($solution->pass_rate * 100));
-                            if ($user[$solution->index]['score'] < $new_score) {  //获得了更高分
-                                // score
-                                $user['score'] += $new_score - $user[$solution->index]['score'];
-                                $user[$solution->index]['score'] = $new_score;
-                                // penalty
-                                $new_penalty = strtotime($solution->submit_time) - strtotime($contest->start_time);
-                                $user['penalty'] += $new_penalty - $user[$solution->index]['penalty'];
-                                $user[$solution->index]['penalty'] = $new_penalty;
-                            }
-                            $user[$solution->index]['AC_info'] = $user[$solution->index]['score'];
-                        }
-                    }
+        // 普通用户在封榜后，应当禁用终榜、实时
+        if ($rank_time['locked_time']['able'] && !privilege('admin.contest')) {
+            $rank_time['final_time']['able'] = false;
+            $rank_time['real_time']['able'] = false;
+        }
+
+        // ====================== 解析用户请求的截止榜单 ==============
+        if (!isset($_GET['end']) || !in_array($_GET['end'], array_keys($rank_time))) // 不合法的参数改为默认值real_time
+            $_GET['end'] = 'real_time';
+        if ($rank_time['real_time']['able'] === false) // real_time不允许查看，则切换为封榜
+            $_GET['end'] = 'locked_time';
+
+
+        // ======================= 获取题单 =========================
+        $problems = DB::table('contest_problems')
+            ->where('contest_id', $contest->id)
+            ->orderBy('index')
+            ->pluck('index', 'problem_id'); // [problem_id => index, ...]
+
+
+        // ======================== 计算榜单 =======================
+        $calculate_rank = function ($contest, $end_date = null) use ($problems) {
+            // 查询所有提交记录
+            $solutions = DB::table('solutions as s')
+                ->join('users', 's.user_id', '=', 'users.id')
+                ->select([
+                    'problem_id', 'result', 'pass_rate', 'time', 'memory', 'submit_time',
+                    'user_id', 'username', 'school', 'class', 'nick'
+                ])
+                ->where('s.contest_id', $contest->id)
+                ->whereBetween('result', [4, 10])
+                ->where('submit_time', '>=', $contest->start_time)
+                ->when(isset($end_date), function ($q) use ($end_date) {
+                    return $q->where('submit_time', '<', $end_date);
+                })
+                ->get();
+
+            // 生成榜单（重量级）
+            $users = [];
+            $problem_was_solved = []; // 标记每道题是否已经被AC
+            foreach ($solutions as $solution) {
+                // 用户首次提交，先创建用户
+                if (!isset($users[$solution->user_id])) {
+                    $users[$solution->user_id] = [
+                        'solved' => 0, // acm解决题目数量
+                        'penalty' => 0, // acm罚时
+                        'score' => 0, // oi得分
+                        'username' => $solution->username,
+                        'school' => $solution->school,
+                        'class' => $solution->class,
+                        'nick' => $solution->nick,
+                    ];
                 }
+                $user = &$users[$solution->user_id];
+                $index = $problems[$solution->problem_id];     // 题目序号
 
-                // 排序
-                uasort($users, function ($x, $y) {
+                // 用户user对于题目index是首次提交，则初始化
+                if (!isset($user[$index])) {
+                    $user[$index] = [
+                        'solved_time' => null, // 解决时间，若为null则表示尚未解决
+                        'solved_first' => false, // 是否是最快解决的
+                        'solved_after_end' => false, // 比赛结束后AC的
+                        'tries' => 0, // 直到解决时的尝试次数
+                        'score' => 0, // 得分（百分制）
+                    ];
+                }
+                // 用户user对于题目index还未解决
+                if (!$user[$index]['solved_time']) {
+                    if ($solution->result == 4) { // 该用户首次AC该题目
+                        $user[$index]['solved_time'] = strtotime($solution->submit_time) - strtotime($contest->start_time);
+                        if ($solution->submit_time > $contest->end_time) // 赛后AC
+                            $user[$index]['solved_after_end'] = true;
+                        else if (!isset($problem_was_solved[$index])) { // 比赛中一血
+                            $user[$index]['solved_first'] = true;
+                            $problem_was_solved[$index] = true;
+                        }
+                        // acm过题数、罚时
+                        $user['solved']++;
+                        $user['penalty'] += $user[$index]['tries'] * intval(get_setting('penalty_acm')) + $user[$index]['solved_time'];
+                    }
+                    // oi得分，以最后得分为准
+                    $user['score'] -= $user[$index]['score'];
+                    $user[$index]['score'] = $solution->pass_rate * 100; //百分制
+                    $user['score'] += $user[$index]['score']; // oi得分
+                    // 尝试次数
+                    $user[$index]['tries']++;
+                }
+            }
+
+            // 排序
+            uasort($users, $contest->judge_type == 'acm' ?
+                function ($x, $y) {
+                    if ($x['solved'] != $y['solved'])
+                        return $x['solved'] < $y['solved'];
+                    return $x['penalty'] > $y['penalty'];
+                }
+                : // oi
+                function ($x, $y) {
                     if ($x['score'] != $y['score'])
                         return $x['score'] < $y['score'];
                     return $x['penalty'] > $y['penalty'];
                 });
 
-                //罚时由秒转为H:i:s
-                foreach ($users as $uid => &$user)
-                    $user['penalty'] = $seconds2clock($user['penalty']);
-
-                return $users;
+            // 标记名次
+            $rank = 0;
+            foreach ($users as $uid => &$user) {
+                $user['rank'] = ++$rank;
             }
-        );
+            return $users;
+        };
 
-        //题目总数
-        $problem_count = DB::table('contest_problems')->where('contest_id', $contest->id)->count();
 
-        //封榜时间
-        $end_time = strtotime($contest->end_time) - (strtotime($contest->end_time) - strtotime($contest->start_time)) * $contest->lock_rate;
-        return view('contest.rank', compact('contest', 'users', 'problem_count', 'end_time'));
+        // ========================== 调用榜单 ============================
+        $key = sprintf('contest:%d:rank:%s:users', $id, $_GET['end']);
+        if ($_GET['end'] == 'real_time') // 缓存15秒
+            $users = Cache::remember($key, 15, function () use ($contest, $calculate_rank) {
+                return $calculate_rank($contest);
+            });
+        else // 缓存5分钟
+            $users = Cache::remember($key, 300, function () use ($contest, $calculate_rank, $rank_time) {
+                return $calculate_rank($contest, $rank_time[$_GET['end']]['date']);
+            });
+
+        // =========================== 模糊查询 ========================
+        foreach ($users as $uid => &$user) {
+            if (isset($_GET['school']) && $_GET['school'] != '' && stripos($user['school'], $_GET['school']) === false) unset($users[$uid]);
+            if (isset($_GET['class']) && $_GET['class'] != '' && stripos($user['class'], $_GET['class']) === false) unset($users[$uid]);
+            if (isset($_GET['nick']) && $_GET['nick'] != '' && stripos($user['nick'], $_GET['nick']) === false) unset($users[$uid]);
+            if (isset($_GET['username']) && $_GET['username'] != '' && stripos($user['username'], $_GET['username']) === false) unset($users[$uid]);
+        }
+        return view('contest.rank', compact('contest', 'users', 'problems', 'rank_time'));
     }
 
     // 竞赛公告
