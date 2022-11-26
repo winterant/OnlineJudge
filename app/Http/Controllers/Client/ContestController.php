@@ -398,6 +398,11 @@ class ContestController extends Controller
             $users = [];
             $problem_was_solved = []; // 标记每道题是否已经被AC
             foreach ($solutions as $solution) {
+                // 获取题目序号
+                if (!isset($problems[$solution->problem_id]))
+                    continue; // 说明这条记录对应的题目已经从竞赛中删除了
+                $index = $problems[$solution->problem_id];
+
                 // 用户首次提交，先创建用户
                 if (!isset($users[$solution->user_id])) {
                     $users[$solution->user_id] = [
@@ -411,7 +416,6 @@ class ContestController extends Controller
                     ];
                 }
                 $user = &$users[$solution->user_id];
-                $index = $problems[$solution->problem_id];     // 题目序号
 
                 // 用户user对于题目index是首次提交，则初始化
                 if (!isset($user[$index])) {
