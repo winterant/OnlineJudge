@@ -40,18 +40,12 @@ class ProblemController extends Controller
             ->orderBy('problems.id')
             ->distinct()
             ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 100);
+
+        // 获取题目标签
         foreach ($problems as &$problem) {
-            $tag = DB::table('tag_marks')
-                ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
-                ->groupBy('tag_pool.id', 'name')
-                ->where('problem_id', $problem->id)
-                ->where('hidden', 0)
-                ->select('tag_pool.id', 'name', DB::raw('count(name) as count'))
-                ->orderByDesc('count')
-                ->limit(2)
-                ->get();
-            $problem->tags = $tag;
+            $problem->tags = $this::get_problem_tags($problem->id);
         }
+
         $tag_pool = DB::table('tag_pool')
             ->select('id', 'name')
             ->where('hidden', 0)
@@ -87,22 +81,8 @@ class ProblemController extends Controller
         // 是否存在特判代码
         $hasSpj = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));
 
-        // 获取本题的tag（缓存10分钟）
-        $tags = Cache::remember(
-            sprintf('problem:%d:tags', $problem->id),
-            600,
-            function () use ($problem) {
-                return DB::table('tag_marks')
-                    ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
-                    ->select('name', DB::raw('count(*) as count'))
-                    ->where('problem_id', $problem->id)
-                    ->where('hidden', 0)
-                    ->groupBy('tag_pool.id')
-                    ->orderByDesc('count')
-                    ->limit(3)
-                    ->get();
-            }
-        );
+        // 获取本题的tag（有缓存）
+        $tags = $this::get_problem_tags($problem->id, 5);
 
         // 可能指定了solution代码
         $solution = DB::table('solutions')->find($_GET['solution'] ?? -1);
@@ -213,5 +193,31 @@ class ProblemController extends Controller
         return DB::table('discussions')
             ->where('id', $request->input('id'))
             ->update(['hidden' => $request->input('value')]);
+    }
+
+
+    // ================================ 公用功能 =================================
+    /**
+     * 获取某题目的标签，默认获取被标记次数最多的3个，并缓存20分钟
+     * @return array
+     */
+    public static function get_problem_tags(int $problem_id, int $limit = 3)
+    {
+        return  Cache::remember(
+            sprintf('problem:%d:tags:limit:%d', $problem_id, $limit),
+            1200, // 缓存20分钟
+            function () use ($problem_id, $limit) {
+                $tags = DB::table('tag_marks as tm')
+                    ->join('tag_pool as tp', 'tp.id', '=', 'tm.tag_id')
+                    ->select(['tp.id', 'tp.name', DB::raw('count(*) as count')])
+                    ->where('tm.problem_id', $problem_id)
+                    ->where('tp.hidden', 0)
+                    ->groupBy('tp.id')
+                    ->orderByDesc('count')
+                    ->limit($limit)
+                    ->get();
+                return $tags ?? [];
+            }
+        );
     }
 }

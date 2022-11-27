@@ -51,7 +51,7 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        session(['url.intended'=>url()->previous()]); //登录后跳转回上一页
+        session(['url.intended' => url()->previous()]); //登录后跳转回上一页
         return view('auth.login');
     }
 
@@ -70,8 +70,10 @@ class LoginController extends Controller
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
-        if (method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request)) {
+        if (
+            method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)
+        ) {
             $this->fireLockoutEvent($request);
 
             return $this->sendLockoutResponse($request);
@@ -80,8 +82,8 @@ class LoginController extends Controller
         if ($this->attemptLogin($request)) {
             // 登陆成功，刷新api_token
             DB::table('users')->where('id', Auth::id())
-                ->update(['api_token'=> hash('sha256', $api_token = Str::random(64))]); // hash 64 bits
-            Cache::forever('user:' . Auth::id() . ':api_token', $api_token);
+                ->update(['api_token' => hash('sha256', $api_token = Str::random(64))]); // hash 64 bits
+            Cache::put('user:' . Auth::id() . ':api_token', $api_token, 3600 * 24 * 30);
             // 退出其他设备的登陆信息
             // Auth::logoutOtherDevices($request->input('password'));
             return $this->sendLoginResponse($request);
@@ -106,16 +108,16 @@ class LoginController extends Controller
      */
     protected function validateLogin(Request $request)
     {
-        if(get_setting("login_reg_captcha")){
+        if (get_setting("login_reg_captcha")) {
             $request->validate([
                 $this->username() => 'required|string',
                 'password' => 'required|string',
                 'captcha' => ['required', 'captcha'], // 验证码
-            ],[
+            ], [
                 'captcha.required' => '请输入验证码',
                 'captcha.captcha'  => '验证码错误! 请重新输入验证码'
             ]);
-        }else{
+        } else {
             $request->validate([
                 $this->username() => 'required|string',
                 'password' => 'required|string'

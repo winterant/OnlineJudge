@@ -21,7 +21,7 @@ class UserController extends Controller
             return view('layouts.message', ['msg' => trans('sentence.User not found', ['un' => $username])]);
 
         $problems_solved = Cache::remember(
-            'problems:solved:user:' . $username,
+            sprintf("user:%d:soved_problems:ids", $user->id),
             30, // 缓存
             function () use ($user) {
                 return DB::table('solutions')

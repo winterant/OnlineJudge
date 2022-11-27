@@ -140,25 +140,10 @@ class ContestController extends Controller
         $problem_link = new ProblemsLink($id, null);
         $problems = $problem_link->problems;
 
-        // 读取标签（缓存）
+        // 读取标签（有缓存）
         if (privilege('admin.contest') || time() > strtotime($contest->end_time))
             foreach ($problems as &$problem) {
-                $tags = Cache::remember(
-                    sprintf('problem:%d:tags', $problem->id),
-                    1200, // 缓存20分钟
-                    function () use ($problem) {
-                        return DB::table('tag_marks')
-                            ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
-                            ->select('name', DB::raw('count(*) as count'))
-                            ->where('problem_id', $problem->id)
-                            ->where('hidden', 0)
-                            ->groupBy('tag_pool.id')
-                            ->orderByDesc('count')
-                            ->limit(3)
-                            ->get();
-                    }
-                );
-                $problem->tags = ($tags ?? []);
+                $problem->tags = ProblemController::get_problem_tags($problem->id);
             }
 
         //读取附件，位于storage/app/public/contest/files/$cid/*
@@ -209,22 +194,8 @@ class ContestController extends Controller
         // 特判代码是否存在
         $hasSpj = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));
 
-        // 获取本题的tag（缓存10分钟）
-        $tags = Cache::remember(
-            sprintf('problem:%d:tags', $problem->id),
-            600,
-            function () use ($problem) {
-                return DB::table('tag_marks')
-                    ->join('tag_pool', 'tag_pool.id', '=', 'tag_id')
-                    ->select('name', DB::raw('count(*) as count'))
-                    ->where('problem_id', $problem->id)
-                    ->where('hidden', 0)
-                    ->groupBy('tag_pool.id')
-                    ->orderByDesc('count')
-                    ->limit(3)
-                    ->get();
-            }
-        );
+        // 获取本题的tag
+        $tags = ProblemController::get_problem_tags($problem->id, 5);
 
         return view('problem.problem', compact('contest', 'problem', 'samples', 'hasSpj', 'tags'));
     }
@@ -248,16 +219,10 @@ class ContestController extends Controller
                 $_GET['user_id'] = Auth::id();
 
         // 获得题号映射数组 [problem_id => index]
-        $pid2index = Cache::remember(
-            sprintf("contest:%d:solutions:problem_index", $id),
-            10,
-            function () use ($id) {
-                return DB::table('contest_problems')->where('contest_id', $id)
-                    ->orderBy('index')
-                    ->pluck('index', 'problem_id')
-                    ->toArray();
-            }
-        );
+        $pid2index = DB::table('contest_problems')->where('contest_id', $id)
+            ->orderBy('index')
+            ->pluck('index', 'problem_id')
+            ->toArray();
 
         // 获取提交记录
         $solutions = DB::table('solutions as s')

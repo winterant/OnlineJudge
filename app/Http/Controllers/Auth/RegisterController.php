@@ -53,19 +53,19 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        if(get_setting('login_reg_captcha')){
+        if (get_setting('login_reg_captcha')) {
             return Validator::make($data, [
-                'username' => ['required', 'string','max:30','min:4','unique:users'],
+                'username' => ['required', 'string', 'max:30', 'min:4', 'unique:users'],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
                 'email' => ['max:255'],
                 'captcha' => ['required', 'captcha'], // 验证码
-            ],[
+            ], [
                 'captcha.required' => '请输入验证码',
                 'captcha.captcha'  => '验证码错误! 请重新输入验证码'
             ]);
-        }else{
+        } else {
             return Validator::make($data, [
-                'username' => ['required', 'string','max:30','min:4','unique:users'],
+                'username' => ['required', 'string', 'max:30', 'min:4', 'unique:users'],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
                 'email' => ['max:255']
             ]);
@@ -80,7 +80,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $user=User::create([
+        $user = User::create([
             'username' => $data['username'],
             'password' => Hash::make($data['password']),
             'email' => $data['email'],
@@ -89,7 +89,7 @@ class RegisterController extends Controller
             'nick'   => $data['nick'],
             'api_token' => hash('sha256', $api_token = Str::random(64)), // hash 64 bits
         ]);
-        Cache::forever('user:' . $user->getAttributes()['id'] . ':api_token', $api_token);
+        Cache::put('user:' . $user->getAttributes()['id'] . ':api_token', $api_token, 3600 * 24 * 30);
         return $user;
     }
 }
