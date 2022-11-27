@@ -439,15 +439,21 @@ class ContestController extends Controller
 
 
         // ========================== 调用榜单 ============================
-        $key = sprintf('contest:%d:rank:%s:users', $id, $_GET['end']);
-        if ($_GET['end'] == 'real_time') // 缓存15秒
-            $users = Cache::remember($key, 15, function () use ($contest, $calculate_rank) {
-                return $calculate_rank($contest);
+        $users = [];
+        $key = sprintf('contest:%d:rank:%s:users', $contest->id, $_GET['end']);
+        Cache::lock('lock:' . $key, 15)
+            ->block(10, function () use ($key, $contest, $calculate_rank, $rank_time, &$users) {
+                // 原子锁的生命周期最长 15秒；等待最多 10 秒后获得锁，否则抛出异常
+                if ($_GET['end'] == 'real_time') // 实时榜单，缓存15秒
+                    $users = Cache::remember($key, 15, function () use ($contest, $calculate_rank) {
+                        return $calculate_rank($contest);
+                    });
+                else // 封榜或终榜，基本固定，缓存60分钟
+                    $users = Cache::remember($key, 3600, function () use ($contest, $calculate_rank, $rank_time) {
+                        return $calculate_rank($contest, $rank_time[$_GET['end']]['date']);
+                    });
             });
-        else // 缓存5分钟
-            $users = Cache::remember($key, 300, function () use ($contest, $calculate_rank, $rank_time) {
-                return $calculate_rank($contest, $rank_time[$_GET['end']]['date']);
-            });
+
 
         // =========================== 模糊查询 ========================
         foreach ($users as $uid => &$user) {
