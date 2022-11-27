@@ -26,8 +26,8 @@ COPY . /app_src/
 
 RUN cd /app_src &&\
     cp -rf .env.example .env &&\
-    composer install --ignore-platform-reqs &&\
-    composer dump-autoload --optimize
+    composer install --ignore-platform-reqs --no-dev -o &&\
+    composer dump-autoload --optimize --no-dev
 
 RUN cd /app_src &&\
     # docker entrypoint

@@ -1,6 +1,7 @@
 **/.DS_Store
 .git
 .env
+vendor
 storage/app
 storage/logs/*.log
 storage/framework/cache/data/*
