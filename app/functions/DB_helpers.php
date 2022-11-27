@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 
 /************************ 前台 ***********************************/
 
@@ -14,11 +15,19 @@ function get_setting($key, $default = null, bool $update = false)
     $redis_key = 'website:' . $key;
     // 有默认值
     if ($default !== null) {
-        if ($update)
-            Cache::forever($redis_key, $default);
+        // $update=true时，将设置项更新为传入的默认值
+        if ($update) {
+            Cache::forever($redis_key, $default); // 缓存
+            if (Schema::hasTable('settings')) // 持久化到数据库
+                DB::table('settings')->where('key', $key)->update(['value' => $default]);
+        }
         return $default;
     }
+    // 查询设置值，查询顺序：cache，database，file
     return Cache::rememberForever($redis_key, function () use ($key) {
+        if (Schema::hasTable('settings') && ($val = DB::table('settings')->where('key', $key)->value('value')) !== null) {
+            return $val;
+        }
         return config('init.settings.' . $key);   // 尝试从配置文件中读取初始配置项
     });
 }

@@ -45,6 +45,7 @@ class CreateTriggerForSolutions extends Migration
                     and not exists(select 1 from solutions where id<new.id and contest_id=new.contest_id and problem_id=new.problem_id and `user_id`=new.user_id and result=4 limit 1);
             END"
         );
+
         // 一些其它更新: 竞赛类别的父类别默认为0而不是null
         Schema::table('contest_cate', function (Blueprint $table) {
             DB::table('contest_cate')->where('parent_id', null)->update(['parent_id' => 0]);

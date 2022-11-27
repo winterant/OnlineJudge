@@ -32,6 +32,9 @@ class AlterIndexesAndAddColumns extends Migration
                 $table->dateTime('submit_time')->index()->useCurrent()->change();
         });
 
+        /**
+         * 以下添加的字段，是弥补某些已存在的表所缺失的功能，故增加之。
+         */
         // contests添加字段
         Schema::table('contests', function (Blueprint $table) {
             if (!Schema::hasColumn('contests', 'num_members')) {
