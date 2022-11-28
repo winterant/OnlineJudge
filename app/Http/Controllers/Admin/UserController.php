@@ -62,7 +62,7 @@ class UserController extends Controller
             }
             return back()->with('msg', $msg);
         }
-        return view('layouts.message', ['msg' => '请求有误！', 'success' => false, 'is_admin' => true]);
+        return view('message', ['msg' => '请求有误！', 'success' => false, 'is_admin' => true]);
     }
 
     public function privilege_delete(Request $request)
@@ -113,7 +113,7 @@ class UserController extends Controller
             }
 
             if (count($usernames) > 1000)
-                return view('layouts.message', ['msg' => '每次生成的用户数量不能超过1000，请分批生成！', 'success' => false, 'is_admin' => true]);
+                return view('message', ['msg' => '每次生成的用户数量不能超过1000，请分批生成！', 'success' => false, 'is_admin' => true]);
 
             if (isset($data['check_exist'])) {
                 //设置了安全检查，发现已存在用户时，告诉管理员，而不是直接删除

@@ -98,7 +98,7 @@ class SolutionController extends Controller
             (Auth::id() == $solution->user_id && $solution->submit_time > Auth::user()->created_at)
         )
             return view('solution.solution', compact('solution'));
-        return view('layouts.message', ['msg' => trans('sentence.Permission denied')]);
+        return view('message', ['msg' => trans('sentence.Permission denied')]);
     }
 
     // web 读取出错数据
@@ -110,14 +110,14 @@ class SolutionController extends Controller
             ->where('solutions.id', $id)
             ->first();
         if (!$solution || $solution->wrong_data === null)
-            return view('layouts.message', ['msg' => '没有记录出错数据']);
+            return view('message', ['msg' => '没有记录出错数据']);
         $allow_get = false;
         if (privilege('admin.problem.solution')) // 管理员可以直接看
             $allow_get = true;
         else if (Auth::id() == $solution->user_id) // 普通用户
         {
             if ($solution->end_time && date('Y-m-d H:i:s') < $solution->end_time) // 比赛未结束
-                return view('layouts.message', ['msg' => trans('sentence.not_end')]);
+                return view('message', ['msg' => trans('sentence.not_end')]);
             $allow_get = true;
         }
         if ($allow_get) {
@@ -129,6 +129,6 @@ class SolutionController extends Controller
                 $text = file_get_contents(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.ans'));
             return view('solution.solution_wrong_data', compact('text'));
         }
-        return view('layouts.message', ['msg' => trans('sentence.Permission denied')]);
+        return view('message', ['msg' => trans('sentence.Permission denied')]);
     }
 }

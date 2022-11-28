@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         $user = DB::table('users')->where('username', $username)->first();
         if ($user == null)
-            return view('layouts.message', ['msg' => trans('sentence.User not found', ['un' => $username])]);
+            return view('message', ['msg' => trans('sentence.User not found', ['un' => $username])]);
 
         $problems_solved = Cache::remember(
             sprintf("user:%d:soved_problems:ids", $user->id),
@@ -45,7 +45,7 @@ class UserController extends Controller
     public function user_edit(Request $request, $username)
     {
         if (!privilege('admin.user.edit') && Auth::user()->username != $username) //不是管理员&&不是本人
-            return view('layouts.message', ['msg' => trans('sentence.Permission denied')]);
+            return view('message', ['msg' => trans('sentence.Permission denied')]);
 
         $user = DB::table('users')->where('username', $username)->first();
         // 提供修改界面
@@ -56,7 +56,7 @@ class UserController extends Controller
         // 提交修改资料
         if ($request->isMethod('post')) {
             if (Auth::user()->id == $user->id && $user->revise <= 0)     // 是本人&&没有修改次数
-                return view('layouts.message', ['msg' => trans('sentence.forbid_edit')]); // 不允许本人修改
+                return view('message', ['msg' => trans('sentence.forbid_edit')]); // 不允许本人修改
 
             $user = $request->input('user');
             if (!isset($user['school']))
@@ -68,7 +68,7 @@ class UserController extends Controller
             $user['updated_at'] = date('Y-m-d H:i:s');
             $ret = DB::table('users')->where('username', $username)->update($user);
             if ($ret != 1) //失败
-                return view('layouts.message', ['msg' => trans('sentence.Operation failed')]);
+                return view('message', ['msg' => trans('sentence.Operation failed')]);
 
             // if (Auth::user()->username == $username) //是本人则次数减一
             //     DB::table('users')->where('username', $username)->decrement('revise');
@@ -79,7 +79,7 @@ class UserController extends Controller
     public function password_reset(Request $request, $username)
     {
         if (!privilege('admin.user.edit') && Auth::user()->username != $username) //不是管理员&&不是本人
-            return view('layouts.message', ['msg' => trans('sentence.Permission denied')]);
+            return view('message', ['msg' => trans('sentence.Permission denied')]);
 
         // 提供界面
         if ($request->isMethod('get')) {
@@ -104,9 +104,9 @@ class UserController extends Controller
             $ret = DB::table('users')->where('username', $username)
                 ->update(['password' => Hash::make($user['new_password']), 'updated_at' => date('Y-m-d H:i:s')]);
             if ($ret != 1) //失败
-                return view('layouts.message', ['msg' => trans('sentence.Operation failed')]);
+                return view('message', ['msg' => trans('sentence.Operation failed')]);
             Auth::logoutOtherDevices($user['new_password']); //其他设备全部失效
-            return view('layouts.message', ['success' => true, 'msg' => trans('passwords.reset')]);
+            return view('message', ['success' => true, 'msg' => trans('passwords.reset')]);
         }
     }
 

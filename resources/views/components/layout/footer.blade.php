@@ -2,9 +2,9 @@
 <div id="footer" class="text-center pb-3">
   <div>
     <span id="localtime">{{ date('Y-m-d H:i:s') }}</span>
-    @if (get_setting('footer_info') !== '')
+    @if ($footer_info)
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      {{ get_setting('footer_info') }}
+      {{ $footer_info }}
     @endif
   </div>
 
@@ -14,10 +14,9 @@
   <span>
     All Rights Reserved.
   </span>
-  @if (file_exists(base_path('install/.version')))
-    <span>
-      Version: {{ file_get_contents(base_path('install/.version')) }}
-    </span>
+
+  @if ($web_version)
+    <span>Version: {{ $web_version }}</span>
   @endif
 </div>
 

@@ -67,12 +67,12 @@ class ProblemController extends Controller
             'accepted', 'solved', 'submitted'
         ])->find($id);
         if ($problem == null) //问题不存在
-            return view('layouts.message', ['msg' => trans('sentence.problem_not_found')]);
+            return view('message', ['msg' => trans('sentence.problem_not_found')]);
 
         if ($problem->hidden && !privilege('admin.problem.list')) // 问题是隐藏的，那么不登录或无权限是不可以看题的
         {
             $msg = trans('main.Problem') . $id . ': ' . trans('main.Hidden') . '; ';
-            return view('layouts.message', compact('msg'));
+            return view('message', compact('msg'));
         }
 
         //读取样例文件

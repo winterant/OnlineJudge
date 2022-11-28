@@ -26,7 +26,7 @@ class ContestController extends Controller
             if (!$current_cate) // cookie保存的类别也不存在，则直接取第一个类别
                 $current_cate = DB::table('contest_cate')->first();
             if (!$current_cate)
-                return view('layouts.message', ['msg' => '竞赛中没有任何可用类别，请管理员前往后台添加类别！']);
+                return view('message', ['msg' => '竞赛中没有任何可用类别，请管理员前往后台添加类别！']);
         }
 
         // 获取父类别（有可能不存在，则为null）
@@ -284,7 +284,7 @@ class ContestController extends Controller
 
         //对于隐藏的竞赛，普通用户不能查看榜单
         if ($contest->hidden && !privilege('admin.contest')) {
-            return view('layouts.message', ['msg' => '该竞赛处于隐藏状态，不可查看榜单。']);
+            return view('message', ['msg' => '该竞赛处于隐藏状态，不可查看榜单。']);
         }
 
         // ======================= 计算榜单结束时间 ======================

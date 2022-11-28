@@ -30,7 +30,7 @@ class NoticeController extends Controller
             $notice['user_id'] = Auth::id();
             $nid = DB::table('notices')->insertGetId($notice);
             $msg = '成功发布公告（id=' . $nid . '），你可以在首页查看';
-            return view('layouts.message', ['msg' => $msg, 'success' => true, 'is_admin' => true]);
+            return view('message', ['msg' => $msg, 'success' => true, 'is_admin' => true]);
         }
     }
 
@@ -47,7 +47,7 @@ class NoticeController extends Controller
             $notice['user_id'] = Auth::id();
             DB::table('notices')->where('id', $id)->update($notice);
             $msg = '已更新公告（id=' . $id . '），你可以在首页查看';
-            return view('layouts.message', ['msg' => $msg, 'success' => true, 'is_admin' => true]);
+            return view('message', ['msg' => $msg, 'success' => true, 'is_admin' => true]);
         }
     }
 

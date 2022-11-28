@@ -3,7 +3,7 @@
 
 <head>
 
-  @include('layouts.components.head')
+  <x-layout.head />
   <title>@yield('title')</title>
 
   <style type="text/css">
@@ -129,7 +129,7 @@
       <a class="navbar-brand pl-2" href="{{ route('admin.home') }}">后台管理</a>
 
       {{-- 导航栏项 --}}
-      @include('layouts.components.navbar')
+      <x-layout.navbar />
 
     </nav>
 
@@ -278,7 +278,7 @@
     {{-- 主体 --}}
     <main class="col-12 col-sm-12 col-md-10  ml-auto">
       @yield('content')
-      @include('layouts.components.footer')
+      <x-layout.footer />
     </main>
 
   </div>

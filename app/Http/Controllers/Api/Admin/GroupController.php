@@ -62,9 +62,9 @@ class GroupController extends Controller
     public function update(Request $request, $group_id)
     {
         if (!($group = DB::table('groups')->find($group_id)))
-            return view('layouts.message', ['msg' => '群组不存在!']);
+            return view('message', ['msg' => '群组不存在!']);
         if (!privilege('admin.group') && Auth::id() != $group->creator)
-            return view('layouts.message', ['msg' => '您没有管理权限，也不是该群组的创建者!']);
+            return view('message', ['msg' => '您没有管理权限，也不是该群组的创建者!']);
 
         $request_group = $request->input('group');
         if ($request_group['class'] == '') // class是integer，无法赋值空串

@@ -55,6 +55,6 @@ class HomeController extends Controller
             }
         );
 
-        return view('layouts.home', compact('notices', 'this_week', 'last_week'));
+        return view('home', compact('notices', 'this_week', 'last_week'));
     }
 }

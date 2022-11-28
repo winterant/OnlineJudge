@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\CorrectSolutionsStatistics;
 use Illuminate\Console\Command;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
@@ -44,13 +45,22 @@ class LduojInit extends Command
     public function handle()
     {
         echo "Run command 'lduoj:init'." . PHP_EOL;
+
+        // 初始化权限和管理员
         $this->init_permission();
         $this->init_user_admin();
+
+        // 初始化竞赛类别，校正竞赛、竞赛类别顺序
         $this->init_contest_cate();
         $this->correct_contest_order();
         $this->correct_contest_cate_order();
+
+        // 清除重启后失效的cache
+        Cache::forget('web:version');
+
         // 矫正过题数字段，延迟2分钟执行（待服务器稳定运行）
         dispatch(new CorrectSolutionsStatistics())->delay(120);
+
         echo "Command `php artisan lduoj:init` done!" . PHP_EOL;
     }
 

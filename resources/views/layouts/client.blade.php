@@ -2,7 +2,8 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-  @include('layouts.components.head')
+
+  <x-layout.head />
   <title>@yield('title')</title>
 
   <style type="text/css">
@@ -66,7 +67,7 @@
     <a class="navbar-brand text-center" style="min-width: 200px">{{ get_setting('siteName') }}</a>
 
     {{-- 导航栏菜单项 --}}
-    @include('layouts.components.navbar')
+    <x-layout.navbar />
 
   </nav>
 
@@ -81,7 +82,7 @@
   @yield('content')
 
   {{-- 页脚 --}}
-  @include('layouts.components.footer')
+  <x-layout.footer />
 
 </body>
 
