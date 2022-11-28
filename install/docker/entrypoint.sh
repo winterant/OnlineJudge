@@ -20,17 +20,6 @@ fi
 function mod_env(){
     sed -i "s/^.\?$1\s\?=.*$/$1=${2//\//\\\/}/" $3
 }
-mod_env "TIMEZONE"          ${TZ:-Asia/Shanghai}                .env
-mod_env "APP_DEBUG"         ${APP_DEBUG:-false}                 .env
-mod_env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false}          .env
-mod_env "DB_HOST"           ${MYSQL_HOST:-host.docker.internal} .env
-mod_env "DB_PORT"           ${MYSQL_PORT:-3306} .env
-mod_env "DB_DATABASE"       ${MYSQL_DATABASE}   .env
-mod_env "DB_USERNAME"       ${MYSQL_USER}       .env
-mod_env "DB_PASSWORD"       ${MYSQL_PASSWORD}   .env
-mod_env "REDIS_HOST"        ${REDIS_HOST:-host.docker.internal} .env
-mod_env "REDIS_PORT"        ${REDIS_PORT:-6379} .env
-mod_env "REDIS_PASSWORD"    ${REDIS_PASSWORD}   .env
 
 ########### config php-fpm pool
 php_fpm_config_file=/etc/php/8.1/fpm/pool.d/www.conf
@@ -63,11 +52,12 @@ chown -R www-data:www-data bootstrap storage
 # Start Server
 ##########################################################################
 # start nginx server
-echo "Start" >> /app/storage/logs/nginx/access.log
-echo "Start" >> /app/storage/logs/nginx/error.log
+echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/nginx/access.log
+echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/nginx/error.log
 service nginx start
 
 # Start php-fpm server
+echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/php-fpm.log
 service php8.1-fpm start
 
 
@@ -85,5 +75,8 @@ bash storage/logs/nginx/auto-clear-log.sh 2>&1 &
 ##########################################################################
 php artisan queue:work --queue=default
 
+
+##########################################################################
 # Sleep forever to keep container alives.
+##########################################################################
 sleep infinity
