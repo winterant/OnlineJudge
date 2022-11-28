@@ -340,7 +340,7 @@ class ProblemController extends Controller
             if ($pid) $query['pid'] = $pid;
             if ($cid) $query['cid'] = $cid;
             if ($sid) $query['sid'] = $sid;
-            return redirect(route("status", $query));
+            return redirect(route("solutions", $query));
         }
     }
 
