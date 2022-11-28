@@ -33,6 +33,19 @@ mod_env "pm.max_spare_servers" ${fpm_pm_max_spare_servers:-1024} ${php_fpm_confi
 # php-fpm will be recreated after has processed for `pm.max_request` times.
 mod_env "pm.max_requests"      ${fpm_pm_max_requests:-1000}      ${php_fpm_config_file}
 
+########## config laravel env
+export APP_DEBUG="${APP_DEBUG:-false}"
+export HREF_FORCE_HTTPS="${HREF_FORCE_HTTPS:-false}"
+export JUDGE_SERVER="${JUDGE_SERVER:-host.docker.internal}"
+
+export TIMEZONE="${TZ:-Asia/Shanghai}"
+export DB_CONNECTION=mysql
+export DB_HOST="${MYSQL_HOST:-host.docker.internal}"
+export DB_PORT="${MYSQL_PORT:-3306}"
+export DB_DATABASE="${MYSQL_DATABASE}"
+export DB_USERNAME="${MYSQL_USER}"
+export DB_PASSWORD="${MYSQL_PASSWORD}"
+
 
 ##########################################################################
 # Initialize laravel app.
