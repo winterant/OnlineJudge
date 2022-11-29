@@ -19,8 +19,11 @@ class LineChart extends Component
         $_GET['past'] = $past; // 前端还要用到该值
 
         // 结束时间
-        if ($endTime == null)
+        $is_now = false; // 用于区分是否是实时的折线图（竞赛榜单中有可能是历史折线图）
+        if ($endTime == null) {
             $endTime = time();
+            $is_now = true;
+        }
 
         // 声明时间规则
         $rules = [
@@ -56,8 +59,8 @@ class LineChart extends Component
             $next_ts = strtotime(sprintf('+1 %s', $rule['unit']), $ts);
             // 缓存历史结果；注意，若发生重判，重判后必须清空这些缓存
             $counts = Cache::remember(
-                sprintf('solution:line-chart_:%s,%s,%s,%s,%s', $userId, $contestId, $groupId, $past, date(str_replace(' ', '_', $rule['format']), $ts)),
-                $next_ts <= $endTime ? $next_ts - $start_ts : 15, // 已度过的阶段长期缓存，当前阶段缓存15秒
+                sprintf('solution:line-chart:%s,%s,%s,%s,%s', $userId, $contestId, $groupId, $past, date(str_replace(' ', '_', $rule['format']), $ts)),
+                $next_ts <= $endTime ? ($is_now ? $next_ts - $start_ts : 3600 * 24 * 30) : 15, // 已度过的阶段长期缓存，当前阶段缓存15秒
                 function () use ($userId, $contestId, $groupId, $ts, $next_ts) {
                     return DB::table('solutions')
                         ->select([
