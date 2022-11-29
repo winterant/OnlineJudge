@@ -16,6 +16,9 @@ class LineChart extends Component
         $past = $_GET['past'] ?? $defaultPast; // 无参则取默认值
         if (!in_array($past, ['300i', '24h', '30d', '180d', '12m']))
             $past = $defaultPast; // 无效的past改为默认值
+        $_GET['past'] = $past; // 前端还要用到该值
+
+        // 结束时间
         if ($endTime == null)
             $endTime = time();
 

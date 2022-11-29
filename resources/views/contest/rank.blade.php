@@ -36,7 +36,7 @@
 
             {{-- 提交记录折线图 --}}
             <div>
-              <x-solution.line-chart :default-past="$_GET['past'] ?? '300i'" :contest-id="$contest->id" />
+              <x-solution.line-chart :contest-id="$contest->id" :default-past="$_GET['past'] ?? '300i'" :end-time="strtotime($rank_time[$_GET['end'] ?? 'real_time']['date'])" />
             </div>
 
             <div class="float-left">
