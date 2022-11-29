@@ -132,6 +132,7 @@ return [
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => env('REDIS_DB', 0),
+            'persistent' => true // 使用pconnect连接池
         ],
 
         'cache' => [
@@ -140,6 +141,7 @@ return [
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => env('REDIS_CACHE_DB', 1),
+            'persistent' => true // 使用pconnect连接池
         ],
 
     ],
