@@ -8,83 +8,81 @@ use Illuminate\View\Component;
 
 class LineChart extends Component
 {
-    public $x, $submitted, $accepted, $solved;
+    public array $x, $submitted, $accepted, $solved;
 
-    public function __construct($defaultPast = '30d', $userId = null, $contestId = null, $groupId = null)
+    public function __construct($userId = null, $contestId = null, $groupId = null, $defaultPast = '30d', $endTime = null)
     {
-        // 筛选的起始时间
-        $sub_sql = [
-            '300i' => [
-                'groupby' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d %H:%i:00') AS groupby"),
-                'start_date' => date("Y-m-d H:i:00", strtotime("-300 minute")),
-                'cache_seconds' => 30, // 缓存30秒
+        // 获取参数
+        $past = $_GET['past'] ?? $defaultPast; // 无参则取默认值
+        if (!in_array($past, ['300i', '24h', '30d', '180d', '12m']))
+            $past = $defaultPast; // 无效的past改为默认值
+        if ($endTime == null)
+            $endTime = time();
+
+        // 声明时间规则
+        $rules = [
+            'i' => [
+                'current' =>  $endTime - $endTime % 60,
+                'format' => 'Y-m-d H:i',
+                'unit' => 'minute'
             ],
-            '24h' => [
-                'groupby' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d %H:00') AS groupby"),
-                'start_date' => date("Y-m-d H:00:00", strtotime("-24 hour")),
-                'cache_seconds' => 600, // 缓存10分钟
+            'h' => [
+                'current' =>  $endTime - $endTime % 3600,
+                'format' => 'Y-m-d H',
+                'unit' => 'hour'
             ],
-            '30d' => [
-                'groupby' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d') AS groupby"),
-                'start_date' => date("Y-m-d 00:00:00", strtotime("-30 day")),
-                'cache_seconds' => 3600, // 缓存1小时
+            'd' => [
+                'current' => mktime(0, 0, 0, date('m', $endTime), date('d', $endTime), date('Y', $endTime)),
+                'format' => 'Y-m-d',
+                'unit' => 'day'
             ],
-            '180d' => [
-                'groupby' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m-%d') AS groupby"),
-                'start_date' => date("Y-m-d 00:00:00", strtotime("-180 day")),
-                'cache_seconds' => 3600 * 12, // 缓存12小时
-            ],
-            '12m' => [
-                'groupby' => DB::raw("DATE_FORMAT(`submit_time`, '%Y-%m') AS groupby"),
-                'start_date' => date("Y-m-d 00:00:00", strtotime("-12 month")),
-                'cache_seconds' => 3600 * 24, // 缓存1天
+            'm' => [
+                'current' => mktime(0, 0, 0, date('m'), 1, date('Y')), // 本月1号时间戳
+                'format' => 'Y-m',
+                'unit' => 'month'
             ],
         ];
-        if (!isset($_GET['past']))
-            $_GET['past'] = $defaultPast;
-        $option = $sub_sql[$_GET['past']];
 
-        // 查询数据库
-        $solutions = Cache::remember(
-            sprintf('solution:line-chart:%s,%s,%s,%s', $_GET['past'], $userId, $contestId, $groupId),
-            $option['cache_seconds'],
-            function () use ($userId, $contestId, $groupId, $option) {
-                return DB::table('solutions as s')
-                    ->select([
-                        DB::raw('count(*) as submitted'),
-                        DB::raw('count(result=4 or null) as accepted'),
-                        DB::raw('count(distinct (problem_id * 10 + (result=4 or null))) as solved'),
-                        $option['groupby']
-                    ])
-                    ->when($userId !== null, function ($q) use ($userId) {
-                        return $q->where('user_id', $userId);
-                    })
-                    ->when($contestId !== null, function ($q) use ($contestId) {
-                        return $q->where('contest_id', $contestId);
-                    })
-                    ->when($groupId !== null, function ($q) use ($groupId) {
-                        return $q->join('group_contests as gc', 'gc.contest_id', 's.contest_id')
-                            ->where('group_id', $groupId);
-                    })
-                    ->where('submit_time', '>', $option['start_date'])
-                    ->groupBy('groupby')
-                    ->get()->toArray();
-            }
-        );
+        // 获取时长和规则
+        $num = intval(substr($past, 0, strlen($past) - 1)); // 拿到数字
+        $rule = $rules[$past[strlen($past) - 1]]; // 拿到单位所对应的规则
 
-        // 汇总数据
-        $this->x = array_map(function ($v) {
-            return $v->groupby;
-        }, $solutions);
-        $this->submitted = array_map(function ($v) {
-            return $v->submitted;
-        }, $solutions);
-        $this->accepted = array_map(function ($v) {
-            return $v->accepted;
-        }, $solutions);
-        $this->solved = array_map(function ($v) {
-            return $v->solved;
-        }, $solutions);
+        // 遍历时间阶段，各个时间段分别缓存，提高响应速度
+        $start_ts = strtotime(sprintf('-%d %s', $num, $rule['unit']), $rule['current']);
+        for ($ts = $start_ts; $ts <= $endTime;) {
+            $next_ts = strtotime(sprintf('+1 %s', $rule['unit']), $ts);
+            // 缓存历史结果；注意，若发生重判，重判后必须清空这些缓存
+            $counts = Cache::remember(
+                sprintf('solution:line-chart_:%s,%s,%s,%s,%s', $userId, $contestId, $groupId, $past, date(str_replace(' ', '_', $rule['format']), $ts)),
+                $next_ts <= $endTime ? $next_ts - $start_ts : 15, // 已度过的阶段长期缓存，当前阶段缓存15秒
+                function () use ($userId, $contestId, $groupId, $ts, $next_ts) {
+                    return DB::table('solutions')
+                        ->select([
+                            DB::raw('count(*) as submitted'),
+                            DB::raw('count(result=4 or null) as accepted'),
+                            DB::raw('count(distinct (problem_id * 10 + (result=4 or null))) as solved'),
+                        ])
+                        ->when($userId !== null, function ($q) use ($userId) {
+                            return $q->where('user_id', $userId);
+                        })
+                        ->when($contestId !== null, function ($q) use ($contestId) {
+                            return $q->where('contest_id', $contestId);
+                        })
+                        ->when($groupId !== null, function ($q) use ($groupId) {
+                            return $q->join('group_contests as gc', 'gc.contest_id', 'solutions.contest_id')
+                                ->where('group_id', $groupId);
+                        })
+                        ->whereBetween('submit_time', [date('Y-m-d H:i:s', $ts), date('Y-m-d H:i:s', $next_ts)])
+                        ->first();
+                }
+            );
+            $this->x[] = date($rule['format'], $ts);
+            $this->submitted[] = $counts->submitted;
+            $this->accepted[] = $counts->accepted;
+            $this->solved[] = $counts->solved;
+            // 进入下一阶段
+            $ts = $next_ts;
+        }
     }
 
     /**
