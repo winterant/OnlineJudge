@@ -19,7 +19,7 @@ function get_setting($key, $default = null, bool $update = false)
         if ($update) {
             Cache::forever($redis_key, $default); // 缓存
             if (Schema::hasTable('settings')) // 持久化到数据库
-                DB::table('settings')->where('key', $key)->update(['value' => $default]);
+                DB::table('settings')->updateOrInsert(['key' => $key], ['value' => $default]);
         }
         return $default;
     }

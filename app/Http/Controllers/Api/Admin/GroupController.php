@@ -230,8 +230,7 @@ class GroupController extends Controller
             ->delete();
         return [
             'ok' => 1,
-            'msg' => sprintf("已删除%d个成员", $deleted),
-            'data' => $request->all(),
+            'msg' => sprintf("已删除%d个成员", $deleted)
         ];
     }
 }
