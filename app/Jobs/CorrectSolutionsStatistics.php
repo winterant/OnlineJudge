@@ -23,7 +23,7 @@ class CorrectSolutionsStatistics implements ShouldQueue
      */
     public function __construct()
     {
-        //
+        $this->onQueue('default');
     }
 
     /**

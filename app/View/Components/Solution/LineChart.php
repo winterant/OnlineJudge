@@ -10,7 +10,7 @@ class LineChart extends Component
 {
     public array $x, $submitted, $accepted, $solved;
 
-    public function __construct($userId = null, $contestId = null, $groupId = null, $defaultPast = '30d', $endTime = null)
+    public function __construct($userId = null, $contestId = null, $groupId = null, $endTime = null, $defaultPast = '30d')
     {
         // 获取参数
         $past = $_GET['past'] ?? $defaultPast; // 无参则取默认值
@@ -57,16 +57,19 @@ class LineChart extends Component
         $start_ts = strtotime(sprintf('-%d %s', $num, $rule['unit']), $rule['current']);
         for ($ts = $start_ts; $ts <= $endTime;) {
             $next_ts = strtotime(sprintf('+1 %s', $rule['unit']), $ts);
+
             // 缓存历史结果；注意，若发生重判，重判后必须清空这些缓存
+            $key = sprintf('solution:line-chart:%s,%s,%s,%s,%s', $userId, $contestId, $groupId, $past, date(str_replace(' ', '_', $rule['format']), $ts));
+            clear_cache_if_rejudged($key);
             $counts = Cache::remember(
-                sprintf('solution:line-chart:%s,%s,%s,%s,%s', $userId, $contestId, $groupId, $past, date(str_replace(' ', '_', $rule['format']), $ts)),
+                $key,
                 $next_ts <= $endTime ? ($is_now ? $next_ts - $start_ts : 3600 * 24 * 30) : 15, // 已度过的阶段长期缓存，当前阶段缓存15秒
                 function () use ($userId, $contestId, $groupId, $ts, $next_ts) {
                     return DB::table('solutions')
                         ->select([
                             DB::raw('count(*) as submitted'),
                             DB::raw('count(result=4 or null) as accepted'),
-                            DB::raw('count(distinct (problem_id * 10 + (result=4 or null))) as solved'),
+                            DB::raw('count(distinct (problem_id * 2 + (result=4 or 0))) as solved'),
                         ])
                         ->when($userId !== null, function ($q) use ($userId) {
                             return $q->where('user_id', $userId);

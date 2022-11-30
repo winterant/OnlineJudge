@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\Input;
 
 use App\Http\Controllers\UploadController;
+use App\Jobs\CorrectSolutionsStatistics;
+use App\Jobs\GenerateRejudgedCode;
 use App\Jobs\Judger;
 
 use const http\Client\Curl\AUTH_ANY;
@@ -336,6 +338,15 @@ class ProblemController extends Controller
                 // foreach ($solution_ids as $id)
                 //     dispatch(new Judger($id));
             }
+
+            // 发生重判后必须重新统计数据，以及更新重判唯一标识符
+            // 任务投入队列，预估等待到判题结束时执行
+            if ($num_updated ?? 0) {
+                dispatch(new CorrectSolutionsStatistics())->delay($num_updated * 5); // 预估平均每条solution重判需要5秒
+                dispatch(new GenerateRejudgedCode())->delay($num_updated * 5);
+            }
+
+            // 返回提交记录页面
             $query = ['inc_contest' => 'on'];
             if ($pid) $query['pid'] = $pid;
             if ($cid) $query['cid'] = $cid;
