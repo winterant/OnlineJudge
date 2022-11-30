@@ -342,8 +342,8 @@ class ProblemController extends Controller
             // 发生重判后必须重新统计数据，以及更新重判唯一标识符
             // 任务投入队列，预估等待到判题结束时执行
             if ($num_updated ?? 0) {
-                dispatch(new CorrectSolutionsStatistics())->delay($num_updated * 5); // 预估平均每条solution重判需要5秒
-                dispatch(new GenerateRejudgedCode())->delay($num_updated * 5);
+                dispatch(new GenerateRejudgedCode())->delay($num_updated * 5); // 预估平均每条solution重判需要5秒
+                dispatch(new CorrectSolutionsStatistics())->delay($num_updated * 5);
             }
 
             // 返回提交记录页面

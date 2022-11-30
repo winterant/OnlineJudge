@@ -441,19 +441,24 @@ class ContestController extends Controller
         // ========================== 调用榜单 ============================
         $users = [];
         $key = sprintf('contest:%d:rank:%s:users', $contest->id, $_GET['end']);
-        Cache::lock('lock:' . $key, 15)
-            ->block(10, function () use ($key, $contest, $calculate_rank, $rank_time, &$users) {
+        clear_cache_if_rejudged($key); // 若发生了重判，先清除缓存，迫使下方业务重新计算榜单
+        if (Cache::has($key))
+            $users = Cache::get($key);
+        else {
+            // 由于榜单计算非常耗时，加锁避免高并发，确保并发时，榜单只被计算一次
+            // 举例：若A得到了锁，则会计算结束后释放锁，同时将结果压入缓存；B等到锁后，直接通过remember获取缓存，避免重复计算
+            Cache::lock('lock:' . $key, 15)->block(10, function () use ($key, $contest, $calculate_rank, $rank_time, &$users) {
                 // 原子锁的生命周期最长 15秒；等待最多 10 秒后获得锁，否则抛出异常
                 if ($_GET['end'] == 'real_time') // 实时榜单，缓存15秒
                     $users = Cache::remember($key, 15, function () use ($contest, $calculate_rank) {
                         return $calculate_rank($contest);
                     });
-                else // 封榜或终榜，基本固定，缓存60分钟
-                    $users = Cache::remember($key, 3600, function () use ($contest, $calculate_rank, $rank_time) {
+                else // 封榜或终榜，已经固定，长期缓存
+                    $users = Cache::remember($key, 3600 * 24 * 30, function () use ($contest, $calculate_rank, $rank_time) {
                         return $calculate_rank($contest, $rank_time[$_GET['end']]['date']);
                     });
             });
-
+        }
 
         // =========================== 模糊查询 ========================
         foreach ($users as $uid => &$user) {

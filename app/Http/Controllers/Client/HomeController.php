@@ -26,7 +26,7 @@ class HomeController extends Controller
         $last_monday_time = $monday_time - 3600 * 24 * 7;
         $next_monday_time = $monday_time + 3600 * 24 * 7;
 
-        $this_week = Cache::remember('home:cache:this_week_top10', 3600, function () use ($monday_time) {
+        $this_week = Cache::remember(clear_cache_if_rejudged('home:cache:this_week_top10'), 3600, function () use ($monday_time) {
             $this_week = DB::table('solutions')
                 ->join('users', 'users.id', '=', 'solutions.user_id')
                 ->select(['user_id', 'username', 'school', 'class', 'nick', DB::raw('count(distinct problem_id) as solved'),])
@@ -39,7 +39,7 @@ class HomeController extends Controller
         });
 
         $last_week = Cache::remember(
-            'home:cache:last_week_top10',
+            clear_cache_if_rejudged('home:cache:last_week_top10'),
             $next_monday_time - time(),
             function () use ($monday_time, $last_monday_time) {
                 $last_week = DB::table('solutions')
