@@ -307,8 +307,7 @@ class ProblemController extends Controller
     public function rejudge(Request $request)
     {
         if ($request->isMethod('get')) {
-            $pageTitle = '重判';
-            return view('admin.problem.rejudge', compact('pageTitle'));
+            return view('admin.problem.rejudge');
         }
         if ($request->isMethod('post')) {
             $pid = $request->input('pid');

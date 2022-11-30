@@ -61,7 +61,7 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
     Route::prefix('admin')->name('admin.')->middleware(['auth:api', 'CheckUserLocked'])->group(function () {
         // Manage solution: route('api.admin.solution.*')
         Route::middleware(['Permission:admin'])->group(function () {
-            Route::post('/solution/correct-submitted-count', 'Admin\SolutionController@correct_submitted_count')->name('solution.correct_submitted_count');
+            // Route::post('/solution/correct-submitted-count', 'Admin\SolutionController@correct_submitted_count')->name('solution.correct_submitted_count');
         });
 
         // Manage contest: route('api.admin.contest.*')
