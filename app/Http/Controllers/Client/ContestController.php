@@ -496,6 +496,7 @@ class ContestController extends Controller
         $notice = $request->input('notice');
         if ($notice['id'] == null) {
             //new
+            unset($notice['id']);
             $notice['contest_id'] = $id;
             DB::table('contest_notices')->insert($notice);
         } else {
