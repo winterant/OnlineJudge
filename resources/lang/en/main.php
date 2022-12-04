@@ -211,6 +211,8 @@ return [
     "access_password"=> "Password",
 
     "ranking_rule"  => "Ranking Rule",
+    "Access"        => "Access",
+    "Contestants"   => "Contestants",
 
     // Groups
     "Group"         => "Group",

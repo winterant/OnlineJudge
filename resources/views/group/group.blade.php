@@ -30,8 +30,12 @@
             <table class="table table-sm table-hover">
               <thead>
                 <tr>
-                  <th width="10">#</th>
+                  <th>#</th>
                   <th>{{ trans('main.Title') }}</th>
+                  <th>{{ __('main.Access')}}</th>
+                  <th>{{ __('main.ranking_rule') }}</th>
+                  <th>{{ __('main.Time') }}</th>
+                  <th>{{ __('main.Contestants') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -40,6 +44,35 @@
                     <td>{{ $item->id }}</td>
                     <td nowrap>
                       <a href="{{ route('contest.home', [$item->id, 'group' => $group->id]) }}">{{ $item->title }}</a>
+                    <td>
+                      <span class="border bg-light px-1 text-{{ $item->access == 'public' ? 'green' : 'red' }}"
+                        style="border-radius: 12px;">
+                        @if ($item->access != 'public')
+                          <i class="fa fa-lock" aria-hidden="true"></i>
+                        @endif
+                        {{ trans('main.access_' . $item->access) }}
+                        @if (privilege('admin.contest') && $item->access == 'password')
+                          [{{ __('main.Password') }}:{{ $item->password }}]
+                        @endif
+                      </span>
+                    </td>
+                    <td>{{ $item->judge_type == 'acm' ? 'ACM/ICPC' : 'OI/IOI' }}</td>
+                    <td><i class="fa fa-calendar pr-1 text-sky" aria-hidden="true"></i>{{ $item->start_time }}
+                      <i class="fa fa-clock-o text-sky" aria-hidden="true"></i>
+                      @php($time_len = strtotime($item->end_time) - strtotime($item->start_time))
+                      @if ($time_len > 3600 * 24 * 30)
+                        {{ round($time_len / (3600 * 24 * 30), 1) }}
+                        {{ trans_choice('main.months', round($time_len / (3600 * 24 * 30), 1)) }}
+                      @elseif($time_len > 3600 * 24)
+                        {{ round($time_len / (3600 * 24), 1) }}
+                        {{ trans_choice('main.days', round($time_len / (3600 * 24), 1)) }}
+                      @else
+                        {{ round($time_len / 3600, 1) }} {{ trans_choice('main.hours', round($time_len / 3600, 1)) }}
+                      @endif
+                    </td>
+                    <td>
+                      <i class="fa fa-user-o text-sky" aria-hidden="true"></i>
+                      {{ $item->num_members }}
                     </td>
                   </tr>
                 @endforeach

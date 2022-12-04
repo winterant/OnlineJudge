@@ -60,7 +60,7 @@
         </div>
 
         {{-- 题号链接 --}}
-        <x-contest.problems-link :contest-id="$contest->id" :problem-index="$problem->index" />
+        <x-contest.problems-link :contest-id="$contest->id" :problem-index="$problem->index" :group-id="$_GET['group'] ?? null" />
       @endif
 
       {{-- 题目内容 --}}

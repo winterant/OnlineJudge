@@ -10,6 +10,7 @@ use Illuminate\View\Component;
 class ProblemsLink extends Component
 {
     public int $contest_id;
+    public ?int $group_id;
     public ?int $problem_index;
     public $problems;
 
@@ -18,9 +19,11 @@ class ProblemsLink extends Component
      *
      * @return void
      */
-    public function __construct(int $contestId, ?int $problemIndex)
+    public function __construct(int $contestId, ?int $userId = null, ?int $groupId = null, ?int $problemIndex = null)
     {
         $this->contest_id = $contestId;
+        $userId = $userId ?? Auth::id(); // 默认为自己
+        $this->group_id = $groupId;
         $this->problem_index = $problemIndex;
         $this->problems = DB::table('contest_problems as cp')
             ->join('problems as p', 'p.id', 'cp.problem_id')
@@ -35,13 +38,13 @@ class ProblemsLink extends Component
 
         foreach ($this->problems as &$item) {
             // null,0，1，2，3都视为没做； 4视为Accepted；其余视为答案错误（尝试中）
-            $key = sprintf('contest:%d:problem:%d:user:%d:result', $contestId, $item->id, Auth::id());
+            $key = sprintf('contest:%d:problem:%d:user:%d:result', $contestId, $item->id, $userId);
             clear_cache_if_rejudged($key); // 若发生了重判，会强制清除缓存，然后下面重新查库
             if (!Cache::has($key)) {
                 $result = DB::table('solutions')
                     ->where('contest_id', $contestId)
                     ->where('problem_id', $item->id)
-                    ->where('user_id', Auth::id())
+                    ->where('user_id', $userId)
                     ->where('result', '>=', 4)
                     ->min('result');
                 if ($result == 4) // 已经AC，长期保存

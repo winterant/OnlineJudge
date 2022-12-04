@@ -211,6 +211,8 @@ return [
     "access_password" => "加密验证",
 
     "ranking_rule"  => "排名规则",
+    "Access"        => "权限",
+    "Contestants"   => "参赛者",
 
     // Groups
     "Group"         => "课程(群组)",

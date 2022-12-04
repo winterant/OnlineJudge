@@ -94,6 +94,19 @@ class GroupController extends Controller
     {
         $group = DB::table('groups as g')->find($group_id);
         $user = DB::table('users')->find($user_id);
-        return view('group.member', compact('group', 'user'));
+
+        $contests = DB::table('contests as c')
+            ->join('group_contests as gc', function ($q) use ($group_id) {
+                $q->on('gc.contest_id', 'c.id')->on('gc.group_id', DB::raw($group_id));
+            })
+            ->select([
+                'c.id', 'c.judge_type', 'c.title', 'c.start_time', 'c.end_time',
+                'c.access', 'c.order', 'c.hidden',
+                'c.password',
+                'c.num_members'
+            ])
+            ->orderBy('gc.id')
+            ->paginate($_GET['perPage'] ?? 10);
+        return view('group.member', compact('group', 'user', 'contests'));
     }
 }

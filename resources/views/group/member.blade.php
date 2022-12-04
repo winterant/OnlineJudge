@@ -26,6 +26,26 @@
           <div>
             <x-solution.line-chart :user-id="$user->id" :group-id="$group->id" />
           </div>
+
+          {{ $contests->appends($_GET)->links() }}
+
+          <ul class="list-unstyled border-top">
+            @foreach ($contests as $item)
+              <li class="border-bottom pt-3 pb-2">
+                <h5 style="font-size: 1.15rem">
+                  <a href="{{ route('contest.home', [$item->id, 'group' => $group->id ?? null]) }}"
+                    class="text-black">{{ $item->title }}</a>
+                </h5>
+
+                <div>
+                  <x-contest.problems-link :contest-id="$item->id" :user-id="$user->id" :group-id="$group->id" />
+                </div>
+
+              </li>
+            @endforeach
+          </ul>
+
+          {{ $contests->appends($_GET)->links() }}
         </div>
 
       </div>

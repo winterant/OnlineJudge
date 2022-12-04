@@ -1,9 +1,9 @@
 {{-- 题号链接 --}}
 <div class="tabbable">
-  <div class="btn-group d-flex flex-wrap">
+  <div class="btn-group d-flex flex-wrap m-0">
     @foreach ($problems as $item)
-      <a class="btn btn-secondary border @if ($problem_index == $item->index) active @endif"
-        href="{{ route('contest.problem', [$contest_id, $item->index, 'group' => $_GET['group'] ?? null]) }}"
+      <a class="btn btn-secondary border @if ($problem_index === $item->index) active @endif"
+        href="{{ route('contest.problem', [$contest_id, $item->index, 'group' => $group_id??($_GET['group'] ?? null)]) }}"
         style="flex: none; " data-toggle="tooltip" data-placement="bottom" title="{{ $item->title }}">
 
         @if ($item->result == 4)
