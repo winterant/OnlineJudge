@@ -33,7 +33,8 @@
     <div class="tabbable mb-3">
       <ul class="nav nav-tabs border-bottom">
         <li class="nav-item">
-          <a class="nav-link text-center py-3 @if (Route::currentRouteName() == 'groups.my') active @endif" href="{{ route('groups.my') }}">
+          <a class="nav-link text-center py-3 @if (Route::currentRouteName() == 'groups.my') active @endif"
+            href="{{ route('groups.my') }}">
             {{ __('main.My') }}{{ __('main.Groups') }}
           </a>
         </li>
@@ -84,16 +85,25 @@
           <div class="col-12 col-sm-6 col-md-3">
             <div class="my-3 p-3 border position-relative">
               {{-- <img class="" src="" alt="" /> --}}
-              @if ($item->hidden)
-                <span class="text-nowrap position-absolute" style="font-size: 0.9rem; right:1rem; top:1rem;">
-                  <i class="fa fa-eye-slash ml-2" aria-hidden="true"></i>
-                  <span class="text-gray">{{ __('main.Hidden') }}</span>
+              <h5>
+                <span>
+                  @if ($item->type == 0)
+                    [<i class="fa fa-book" aria-hidden="true"></i>
+                    {{ __('main.Course') }}]
+                  @else
+                    [<i class="fa fa-users" aria-hidden="true"></i>
+                    {{ __('main.Class') }}]
+                  @endif
                 </span>
-              @endif
-              <h5 style="@if ($item->hidden) width: 80% @endif">
                 <a href="{{ route('group', $item->id) }}">
                   {{ $item->name }}
                 </a>
+                @if ($item->hidden)
+                  <span class="text-nowrap" style="font-size: 0.9rem; right:1rem; top:1rem;">
+                    <i class="fa fa-eye-slash ml-2" aria-hidden="true"></i>
+                    <span class="text-gray">{{ __('main.Hidden') }}</span>
+                  </span>
+                @endif
               </h5>
               <hr>
               <div class="table-responsive">

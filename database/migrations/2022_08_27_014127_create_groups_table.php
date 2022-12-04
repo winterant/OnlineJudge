@@ -15,14 +15,15 @@ class CreateGroupsTable extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->tinyInteger('type')->default(0); // 添加字段 群组类型
+            $table->boolean('hidden')->default(1);
+            $table->boolean('private')->default(1);
             $table->string('name')->default('unamed');
             $table->text('description')->nullable();
             $table->string('teacher')->nullable()->comment('teacher\'s name');
             $table->integer('grade')->index()->nullable();
             $table->integer('class')->nullable();
             $table->string('major')->nullable();
-            $table->boolean('private')->default(1);
-            $table->boolean('hidden')->default(1);
             $table->bigInteger('creator')->index()->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();

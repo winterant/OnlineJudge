@@ -13,7 +13,19 @@
       <div class="col-lg-9 col-md-8 col-sm-12 col-12">
         <div class="my-container bg-white">
 
-          <h3 class="text-center">{{ $group->name }}
+          <h3 class="text-center">
+            <span>
+              @if ($group->type == 0)
+                [<i class="fa fa-book" aria-hidden="true"></i>
+                {{ __('main.Course') }}]
+              @else
+                [<i class="fa fa-users" aria-hidden="true"></i>
+                {{ __('main.Class') }}]
+              @endif
+            </span>
+            <span>
+              {{ $group->name }}
+            </span>
             @if (privilege('admin.group.edit') || Auth::id() == $group->creator)
               <span style="font-size: 0.85rem">
                 [ <a href="{{ route('admin.group.edit', [$group->id]) }}">{{ __('main.Edit') }}</a> ]
@@ -26,13 +38,15 @@
             <div id="description_div" class="ck-content p-2">{!! $group->description !!}</div>
           @endif
 
+          {{ $contests->appends($_GET)->links() }}
+
           <div class="table-responsive">
             <table class="table table-sm table-hover">
               <thead>
                 <tr>
                   <th>#</th>
                   <th>{{ trans('main.Title') }}</th>
-                  <th>{{ __('main.Access')}}</th>
+                  <th>{{ __('main.Access') }}</th>
                   <th>{{ __('main.ranking_rule') }}</th>
                   <th>{{ __('main.Time') }}</th>
                   <th>{{ __('main.Contestants') }}</th>
@@ -79,6 +93,9 @@
               </tbody>
             </table>
           </div>
+
+          {{ $contests->appends($_GET)->links() }}
+
         </div>
       </div>
 

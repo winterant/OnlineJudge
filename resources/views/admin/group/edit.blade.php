@@ -4,29 +4,51 @@
 
 @section('content')
   <h2>
-    @if (isset($group))
-      修改{{__('main.Group')}}
-    @else
-      新建{{__('main.Group')}}
-    @endif
+    {{ isset($group) ? '修改' : '创建' }}{{ __('main.Group') }}
   </h2>
   <hr>
   <div>
     <form class="p-4 col-12" onsubmit="return submit_group(this)" enctype="multipart/form-data">
 
       <div class="form-inline mb-3">
-        <span>是否公开：</span>
-        <div class="custom-control custom-radio ml-3">
-          <input type="radio" name="group[hidden]" value="1" class="custom-control-input" id="hidden_yes"
-            @if (!isset($group->hidden) || $group->hidden == 1) checked @endif>
-          <label class="custom-control-label pt-1" for="hidden_yes">隐藏（组外用户无法找到该组）</label>
+        <span>群组类型：</span>
+        <div class="custom-control custom-radio mx-3">
+          <input type="radio" name="group[type]" value="0" class="custom-control-input" id="type_0"
+            @if (!isset($group->type) || $group->type == 0) checked @endif>
+          <label class="custom-control-label pt-1" for="type_0">课程</label>
         </div>
-        <div class="custom-control custom-radio ml-3">
-          <input type="radio" name="group[hidden]" value="0" class="custom-control-input" id="hidden_no"
-            @if (isset($group->hidden) && $group->hidden == 0) checked @endif>
-          <label class="custom-control-label pt-1" for="hidden_no">公开（允许组外用户申请加入）</label>
+        <div class="custom-control custom-radio mx-3">
+          <input type="radio" name="group[type]" value="1" class="custom-control-input" id="type_1"
+            @if (isset($group->type) && $group->type == 1) checked @endif>
+          <label class="custom-control-label pt-1" for="type_1">班级</label>
+        </div>
+        <div class="custom-control custom-radio">
+          <a href="javascript:" class="text-gray"
+            onclick="whatisthis('课程：作业相对固定不变，适合作为“某一门课程”，将以正序展示所有竞赛/作业（不分页），竞赛总数不宜超过30，否则页面加载卡顿；<br><br>班级：作业增删频繁，适合作为“某一个班集体”，将以逆序(最新在前)展示竞赛/作业（分页）。')">
+            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+          </a>
         </div>
       </div>
+
+      <div class="form-inline mb-3">
+        <span>是否公开：</span>
+        <div class="custom-control custom-radio mx-3">
+          <input type="radio" name="group[hidden]" value="1" class="custom-control-input" id="hidden_yes"
+            @if (!isset($group->hidden) || $group->hidden == 1) checked @endif>
+          <label class="custom-control-label pt-1" for="hidden_yes">隐藏</label>
+        </div>
+        <div class="custom-control custom-radio mx-3">
+          <input type="radio" name="group[hidden]" value="0" class="custom-control-input" id="hidden_no"
+            @if (isset($group->hidden) && $group->hidden == 0) checked @endif>
+          <label class="custom-control-label pt-1" for="hidden_no">公开</label>
+        </div>
+        <div class="custom-control custom-radio">
+          <a href="javascript:" class="text-gray" onclick="whatisthis('隐藏的群组，除成员外，普通用户在前台不可见；<br>公开的群组在前台可见、可被搜索到。')">
+            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
       <div class="form-inline mb-3">
         <span>加入方式：</span>
         <div class="custom-control custom-radio ml-3">
@@ -107,7 +129,8 @@
           <div class="float-left">竞赛列表：</div>
           <label>
             <textarea id="text-group-ids" name="contest_ids" class="form-control-plaintext border bg-white" rows="8"
-              cols="26" placeholder="1000&#13;&#10;1001&#13;&#10;每行一个{{__('main.Group')}}编号&#13;&#10;你可以将表格的整列粘贴到这里" autoHeight></textarea>
+              cols="26" placeholder="1000&#13;&#10;1001&#13;&#10;每行一个{{ __('main.Group') }}编号&#13;&#10;你可以将表格的整列粘贴到这里"
+              autoHeight></textarea>
           </label>
           <script type="text/javascript">
             $(function() {

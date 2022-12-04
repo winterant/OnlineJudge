@@ -219,6 +219,8 @@ return [
     "Groups"        => "Groups",
     "Related Groups"=> "Related Groups",
     "Creator"       => "Creator",
+    "Course"        => "Course",
+    "Type"          => "Type",
     "Grade"         => "Grade",
     "Major"         => "Major",
     "Class"         => "Class",
