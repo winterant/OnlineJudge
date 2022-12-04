@@ -65,7 +65,7 @@
             <tr>
               <td>{{ $item->id }}</td>
               <td nowrap>
-                <select class="px-1" onchange="update_contest_cate_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
+                <select class="px-1" onchange="update_contest_cate_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;border-radius: 2px;">
                   <option value="{{ route('api.admin.contest.update_contest_cate_order', [$item->id, -1000000000]) }}">置顶</option>
                   @for ($shift = 32; $shift > 0; $shift >>= 1)
                     @if ($item->order - $shift > 0)

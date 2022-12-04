@@ -183,6 +183,8 @@ class ContestController extends Controller
         if (isset($contest->id)) {
             unset($contest->id);
             $contest->title .= "[cloned " . $cid . "]";
+            $contest->num_members = 0; // 参与人数归零
+            $contest->user_id = Auth::id(); // 创建人
             //复制竞赛主体
             $cloned_cid = DB::table('contests')->insertGetId((array)$contest);
             //复制题号

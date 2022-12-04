@@ -124,7 +124,7 @@
             <td>{{ $item->id }}</td>
             @if (isset($_GET['cate_id']) && $_GET['cate_id'] !== '')
               <td nowrap>
-                <select onchange="update_contest_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
+                <select onchange="update_contest_order($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;border-radius: 2px;">
                   <option value="{{ route('api.admin.contest.update_order', [$item->id, 1000000000]) }}">置顶</option>
                   @for ($shift = 256; $shift > 0; $shift >>= 1)
                     <option value="{{ route('api.admin.contest.update_order', [$item->id, $shift]) }}">
@@ -143,7 +143,7 @@
             @endif
             <td>
               <div class="form-inline">
-                <select class="" onchange="update_contest_cate_id($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
+                <select class="" onchange="update_contest_cate_id($(this).val())" style="width:auto;padding:0 1%;text-align:center;text-align-last:center;border-radius: 2px;">
                   <option value="{{ route('api.admin.contest.update_cate_id', [$item->id, 0]) }}">--- 未分类 ---</option>
                   @foreach ($categories as $cate)
                     <option value="{{ route('api.admin.contest.update_cate_id', [$item->id, $cate->id]) }}" @if ($item->cate_id == $cate->id) selected @endif>
