@@ -67,35 +67,9 @@ class GroupController extends Controller
             return view('message', ['msg' => '您没有管理权限，也不是该群组的创建者!']);
 
         $request_group = $request->input('group');
-        if ($request_group['class'] == '') // class是integer，无法赋值空串
-            $request_group['class'] = null;
         $request_group['updated_at'] = date('Y-m-d H:i:s');
         DB::table('groups')->where('id', $group->id)->update($request_group);
 
-        // 添加竞赛
-        // $contest_ids = $request->input('contest_ids');
-        // DB::table('group_contests')->where('group_id', $group->id)->delete();
-        // foreach (explode(PHP_EOL, $contest_ids) as &$contest_id) {
-        //     $line = explode('-', trim($contest_id));
-        //     $group_contests = [];
-        //     if (count($line) == 1) {
-        //         $cid = intval(trim($line[0]));
-        //         if (DB::table('contests')->find($cid))
-        //             $group_contests[] = [
-        //                 'group_id' => $group->id,
-        //                 'contest_id' => $cid,
-        //             ];
-        //     } else {
-        //         foreach (range(intval(trim($line[0])), intval((trim($line[1])))) as $i) {
-        //             if (DB::table('contests')->find($i))
-        //                 $group_contests[] = [
-        //                     'group_id' => $group->id,
-        //                     'contest_id' => $i,
-        //                 ];
-        //         }
-        //     }
-        //     DB::table('group_contests')->insert($group_contests);
-        // }
         return [
             'ok' => 1,
             'msg' => '修改成功',
@@ -164,18 +138,18 @@ class GroupController extends Controller
         $contests_id = explode(PHP_EOL, $request->input('contests_id'));
         foreach ($contests_id as &$item)
             $item = trim($item);
-        $cids = DB::table('contests')->whereIn('id', $contests_id)->pluck('id')->toArray(); // 欲添加竞赛id
         $max_order = DB::table('group_contests')->where('group_id', $group->id)->max('order'); // 已存在的最大顺序序号
-        foreach ($cids as $cid) {
-            DB::table('group_contests')->insert([
-                'group_id' => $group->id,
-                'contest_id' => $cid,
-                'order' => ++$max_order
-            ]);
+        foreach ($contests_id as $cid) {
+            if (DB::table('contests')->find($cid))
+                DB::table('group_contests')->insert([
+                    'group_id' => $group->id,
+                    'contest_id' => $cid,
+                    'order' => ++$max_order
+                ]);
         }
         return [
             'ok' => 1,
-            'msg' => sprintf("已成功新增%d个竞赛: %s", count($cids), $request->input('contests_id'))
+            'msg' => sprintf("已成功新增%d个竞赛: %s", count($contests_id), $request->input('contests_id'))
         ];
     }
 

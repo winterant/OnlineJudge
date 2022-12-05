@@ -8,7 +8,7 @@
   </h2>
   <hr>
   <div>
-    <form class="p-4 col-12" onsubmit="return submit_group(this)" enctype="multipart/form-data">
+    <form class="p-4 col-12" onsubmit="submit_group(this); return false" enctype="multipart/form-data">
 
       <div class="form-inline mb-3">
         <span>群组类型：</span>
@@ -162,11 +162,13 @@
 
   <script type="text/javascript">
     function submit_group(that) {
+      $("#description").val(window.editor.getData()) // 手动更新提交值
       $.ajax({
         type: '{{ isset($group) ? 'put' : 'post' }}',
         url: '{{ isset($group) ? route('api.admin.group.update', $group->id) : route('api.admin.group.create') }}',
         data: $(that).serializeJSON(),
         success: function(ret) {
+          console.log(ret)
           if (ret.ok) {
             Notiflix.Confirm.Show('提交成功', ret.msg, '查看', '返回', function() {
               window.location.href = ret.redirect

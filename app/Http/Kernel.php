@@ -23,7 +23,7 @@ class Kernel extends HttpKernel
         // \App\Http\Middleware\CheckForMaintenanceMode::class,  // 检查laravel是否处于维护状态(php artisan down) 没必要
         // \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,  // 验证post请求大小是否超出限制(php-fpm也会限制) 没必要
         // \App\Http\Middleware\TrimStrings::class,  // 删出请求中字符串两端的空白字符 没必要
-        // \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class, // '' to null 没必要
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class, // '' to null
     ];
 
     /**
@@ -91,7 +91,7 @@ class Kernel extends HttpKernel
      * This forces non-global middleware to always be in the given order.
      *
      * 以下是自定义中间件的优先级，即以上所有中间件必然遵守的执行顺序
-     * 
+     *
      * @var array
      */
     protected $middlewarePriority = [
