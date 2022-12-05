@@ -107,7 +107,7 @@ class GroupController extends Controller
                 'c.num_members'
             ])
             ->orderBy('gc.id', $group->type == 0 ? 'asc' : 'desc')
-            ->paginate($group->type == 0 ? 50 : ($_GET['perPage'] ?? 15));
+            ->paginate($_GET['perPage'] ?? 15);
         return view('group.member', compact('group', 'user', 'contests'));
     }
 }

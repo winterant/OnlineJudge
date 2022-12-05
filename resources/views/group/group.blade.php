@@ -45,20 +45,20 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>{{ trans('main.Title') }}</th>
-                  <th>{{ __('main.Access') }}</th>
-                  <th>{{ __('main.ranking_rule') }}</th>
-                  <th>{{ __('main.Time') }}</th>
-                  <th>{{ __('main.Contestants') }}</th>
+                  <th nowrap>{{ trans('main.Title') }}</th>
+                  <th nowrap>{{ __('main.Access') }}</th>
+                  {{-- <th nowrap>{{ __('main.ranking_rule') }}</th> --}}
+                  <th nowrap>{{ __('main.Time') }}</th>
+                  <th nowrap>{{ __('main.Contestants') }}</th>
                 </tr>
               </thead>
               <tbody>
                 @foreach ($contests as $item)
                   <tr>
-                    <td>{{ $item->id }}</td>
+                    <td nowrap>{{ $item->id }}</td>
                     <td nowrap>
                       <a href="{{ route('contest.home', [$item->id, 'group' => $group->id]) }}">{{ $item->title }}</a>
-                    <td>
+                    {{-- <td nowrap>
                       <span class="border bg-light px-1 text-{{ $item->access == 'public' ? 'green' : 'red' }}"
                         style="border-radius: 12px;">
                         @if ($item->access != 'public')
@@ -69,9 +69,9 @@
                           [{{ __('main.Password') }}:{{ $item->password }}]
                         @endif
                       </span>
-                    </td>
-                    <td>{{ $item->judge_type == 'acm' ? 'ACM/ICPC' : 'OI/IOI' }}</td>
-                    <td><i class="fa fa-calendar pr-1 text-sky" aria-hidden="true"></i>{{ $item->start_time }}
+                    </td> --}}
+                    <td nowrap>{{ $item->judge_type == 'acm' ? 'ACM/ICPC' : 'OI/IOI' }}</td>
+                    <td nowrap><i class="fa fa-calendar pr-1 text-sky" aria-hidden="true"></i>{{ $item->start_time }}
                       <i class="fa fa-clock-o text-sky" aria-hidden="true"></i>
                       @php($time_len = strtotime($item->end_time) - strtotime($item->start_time))
                       @if ($time_len > 3600 * 24 * 30)
@@ -84,7 +84,7 @@
                         {{ round($time_len / 3600, 1) }} {{ trans_choice('main.hours', round($time_len / 3600, 1)) }}
                       @endif
                     </td>
-                    <td>
+                    <td nowrap>
                       <i class="fa fa-user-o text-sky" aria-hidden="true"></i>
                       {{ $item->num_members }}
                     </td>

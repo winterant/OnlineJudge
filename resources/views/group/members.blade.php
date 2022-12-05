@@ -24,7 +24,7 @@
                   <option value="2,3" @if (($_GET['identity'] ?? -1) == '2,3') selected @endif>仅学生</option>
                   <option value="4" @if (($_GET['identity'] ?? -1) == 4) selected @endif>仅管理员</option>
                   <option value="1" @if (($_GET['identity'] ?? -1) == 1) selected @endif>申请中</option>
-                  <option value="0" @if (($_GET['identity'] ?? -1) == 0) selected @endif>已退出</option>
+                  <option value="0" @if (($_GET['identity'] ?? -1) == 0) selected @endif>已禁用/已退出</option>
                 </select>
               </div>
               <div class="form-inline mx-3">
@@ -69,7 +69,7 @@
                           </select>
                         </div>
                       @else
-                        @php($ident = [0 => '已退出', 1 => '申请加入', 2 => '学生', 3 => '学生班长', 4 => '管理员'])
+                        @php($ident = [0 => '已禁用', 1 => '申请加入', 2 => '学生', 3 => '学生班长', 4 => '管理员'])
                         {{ $ident[intval($u->identity)] }}
                       @endif
                     </td>
@@ -78,12 +78,12 @@
                       <a href="{{ route('group.member', [$group->id, $u->user_id]) }}">{{ __('查看Ta的学习') }}</a>
                       @if (privilege('admin.group') || $group->creator == Auth::id())
                         <a class="ml-3" href="javascript:"
-                          onclick="if(confirm('该用户被移除后，无法进入该{{__('main.Group')}}。您仍然可以从【已退出】成员页面看到该成员，并且可以查看其所有学习信息。确定移除？')){
+                          onclick="if(confirm('该用户被禁用后，无法进入该群组，无法自行恢复。管理员可以从【已禁用】成员页面看到该成员，可以查看其学习信息，可以解除禁用。确定禁用？')){
                             update_members_identity([{{ $u->id }}], 0)
                             $(this).parent().parent().remove();
-                          }">移除</a>
+                          }">禁用</a>
                         <a class="ml-3" href="javascript:"
-                          onclick="if(confirm('该用户被彻底删除后，无法进入该{{__('main.Group')}}。除提交记录外，该用户在该{{__('main.Group')}}中的学习规划信息将会丢失。建议您优先考虑【移除】该成员来代替【彻底删除】。确定彻底删除？')){
+                          onclick="if(confirm('该用户被彻底删除后，无法进入该群组；除提交记录外，该用户在该群组中的学习规划信息将会丢失。建议您优先考虑【禁用】该成员来代替【彻底删除】。确定彻底删除？')){
                             delete_members_batch([{{ $u->user_id }}]);
                             $(this).parent().parent().remove();
                           }">彻底删除</a>
