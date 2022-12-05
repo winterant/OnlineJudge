@@ -19,6 +19,7 @@ return [
     "Next Page"     => "Next",
     "View details"  => "View details",
     "Default"       => "Default",
+    "Order"         => "Order",
 
     //home.blade
     "Notice Board"  => "Notice Board",

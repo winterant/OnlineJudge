@@ -73,29 +73,29 @@ class GroupController extends Controller
         DB::table('groups')->where('id', $group->id)->update($request_group);
 
         // 添加竞赛
-        $contest_ids = $request->input('contest_ids');
-        DB::table('group_contests')->where('group_id', $group->id)->delete();
-        foreach (explode(PHP_EOL, $contest_ids) as &$contest_id) {
-            $line = explode('-', trim($contest_id));
-            $group_contests = [];
-            if (count($line) == 1) {
-                $cid = intval(trim($line[0]));
-                if (DB::table('contests')->find($cid))
-                    $group_contests[] = [
-                        'group_id' => $group->id,
-                        'contest_id' => $cid,
-                    ];
-            } else {
-                foreach (range(intval(trim($line[0])), intval((trim($line[1])))) as $i) {
-                    if (DB::table('contests')->find($i))
-                        $group_contests[] = [
-                            'group_id' => $group->id,
-                            'contest_id' => $i,
-                        ];
-                }
-            }
-            DB::table('group_contests')->insert($group_contests);
-        }
+        // $contest_ids = $request->input('contest_ids');
+        // DB::table('group_contests')->where('group_id', $group->id)->delete();
+        // foreach (explode(PHP_EOL, $contest_ids) as &$contest_id) {
+        //     $line = explode('-', trim($contest_id));
+        //     $group_contests = [];
+        //     if (count($line) == 1) {
+        //         $cid = intval(trim($line[0]));
+        //         if (DB::table('contests')->find($cid))
+        //             $group_contests[] = [
+        //                 'group_id' => $group->id,
+        //                 'contest_id' => $cid,
+        //             ];
+        //     } else {
+        //         foreach (range(intval(trim($line[0])), intval((trim($line[1])))) as $i) {
+        //             if (DB::table('contests')->find($i))
+        //                 $group_contests[] = [
+        //                     'group_id' => $group->id,
+        //                     'contest_id' => $i,
+        //                 ];
+        //         }
+        //     }
+        //     DB::table('group_contests')->insert($group_contests);
+        // }
         return [
             'ok' => 1,
             'msg' => '修改成功',
@@ -128,6 +128,85 @@ class GroupController extends Controller
             return HomeController::update_batch('groups', $ids, $request->input('values'));
         else
             return HomeController::update_batch('groups', $ids, $request->input('value'), true);
+    }
+
+
+    /**
+     * 批量添加group_contests
+     *
+     * post request:{
+     *   contests_id:[id1,id2,...],
+     *   identity: int(^[0-4].$)
+     * }
+     *
+     * response:{
+     *   ok:(0|1),
+     *   msg:string,
+     *   data:{
+     *     updated:int
+     *   }
+     * }
+     */
+    public function create_contests(Request $request, $group_id)
+    {
+        if (!($group = DB::table('groups')->find($group_id)))
+            return [
+                'ok' => 0,
+                'msg' => '群组不存在！'
+            ];
+        if (!privilege('admin.group') && Auth::id() != $group->creator)
+            return [
+                'ok' => 0,
+                'msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!'
+            ];
+
+        // 开始处理
+        $contests_id = explode(PHP_EOL, $request->input('contests_id'));
+        foreach ($contests_id as &$item)
+            $item = trim($item);
+        $cids = DB::table('contests')->whereIn('id', $contests_id)->pluck('id')->toArray(); // 欲添加竞赛id
+        $max_order = DB::table('group_contests')->where('group_id', $group->id)->max('order'); // 已存在的最大顺序序号
+        foreach ($cids as $cid) {
+            DB::table('group_contests')->insert([
+                'group_id' => $group->id,
+                'contest_id' => $cid,
+                'order' => ++$max_order
+            ]);
+        }
+        return [
+            'ok' => 1,
+            'msg' => sprintf("已成功新增%d个竞赛: %s", count($cids), $request->input('contests_id'))
+        ];
+    }
+
+
+    /**
+     * 批量删除group_contests
+     *
+     * delete request:{
+     *   ids:[1,2,...],   // 注意这是group_contests表的主键id
+     * }
+     *
+     * response:{
+     *   ok:(0|1),
+     *   msg:string,
+     * }
+     */
+    public function delete_contests_batch(Request $request, $group_id)
+    {
+        if (!($group = DB::table('groups')->find($group_id)))
+            return ['ok' => 0, 'msg' => '群组不存在!'];
+        if (!privilege('admin.group') && Auth::id() != $group->creator)
+            return ['ok' => 0, 'msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!'];
+        // 开始处理
+        $deleted = DB::table('group_contests')
+            ->where('group_id', $group_id)
+            ->whereIn('id', $request->input('ids'))
+            ->delete();
+        return [
+            'ok' => 1,
+            'msg' => sprintf("已删除%d个竞赛", $deleted)
+        ];
     }
 
     /**
@@ -231,6 +310,59 @@ class GroupController extends Controller
         return [
             'ok' => 1,
             'msg' => sprintf("已删除%d个成员", $deleted)
+        ];
+    }
+
+    /**
+     * 修改某一群组内的竞赛的顺序，即order字段
+     * 注意！竞赛order是顺序还是倒序展示的，取决于群组类型是课程还是班级，此处无需关心
+     * 输入：
+     *      gc_id: group_contests表的主键id
+     *      shift: 对order字段的偏移量，整数范围
+     */
+    public function update_contest_order($gc_id, $shift)
+    {
+        // 获取当前竞赛
+        $gc = DB::table('group_contests')->find($gc_id);
+        if ($shift > 0) {
+            // order增加，上移
+            $count_updated = 0;
+            DB::transaction(function () use ($gc, $shift) {
+                // 当前竞赛后面受影响的竞赛，前移1
+                $count_updated = DB::table('group_contests')
+                    ->where('group_id', $gc->group_id)
+                    ->whereBetween('order', [$gc->order + 1, $gc->order + $shift])
+                    ->decrement('order');
+                // 当前竞赛移动到指定位置
+                DB::table('group_contests')
+                    ->where('id', $gc->id)
+                    ->increment('order', $count_updated);
+            });
+            return [
+                'ok' => 1,
+                'msg' => sprintf('竞赛[%s]已向上移动%d项', $gc->contest_id, $count_updated)
+            ];
+        } else {
+            // order降低，下移
+            $count_updated = 0;
+            DB::transaction(function () use ($gc, $shift) {
+                $count_updated = DB::table('group_contests')
+                    ->where('group_id', $gc->group_id)
+                    ->whereBetween('order', [$gc->order + $shift, $gc->order - 1])
+                    ->increment('order');
+                // 当前竞赛移动到指定位置
+                DB::table('group_contests')
+                    ->where('id', $gc->id)
+                    ->decrement('order', $count_updated);
+            });
+            return [
+                'ok' => 1,
+                'msg' => sprintf('竞赛[%s]已向下移动%d项', $gc->contest_id, $count_updated)
+            ];
+        }
+        return [
+            'ok' => 0,
+            'msg' => '移动失败'
         ];
     }
 }

@@ -57,9 +57,12 @@ class GroupController extends Controller
             return abort(404);
         $contests = DB::table('group_contests as gc')
             ->join('contests as c', 'c.id', '=', 'gc.contest_id')
-            ->select('c.*')
+            ->select([
+                'gc.id', 'gc.contest_id', 'gc.order',
+                'c.title', 'c.judge_type', 'c.start_time', 'c.end_time', 'c.num_members'
+            ])
             ->where('gc.group_id', $group->id)
-            ->orderBy('gc.id', $group->type == 0 ? 'asc' : 'desc')
+            ->orderBy('gc.order', $group->type == 0 ? 'asc' : 'desc')
             ->paginate($group->type == 0 ? 100 : ($_GET['perPage'] ?? 20)); // 课程显示100项，班级现实20项
         return view('group.group', compact('group', 'contests'));
     }
@@ -106,7 +109,7 @@ class GroupController extends Controller
                 'c.password',
                 'c.num_members'
             ])
-            ->orderBy('gc.id', $group->type == 0 ? 'asc' : 'desc')
+            ->orderBy('gc.order', $group->type == 0 ? 'asc' : 'desc')
             ->paginate($_GET['perPage'] ?? 15);
         return view('group.member', compact('group', 'user', 'contests'));
     }

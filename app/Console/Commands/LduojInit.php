@@ -54,6 +54,7 @@ class LduojInit extends Command
         $this->init_contest_cate();
         $this->correct_contest_order();
         $this->correct_contest_cate_order();
+        $this->correct_group_contest_order();
 
         // 清除重启后失效的cache
         Cache::forget('web:version');
@@ -211,6 +212,40 @@ class LduojInit extends Command
                     ->where('parent_id', $parent_id)
                     ->update(['order' => DB::raw('(@row_num:=@row_num+1)')]);
             }
+        }
+    }
+
+
+    /**
+     * 竞赛order字段用于竞赛列表的顺序排序，每个群组中的竞赛单独排序，不同群组之间order不通
+     * 在每个群组内部，order的取值范围是[1,n]，n表示群组竞赛个数。
+     *
+     * lduoj-v1.5中新增了该排序方法，对于老版本，将使用此函数进行矫正
+     * 默认以id字段顺序重写order字段：1,2,3,...,n
+     */
+    private function correct_group_contest_order()
+    {
+        // 筛选出竞赛顺序混乱的那些群组
+        $group_contests = DB::table('group_contests')
+            ->select([
+                'group_id',
+                DB::raw('count(*) as num_contests'),
+                DB::raw('count(distinct `order`) as num_distinct_order'),
+                DB::raw('max(`order`) as max_order')
+            ])
+            ->groupBy('group_id')
+            ->havingRaw('`num_distinct_order` != `num_contests`')
+            ->orHavingRaw('`max_order` != `num_contests`')
+            ->get();
+        // 对竞赛顺序混乱的群组，一一校正
+        foreach ($group_contests as $gc) {
+            $gid = $gc->group_id;
+            echo "[Wrong] Contests of Group " . $gid . " have incorrect order. Correct them to 1,2,3,...," . $gc->num_contests . PHP_EOL;
+            // 对order字段赋值为(1,2,3,...,n)，update默认按主键升序依次赋值
+            $updated = DB::table('group_contests')
+                ->leftJoin(DB::raw('(SELECT @row_num := 0) as row_num_table'), DB::raw('1'), DB::raw('1'))
+                ->where('group_id', $gid)
+                ->update(['order' => DB::raw('(@row_num:=@row_num+1)')]);
         }
     }
 }

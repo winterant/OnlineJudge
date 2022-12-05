@@ -84,6 +84,10 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
             Route::put('/groups/{id}', 'Admin\GroupController@update')->name('group.update');
             Route::delete('/groups/{id}', 'Admin\GroupController@delete')->name('group.delete');
             Route::patch('/groups/batch', 'Admin\GroupController@update_batch')->name('group.update_batch');
+            // contests
+            Route::post('/groups/{id}/contests', 'Admin\GroupController@create_contests')->name('group.create_contests');
+            Route::delete('/groups/{id}/contests/batch', 'Admin\GroupController@delete_contests_batch')->name('group.delete_contests_batch');
+            Route::patch('/group-contests/{id}/order/{shift}', 'Admin\GroupController@update_contest_order')->name('group.update_contest_order')->where(['shift' => '^(\-|\+)?[0-9]+']);
             // members
             Route::post('/groups/{id}/members', 'Admin\GroupController@create_members')->name('group.create_members');
             Route::delete('/groups/{id}/members/batch', 'Admin\GroupController@delete_members_batch')->name('group.delete_members_batch');

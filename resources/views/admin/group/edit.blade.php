@@ -123,7 +123,7 @@
       </div>
       --}}
 
-      <div class="mt-4 p-2 bg-sky">为该群组添加作业/竞赛</div>
+      {{-- <div class="mt-4 p-2 bg-sky">为该群组添加作业/竞赛</div>
       <div class="border p-2">
         <div id="type_users" class="form-group my-3">
           <div class="float-left">竞赛列表：</div>
@@ -140,7 +140,7 @@
             })
           </script>
         </div>
-      </div>
+      </div> --}}
 
       <div class="form-group m-4 text-center">
         <button type="submit" class="btn-lg btn-success">提交</button>

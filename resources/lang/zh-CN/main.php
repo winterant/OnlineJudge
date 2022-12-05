@@ -19,6 +19,7 @@ return [
     "Next Page"     => "下一页",
     "View details"  => "查看详情",
     "Default"       => "默认",
+    "Order"         => "顺序",
 
     //home.blade
     "Notice Board"  => "公告板",
