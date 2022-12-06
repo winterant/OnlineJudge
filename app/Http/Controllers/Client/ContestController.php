@@ -267,7 +267,7 @@ class ContestController extends Controller
 
         // 计算题目在竞赛中的题号[0,1,2,...]
         foreach ($solutions as &$s) {
-            $s->index = $pid2index[$s->problem_id];
+            $s->index = $pid2index[$s->problem_id] ?? ($s->problem_id - 1); // 注意已删除的题目不在竞赛题号列表中
         }
         return view('solution.solutions', compact('contest', 'solutions', 'pid2index'));
     }
