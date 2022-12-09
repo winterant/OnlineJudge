@@ -13,8 +13,8 @@
                     <option value="20" @if(isset($_GET['perPage'])&&$_GET['perPage']==25)selected @endif>25</option>
                     <option value="50" @if(isset($_GET['perPage'])&&$_GET['perPage']==50)selected @endif>50</option>
                     <option value="100" @if(isset($_GET['perPage'])&&$_GET['perPage']==100)selected @endif>100</option>
-                    <option value="200" @if(isset($_GET['perPage'])&&$_GET['perPage']==200)selected @endif>200</option>
-                    <option value="1000" @if(isset($_GET['perPage'])&&$_GET['perPage']==1000)selected @endif>1000</option>
+                    {{-- <option value="200" @if(isset($_GET['perPage'])&&$_GET['perPage']==200)selected @endif>200</option> --}}
+                    {{-- <option value="1000" @if(isset($_GET['perPage'])&&$_GET['perPage']==1000)selected @endif>1000</option> --}}
                 </select>
             </div>
             <div class="form-inline mx-1">
@@ -45,7 +45,7 @@
             {{$users->appends($_GET)->links()}}
             <a href="javascript:$('.cb input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
             <a href="javascript:$('.cb input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
-            
+
             &nbsp;修改个人资料：[
             <a href="javascript:update_revise(1);">允许</a>
             |
@@ -57,7 +57,7 @@
             |
             <a href="javascript:update_locked(0);">解锁</a>
             ]
-            
+
             <a href="javascript:" onclick="delete_user()" class="ml-3">批量删除</a>
         </div>
         <div class="table-responsive">
@@ -189,7 +189,7 @@
                 uids=[id,]
             }else{
                 lock_single_call=true
-                $('.cb input[type=checkbox]:checked').each(function () { 
+                $('.cb input[type=checkbox]:checked').each(function () {
                     uids.push($(this).val())
                     if(val)
                         switchs_revise[$(this).val()].on()
