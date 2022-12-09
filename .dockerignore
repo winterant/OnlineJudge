@@ -1,6 +1,8 @@
 **/.DS_Store
+.idea
+.vscode
 .git
-.env
+node_modules
 vendor
 storage/app
 storage/logs/*.log
@@ -8,3 +10,4 @@ storage/framework/cache/data/*
 storage/framework/sessions/*
 storage/framework/testing/*
 storage/framework/views/*
+.env
