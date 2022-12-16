@@ -64,6 +64,16 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
             // Route::post('/solution/correct-submitted-count', 'Admin\SolutionController@correct_submitted_count')->name('solution.correct_submitted_count');
         });
 
+        // Manage user: route('api.admin.user.*')
+        Route::middleware(['Permission:admin.user'])->group(function () {
+            Route::put('/user/roles', 'Admin\UserController@create_role')->name('user.create_role');
+            Route::patch('/user/roles/{id}', 'Admin\UserController@update_role')->name('user.update_role');
+            Route::delete('/user/roles/{id}', 'Admin\UserController@delete_role')->name('user.delete_role');
+            Route::get('/user/roles/{id}/permissions', 'Admin\UserController@get_role_permissions')->name('user.get_role_permissions');
+            Route::put('/user/roles/{id}/users/batch', 'Admin\UserController@role_add_users')->name('user.role_add_users');
+            Route::delete('/user/roles/{id}/users/{uid}', 'Admin\UserController@role_delete_user')->name('user.role_delete_user');
+        });
+
         // Manage contest: route('api.admin.contest.*')
         Route::middleware(['Permission:admin.contest'])->group(function () {
             Route::patch('/contests/{id}/order/{shift}', 'Admin\ContestController@update_order')->name('contest.update_order')->where(['shift' => '^(\-|\+)?[0-9]+']);

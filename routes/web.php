@@ -130,11 +130,14 @@ Route::middleware(['auth', 'CheckUserLocked'])->prefix('admin')->name('admin.')-
         Route::post('user/delete', 'Admin\UserController@delete')->name('user.delete');
         Route::post('user/update-revise', 'Admin\UserController@update_revise')->name('user.update_revise');
         Route::post('user/update-locked', 'Admin\UserController@update_locked')->name('user.update_locked');
-        // privileges
+
+        // privileges；已废弃。未来版本权限改用spatie/laravel-permission）
         Route::get('user/privileges', 'Admin\UserController@privileges')->name('user.privileges');
-        // todo 添加、删除 特权 需要定制api（未来版本权限管理将改用spatie/laravel-permission）
         Route::post('user/privilege/create', 'Admin\UserController@privilege_create')->name('user.privilege_create');
         Route::post('user/privilege/delete', 'Admin\UserController@privilege_delete')->name('user.privilege_delete');
+
+        // spatie/laravel-permission
+        Route::get('user/roles', 'Admin\UserController@roles')->name('user.roles');
     });
 
     //   manage problem list

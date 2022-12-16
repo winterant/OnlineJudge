@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -15,7 +16,7 @@ class UserController extends Controller
     {
         $users = DB::table('users')->select([
             'id', 'username', 'email', 'nick', 'school', 'class',
-            'solved','accepted','submitted',
+            'solved', 'accepted', 'submitted',
             'revise', 'locked', 'created_at'
         ])
             ->when(isset($_GET['username']) && $_GET['username'], function ($q) {
@@ -195,5 +196,19 @@ class UserController extends Controller
             }
             return view('admin.user.reset_pwd', compact('msg'));
         }
+    }
+
+    public function roles()
+    {
+        if (isset($_GET['kw']) && $_GET['kw'] != '')
+            $roles = Role::where('name', 'like', '%' . $_GET['kw'] . '%')->get();
+        else
+            $roles = Role::all();
+        $role_users = [];
+        foreach ($roles as $role) {
+            $users = User::role($role)->get();
+            $role_users[$role->id] = $users;
+        }
+        return view('admin.user.roles', compact('roles', 'role_users'));
     }
 }

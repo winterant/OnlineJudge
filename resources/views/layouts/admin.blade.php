@@ -110,6 +110,10 @@
       /*table垂直居中*/
       vertical-align: middle !important;
     }
+
+    #left-menu i {
+      width: 30px;
+    }
   </style>
 </head>
 
@@ -137,26 +141,28 @@
       <div class="sidebar-sticky">
         <ul class="list-unstyled">
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.home') }}">
-              <i class="fa fa-bar-chart fa-lg mr-1" aria-hidden="true"></i> 概览
+            <a class="nav-link @if (Route::currentRouteName() == 'admin.home') active @endif" href="{{ route('admin.home') }}">
+              <i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i>概览
             </a>
           </li>
 
           <li class="nav-item">
             <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
               data-target="#menu-notice" aria-expanded="false">
-              <i class="fa fa-sticky-note-o fa-lg mr-2" aria-hidden="true"></i> 公告管理
+              <i class="fa fa-sticky-note-o fa-lg" aria-hidden="true"></i>公告管理
             </a>
             <ul id="menu-notice" class="collapse @if (preg_match('/^admin\.notice\S*$/', Route::currentRouteName())) show @endif">
 
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.notice.list') }}">
-                  <i class="fa fa-list" aria-hidden="true"></i> 公告列表</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.notice.list') active @endif"
+                  href="{{ route('admin.notice.list') }}">
+                  <i class="fa fa-list" aria-hidden="true"></i>公告列表</a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.notice.add') }}">
-                  <i class="fa fa-plus" aria-hidden="true"></i> 发布公告</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.notice.add') active @endif"
+                  href="{{ route('admin.notice.add') }}">
+                  <i class="fa fa-plus" aria-hidden="true"></i>发布公告</a>
               </li>
 
             </ul>
@@ -165,29 +171,39 @@
           <li class="nav-item">
             <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
               data-target="#menu-user" aria-expanded="false">
-              <i class="fa fa-user-circle-o fa-lg mr-1" aria-hidden="true"></i>
-              账号管理
+              <i class="fa fa-user-circle-o fa-lg" aria-hidden="true"></i>账号管理
             </a>
             <ul id="menu-user" class="collapse @if (preg_match('/^admin\.user\S*$/', Route::currentRouteName())) show @endif">
 
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.user.list') }}">
-                  <i class="fa fa-list" aria-hidden="true"></i> 账号列表</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.user.list') active @endif"
+                  href="{{ route('admin.user.list') }}">
+                  <i class="fa fa-list" aria-hidden="true"></i>账号列表</a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.user.privileges') }}">
-                  <i class="fa fa-universal-access" aria-hidden="true"></i> 权限管理</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.user.privileges') active @endif"
+                  href="{{ route('admin.user.privileges') }}">
+                  <i class="fa fa-universal-access" aria-hidden="true"></i>权限管理</a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.user.create') }}">
-                  <i class="fa fa-user-plus" aria-hidden="true"></i> 账号批量生成</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.user.create') active @endif"
+                  href="{{ route('admin.user.create') }}">
+                  <i class="fa fa-user-plus" aria-hidden="true"></i>账号批量生成</a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.user.reset_pwd') }}">
-                  <i class="fa fa-refresh" aria-hidden="true"></i> 账号密码重置</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.user.reset_pwd') active @endif"
+                  href="{{ route('admin.user.reset_pwd') }}">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>账号密码重置</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.user.roles') active @endif"
+                  href="{{ route('admin.user.roles') }}">
+                  <i class="fa fa-users" aria-hidden="true"></i>角色管理
+                </a>
               </li>
             </ul>
           </li>
@@ -195,36 +211,43 @@
           <li class="nav-item">
             <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
               data-target="#menu-problem" aria-expanded="false">
-              <i class="fa fa-file-text-o fa-lg mr-2" aria-hidden="true"></i>题库管理
+              <i class="fa fa-file-text-o fa-lg" aria-hidden="true"></i>题库管理
             </a>
             <ul id="menu-problem" class="collapse @if (preg_match('/^admin\.problem\S*$/', Route::currentRouteName())) show @endif">
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.problem.list') }}">
-                  <i class="fa fa-list" aria-hidden="true"></i> 题库</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.problem.list') active @endif"
+                  href="{{ route('admin.problem.list') }}">
+                  <i class="fa fa-list" aria-hidden="true"></i>题库</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.problem.add') }}">
-                  <i class="fa fa-plus" aria-hidden="true"></i> 添加题目</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.problem.add') active @endif"
+                  href="{{ route('admin.problem.add') }}">
+                  <i class="fa fa-plus" aria-hidden="true"></i>添加题目</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.problem.tags') }}">
-                  <i class="fa fa-tag" aria-hidden="true"></i> 标签管理</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.problem.tags') active @endif"
+                  href="{{ route('admin.problem.tags') }}">
+                  <i class="fa fa-tag" aria-hidden="true"></i>标签管理</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.problem.tag_pool') }}">
-                  <i class="fa fa-tags" aria-hidden="true"></i> 标签库</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.problem.tag_pool') active @endif"
+                  href="{{ route('admin.problem.tag_pool') }}">
+                  <i class="fa fa-tags" aria-hidden="true"></i>标签库</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.problem.test_data') }}">
-                  <i class="fa fa-file-text" aria-hidden="true"></i> 测试数据管理</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.problem.test_data') active @endif"
+                  href="{{ route('admin.problem.test_data') }}">
+                  <i class="fa fa-file-text" aria-hidden="true"></i>测试数据管理</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.problem.rejudge') }}">
-                  <i class="fa fa-recycle" aria-hidden="true"></i> 重判提交</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.problem.rejudge') active @endif"
+                  href="{{ route('admin.problem.rejudge') }}">
+                  <i class="fa fa-recycle" aria-hidden="true"></i>重判提交</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.problem.import_export') }}">
-                  <i class="fa fa-sign-in" aria-hidden="true"></i> 导入与导出</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.problem.import_export') active @endif"
+                  href="{{ route('admin.problem.import_export') }}">
+                  <i class="fa fa-sign-in" aria-hidden="true"></i>导入与导出</a>
               </li>
             </ul>
           </li>
@@ -232,20 +255,26 @@
           <li class="nav-item">
             <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
               data-target="#menu-contest" aria-expanded="false">
-              <i class="fa fa-trophy fa-lg mr-2" aria-hidden="true"></i>竞赛管理
+              <i class="fa fa-trophy fa-lg" aria-hidden="true"></i>竞赛管理
             </a>
             <ul id="menu-contest" class="collapse @if (preg_match('/^admin\.contest\S*$/', Route::currentRouteName())) show @endif">
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.contest.list') }}">
-                  <i class="fa fa-list" aria-hidden="true"></i> 竞赛列表</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.contest.list') active @endif"
+                  href="{{ route('admin.contest.list') }}">
+                  <i class="fa fa-list" aria-hidden="true"></i>竞赛列表
+                </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.contest.add') }}">
-                  <i class="fa fa-plus" aria-hidden="true"></i> 添加竞赛</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.contest.add') active @endif"
+                  href="{{ route('admin.contest.add') }}">
+                  <i class="fa fa-plus" aria-hidden="true"></i>添加竞赛
+                </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.contest.categories') }}">
-                  <i class="fa fa-tags" aria-hidden="true"></i> 类别管理</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.contest.categories') active @endif"
+                  href="{{ route('admin.contest.categories') }}">
+                  <i class="fa fa-tags" aria-hidden="true"></i>类别管理
+                </a>
               </li>
             </ul>
           </li>
@@ -253,23 +282,26 @@
           <li class="nav-item">
             <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
               data-target="#menu-groups" aria-expanded="false">
-              <i class="fa fa-users fa-lg mr-2" aria-hidden="true"></i>{{__('main.Group')}}管理
+              <i class="fa fa-users fa-lg" aria-hidden="true"></i>群组管理
             </a>
             <ul id="menu-groups" class="collapse @if (preg_match('/^admin\.group\S*$/', Route::currentRouteName())) show @endif">
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.group.list') }}">
-                  <i class="fa fa-list" aria-hidden="true"></i> {{__('main.Group')}}列表</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.group.list') active @endif"
+                  href="{{ route('admin.group.list') }}">
+                  <i class="fa fa-list" aria-hidden="true"></i>群组列表</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link border-top" href="{{ route('admin.group.create') }}">
-                  <i class="fa fa-plus" aria-hidden="true"></i> 新建{{__('main.Group')}}</a>
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.group.create') active @endif"
+                  href="{{ route('admin.group.create') }}">
+                  <i class="fa fa-plus" aria-hidden="true"></i>新建群组</a>
               </li>
             </ul>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link border-top" href="{{ route('admin.settings') }}">
-              <i class="fa fa-cogs fa-lg" aria-hidden="true"></i> 系统设置
+            <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.settings') active @endif"
+              href="{{ route('admin.settings') }}">
+              <i class="fa fa-cogs fa-lg" aria-hidden="true"></i>系统设置
             </a>
         </ul>
       </div>
@@ -304,7 +336,7 @@
       }, speed, callback);
     };
   </script>
-
+  {{--
   <script type="text/javascript">
     // 遍历导航栏按钮，如果href与当前位置相等，就active
     $(function() {
@@ -323,7 +355,7 @@
         }
       });
     })
-  </script>
+  </script> --}}
 
 </body>
 
