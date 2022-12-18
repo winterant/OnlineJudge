@@ -21,10 +21,6 @@
     <button class="btn border">查找</button>
   </form>
 
-  @can('admin.problem.view')
-    !!!!
-  @endcan
-
   @foreach ($roles as $role)
     <div class="border my-3">
       <div class="alert-info p-2">
