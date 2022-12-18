@@ -26,22 +26,20 @@ function clear_cache_if_rejudged($cache_key)
 function get_setting($key, $default = null, bool $update = false)
 {
     $redis_key = 'website:' . $key;
-    // 有默认值
-    if ($default !== null) {
-        // $update=true时，将设置项更新为传入的默认值
-        if ($update) {
-            Cache::forever($redis_key, $default); // 缓存
-            if (Schema::hasTable('settings')) // 持久化到数据库
-                DB::table('settings')->updateOrInsert(['key' => $key], ['value' => $default]);
-        }
-        return $default;
+
+    if ($update) {
+        Cache::forever($redis_key, $default); // 缓存
+        if (Schema::hasTable('settings')) // 持久化到数据库
+            DB::table('settings')->updateOrInsert(['key' => $key], ['value' => $default]);
     }
+
     // 查询设置值，查询顺序：cache，database，file
-    return Cache::rememberForever($redis_key, function () use ($key) {
-        if (Schema::hasTable('settings') && ($val = DB::table('settings')->where('key', $key)->value('value')) !== null) {
+    return Cache::rememberForever($redis_key, function () use ($key, $default) {
+        if (Schema::hasTable('settings') && ($val = DB::table('settings')->where('key', $key)->value('value')) !== null)
             return $val;
-        }
-        return config('init.settings.' . $key);   // 尝试从配置文件中读取初始配置项
+        else if ($val = config('init.settings.' . $key))
+            return $val;   // 尝试从配置文件中读取初始配置项
+        return $default;
     });
 }
 
