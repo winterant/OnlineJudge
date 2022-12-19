@@ -11,8 +11,11 @@ class NoticeController extends Controller
     // 获取一条公告
     public function get_notice($id)
     {
+        /** @var \App\Models\User */
+        $user = auth('api')->user();
+
         $notice = DB::table('notices')->select(['title', 'content', 'created_at', 'hidden'])->find($id);
-        if (!$notice || (!privilege('admin.notice') && $notice->hidden))
+        if (!$notice || ($notice->hidden && !$user->can('admin.notice.view')))
             return ['ok' => 0, 'msg' => '不存在的公告'];
         return [
             'ok' => 1,

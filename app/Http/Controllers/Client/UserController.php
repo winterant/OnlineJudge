@@ -44,9 +44,6 @@ class UserController extends Controller
 
     public function user_edit(Request $request, $username)
     {
-        if (!privilege('admin.user.edit') && Auth::user()->username != $username) //不是管理员&&不是本人
-            return view('message', ['msg' => trans('sentence.Permission denied')]);
-
         $user = DB::table('users')->where('username', $username)->first();
         // 提供修改界面
         if ($request->isMethod('get')) {
@@ -78,9 +75,6 @@ class UserController extends Controller
 
     public function password_reset(Request $request, $username)
     {
-        if (!privilege('admin.user.edit') && Auth::user()->username != $username) //不是管理员&&不是本人
-            return view('message', ['msg' => trans('sentence.Permission denied')]);
-
         // 提供界面
         if ($request->isMethod('get')) {
             return view('auth.password_reset', compact('username'));

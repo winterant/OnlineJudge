@@ -39,7 +39,7 @@ class UserController extends Controller
 
     public function update_role(Request $request, $role_id)
     {
-        $role = Role::findById($role_id, 'web');
+        $role = Role::find($role_id);
         $updated_permissions = $request->input('permissions');
         // 修改权限
         $role->syncPermissions(array_keys($updated_permissions));
@@ -52,7 +52,7 @@ class UserController extends Controller
     public function delete_role(Request $request, $role_id)
     {
         try {
-            Role::findById($role_id, 'web')->delete();
+            Role::find($role_id)->delete();
             return [
                 'ok' => 1,
                 'msg' => '已删除'
@@ -72,11 +72,11 @@ class UserController extends Controller
      */
     public function get_role_permissions($role_id)
     {
-        $role = Role::findById($role_id, 'web');
+        $role = Role::find($role_id);
         $ret = [];
         if ($_GET['bool'] ?? false) {
-            foreach (Permission::all() as $p)
-                $ret[$p->name] = ($role->hasPermissionTo($p));
+            foreach (config('init.permissions') as $p=>$desc)
+                $ret[$p] = ($role->hasPermissionTo($p));
         } else {
             $ret = $role->permissions();
         }
@@ -89,7 +89,7 @@ class UserController extends Controller
     // 向某角色中添加批量用户
     public function role_add_users(Request $request, $role_id)
     {
-        $role = Role::findById($role_id, 'web');
+        $role = Role::find($role_id);
         $usernames = explode(PHP_EOL, $request->input('usernames'));
         foreach ($usernames as &$name) {
             $name = trim($name);
@@ -105,7 +105,7 @@ class UserController extends Controller
 
     public function role_delete_user($role_id, $user_id)
     {
-        $role = Role::findById($role_id, 'web');
+        $role = Role::find($role_id);
         $user = User::find($user_id);
         $user->removeRole($role);
         return [

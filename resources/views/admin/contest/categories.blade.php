@@ -157,7 +157,7 @@
 
     function update_contest_cate(url, values) {
       $.ajax({
-        method: 'put',
+        method: 'patch',
         url: url,
         data: {
           'values': values

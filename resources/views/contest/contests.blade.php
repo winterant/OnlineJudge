@@ -144,7 +144,7 @@
                       <i class="fa fa-lock" aria-hidden="true"></i>
                     @endif
                     {{ trans('main.access_' . $item->access) }}
-                    @if (privilege('admin.contest') && $item->access == 'password')
+                    @if (Auth::user()->can('admin.contest.view') && $item->access == 'password')
                       [{{ __('main.Password') }}:{{ $item->password }}]
                     @endif
                   </span>

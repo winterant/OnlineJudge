@@ -52,7 +52,7 @@
           @endif
         </a>
       </li>
-      @if (Auth::check() && privilege('admin.contest.balloon'))
+      @if (Auth::check() && Auth::user()->can('admin.contest_balloon'))
         <li class="nav-item">
           <a class="nav-link py-3 @if (Route::currentRouteName() == 'contest.balloons') active @endif"
             href="{{ route('contest.balloons', [$contest->id, 'group' => $group->id ?? null]) }}">{{ trans('main.Balloon') }}</a>

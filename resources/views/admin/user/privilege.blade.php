@@ -7,6 +7,10 @@
 
     <div class="row">
 
+      <div class="col-12">
+        <p class="p-3 alert-warning">权限管理模块已遗弃，以下权限已失效，请使用“角色管理”重新设置权限。
+          未来版本中将移除该界面，请在下次升级前及时记下这些信息。</p>
+      </div>
         <div class="col-md-6">
             <h2>账号权限管理</h2>
             <div class="float-left">
@@ -62,8 +66,8 @@
                     {{ session('msg') }}
                 </div>
             @endif
-            <form action="{{route('admin.user.privilege_create')}}" method="post"
-                onsubmit="if($('#privi').val()==='admin')return confirm('将admin权限分配给用户会使后台数据非常危险!\n' +
+            <form action="" method="post"
+                onsubmit="return false;if($('#privi').val()==='admin')return confirm('将admin权限分配给用户会使后台数据非常危险!\n' +
                     '推荐您分配单独权限给用户！\n' +
                     '若仍要执行，请点击确定')">
                 @csrf
@@ -111,45 +115,4 @@
         </div>
     </div>
 
-    <script>
-        /*
-        function delete_privilege(id) {
-            Notiflix.Confirm.Init();
-            Notiflix.Confirm.Show( '敏感操作', '确定删除该权限?', '确认', '取消', function(){
-                $.post(
-                    '{{route('admin.user.privilege_delete')}}',
-                    {
-                        '_token':'{{csrf_token()}}',
-                        'id':id,
-                        'type':'delete',
-                    },
-                    function (ret) {
-                        location.reload();
-                    }
-                );
-            });
-        }
-        */
-        function delete_manager(id=-1) {
-            Notiflix.Confirm.Init();
-            Notiflix.Confirm.Show('操作确认','确定删除选中的用户权限？','确认删除','取消',function () {
-                if(id!==-1){  ///单独一个
-                    $('td input[type=checkbox]').prop('checked',false)
-                    $('td input[value='+id+']').prop('checked',true)
-                }
-                var nids=[];
-                $('td input[type=checkbox]:checked').each(function () { nids.push($(this).val()); });
-                $.post(
-                    '{{route('admin.user.privilege_delete')}}',
-                    {
-                        '_token':'{{csrf_token()}}',
-                        'pids':nids,
-                    },
-                    function (ret) {
-                        location.reload();
-                    }
-                );
-            })
-        }
-    </script>
 @endsection

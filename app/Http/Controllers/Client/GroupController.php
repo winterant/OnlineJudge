@@ -16,6 +16,9 @@ class GroupController extends Controller
     // 我的群组/当前用户的所有的群组
     public function mygroups()
     {
+        if (!Auth::check()) // 未登陆用户只能查看所有群组
+            return redirect(route('groups'));
+
         $groups = DB::table('groups as g')
             ->leftJoin('users as u', 'u.id', '=', 'g.creator')
             ->join('group_users as gu', 'gu.group_id', '=', 'g.id')
@@ -30,10 +33,13 @@ class GroupController extends Controller
     // 所有群组
     public function allgroups()
     {
+        /** @var \App\Models\User */
+        $user = auth()->user();
+
         $groups = DB::table('groups as g')
             ->leftJoin('users as u', 'u.id', '=', 'g.creator')
             ->select('g.*', 'u.username as creator')
-            ->when(!privilege('admin.group'), function ($q) {
+            ->when(!$user->can('admin.group.view'), function ($q) {
                 return $q->where('hidden', 0);
             })
             ->orderByDesc('id')

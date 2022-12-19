@@ -16,6 +16,9 @@ class ContestController extends Controller
 {
     public function contests()
     {
+        /** @var \App\Models\User */
+        $user = auth()->user();
+
         //获取类别
         $current_cate = DB::table('contest_cate')->find($_GET['cate'] ?? 0);
 
@@ -35,19 +38,6 @@ class ContestController extends Controller
         // cookie记下上次访问的类别，下次默认直接访问它
         Cookie::queue('unencrypted_contests_default_cate', $current_cate->id, 5256000); // 10 years
 
-        // 拿到当前所处类别的所有二级类别
-        // $sons = DB::table('contest_cate')
-        //     ->where('parent_id', $current_cate->parent_id ?: $current_cate->id)
-        //     ->select(['id', 'title'])
-        //     ->where('parent_id', '>', 0)
-        //     ->orderBy('order')
-        //     ->get();
-        // // 拿到所有的一级类别
-        // $categories = DB::table('contest_cate')
-        //     ->select(['id', 'title'])
-        //     ->where('parent_id', 0)
-        //     ->orderBy('order')
-        //     ->get();
         // 拿到所有的类别
         $categories = DB::table('contest_cate as cc')
             ->leftJoin('contest_cate as father', 'father.id', 'cc.parent_id')
@@ -90,7 +80,7 @@ class ContestController extends Controller
             ->when(isset($_GET['title']) && $_GET['title'] != null, function ($q) {
                 return $q->where('c.title', 'like', '%' . $_GET['title'] . '%');
             })
-            ->when(!Auth::check() || !privilege('admin.contest'), function ($q) {
+            ->when(!Auth::check() || !$user->can('admin.contest.view'), function ($q) {
                 return $q->where('c.hidden', 0); // 没登陆 or 登陆了但没权限，则隐藏
             })
             ->orderByDesc('c.order')
@@ -123,6 +113,9 @@ class ContestController extends Controller
     // 竞赛首页概览 题目列表
     public function home($id)
     {
+        /** @var \App\Models\User */
+        $user = auth()->user();
+
         // 拿到竞赛
         $contest = DB::table('contests')
             ->select([
@@ -141,7 +134,7 @@ class ContestController extends Controller
         $problems = $problem_link->problems;
 
         // 读取标签（有缓存）
-        if (privilege('admin.contest') || time() > strtotime($contest->end_time))
+        if ($user->can('admin.contest.view') || time() > strtotime($contest->end_time))
             foreach ($problems as &$problem) {
                 $problem->tags = ProblemController::get_problem_tags($problem->id);
             }
@@ -203,6 +196,9 @@ class ContestController extends Controller
     // 竞赛提交记录
     public function solutions($id)
     {
+        /** @var \App\Models\User */
+        $user = auth()->user();
+
         // 拿到竞赛信息
         $contest = DB::table('contests')
             ->select([
@@ -214,8 +210,7 @@ class ContestController extends Controller
             ])->find($id);
 
         // 判断比赛状态: 比赛没结束，普通用户只能看自己
-        if (time() < strtotime($contest->end_time))
-            if (!privilege('admin.contest') && !privilege('admin.problem.solution'))
+        if (time() < strtotime($contest->end_time) && !$user->can('admin.contest.view'))
                 $_GET['user_id'] = Auth::id();
 
         // 获得题号映射数组 [problem_id => index]
@@ -283,7 +278,9 @@ class ContestController extends Controller
         }
 
         //对于隐藏的竞赛，普通用户不能查看榜单
-        if ($contest->hidden && !privilege('admin.contest')) {
+        /** @var \App\Models\User */
+        $user = auth()->user();
+        if ($contest->hidden && !$user->can('admin.contest.view')) {
             return view('message', ['msg' => '该竞赛处于隐藏状态，不可查看榜单。']);
         }
 
@@ -323,7 +320,9 @@ class ContestController extends Controller
         $rank_time['real_time']['able'] = true;
 
         // 普通用户在封榜后，应当禁用终榜、实时
-        if ($rank_time['locked_time']['able'] && !privilege('admin.contest')) {
+        /** @var \App\Models\User */
+        $user = auth()->user();
+        if ($rank_time['locked_time']['able'] && !$user->can('admin.contest.view')) {
             $rank_time['final_time']['able'] = false;
             $rank_time['real_time']['able'] = false;
         }

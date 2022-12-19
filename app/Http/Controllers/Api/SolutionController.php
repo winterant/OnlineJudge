@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\Judger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+
 
 class SolutionController extends Controller
 {
@@ -15,7 +14,9 @@ class SolutionController extends Controller
     public function submit_solution(Request $request)
     {
         //======================= 拦截非管理员的频繁提交 =================================
-        if (!privilege('admin.problem.list') || !privilege('admin.problem.solution')) {
+        /** @var \App\Models\User */
+        $user = auth('api')->user();
+        if (!$user->can('admin.solution.view')) {
             // 规定时间内，不允许多次提交
             $last_submit_time = DB::table('solutions')
                 ->where('user_id', Auth::id())
@@ -56,11 +57,7 @@ class SolutionController extends Controller
                     'msg' => 'Using a programming language that is not allowed!'
                 ];
         } else { //else 从题库中进行提交，需要判断一下用户权限
-            if (
-                !privilege('admin.problem.solution') &&
-                !privilege('admin.problem.list') &&
-                $problem->hidden == 1
-            ) //不是管理员&&问题隐藏 => 不允许提交
+            if ($problem->hidden == 1 && !$user->can('admin.solution.view'))
                 return [
                     'ok' => 0,
                     'msg' => '该题目为私有题目，您没有权限提交'
@@ -131,8 +128,6 @@ class SolutionController extends Controller
         $solution = DB::table('solutions')->find($solution_id);
         if (!$solution)
             return ['ok' => 0, 'msg' => '提交记录不存在'];
-        if ((auth('api')->user()->id ?? -1) != $solution->user_id && !privilege('admin.problem.solution'))
-            return ['ok' => 0, 'msg' => '您没有权限查看别人的提交记录'];
 
         /*
         // ==================== 读取判题结果 =========================
@@ -174,11 +169,16 @@ class SolutionController extends Controller
         ];
     }
 
+
+    // ==================================== 以下废弃 ===================================
+
     // api 提交一条本地测试，仅运行返回结果。 No DB
     public function submit_local_test(Request $request)
     {
         //============================= 拦截非管理员的频繁提交 =================================
-        if (!privilege('admin.problem.list') || !privilege('admin.problem.solution')) {
+        /** @var \App\Models\User */
+        $user = auth('api')->user();
+        if (!$user->can('admin.solution.view')) {
             $last_submit_time = DB::table('solutions')
                 ->where('user_id', Auth::id())
                 ->orderByDesc('submit_time')

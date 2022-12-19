@@ -48,11 +48,11 @@
       <div class="form-inline m-3">
         <label for="">
           选定时间区间：
-          <input type="datetime-local" name="date[1]"
+          <input type="datetime-local" name="date[]"
             value="{{ str_replace(' ', 'T', date('Y-m-d 00:00', time() - 3600 * 24 * 7)) }}" class="form-control"
             required>
           <span class="mx-2">—</span>
-          <input type="datetime-local" name="date[2]" value="{{ str_replace(' ', 'T', date('Y-m-d H:i')) }}"
+          <input type="datetime-local" name="date[]" value="{{ str_replace(' ', 'T', date('Y-m-d H:i')) }}"
             class="form-control" required>
         </label>
         <span class="alert-info mx-2 px-2 py-1">默认过去7天</span>

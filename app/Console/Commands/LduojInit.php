@@ -82,7 +82,7 @@ class LduojInit extends Command
         print_r(json_decode(json_encode(Permission::all()), true));
 
         //============= 创建预置角色，并分配预置权限
-        if (Role::count() > 0) // 已有角色，则不打扰了
+        if (Role::count() >= count(config('init.roles'))) // 已有角色数量达到预置角色数，则不自动添加了
             return false;
         // foreach (config('auth.guards') as $guard_name => $v)
         foreach (config('init.roles') as $name => $permissions) {
@@ -116,8 +116,8 @@ class LduojInit extends Command
         // echo "Gave permision [admin] to user [admin]" . PHP_EOL;
         $user->assignRole('admin');
         echo "Assign role [admin] to user [admin]" . PHP_EOL;
-        // 临时旧版本权限表赋权 to be deleted
-        DB::table('privileges')->insert(['user_id' => $user->id, 'authority' => 'admin']);
+        // 遗弃的。旧版本权限表赋权
+        // DB::table('privileges')->insert(['user_id' => $user->id, 'authority' => 'admin']);
         return true;
     }
 

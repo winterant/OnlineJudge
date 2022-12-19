@@ -16,8 +16,12 @@ class CheckGroup
         $group = DB::table('groups')->find($request->route()->parameter('id'));
         if (!$group)
             return abort(404);
+
+        /** @var \App\Models\User */
+        $user = auth()->user() ?? auth('api')->user();
+
         //管理员直接进入
-        if (privilege('admin.group'))
+        if ($user->can('admin.group.view'))
             return $next($request);
 
         //============== 剩余情况均为普通用户 ==============

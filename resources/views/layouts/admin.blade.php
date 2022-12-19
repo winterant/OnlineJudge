@@ -182,12 +182,6 @@
               </li>
 
               <li class="nav-item">
-                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.user.privileges') active @endif"
-                  href="{{ route('admin.user.privileges') }}">
-                  <i class="fa fa-universal-access" aria-hidden="true"></i>权限管理</a>
-              </li>
-
-              <li class="nav-item">
                 <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.user.create') active @endif"
                   href="{{ route('admin.user.create') }}">
                   <i class="fa fa-user-plus" aria-hidden="true"></i>账号批量生成</a>
@@ -205,6 +199,13 @@
                   <i class="fa fa-users" aria-hidden="true"></i>角色管理
                 </a>
               </li>
+
+              <li class="nav-item">
+                <a class="nav-link border-top text-gray @if (Route::currentRouteName() == 'admin.user.privileges') active @endif"
+                  href="{{ route('admin.user.privileges') }}">
+                  <i class="fa fa-universal-access" aria-hidden="true"></i>权限管理(遗弃)</a>
+              </li>
+
             </ul>
           </li>
 
@@ -240,14 +241,23 @@
                   <i class="fa fa-file-text" aria-hidden="true"></i>测试数据管理</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.problem.rejudge') active @endif"
-                  href="{{ route('admin.problem.rejudge') }}">
-                  <i class="fa fa-recycle" aria-hidden="true"></i>重判提交</a>
-              </li>
-              <li class="nav-item">
                 <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.problem.import_export') active @endif"
                   href="{{ route('admin.problem.import_export') }}">
                   <i class="fa fa-sign-in" aria-hidden="true"></i>导入与导出</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
+              data-target="#menu-problem" aria-expanded="false">
+              <i class="fa fa-paper-plane-o fa-lg" aria-hidden="true"></i>提交记录
+            </a>
+            <ul id="menu-problem" class="collapse @if (preg_match('/^admin\.solution\S*$/', Route::currentRouteName())) show @endif">
+              <li class="nav-item">
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.solution.rejudge') active @endif"
+                  href="{{ route('admin.solution.rejudge') }}">
+                  <i class="fa fa-recycle" aria-hidden="true"></i>重判提交</a>
               </li>
             </ul>
           </li>

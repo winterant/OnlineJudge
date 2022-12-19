@@ -2,7 +2,7 @@
   <div class="d-flex p-2" style="background-color: rgb(162, 212, 255)">
     <h4 class="flex-row mb-0">{{ __('main.Discussions') }}</h4>
     {{-- 发表按钮 --}}
-    @if (Auth::check() && (get_setting('post_discussion') || privilege('admin.problem')))
+    @if (Auth::check() && (get_setting('post_discussion') || Auth::user()->can('admin.problem.view')))
       <button class="btn btn-info flex-row ml-2 mb-0" data-toggle="modal" data-target="#edit-discussion"
         onclick="$('#form_edit_discussion')[0].reset()">{{ __('main.New Discussion') }}</button>
     @endif
@@ -102,7 +102,7 @@
             "   <div class=\"float-right\" style=\"font-size: 0.85rem\">\n" +
             (dis.top ? "[<font class=\"text-red px-1\">{{ trans('main.Top') }}</font>]" : '') +
             (dis.hidden ? "[<font class=\"text-red px-1\">{{ trans('main.Hidden') }}</font>]" : '') +
-            @if (Auth::check() && privilege('admin.problem.tag'))
+            @if (Auth::check() && Auth::user()->can('admin.problem.view'))
               (dis.top ?
                 "    <a href=\"javascript:top_discussion(" + dis.id +
                 ",0)\" class=\"px-1\">{{ __('main.Cancel Top') }}</a>\n" :
@@ -137,7 +137,7 @@
                 "    <div class=\"math_formula pl-1\">" + son_dis.content + "</div>\n" +
                 "    <div class=\"float-right\" style=\"font-size: 0.85rem\">\n" +
                 (son_dis.hidden ? "[<font class=\"text-red px-1\">{{ trans('main.Hidden') }}</font>]" : '') +
-                @if (Auth::check() && privilege('admin.problem.tag'))
+                @if (Auth::check() && Auth::user()->can('admin.problem.view'))
                   (son_dis.hidden ?
                     "   <a href=\"javascript:hidden_discussion(" + son_dis.id +
                     ",0)\" class=\"px-1\">{{ __('main.Public') }}</a>\n" :

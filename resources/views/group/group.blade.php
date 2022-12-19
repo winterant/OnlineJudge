@@ -26,7 +26,7 @@
             <span>
               {{ $group->name }}
             </span>
-            @if (privilege('admin.group.edit') || Auth::id() == $group->creator)
+            @if (Auth::user()->can('admin.group.update.' . $group->id))
               <span style="font-size: 0.85rem">
                 [ <a href="{{ route('admin.group.edit', [$group->id]) }}">{{ __('main.Edit') }}</a> ]
               </span>
@@ -45,7 +45,7 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  @if (privilege('admin.group'))
+                  @if (Auth::user()->can('admin.group.update.' . $group->id))
                     <th>{{ __('main.Order') }}</th>
                   @endif
                   <th nowrap>{{ trans('main.Title') }}</th>
@@ -60,7 +60,7 @@
                   <tr>
                     <td>{{ $item->contest_id }}</td>
 
-                    @if (privilege('admin.group'))
+                    @if (Auth::user()->can('admin.group.update.' . $group->id))
                       <td nowrap>
                         <select onchange="update_contest_order({{ $item->id }}, $(this).val())"
                           style="width:auto;padding:0 1%;text-align:center;text-align-last:center;border-radius: 2px;">
@@ -133,7 +133,7 @@
                       {{ $item->num_members }}
                     </td>
                     <td nowrap>
-                      @if (privilege('admin.group') || $group->creator == Auth::id())
+                      @if (Auth::user()->can('admin.group.update.' . $group->id))
                         <a class="ml-3" href="javascript:"
                           onclick="if(confirm('确定从该群组中删除该竞赛？')){
                             delete_contests_batch([{{ $item->id }}]);
@@ -156,7 +156,7 @@
         <x-group.info :group-id="$group->id" />
 
         {{-- 管理员添加竞赛 --}}
-        @if (privilege('admin.group') || $group->creator == Auth::id())
+        @if (Auth::user()->can('admin.group.update.' . $group->id))
           <div class="my-container bg-white">
             <h5>添加竞赛</h5>
             <hr class="mt-0">
@@ -180,9 +180,10 @@
     function update_contest_order(group_contest_id, shift) {
       $.ajax({
         method: 'patch',
-        url: '{{ route('api.admin.group.update_contest_order', ['??1', '??2']) }}'
-          .replace('??1', group_contest_id)
-          .replace('??2', shift),
+        url: '{{ route('api.admin.group.update_contest_order', ['??1', '??2', '??3']) }}'
+          .replace('??1', '{{$group->id}}')
+          .replace('??2', group_contest_id)
+          .replace('??3', shift),
         success: function(ret) {
           if (ret.ok)
             location.reload()

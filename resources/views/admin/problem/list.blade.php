@@ -125,7 +125,7 @@
                 pids=[id]
             }else{
                 lock_single_call=true
-                $('.cb input[type=checkbox]:checked').each(function () { 
+                $('.cb input[type=checkbox]:checked').each(function () {
                     pids.push($(this).val());
                     if(hidden)
                         switchs_hidden[$(this).val()].off();

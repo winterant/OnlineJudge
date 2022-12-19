@@ -24,7 +24,7 @@
             @endif
             <div class="form-inline float-right ">
               {{-- 管理员附加按钮 --}}
-              @if (privilege('admin.problem.solution'))
+              @if (Auth::user()->can('admin.solution.view'))
                 {{-- 管理员可以筛选查重记录 --}}
                 <select name="sim_rate" class="form-control px-2 mr-3" onchange="this.form.submit();">
                   <option class="form-control" value="0">{{ __('main.Similarity Check') }}</option>
@@ -98,7 +98,7 @@
                     </th>
                     <th nowrap>{{ __('main.Submission Time') }}</th>
                     <th nowrap>
-                      @if (privilege('admin.problem.solution'))
+                      @if (Auth::user()->can('admin.solution.view'))
                         <div class="form-group m-0 p-0 bmd-form-group">
                           <input type="text" class="form-control" placeholder="IP" onchange="this.form.submit();" name="ip" value="{{ $_GET['ip'] ?? '' }}">
                         </div>
@@ -115,7 +115,7 @@
                   @foreach ($solutions as $sol)
                     <tr>
                       <td>
-                        @if (privilege('admin.problem.solution') || Auth::id() == $sol->user_id)
+                        @if (Auth::user()->can('admin.solution.view') || Auth::id() == $sol->user_id)
                           <a href="{{ route('solution', $sol->id) }}" target="_blank">{{ $sol->id }}</a>
                         @else
                           {{ $sol->id }}
@@ -154,7 +154,7 @@
                             ({{ round($sol->pass_rate * 100) }}%)
                           @endif
                         </span>
-                        @if (privilege('admin.problem.solution') && $sol->sim_rate >= 50)
+                        @if (Auth::user()->can('admin.solution.view') && $sol->sim_rate >= 50)
                           <a class="bg-sky px-1 text-black" style="border-radius: 3px" href="{{ route('solution', $sol->sim_sid) }}" target="_blank"
                             title="Your code is {{ $sol->sim_rate }}% similar to solution {{ $sol->sim_sid }}">
                             *{{ $sol->sim_sid }} ({{ $sol->sim_rate }}%)
@@ -164,7 +164,7 @@
                       <td nowrap>{{ $sol->time }}MS</td>
                       <td nowrap>{{ round($sol->memory, 2) }}MB</td>
                       <td nowrap>
-                        @if (privilege('admin.problem.solution') || Auth::id() == $sol->user_id)
+                        @if (Auth::user()->can('admin.solution.view') || Auth::id() == $sol->user_id)
                           <a href="{{ route('solution', $sol->id) }}" target="_blank">{{ config('oj.judge_lang.' . $sol->language) }}</a>
                           /
                           @if (isset($contest))
@@ -178,7 +178,7 @@
                       </td>
                       <td nowrap>{{ $sol->submit_time }}</td>
                       <td nowrap>
-                        @if (privilege('admin.problem.solution'))
+                        @if (Auth::user()->can('admin.solution.view'))
                           {{ $sol->ip }} {{ $sol->ip_loc ?? null }}
                         @else
                           -

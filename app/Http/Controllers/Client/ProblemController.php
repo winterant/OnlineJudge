@@ -56,6 +56,9 @@ class ProblemController extends Controller
 
     public function problem($id)
     {
+        /** @var \App\Models\User */
+        $user = auth()->user();
+
         if (!Auth::check() && !get_setting('guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
             return redirect(route('login'));
         // 在网页展示一个问题
@@ -69,7 +72,7 @@ class ProblemController extends Controller
         if ($problem == null) //问题不存在
             return view('message', ['msg' => trans('sentence.problem_not_found')]);
 
-        if ($problem->hidden && !privilege('admin.problem.list')) // 问题是隐藏的，那么不登录或无权限是不可以看题的
+        if ($problem->hidden && !$user->can('admin.problem.view')) // 问题是隐藏的，那么不登录或无权限是不可以看题的
         {
             $msg = trans('main.Problem') . $id . ': ' . trans('main.Hidden') . '; ';
             return view('message', compact('msg'));
@@ -86,7 +89,7 @@ class ProblemController extends Controller
 
         // 可能指定了solution代码
         $solution = DB::table('solutions')->find($_GET['solution'] ?? -1);
-        if (Auth::check() && $solution && ($solution->user_id == Auth::id()) || privilege('admin.problem.solution'))
+        if (Auth::check() && $solution && ($solution->user_id == Auth::id()) || $user->can('admin.solution.view'))
             $solution_code = $solution->code ?? null;
         else
             $solution_code = null;
@@ -98,13 +101,16 @@ class ProblemController extends Controller
      */
     public function load_discussion(Request $request)
     {
+        /** @var \App\Models\User */
+        $user = auth()->user();
+
         $problem_id = $request->input('problem_id');
         $page = $request->input('page');
         $discussions = DB::table('discussions')
             ->select('id', 'username', 'content', 'top', 'hidden', 'created_at')
             ->where('problem_id', $problem_id)
             ->where('discussion_id', -1)
-            ->when(!privilege('admin.problem.tag'), function ($q) {
+            ->when(!$user->can('admin.problem.view'), function ($q) {
                 return $q->where('hidden', 0);
             })
             ->orderByDesc('top')
@@ -122,7 +128,7 @@ class ProblemController extends Controller
         $son_disc = DB::table('discussions')
             ->select('id', 'discussion_id', 'username', 'reply_username', 'content', 'top', 'hidden', 'created_at')
             ->whereIn('discussion_id', $ids)
-            ->when(!privilege('admin.problem.tag'), function ($q) {
+            ->when(!$user->can('admin.problem.view'), function ($q) {
                 return $q->where('hidden', 0);
             })
             ->orderBy('created_at')
@@ -144,7 +150,10 @@ class ProblemController extends Controller
      */
     public function edit_discussion(Request $request, $pid)
     {
-        if (!privilege('admin.problem.tag')) {
+        /** @var \App\Models\User */
+        $user = auth()->user();
+
+        if (!$user->can('admin.problem.view')) {
             $last_time = DB::table('discussions')
                 ->where('username', Auth::user()->username)
                 ->where('discussion_id', -1)

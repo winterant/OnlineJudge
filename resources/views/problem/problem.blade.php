@@ -86,7 +86,7 @@
           @endif
 
           {{-- 原题连接 --}}
-          @if (isset($contest) && (privilege('admin.problem.list') || $contest->end_time < date('Y-m-d H:i:s')))
+          @if (isset($contest) && (Auth::user()->can('admin.problem.view') || $contest->end_time < date('Y-m-d H:i:s')))
             <span style="font-size: 0.85rem">
               [
               <a href="{{ route('problem', $problem->id) }}" target="_blank">{{ __('main.Problem') }}
@@ -97,7 +97,7 @@
           @endif
 
           {{-- 编辑链接 --}}
-          @if (privilege('admin.problem.edit'))
+          @if (Auth::user()->can('admin.problem.update'))
             <span style="font-size: 0.85rem">
               [ <a href="{{ route('admin.problem.update_withId', $problem->id) }}"
                 target="_blank">{{ __('main.Edit') }}</a> ]

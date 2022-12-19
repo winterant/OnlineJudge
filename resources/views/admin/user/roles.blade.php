@@ -222,7 +222,7 @@
       if (role_id == '' || role_id == null) {
         // 创建角色
         $.ajax({
-          method: 'put',
+          method: 'post',
           url: '{{ route('api.admin.user.create_role') }}',
           data: $(form).serializeJSON(),
           success: function(ret) {
@@ -250,7 +250,7 @@
       }
     }
 
-    // 删除一个角色 todo
+    // 删除一个角色
     function delete_role(id, dom = null) {
       Notiflix.Confirm.Show('删除', '删除该角色将导致持有该角色的用户丢失相应的权限，确定删除该角色？', '确定', '取消', function() {
         $.ajax({
@@ -272,7 +272,7 @@
     function role_add_users(form) {
       let role_id = $('#role-id').html() // 当前操作的角色id
       $.ajax({
-        method: 'put',
+        method: 'post',
         url: '{{ route('api.admin.user.role_add_users', '??') }}'.replace('??', role_id),
         data: $(form).serializeJSON(),
         success: function(ret) {

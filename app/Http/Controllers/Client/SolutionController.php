@@ -13,7 +13,10 @@ class SolutionController extends Controller
 {
     public function solutions(Request $request)
     {
-        if (privilege('admin.problem.solution') && !isset($_GET['sim_rate']))
+        /** @var \App\Models\User */
+        $user = auth()->user();
+
+        if ($user->can('admin.solution.view') && !isset($_GET['sim_rate']))
             $_GET['inc_contest'] = 'on';
 
         //读取提交记录
@@ -27,7 +30,7 @@ class SolutionController extends Controller
             ])
             //普通用户只能查看非竞赛提交
             //关闭“包含竞赛”按钮时只能查看非竞赛提交
-            ->when(!privilege('admin.problem.solution') || !isset($_GET['inc_contest']), function ($q) {
+            ->when(!$user->can('admin.solution.view') || !isset($_GET['inc_contest']), function ($q) {
                 $q->whereIn('s.contest_id', [-1, null]);
             })
 
@@ -68,7 +71,7 @@ class SolutionController extends Controller
         // ======== 处理显示信息 ==========
         foreach ($solutions as $s) {
             // 非管理员，抹掉重要信息
-            if (!privilege('admin.problem.solution')) {
+            if (!$user->can('admin.solution.view')) {
                 $s->nick = null;
                 $s->ip = '-';
                 $s->ip_loc = '';
@@ -93,12 +96,9 @@ class SolutionController extends Controller
                 $solution->contest_id = -1; // 这条solution以前是竞赛中的，但题目现在被从竞赛中删除了
         }
 
-        if (
-            privilege('admin.problem.solution') ||
-            (Auth::id() == $solution->user_id && $solution->submit_time > Auth::user()->created_at)
-        )
-            return view('solution.solution', compact('solution'));
-        return view('message', ['msg' => trans('sentence.Permission denied')]);
+        if ($solution->submit_time < Auth::user()->created_at) // 重新注册的用户不能查看以前的记录
+            return view('message', ['msg' => trans('sentence.Permission denied')]);
+        return view('solution.solution', compact('solution'));
     }
 
     // web 读取出错数据
@@ -111,16 +111,10 @@ class SolutionController extends Controller
             ->first();
         if (!$solution || $solution->wrong_data === null)
             return view('message', ['msg' => '没有记录出错数据']);
-        $allow_get = false;
-        if (privilege('admin.problem.solution')) // 管理员可以直接看
-            $allow_get = true;
-        else if (Auth::id() == $solution->user_id) // 普通用户
-        {
-            if ($solution->end_time && date('Y-m-d H:i:s') < $solution->end_time) // 比赛未结束
-                return view('message', ['msg' => trans('sentence.not_end')]);
-            $allow_get = true;
-        }
-        if ($allow_get) {
+
+        if (Auth::id() == $solution->user_id && $solution->end_time && date('Y-m-d H:i:s') < $solution->end_time) // 普通用户 && 比赛未结束
+            return view('message', ['msg' => trans('sentence.not_end')]);
+        else {
             if ($type == 'in')
                 $text = file_get_contents(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.in'));
             else if (file_exists(testdata_path($solution->problem_id . '/test/' . $solution->wrong_data . '.out')))

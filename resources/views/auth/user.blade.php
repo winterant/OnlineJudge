@@ -13,8 +13,8 @@
             <{{ $user->email }}>
           </span>
         @endif
-        @if (Auth::check() && (privilege('admin.user.edit') || Auth::user()->username == $user->username))
-          <a href="{{ route('user_edit', $user->username) }}" class="pull-right" title="edit">
+        @if (Auth::check() && (Auth::user()->can('admin.user.update') || Auth::user()->username == $user->username))
+          <a href="{{ route('user_edit', $user->username) }}" class="float-right" title="edit">
             <i class="fa fa-edit" aria-hidden="true"></i>
           </a>
         @endif

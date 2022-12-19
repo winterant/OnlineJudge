@@ -22,7 +22,9 @@ class SetGlobalVariable
         // ========================== 获取APItoken ===================
         // 对于已登陆用户的api请求，自动从redis中获取api_token（为保证此操作成功执行，已在Kenel.php中将当前中间件优先级提升至Auth认证之前）
         if (Auth::check() && request()->is('api/*')) {
-            $request['api_token'] = Cache::get('user:' . Auth::id() . ':api_token');
+            /** @var \App\Models\User */
+            $user = Auth::user() ?? auth('api')->user();
+            $request['api_token'] = $user->get_api_token();
         }
 
         // ========================== 设置时区 ========================

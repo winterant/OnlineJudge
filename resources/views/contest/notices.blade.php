@@ -15,7 +15,7 @@
 
           <h4 class="text-center">{{ $contest->id }}. {{ $contest->title }}</h4>
           <hr class="mt-0">
-          @if (privilege('admin.contest'))
+          @if (Auth::user()->can('admin.contest_notice.view'))
             <button class="btn btn-info" data-toggle="modal" data-target="#edit_notice"
               onclick="$('#form_edit_notice')[0].reset();window.editor.setData('')">{{ __('main.New Notice') }}</button>
           @endif
@@ -31,7 +31,7 @@
                 <tr>
                   <td class="text-left">
                     <a href="javascript:" onclick="get_notice({{ $item->id }})" data-toggle="modal" data-target="#myModal">{{ $item->title }}</a>
-                    @if (privilege('admin.contest'))
+                    @if (Auth::user()->can('admin.contest_notice.view'))
                       <div class="float-right">
                         <a href="javascript:" class="text-sky" data-toggle="modal" onclick="edit_notice({{ $item->id }})" data-target="#edit_notice">
                           <i class="fa fa-edit" aria-hidden="true"></i>
@@ -86,7 +86,7 @@
 
         </div>
 
-        @if (privilege('admin.contest'))
+        @if (Auth::user()->can('admin.contest_notice.view'))
           {{--                模态框，管理员编辑公告 --}}
           <div class="modal fade" id="edit_notice">
             <div class="modal-dialog modal-lg">
@@ -131,7 +131,7 @@
   </div>
 
   <script type="text/javascript">
-    @if (privilege('admin.contest'))
+    @if (Auth::user()->can('admin.contest_notice.view'))
       $(function() {
         ClassicEditor.create(document.querySelector('#content'), ck_config).then(editor => {
           window.editor = editor;

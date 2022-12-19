@@ -28,7 +28,9 @@ class CodeEditor extends Component
         // 用户可能请求了已提交的代码
         if (isset($_GET['solution']) && Auth::check()) {
             $solution = DB::table('solutions')->select(['code', 'user_id'])->find($_GET['solution']);
-            if ($solution->user_id == Auth::id() || privilege('admin.problem.solution'))
+            /** @var \App\Models\User */
+            $user = auth()->user() ?? auth('api')->user();
+            if ($solution->user_id == Auth::id() || $user->can('admin.solution.view'))
                 $this->solution_code = $solution->code ?? null;
         }
     }

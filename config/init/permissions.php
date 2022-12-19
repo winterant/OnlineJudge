@@ -15,13 +15,12 @@ return [
     'admin.user.create'         => '生成账号',
     'admin.user.delete'         => '删除任意用户',  // 高危
     'admin.user.reset_password' => '修改任意用户密码', // 敏感操作
-    'admin.user.permission'     => '管理用户权限', // 敏感操作
-    // 群组管理
-    'admin.group'               => '管理群组(🔺增删改查)',
-    'admin.group.view'          => '查看所有群组',
-    'admin.group.update'        => '修改任意群组',
-    'admin.group.create'        => '创建群组',
-    'admin.group.delete'        => '删除任意群组',
+    // 用户权限
+    'admin.user_role'           => '管理用户角色(🔺增删改查)',
+    'admin.user_role.view'      => '查看角色',
+    'admin.user_role.create'    => '创建角色',
+    'admin.user_role.update'    => '修改角色(含增删用户)',
+    'admin.user_role.delete'    => '删除角色',
     // 题目管理
     'admin.problem'             => '管理题目(🔺增删改查)',
     'admin.problem.view'        => '查看所有题目',
@@ -42,6 +41,7 @@ return [
     'admin.problem_data.delete' => '删除任意题目测试数据',
     // 题目导入导出
     'admin.problem_xml'         => '导入导出题目(🔺导入导出)',
+    'admin.problem_xml.view'    => '题目导入导出界面',
     'admin.problem_xml.import'  => '仅导入题目',
     'admin.problem_xml.export'  => '仅导出题目',
     // 判题
@@ -53,12 +53,25 @@ return [
     'admin.contest.update'      => '修改任意竞赛',
     'admin.contest.create'      => '创建竞赛',
     'admin.contest.delete'      => '删除任意竞赛',
+    // 竞赛公告管理
+    'admin.contest_notice'        => '管理竞赛公告(🔺增删改查)',
+    'admin.contest_notice.update' => '修改任意竞赛',
+    'admin.contest_notice.create' => '创建竞赛',
+    'admin.contest_notice.delete' => '删除任意竞赛',
+    // 竞赛气球
+    'admin.contest_balloon'     => '竞赛中派送气球',
     // 竞赛类别
     'admin.contest_cate'        => '管理竞赛类别(🔺增删改查)',
     'admin.contest_cate.view'   => '查看所有竞赛类别',
     'admin.contest_cate.update' => '修改任意竞赛类别',
     'admin.contest_cate.create' => '创建竞赛类别',
     'admin.contest_cate.delete' => '删除任意竞赛类别',
+    // 群组管理
+    'admin.group'               => '管理群组(🔺增删改查)',
+    'admin.group.view'          => '查看所有群组',
+    'admin.group.update'        => '修改任意群组',
+    'admin.group.create'        => '创建群组',
+    'admin.group.delete'        => '删除任意群组',
     // 系统设置
     'admin.setting'             => '管理系统设置(🔺改查)',
     'admin.setting.view'        => '查看所有系统设置',

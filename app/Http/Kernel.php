@@ -44,6 +44,7 @@ class Kernel extends HttpKernel
             // \Illuminate\Routing\Middleware\SubstituteBindings::class,  // 根据请求参数绑定对应数据模型(本项目没使用ORM，故没用)
 
             \App\Http\Middleware\SetGlobalVariable::class,
+            \App\Http\Middleware\CheckUserLocked::class,
             \App\Http\Middleware\CheckFormDecode::class,
         ],
 
@@ -54,6 +55,7 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
 
             \App\Http\Middleware\SetGlobalVariable::class,
+            \App\Http\Middleware\CheckUserLocked::class,
             \App\Http\Middleware\CheckFormDecode::class,
         ],
     ];
@@ -80,7 +82,7 @@ class Kernel extends HttpKernel
 
         // 自定义路由中间件
         'Permission' => \App\Http\Middleware\Permission::class,
-        'CheckUserLocked' => \App\Http\Middleware\CheckUserLocked::class,
+        // 'CheckUserLocked' => \App\Http\Middleware\CheckUserLocked::class,
         'CheckContest' => \App\Http\Middleware\CheckContest::class,
         'CheckGroup' => \App\Http\Middleware\CheckGroup::class,
     ];
@@ -98,6 +100,7 @@ class Kernel extends HttpKernel
         // 业务需要，优先解密cookie以及设定全局配置
         \App\Http\Middleware\EncryptCookies::class,
         \App\Http\Middleware\SetGlobalVariable::class,
+        \App\Http\Middleware\Permission::class, // 权限中间件需要在它之前执行：\App\Http\Middleware\Authenticate::class
 
         // laravel 默认中间件顺序
         \Illuminate\Session\Middleware\StartSession::class,

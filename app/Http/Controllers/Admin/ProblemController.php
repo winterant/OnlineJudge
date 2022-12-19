@@ -83,8 +83,6 @@ class ProblemController extends Controller
             $problem = DB::table('problems')->find($id);  // 提取出要修改的题目
             if ($problem == null)
                 return view('message', ['msg' => '该题目不存在或操作有误!', 'success' => false, 'is_admin' => true]);
-            if (!privilege('admin.problem') && Auth::id() != $problem->creator) //不是管理员 && 也不是出题人 ==> 禁止修改本题
-                return view('message', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem]，不能修改本题!', 'success' => false, 'is_admin' => true]);
 
             $samples = read_problem_data($problem->id);
             //看看有没有特判文件
@@ -101,9 +99,6 @@ class ProblemController extends Controller
             $problem['updated_at'] = date('Y-m-d H:i:s');
             $update_ret = DB::table('problems')
                 ->where('id', $id)
-                ->when(!privilege('admin.problem'), function ($q) {
-                    return $q->where('creator', Auth::id());
-                })
                 ->update($problem);
             if (!$update_ret)
                 return view('message', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem]，不能修改本题!', 'success' => false, 'is_admin' => true]);
@@ -147,9 +142,6 @@ class ProblemController extends Controller
             $hidden = $request->input('hidden');
             return DB::table('problems')
                 ->whereIn('id', $pids)
-                ->when(!privilege('admin'), function ($q) {
-                    return $q->where('creator', Auth::id());
-                })
                 ->update(['hidden' => $hidden]);
         }
         return 0;
@@ -230,12 +222,6 @@ class ProblemController extends Controller
     // ajax
     public function upload_data(Request $request)
     {
-        $problem = DB::table('problems')->find($request->input('pid'));  // 提取出要修改的题目
-        if (!$problem)
-            return -2;  // 题目不存在返回-2
-        if (!$problem || !privilege('admin.problem.data') && Auth::id() != $problem->creator) //不是管理员 && 不是出题人 => 禁止上传数据
-            return -1;  // 权限不足直接返回-1
-
         $pid = $request->input('pid');
         $filename = $request->input('filename');
         $filename = str_replace('../', '', $filename);
@@ -256,13 +242,6 @@ class ProblemController extends Controller
     //ajax
     public function get_data(Request $request)
     {
-        $problem = DB::table('problems')->find($request->input('pid'));  // 提取出要修改的题目
-        if (
-            !$problem ||
-            !privilege('admin.problem.data')
-            && Auth::id() != $problem->creator
-        ) //不是管理员 && 不是出题人 => 禁止查看数据
-            return -1;
         $pid = $request->input('pid');
         $filename = $request->input('filename');
         $filename = str_replace('../', '', $filename);
@@ -274,10 +253,6 @@ class ProblemController extends Controller
     //form
     public function update_data(Request $request)
     {
-        $problem = DB::table('problems')->find($request->input('pid'));  // 提取出要修改的题目
-        if (!$problem || !privilege('admin.problem.data') && Auth::id() != $problem->creator) //不是超级管理员 && 不是出题人 => 禁止修改本题
-            return view('message', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem.data]，不能修改测试数据!', 'success' => false, 'is_admin' => true]);
-
         $pid = $request->input('pid');
         $filename = $request->input('filename');
         $filename = str_replace('../', '', $filename);
@@ -290,10 +265,6 @@ class ProblemController extends Controller
     //ajax
     public function delete_data(Request $request)
     {
-        $problem = DB::table('problems')->find($request->input('pid'));  // 提取出要修改的题目
-        if (!$problem || !privilege('admin.problem.data') && Auth::id() != $problem->creator) //不是管理员 && 不是出题人 => 禁止修改本题
-            return -1;
-
         $pid = $request->input('pid');
         $fnames = $request->input('fnames');
         foreach ($fnames as $filename)
@@ -301,59 +272,6 @@ class ProblemController extends Controller
                 unlink(testdata_path($pid . '/test/' . $filename));
         return 1;
     }
-
-
-    //重判题目|竞赛|提交记录
-    public function rejudge(Request $request)
-    {
-        if ($request->isMethod('get')) {
-            return view('admin.problem.rejudge');
-        }
-        if ($request->isMethod('post')) {
-            $pid = $request->input('pid');
-            $cid = $request->input('cid');
-            $sid = $request->input('sid');
-            $date = $request->input('date');
-
-            if ($sid) // 若指定了“提交记录编号”，则其余项自动忽略
-                $pid = $cid = $date[0] = $date[1] = null;
-            if ($pid || $cid || $sid || ($date[1] && $date[2])) {
-                $num_updated = DB::table('solutions')
-                    ->when($pid, function ($q) use ($pid) {
-                        $q->where('problem_id', $pid);
-                    })
-                    ->when($cid, function ($q) use ($cid) {
-                        $q->where('contest_id', $cid);
-                    })
-                    ->when($sid, function ($q) use ($sid) {
-                        $q->where('id', $sid);
-                    })
-                    ->when($date[1], function ($q) use ($date) {
-                        $q->where('submit_time', '>', str_replace('T', ' ', $date[1]))
-                            ->where('submit_time', '<', str_replace('T', ' ', $date[2]));
-                    })
-                    ->update(['result' => 0]);
-                // 发起判题任务
-                // foreach ($solution_ids as $id)
-                //     dispatch(new Judger($id));
-            }
-
-            // 发生重判后必须重新统计数据，以及更新重判唯一标识符
-            // 任务投入队列，预估等待到判题结束时执行
-            if ($num_updated ?? 0) {
-                dispatch(new GenerateRejudgedCode())->delay($num_updated * 5); // 预估平均每条solution重判需要5秒
-                dispatch(new CorrectSolutionsStatistics())->delay($num_updated * 5);
-            }
-
-            // 返回提交记录页面
-            $query = ['inc_contest' => 'on'];
-            if ($pid) $query['pid'] = $pid;
-            if ($cid) $query['cid'] = $cid;
-            if ($sid) $query['sid'] = $sid;
-            return redirect(route("solutions", $query));
-        }
-    }
-
 
     public function import_export()
     {

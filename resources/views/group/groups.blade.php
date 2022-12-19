@@ -165,7 +165,7 @@
                     {{-- <a class="btn btn-info border" href="{{route('groups.joinin',['id'=>$item->id])}}">申请加入</a> --}}
                   @endif
                 @endif
-                @if (privilege('admin.group'))
+                @if (Auth::user()->can('admin.group.update'))
                   @php($has_btn = true)
                   <a class="btn btn-info border" href="{{ route('admin.group.edit', [$item->id]) }}"
                     target="_blank">编辑</a>

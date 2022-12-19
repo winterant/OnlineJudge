@@ -78,9 +78,6 @@ class ContestController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!privilege('admin') && Auth::id() != DB::table('contests')->where('id', $id)->value('id'))
-            return view('message', ['msg' => '权限不足！您不是这场比赛的创建者', 'success' => false, 'is_admin' => true]);
-
         if ($request->isMethod('get')) {
             $contest = DB::table('contests')->find($id);
             $unames = DB::table('contest_users')
@@ -220,10 +217,7 @@ class ContestController extends Controller
     {
         $cids = $request->input('cids') ?: [];
         $hidden = $request->input('hidden');
-        if (privilege('admin')) //超管，直接进行
-            return DB::table('contests')->whereIn('id', $cids)->update(['hidden' => $hidden]);
-        return DB::table('contests')->whereIn('id', $cids)
-            ->where('user_id', Auth::id())->update(['hidden' => $hidden]);
+        return DB::table('contests')->whereIn('id', $cids)->update(['hidden' => $hidden]);
     }
 
     // 修改榜单的可见性
@@ -231,10 +225,7 @@ class ContestController extends Controller
     {
         $cids = $request->input('cids') ?: [];
         $public_rank = $request->input('public_rank');
-        if (privilege('admin')) //超管，直接进行
-            return DB::table('contests')->whereIn('id', $cids)->update(['public_rank' => $public_rank]);
-        return DB::table('contests')->whereIn('id', $cids)
-            ->where('user_id', Auth::id())->update(['public_rank' => $public_rank]);
+        return DB::table('contests')->whereIn('id', $cids)->update(['public_rank' => $public_rank]);
     }
 
     /*****************************  类别   ***********************************/

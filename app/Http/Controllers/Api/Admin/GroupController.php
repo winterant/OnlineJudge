@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -63,8 +64,6 @@ class GroupController extends Controller
     {
         if (!($group = DB::table('groups')->find($group_id)))
             return view('message', ['msg' => '群组不存在!']);
-        if (!privilege('admin.group') && Auth::id() != $group->creator)
-            return view('message', ['msg' => '您没有管理权限，也不是该群组的创建者!']);
 
         $request_group = $request->input('group');
         $request_group['updated_at'] = date('Y-m-d H:i:s');
@@ -128,11 +127,6 @@ class GroupController extends Controller
                 'ok' => 0,
                 'msg' => '群组不存在！'
             ];
-        if (!privilege('admin.group') && Auth::id() != $group->creator)
-            return [
-                'ok' => 0,
-                'msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!'
-            ];
 
         // 开始处理
         $contests_id = explode(PHP_EOL, $request->input('contests_id'));
@@ -170,8 +164,6 @@ class GroupController extends Controller
     {
         if (!($group = DB::table('groups')->find($group_id)))
             return ['ok' => 0, 'msg' => '群组不存在!'];
-        if (!privilege('admin.group') && Auth::id() != $group->creator)
-            return ['ok' => 0, 'msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!'];
         // 开始处理
         $deleted = DB::table('group_contests')
             ->where('group_id', $group_id)
@@ -191,7 +183,7 @@ class GroupController extends Controller
      *   values:[{},{},...]
      *   value:{},
      * }
-     * 注释：values/二选一，有values则每条记录单独更新，否则一条sql将记录批量更新为value。
+     * 注释：values/value二选一，有values则每条记录单独更新，否则一条sql将记录批量更新为value。
      *
      * response:{
      *   ok:(0|1),
@@ -201,9 +193,12 @@ class GroupController extends Controller
      *   }
      * }
      */
-    public function update_members_batch(Request $request)
+    public function update_members_batch(Request $request, $group_id)
     {
         $ids = $request->input('ids') ?? [];
+        // todo 对group_id进行筛选，不要误改其他group的成员
+
+        // 批处理
         if ($request->has('values'))
             return HomeController::update_batch('group_users', $ids, $request->input('values'));
         else
@@ -233,11 +228,6 @@ class GroupController extends Controller
             return [
                 'ok' => 0,
                 'msg' => '群组不存在！'
-            ];
-        if (!privilege('admin.group') && Auth::id() != $group->creator)
-            return [
-                'ok' => 0,
-                'msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!'
             ];
 
         // 开始处理
@@ -274,8 +264,7 @@ class GroupController extends Controller
     {
         if (!($group = DB::table('groups')->find($group_id)))
             return ['ok' => 0, 'msg' => '群组不存在!'];
-        if (!privilege('admin.group') && Auth::id() != $group->creator)
-            return ['ok' => 0, 'msg' => '您既不是该群组的创建者，也不具备管理权限[admin.group]!'];
+
         // 开始处理
         $deleted = DB::table('group_users')
             ->where('group_id', $group_id)
@@ -294,7 +283,7 @@ class GroupController extends Controller
      *      gc_id: group_contests表的主键id
      *      shift: 对order字段的偏移量，整数范围
      */
-    public function update_contest_order($gc_id, $shift)
+    public function update_contest_order($group_id, $gc_id, $shift)
     {
         // 获取当前竞赛
         $gc = DB::table('group_contests')->find($gc_id);
