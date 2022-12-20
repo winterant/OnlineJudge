@@ -29,7 +29,7 @@ class Permission
         // ================================== 权限不足，返回提示信息 ==================================
         if (request()->is('api/*'))
             return response()->json(['ok' => 0, 'msg' => '权限不足! 您没有该权限:' . $permission]);
-        else if (request()->is('admin/*') && $user->can('admin.view')) // 管理员在后台页面访问时，权限不足
+        else if (request()->is('admin/*') && $user != null && $user->can('admin.view')) // 管理员在后台页面访问时，权限不足
             return response()->view('message', ['msg' => '权限不足！如果您需要访问该页面，请联系管理员索要权限：' . $permission, 'success' => false, 'is_admin' => true]);
         else
             return response()->view('message', ['msg' => '权限不足！']);

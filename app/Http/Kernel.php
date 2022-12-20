@@ -17,11 +17,6 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        \App\Http\Middleware\EncryptCookies::class,
-        \App\Http\Middleware\SetGlobalVariable::class,
-        \App\Http\Middleware\CheckUserLocked::class,
-        \App\Http\Middleware\CheckFormDecode::class,
     ];
 
     /**
@@ -33,13 +28,25 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+
+            \App\Http\Middleware\SetGlobalVariable::class,
+            \App\Http\Middleware\CheckUserLocked::class,
+            \App\Http\Middleware\CheckFormDecode::class,
         ],
 
         'api' => [
             'throttle:60,1',  // 限制请求次数；60,1 表示60次/分钟
+
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \App\Http\Middleware\SetGlobalVariable::class,
+            \App\Http\Middleware\CheckUserLocked::class,
+            \App\Http\Middleware\CheckFormDecode::class,
         ],
     ];
 
@@ -64,7 +71,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         'Permission' => \App\Http\Middleware\Permission::class,
-        // 'CheckUserLocked' => \App\Http\Middleware\CheckUserLocked::class,
         'CheckContest' => \App\Http\Middleware\CheckContest::class,
         'CheckGroup' => \App\Http\Middleware\CheckGroup::class,
     ];
@@ -81,12 +87,13 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         \App\Http\Middleware\EncryptCookies::class,
         \App\Http\Middleware\SetGlobalVariable::class,
-        // \Illuminate\Session\Middleware\StartSession::class,
-        // \Illuminate\Session\Middleware\AuthenticateSession::class,
-        // \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        // \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        // \App\Http\Middleware\Authenticate::class, // auth
-        // \Illuminate\Auth\Middleware\Authorize::class, // can
-        // \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        \App\Http\Middleware\Permission::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        \App\Http\Middleware\Authenticate::class, // auth
+        \Illuminate\Auth\Middleware\Authorize::class, // can
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
     ];
 }

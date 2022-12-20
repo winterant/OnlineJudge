@@ -16,7 +16,7 @@ class SolutionController extends Controller
         /** @var \App\Models\User */
         $user = auth()->user();
 
-        if ($user->can('admin.solution.view') && !isset($_GET['sim_rate']))
+        if ($user != null && $user->can('admin.solution.view') && !isset($_GET['sim_rate']))
             $_GET['inc_contest'] = 'on';
 
         //读取提交记录
@@ -30,7 +30,7 @@ class SolutionController extends Controller
             ])
             //普通用户只能查看非竞赛提交
             //关闭“包含竞赛”按钮时只能查看非竞赛提交
-            ->when(!$user->can('admin.solution.view') || !isset($_GET['inc_contest']), function ($q) {
+            ->when($user == null || !$user->can('admin.solution.view') || !isset($_GET['inc_contest']), function ($q) {
                 $q->whereIn('s.contest_id', [-1, null]);
             })
 
@@ -71,7 +71,7 @@ class SolutionController extends Controller
         // ======== 处理显示信息 ==========
         foreach ($solutions as $s) {
             // 非管理员，抹掉重要信息
-            if (!$user->can('admin.solution.view')) {
+            if ($user == null || !$user->can('admin.solution.view')) {
                 $s->nick = null;
                 $s->ip = '-';
                 $s->ip_loc = '';

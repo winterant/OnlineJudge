@@ -181,6 +181,7 @@
         url: '{{ route('api.admin.settings') }}',
         data: $(form).serialize(),
         success: function(ret) {
+          console.log(ret)
           if (ret.ok)
             Notiflix.Notify.Success("修改成功!");
           else

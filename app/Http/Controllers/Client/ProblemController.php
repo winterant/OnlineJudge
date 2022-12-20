@@ -72,7 +72,7 @@ class ProblemController extends Controller
         if ($problem == null) //问题不存在
             return view('message', ['msg' => trans('sentence.problem_not_found')]);
 
-        if ($problem->hidden && !$user->can('admin.problem.view')) // 问题是隐藏的，那么不登录或无权限是不可以看题的
+        if ($problem->hidden && ($user == null || !$user->can('admin.problem.view'))) // 问题是隐藏的，那么不登录或无权限是不可以看题的
         {
             $msg = trans('main.Problem') . $id . ': ' . trans('main.Hidden') . '; ';
             return view('message', compact('msg'));

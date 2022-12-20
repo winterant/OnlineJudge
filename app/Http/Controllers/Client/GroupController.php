@@ -39,7 +39,7 @@ class GroupController extends Controller
         $groups = DB::table('groups as g')
             ->leftJoin('users as u', 'u.id', '=', 'g.creator')
             ->select('g.*', 'u.username as creator')
-            ->when(!$user->can('admin.group.view'), function ($q) {
+            ->when(!$user || !$user->can('admin.group.view'), function ($q) {
                 return $q->where('hidden', 0);
             })
             ->orderByDesc('id')
