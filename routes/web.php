@@ -119,7 +119,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
         Route::post('user/update-locked', 'Admin\UserController@update_locked')->name('user.update_locked')->middleware('Permission:admin.user.update');
 
         // ====================== privileges；!!!已废弃!!! 未来版本权限改用spatie/laravel-permission）
-        Route::get('user/privileges', 'Admin\UserController@privileges')->name('user.privileges');
+        Route::get('user/privileges', 'Admin\UserController@privileges')->name('user.privileges')->middleware('Permission:admin.user');
         // Route::post('user/privilege/create', 'Admin\UserController@privilege_create')->name('user.privilege_create');
         // Route::post('user/privilege/delete', 'Admin\UserController@privilege_delete')->name('user.privilege_delete');
 

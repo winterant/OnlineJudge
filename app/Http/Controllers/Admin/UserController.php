@@ -39,7 +39,7 @@ class UserController extends Controller
         return view('admin.user.list', compact('users'));
     }
 
-    //权限管理
+    // 已废弃；权限管理
     public function privileges()
     {
         $privileges = DB::table('privileges')
@@ -50,27 +50,27 @@ class UserController extends Controller
         return view('admin.user.privilege', compact('privileges'));
     }
 
-    public function privilege_create(Request $request)
-    {
-        if ($request->isMethod('post')) {
-            $privilege = $request->input('privilege');
-            $privilege['user_id'] = DB::table('users')->where('username', $request->input('username'))->value('id');
-            if ($privilege['user_id'] == null)
-                $msg = '该用户不存在！请先至用户列表确认用户的登录名！';
-            else {
-                $privilege['creator'] = Auth::id();
-                $msg = '成功添加' . DB::table('privileges')->insert($privilege) . '个权限用户';
-            }
-            return back()->with('msg', $msg);
-        }
-        return view('message', ['msg' => '请求有误！', 'success' => false, 'is_admin' => true]);
-    }
+    // public function privilege_create(Request $request)
+    // {
+    //     if ($request->isMethod('post')) {
+    //         $privilege = $request->input('privilege');
+    //         $privilege['user_id'] = DB::table('users')->where('username', $request->input('username'))->value('id');
+    //         if ($privilege['user_id'] == null)
+    //             $msg = '该用户不存在！请先至用户列表确认用户的登录名！';
+    //         else {
+    //             $privilege['creator'] = Auth::id();
+    //             $msg = '成功添加' . DB::table('privileges')->insert($privilege) . '个权限用户';
+    //         }
+    //         return back()->with('msg', $msg);
+    //     }
+    //     return view('message', ['msg' => '请求有误！', 'success' => false, 'is_admin' => true]);
+    // }
 
-    public function privilege_delete(Request $request)
-    {
-        $pids = $request->input('pids') ?: [];
-        return DB::table('privileges')->whereIn('id', $pids)->where('user_id', '!=', 1000)->delete();
-    }
+    // public function privilege_delete(Request $request)
+    // {
+    //     $pids = $request->input('pids') ?: [];
+    //     return DB::table('privileges')->whereIn('id', $pids)->where('user_id', '!=', 1000)->delete();
+    // }
 
     //批量生成账号
     private function trans_data($list_str, $use_end_num = false)
@@ -183,12 +183,12 @@ class UserController extends Controller
         if ($request->isMethod('post')) {
             $username = $request->input('username');
             $password = $request->input('password');
-            $user_id = DB::table('users')->where('username', $username)->value('id');
-            if ($user_id) {
-                if (DB::table('privileges')->where('user_id', $user_id)->where('authority', 'admin')->exists()) {
-                    $msg = "该用户拥有管理员权限(admin)，不能被重置密码。请先取消该账号的权限再尝试！";
+            $user = User::where('username', $username)->first();
+            if ($user) {
+                if ($user->can('admin')) {
+                    $msg = "该用户拥有超级管理员权限(admin)，不能被重置密码。请先取消该账号的权限再尝试！";
                 } else {
-                    DB::table('users')->where('id', $user_id)->update(['password' => Hash::make($password)]);
+                    DB::table('users')->where('id', $user->id)->update(['password' => Hash::make($password)]);
                     $msg = '重置成功！';
                 }
             } else {

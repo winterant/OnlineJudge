@@ -12,9 +12,6 @@ class HomeController extends Controller
 {
     public function home(Request $request)
     {
-        if (!DB::table('privileges')->where('user_id', Auth::id())->exists())
-            abort(404);
-
         //服务器相关信息
         $systemInfo = [
             '网站域名'      => $_SERVER["HTTP_HOST"],
