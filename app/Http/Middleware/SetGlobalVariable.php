@@ -26,9 +26,6 @@ class SetGlobalVariable
             $user = Auth::user();
             $request['api_token'] = $user->get_api_token();
         }
-        $request['check']=Auth::check();
-        $request['api']=request()->is('api/*');
-        // return response()->json($request);
 
         // ========================== 设置时区 ========================
         //date()函数的时区默认UTC，用这个全局中间件来改为上海时间
