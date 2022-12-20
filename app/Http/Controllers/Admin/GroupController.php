@@ -38,6 +38,12 @@ class GroupController extends Controller
     {
         if (!($group = DB::table('groups')->find($group_id)))
             return view('message', ['msg' => '群组不存在!']);
+
+        /** @var \App\Models\User */
+        $user = Auth::user(); // 不是管理员，也不是创建者
+        if (!$user->can('admin.group.update') && $user->id != $group->creator)
+            return view('message', ['msg' => trans('sentence.Permission denied'), 'success' => false, 'is_admin' => true]);
+
         // 提供界面
         $contest_ids = DB::table('group_contests as gc')
             ->join('contests as c', 'c.id', '=', 'gc.contest_id')

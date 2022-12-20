@@ -84,6 +84,13 @@ class SolutionController extends Controller
     public function solution($id)
     {
         $solution = DB::table('solutions')->find($id);
+        /** @var \App\Models\User */
+        $user = auth()->user();
+        if ($solution->user_id != Auth::id() && !$user->can('admin.solution.view')) // 不是拥有者 && 不是管理员
+            return view('message', ['msg' => trans('sentence.Permission denied')]);
+        if ($solution->submit_time < Auth::user()->created_at) // 重新注册的用户不能查看以前的记录
+            return view('message', ['msg' => trans('sentence.Permission denied')]);
+
         $solution->username = DB::table('users')->find($solution->user_id)->username ?? null;
         if ($solution->contest_id > 0) {
             $cp = DB::table('contest_problems')
@@ -96,8 +103,6 @@ class SolutionController extends Controller
                 $solution->contest_id = -1; // 这条solution以前是竞赛中的，但题目现在被从竞赛中删除了
         }
 
-        if ($solution->submit_time < Auth::user()->created_at) // 重新注册的用户不能查看以前的记录
-            return view('message', ['msg' => trans('sentence.Permission denied')]);
         return view('solution.solution', compact('solution'));
     }
 
@@ -106,11 +111,21 @@ class SolutionController extends Controller
     {
         $solution = DB::table('solutions')
             ->leftJoin('contests', 'solutions.contest_id', '=', 'contests.id')  //非必须，left
-            ->select('solutions.problem_id', 'solutions.user_id', 'contests.end_time', 'solutions.wrong_data')
+            ->select([
+                'solutions.problem_id', 'solutions.user_id', 'submit_time',
+                'contests.end_time', 'solutions.wrong_data'
+            ])
             ->where('solutions.id', $id)
             ->first();
         if (!$solution || $solution->wrong_data === null)
             return view('message', ['msg' => '没有记录出错数据']);
+
+        /** @var \App\Models\User */
+        $user = auth()->user();
+        if ($solution->user_id != Auth::id() && !$user->can('admin.solution.view')) // 不是拥有者 && 不是管理员
+            return view('message', ['msg' => trans('sentence.Permission denied')]);
+        if ($solution->submit_time < Auth::user()->created_at) // 重新注册的用户不能查看以前的记录
+            return view('message', ['msg' => trans('sentence.Permission denied')]);
 
         if (Auth::id() == $solution->user_id && $solution->end_time && date('Y-m-d H:i:s') < $solution->end_time) // 普通用户 && 比赛未结束
             return view('message', ['msg' => trans('sentence.not_end')]);

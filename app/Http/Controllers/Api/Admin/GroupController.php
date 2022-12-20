@@ -63,12 +63,11 @@ class GroupController extends Controller
     public function update(Request $request, $group_id)
     {
         if (!($group = DB::table('groups')->find($group_id)))
-            return view('message', ['msg' => '群组不存在!']);
+            return ['ok' => 0, 'msg' => '群组不存在!'];
 
         $request_group = $request->input('group');
         $request_group['updated_at'] = date('Y-m-d H:i:s');
         DB::table('groups')->where('id', $group->id)->update($request_group);
-
         return [
             'ok' => 1,
             'msg' => '修改成功',
@@ -128,6 +127,11 @@ class GroupController extends Controller
                 'msg' => '群组不存在！'
             ];
 
+        /** @var \app\Models\User */
+        $user = Auth::user();
+        if (!$user->has_group_permission($group, 'admin.group.update'))
+            return ['ok' => 0, 'msg' => '权限不足!'];
+
         // 开始处理
         $contests_id = explode(PHP_EOL, $request->input('contests_id'));
         foreach ($contests_id as &$item)
@@ -164,6 +168,12 @@ class GroupController extends Controller
     {
         if (!($group = DB::table('groups')->find($group_id)))
             return ['ok' => 0, 'msg' => '群组不存在!'];
+
+        /** @var \app\Models\User */
+        $user = Auth::user();
+        if (!$user->has_group_permission($group, 'admin.group.update'))
+            return ['ok' => 0, 'msg' => '权限不足!'];
+
         // 开始处理
         $deleted = DB::table('group_contests')
             ->where('group_id', $group_id)
@@ -195,6 +205,14 @@ class GroupController extends Controller
      */
     public function update_members_batch(Request $request, $group_id)
     {
+        if (!($group = DB::table('groups')->find($group_id)))
+            return ['ok' => 0, 'msg' => '群组不存在!'];
+
+        /** @var \app\Models\User */
+        $user = Auth::user();
+        if (!$user->has_group_permission($group, 'admin.group.update'))
+            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
+
         $ids = $request->input('ids') ?? [];
         // todo 对group_id进行筛选，不要误改其他group的成员
 
@@ -229,6 +247,11 @@ class GroupController extends Controller
                 'ok' => 0,
                 'msg' => '群组不存在！'
             ];
+
+        /** @var \app\Models\User */
+        $user = Auth::user();
+        if (!$user->has_group_permission($group, 'admin.group.update'))
+            return ['ok' => 0, 'msg' => '权限不足!'];
 
         // 开始处理
         $unames = explode(PHP_EOL, $request->input('usernames'));
@@ -265,6 +288,11 @@ class GroupController extends Controller
         if (!($group = DB::table('groups')->find($group_id)))
             return ['ok' => 0, 'msg' => '群组不存在!'];
 
+        /** @var \app\Models\User */
+        $user = Auth::user();
+        if (!$user->has_group_permission($group, 'admin.group.update'))
+            return ['ok' => 0, 'msg' => '权限不足!'];
+
         // 开始处理
         $deleted = DB::table('group_users')
             ->where('group_id', $group_id)
@@ -285,6 +313,14 @@ class GroupController extends Controller
      */
     public function update_contest_order($group_id, $gc_id, $shift)
     {
+        if (!($group = DB::table('groups')->find($group_id)))
+            return ['ok' => 0, 'msg' => '群组不存在!'];
+
+        /** @var \app\Models\User */
+        $user = Auth::user();
+        if (!$user->has_group_permission($group, 'admin.group.update'))
+            return ['ok' => 0, 'msg' => '权限不足!'];
+
         // 获取当前竞赛
         $gc = DB::table('group_contests')->find($gc_id);
         if ($shift > 0) {

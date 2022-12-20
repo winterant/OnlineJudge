@@ -57,4 +57,23 @@ class User extends Authenticatable
             return $api_token;
         });
     }
+
+
+    /**
+     * 判断群组管理者
+     */
+    public function has_group_permission($group, $permission = null, $or_identity_manager = true)
+    {
+        if ($permission != null && $this->can($permission)) // 权限
+            return true;
+        if ($group->creator == $this->id) // 创建者
+            return true;
+        if (
+            $or_identity_manager &&
+            DB::table('group_users')->where('group_id', $group->id)
+            ->where('user_id', $this->id)->where('identity', 4)->exists()
+        )
+            return true; // 群组管理员
+        return false;
+    }
 }

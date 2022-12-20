@@ -15,7 +15,7 @@
         <div class="my-container bg-white">
           <h4 class="float-left">{{ __('main.Group') }} {{ __('main.Members') }}</h4>
 
-          @if (Auth::user()->can('admin.group.update.' . $group->id))
+          @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
             <form action="" method="get" class="float-right form-inline">
               <div class="form-inline mx-3">
                 {{ __('main.Identity') }}:
@@ -55,7 +55,7 @@
                     <td nowrap>{{ $u->school }} &nbsp; {{ $u->class }}</td>
                     <td nowrap>{{ $u->nick }}</td>
                     <td nowrap>
-                      @if (Auth::user()->can('admin.group.update.' . $group->id))
+                      @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
                         <div class="form-inline">
                           <select class="border" onchange="update_members_identity([{{ $u->id }}], $(this).val())"
                             style="width:auto; padding:0 1%;text-align:center;text-align-last:center;border-radius: 0.2rem;min-width:6rem">
@@ -76,7 +76,7 @@
                     <td nowrap>{{ $u->created_at }}</td>
                     <td nowrap>
                       <a href="{{ route('group.member', [$group->id, $u->user_id]) }}">{{ __('查看Ta的学习') }}</a>
-                      @if (Auth::user()->can('admin.group.update.' . $group->id))
+                      @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
                         <a class="ml-3" href="javascript:"
                           onclick="if(confirm('该用户被禁用后，无法进入该群组，无法自行恢复。管理员可以从【已禁用】成员页面看到该成员，可以查看其学习信息，可以解除禁用。确定禁用？')){
                             update_members_identity([{{ $u->id }}], 0)
@@ -102,7 +102,7 @@
         {{-- 侧边栏信息 --}}
         <x-group.info :group-id="$group->id" />
         {{-- 管理员添加成员 --}}
-        @if (Auth::user()->can('admin.group.update.' . $group->id))
+        @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
           <div class="my-container bg-white">
             <h5>添加成员</h5>
             <hr class="mt-0">

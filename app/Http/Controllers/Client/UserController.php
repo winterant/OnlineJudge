@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -44,14 +45,19 @@ class UserController extends Controller
 
     public function user_edit(Request $request, $username)
     {
-        $user = DB::table('users')->where('username', $username)->first();
+        $user = User::where('username', $username)->first();
+
         // 提供修改界面
         if ($request->isMethod('get')) {
+            if (Auth::user()->id != $user->id && !$user->can('admin.user.view'))
+                return view('message', ['msg' => trans('sentence.forbid_edit')]);
             return view('auth.user_edit', compact('user'));
         }
 
         // 提交修改资料
         if ($request->isMethod('post')) {
+            if (Auth::user()->id != $user->id && !$user->can('admin.user.update'))
+                return view('message', ['msg' => trans('sentence.forbid_edit')]);
             if (Auth::user()->id == $user->id && $user->revise <= 0)     // 是本人&&没有修改次数
                 return view('message', ['msg' => trans('sentence.forbid_edit')]); // 不允许本人修改
 
@@ -75,13 +81,20 @@ class UserController extends Controller
 
     public function password_reset(Request $request, $username)
     {
+        $user = User::where('username', $username)->first();
+
         // 提供界面
         if ($request->isMethod('get')) {
+            if (Auth::user()->id != $user->id && !$user->can('admin.user.view'))
+                return view('message', ['msg' => trans('sentence.forbid_edit')]);
             return view('auth.password_reset', compact('username'));
         }
 
         // 提交修改
         if ($request->isMethod('post')) {
+            // 鉴权
+            if (Auth::user()->id != $user->id && !$user->can('admin.user.update'))
+                return view('message', ['msg' => trans('sentence.forbid_edit')]);
 
             $user = $request->input('user');
 

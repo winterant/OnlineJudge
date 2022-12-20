@@ -63,12 +63,12 @@ class ProblemController extends Controller
         //提交一条新题目
         if ($request->isMethod('post')) {
             $pid = DB::table('problems')->insertGetId(['creator' => Auth::id()]);
-            return $this->update($request, $pid);
+            return $this->update($request, $pid, true);
         }
     }
 
     //管理员修改题目
-    public function update(Request $request, $id = -1)
+    public function update(Request $request, $id = -1, $create = false)
     {
         //get提供修改界面
         if ($request->isMethod('get')) {
@@ -84,6 +84,12 @@ class ProblemController extends Controller
             if ($problem == null)
                 return view('message', ['msg' => '该题目不存在或操作有误!', 'success' => false, 'is_admin' => true]);
 
+            /** @var \App\Models\User */
+            $user = Auth::user(); // 不是管理员，也不是出题人
+            if (!$create)
+                if (!$user->can('admin.problem.update') && $user->id != $problem->creator)
+                    return view('message', ['msg' => trans('sentence.Permission denied'), 'success' => false, 'is_admin' => true]);
+
             $samples = read_problem_data($problem->id);
             //看看有没有特判文件
             $spj_exist = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));
@@ -92,6 +98,14 @@ class ProblemController extends Controller
 
         // 提交修改好的题目
         if ($request->isMethod('post')) {
+            $problem = DB::table('problems')->find($id);  // 提取出要修改的题目
+            /** @var \App\Models\User */
+            $user = Auth::user(); // 不是管理员，也不是出题人
+            if (!$create)
+                if (!$user->can('admin.problem.update') && $user->id != $problem->creator)
+                    return view('message', ['msg' => trans('sentence.Permission denied'), 'success' => false, 'is_admin' => true]);
+
+            // 读取表单
             $problem = $request->input('problem');
             if (!isset($problem['spj'])) // 默认不特判
                 $problem['spj'] = 0;

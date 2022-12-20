@@ -29,7 +29,7 @@ class CodeEditor extends Component
         if (isset($_GET['solution']) && Auth::check()) {
             $solution = DB::table('solutions')->select(['code', 'user_id'])->find($_GET['solution']);
             /** @var \App\Models\User */
-            $user = auth()->user() ?? auth('api')->user();
+            $user = auth()->user();
             if ($solution->user_id == Auth::id() || $user->can('admin.solution.view'))
                 $this->solution_code = $solution->code ?? null;
         }

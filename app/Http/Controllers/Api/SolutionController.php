@@ -15,7 +15,7 @@ class SolutionController extends Controller
     {
         //======================= 拦截非管理员的频繁提交 =================================
         /** @var \App\Models\User */
-        $user = auth('api')->user();
+        $user = auth()->user();
         if (!$user->can('admin.solution.view')) {
             // 规定时间内，不允许多次提交
             $last_submit_time = DB::table('solutions')
@@ -129,6 +129,14 @@ class SolutionController extends Controller
         if (!$solution)
             return ['ok' => 0, 'msg' => '提交记录不存在'];
 
+        if (!Auth::check())
+            return ['ok' => 0, 'msg' => '请先登陆'];
+
+        /** @var \App\Models\User */
+        $user = Auth::user();
+        if ($user->id != $solution->user_id && !$user->can('admin.problem.solution'))
+            return ['ok' => 0, 'msg' => '您没有权限查看别人的提交记录'];
+
         /*
         // ==================== 读取判题结果 =========================
         $judge0result = json_decode($solution->judge0result, true) ?? [];
@@ -177,7 +185,7 @@ class SolutionController extends Controller
     {
         //============================= 拦截非管理员的频繁提交 =================================
         /** @var \App\Models\User */
-        $user = auth('api')->user();
+        $user = auth()->user();
         if (!$user->can('admin.solution.view')) {
             $last_submit_time = DB::table('solutions')
                 ->where('user_id', Auth::id())
@@ -242,7 +250,7 @@ class SolutionController extends Controller
             'base64_encoded' => 'true',
             'wait' => $wait ? 'true' : 'false'
         ]);
-        $res = send_post($url, $data);
+        $res = null; // send_post($url, $data);
         $res[1] = json_decode($res[1], true);
         $res[1] = $this->decode_base64_judge0_submission($res[1]);
         return $res;

@@ -21,8 +21,8 @@ class CheckUserLocked
     public function handle($request, Closure $next)
     {
         // 检查已登陆用户是否已被拉黑？（不登陆用户将不会被阻止，直接跳过该中间件）
-        if (request()->is('api/*') && auth('api')->check()) {
-            if (auth('api')->user()->locked && auth('api')->user()->username != 'admin')
+        if (request()->is('api/*') && auth()->check()) {
+            if (auth()->user()->locked && auth()->user()->username != 'admin')
                 return response()->json([
                     'ok' => 0,
                     'msg' => '您的账号已被锁定，无法继续使用此api。如需继续使用，请联系管理员解锁。'
