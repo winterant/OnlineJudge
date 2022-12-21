@@ -18,7 +18,7 @@ class CheckGroup
             return abort(404);
 
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
 
         //管理员直接进入
         if ($user->can('admin.group.view'))

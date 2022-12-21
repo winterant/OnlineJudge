@@ -17,7 +17,7 @@ class ContestController extends Controller
     public function contests()
     {
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
 
         //获取类别
         $current_cate = DB::table('contest_cate')->find($_GET['cate'] ?? 0);
@@ -114,7 +114,7 @@ class ContestController extends Controller
     public function home($id)
     {
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
 
         // 拿到竞赛
         $contest = DB::table('contests')
@@ -197,7 +197,7 @@ class ContestController extends Controller
     public function solutions($id)
     {
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
 
         // 拿到竞赛信息
         $contest = DB::table('contests')
@@ -279,7 +279,7 @@ class ContestController extends Controller
 
         //对于隐藏的竞赛，普通用户不能查看榜单
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
         if ($contest->hidden && !$user->can('admin.contest.view')) {
             return view('message', ['msg' => '该竞赛处于隐藏状态，不可查看榜单。']);
         }
@@ -321,7 +321,7 @@ class ContestController extends Controller
 
         // 普通用户在封榜后，应当禁用终榜、实时
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
         if ($rank_time['locked_time']['able'] && !$user->can('admin.contest.view')) {
             $rank_time['final_time']['able'] = false;
             $rank_time['real_time']['able'] = false;

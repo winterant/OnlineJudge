@@ -57,7 +57,7 @@ class ProblemController extends Controller
     public function problem($id)
     {
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!Auth::check() && !get_setting('guest_see_problem')) //未登录&&不允许访客看题 => 请先登录
             return redirect(route('login'));
@@ -89,7 +89,7 @@ class ProblemController extends Controller
 
         // 可能指定了solution代码
         $solution = DB::table('solutions')->find($_GET['solution'] ?? -1);
-        if (Auth::check() && $solution && ($solution->user_id == Auth::id()) || $user->can('admin.solution.view'))
+        if (Auth::check() && $solution && ($solution->user_id == Auth::id() || $user->can('admin.solution.view')))
             $solution_code = $solution->code ?? null;
         else
             $solution_code = null;
@@ -102,7 +102,7 @@ class ProblemController extends Controller
     public function load_discussion(Request $request)
     {
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
 
         $problem_id = $request->input('problem_id');
         $page = $request->input('page');
@@ -151,7 +151,7 @@ class ProblemController extends Controller
     public function edit_discussion(Request $request, $pid)
     {
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!$user->can('admin.problem.view')) {
             $last_time = DB::table('discussions')

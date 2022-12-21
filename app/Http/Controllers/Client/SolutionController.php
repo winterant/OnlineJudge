@@ -14,7 +14,7 @@ class SolutionController extends Controller
     public function solutions(Request $request)
     {
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
 
         if ($user != null && $user->can('admin.solution.view') && !isset($_GET['sim_rate']))
             $_GET['inc_contest'] = 'on';
@@ -85,7 +85,7 @@ class SolutionController extends Controller
     {
         $solution = DB::table('solutions')->find($id);
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
         if ($solution->user_id != Auth::id() && !$user->can('admin.solution.view')) // 不是拥有者 && 不是管理员
             return view('message', ['msg' => trans('sentence.Permission denied')]);
         if ($solution->submit_time < Auth::user()->created_at) // 重新注册的用户不能查看以前的记录
@@ -121,7 +121,7 @@ class SolutionController extends Controller
             return view('message', ['msg' => '没有记录出错数据']);
 
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
         if ($solution->user_id != Auth::id() && !$user->can('admin.solution.view')) // 不是拥有者 && 不是管理员
             return view('message', ['msg' => trans('sentence.Permission denied')]);
         if ($solution->submit_time < Auth::user()->created_at) // 重新注册的用户不能查看以前的记录

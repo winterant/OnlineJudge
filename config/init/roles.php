@@ -10,6 +10,8 @@ return [
         // 题目
         'admin.problem.view',
         'admin.problem.create',
+        // 代码
+        'admin.solution.view',
         // 竞赛
         'admin.contest.view',
         'admin.contest.create',

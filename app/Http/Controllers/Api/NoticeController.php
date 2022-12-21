@@ -12,7 +12,7 @@ class NoticeController extends Controller
     public function get_notice($id)
     {
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
 
         $notice = DB::table('notices')->select(['title', 'content', 'created_at', 'hidden'])->find($id);
         if (!$notice || ($notice->hidden && !$user->can('admin.notice.view')))

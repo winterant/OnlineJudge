@@ -15,7 +15,7 @@ class SolutionController extends Controller
     {
         //======================= 拦截非管理员的频繁提交 =================================
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user->can('admin.solution.view')) {
             // 规定时间内，不允许多次提交
             $last_submit_time = DB::table('solutions')
@@ -185,7 +185,7 @@ class SolutionController extends Controller
     {
         //============================= 拦截非管理员的频繁提交 =================================
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user->can('admin.solution.view')) {
             $last_submit_time = DB::table('solutions')
                 ->where('user_id', Auth::id())

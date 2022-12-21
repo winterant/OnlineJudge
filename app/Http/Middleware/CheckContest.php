@@ -26,7 +26,7 @@ class CheckContest
             return abort(404, '竞赛不存在'); // 竞赛不存在
 
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
 
         //contest管理员直接进入
         if ($user->can('admin.contest.view'))

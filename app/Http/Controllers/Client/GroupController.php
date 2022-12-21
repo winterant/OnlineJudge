@@ -34,7 +34,7 @@ class GroupController extends Controller
     public function allgroups()
     {
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
 
         $groups = DB::table('groups as g')
             ->leftJoin('users as u', 'u.id', '=', 'g.creator')

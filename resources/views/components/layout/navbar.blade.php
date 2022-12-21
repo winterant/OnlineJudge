@@ -110,9 +110,9 @@
             <a class="dropdown-item"
               href="{{ route('password_reset', Auth::user()->username) }}">{{ trans('sentence.Reset Password') }}</a>
 
-            @if (Auth::user()->can('admin.view'))
+            @can('admin.view')
               <a class="dropdown-item" href="{{ route('admin.home') }}">{{ trans('main.Administration') }}</a>
-            @endif
+            @endcan
 
             <div class="dropdown-divider"></div>
 
