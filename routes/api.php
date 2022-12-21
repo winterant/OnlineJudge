@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+'])->group(function () {
+Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+', 'shift' => '^(\-|\+)?[0-9]+'])->group(function () {
     // ========================= CK editor upload image API =========================
     /**
      * Usage Example
@@ -60,6 +60,12 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
     // ============================ admin ==================================
     Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
         // Manage user: route('api.admin.user.*')
+        Route::post('user/create/batch', 'Admin\UserController@create_batch')->name('user.create_batch')->middleware('Permission:admin.user.create');
+        Route::get('user/create/download', 'Admin\UserController@download_created_users_csv')->name('user.download_created_users_csv')->middleware('Permission:admin.user.create');
+        Route::post('user/delete/batch', 'Admin\UserController@delete_batch')->name('user.delete_batch')->middleware('Permission:admin.user.delete');
+        Route::patch('user/reset_password', 'Admin\UserController@reset_password')->name('user.reset_password')->middleware('Permission:admin.user.update');
+
+        // permission and role
         Route::post('/user/roles', 'Admin\UserController@create_role')->name('user.create_role')->middleware('Permission:admin.user_role.create');
         Route::patch('/user/roles/{id}', 'Admin\UserController@update_role')->name('user.update_role')->middleware('Permission:admin.user_role.update');
         Route::delete('/user/roles/{id}', 'Admin\UserController@delete_role')->name('user.delete_role')->middleware('Permission:admin.user_role.delete');
@@ -68,14 +74,14 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::delete('/user/roles/{id}/users/{uid}', 'Admin\UserController@role_delete_user')->name('user.role_delete_user')->middleware('Permission:admin.user_role.update');
 
         // Manage contest: route('api.admin.contest.*')
-        Route::patch('/contests/{id}/order/{shift}', 'Admin\ContestController@update_order')->name('contest.update_order')->middleware('Permission:admin.contest.update')->where(['shift' => '^(\-|\+)?[0-9]+']);
+        Route::patch('/contests/{id}/order/{shift}', 'Admin\ContestController@update_order')->name('contest.update_order')->middleware('Permission:admin.contest.update');
         Route::patch('/contests/{id}/cate_id/{cate_id}', 'Admin\ContestController@update_cate_id')->name('contest.update_cate_id')->middleware('Permission:admin.contest.update');
 
         // Manage contest category: route('api.admin.contest.*')
         Route::post('/contest-categaries', 'Admin\ContestController@add_contest_cate')->name('contest.add_contest_cate')->middleware('Permission:admin.contest_cate.create');
         Route::patch('/contest-categaries/{id}', 'Admin\ContestController@update_contest_cate')->name('contest.update_contest_cate')->middleware('Permission:admin.contest_cate.update');
         Route::delete('/contest-categaries/{id}', 'Admin\ContestController@delete_contest_cate')->name('contest.delete_contest_cate')->middleware('Permission:admin.contest_cate.delete');
-        Route::patch('/contest-categaries/{id}/order/{shift}', 'Admin\ContestController@update_contest_cate_order')->name('contest.update_contest_cate_order')->middleware('Permission:admin.contest_cate.update')->where(['shift' => '^(\-|\+)?[0-9]+']);
+        Route::patch('/contest-categaries/{id}/order/{shift}', 'Admin\ContestController@update_contest_cate_order')->name('contest.update_contest_cate_order')->middleware('Permission:admin.contest_cate.update');
 
         // Manage group: route('api.admin.group.*')
         Route::post('/groups', 'Admin\GroupController@create')->name('group.create')->middleware('Permission:admin.group.create');
@@ -87,7 +93,7 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         // contests
         Route::post('/groups/{id}/contests', 'Admin\GroupController@create_contests')->name('group.create_contests');
         Route::delete('/groups/{id}/contests/batch', 'Admin\GroupController@delete_contests_batch')->name('group.delete_contests_batch');
-        Route::patch('/groups/{id}/group-contests/{gcid}/order/{shift}', 'Admin\GroupController@update_contest_order')->name('group.update_contest_order')->where(['shift' => '^(\-|\+)?[0-9]+']);
+        Route::patch('/groups/{id}/group-contests/{gcid}/order/{shift}', 'Admin\GroupController@update_contest_order')->name('group.update_contest_order');
         // members
         Route::post('/groups/{id}/members', 'Admin\GroupController@create_members')->name('group.create_members');
         Route::delete('/groups/{id}/members/batch', 'Admin\GroupController@delete_members_batch')->name('group.delete_members_batch');

@@ -12,7 +12,7 @@ class UploadController extends Controller
      * 保存request传过来的一块文件，指定保存位置与文件名
      */
     public function upload(Request $request, $save_dir_abspath, $save_name){
-        $temp_save_dir='upload_big_temp/'.(Auth::check()?Auth::id():'guest');
+        $temp_save_dir='temp/upload_big_temp/'.(Auth::check()?Auth::id():'guest');
         if(!Storage::exists($temp_save_dir)){  //临时文件夹
             Storage::makeDirectory($temp_save_dir);
         }

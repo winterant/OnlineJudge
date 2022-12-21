@@ -146,3 +146,34 @@ function index2ch(int $index)
 //     }
 //     return $content;
 // }
+
+
+/**
+ * 给定文本字符串，按行进行分割。对于每一行，有一些特殊规则：
+ * 1、若存在减号，且前后均为正数，如16-20，则表示连续数列，解析为16、17、18、19、20这5个数字字符串
+ * 2、若存在空白，且空格后是数字，如xxx 3，则表示复制，解析为xxx、xxx、xxx这3个相等字符串
+ */
+function decode_str_to_array($text, $special_rule = true)
+{
+    if ($text == null)
+        return [];
+
+    $rows = explode(PHP_EOL, $text); // 按行分割
+    $data = [];
+    foreach ($rows as $row) {
+        $row = trim($row);
+        if ($special_rule && preg_match('/^\d+\s*-\s*\d+$/', $row)) { // 特殊规则1
+            $values = preg_split('/\s*-\s*/', $row);
+            $range = array_map(function ($x) {
+                return (string)$x;
+            }, range($values[0], $values[1]));
+            $data = array_merge($data, $range);
+        } else if ($special_rule && preg_match('/^\S+\s+\d+$/', $row, $arr)) { // 特殊规则2
+            $values = preg_split('/\s+/', $row);
+            $data = array_merge($data, array_fill(0, $values[1], $values[0]));
+        } else { // 无规则
+            $data[] = $row;
+        }
+    }
+    return $data;
+}

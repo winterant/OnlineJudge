@@ -33,7 +33,8 @@ function disabledSubmitButton(dom, disabledText, second = 10) {
         second--;
         return f;
     }
-    var intervalObj = setInterval(f(), 1000);
+    var intervalObj = setInterval(f(), 1000)
+    return intervalObj
 }
 
 // ====================== 将指定dom的文本复制到系统剪贴板 ====================

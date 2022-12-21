@@ -520,14 +520,14 @@ class ProblemController extends Controller
             $root->appendChild($item);
         }
         $dom->appendChild($root);
-        $dir = "problem_export_temp/";
+        $dir = "temp/problem_export_temp/";
         if (!Storage::exists($dir . Auth::id()))
             Storage::makeDirectory($dir . Auth::id());
-        foreach (Storage::allFiles($dir) as $fpath) {  //删除24小时以上的文件
-            if (time() - filemtime(storage_path('app/' . $fpath)) > 3600 * 24)
+        foreach (Storage::allFiles($dir) as $fpath) {  //删除3*24小时以上的文件
+            if (time() - Storage::lastModified($fpath) > 3600 * 24 * 3)
                 Storage::delete($fpath);
         }
-        //        $filename=str_replace("\r",',',str_replace("\n",',',str_replace("\r\n",',',$problem_ids))).".xml";
+        //  $filename=str_replace("\r",',',str_replace("\n",',',str_replace("\r\n",',',$problem_ids))).".xml";
         $filename = str_replace(["\r\n", "\r", "\n"], ',', $problem_ids) . ".xml";
         $dom->save(storage_path("app/" . $dir . Auth::id() . '/' . $filename));
         return Storage::download($dir . Auth::id() . '/' . $filename);

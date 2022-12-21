@@ -112,9 +112,8 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
 
         // ===================== Manage user
         Route::get('users', 'Admin\UserController@list')->name('user.list')->middleware('Permission:admin.user.view');
-        Route::any('user/create', 'Admin\UserController@create')->name('user.create')->middleware('Permission:admin.user.create');
-        Route::any('user/reset_pwd', 'Admin\UserController@reset_pwd')->name('user.reset_pwd')->middleware('Permission:admin.user.update');
-        Route::post('user/delete', 'Admin\UserController@delete')->name('user.delete')->middleware('Permission:admin.user.delete');
+        Route::get('user/create', 'Admin\UserController@create')->name('user.create')->middleware('Permission:admin.user.create');
+        Route::get('user/reset_password', 'Admin\UserController@reset_password')->name('user.reset_password')->middleware('Permission:admin.user.update');
         Route::post('user/update-revise', 'Admin\UserController@update_revise')->name('user.update_revise')->middleware('Permission:admin.user.update');
         Route::post('user/update-locked', 'Admin\UserController@update_locked')->name('user.update_locked')->middleware('Permission:admin.user.update');
 

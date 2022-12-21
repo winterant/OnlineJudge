@@ -167,9 +167,8 @@
                     $('.cb input[type=checkbox]:checked').each(function () { uids.push($(this).val()); });
                 }
                 $.post(
-                    '{{route("admin.user.delete")}}',
+                    '{{route("api.admin.user.delete_batch")}}',
                     {
-                        '_token':'{{csrf_token()}}',
                         'uids':uids,
                     },
                     function (ret) {

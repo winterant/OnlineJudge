@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -72,86 +73,28 @@ class UserController extends Controller
     //     return DB::table('privileges')->whereIn('id', $pids)->where('user_id', '!=', 1000)->delete();
     // }
 
-    //批量生成账号
-    private function trans_data($list_str, $use_end_num = false)
-    {
-        $list = explode(PHP_EOL, $list_str); //按行分割
-        foreach ($list as &$item) {
-            if ($use_end_num && preg_match('/\d+$/', $item, $arr)) {
-                $c = intval($arr[0]);
-                $item = trim(substr($item, 0, -strlen($arr[0])));
-            } else $c = 1;
-            while ($c--) $ret[] = $item;
-        }
-        return $ret;
-    }
-    private function make_passwd($len)
-    {
-        return substr(str_shuffle("ABCDMNXYZ"), 0, 4) . substr(str_shuffle("0123456789ABCDEF"), 0, 4);
-    }
+    /**
+     * 显示账号生成页面，含历史数据
+     */
     public function create(Request $request)
     {
-        if ($request->isMethod('get')) {
-            return view('admin.user.create');
-        }
-        if ($request->isMethod('post')) {
-            set_time_limit(60);
-            $data = $request->input('data');
-
-            $usernames = [];
-            if ($data['stu_id'] != null) {
-                $temp = explode(PHP_EOL, $data['stu_id']); //将要注册的账号名收集到$usernames中
-                foreach ($temp as $u)
-                    if (strlen(trim($u)) > 0)
-                        $usernames[] = trim($u);
-            } else {
-                $data['prefix'] = trim($data['prefix']);
-                if (intval($data['begin']) == intval($data['end'])) // 单个用户，则直接生成名字
-                    $usernames[] = $data['prefix'];
-                else
-                    for ($i = intval($data['begin']); $i <= intval($data['end']); $i++) // 多个用户，按顺序生成
-                        $usernames[] = sprintf("%s%03d", $data['prefix'], $i);
-            }
-
-            if (count($usernames) > 1000)
-                return view('message', ['msg' => '每次生成的用户数量不能超过1000，请分批生成！', 'success' => false, 'is_admin' => true]);
-
-            if (isset($data['check_exist'])) {
-                //设置了安全检查，发现已存在用户时，告诉管理员，而不是直接删除
-                $exist_users = DB::table('users')->whereIn('username', $usernames)->pluck('username');
-                if (count($exist_users) > 0)
-                    return back()->withInput()->with(['exist_users' => $exist_users]);
-            }
-
-            $nick = $this->trans_data($data['nick']);
-            $email = $this->trans_data($data['email']);
-            $school = $this->trans_data($data['school'], true);
-            $class = $this->trans_data($data['class'], true);
-            foreach ($usernames as $i => $username) {
-                $password = $this->make_passwd(8);
-                $user = [
-                    'username' => trim($username),
-                    'password' => Hash::make($password),
-                    'revise' => trim(isset($data['revise']) ? 1 : 0),
-                    'nick' => isset($nick[$i]) ? $nick[$i] : '',
-                    'email' => isset($email[$i]) ? $email[$i] : '',
-                    'school' => isset($school[$i]) ? $school[$i] : '',
-                    'class' => isset($class[$i]) ? $class[$i] : '',
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s')
+        $files = Storage::allFiles('temp/created_users');
+        $files = array_reverse($files);
+        $created_csv = [];
+        foreach ($files as $path) {
+            if (time() - Storage::lastModified($path) > 3600 * 24 * 30) // 超过30天的数据删除掉
+                Storage::delete($path);
+            else {
+                $info = pathinfo($path);
+                preg_match('/\[(\S+?)\]/', $info['filename'], $matches);
+                $created_csv[] = [
+                    'name' => $info['basename'],
+                    'creator' => $matches[1] ?? '',
+                    'created_at' => date('Y-m-d H:i:s', Storage::lastModified($path))
                 ];
-                DB::table('users')->updateOrInsert(['username' => $username], $user);
-                $user['password'] = $password;
-                $users[] = $user;
             }
-            return view('admin.user.create', compact('users'));
         }
-    }
-
-    public function delete(Request $request)
-    {
-        $uids = $request->input('uids') ?: [];
-        DB::table('users')->whereIn('id', $uids)->where('id', '!=', 1000)->delete();
+        return view('admin.user.create', compact('created_csv'));
     }
 
     public function update_revise(Request $request)
@@ -175,27 +118,9 @@ class UserController extends Controller
     }
 
     //重置密码
-    public function reset_pwd(Request $request)
+    public function reset_password(Request $request)
     {
-        if ($request->isMethod('get')) {
-            return view('admin.user.reset_pwd');
-        }
-        if ($request->isMethod('post')) {
-            $username = $request->input('username');
-            $password = $request->input('password');
-            $user = User::where('username', $username)->first();
-            if ($user) {
-                if ($user->can('admin')) {
-                    $msg = "该用户拥有超级管理员权限(admin)，不能被重置密码。请先取消该账号的权限再尝试！";
-                } else {
-                    DB::table('users')->where('id', $user->id)->update(['password' => Hash::make($password)]);
-                    $msg = '重置成功！';
-                }
-            } else {
-                $msg = '该账号不存在！';
-            }
-            return view('admin.user.reset_pwd', compact('msg'));
-        }
+        return view('admin.user.reset_password');
     }
 
     public function roles()

@@ -188,8 +188,8 @@
               </li>
 
               <li class="nav-item">
-                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.user.reset_pwd') active @endif"
-                  href="{{ route('admin.user.reset_pwd') }}">
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.user.reset_password') active @endif"
+                  href="{{ route('admin.user.reset_password') }}">
                   <i class="fa fa-refresh" aria-hidden="true"></i>账号密码重置</a>
               </li>
 
