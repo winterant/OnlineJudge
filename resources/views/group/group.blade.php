@@ -49,7 +49,7 @@
                     <th>{{ __('main.Order') }}</th>
                   @endif
                   <th nowrap>{{ trans('main.Title') }}</th>
-                  <th nowrap>{{ __('main.Access') }}</th>
+                  <th nowrap>{{ __('main.ranking_rule') }}</th>
                   {{-- <th nowrap>{{ __('main.ranking_rule') }}</th> --}}
                   <th nowrap>{{ __('main.Time') }}</th>
                   <th nowrap>{{ __('main.Contestants') }}</th>
