@@ -69,7 +69,7 @@ class LineChart extends Component
                         ->select([
                             DB::raw('count(*) as submitted'),
                             DB::raw('count(result=4 or null) as accepted'),
-                            DB::raw('count(distinct (problem_id * 2 + (result=4 or 0))) as solved'),
+                            DB::raw('count(distinct case when result=4 then problem_id else null end) as solved'),
                         ])
                         ->when($userId !== null, function ($q) use ($userId) {
                             return $q->where('user_id', $userId);
