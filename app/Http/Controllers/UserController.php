@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Client;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -23,12 +23,13 @@ class UserController extends Controller
 
         $problems_solved = Cache::remember(
             sprintf("user:%d:soved_problems:ids", $user->id),
-            30, // 缓存
+            30, // 缓存一会儿，可以防止爬虫耗尽资源
             function () use ($user) {
                 return DB::table('solutions')
                     ->where('user_id', $user->id)
                     ->where('result', 4)
                     ->distinct()
+                    ->orderBy('problem_id')
                     ->pluck('problem_id');
             }
         );

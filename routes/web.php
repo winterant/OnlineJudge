@@ -21,80 +21,80 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
 
 
     // ================================ 主页 ================================
-    Route::get('/', 'Client\HomeController@home')->name('home');
-    Route::get('/home', 'Client\HomeController@home');
+    Route::get('/', 'HomeController@home')->name('home');
+    Route::get('/home', 'HomeController@home');
 
 
     // ================================ 修改语言 ================================
-    Route::get('/change_language/{lang}', 'Client\UserController@change_language')->name('change_language');
+    Route::get('/change_language/{lang}', 'UserController@change_language')->name('change_language');
 
 
     // ================================ 提交记录 ================================
-    Route::get('/solutions', 'Client\SolutionController@solutions')->name('solutions');
-    Route::get('/solutions/{id}', 'Client\SolutionController@solution')->name('solution');
-    Route::get('/solutions/{id}/wrong_data/{type}', 'Client\SolutionController@solution_wrong_data')->name('solution_wrong_data')->where(['type' => '(in|out)']);
+    Route::get('/solutions', 'SolutionController@solutions')->name('solutions');
+    Route::get('/solutions/{id}', 'SolutionController@solution')->name('solution');
+    Route::get('/solutions/{id}/wrong_data/{type}', 'SolutionController@solution_wrong_data')->name('solution_wrong_data')->where(['type' => '(in|out)']);
 
 
     // ================================ 题目 ================================
-    Route::get('/problems', 'Client\ProblemController@problems')->name('problems');
-    Route::get('/problems/{id}', 'Client\ProblemController@problem')->name('problem');
+    Route::get('/problems', 'ProblemController@problems')->name('problems');
+    Route::get('/problems/{id}', 'ProblemController@problem')->name('problem');
 
 
     // =============================== 题目 > 讨论板模块 ======================
     // 已废弃
     // todo: 开发计划：取消讨论版功能，改为网站全局文章功能，每篇文章可以是题解、博文、知识讲解等。）
-    Route::post('/load_discussion', 'Client\ProblemController@load_discussion')->name('load_discussion');
+    Route::post('/load_discussion', 'ProblemController@load_discussion')->name('load_discussion');
     Route::middleware(['auth'])->group(function () {
-        Route::post('/edit_discussion/{pid}', 'Client\ProblemController@edit_discussion')->name('edit_discussion');
+        Route::post('/edit_discussion/{pid}', 'ProblemController@edit_discussion')->name('edit_discussion');
     });
     // 已废弃的功能
     Route::middleware(['auth', 'Permission:admin.problem'])->group(function () {
-        Route::post('/delete_discussion', 'Client\ProblemController@delete_discussion')->name('delete_discussion');
-        Route::post('/top_discussion', 'Client\ProblemController@top_discussion')->name('top_discussion');
-        Route::post('/hidden_discussion', 'Client\ProblemController@hidden_discussion')->name('hidden_discussion');
+        Route::post('/delete_discussion', 'ProblemController@delete_discussion')->name('delete_discussion');
+        Route::post('/top_discussion', 'ProblemController@top_discussion')->name('top_discussion');
+        Route::post('/hidden_discussion', 'ProblemController@hidden_discussion')->name('hidden_discussion');
     });
 
 
     // ================================ 竞赛 ================================
     // 竞赛列表
-    Route::get('contests', 'Client\ContestController@contests')->name('contests');
-    Route::get('contests/{id}/rank', 'Client\ContestController@rank')->name('contest.rank'); // 公开榜单
-    Route::any('contests/{id}/password', 'Client\ContestController@password')->middleware(['auth'])->name('contest.password');
+    Route::get('contests', 'ContestController@contests')->name('contests');
+    Route::get('contests/{id}/rank', 'ContestController@rank')->name('contest.rank'); // 公开榜单
+    Route::any('contests/{id}/password', 'ContestController@password')->middleware(['auth'])->name('contest.password');
     // 竞赛详情
     Route::middleware(['auth', 'CheckContest'])->group(function () {
-        Route::get('contests/{id}', 'Client\ContestController@home')->name('contest.home');
-        Route::get('contests/{id}/problems/{index}', 'Client\ContestController@problem')->name('contest.problem');
-        Route::get('contests/{id}/solutions', 'Client\ContestController@solutions')->name('contest.solutions');
-        Route::get('contests/{id}/notices', 'Client\ContestController@notices')->name('contest.notices'); //公告
-        Route::get('contests/{id}/private_rank', 'Client\ContestController@rank')->name('contest.private_rank'); // 私有榜单
+        Route::get('contests/{id}', 'ContestController@home')->name('contest.home');
+        Route::get('contests/{id}/problems/{index}', 'ContestController@problem')->name('contest.problem');
+        Route::get('contests/{id}/solutions', 'ContestController@solutions')->name('contest.solutions');
+        Route::get('contests/{id}/notices', 'ContestController@notices')->name('contest.notices'); //公告
+        Route::get('contests/{id}/private_rank', 'ContestController@rank')->name('contest.private_rank'); // 私有榜单
         Route::middleware('Permission:admin.contest_balloon')->group(function () {
-            Route::get('contests/{id}/balloons', 'Client\ContestController@balloons')->name('contest.balloons');
-            Route::post('contests/{id}/deliver_ball/{bid}', 'Client\ContestController@deliver_ball')->name('contest.deliver_ball');
+            Route::get('contests/{id}/balloons', 'ContestController@balloons')->name('contest.balloons');
+            Route::post('contests/{id}/deliver_ball/{bid}', 'ContestController@deliver_ball')->name('contest.deliver_ball');
         });
         // todo 获取公告 需要定制api
-        Route::post('contests/{id}/get_notice', 'Client\ContestController@get_notice')->name('contest.get_notice'); //获取一条公告
+        Route::post('contests/{id}/get_notice', 'ContestController@get_notice')->name('contest.get_notice'); //获取一条公告
         // todo: 添加公告、删除公告 需要定制api
-        Route::post('contests/{id}/edit_notice', 'Client\ContestController@edit_notice')->name('contest.edit_notice')->middleware('Permission:admin.contest_notice.update'); //编辑/添加一条公告
-        Route::post('contests/{id}/delete_notice/{nid}', 'Client\ContestController@delete_notice')->name('contest.delete_notice')->middleware('Permission:admin.contest_notice.delete'); //删除一条公告
+        Route::post('contests/{id}/edit_notice', 'ContestController@edit_notice')->name('contest.edit_notice')->middleware('Permission:admin.contest_notice.update'); //编辑/添加一条公告
+        Route::post('contests/{id}/delete_notice/{nid}', 'ContestController@delete_notice')->name('contest.delete_notice')->middleware('Permission:admin.contest_notice.delete'); //删除一条公告
     });
 
 
     // ================================ groups 群组/团队 ================================
     // 群组列表
-    Route::get('my-groups', 'Client\GroupController@mygroups')->name('groups.my');
-    Route::get('groups', 'Client\GroupController@allgroups')->name('groups');
+    Route::get('my-groups', 'GroupController@mygroups')->name('groups.my');
+    Route::get('groups', 'GroupController@allgroups')->name('groups');
     // 具体的群组
     Route::middleware(['auth', 'CheckGroup'])->group(function () {
-        Route::get('groups/{id}', 'Client\GroupController@group')->name('group');
-        Route::get('groups/{id}/members', 'Client\GroupController@members')->name('group.members');
-        Route::get('groups/{id}/members/{uid}', 'Client\GroupController@member')->name('group.member');
+        Route::get('groups/{id}', 'GroupController@group')->name('group');
+        Route::get('groups/{id}/members', 'GroupController@members')->name('group.members');
+        Route::get('groups/{id}/members/{uid}', 'GroupController@member')->name('group.member');
     });
 
     // ================================ 用户（users） ================================
-    Route::get('/standings', 'Client\UserController@standings')->name('standings');
-    Route::get('/users/{username}', 'Client\UserController@user')->name('user');
-    Route::any('/users/{username}/edit', 'Client\UserController@user_edit')->name('user_edit');
-    Route::any('/users/{username}/reset-password', 'Client\UserController@password_reset')->name('password_reset');
+    Route::get('/standings', 'UserController@standings')->name('standings');
+    Route::get('/users/{username}', 'UserController@user')->name('user');
+    Route::any('/users/{username}/edit', 'UserController@user_edit')->name('user_edit');
+    Route::any('/users/{username}/reset-password', 'UserController@password_reset')->name('password_reset');
 
 
     // ================================ Administration 后台管理 ================================

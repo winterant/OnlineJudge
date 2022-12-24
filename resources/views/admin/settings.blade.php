@@ -33,7 +33,7 @@
           <input type="text" name="marquee_notice_id" value="{{ get_setting('marquee_notice_id') }}"
             class="form-control" autocomplete="off" placeholder="请填写一个公告编号，对应公告将在前台页面顶端滚动显示；不填则无滚动公告">
         </div>
-        <div class="form-inline">
+        <div class="form-inline mt-2">
           <div class="input-group-prepend">
             <span class="input-group-text">前台语言：</span>
           </div>

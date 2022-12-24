@@ -2,21 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Client\StatusController;
-use App\Http\Controllers\Controller;
 use DOMDocument;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\UploadController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\Console\Input\Input;
 
-use App\Http\Controllers\UploadController;
-use App\Jobs\CorrectSolutionsStatistics;
-use App\Jobs\GenerateRejudgedCode;
-use App\Jobs\Judger;
-
-use const http\Client\Curl\AUTH_ANY;
 
 class ProblemController extends Controller
 {
