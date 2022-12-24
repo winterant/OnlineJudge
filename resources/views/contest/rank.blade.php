@@ -5,7 +5,8 @@
 @section('content')
 
   <style>
-    .table td,th {
+    .table td,
+    th {
       vertical-align: middle;
       text-align: center;
     }
@@ -167,13 +168,12 @@
                               @if (isset($user[$index]['solved_time']))
                                 {{ sprintf('%02d:%02d:%02d', $user[$index]['solved_time'] / 3600, ($user[$index]['solved_time'] % 3600) / 60, $user[$index]['solved_time'] % 60) }}
                               @endif
+                              <span class="text-nowrap" style="font-size: 0.7rem; color:gray">
+                                {{ $user[$index]['tries'] . ' ' . trans_choice('main.tries', $user[$index]['tries']) }}
+                              </span>
                             @else
                               {{ $user[$index]['score'] }}
                             @endif
-                            {{-- <br> --}}
-                            <span class="text-nowrap" style="font-size: 0.7rem; color:gray">
-                              {{ $user[$index]['tries'] . ' ' . trans_choice('main.tries', $user[$index]['tries']) }}
-                            </span>
                           </td>
                         @else
                           <td class="border"></td>
