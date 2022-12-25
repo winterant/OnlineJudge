@@ -50,7 +50,9 @@ class UserController extends Controller
 
         // 提供修改界面
         if ($request->isMethod('get')) {
-            if (Auth::user()->id != $user->id && !$user->can('admin.user.view'))
+            /** @var User */
+            $u = Auth::user();
+            if (Auth::user()->id != $user->id && $u->cant('admin.user.view'))
                 return view('message', ['msg' => trans('sentence.forbid_edit')]);
             return view('auth.user_edit', compact('user'));
         }
