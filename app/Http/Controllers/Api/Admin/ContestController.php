@@ -83,7 +83,7 @@ class ContestController extends Controller
      * 输入：
      *      values: 数组，要修改的字段
      */
-    public function update_contest_cate($id, Request $request)
+    public function update_contest_cate(Request $request, $id)
     {
         $values = $request->input('values');
         if (isset($values['parent_id'])) //拦截非法的父级类别修改
@@ -117,20 +117,22 @@ class ContestController extends Controller
 
         // 开始执行修改事务
         $cate = DB::table('contest_cate')->find($id);
-        DB::transaction(function () use ($cate, $values) {
-            // 修改了类别，则一定要矫正order字段
-            if (isset($values['parent_id']) && $values['parent_id'] != $cate->parent_id) {
-                $count_updated = DB::table('contest_cate')
-                    ->where('parent_id', $cate->parent_id)
-                    ->where('order', '>', $cate->order)
-                    ->decrement('order');
-                // 在新类别中order默认处于末尾
-                $values['order'] = DB::table('contest_cate')
-                    ->where('parent_id', $values['parent_id'])->max('order') + 1;
-            }
-            // 执行修改
-            DB::table('contest_cate')->where('id', $cate->id)->update($values);
-        });
+
+        // 如果父类别发生了改变，则一定要矫正order字段
+        if (isset($values['parent_id']) && $values['parent_id'] != $cate->parent_id) {
+            DBHelper::shift_order('contest_cate', ['parent_id' => $cate->parent_id], $cate->order, PHP_INT_MAX);
+            // 在新类别中order应当处于末尾
+            $values['order'] = DB::raw(
+                "(select temp.`next_order`
+                    from (
+                        select max(cc.`order`)+1 as next_order
+                        from `contest_cate` as cc
+                        where cc.`parent_id`=" . $values['parent_id'] . "
+                        ) temp)"
+            );
+        }
+        // 执行修改
+        DB::table('contest_cate')->where('id', $cate->id)->update($values);
 
         return [
             'ok' => 1,

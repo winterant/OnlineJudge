@@ -107,7 +107,7 @@
                       @if ($item->parent_id > 0)
                         ----- 变更为一级类别 -----
                       @else
-                        ----- 无 -----
+                        ----- 一级类别 -----
                       @endif
                     </option>
                     @foreach ($categories as $father)
@@ -163,8 +163,10 @@
           'values': values
         },
         success: function(ret) {
-          if (ret.ok)
+          if (ret.ok){
             Notiflix.Notify.Success(ret.msg);
+            location.reload()
+          }
           else
             Notiflix.Notify.Failure(ret.msg);
         }
