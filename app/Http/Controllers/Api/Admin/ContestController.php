@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\DBHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -45,42 +46,15 @@ class ContestController extends Controller
     {
         // 获取当前竞赛
         $contest = DB::table('contests')->find($id);
-        if ($shift > 0) {
-            // order增加，上移
-            $count_updated = 0;
-            DB::transaction(function () use ($contest, $shift) {
-                $count_updated = DB::table('contests')
-                    ->where('cate_id', $contest->cate_id)
-                    ->whereBetween('order', [$contest->order + 1, $contest->order + $shift])
-                    ->decrement('order');
-                DB::table('contests')
-                    ->where('id', $contest->id)
-                    ->increment('order', $count_updated);
-            });
+        $updated = DBHelper::shift_order('contests', ['cate_id' => $contest->cate_id], $contest->order, $shift);
+        if ($updated > 0)
             return [
                 'ok' => 1,
-                'msg' => sprintf('竞赛[%s]已向上移动%d项', $contest->title, $count_updated)
+                'msg' => sprintf('%d items have been affected.', $updated)
             ];
-        } else {
-            // order降低，下移
-            $count_updated = 0;
-            DB::transaction(function () use ($contest, $shift) {
-                $count_updated = DB::table('contests')
-                    ->where('cate_id', $contest->cate_id)
-                    ->whereBetween('order', [$contest->order + $shift, $contest->order - 1])
-                    ->increment('order');
-                DB::table('contests')
-                    ->where('id', $contest->id)
-                    ->decrement('order', $count_updated);
-            });
-            return [
-                'ok' => 1,
-                'msg' => sprintf('竞赛[%s]已向下移动%d项', $contest->title, $count_updated)
-            ];
-        }
         return [
             'ok' => 0,
-            'msg' => '移动失败'
+            'msg' => 'Nothing has been affected.'
         ];
     }
 
@@ -198,42 +172,15 @@ class ContestController extends Controller
     {
         // 获取当前类别
         $cate = DB::table('contest_cate')->find($id);
-        if ($shift > 0) {
-            // order增加，下移
-            $count_updated = 0;
-            DB::transaction(function () use ($cate, $shift) {
-                $count_updated = DB::table('contest_cate')
-                    ->where('parent_id', $cate->parent_id)
-                    ->whereBetween('order', [$cate->order + 1, $cate->order + $shift])
-                    ->decrement('order');
-                DB::table('contest_cate')
-                    ->where('id', $cate->id)
-                    ->increment('order', $count_updated);
-            });
+        $updated = DBHelper::shift_order('contest_cate', ['parent_id' => $cate->parent_id], $cate->order, $shift);
+        if ($updated > 0)
             return [
                 'ok' => 1,
-                'msg' => sprintf('类别[%s]已向下移动%d项', $cate->title, $count_updated)
+                'msg' => sprintf('%d items have been affected.', $updated)
             ];
-        } else {
-            // order降低，上移
-            $count_updated = 0;
-            DB::transaction(function () use ($cate, $shift) {
-                $count_updated = DB::table('contest_cate')
-                    ->where('parent_id', $cate->parent_id)
-                    ->whereBetween('order', [$cate->order + $shift, $cate->order - 1])
-                    ->increment('order');
-                DB::table('contest_cate')
-                    ->where('id', $cate->id)
-                    ->decrement('order', $count_updated);
-            });
-            return [
-                'ok' => 1,
-                'msg' => sprintf('类别[%s]已向上移动%d项', $cate->title, $count_updated)
-            ];
-        }
         return [
             'ok' => 0,
-            'msg' => '移动失败'
+            'msg' => 'Nothing has been affected.'
         ];
     }
 }

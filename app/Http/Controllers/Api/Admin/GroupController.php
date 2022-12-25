@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\DBHelper;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -319,49 +320,19 @@ class GroupController extends Controller
         /** @var \app\Models\User */
         $user = Auth::user();
         if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => '权限不足!'];
+            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
 
         // 获取当前竞赛
         $gc = DB::table('group_contests')->find($gc_id);
-        if ($shift > 0) {
-            // order增加，上移
-            $count_updated = 0;
-            DB::transaction(function () use ($gc, $shift) {
-                // 当前竞赛后面受影响的竞赛，前移1
-                $count_updated = DB::table('group_contests')
-                    ->where('group_id', $gc->group_id)
-                    ->whereBetween('order', [$gc->order + 1, $gc->order + $shift])
-                    ->decrement('order');
-                // 当前竞赛移动到指定位置
-                DB::table('group_contests')
-                    ->where('id', $gc->id)
-                    ->increment('order', $count_updated);
-            });
+        $updated = DBHelper::shift_order('group_contests', ['group_id' => $group_id], $gc->order, $shift);
+        if ($updated > 0)
             return [
                 'ok' => 1,
-                'msg' => sprintf('竞赛[%s]已向上移动%d项', $gc->contest_id, $count_updated)
+                'msg' => sprintf('%d items have been affected.', $updated)
             ];
-        } else {
-            // order降低，下移
-            $count_updated = 0;
-            DB::transaction(function () use ($gc, $shift) {
-                $count_updated = DB::table('group_contests')
-                    ->where('group_id', $gc->group_id)
-                    ->whereBetween('order', [$gc->order + $shift, $gc->order - 1])
-                    ->increment('order');
-                // 当前竞赛移动到指定位置
-                DB::table('group_contests')
-                    ->where('id', $gc->id)
-                    ->decrement('order', $count_updated);
-            });
-            return [
-                'ok' => 1,
-                'msg' => sprintf('竞赛[%s]已向下移动%d项', $gc->contest_id, $count_updated)
-            ];
-        }
         return [
             'ok' => 0,
-            'msg' => '移动失败'
+            'msg' => 'Nothing has been affected.'
         ];
     }
 }
