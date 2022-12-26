@@ -36,4 +36,37 @@ class DBHelper
         }
         return $updated;
     }
+
+
+    // /**
+    //  * 对于某张表，批量更新
+    //  * @param attributes [{},{},...] 筛选字段
+    //  * @param values [{},{},...] 要更新的字段
+    //  * @return int 修改的记录条数
+    //  * 使用方法：
+    //  *   update_batch($table_name, $attributes, $values) // 多条数据分别更新
+    //  */
+    // public static function update_batch(string $table, array $attributes, array $values)
+    // {
+    //     $updated = 0;
+    //     // 多条数据各自更新，将执行多条sql
+    //     if (count($attributes) == count($values))
+    //         foreach ($attributes as $i => $attr)
+    //             $updated += DB::table($table)->where($attr)->update($values[$i]);
+    //     return $updated;
+    // }
+
+    /**
+     * 对于某张表，批量更新，多个记录更新为同一个值
+     * @param table 表名
+     * @param attribute whereIn的字段名，例如id
+     * @param in whereIn的值，例如id的值。与attribute配合；
+     * @param value {} 要更新的字段
+     * @param extra_where 额外的筛选条件
+     * @return int 修改的记录条数
+     */
+    public static function update_batch_to_one(string $table, string $attribute, array $in, array $value, array $extra_where = [])
+    {
+        return  DB::table($table)->where($extra_where)->whereIn($attribute, $in)->update($value);
+    }
 }

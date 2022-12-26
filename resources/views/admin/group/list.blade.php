@@ -137,7 +137,7 @@
       }
       $.ajax({
         type: 'patch',
-        url: '{{ route('api.admin.group.update_batch') }}',
+        url: '{{ route('api.admin.group.update_batch_to_one') }}',
         data: {
           'ids': cids,
           'value': {

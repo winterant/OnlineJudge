@@ -81,43 +81,29 @@ class GroupController extends Controller
      *
      * patch request:{
      *   ids:[1,2,...],
-     *   values:[{},{},...]
      *   value:{},
      * }
-     * 注释：values/二选一，有values则每条记录单独更新，否则一条sql将记录批量更新为value。
-     *
-     * response:{
-     *   ok:(0|1),
-     *   msg:string,
-     *   data:{
-     *     updated:int
-     *   }
-     * }
      */
-    public function update_batch(Request $request)
+    public function update_batch_to_one(Request $request)
     {
         $ids = $request->input('ids') ?? [];
-        if ($request->has('values'))
-            return HomeController::update_batch('groups', $ids, $request->input('values'));
-        else
-            return HomeController::update_batch('groups', $ids, $request->input('value'), true);
+        $value = $request->input('value');
+        $updated = DBHelper::update_batch_to_one('groups', 'id', $ids, $value);
+        if ($updated > 0)
+            return ['ok' => 1, 'msg' => '成功修改' . $updated . '条数据'];
+        return ['ok' => 0, 'msg' => '没有任何数据被修改'];
     }
-
 
     /**
      * 批量添加group_contests
      *
      * post request:{
-     *   contests_id:[id1,id2,...],
-     *   identity: int(^[0-4].$)
+     *   contests_id:[id1,id2,...]
      * }
      *
      * response:{
      *   ok:(0|1),
-     *   msg:string,
-     *   data:{
-     *     updated:int
-     *   }
+     *   msg:string
      * }
      */
     public function create_contests(Request $request, $group_id)

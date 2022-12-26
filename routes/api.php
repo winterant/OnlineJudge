@@ -87,7 +87,7 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::post('/groups', 'Admin\GroupController@create')->name('group.create')->middleware('Permission:admin.group.create');
         Route::delete('/groups/{id}', 'Admin\GroupController@delete')->name('group.delete')->middleware('Permission:admin.group.delete');
         Route::put('/groups/{id}', 'Admin\GroupController@update')->name('group.update')->middleware('Permission:admin.group.update');
-        Route::patch('/groups/batch', 'Admin\GroupController@update_batch')->name('group.update_batch')->middleware('Permission:admin.group.update');
+        Route::patch('/groups/batch-to-one', 'Admin\GroupController@update_batch_to_one')->name('group.update_batch_to_one')->middleware('Permission:admin.group.update');
 
         // 对group的竞赛、成员的管理，控制器中控制权限
         // contests
