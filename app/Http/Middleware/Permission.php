@@ -16,9 +16,11 @@ class Permission
      * @param \Illuminate\Http\Request $request
      * @param \Closure $next
      * @param $permission
+     * @param $verify_creator 验证是否为创建者，格式 table.{id}.column
+     *        例如 groups.{id}.creator 表示groups表的创建者字段是`creator`，从路由中读取{id}
      * @return mixed
      */
-    public function handle($request, $next, string $permission)
+    public function handle($request, $next, string $permission, string $verify_creator)
     {
         // ================================== 权限检查 ==================================
         /** @var \App\Models\User */

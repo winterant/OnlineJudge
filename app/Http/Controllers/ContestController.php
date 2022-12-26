@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\CacheHelper;
 use App\View\Components\Contest\ProblemsLink;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -440,7 +441,7 @@ class ContestController extends Controller
         // ========================== 调用榜单 ============================
         $users = [];
         $key = sprintf('contest:%d:rank:%s:users', $contest->id, $_GET['end']);
-        clear_cache_if_rejudged($key); // 若发生了重判，先清除缓存，迫使下方业务重新计算榜单
+        CacheHelper::clear_cache_if_rejudged($key); // 若发生了重判，先清除缓存，迫使下方业务重新计算榜单
         if (Cache::has($key))
             $users = Cache::get($key);
         else {

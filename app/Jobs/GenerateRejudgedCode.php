@@ -35,7 +35,7 @@ class GenerateRejudgedCode implements ShouldQueue
      */
     public function handle()
     {
-        // 重新生成 重判标识码；请保持key名与functions/DB_helpers.php/clear_cache_if_rejudged()中一致
+        // 重新生成 重判标识码；请保持key名与App\Http\CacheHelper::clear_cache_if_rejudged()中一致
         Cache::put('solution:rejudged_code', uniqid());
     }
 }

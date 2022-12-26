@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\CacheHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +27,9 @@ class HomeController extends Controller
         $last_monday_time = $monday_time - 3600 * 24 * 7;
         $next_monday_time = $monday_time + 3600 * 24 * 7;
 
-        $this_week = Cache::remember(clear_cache_if_rejudged('home:cache:this_week_top10'), 3600, function () use ($monday_time) {
+        $rk = 'home:cache:this_week_top10';
+        CacheHelper::clear_cache_if_rejudged($rk);
+        $this_week = Cache::remember($rk, 3600, function () use ($monday_time) {
             $this_week = DB::table('solutions')
                 ->join('users', 'users.id', '=', 'solutions.user_id')
                 ->select(['user_id', 'username', 'school', 'class', 'nick', DB::raw('count(distinct problem_id) as solved'),])
@@ -38,8 +41,10 @@ class HomeController extends Controller
             return $this_week; // 缓存有效期1小时
         });
 
+        $rk = 'home:cache:last_week_top10';
+        CacheHelper::clear_cache_if_rejudged($rk);
         $last_week = Cache::remember(
-            clear_cache_if_rejudged('home:cache:last_week_top10'),
+            $rk,
             $next_monday_time - time(),
             function () use ($monday_time, $last_monday_time) {
                 $last_week = DB::table('solutions')
