@@ -57,10 +57,13 @@
                     <td nowrap>
                       @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
                         <div class="form-inline">
-                          <select class="border" onchange="update_members_identity([{{ $u->id }}], $(this).val())"
+                          <select class="border" onchange="update_members_identity([{{ $u->user_id }}], $(this).val())"
                             style="width:auto; padding:0 1%;text-align:center;text-align-last:center;border-radius: 0.2rem;min-width:6rem">
                             <option disabled>修改成员身份</option>
                             @php($mod_ident = [2 => '学生', 3 => '学生班长', 4 => '管理员'])
+                            @if (isset($_GET['identity']) && $_GET['identity'] == 0)
+                              <option>已被禁用</option>
+                            @endif
                             @foreach ($mod_ident as $k => $i)
                               <option value="{{ $k }}" @if ($u->identity == $k) selected @endif>
                                 {{ $i }}
@@ -77,11 +80,19 @@
                     <td nowrap>
                       <a href="{{ route('group.member', [$group->id, $u->user_id]) }}">{{ __('查看Ta的学习') }}</a>
                       @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
-                        <a class="ml-3" href="javascript:"
-                          onclick="if(confirm('该用户被禁用后，无法进入该群组，无法自行恢复。管理员可以从【已禁用】成员页面看到该成员，可以查看其学习信息，可以解除禁用。确定禁用？')){
-                            update_members_identity([{{ $u->id }}], 0)
+                        @if (isset($_GET['identity']) && $_GET['identity'] == 0)
+                          <a class="ml-3" href="javascript:"
+                            onclick="if(confirm('该用户已被禁用，无法进入该群组。确定恢复为学生？')){
+                            update_members_identity([{{ $u->user_id }}], 2)
+                            $(this).parent().parent().remove();
+                          }">恢复学生</a>
+                        @else
+                          <a class="ml-3" href="javascript:"
+                            onclick="if(confirm('该用户被禁用后，无法进入该群组，无法自行恢复。管理员可以从【已禁用】成员页面看到该成员，可以查看其学习信息，可以解除禁用。确定禁用？')){
+                            update_members_identity([{{ $u->user_id }}], 0)
                             $(this).parent().parent().remove();
                           }">禁用</a>
+                        @endif
                         <a class="ml-3" href="javascript:"
                           onclick="if(confirm('该用户被彻底删除后，无法进入该群组；除提交记录外，该用户在该群组中的学习规划信息将会丢失。建议您优先考虑【禁用】该成员来代替【彻底删除】。确定彻底删除？')){
                             delete_members_batch([{{ $u->user_id }}]);
@@ -134,12 +145,12 @@
 
   <script type="text/javascript">
     // 批量修改成员的身份
-    function update_members_identity(ids, ident) {
+    function update_members_identity(user_ids, ident) {
       $.ajax({
         type: 'patch',
-        url: '{{ route('api.admin.group.update_members_batch', $group->id) }}',
+        url: '{{ route('api.admin.group.update_members_batch_to_one', $group->id) }}',
         data: {
-          'ids': ids,
+          'user_ids': user_ids,
           'value': {
             'identity': ident
           }

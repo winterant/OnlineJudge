@@ -64,7 +64,12 @@ class GroupController extends Controller
     public function update(Request $request, $group_id)
     {
         if (!($group = DB::table('groups')->find($group_id)))
-            return ['ok' => 0, 'msg' => '群组不存在!'];
+            return ['ok' => 0, 'msg' => '群组不存在！'];
+
+        /** @var \app\Models\User */
+        $user = Auth::user();
+        if (!$user->has_group_permission($group, 'admin.group.update'))
+            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
 
         $request_group = $request->input('group');
         $request_group['updated_at'] = date('Y-m-d H:i:s');
@@ -88,7 +93,7 @@ class GroupController extends Controller
     {
         $ids = $request->input('ids') ?? [];
         $value = $request->input('value');
-        $updated = DBHelper::update_batch_to_one('groups', 'id', $ids, $value);
+        $updated = DBHelper::update_batch_to_one('groups', ['id' => $ids], $value);
         if ($updated > 0)
             return ['ok' => 1, 'msg' => '成功修改' . $updated . '条数据'];
         return ['ok' => 0, 'msg' => '没有任何数据被修改'];
@@ -109,15 +114,12 @@ class GroupController extends Controller
     public function create_contests(Request $request, $group_id)
     {
         if (!($group = DB::table('groups')->find($group_id)))
-            return [
-                'ok' => 0,
-                'msg' => '群组不存在！'
-            ];
+            return ['ok' => 0, 'msg' => '群组不存在！'];
 
         /** @var \app\Models\User */
         $user = Auth::user();
         if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => '权限不足!'];
+            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
 
         // 开始处理
         $contests_id = explode(PHP_EOL, $request->input('contests_id'));
@@ -154,12 +156,12 @@ class GroupController extends Controller
     public function delete_contests_batch(Request $request, $group_id)
     {
         if (!($group = DB::table('groups')->find($group_id)))
-            return ['ok' => 0, 'msg' => '群组不存在!'];
+            return ['ok' => 0, 'msg' => '群组不存在！'];
 
         /** @var \app\Models\User */
         $user = Auth::user();
         if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => '权限不足!'];
+            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
 
         // 开始处理
         $deleted = DB::table('group_contests')
@@ -176,21 +178,15 @@ class GroupController extends Controller
      * 批量更新group_members
      *
      * patch request:{
-     *   ids:[1,2,...],
-     *   values:[{},{},...]
+     *   user_ids:[1,2,...],
      *   value:{},
      * }
-     * 注释：values/value二选一，有values则每条记录单独更新，否则一条sql将记录批量更新为value。
-     *
      * response:{
      *   ok:(0|1),
      *   msg:string,
-     *   data:{
-     *     updated:int
-     *   }
      * }
      */
-    public function update_members_batch(Request $request, $group_id)
+    public function update_members_batch_to_one(Request $request, $group_id)
     {
         if (!($group = DB::table('groups')->find($group_id)))
             return ['ok' => 0, 'msg' => '群组不存在!'];
@@ -200,14 +196,12 @@ class GroupController extends Controller
         if (!$user->has_group_permission($group, 'admin.group.update'))
             return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
 
-        $ids = $request->input('ids') ?? [];
-        // todo 对group_id进行筛选，不要误改其他group的成员
-
-        // 批处理
-        if ($request->has('values'))
-            return HomeController::update_batch('group_users', $ids, $request->input('values'));
-        else
-            return HomeController::update_batch('group_users', $ids, $request->input('value'), true);
+        $user_ids = $request->input('user_ids') ?? [];
+        $value = $request->input('value');
+        $updated = DBHelper::update_batch_to_one('group_users', ['user_id' => $user_ids], $value, ['group_id' => $group_id]);
+        if ($updated > 0)
+            return ['ok' => 1, 'msg' => '成功修改' . $updated . '条数据'];
+        return ['ok' => 0, 'msg' => '没有任何数据被修改'];
     }
 
 
@@ -230,15 +224,12 @@ class GroupController extends Controller
     public function create_members(Request $request, $group_id)
     {
         if (!($group = DB::table('groups')->find($group_id)))
-            return [
-                'ok' => 0,
-                'msg' => '群组不存在！'
-            ];
+            return ['ok' => 0, 'msg' => '群组不存在！'];
 
         /** @var \app\Models\User */
         $user = Auth::user();
         if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => '权限不足!'];
+            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
 
         // 开始处理
         $unames = explode(PHP_EOL, $request->input('usernames'));
@@ -273,12 +264,12 @@ class GroupController extends Controller
     public function delete_members_batch(Request $request, $group_id)
     {
         if (!($group = DB::table('groups')->find($group_id)))
-            return ['ok' => 0, 'msg' => '群组不存在!'];
+            return ['ok' => 0, 'msg' => '群组不存在！'];
 
         /** @var \app\Models\User */
         $user = Auth::user();
         if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => '权限不足!'];
+            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
 
         // 开始处理
         $deleted = DB::table('group_users')

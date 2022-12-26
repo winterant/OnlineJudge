@@ -86,7 +86,7 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         // Manage group: route('api.admin.group.*')
         Route::post('/groups', 'Admin\GroupController@create')->name('group.create')->middleware('Permission:admin.group.create');
         Route::delete('/groups/{id}', 'Admin\GroupController@delete')->name('group.delete')->middleware('Permission:admin.group.delete');
-        Route::put('/groups/{id}', 'Admin\GroupController@update')->name('group.update')->middleware('Permission:admin.group.update');
+        Route::put('/groups/{id}', 'Admin\GroupController@update')->name('group.update');
         Route::patch('/groups/batch-to-one', 'Admin\GroupController@update_batch_to_one')->name('group.update_batch_to_one')->middleware('Permission:admin.group.update');
 
         // 对group的竞赛、成员的管理，控制器中控制权限
@@ -97,7 +97,7 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         // members
         Route::post('/groups/{id}/members', 'Admin\GroupController@create_members')->name('group.create_members');
         Route::delete('/groups/{id}/members/batch', 'Admin\GroupController@delete_members_batch')->name('group.delete_members_batch');
-        Route::patch('/groups/{id}/members/batch', 'Admin\GroupController@update_members_batch')->name('group.update_members_batch');
+        Route::patch('/groups/{id}/members/batch-to-one', 'Admin\GroupController@update_members_batch_to_one')->name('group.update_members_batch_to_one');
 
         // settings
         Route::patch('/settings', 'Admin\HomeController@settings')->name('settings')->middleware('Permission:admin.setting.update');

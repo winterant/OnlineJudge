@@ -58,15 +58,19 @@ class DBHelper
 
     /**
      * 对于某张表，批量更新，多个记录更新为同一个值
-     * @param table 表名
-     * @param attribute whereIn的字段名，例如id
-     * @param in whereIn的值，例如id的值。与attribute配合；
-     * @param value {} 要更新的字段
-     * @param extra_where 额外的筛选条件
-     * @return int 修改的记录条数
+     * @param table  表名，例如'groups'
+     * @param in  whereIn的键值对，例如['id'=>[1,2,...]]
+     * @param value  {} 要更新的字段值，例如['identity'=>0]
+     * @param extra_where  额外的筛选条件，例如['group_id'=>4]
+     * @return int 受影响的记录条数
      */
-    public static function update_batch_to_one(string $table, string $attribute, array $in, array $value, array $extra_where = [])
+    public static function update_batch_to_one(string $table, array $in, array $value, array $extra_where = null)
     {
-        return  DB::table($table)->where($extra_where)->whereIn($attribute, $in)->update($value);
+        $q = DB::table($table);
+        if ($extra_where)
+            $q = $q->where($extra_where);
+        foreach ($in as $k => $vs)
+            $q = $q->whereIn($k, $vs);
+        return $q->update($value);
     }
 }
