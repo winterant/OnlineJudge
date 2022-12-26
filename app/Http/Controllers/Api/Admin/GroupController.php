@@ -63,22 +63,16 @@ class GroupController extends Controller
      */
     public function update(Request $request, $group_id)
     {
-        if (!($group = DB::table('groups')->find($group_id)))
-            return ['ok' => 0, 'msg' => '群组不存在！'];
-
-        /** @var \app\Models\User */
-        $user = Auth::user();
-        if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
-
         $request_group = $request->input('group');
         $request_group['updated_at'] = date('Y-m-d H:i:s');
-        DB::table('groups')->where('id', $group->id)->update($request_group);
-        return [
-            'ok' => 1,
-            'msg' => '修改成功',
-            'redirect' => route('group', $group->id)
-        ];
+        $updated = DB::table('groups')->where('id', $group_id)->update($request_group);
+        if ($updated)
+            return [
+                'ok' => 1,
+                'msg' => '修改成功',
+                'redirect' => route('group', $group_id)
+            ];
+        return ['ok' => 0, 'msg' => '没有数据被修改'];
     }
 
     /**
@@ -113,23 +107,15 @@ class GroupController extends Controller
      */
     public function create_contests(Request $request, $group_id)
     {
-        if (!($group = DB::table('groups')->find($group_id)))
-            return ['ok' => 0, 'msg' => '群组不存在！'];
-
-        /** @var \app\Models\User */
-        $user = Auth::user();
-        if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
-
         // 开始处理
         $contests_id = explode(PHP_EOL, $request->input('contests_id'));
         foreach ($contests_id as &$item)
             $item = trim($item);
-        $max_order = DB::table('group_contests')->where('group_id', $group->id)->max('order'); // 已存在的最大顺序序号
+        $max_order = DB::table('group_contests')->where('group_id', $group_id)->max('order'); // 已存在的最大顺序序号
         foreach ($contests_id as $cid) {
             if (DB::table('contests')->find($cid))
                 DB::table('group_contests')->insert([
-                    'group_id' => $group->id,
+                    'group_id' => $group_id,
                     'contest_id' => $cid,
                     'order' => ++$max_order
                 ]);
@@ -155,14 +141,6 @@ class GroupController extends Controller
      */
     public function delete_contests_batch(Request $request, $group_id)
     {
-        if (!($group = DB::table('groups')->find($group_id)))
-            return ['ok' => 0, 'msg' => '群组不存在！'];
-
-        /** @var \app\Models\User */
-        $user = Auth::user();
-        if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
-
         // 开始处理
         $deleted = DB::table('group_contests')
             ->where('group_id', $group_id)
@@ -188,14 +166,6 @@ class GroupController extends Controller
      */
     public function update_members_batch_to_one(Request $request, $group_id)
     {
-        if (!($group = DB::table('groups')->find($group_id)))
-            return ['ok' => 0, 'msg' => '群组不存在!'];
-
-        /** @var \app\Models\User */
-        $user = Auth::user();
-        if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
-
         $user_ids = $request->input('user_ids') ?? [];
         $value = $request->input('value');
         $updated = DBHelper::update_batch_to_one('group_users', ['user_id' => $user_ids], $value, ['group_id' => $group_id]);
@@ -223,14 +193,6 @@ class GroupController extends Controller
      */
     public function create_members(Request $request, $group_id)
     {
-        if (!($group = DB::table('groups')->find($group_id)))
-            return ['ok' => 0, 'msg' => '群组不存在！'];
-
-        /** @var \app\Models\User */
-        $user = Auth::user();
-        if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
-
         // 开始处理
         $unames = explode(PHP_EOL, $request->input('usernames'));
         $iden = $request->input('identity');
@@ -239,7 +201,7 @@ class GroupController extends Controller
         $uids = DB::table('users')->whereIn('username', $unames)->pluck('id')->toArray(); // 欲添加用户id
         foreach ($uids as $uid) {
             DB::table('group_users')->updateOrInsert(
-                ['group_id' => $group->id, 'user_id' => $uid],
+                ['group_id' => $group_id, 'user_id' => $uid],
                 ['identity' => $iden ?: 2]
             );
         }
@@ -263,14 +225,6 @@ class GroupController extends Controller
      */
     public function delete_members_batch(Request $request, $group_id)
     {
-        if (!($group = DB::table('groups')->find($group_id)))
-            return ['ok' => 0, 'msg' => '群组不存在！'];
-
-        /** @var \app\Models\User */
-        $user = Auth::user();
-        if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
-
         // 开始处理
         $deleted = DB::table('group_users')
             ->where('group_id', $group_id)
@@ -291,14 +245,6 @@ class GroupController extends Controller
      */
     public function update_contest_order($group_id, $gc_id, $shift)
     {
-        if (!($group = DB::table('groups')->find($group_id)))
-            return ['ok' => 0, 'msg' => '群组不存在!'];
-
-        /** @var \app\Models\User */
-        $user = Auth::user();
-        if (!$user->has_group_permission($group, 'admin.group.update'))
-            return ['ok' => 0, 'msg' => trans('sentence.Permission denied')];
-
         // 获取当前竞赛
         $gc = DB::table('group_contests')->find($gc_id);
         $updated = DBHelper::shift_order('group_contests', ['group_id' => $group_id], $gc->order, $shift);

@@ -4,11 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class GroupController extends Controller
 {
@@ -38,18 +34,6 @@ class GroupController extends Controller
     {
         if (!($group = DB::table('groups')->find($group_id)))
             return view('message', ['msg' => '群组不存在!']);
-
-        /** @var \App\Models\User */
-        $user = Auth::user(); // 不是管理员，也不是创建者
-        if (!$user->can('admin.group.update') && $user->id != $group->creator)
-            return view('message', ['msg' => trans('sentence.Permission denied'), 'success' => false, 'is_admin' => true]);
-
-        // 提供界面
-        $contest_ids = DB::table('group_contests as gc')
-            ->join('contests as c', 'c.id', '=', 'gc.contest_id')
-            ->where('gc.group_id', $group_id)
-            ->orderBy('gc.id')
-            ->pluck('c.id');
-        return view('admin.group.edit', compact('group', 'contest_ids'));
+        return view('admin.group.edit', compact('group'));
     }
 }

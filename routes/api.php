@@ -51,7 +51,7 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
     // =========================== solution =================================
     Route::middleware(['auth'])->group(function () {
         Route::post('/solutions', 'SolutionController@submit_solution')->name('solution.submit_solution');
-        Route::get('/solutions/{id}', 'SolutionController@solution_result')->name('solution.solution_result');
+        Route::get('/solutions/{id}', 'SolutionController@solution_result')->name('solution.solution_result')->middleware(['auth', 'Permission:admin.solution.view,solutions.{id}.user_id']);
         Route::post('/solution/test', 'SolutionController@submit_local_test')->name('solution.submit_local_test');
     });
 
@@ -86,18 +86,18 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         // Manage group: route('api.admin.group.*')
         Route::post('/groups', 'Admin\GroupController@create')->name('group.create')->middleware('Permission:admin.group.create');
         Route::delete('/groups/{id}', 'Admin\GroupController@delete')->name('group.delete')->middleware('Permission:admin.group.delete');
-        Route::put('/groups/{id}', 'Admin\GroupController@update')->name('group.update');
+        Route::put('/groups/{id}', 'Admin\GroupController@update')->name('group.update')->middleware('Permission:admin.group.update,groups.{id}.creator');
         Route::patch('/groups/batch-to-one', 'Admin\GroupController@update_batch_to_one')->name('group.update_batch_to_one')->middleware('Permission:admin.group.update');
 
         // 对group的竞赛、成员的管理，控制器中控制权限
         // contests
-        Route::post('/groups/{id}/contests', 'Admin\GroupController@create_contests')->name('group.create_contests');
-        Route::delete('/groups/{id}/contests/batch', 'Admin\GroupController@delete_contests_batch')->name('group.delete_contests_batch');
-        Route::patch('/groups/{id}/group-contests/{gcid}/order/{shift}', 'Admin\GroupController@update_contest_order')->name('group.update_contest_order');
+        Route::post('/groups/{id}/contests', 'Admin\GroupController@create_contests')->name('group.create_contests')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::delete('/groups/{id}/contests/batch', 'Admin\GroupController@delete_contests_batch')->name('group.delete_contests_batch')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::patch('/groups/{id}/group-contests/{gcid}/order/{shift}', 'Admin\GroupController@update_contest_order')->name('group.update_contest_order')->middleware('Permission:admin.group.update,groups.{id}.creator');
         // members
-        Route::post('/groups/{id}/members', 'Admin\GroupController@create_members')->name('group.create_members');
-        Route::delete('/groups/{id}/members/batch', 'Admin\GroupController@delete_members_batch')->name('group.delete_members_batch');
-        Route::patch('/groups/{id}/members/batch-to-one', 'Admin\GroupController@update_members_batch_to_one')->name('group.update_members_batch_to_one');
+        Route::post('/groups/{id}/members', 'Admin\GroupController@create_members')->name('group.create_members')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::delete('/groups/{id}/members/batch', 'Admin\GroupController@delete_members_batch')->name('group.delete_members_batch')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::patch('/groups/{id}/members/batch-to-one', 'Admin\GroupController@update_members_batch_to_one')->name('group.update_members_batch_to_one')->middleware('Permission:admin.group.update,groups.{id}.creator');
 
         // settings
         Route::patch('/settings', 'Admin\HomeController@settings')->name('settings')->middleware('Permission:admin.setting.update');

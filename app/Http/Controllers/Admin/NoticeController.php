@@ -36,20 +36,13 @@ class NoticeController extends Controller
 
     public function update(Request $request, $id)
     {
-        /** @var \App\Models\User */
-        $user = Auth::user();
         $notice = DB::table('notices')->find($id);
 
         if ($request->isMethod('get')) {
             $pageTitle = '修改公告';
-            if ($notice->user_id != Auth::id() && !$user->can('admin.notice.view')) // 不是拥有者 && 不是管理员
-                return view('message', ['msg' => trans('sentence.Permission denied'), 'success' => false, 'is_admin' => true]);
             return view('admin.notice.edit', compact('pageTitle', 'notice'));
         }
         if ($request->isMethod('post')) {
-            if ($notice->user_id != Auth::id() && !$user->can('admin.notice.view')) // 不是拥有者 && 不是管理员
-                return view('message', ['msg' => trans('sentence.Permission denied'), 'success' => false, 'is_admin' => true]);
-
             $notice = $request->input('notice');
             $notice['updated_at'] = date('Y-m-d H:i:s');
             // $notice['user_id'] = Auth::id();

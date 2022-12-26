@@ -61,27 +61,14 @@ class ProblemController extends Controller
     }
 
     //管理员修改题目
-    public function update(Request $request, $id = -1, $create = false)
+    public function update(Request $request, $id)
     {
         //get提供修改界面
         if ($request->isMethod('get')) {
-
             $pageTitle = '修改题目';
-            if ($id == -1) {
-                if (isset($_GET['id'])) //用户手动输入了题号
-                    return redirect(route('admin.problem.update_withId', $_GET['id']));
-                return view('admin.problem.edit', compact('pageTitle'))->with('lack_id', true);
-            } //询问要修改的题号
-
             $problem = DB::table('problems')->find($id);  // 提取出要修改的题目
             if ($problem == null)
                 return view('message', ['msg' => '该题目不存在或操作有误!', 'success' => false, 'is_admin' => true]);
-
-            /** @var \App\Models\User */
-            $user = Auth::user(); // 不是管理员，也不是出题人
-            if (!$create)
-                if (!$user->can('admin.problem.update') && $user->id != $problem->creator)
-                    return view('message', ['msg' => trans('sentence.Permission denied'), 'success' => false, 'is_admin' => true]);
 
             $samples = read_problem_data($problem->id);
             //看看有没有特判文件
@@ -92,12 +79,6 @@ class ProblemController extends Controller
         // 提交修改好的题目
         if ($request->isMethod('post')) {
             $problem = DB::table('problems')->find($id);  // 提取出要修改的题目
-            /** @var \App\Models\User */
-            $user = Auth::user(); // 不是管理员，也不是出题人
-            if (!$create)
-                if (!$user->can('admin.problem.update') && $user->id != $problem->creator)
-                    return view('message', ['msg' => trans('sentence.Permission denied'), 'success' => false, 'is_admin' => true]);
-
             // 读取表单
             $problem = $request->input('problem');
             if (!isset($problem['spj'])) // 默认不特判
@@ -108,7 +89,7 @@ class ProblemController extends Controller
                 ->where('id', $id)
                 ->update($problem);
             if (!$update_ret)
-                return view('message', ['msg' => '您不是该题目的创建者，也不具备权限[admin.problem]，不能修改本题!', 'success' => false, 'is_admin' => true]);
+                return view('message', ['msg' => '没有任何数据被修改，请检查操作是否合理!', 'success' => false, 'is_admin' => true]);
 
             ///保存样例、spj
             $samp_ins = $request->input('sample_ins');

@@ -81,12 +81,6 @@ class ContestController extends Controller
         if ($request->isMethod('get')) {
             $contest = DB::table('contests')->find($id);
 
-            /** @var \App\Models\User */
-            $user = Auth::user(); // 不是管理员，也不是创建者
-            if (!$user->can('admin.contest.update') && $user->id != $contest->user_id)
-                return view('message', ['msg' => trans('sentence.Permission denied'), 'success' => false, 'is_admin' => true]);
-
-
             $unames = DB::table('contest_users')
                 ->leftJoin('users', 'users.id', '=', 'user_id')
                 ->where('contest_id', $id)
@@ -104,13 +98,6 @@ class ContestController extends Controller
         }
         if ($request->isMethod('post')) {
             $old_contest = DB::table('contests')->find($id);
-
-
-            /** @var \App\Models\User */
-            $user = Auth::user(); // 不是管理员，也不是创建者
-            if (!$user->can('admin.contest.update') && $user->id != $old_contest->user_id)
-                return view('message', ['msg' => trans('sentence.Permission denied'), 'success' => false, 'is_admin' => true]);
-
 
             $contest = $request->input('contest');
             $problem_ids = $request->input('problems');

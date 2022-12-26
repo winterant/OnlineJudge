@@ -105,7 +105,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
         // ===================== Manage notice
         Route::get('notices', 'Admin\NoticeController@list')->name('notice.list')->middleware('Permission:admin.notice.view');
         Route::any('notice/add', 'Admin\NoticeController@add')->name('notice.add')->middleware('Permission:admin.notice.create');
-        Route::any('notices/{id}/update', 'Admin\NoticeController@update')->name('notice.update');
+        Route::any('notices/{id}/update', 'Admin\NoticeController@update')->name('notice.update')->middleware('Permission:admin.notice.update,notices.{id}.user_id');
         // todo 删除、更新公告 需要定制api
         Route::post('notice/delete', 'Admin\NoticeController@delete')->name('notice.delete')->middleware('Permission:admin.notice.delete');
         Route::post('notice/update-state', 'Admin\NoticeController@update_state')->name('notice.update_state')->middleware('Permission:admin.notice.update');
@@ -130,7 +130,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
 
         // ====================== Manage problem editor
         Route::any('problem/add', 'Admin\ProblemController@add')->name('problem.add')->middleware('Permission:admin.problem.create');
-        Route::any('problems/{id}/update', 'Admin\ProblemController@update')->name('problem.update_withId');
+        Route::any('problems/{id}/update', 'Admin\ProblemController@update')->name('problem.update_withId')->middleware('Permission:admin.problem.update,problems.{id}.creator');
         // todo 修改hidden需要定制api
         Route::post('problem/update-hidden', 'Admin\ProblemController@update_hidden')->name('problem.update_hidden')->middleware('Permission:admin.problem.update');
         // todo 获取spj需要定制api
@@ -163,7 +163,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
 
         // ====================== Manage contest
         Route::get('contests', 'Admin\ContestController@list')->name('contest.list')->middleware('Permission:admin.contest.view');
-        Route::any('contests/{id}/update', 'Admin\ContestController@update')->name('contest.update');
+        Route::any('contests/{id}/update', 'Admin\ContestController@update')->name('contest.update')->middleware('Permission:admin.contest.view,contests.{id}.user_id');
         // todo 删除附件需要定制api
         Route::post('contests/{id}/delete-file', 'Admin\ContestController@delete_file')->name('contest.delete_file')->middleware('Permission:admin.contest.update');
         Route::any('contest/add', 'Admin\ContestController@add')->name('contest.add')->middleware('Permission:admin.contest.create');
@@ -177,8 +177,8 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
 
         // ===================== Manage group
         Route::get('groups', 'Admin\GroupController@list')->name('group.list')->middleware('Permission:admin.group.view');
-        Route::get('groups/{id}/edit', 'Admin\GroupController@edit')->name('group.edit');
         Route::get('group/create', 'Admin\GroupController@create')->name('group.create')->middleware('Permission:admin.group.create');
+        Route::get('groups/{id}/edit', 'Admin\GroupController@edit')->name('group.edit')->middleware('Permission:admin.group.update,groups.{id}.creator');
 
         // ===================== settings
         Route::get('/settings', 'Admin\HomeController@settings')->name('settings')->middleware('Permission:admin.setting.view');

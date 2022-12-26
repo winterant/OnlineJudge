@@ -129,14 +129,6 @@ class SolutionController extends Controller
         if (!$solution)
             return ['ok' => 0, 'msg' => '提交记录不存在'];
 
-        if (!Auth::check())
-            return ['ok' => 0, 'msg' => '请先登陆'];
-
-        /** @var \App\Models\User */
-        $user = Auth::user();
-        if ($user->id != $solution->user_id && !$user->can('admin.problem.solution'))
-            return ['ok' => 0, 'msg' => '您没有权限查看别人的提交记录'];
-
         /*
         // ==================== 读取判题结果 =========================
         $judge0result = json_decode($solution->judge0result, true) ?? [];
