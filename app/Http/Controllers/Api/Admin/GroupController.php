@@ -186,9 +186,6 @@ class GroupController extends Controller
      * response:{
      *   ok:(0|1),
      *   msg:string,
-     *   data:{
-     *     updated:int
-     *   }
      * }
      */
     public function create_members(Request $request, $group_id)

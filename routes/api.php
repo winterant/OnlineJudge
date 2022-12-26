@@ -51,7 +51,7 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
     // =========================== solution =================================
     Route::middleware(['auth'])->group(function () {
         Route::post('/solutions', 'SolutionController@submit_solution')->name('solution.submit_solution');
-        Route::get('/solutions/{id}', 'SolutionController@solution_result')->name('solution.solution_result')->middleware(['auth', 'Permission:admin.solution.view,solutions.{id}.user_id']);
+        Route::get('/solutions/{id}', 'SolutionController@solution_result')->name('solution.solution_result')->middleware('Permission:admin.solution.view,solutions.{id}.user_id');
         Route::post('/solution/test', 'SolutionController@submit_local_test')->name('solution.submit_local_test');
     });
 
