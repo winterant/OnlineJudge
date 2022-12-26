@@ -50,18 +50,12 @@ class UserController extends Controller
 
         // 提供修改界面
         if ($request->isMethod('get')) {
-            /** @var User */
-            $u = Auth::user();
-            if (Auth::user()->id != $user->id && $u->cant('admin.user.view'))
-                return view('message', ['msg' => trans('sentence.forbid_edit')]);
             return view('auth.user_edit', compact('user'));
         }
 
         // 提交修改资料
         if ($request->isMethod('post')) {
-            if (Auth::user()->id != $user->id && !$user->can('admin.user.update'))
-                return view('message', ['msg' => trans('sentence.forbid_edit')]);
-            if (Auth::user()->id == $user->id && $user->revise <= 0)     // 是本人&&没有修改次数
+            if (Auth::id() == $user->id && $user->revise <= 0)     // 是本人&&没有修改次数
                 return view('message', ['msg' => trans('sentence.forbid_edit')]); // 不允许本人修改
 
             $user = $request->input('user');
@@ -76,8 +70,6 @@ class UserController extends Controller
             if ($ret != 1) //失败
                 return view('message', ['msg' => trans('sentence.Operation failed')]);
 
-            // if (Auth::user()->username == $username) //是本人则次数减一
-            //     DB::table('users')->where('username', $username)->decrement('revise');
             return redirect(route('user', $username));
         }
     }

@@ -93,8 +93,8 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
     // ================================ 用户（users） ================================
     Route::get('/standings', 'UserController@standings')->name('standings');
     Route::get('/users/{username}', 'UserController@user')->name('user');
-    Route::any('/users/{username}/edit', 'UserController@user_edit')->name('user_edit');
-    Route::any('/users/{username}/reset-password', 'UserController@password_reset')->name('password_reset');
+    Route::any('/users/{username}/edit', 'UserController@user_edit')->name('user_edit')->middleware('Permission:admin.user.update,users.{username}.id');
+    Route::any('/users/{username}/reset-password', 'UserController@password_reset')->name('password_reset')->middleware('Permission:admin.user.update,users.{username}.id');
 
 
     // ================================ Administration 后台管理 ================================
