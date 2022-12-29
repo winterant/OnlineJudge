@@ -4,6 +4,7 @@
 return [
 	"siteName"	                => "Online Judge",  //网站名称
 	"footer_info"               => "QQ群：529507453", //页脚信息
+    "marquee_notice_id"         => "",
     "APP_LOCALE"                => "en",    //网站前台默认语言
 
 	"web_page_display_wide" 	=> true,    //宽屏模式
