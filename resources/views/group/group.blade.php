@@ -134,7 +134,7 @@
                       @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
                         <a class="ml-3" href="javascript:"
                           onclick="if(confirm('确定从该群组中删除该竞赛？')){
-                            delete_contests_batch([{{ $item->id }}]);
+                            delete_contests_batch([{{ $item->contest_id }}]);
                             $(this).parent().parent().remove();
                           }">删除</a>
                       @endif
@@ -214,17 +214,18 @@
     }
 
     // 批量删除group contest
-    function delete_contests_batch(ids) {
+    function delete_contests_batch(cids) {
       $.ajax({
         type: 'delete',
         url: '{{ route('api.admin.group.delete_contests_batch', $group->id) }}',
         data: {
-          'ids': ids
+          'contest_ids': cids
         },
         success: function(ret) {
           console.log(ret)
           if (ret.ok) {
             Notiflix.Notify.Success(ret.msg);
+            location.reload()
           } else {
             Notiflix.Report.Failure('删除失败', ret.msg, '确定')
           }

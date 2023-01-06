@@ -141,11 +141,15 @@ class GroupController extends Controller
      */
     public function delete_contests_batch(Request $request, $group_id)
     {
+        $contest_ids = $request->input('contest_ids');
         // 开始处理
         $deleted = DB::table('group_contests')
             ->where('group_id', $group_id)
-            ->whereIn('id', $request->input('ids'))
+            ->whereIn('contest_id', $contest_ids)
             ->delete();
+        // 调整受影响的顺序，使其连续
+        DBHelper::continue_order('group_contests', ['group_id' => $group_id]);
+
         return [
             'ok' => 1,
             'msg' => sprintf("已删除%d个竞赛", $deleted)

@@ -38,6 +38,32 @@ class DBHelper
     }
 
 
+    /**
+     * 调整某一类记录的顺序，使其连续。
+     * 目标表的order字段用于前端展示顺序（1～n）
+     * 例如 1,3,4,4,6 调整后变为1,2,3,4,5
+     * @param $table 要操作的数据库表名，如group_contests
+     * @param $where 要调整顺序的条目的筛选条件，如['group_id'=>1]
+     * @return int 受影响的记录条数
+     */
+    public static function continue_order(string $table, array $where)
+    {
+        $updated = DB::table($table . ' as T')
+            ->joinSub(
+                DB::table($table)->where($where)
+                    ->select([
+                        'id',
+                        DB::raw('row_number() over(order by `order`) as row_id')
+                    ]),
+                'B',
+                'B.id',
+                'T.id'
+            )
+            ->update(['order' => DB::raw('`B`.`row_id`')]);
+        return $updated;
+    }
+
+
     // /**
     //  * 对于某张表，批量更新
     //  * @param attributes [{},{},...] 筛选字段
