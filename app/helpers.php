@@ -1,5 +1,35 @@
 <?php
 
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+
+/**
+ * 获取配置项的值。
+ * 当$update===true时，配置项值将强制更新为$default
+ */
+function get_setting($key, $default = null, bool $update = false)
+{
+    $redis_key = 'website:' . $key;
+
+    if ($update) {
+        Cache::forever($redis_key, $default); // 缓存
+        if (Schema::hasTable('settings')) // 持久化到数据库
+            DB::table('settings')->updateOrInsert(['key' => $key], ['value' => $default]);
+    }
+
+    // 查询设置值，查询顺序：cache，database，file
+    return Cache::rememberForever($redis_key, function () use ($key, $default) {
+        if (Schema::hasTable('settings') && ($val = DB::table('settings')->where('key', $key)->value('value')) !== null)
+            return $val;
+        else if ($val = config('init.settings.' . $key))
+            return $val;   // 尝试从配置文件中读取初始配置项
+        return $default;
+    });
+}
+
+
 // 获取用户真实ip（参考https://blog.csdn.net/m0_46266407/article/details/107222142）
 function get_client_real_ip()
 {
@@ -46,6 +76,7 @@ function testdata_path($path = null): string
     return $testdata_path;
 }
 
+
 //读取一个文件夹下所有文件，返回路径列表
 function readAllFilesPath($dir_path): array
 {
@@ -61,6 +92,7 @@ function readAllFilesPath($dir_path): array
     }
     return $files;
 }
+
 
 /**
  * 读取样例/测试文件
@@ -85,6 +117,7 @@ function read_problem_data($problem_id, $from_sample = true): array
     return $samples;
 }
 
+
 /**
  * 保存样例/测试到文件
  * @param $problem_id
@@ -105,6 +138,7 @@ function save_problem_data($problem_id, $ins, $outs, $from_sample = true)
         file_put_contents(sprintf('%s/%s.out', $dir, $i), $out);
 }
 
+
 //将一个数字题号转为大写字母 A~Z(0~25), 27, 28, 29, ...
 function index2ch(int $index)
 {
@@ -112,40 +146,6 @@ function index2ch(int $index)
         return sprintf("%s (%d)", chr($index + 65), $index + 1);
     return $index + 1; //Z的下一题是27题
 }
-
-//从txt文件读取的内容转码
-// function autoiconv($text, $type = "gb2312//ignore")
-// {
-//     define('UTF32_BIG_ENDIAN_BOM', chr(0x00) . chr(0x00) . chr(0xFE) . chr(0xFF));
-//     define('UTF32_LITTLE_ENDIAN_BOM', chr(0xFF) . chr(0xFE) . chr(0x00) . chr(0x00));
-//     define('UTF16_BIG_ENDIAN_BOM', chr(0xFE) . chr(0xFF));
-//     define('UTF16_LITTLE_ENDIAN_BOM', chr(0xFF) . chr(0xFE));
-//     define('UTF8_BOM', chr(0xEF) . chr(0xBB) . chr(0xBF));
-//     $first2 = substr($text, 0, 2);
-//     $first3 = substr($text, 0, 3);
-//     $first4 = substr($text, 0, 3);
-//     $encodType = "";
-//     if ($first3 == UTF8_BOM)
-//         $encodType = 'UTF-8 BOM';
-//     else if ($first4 == UTF32_BIG_ENDIAN_BOM)
-//         $encodType = 'UTF-32BE';
-//     else if ($first4 == UTF32_LITTLE_ENDIAN_BOM)
-//         $encodType = 'UTF-32LE';
-//     else if ($first2 == UTF16_BIG_ENDIAN_BOM)
-//         $encodType = 'UTF-16BE';
-//     else if ($first2 == UTF16_LITTLE_ENDIAN_BOM)
-//         $encodType = 'UTF-16LE';
-//     //下面的判断主要还是判断ANSI编码的·
-//     if ($encodType == '') { //即默认创建的txt文本-ANSI编码的
-//         //        $content = mb_convert_encoding($text,"UTF-8","auto");
-//         $content = iconv("GBK", "UTF-8//ignore", $text);
-//     } else if ($encodType == 'UTF-8 BOM') { //本来就是UTF-8不用转换
-//         $content = $text;
-//     } else { //其他的格式都转化为UTF-8就可以了
-//         $content = iconv($encodType, "UTF-8", $text);
-//     }
-//     return $content;
-// }
 
 
 /**

@@ -51,8 +51,7 @@
         "classmap": [
         ],
         "files": [
-            "app/functions/DB_helpers.php",
-            "app/functions/helpers.php"
+            "app/helpers.php"
         ]
     },
     "autoload-dev": {
