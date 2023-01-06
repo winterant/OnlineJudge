@@ -162,7 +162,7 @@
               <div class="form-group my-3">
                 <label>
                   <textarea name="contests_id" class="form-control-plaintext border bg-white" rows="8" cols="64"
-                    placeholder="1001&#13;&#10;1002&#13;&#10;每行一个竞赛编号&#13;&#10;你可以将表格的整列粘贴到这里" required></textarea>
+                    placeholder="1001&#13;&#10;1002-1005&#13;&#10;每行一个竞赛编号或一段区间&#13;&#10;你可以将表格的整列粘贴到这里" required></textarea>
                 </label>
               </div>
               <div class="form-group text-center">
@@ -201,6 +201,7 @@
           console.log(ret)
           if (ret.ok) {
             Notiflix.Notify.Success(ret.msg);
+            location.reload()
           } else {
             Notiflix.Report.Failure('添加失败', ret.msg, '确定')
           }

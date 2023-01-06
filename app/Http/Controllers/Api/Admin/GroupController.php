@@ -108,17 +108,22 @@ class GroupController extends Controller
     public function create_contests(Request $request, $group_id)
     {
         // 开始处理
-        $contests_id = explode(PHP_EOL, $request->input('contests_id'));
-        foreach ($contests_id as &$item)
-            $item = trim($item);
+        $contests_id = decode_str_to_array($request->input('contests_id'));
         $max_order = DB::table('group_contests')->where('group_id', $group_id)->max('order'); // 已存在的最大顺序序号
         foreach ($contests_id as $cid) {
-            if (DB::table('contests')->find($cid))
+            if (
+                DB::table('contests')->find($cid)
+                && DB::table('group_contests')->where([
+                    'group_id' => $group_id,
+                    'contest_id' => $cid
+                ])->doesntExist()
+            ) {
                 DB::table('group_contests')->insert([
                     'group_id' => $group_id,
                     'contest_id' => $cid,
                     'order' => ++$max_order
                 ]);
+            }
         }
         return [
             'ok' => 1,

@@ -53,7 +53,7 @@ class DBHelper
                 DB::table($table)->where($where)
                     ->select([
                         'id',
-                        DB::raw('row_number() over(order by `order`) as row_id')
+                        DB::raw('row_number() over(order by `order`,`id`) as row_id')
                     ]),
                 'B',
                 'B.id',

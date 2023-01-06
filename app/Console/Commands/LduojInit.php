@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Helpers\DBHelper;
 use App\Jobs\CorrectSolutionsStatistics;
 use Illuminate\Console\Command;
 use App\Models\User;
@@ -169,14 +170,15 @@ class LduojInit extends Command
                 ->first();
             // 检查order字段是否已经全部处于[1,n]且无重复，否则重排
             if ($info->num_contests == $info->num_distinct_order && $info->num_contests == $info->max_order) {
-                echo "[OK] Contests of category " . $cate_id . " have correct order." . PHP_EOL;
+                // echo "[Order is OK] Contests of category " . $cate_id . " have correct order." . PHP_EOL;
             } else {
-                echo "[Wrong] Contests of category " . $cate_id . " have incorrect order. Correct them to 1,2,3,...," . $info->num_contests . PHP_EOL;
+                echo "[Wrong Order] Contests of category " . $cate_id . " have incorrect order. Correct them to 1,2,3,...," . $info->num_contests . PHP_EOL;
                 // 对order字段赋值为(1,2,3,...,n)，update默认按主键升序依次赋值
-                $updated = DB::table('contests')
-                    ->leftJoin(DB::raw('(SELECT @row_num := 0) as row_num_table'), DB::raw('1'), DB::raw('1'))
-                    ->where('cate_id', $cate_id)
-                    ->update(['order' => DB::raw('(@row_num:=@row_num+1)')]);
+                DBHelper::continue_order('contests', ['cate_id' => $cate_id]);
+                // $updated = DB::table('contests')
+                //     ->leftJoin(DB::raw('(SELECT @row_num := 0) as row_num_table'), DB::raw('1'), DB::raw('1'))
+                //     ->where('cate_id', $cate_id)
+                //     ->update(['order' => DB::raw('(@row_num:=@row_num+1)')]);
             }
         }
     }
@@ -205,14 +207,15 @@ class LduojInit extends Command
                 ->where('parent_id', $parent_id)
                 ->first();
             if ($info->count == $info->num_distinct_order && $info->count == $info->max_order) {
-                echo "[OK] Parent categories with `parent_id` " . $parent_id . " have correct order." . PHP_EOL;
+                // echo "[Order is OK] Parent categories with `parent_id` " . $parent_id . " have correct order." . PHP_EOL;
             } else {
-                echo "[Wrong] Parent categories with `parent_id` " . $parent_id . " have incorrect order. Correct them to 1,2,3,...," . $info->count . PHP_EOL;
+                echo "[Wrong Order] Parent categories with `parent_id` " . $parent_id . " have incorrect order. Correct them to 1,2,3,...," . $info->count . PHP_EOL;
                 // 对order字段赋值为(1,2,3,...,n)，update默认按主键升序依次赋值
-                $updated = DB::table('contest_cate')
-                    ->leftJoin(DB::raw('(SELECT @row_num := 0) as row_num_table'), DB::raw('1'), DB::raw('1'))
-                    ->where('parent_id', $parent_id)
-                    ->update(['order' => DB::raw('(@row_num:=@row_num+1)')]);
+                DBHelper::continue_order('contest_cate', ['parent_id' => $parent_id]);
+                // $updated = DB::table('contest_cate')
+                //     ->leftJoin(DB::raw('(SELECT @row_num := 0) as row_num_table'), DB::raw('1'), DB::raw('1'))
+                //     ->where('parent_id', $parent_id)
+                //     ->update(['order' => DB::raw('(@row_num:=@row_num+1)')]);
             }
         }
     }
@@ -242,12 +245,13 @@ class LduojInit extends Command
         // 对竞赛顺序混乱的群组，一一校正
         foreach ($group_contests as $gc) {
             $gid = $gc->group_id;
-            echo "[Wrong] Contests of Group " . $gid . " have incorrect order. Correct them to 1,2,3,...," . $gc->num_contests . PHP_EOL;
+            echo "[Wrong Order] Contests of Group " . $gid . " have incorrect order. Correct them to 1,2,3,...," . $gc->num_contests . PHP_EOL;
             // 对order字段赋值为(1,2,3,...,n)，update默认按主键升序依次赋值
-            $updated = DB::table('group_contests')
-                ->leftJoin(DB::raw('(SELECT @row_num := 0) as row_num_table'), DB::raw('1'), DB::raw('1'))
-                ->where('group_id', $gid)
-                ->update(['order' => DB::raw('(@row_num:=@row_num+1)')]);
+            DBHelper::continue_order('group_contests', ['group_id' => $gid]);
+            // $updated = DB::table('group_contests')
+            //     ->leftJoin(DB::raw('(SELECT @row_num := 0) as row_num_table'), DB::raw('1'), DB::raw('1'))
+            //     ->where('group_id', $gid)
+            //     ->update(['order' => DB::raw('(@row_num:=@row_num+1)')]);
         }
     }
 }
