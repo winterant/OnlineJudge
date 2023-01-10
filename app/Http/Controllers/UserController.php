@@ -46,7 +46,10 @@ class UserController extends Controller
 
     public function user_edit(Request $request, $username)
     {
-        $user = User::where('username', $username)->first();
+        $user = User::where('username', $username)->first(); // 要修改的user
+
+        if (Auth::id() == $user->id && $user->revise <= 0)     // 是本人&&没有修改次数
+            return view('message', ['msg' => trans('sentence.forbid_edit')]); // 不允许本人修改
 
         // 提供修改界面
         if ($request->isMethod('get')) {
@@ -55,9 +58,6 @@ class UserController extends Controller
 
         // 提交修改资料
         if ($request->isMethod('post')) {
-            if (Auth::id() == $user->id && $user->revise <= 0)     // 是本人&&没有修改次数
-                return view('message', ['msg' => trans('sentence.forbid_edit')]); // 不允许本人修改
-
             $user = $request->input('user');
             if (!isset($user['school']))
                 $user['school'] = '';
@@ -80,17 +80,11 @@ class UserController extends Controller
 
         // 提供界面
         if ($request->isMethod('get')) {
-            if (Auth::user()->id != $user->id && !$user->can('admin.user.view'))
-                return view('message', ['msg' => trans('sentence.forbid_edit')]);
             return view('auth.password_reset', compact('username'));
         }
 
         // 提交修改
         if ($request->isMethod('post')) {
-            // 鉴权
-            if (Auth::user()->id != $user->id && !$user->can('admin.user.update'))
-                return view('message', ['msg' => trans('sentence.forbid_edit')]);
-
             $user = $request->input('user');
 
             if (strlen($user['new_password']) < 8) //密码太短

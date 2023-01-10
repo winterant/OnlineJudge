@@ -5,15 +5,6 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        @if($user->revise == 0)
-            <div class="col-md-8">
-                <div class="my-container alert-danger">
-                    <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
-                    {{trans('sentence.forbid_edit')}}
-                </div>
-            </div>
-        @endif
-
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{trans('main.User')}}：{{$user->username}}</div>
