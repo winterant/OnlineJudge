@@ -60,7 +60,7 @@
                           <select class="border" onchange="update_members_identity([{{ $u->user_id }}], $(this).val())"
                             style="width:auto; padding:0 1%;text-align:center;text-align-last:center;border-radius: 0.2rem;min-width:6rem">
                             <option disabled>修改成员身份</option>
-                            @php($mod_ident = [2 => '学生', 3 => '学生班长', 4 => '管理员'])
+                            @php($mod_ident = [2 => '学生', /* 3 => '学生班长', */ 4 => '管理员'])
                             @if (isset($_GET['identity']) && $_GET['identity'] == 0)
                               <option>已被禁用</option>
                             @endif
@@ -72,7 +72,7 @@
                           </select>
                         </div>
                       @else
-                        @php($ident = [0 => '已禁用', 1 => '申请加入', 2 => '学生', 3 => '学生班长', 4 => '管理员'])
+                        @php($ident = [0 => '已禁用', 1 => '申请加入', 2 => '学生', /* 3 => '学生班长', */ 4 => '管理员'])
                         {{ $ident[intval($u->identity)] }}
                       @endif
                     </td>
@@ -128,8 +128,9 @@
                 <span>成员身份：</span>
                 <select name="identity" class="form-control px-3">
                   <option value="2">学生</option>
-                  <option value="3">学生班长</option>
+                  {{-- <option value="3">学生班长</option> --}}
                   <option value="4">管理员</option>
+                  <option value="0">设为禁用状态</option>
                 </select>
               </div>
               <div class="form-group text-center">
