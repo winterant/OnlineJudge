@@ -78,6 +78,7 @@ return [
     "New Password"  => "新密码",
     "Old Password"  => "旧密码",
     "Confirm Password" => "确认密码",
+    "Confirm New Password" => "确认新密码",
     "Remember Me"   => "记住我",
     "Profile"       => "个人资料",
     "Administration" => "管理",

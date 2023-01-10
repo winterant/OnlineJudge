@@ -78,6 +78,7 @@ return [
     "New Password"  => "New Password",
     "Old Password"  => "Old Password",
     "Confirm Password" => "Confirm Password",
+    "Confirm New Password" => "Confirm New Password",
     "Remember Me"   => "Remember Me",
     "Profile"       => "Profile",
     "Administration" => "Administration",
