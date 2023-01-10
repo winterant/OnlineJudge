@@ -3,7 +3,7 @@
 
 <head>
 
-  <x-layout.head />
+  <x-head />
   <title>@yield('title')</title>
 
   <style type="text/css">
@@ -67,7 +67,7 @@
     <a class="navbar-brand text-center" style="min-width: 200px">{{ get_setting('siteName') }}</a>
 
     {{-- 导航栏菜单项 --}}
-    <x-layout.navbar />
+    <x-navbar />
 
   </nav>
 
@@ -82,7 +82,7 @@
   @yield('content')
 
   {{-- 页脚 --}}
-  <x-layout.footer />
+  <x-footer />
 
 </body>
 
