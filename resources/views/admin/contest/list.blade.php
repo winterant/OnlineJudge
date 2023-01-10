@@ -74,7 +74,6 @@
     <a href="javascript:" class="text-gray" onclick="whatisthis('普通用户是否可以在前台竞赛页面看到该竞赛.')">
       <i class="fa fa-question-circle-o" aria-hidden="true"></i>
     </a>
-    <a href="javascript:" onclick="delete_contest()" class="ml-3">批量删除</a>
   </div>
   <div class="table-responsive">
     <table class="table table-striped table-hover table-sm">

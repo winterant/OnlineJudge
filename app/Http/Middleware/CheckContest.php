@@ -37,9 +37,18 @@ class CheckContest
         if (time() < strtotime($contest->start_time) && Route::currentRouteName() != 'contest.home') //比赛尚未开始,必须重定向到home
             return redirect(route('contest.home', $contest->id));
 
+        /** 对于普通用来说，能否进入竞赛，遵循下表规则:
+         * ________| 参赛权限 | public | private | password |
+         * 普通竞赛 | 前台可见 | Yes    | private | password |
+         * ________| 前台隐藏 |          No                 |
+         * 群组竞赛 | 前台可见 | Yes    | Yes     | password |
+         *         | 前台隐藏 | Yes    | Yes     | password |
+         */
+
         // 群组内private私有竞赛（不论竞赛是否隐藏），群组成员可以直接进入。不包括password密码竞赛
         if (
-            $contest->access == 'private' &&
+            ($contest->access == 'public' || $contest->access == 'private')
+            &&
             DB::table('group_contests as gc')
             ->join('group_users as gu', 'gu.group_id', '=', 'gc.group_id')
             ->where('gc.contest_id', $contest->id)
@@ -68,6 +77,6 @@ class CheckContest
                 return redirect(route('contest.password', $contest->id)); //去验证
         }
 
-        return $next($request); // 通过验证
+        return $next($request); // public + hidden==0, 通过验证
     }
 }
