@@ -1,9 +1,9 @@
 <?php
 
-namespace App\View\Components\Layout;
+namespace App\View\Components;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\View\Component;
+use Illuminate\Support\Facades\Cache;
 
 class Footer extends Component
 {
@@ -32,6 +32,6 @@ class Footer extends Component
      */
     public function render()
     {
-        return view('components.layout.footer');
+        return view('components.footer');
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use Exception;
 use App\Http\Controllers\Controller;
-use App\Jobs\User\CreateUsers;
+use App\Jobs\CreateUsers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

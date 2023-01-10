@@ -100,6 +100,6 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::patch('/groups/{id}/members/batch-to-one', 'Admin\GroupController@update_members_batch_to_one')->name('group.update_members_batch_to_one')->middleware('Permission:admin.group.update,groups.{id}.creator');
 
         // settings
-        Route::patch('/settings', 'Admin\HomeController@settings')->name('settings')->middleware('Permission:admin.setting.update');
+        Route::patch('/settings', 'Admin\SettingController@settings')->name('settings')->middleware('Permission:admin.setting.update');
     });
 });
