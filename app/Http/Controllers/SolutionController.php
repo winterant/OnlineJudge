@@ -13,71 +13,7 @@ class SolutionController extends Controller
 {
     public function solutions(Request $request)
     {
-        /** @var \App\Models\User */
-        $user = Auth::user();
-
-        if ($user != null && $user->can('admin.solution.view') && !isset($_GET['sim_rate']))
-            $_GET['inc_contest'] = 'on';
-
-        //读取提交记录
-        $solutions = DB::table('solutions as s')
-            ->join('users as u', 'u.id', '=', 's.user_id')
-            ->select([
-                'user_id', 'username', 'nick', // 用户信息
-                's.id', 'contest_id', 'problem_id', 'ip', 'ip_loc',
-                'judge_type', 'language', 'submit_time',
-                'result', 'time', 'memory', 'pass_rate', 'judger', 'sim_rate', 'sim_sid',
-            ])
-            //普通用户只能查看非竞赛提交
-            //关闭“包含竞赛”按钮时只能查看非竞赛提交
-            ->when($user == null || !$user->can('admin.solution.view') || !isset($_GET['inc_contest']), function ($q) {
-                $q->whereIn('s.contest_id', [-1, null]);
-            })
-
-            ->when(isset($_GET['sid']) && $_GET['sid'] != null, function ($q) {
-                return $q->where('s.id', $_GET['sid']);
-            })
-            ->when(isset($_GET['pid']) && $_GET['pid'] != null, function ($q) {
-                return $q->where('s.problem_id', $_GET['pid']);
-            })
-
-            ->when(intval($_GET['sim_rate'] ?? 0) > 0, function ($q) {
-                return $q->where('sim_rate', '>=', $_GET['sim_rate']); // 0~100
-            })
-            ->when(isset($_GET['username']) && $_GET['username'] != null, function ($q) {
-                return $q->where('username', 'like', $_GET['username'] . '%');
-            })
-            ->when(isset($_GET['result']) && $_GET['result'] >= 0, function ($q) {
-                return $q->where('result', $_GET['result']);
-            })
-            ->when(isset($_GET['language']) && $_GET['language'] >= 0, function ($q) {
-                return $q->where('language', $_GET['language']);
-            })
-            ->when(isset($_GET['ip']) && $_GET['ip'] != null, function ($q) {
-                return $q->where('ip', $_GET['ip']);
-            })
-            ->when(isset($_GET['top_id']) && $_GET['top_id'] != null, function ($q) {
-                if (isset($_GET['reverse']) && $_GET['reverse'] == 1)
-                    return $q->where('s.id', '>=', $_GET['top_id']);
-                return $q->where('s.id', '<=', $_GET['top_id']);
-            })
-            ->orderBy('s.id', (isset($_GET['reverse']) && $_GET['reverse'] == 1) ? 'asc' : 'desc')
-            ->limit(10)
-            ->get();
-
-        if (isset($_GET['reverse']) && $_GET['reverse'] == 1)
-            $solutions = $solutions->reverse();
-
-        // ======== 处理显示信息 ==========
-        foreach ($solutions as $s) {
-            // 非管理员，抹掉重要信息
-            if ($user == null || !$user->can('admin.solution.view')) {
-                $s->nick = null;
-                $s->ip = '-';
-                $s->ip_loc = '';
-            }
-        }
-        return view('solution.solutions', compact('solutions'));
+        return view('solution.solutions');
     }
 
     // web 查看一条提交记录

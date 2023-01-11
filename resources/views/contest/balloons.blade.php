@@ -60,8 +60,8 @@
   </div>
 
   <script>
-    setInterval(function() {
-      location.reload()
-    }, 5000) //5s自动刷新页面
+    // setInterval(function() {
+    //   location.reload()
+    // }, 5000) //5s自动刷新页面
   </script>
 @endsection

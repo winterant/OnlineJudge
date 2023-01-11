@@ -197,75 +197,8 @@ class ContestController extends Controller
     // 竞赛提交记录
     public function solutions($id)
     {
-        /** @var \App\Models\User */
-        $user = Auth::user();
-
-        // 拿到竞赛信息
-        $contest = DB::table('contests')
-            ->select([
-                'id', 'title', 'cate_id',
-                'start_time', 'end_time',
-                'judge_type', 'public_rank',
-                'allow_lang',
-                'open_discussion'
-            ])->find($id);
-
-        // 判断比赛状态: 比赛没结束，普通用户只能看自己
-        if (time() < strtotime($contest->end_time) && !$user->can('admin.contest.view'))
-                $_GET['user_id'] = Auth::id();
-
-        // 获得题号映射数组 [problem_id => index]
-        $pid2index = DB::table('contest_problems')->where('contest_id', $id)
-            ->orderBy('index')
-            ->pluck('index', 'problem_id')
-            ->toArray();
-
-        // 获取提交记录
-        $solutions = DB::table('solutions as s')
-            ->join('users as u', 's.user_id', '=', 'u.id')
-            ->select([
-                'user_id', 'username', 'nick', // 用户信息
-                's.id', 'problem_id', 'judge_type', 'language', 'submit_time', 'ip', 'ip_loc',
-                'result', 'pass_rate', 'sim_rate', 'sim_sid', 'time', 'memory', 'judger'
-            ])
-            ->where('s.contest_id', $id)
-            ->when(isset($_GET['index']) && $_GET['index'] >= 0, function ($q) use ($pid2index) {
-                return $q->where('problem_id', array_search($_GET['index'], $pid2index));
-            })
-            ->when(isset($_GET['user_id']) && $_GET['user_id'] >= 0, function ($q) {
-                return $q->where('user_id', $_GET['user_id']);
-            })
-            ->when(intval($_GET['sim_rate'] ?? 0) > 0, function ($q) {
-                return $q->where('sim_rate', '>=', $_GET['sim_rate']); // 0~100
-            })
-            ->when(isset($_GET['username']) && $_GET['username'] != null, function ($q) {
-                return $q->where('username', 'like', $_GET['username'] . '%');
-            })
-            ->when(isset($_GET['result']) && $_GET['result'] >= 0, function ($q) {
-                return $q->where('result', $_GET['result']);
-            })
-            ->when(isset($_GET['language']) && $_GET['language'] >= 0, function ($q) {
-                return $q->where('language', $_GET['language']);
-            })
-            ->when(isset($_GET['ip']) && $_GET['ip'] != null, function ($q) {
-                return $q->where('ip', $_GET['ip']);
-            })
-            ->when(isset($_GET['top_id']) && $_GET['top_id'] != null, function ($q) {
-                if (isset($_GET['reverse']) && $_GET['reverse'] == 1)
-                    return $q->where('s.id', '>=', $_GET['top_id']);
-                return $q->where('s.id', '<=', $_GET['top_id']);
-            })
-            ->orderBy('s.id', (isset($_GET['reverse']) && $_GET['reverse'] == 1) ? 'asc' : 'desc')
-            ->limit(10)->get();
-
-        if (isset($_GET['reverse']) && $_GET['reverse'] == 1)
-            $solutions = $solutions->reverse();
-
-        // 计算题目在竞赛中的题号[0,1,2,...]
-        foreach ($solutions as &$s) {
-            $s->index = $pid2index[$s->problem_id] ?? ($s->problem_id - 1); // 注意已删除的题目不在竞赛题号列表中
-        }
-        return view('solution.solutions', compact('contest', 'solutions', 'pid2index'));
+        $contest = DB::table('contests')->find($id);
+        return view('contest.solutions', compact('contest'));
     }
 
     // 获取榜单

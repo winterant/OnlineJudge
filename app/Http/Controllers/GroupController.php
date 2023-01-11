@@ -73,6 +73,12 @@ class GroupController extends Controller
         return view('group.group', compact('group', 'contests'));
     }
 
+    public function solutions(Request $request, $group_id)
+    {
+        $group = DB::table('groups as g')->find($group_id);
+        return view('group.solutions', compact('group'));
+    }
+
     // 具体的某一群组的成员列表
     public function members(Request $request, $group_id)
     {

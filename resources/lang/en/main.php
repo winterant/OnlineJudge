@@ -171,7 +171,7 @@ return [
     "Upload File"   => "Upload File",
     "MySolution"    => "My history solutions",
     "More"          => "More",
-    "Similarity Check" => "Similarity Check",
+    "Similarity" => "Similarity",
     "Wrong Data"    => "Wrong Data",
     "All Result"    => "All Result",
     "Result"        => "Result",

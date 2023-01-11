@@ -86,6 +86,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
     // 具体的群组
     Route::middleware(['auth', 'CheckGroup'])->group(function () {
         Route::get('groups/{id}', 'GroupController@group')->name('group');
+        Route::get('groups/{id}/solutions', 'GroupController@solutions')->name('group.solutions');
         Route::get('groups/{id}/members', 'GroupController@members')->name('group.members');
         Route::get('groups/{id}/members/{uid}', 'GroupController@member')->name('group.member');
     });

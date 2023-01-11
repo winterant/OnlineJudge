@@ -171,7 +171,7 @@ return [
     "Upload File"   => "上传文件",
     "MySolution"    => "我的历史提交",
     "More"          => "更多",
-    "Similarity Check" => "相似度",
+    "Similarity" => "相似度",
     "Wrong Data"    => "出错数据",
     "All Result"    => "所有结果",
     "Result"        => "结果",

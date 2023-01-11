@@ -18,6 +18,10 @@
           href="{{ route('group', $groupId) }}">{{ trans('main.Overview') }}</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link py-3 @if (Route::currentRouteName() == 'group.solutions') active @endif"
+          href="{{ route('group.solutions', $groupId) }}">{{ trans('main.Solutions') }}</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link py-3 @if (Route::currentRouteName() == 'group.members') active @endif"
           href="{{ route('group.members', $groupId) }}">{{ trans('main.Members') }}</a>
       </li>
