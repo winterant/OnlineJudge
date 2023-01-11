@@ -32,7 +32,7 @@ class Solutions extends Component
             // 获取用户名及其昵称
             ->join('users as u', 'u.id', '=', 's.user_id')
             // 对于普通用户，只允许查看：非竞赛/已结束竞赛/自己的提交
-            ->when(!$user->canAny(['admin.solution.view', 'admin.contest.view']), function ($q) {
+            ->when(!$user || !$user->canAny(['admin.solution.view', 'admin.contest.view']), function ($q) {
                 $q->leftJoin('contests as c', 'c.id', '=', 's.contest_id')
                     ->where(function ($sq) {
                         $sq->where('c.end_time', '<', date('Y-m-d H:i:s')) // 已结束竞赛
