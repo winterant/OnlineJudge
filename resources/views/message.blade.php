@@ -6,7 +6,7 @@
 
 @extends('layouts.' . ['client', 'admin'][$is_admin ?? 0])
 
-@section('title', trans('main.' . ['Failed', 'Success'][$success ?? 0]) . ' | ' . get_setting('siteName'))
+@section('title', trans('main.' . ['Failed', 'Success'][$success ?? 0]))
 
 @section('content')
   <div class="row justify-content-center">

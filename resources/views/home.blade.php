@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', get_setting('siteName'))
+@section('title', __('main.Home'))
 
 @section('content')
 

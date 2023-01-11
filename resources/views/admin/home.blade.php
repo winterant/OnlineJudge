@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', '后台管理 | ' . get_setting('siteName'))
+@section('title', '后台管理')
 
 @section('content')
 

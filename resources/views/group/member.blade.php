@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', trans('main.Study Schedule') . ' | ' . $group->name . ' | ' . get_setting('siteName'))
+@section('title', trans('main.Study Schedule') . ' | ' . $group->name)
 
 @section('content')
 

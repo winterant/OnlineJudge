@@ -4,7 +4,7 @@
 <head>
 
   <x-head />
-  <title>@yield('title')</title>
+  <title>@yield('title') | {{ get_setting('siteName') }}</title>
 
   <style type="text/css">
     .nav-link,

@@ -2,9 +2,9 @@
 
 @if (isset($contest))
   @section('title', trans('main.Problem') . ' ' . index2ch($problem->index) . ' | ' . trans('main.Contest') . ' ' .
-    $contest->id . ' | ' . get_setting('siteName'))
+    $contest->id)
   @else
-  @section('title', trans('main.Problem') . ' ' . $problem->id . ' | ' . get_setting('siteName'))
+  @section('title', trans('main.Problem') . ' ' . $problem->id)
 @endif
 
 @section('content')

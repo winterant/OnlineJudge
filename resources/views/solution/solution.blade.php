@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', __('main.Solution') . ' | ' . get_setting('siteName'))
+@section('title', __('main.Solution'))
 
 @section('content')
 

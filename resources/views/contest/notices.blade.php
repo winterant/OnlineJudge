@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', trans('main.Notification') . $contest->id . ' | ' . get_setting('siteName'))
+@section('title', trans('main.Notification') . $contest->id)
 
 @section('content')
 

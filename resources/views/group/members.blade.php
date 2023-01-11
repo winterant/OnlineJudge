@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', trans('main.Members') . ' | ' . $group->name . ' | ' . get_setting('siteName'))
+@section('title', trans('main.Members') . ' | ' . $group->name)
 
 @section('content')
 
