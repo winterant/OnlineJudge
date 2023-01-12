@@ -48,12 +48,25 @@ mod_env "REDIS_PORT"        ${REDIS_PORT:-6379}        .env
 mod_env "REDIS_PASSWORD"    ${REDIS_PASSWORD:-null}    .env
 mod_env "MAIL_MAILER"       ${MAIL_MAILER:-smtp}       .env
 mod_env "MAIL_HOST"         ${MAIL_HOST:-smtp.qq.com}  .env
-mod_env "MAIL_PORT"         ${MAIL_PORT:465}           .env
+mod_env "MAIL_PORT"         ${MAIL_PORT:-465}          .env
 mod_env "MAIL_USERNAME"     ${MAIL_USERNAME:-null}     .env
 mod_env "MAIL_PASSWORD"     ${MAIL_PASSWORD:-null}     .env
 mod_env "MAIL_ENCRYPTION"   ${MAIL_ENCRYPTION:-ssl}    .env
 mod_env "MAIL_FROM_ADDRESS" ${MAIL_FROM_ADDRESS:-null} .env
 mod_env "MAIL_FROM_NAME"    ${MAIL_FROM_NAME:-LDUOJ}   .env
+
+
+##########################################################################
+# Start Server
+##########################################################################
+# start nginx server
+echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/nginx/access.log
+echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/nginx/error.log
+service nginx start
+
+# Start php-fpm server
+echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/php-fpm.log
+service php8.1-fpm start
 
 
 ##########################################################################
@@ -68,19 +81,6 @@ php artisan lduoj:init
 
 # Change project owner.
 chown -R www-data:www-data bootstrap storage
-
-
-##########################################################################
-# Start Server
-##########################################################################
-# start nginx server
-echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/nginx/access.log
-echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/nginx/error.log
-service nginx start
-
-# Start php-fpm server
-echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/php-fpm.log
-service php8.1-fpm start
 
 
 ##########################################################################
