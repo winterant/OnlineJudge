@@ -250,10 +250,10 @@
 
           <li class="nav-item">
             <a class="nav-link border-top position-relative" href="#" data-toggle="collapse"
-              data-target="#menu-problem" aria-expanded="false">
+              data-target="#menu-solution" aria-expanded="false">
               <i class="fa fa-paper-plane-o fa-lg" aria-hidden="true"></i>提交记录
             </a>
-            <ul id="menu-problem" class="collapse @if (preg_match('/^admin\.solution\S*$/', Route::currentRouteName())) show @endif">
+            <ul id="menu-solution" class="collapse @if (preg_match('/^admin\.solution\S*$/', Route::currentRouteName())) show @endif">
               <li class="nav-item">
                 <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.solution.rejudge') active @endif"
                   href="{{ route('admin.solution.rejudge') }}">
