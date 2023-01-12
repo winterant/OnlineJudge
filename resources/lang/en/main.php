@@ -62,6 +62,11 @@ return [
     "Notification"  => "Notification",
     "Discussion"    => "Discussion",
     "Discussions"   => "Discussions",
+    "About"         => "About",
+    "Introduction"  => "Introduction",
+    "Judge Service" => "Judge Service",
+    "Judge Result"  => "Judge Result",
+    "Open-Source Code" => "Open-Source Code",
 
     //    user
     "Captcha"       => "Captcha",
@@ -209,8 +214,8 @@ return [
     "Content"       => "Content",
 
     "access_public" => "Public",
-    "access_private"=> "Private",
-    "access_password"=> "Password",
+    "access_private" => "Private",
+    "access_password" => "Password",
 
     "ranking_rule"  => "Ranking Rule",
     "Access"        => "Access",
@@ -219,7 +224,7 @@ return [
     // Groups
     "Group"         => "Group",
     "Groups"        => "Groups",
-    "Related Groups"=> "Related Groups",
+    "Related Groups" => "Related Groups",
     "Creator"       => "Creator",
     "Course"        => "Course",
     "Type"          => "Type",
@@ -232,7 +237,7 @@ return [
     "Identity"      => "Identity",
     "Operate"       => "Operate",
     "My Studies"    => "My Studies",
-    "Study Schedule"=> "Study Schedule",
+    "Study Schedule" => "Study Schedule",
     "Join"          => "Join",
 
     // team

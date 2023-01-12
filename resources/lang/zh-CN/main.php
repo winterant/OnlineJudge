@@ -62,6 +62,11 @@ return [
     "Notification"  => "告示",
     "Discussion"    => "讨论",
     "Discussions"   => "讨论板",
+    "About"         => "关于",
+    "Introduction"  => "介绍",
+    "Judge Service" => "判题服务",
+    "Judge Result"  => "判题结果",
+    "Open-Source Code" => "开源代码",
 
     //    user
     "Captcha"       => "验证码",
