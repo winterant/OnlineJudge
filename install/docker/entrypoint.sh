@@ -44,16 +44,16 @@ mod_env "DB_DATABASE"       ${MYSQL_DATABASE}   .env
 mod_env "DB_USERNAME"       ${MYSQL_USER}       .env
 mod_env "DB_PASSWORD"       ${MYSQL_PASSWORD}   .env
 mod_env "REDIS_HOST"        ${REDIS_HOST:-host.docker.internal} .env
-mod_env "REDIS_PORT"        ${REDIS_PORT:-6379}        .env
-mod_env "REDIS_PASSWORD"    ${REDIS_PASSWORD:-null}    .env
-mod_env "MAIL_MAILER"       ${MAIL_MAILER:-smtp}       .env
-mod_env "MAIL_HOST"         ${MAIL_HOST:-smtp.qq.com}  .env
-mod_env "MAIL_PORT"         ${MAIL_PORT:-465}          .env
-mod_env "MAIL_USERNAME"     ${MAIL_USERNAME:-null}     .env
-mod_env "MAIL_PASSWORD"     ${MAIL_PASSWORD:-null}     .env
-mod_env "MAIL_ENCRYPTION"   ${MAIL_ENCRYPTION:-ssl}    .env
-mod_env "MAIL_FROM_ADDRESS" ${MAIL_FROM_ADDRESS:-null} .env
-mod_env "MAIL_FROM_NAME"    ${MAIL_FROM_NAME:-LDUOJ}   .env
+mod_env "REDIS_PORT"        ${REDIS_PORT:-6379}                 .env
+mod_env "REDIS_PASSWORD"    ${REDIS_PASSWORD:-null}             .env
+mod_env "MAIL_MAILER"       ${MAIL_MAILER:-smtp}                .env
+mod_env "MAIL_HOST"         ${MAIL_HOST:-smtp.qq.com}           .env
+mod_env "MAIL_PORT"         ${MAIL_PORT:-465}                   .env
+mod_env "MAIL_USERNAME"     ${MAIL_USERNAME:-null}              .env
+mod_env "MAIL_PASSWORD"     ${MAIL_PASSWORD:-null}              .env
+mod_env "MAIL_ENCRYPTION"   ${MAIL_ENCRYPTION:-ssl}             .env
+mod_env "MAIL_FROM_ADDRESS" ${MAIL_FROM_ADDRESS:-null}          .env
+mod_env "MAIL_FROM_NAME"    "\"${MAIL_FROM_NAME:-LDUOJ}\""      .env
 
 
 ##########################################################################
