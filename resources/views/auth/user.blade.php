@@ -9,8 +9,8 @@
       <h2>
         <span>{{ $user->username }}</span>
         @if (isset($user->email) && $user->email)
-          <span style="span-weight: lighter;span-size: 1rem">
-            <{{ $user->email }}>
+          <span style="font-weight: lighter; font-size: 1.2rem">
+            &lt; {{ $user->email }} &gt;
           </span>
         @endif
         @if (Auth::check() && (Auth::user()->can('admin.user.update') || Auth::user()->username == $user->username))

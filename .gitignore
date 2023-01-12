@@ -1,6 +1,6 @@
 **/.DS_Store
 .idea
 .vscode
-node_modules
-vendor
+/node_modules
+/vendor
 .env
