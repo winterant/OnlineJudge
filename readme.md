@@ -1,8 +1,10 @@
 <h1 align="center">Ludong University Online Judge</h1>
 
-> 鲁东大学程序设计在线测评系统与考试平台  
-> 官方网站：<https://icpc.ldu.edu.cn>  
-> 中文文档：<https://winterant.github.io/OnlineJudge>
+> 欢迎来到NightCloud OJ
+> OnlineJudge by [winterant](https://github.com/winterant)  
+> 二次开发 by [xueruhao(NightCloud Team)](https://github.com/xueruhao)  
+> 官方网站：<https://www.nightcloudteam.cn>  
+> 示例(beta)：<https://oj.nightcloudteam.cn>
 
 # 💡 快速了解
 
