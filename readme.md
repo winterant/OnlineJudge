@@ -1,6 +1,6 @@
 <h1 align="center">NightCloud OJ</h1>
 
-> 欢迎来到NightCloud OJ
+> 欢迎来到NightCloud OJ  
 > OnlineJudge by [winterant](https://github.com/winterant)  
 > 二次开发 by [xueruhao(NightCloud Team)](https://github.com/xueruhao)  
 > 官方网站：<https://www.nightcloudteam.cn>  
