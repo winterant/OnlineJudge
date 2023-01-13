@@ -11,30 +11,30 @@ use Illuminate\Support\Facades\Storage;
 
 class SolutionController extends Controller
 {
-    public function solutions(Request $request)
+    public function solutions()
     {
         return view('solution.solutions');
     }
 
     // web 查看一条提交记录
-    public function solution($id)
+    public function solution(Request $request, $id)
     {
         $solution = DB::table('solutions')->find($id);
         $solution->username = DB::table('users')->find($solution->user_id)->username ?? null;
-        $can = $this->can_view_solution($solution, true);
+        $can = $this->can_view_solution($request, $solution, true);
         if ($can['ok'])
             return view('solution.solution', compact('solution'));
         return view('message', ['msg' => $can['msg']]); // 失败
     }
 
     // web 读取出错数据
-    public function solution_wrong_data($id, $type)
+    public function solution_wrong_data(Request $request, $id, $type)
     {
         $solution = DB::table('solutions')->select(['problem_id', 'user_id', 'submit_time', 'wrong_data'])->find($id);
         if (!$solution || $solution->wrong_data === null)
             return view('message', ['msg' => '没有记录出错数据']);
 
-        $can = $this->can_view_solution($solution, false);
+        $can = $this->can_view_solution($request, $solution, false);
         if ($can['ok']) {
             $path_without_ext = testdata_path($solution->problem_id . '/test/' . $solution->wrong_data);
             if ($type == 'in' && file_exists($path_without_ext . '.in'))
@@ -51,7 +51,7 @@ class SolutionController extends Controller
     }
 
 
-    private function can_view_solution(&$solution, $can_in_contest = False)
+    private function can_view_solution(Request $request, &$solution, $can_in_contest = False)
     {
         // ========================= 先查询所在竞赛的必要信息 ==========================
         if (($solution->contest_id ?? -1) > 0) {
@@ -67,11 +67,11 @@ class SolutionController extends Controller
             } else
                 $solution->contest_id = -1; // 这条solution以前是竞赛中的，但题目现在被从竞赛中删除了
         }
+
         // =================== 管理员特权 =====================
-        /** @var \App\Models\User */
-        $user = Auth::user();
-        if ($user->can('admin.solution.view'))
+        if (Auth::check() && $request->user()->can('admin.solution.view'))
             return ['ok' => 1];
+
         // ================ 下面检查普通用户 ===================
         if (isset($solution->contest_id) && !$can_in_contest && date('Y-m-d H:i:s') < $solution->end_time)
             return ['ok' => 0, 'msg' => trans('sentence.not_end')]; // 竞赛未结束不允许查看
