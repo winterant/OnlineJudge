@@ -1,4 +1,4 @@
-<h1 align="center">Ludong University Online Judge</h1>
+<h1 align="center">NightCloud OJ</h1>
 
 > 欢迎来到NightCloud OJ
 > OnlineJudge by [winterant](https://github.com/winterant)  
