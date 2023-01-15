@@ -112,6 +112,10 @@
         opacity:.3;
         z-index:49;
     }
+    /* 深色模式 */
+    .darkmode-layer, .darkmode-toggle {
+        z-index: 50;
+    }
   </style>
 </head>
 
@@ -188,6 +192,7 @@
   <x-footer />
 
 </body>
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
 <script>
     $("#mask").show();
     /* 加载完成动画结束 */
@@ -195,5 +200,22 @@
         $(".spinner").fadeOut("slow");
         $("#mask").fadeOut("slow");
     })
+    /* 深色模式设置 */
+    const options = {
+        bottom: "84.3%",                 // default: '32px'
+        right: "unset",                  // default: '32px'
+        left: "2%",                  // default: 'unset'
+        time: "1s",                   // default: '0.3s'
+        mixColor: "#fff",               // default: '#fff'
+        backgroundColor: "#fff",        // default: '#fff'
+        buttonColorDark: "#0e0b64",     // default: '#100f2c'
+        buttonColorLight: "#9595954f",       // default: '#fff'
+        saveInCookies: true,            // default: true,
+        label: "🌓",                    // default: ''
+        autoMatchOsTheme: true,         // default: true
+    };
+    const darkmode = new Darkmode(options);
+    /* 显示深色模式开关 */
+    darkmode.showWidget();
 </script>
 </html>
