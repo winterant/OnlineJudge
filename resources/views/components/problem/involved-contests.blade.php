@@ -5,7 +5,7 @@
   </div>
 
   <div class="table-responsive p-2">
-    <table id="table-overview" class="table table-sm">
+    <table id="table-overview" class="table table-sm m-0">
       <tbody>
         <style type="text/css">
           #table-overview td {

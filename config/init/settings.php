@@ -20,6 +20,8 @@ return [
 	"guest_see_problem"	        => true,    //允许访客浏览题目内容
 	"show_disscussions"			=> true,    //在题目页面显示讨论版
 	"post_discussion"			=> false,   //允许普通用户在讨论版发表讨论
+    "problem_show_tag_collection"=> true,   //题目页面是否向已解决该问题的用户收集题目标签（题目涉及知识点）
+    "problem_show_involved_contests"=> true,//从题库进入题目，是否展示涉及到的竞赛
 
 	"rank_show_school"	        => false,   //榜单显示学校
 	"rank_show_class"			=> false,   //榜单显示班级

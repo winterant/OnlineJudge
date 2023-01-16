@@ -127,7 +127,7 @@ return [
     "hours"         => "[*]小时",
     "minutes"       => "[*]分钟",
     "problems"      => "[*]个问题",
-    "Tag Marking"   => "标签收集",
+    "Tag Collection"=> "标签收集",
     "Tag"           => "标签",
     "Tags"          => "标签",
     "Input"         => "输入",

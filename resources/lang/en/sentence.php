@@ -55,7 +55,7 @@ return [
     "submitting"        => "Submitting, wait a while...",
     "judging"           => "Judging...",
     "WA"                => "Unfortunately, your program can't pass all the test data.",
-    "explain_sample"    => "Running the sample correctly does not mean that the program has no loopholes. The judgment service will use a lot of data to evaluate your program.",
+    "explain_sample"    => "Samples are just examples, not all the test data. Please make sure that your program can deal with any data that meets the meaning of the question.",
 
 //    contest.password
     "pwd wrong"         => "The password is wrong",
