@@ -121,6 +121,11 @@
   {{-- 深色模式，必须首先载入，否则会有闪现白页等延迟现象 --}}
   <x-dark-mode />
 
+  {{-- 页面载入动画（管理员可在后台系统设置中手动关闭） --}}
+  @if (get_setting('web_page_loading_animation'))
+    <x-loading-animation />
+  @endif
+
   <div class="h-100" style="padding-top: 70px;">
 
     {{-- 顶部导航栏 --}}

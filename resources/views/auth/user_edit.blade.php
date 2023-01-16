@@ -1,4 +1,4 @@
-@extends('layouts.client')
+@extends('layout-client')
 
 @section('title', $user->username)
 
