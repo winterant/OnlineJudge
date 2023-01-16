@@ -21,20 +21,6 @@
           <input type="text" name="siteName" value="{{ get_setting('siteName') }}" required class="form-control"
             autocomplete="off">
         </div>
-        <div class="input-group mt-2">
-          <div class="input-group-prepend">
-            <span class="input-group-text">页脚信息：</span>
-          </div>
-          <input type="text" name="footer_info" value="{{ get_setting('footer_info') }}" class="form-control"
-            autocomplete="off" placeholder="您可以将备案信息、交流群等信息填在此处，这些信息将显示在页脚位置。">
-        </div>
-        <div class="input-group mt-2">
-          <div class="input-group-prepend">
-            <span class="input-group-text">滚动公告：</span>
-          </div>
-          <input type="text" name="marquee_notice_id" value="{{ get_setting('marquee_notice_id') }}"
-            class="form-control" autocomplete="off" placeholder="请填写一个公告编号，对应公告将在前台页面顶端滚动显示；不填则无滚动公告">
-        </div>
         <div class="form-inline mt-2">
           <div class="input-group-prepend">
             <span class="input-group-text">前台语言：</span>
@@ -43,6 +29,27 @@
             <option value="en">English</option>
             <option value="zh-CN" @if (get_setting('APP_LOCALE') == 'zh-CN') selected @endif>简体中文</option>
           </select>
+        </div>
+        <div class="input-group mt-2">
+          <div class="input-group-prepend">
+            <span class="input-group-text">滚动公告：</span>
+          </div>
+          <input type="text" name="marquee_notice_id" value="{{ get_setting('marquee_notice_id') }}"
+            class="form-control" autocomplete="off" placeholder="请填写一个公告编号，对应公告将在前台页面顶端滚动显示；不填则无滚动公告">
+        </div>
+        <div class="input-group mt-2">
+          <div class="input-group-prepend">
+            <span class="input-group-text">页脚信息：</span>
+          </div>
+          <input type="text" name="footer_info" value="{{ get_setting('footer_info') }}" class="form-control"
+            autocomplete="off" placeholder="您可以将备案信息、交流群等信息填在此处，这些信息将显示在页脚时间右方。">
+        </div>
+        <div class="input-group mt-2">
+          <div class="input-group-prepend">
+            <span class="input-group-text">定制页脚：</span>
+          </div>
+          <textarea type="text" name="footer_customized_part" class="" autocomplete="off"
+            placeholder="您可以自己编写html代码，该内容将显示在页脚时间下方。支持bootstrap/jquery" rows="6" cols="180">{{ get_setting('footer_customized_part') }}</textarea>
         </div>
         <button class="btn text-white mt-4 bg-success">保存</button>
       </form>
@@ -100,8 +107,8 @@
         <hr>
         <div class="form-group">
           <input id="guest_see_problem" type="checkbox">
-          <input name="guest_see_problem" value="{{ get_setting('guest_see_problem') ? 'true' : 'false' }}" type="text"
-            hidden>
+          <input name="guest_see_problem" value="{{ get_setting('guest_see_problem') ? 'true' : 'false' }}"
+            type="text" hidden>
           <span>允许未登录的访客查看题目内容</span>
         </div>
         <div class="form-group">

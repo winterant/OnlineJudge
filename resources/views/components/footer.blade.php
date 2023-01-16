@@ -8,6 +8,10 @@
     @endif
   </div>
 
+  <div>
+    {!! get_setting('footer_customized_part') !!}
+  </div>
+
   <span>
     © 2020-{{ date('Y') }} <a target="_blank" href="https://github.com/winterant/OnlineJudge">Online Judge</a>.
   </span>
