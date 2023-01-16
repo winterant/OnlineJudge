@@ -4,13 +4,24 @@
 <head>
 
   <x-head />
+
   <title>@yield('title') | {{ get_setting('siteName') }}</title>
 
   <style type="text/css">
-    .nav-link,
-    .btn {
-      text-transform: none;
-      /*不使用大写*/
+    @media screen and (min-width: 768px) {
+
+      /*大屏幕，隐藏侧边栏按钮*/
+      #btn-left-menu {
+        display: none;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+
+      /*小屏幕，初始隐藏侧边栏*/
+      #left-menu {
+        display: none;
+      }
     }
 
     /*侧边菜单*/
@@ -72,71 +83,60 @@
       content: "\f054"
     }
 
+    /*侧边菜单项不换行*/
+    #left-menu a {
+      white-space: nowrap;
+    }
+
+    #left-menu i {
+      width: 30px;
+    }
+
     /*选中的菜单项样式*/
     .nav-item .active {
       background-color: #e6e6e6;
       color: #000000;
     }
 
-    /*侧边菜单项不换行*/
-    #left-menu a {
-      white-space: nowrap;
+    .nav-link,
+    .btn {
+      /* 链接、按钮等，不使用大写*/
+      text-transform: none;
     }
 
-
-    @media screen and (min-width: 768px) {
-
-      /*大屏幕，隐藏侧边栏按钮*/
-      #btn-left-menu {
-        display: none;
-      }
-    }
-
-    @media screen and (max-width: 768px) {
-
-      /*小屏幕，初始隐藏侧边栏*/
-      #left-menu {
-        display: none;
-      }
-    }
-
-
-    /*所有table的表头不换行*/
     th {
+      /*所有table的表头不换行*/
       white-space: nowrap;
     }
 
     td {
-      /*table垂直居中*/
+      /*table表格项垂直居中*/
       vertical-align: middle !important;
-    }
-
-    #left-menu i {
-      width: 30px;
     }
   </style>
 </head>
 
 <body>
 
+  {{-- 深色模式，必须首先载入，否则会有闪现白页等延迟现象 --}}
+  <x-dark-mode />
+
   <div class="h-100" style="padding-top: 70px;">
 
+    {{-- 顶部导航栏 --}}
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" style="z-index: 10">
-
-      {{-- 移动端 左侧菜单按钮 --}}
+      {{-- 移动端 左侧菜单开关按钮 --}}
       <button id="btn-left-menu" class="btn border m-0"
         onclick="$('#left-menu').css('display')=='none'?$('#left-menu').slideLeftShow():$('#left-menu').slideLeftHide()">
         <span class="navbar-toggler-icon"></span>
       </button>
-
       {{-- 网页大标题 --}}
       <a class="navbar-brand pl-2" href="{{ route('admin.home') }}">后台管理</a>
-
       {{-- 导航栏项 --}}
       <x-navbar />
-
     </nav>
 
+    {{-- 左侧菜单栏 --}}
     <nav id="left-menu" class="col-10 col-sm-6 col-md-2 sidebar border">
       <div class="sidebar-sticky">
         <ul class="list-unstyled">
@@ -346,26 +346,16 @@
       }, speed, callback);
     };
   </script>
-  {{--
-  <script type="text/javascript">
-    // 遍历导航栏按钮，如果href与当前位置相等，就active
-    $(function() {
-      $("ul li.nav-item").each(function() {
-        const a = $(this).find("a:first")[0];
-        const href = $(a).attr("href");
-        let uri = location.pathname
-        if (/\d+$/.test(uri))
-          uri = uri.substring(0, uri.lastIndexOf('/')); //去掉编号参数
-        if (href.endsWith(uri)) {
-          $(a).addClass("active");
-          // $(this).parent().prev().click();
-          $('.sidebar-sticky').animate({
-            scrollTop: $(this).parent().position().top - 50 + 'px'
-          });
-        }
+
+  <script>
+    //通用提示框，小问号提示这是什么
+    function whatisthis(text) {
+      Notiflix.Report.Init({
+        plainText: false, //使<br>可以换行
       });
-    })
-  </script> --}}
+      Notiflix.Report.Info('{{ __('sentence.Whats this') }}', text, '{{ __('main.Confirm') }}');
+    }
+  </script>
 
 </body>
 

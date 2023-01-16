@@ -7,31 +7,35 @@
 
   <title>@yield('title') | {{ get_setting('siteName') }}</title>
 
-  <style type="text/css">
-    /* 不同屏幕宽度下的主界面宽度 */
-    @media screen and (max-width: 1200px) {
-      .container {
-        @if (get_setting('web_page_display_wide'))max-width: 1200px;
-        @endif
+  {{-- /* 不同屏幕宽度下的主界面宽度 */ --}}
+  @if (get_setting('web_page_display_wide'))
+    <style type="text/css">
+      @media screen and (max-width: 1200px) {
+        .container {
+          max-width: 1200px;
+        }
       }
-    }
 
-    @media screen and (min-width: 1201px) {
-      .container {
-        @if (get_setting('web_page_display_wide'))max-width: 96%;
-        @endif
+      @media screen and (min-width: 1201px) {
+        .container {
+          max-width: 96%;
+        }
       }
-    }
+    </style>
+  @endif
 
-    /* 深色模式 */
-    .darkmode-layer,
-    .darkmode-toggle {
-      z-index: 50;
-    }
-  </style>
 </head>
 
 <body>
+
+  {{-- 深色模式，必须首先载入，否则会有闪现白页等延迟现象 --}}
+  <x-dark-mode />
+
+  {{-- 页面载入动画（管理员可在后台系统设置中手动关闭） --}}
+  @if (get_setting('web_page_loading_animation'))
+    <x-loading-animation />
+  @endif
+
   {{-- 判断如果是从404重定向过来的，则显示提示窗口 --}}
   @if (($_GET['http_error'] ?? 0) == 404)
     <script type="text/javascript">
@@ -68,17 +72,15 @@
     </div>
   @endif
 
+  {{-- 前台导航栏 --}}
   <nav class="navbar navbar-expand-lg navbar-light bg-white mb-3" style="z-index: 10">
-
     {{-- 网站名称 --}}
     <a class="navbar-brand text-center" style="min-width: 200px">{{ get_setting('siteName') }}</a>
-
     {{-- 导航栏菜单项 --}}
     <x-navbar />
-
   </nav>
 
-  {{-- 除了题目页面外，都要滚动显示公告 --}}
+  {{-- 滚动公告；除了题目页面外，都要显示 --}}
   @if (!in_array(Route::currentRouteName(), ['problem', 'contest.problem']))
     <div class="container">
       <x-marquee />
@@ -88,34 +90,18 @@
   {{-- 主界面 --}}
   @yield('content')
 
-  {{-- 页面载入动画（管理员可在后台系统设置中手动关闭） --}}
-  @if (get_setting('web_page_loading_animation'))
-    <x-loading-animation />
-  @endif
-
   {{-- 页脚 --}}
   <x-footer />
 
+  <script>
+    //通用提示框，小问号提示这是什么
+    function whatisthis(text) {
+      Notiflix.Report.Init({
+        plainText: false, //使<br>可以换行
+      });
+      Notiflix.Report.Info('{{ __('sentence.Whats this') }}', text, '{{ __('main.Confirm') }}');
+    }
+  </script>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
-<script>
-  /* 深色模式设置 */
-  const options = {
-    bottom: "84.3%", // default: '32px'
-    right: "unset", // default: '32px'
-    left: "2%", // default: 'unset'
-    time: "1s", // default: '0.3s'
-    mixColor: "#fff", // default: '#fff'
-    backgroundColor: "#fff", // default: '#fff'
-    buttonColorDark: "#0e0b64", // default: '#100f2c'
-    buttonColorLight: "#9595954f", // default: '#fff'
-    saveInCookies: true, // default: true,
-    label: "🌓", // default: ''
-    autoMatchOsTheme: true, // default: true
-  };
-  const darkmode = new Darkmode(options);
-  /* 显示深色模式开关 */
-  darkmode.showWidget();
-</script>
 
 </html>

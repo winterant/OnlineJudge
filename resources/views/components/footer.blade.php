@@ -2,7 +2,7 @@
 <div id="footer" class="text-center pb-3">
   <div>
     <span id="localtime">{{ date('Y-m-d H:i:s') }}</span>
-    @if ($footer_info)
+    @if ($footer_info = get_setting('footer_info'))
       &nbsp;&nbsp;|&nbsp;&nbsp;
       {{ $footer_info }}
     @endif
@@ -15,7 +15,7 @@
     All Rights Reserved.
   </span>
 
-  @if ($web_version)
+  @if ($web_version = get_oj_version())
     <span>Version: {{ $web_version }}</span>
   @endif
 </div>
@@ -35,12 +35,4 @@
       document.getElementById('localtime').innerHTML = str;
     }, 1000); //每秒刷新时间
   })
-
-  //通用提示框，小问号提示这是什么
-  function whatisthis(text) {
-    Notiflix.Report.Init({
-      plainText: false, //使<br>可以换行
-    });
-    Notiflix.Report.Info('{{ __('sentence.Whats this') }}', text, '{{ __('main.Confirm') }}');
-  }
 </script>
