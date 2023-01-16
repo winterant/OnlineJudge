@@ -5,7 +5,7 @@
 <style>
   /* 加载动画 */
   .spinner {
-    position: absolute;
+    position: fixed;
     width: 60px;
     height: 60px;
     left: 51%;
@@ -85,7 +85,7 @@
 
   /* 加载灰色蒙版 */
   #mask {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
