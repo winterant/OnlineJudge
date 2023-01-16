@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layout-admin')
 
 @section('title', '竞赛类别管理 | 后台')
 

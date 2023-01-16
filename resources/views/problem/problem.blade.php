@@ -1,4 +1,4 @@
-@extends('layouts.client')
+@extends('layout-client')
 
 @if (isset($contest))
   @section('title', trans('main.Problem') . ' ' . index2ch($problem->index) . ' | ' . trans('main.Contest') . ' ' .

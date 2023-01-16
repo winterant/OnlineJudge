@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layout-admin')
 
 @section('title', '公告列表 | 后台')
 

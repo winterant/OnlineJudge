@@ -4,6 +4,19 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * 获取当前项目的版本号，原理是读取文件`install/.version`首行，有缓存(每次重启时会自动清空)
+ */
+function get_oj_version()
+{
+    return Cache::remember('web:version', 3600 * 24 * 30, function () {
+        if (file_exists(base_path('install/.version'))) {
+            $f = fopen(base_path('install/.version'), 'r');
+            return fgets($f);
+        }
+    });
+}
+
 
 /**
  * 获取配置项的值。

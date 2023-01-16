@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layout-admin')
 
 @section('title', '账号生成 | 后台')
 

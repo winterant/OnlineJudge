@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layout-admin')
 
 @section('title','测试数据管理 | 后台')
 

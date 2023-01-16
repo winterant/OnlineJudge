@@ -1,11 +1,13 @@
-@extends('layouts.admin')
+@extends('layout-admin')
 
 @section('title', '设置 | 后台管理')
 
 @section('content')
 
   <h2>设置</h2>
+
   <hr>
+
   <div class="container">
     <div class="my-container bg-white">
       <h4>基本信息</h4>
@@ -19,20 +21,6 @@
           <input type="text" name="siteName" value="{{ get_setting('siteName') }}" required class="form-control"
             autocomplete="off">
         </div>
-        <div class="input-group mt-2">
-          <div class="input-group-prepend">
-            <span class="input-group-text">页脚信息：</span>
-          </div>
-          <input type="text" name="footer_info" value="{{ get_setting('footer_info') }}" class="form-control"
-            autocomplete="off" placeholder="您可以将备案信息、交流群等信息填在此处，这些信息将显示在页脚位置。">
-        </div>
-        <div class="input-group mt-2">
-          <div class="input-group-prepend">
-            <span class="input-group-text">滚动公告：</span>
-          </div>
-          <input type="text" name="marquee_notice_id" value="{{ get_setting('marquee_notice_id') }}"
-            class="form-control" autocomplete="off" placeholder="请填写一个公告编号，对应公告将在前台页面顶端滚动显示；不填则无滚动公告">
-        </div>
         <div class="form-inline mt-2">
           <div class="input-group-prepend">
             <span class="input-group-text">前台语言：</span>
@@ -41,6 +29,27 @@
             <option value="en">English</option>
             <option value="zh-CN" @if (get_setting('APP_LOCALE') == 'zh-CN') selected @endif>简体中文</option>
           </select>
+        </div>
+        <div class="input-group mt-2">
+          <div class="input-group-prepend">
+            <span class="input-group-text">滚动公告：</span>
+          </div>
+          <input type="text" name="marquee_notice_id" value="{{ get_setting('marquee_notice_id') }}"
+            class="form-control" autocomplete="off" placeholder="请填写一个公告编号，对应公告将在前台页面顶端滚动显示；不填则无滚动公告">
+        </div>
+        <div class="input-group mt-2">
+          <div class="input-group-prepend">
+            <span class="input-group-text">页脚信息：</span>
+          </div>
+          <input type="text" name="footer_info" value="{{ get_setting('footer_info') }}" class="form-control"
+            autocomplete="off" placeholder="您可以将备案信息、交流群等信息填在此处，这些信息将显示在页脚时间右方。">
+        </div>
+        <div class="input-group mt-2">
+          <div class="input-group-prepend">
+            <span class="input-group-text">定制页脚：</span>
+          </div>
+          <textarea type="text" name="footer_customized_part" class="" autocomplete="off"
+            placeholder="您可以自己编写html代码，该内容将显示在页脚时间下方。支持bootstrap/jquery" rows="6" cols="180">{{ get_setting('footer_customized_part') }}</textarea>
         </div>
         <button class="btn text-white mt-4 bg-success">保存</button>
       </form>
@@ -54,10 +63,16 @@
           <input id="web_page_display_wide" type="checkbox">
           <input name="web_page_display_wide" value="{{ get_setting('web_page_display_wide') ? 'true' : 'false' }}"
             type="text" hidden>
-          <font>前台页面宽度最大化，使得左右两边铺满屏幕</font>
+          <span>前台页面宽度最大化，使得左右两边铺满屏幕</span>
         </div>
-
+        <div class="form-group">
+          <input id="web_page_loading_animation" type="checkbox">
+          <input name="web_page_loading_animation"
+            value="{{ get_setting('web_page_loading_animation') ? 'true' : 'false' }}" type="text" hidden>
+          <span>页面载入动画，页面加载过程中以半透明幕布覆盖全屏，中部显示加载动画</span>
+        </div>
       </div>
+
       <div class="my-container bg-white">
         <h4>用户访问</h4>
         <hr>
@@ -92,14 +107,14 @@
         <hr>
         <div class="form-group">
           <input id="guest_see_problem" type="checkbox">
-          <input name="guest_see_problem" value="{{ get_setting('guest_see_problem') ? 'true' : 'false' }}" type="text"
-            hidden>
+          <input name="guest_see_problem" value="{{ get_setting('guest_see_problem') ? 'true' : 'false' }}"
+            type="text" hidden>
           <span>允许未登录的访客查看题目内容</span>
         </div>
         <div class="form-group">
           <input id="show_disscussions" type="checkbox">
-          <input name="show_disscussions" value="{{ get_setting('show_disscussions') ? 'true' : 'false' }}" type="text"
-            hidden>
+          <input name="show_disscussions" value="{{ get_setting('show_disscussions') ? 'true' : 'false' }}"
+            type="text" hidden>
           <span>是否在题目页面显示讨论版</span>
         </div>
         <div class="form-group">
@@ -114,9 +129,9 @@
         <h4>竞赛显示</h4>
         <div class="form-group">
           <input id="rank_show_school" type="checkbox">
-          <input name="rank_show_school" value="{{ get_setting('rank_show_school') ? 'true' : 'false' }}" type="text"
-            hidden>
-          <font>在竞赛的榜单中，显示用户的学校</font>
+          <input name="rank_show_school" value="{{ get_setting('rank_show_school') ? 'true' : 'false' }}"
+            type="text" hidden>
+          <span>在竞赛的榜单中，显示用户的学校</span>
         </div>
         <div class="form-group">
           <input id="rank_show_class" type="checkbox">
@@ -128,25 +143,11 @@
           <input id="rank_show_nick" type="checkbox">
           <input name="rank_show_nick" value="{{ get_setting('rank_show_nick') ? 'true' : 'false' }}" type="text"
             hidden>
-          <font>在竞赛的榜单中，显示用户的姓名</font>
+          <span>在竞赛的榜单中，显示用户的姓名</span>
         </div>
       </div>
     </form>
-    <script>
-      $(function() {
-        @php($btns = ['web_page_display_wide', 'login_reg_captcha', 'allow_register', 'display_complete_userinfo', 'display_complete_standings', 'guest_see_problem', 'show_disscussions', 'post_discussion', 'rank_show_school', 'rank_show_class', 'rank_show_nick'])
-        @foreach ($btns as $name)
-          new Switch($("#{{ $name }}")[0], {
-            // size: 'small',
-            checked: '{{ get_setting($name) ? 1 : 0 }}' === '1',
-            onChange: function() {
-              $("input[name={{ $name }}]").attr('value', this.getChecked());
-              $("#form_switch").submit();
-            }
-          });
-        @endforeach
-      })
-    </script>
+
     <div class="my-container bg-white">
       <form onsubmit="return submit_settings(this)" method="post">
         @csrf
@@ -174,7 +175,25 @@
     </div>
   </div>
 
-  <script type="text/javascript">
+  <script>
+    // 初始化所有开关按钮
+    $(function() {
+      @php($btns = ['web_page_display_wide', 'web_page_loading_animation', 'login_reg_captcha', 'allow_register', 'display_complete_userinfo', 'display_complete_standings', 'guest_see_problem', 'show_disscussions', 'post_discussion', 'rank_show_school', 'rank_show_class', 'rank_show_nick'])
+      @foreach ($btns as $name)
+        new Switch($("#{{ $name }}")[0], {
+          // size: 'small',
+          checked: '{{ get_setting($name) ? 1 : 0 }}' === '1',
+          onChange: function() {
+            $("input[name={{ $name }}]").attr('value', this.getChecked());
+            $("#form_switch").submit();
+          }
+        });
+      @endforeach
+    })
+  </script>
+
+  <script>
+    // 提交改动
     function submit_settings(form) {
       $.ajax({
         type: "patch", //方法类型
