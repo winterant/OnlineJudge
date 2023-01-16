@@ -8,6 +8,7 @@ return [
     "APP_LOCALE"                => "en",    //网站前台默认语言
 
 	"web_page_display_wide" 	=> true,    //宽屏模式
+    "web_page_loading_animation"=> true,    //页面载入动画（全屏覆盖/中部动画）
 
 	"allow_register"	        => true,    //允许访客注册账号
 	"login_reg_captcha"			=> true,    //登陆和注册时使用验证码

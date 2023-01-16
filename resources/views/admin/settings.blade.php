@@ -5,7 +5,9 @@
 @section('content')
 
   <h2>设置</h2>
+
   <hr>
+
   <div class="container">
     <div class="my-container bg-white">
       <h4>基本信息</h4>
@@ -54,10 +56,16 @@
           <input id="web_page_display_wide" type="checkbox">
           <input name="web_page_display_wide" value="{{ get_setting('web_page_display_wide') ? 'true' : 'false' }}"
             type="text" hidden>
-          <font>前台页面宽度最大化，使得左右两边铺满屏幕</font>
+          <span>前台页面宽度最大化，使得左右两边铺满屏幕</span>
         </div>
-
+        <div class="form-group">
+          <input id="web_page_loading_animation" type="checkbox">
+          <input name="web_page_loading_animation"
+            value="{{ get_setting('web_page_loading_animation') ? 'true' : 'false' }}" type="text" hidden>
+          <span>页面载入动画，页面加载过程中以半透明幕布覆盖全屏，中部显示加载动画</span>
+        </div>
       </div>
+
       <div class="my-container bg-white">
         <h4>用户访问</h4>
         <hr>
@@ -98,8 +106,8 @@
         </div>
         <div class="form-group">
           <input id="show_disscussions" type="checkbox">
-          <input name="show_disscussions" value="{{ get_setting('show_disscussions') ? 'true' : 'false' }}" type="text"
-            hidden>
+          <input name="show_disscussions" value="{{ get_setting('show_disscussions') ? 'true' : 'false' }}"
+            type="text" hidden>
           <span>是否在题目页面显示讨论版</span>
         </div>
         <div class="form-group">
@@ -114,9 +122,9 @@
         <h4>竞赛显示</h4>
         <div class="form-group">
           <input id="rank_show_school" type="checkbox">
-          <input name="rank_show_school" value="{{ get_setting('rank_show_school') ? 'true' : 'false' }}" type="text"
-            hidden>
-          <font>在竞赛的榜单中，显示用户的学校</font>
+          <input name="rank_show_school" value="{{ get_setting('rank_show_school') ? 'true' : 'false' }}"
+            type="text" hidden>
+          <span>在竞赛的榜单中，显示用户的学校</span>
         </div>
         <div class="form-group">
           <input id="rank_show_class" type="checkbox">
@@ -128,25 +136,11 @@
           <input id="rank_show_nick" type="checkbox">
           <input name="rank_show_nick" value="{{ get_setting('rank_show_nick') ? 'true' : 'false' }}" type="text"
             hidden>
-          <font>在竞赛的榜单中，显示用户的姓名</font>
+          <span>在竞赛的榜单中，显示用户的姓名</span>
         </div>
       </div>
     </form>
-    <script>
-      $(function() {
-        @php($btns = ['web_page_display_wide', 'login_reg_captcha', 'allow_register', 'display_complete_userinfo', 'display_complete_standings', 'guest_see_problem', 'show_disscussions', 'post_discussion', 'rank_show_school', 'rank_show_class', 'rank_show_nick'])
-        @foreach ($btns as $name)
-          new Switch($("#{{ $name }}")[0], {
-            // size: 'small',
-            checked: '{{ get_setting($name) ? 1 : 0 }}' === '1',
-            onChange: function() {
-              $("input[name={{ $name }}]").attr('value', this.getChecked());
-              $("#form_switch").submit();
-            }
-          });
-        @endforeach
-      })
-    </script>
+
     <div class="my-container bg-white">
       <form onsubmit="return submit_settings(this)" method="post">
         @csrf
@@ -174,7 +168,25 @@
     </div>
   </div>
 
-  <script type="text/javascript">
+  <script>
+    // 初始化所有开关按钮
+    $(function() {
+      @php($btns = ['web_page_display_wide', 'web_page_loading_animation', 'login_reg_captcha', 'allow_register', 'display_complete_userinfo', 'display_complete_standings', 'guest_see_problem', 'show_disscussions', 'post_discussion', 'rank_show_school', 'rank_show_class', 'rank_show_nick'])
+      @foreach ($btns as $name)
+        new Switch($("#{{ $name }}")[0], {
+          // size: 'small',
+          checked: '{{ get_setting($name) ? 1 : 0 }}' === '1',
+          onChange: function() {
+            $("input[name={{ $name }}]").attr('value', this.getChecked());
+            $("#form_switch").submit();
+          }
+        });
+      @endforeach
+    })
+  </script>
+
+  <script>
+    // 提交改动
     function submit_settings(form) {
       $.ajax({
         type: "patch", //方法类型
