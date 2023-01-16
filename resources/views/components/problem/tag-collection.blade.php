@@ -39,30 +39,15 @@
 <div id="div_submit_tag">
 
   <div class="p-2" style="background-color: rgb(162, 212, 255)">
-    <h4 class="m-0">{{ trans('main.Tag Marking') }}</h4>
+    <h4 class="m-0">{{ trans('main.Tag Collection') }}</h4>
   </div>
 
-  <form id="form_submit_tag" class="p-3" onsubmit="submit_problem_tag();return false;">
+  <form id="form_submit_tag" class="p-3 m-0">
     <input name="problem_id" value="{{ $problem_id }}" hidden>
 
-    <div class="alert alert-success">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
-      </button>
+    <div class="alert alert-success p-2">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
       {{ __('sentence.Congratulations') }}
-    </div>
-    <div class="form-inline mb-2">
-      <span>{{ __('main.Tag') }}：</span>
-      {{--                                <div class="form-inline"> --}}
-      {{--                                    <input type="text" class="form-control mr-2" oninput="input_auto_width($(this))" required name="tag_names[]" style="width: 50px"> --}}
-      {{--                                </div> --}}
-      <a id="add_tag_btn" class="btn btn-sm border mb-0" onclick="add_tag_input($(this))">
-        <i class="fa fa-plus" aria-hidden="true"></i>
-        {{ __('main.Input') . ' ' . __('main.Tag') }}
-      </a>
-      <a class="btn btn-sm border mb-0 ml-1" data-toggle="modal" data-target="#modal_tag_pool">
-        <i class="fa fa-list" aria-hidden="true"></i>
-        {{ __('main.Tag Pool') }}
-      </a>
     </div>
     @if (count($tags) > 0)
       <div class="form-group">
@@ -76,19 +61,32 @@
         @endforeach
       </div>
     @endif
-    <button type="submit" class="btn bg-success text-white mt-1">{{ trans('main.Submit') }}</button>
+    <div class="form-inline mb-2">
+      <span>{{ __('main.Tag') }}：</span>
+      {{-- <div class="form-inline">
+        <input type="text" class="form-control mr-2" oninput="input_auto_width($(this))" required name="tag_names[]"
+          style="width: 50px">
+      </div> --}}
+      <a id="add_tag_btn" class="btn btn-sm border m-1" onclick="add_tag_input($(this))">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        {{ __('main.Input') . ' ' . __('main.Tag') }}
+      </a>
+      <a class="btn btn-sm border m-1" data-toggle="modal" data-target="#modal_tag_pool">
+        <i class="fa fa-list" aria-hidden="true"></i>
+        {{ __('main.Tag Pool') }}
+      </a>
+      <a class="btn btn-sm bg-success text-white m-1 px-3"
+        onclick="submit_problem_tag()">{{ trans('main.Submit') }}</a>
+    </div>
   </form>
 </div>
 
 {{-- 问题标签的操作 --}}
-<script type="text/javascript">
-  @if (session('tag_marked'))
-    $(function() {
-      Notiflix.Notify.Success("{{ __('sentence.tag_marked') }}");
-    })
-  @endif
+<script>
+  // 目前输入框个数
   var tag_input_count = 0;
 
+  // 添加一个输入框
   function add_tag_input(that, defa = null) {
     if (tag_input_count >= 5) {
       Notiflix.Notify.Failure("{{ __('sentence.tag_marked_exceed') }}")
@@ -111,11 +109,13 @@
   //初始化, 至少一个输入框
   add_tag_input($("#add_tag_btn"))
 
+  //删除一个输入框
   function delete_tag_input(that) {
     tag_input_count--;
     $(that).parent().remove();
   }
 
+  //检查输入框个数为正
   function check_tag_count() {
     if (tag_input_count > 0)
       return true;
@@ -135,8 +135,9 @@
     $(that).css('width', (width + 30) + 'px');
   }
 </script>
-{{-- 提交表单 --}}
-<script type="text/javascript">
+
+<script>
+  // {{-- 提交表单 --}}
   function submit_problem_tag() {
     $.ajax({
       method: 'post',

@@ -1,9 +1,8 @@
 @extends('layout-client')
 
 @if (isset($contest))
-  @section('title', trans('main.Problem') . ' ' . index2ch($problem->index) . ' | ' . trans('main.Contest') . ' ' .
-    $contest->id)
-  @else
+  @section('title', sprintf('%s %s | %s %s', __('main.Problem'), index2ch($problem->index), __('main.Contest'), $contest->id))
+@else
   @section('title', trans('main.Problem') . ' ' . $problem->id)
 @endif
 
@@ -48,6 +47,11 @@
         /* height: 100vh;  */
         /* background-color:green; */
       }
+
+      .blank-placeholder {
+        width: 100%;
+        height: 30rem;
+      }
     }
   </style>
 
@@ -64,7 +68,7 @@
       @endif
 
       {{-- 题目内容 --}}
-      <div class="p-3">
+      <div class="p-3 border-bottom">
         {{-- 非竞赛&&题目未公开，则提示 --}}
         @if (!isset($contest) && $problem->hidden == 1)
           [<span class="text-red">{{ trans('main.Hidden') }}</span>]
@@ -87,7 +91,7 @@
 
           {{-- 原题连接 --}}
           @if (isset($contest) &&
-              ((Auth::check() && Auth::user()->can('admin.problem.view')) || $contest->end_time < date('Y-m-d H:i:s')))
+                  ((Auth::check() && Auth::user()->can('admin.problem.view')) || $contest->end_time < date('Y-m-d H:i:s')))
             <span style="font-size: 0.85rem">
               [
               <a href="{{ route('problem', $problem->id) }}" target="_blank">{{ __('main.Problem') }}
@@ -159,11 +163,14 @@
           @endif
 
           @if (!empty($samples))
-            <h4 class="mt-2 text-sky">{{ __('main.Samples') }}</h4>
-            <p class="p-1 alert-info">{{ trans('sentence.explain_sample') }}</p>
+            <h4 class="my-2 text-sky">{{ __('main.Samples') }}</h4>
+            <div class="alert alert-info p-2 mb-0">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              <span>{{ trans('sentence.explain_sample') }}</span>
+            </div>
           @endif
           @foreach ($samples as $i => $sam)
-            <div class="border mb-4 not_math">
+            <div class="border my-2 not_math">
               {{-- 样例输入 --}}
               <div class="border-bottom pl-2 bg-light">
                 {{ __('main.Input') }}
@@ -191,26 +198,29 @@
         </div>
       </div>
 
-      <hr>
-
       {{-- 讨论版（题库、开启讨论的竞赛、已结束的竞赛） --}}
-      @if (!isset($contest) || $contest->open_discussion || time() > strtotime($contest->end_time))
+      {{-- @if (!isset($contest) || $contest->open_discussion || time() > strtotime($contest->end_time))
         <div class="mt-3">
           <x-problem.disscussions :problem-id="$problem->id" />
         </div>
-      @endif
+      @endif --}}
 
       {{-- 已经AC的用户进行标签标记 --}}
-      <div class="mt-3">
-        <x-problem.tag-collection :problem-id="$problem->id" :tags="$tags" />
-      </div>
+      @if (get_setting('problem_show_tag_collection'))
+        <div class="my-5 border-bottom">
+          <x-problem.tag-collection :problem-id="$problem->id" :tags="$tags" />
+        </div>
+      @endif
 
       {{-- 题库中查看题目时，显示涉及到的竞赛 --}}
-      @if (!isset($contest))
-        <div class="mt-3">
+      @if (!isset($contest) && get_setting('problem_show_involved_contests'))
+        <div class="my-5 border-bottom">
           <x-problem.involved-contests :problem-id="$problem->id" />
         </div>
       @endif
+
+      {{-- 空白部分，使底部可以拉上来 --}}
+      <div class="blank-placeholder"></div>
 
     </div>
 

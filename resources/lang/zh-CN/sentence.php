@@ -40,7 +40,7 @@ return [
     "Input Code"        => "输入你的代码...",
     "submit_frequently" => "提交频繁! 请在 :sec 秒后尝试再次提交！",
     "submit_ce_frequently" => "你在 :dt 提交的代码发生了编译错误,作为惩罚,你在 :sec 秒内无法继续提交代码!",
-    "Congratulations"   => "祝贺! 你解决了这个问题, 因此我们邀请你为本题进行标记！注意，一经提交不可修改.",
+    "Congratulations"   => "祝贺! 你解决了这个问题, 因此我们邀请你为本题进行标记！注意，一经提交不可修改",
     "tag_marked"        => "标记成功！",
     "tag_marked_exceed" => "最多添加5个标签!",
     "tag_marked_zero"   => "请至少添加一个标签!",
@@ -55,7 +55,7 @@ return [
     "submitting"        => "正在提交，请稍等片刻...",
     "judging"           => "您的代码正在评测中, 请等待...",
     "WA"                => "很遗憾，你的程序没有通过全部测试数据.",
-    "explain_sample"    => "样例运行正确并不代表程序没有漏洞，判题服务将使用大量数据对你的程序进行评测。",
+    "explain_sample"    => "样例只是举例,并非全部测试数据,请保证你的程序能应对任意符合题意的数据",
 
 //    contest.password
     "pwd wrong"         => "密码错误",

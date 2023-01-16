@@ -6,6 +6,7 @@
 - 新增 导航栏增加“关于”，方便用户查看相关信息
 - 新增 页面加载动画 [@xuruhao](https://github.com/xueruhao)
 - 新增 深色模式 [@xuruhao](https://github.com/xueruhao)
+- 新增 支持自定义页脚（支持html/js/css/bootstrap/jquery等）
 
 ## 功能优化
 - 优化 文件结构

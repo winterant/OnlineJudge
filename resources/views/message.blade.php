@@ -4,7 +4,7 @@
   `msg` string
 --}}
 
-@extends('layouts.' . ['client', 'admin'][$is_admin ?? 0])
+@extends($is_admin ?? false ? 'layout-admin' : 'layout-client')
 
 @section('title', trans('main.' . ['Failed', 'Success'][$success ?? 0]))
 

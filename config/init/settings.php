@@ -11,6 +11,7 @@ return [
 
 	"web_page_display_wide" 	=> true,    //宽屏模式
     "web_page_loading_animation"=> true,    //页面载入动画（全屏覆盖/中部动画）
+    "web_page_dark_mode"        => true,    //启用深色模式（根据客户端操作系统主题自动切换）
 
 	"allow_register"	        => true,    //允许访客注册账号
 	"login_reg_captcha"			=> true,    //登陆和注册时使用验证码
@@ -20,6 +21,8 @@ return [
 	"guest_see_problem"	        => true,    //允许访客浏览题目内容
 	"show_disscussions"			=> true,    //在题目页面显示讨论版
 	"post_discussion"			=> false,   //允许普通用户在讨论版发表讨论
+    "problem_show_tag_collection"=> true,   //题目页面是否向已解决该问题的用户收集题目标签（题目涉及知识点）
+    "problem_show_involved_contests"=> true,//从题库进入题目，是否展示涉及到的竞赛
 
 	"rank_show_school"	        => false,   //榜单显示学校
 	"rank_show_class"			=> false,   //榜单显示班级

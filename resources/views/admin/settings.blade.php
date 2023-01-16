@@ -71,10 +71,16 @@
             value="{{ get_setting('web_page_loading_animation') ? 'true' : 'false' }}" type="text" hidden>
           <span>页面载入动画，页面加载过程中以半透明幕布覆盖全屏，中部显示加载动画</span>
         </div>
+        <div class="form-group">
+          <input id="web_page_dark_mode" type="checkbox">
+          <input name="web_page_dark_mode" value="{{ get_setting('web_page_dark_mode') ? 'true' : 'false' }}"
+            type="text" hidden>
+          <span>允许客户端切换深色模式（客户端首次访问时将跟随操作系统主题深色模式/浅色模式）</span>
+        </div>
       </div>
 
       <div class="my-container bg-white">
-        <h4>用户访问</h4>
+        <h4>用户设置</h4>
         <hr>
         <div class="form-group">
           <input id="login_reg_captcha" type="checkbox">
@@ -86,24 +92,24 @@
           <input id="allow_register" type="checkbox">
           <input name="allow_register" value="{{ get_setting('allow_register') ? 'true' : 'false' }}" type="text"
             hidden>
-          <font>允许访客通过前台网页注册账号</font>
+          <span>允许访客通过前台网页注册账号</span>
         </div>
         <div class="form-group">
           <input id="display_complete_userinfo" type="checkbox">
           <input name="display_complete_userinfo"
             value="{{ get_setting('display_complete_userinfo') ? 'true' : 'false' }}" type="text" hidden>
-          <font>对于未登录访客，在个人信息页面显示用户的完整信息，关闭后部分信息将被隐藏</font>
+          <span>对于未登录访客，在个人信息页面显示用户的完整信息，关闭后部分信息将被隐藏</span>
         </div>
         <div class="form-group">
           <input id="display_complete_standings" type="checkbox">
           <input name="display_complete_standings"
             value="{{ get_setting('display_complete_standings') ? 'true' : 'false' }}" type="text" hidden>
-          <font>对于未登录访客，在排行榜页面显示排行榜完整名，关闭后排行榜用户名将被隐藏</font>
+          <span>对于未登录访客，在排行榜页面显示排行榜完整名，关闭后排行榜用户名将被隐藏</span>
         </div>
       </div>
 
       <div class="my-container bg-white">
-        <h4>题目访问</h4>
+        <h4>题目设置</h4>
         <hr>
         <div class="form-group">
           <input id="guest_see_problem" type="checkbox">
@@ -123,10 +129,22 @@
             hidden>
           <span>是否允许普通用户在题目讨论版发言（管理员不受限制）</span>
         </div>
+        <div class="form-group">
+          <input id="problem_show_tag_collection" type="checkbox">
+          <input name="problem_show_tag_collection"
+            value="{{ get_setting('problem_show_tag_collection') ? 'true' : 'false' }}" type="text" hidden>
+          <span>在题目页面是否向已解决该问题的用户收集标签（该题涉及知识点）</span>
+        </div>
+        <div class="form-group">
+          <input id="problem_show_involved_contests" type="checkbox">
+          <input name="problem_show_involved_contests"
+            value="{{ get_setting('problem_show_involved_contests') ? 'true' : 'false' }}" type="text" hidden>
+          <span>从题库进入题目时是否展示涉及到的竞赛（使用了该问题的竞赛）</span>
+        </div>
       </div>
 
       <div class="my-container bg-white">
-        <h4>竞赛显示</h4>
+        <h4>竞赛设置</h4>
         <div class="form-group">
           <input id="rank_show_school" type="checkbox">
           <input name="rank_show_school" value="{{ get_setting('rank_show_school') ? 'true' : 'false' }}"
@@ -137,7 +155,7 @@
           <input id="rank_show_class" type="checkbox">
           <input name="rank_show_class" value="{{ get_setting('rank_show_class') ? 'true' : 'false' }}" type="text"
             hidden>
-          <font>在竞赛的榜单中，显示用户的班级</font>
+          <span>在竞赛的榜单中，显示用户的班级</span>
         </div>
         <div class="form-group">
           <input id="rank_show_nick" type="checkbox">
@@ -149,6 +167,8 @@
     </form>
 
     <div class="my-container bg-white">
+      <h4>判题设置</h4>
+      <hr>
       <form onsubmit="return submit_settings(this)" method="post">
         @csrf
         <div class="form-inline">
@@ -178,7 +198,7 @@
   <script>
     // 初始化所有开关按钮
     $(function() {
-      @php($btns = ['web_page_display_wide', 'web_page_loading_animation', 'login_reg_captcha', 'allow_register', 'display_complete_userinfo', 'display_complete_standings', 'guest_see_problem', 'show_disscussions', 'post_discussion', 'rank_show_school', 'rank_show_class', 'rank_show_nick'])
+      @php($btns = ['web_page_display_wide', 'web_page_loading_animation', 'web_page_dark_mode', 'login_reg_captcha', 'allow_register', 'display_complete_userinfo', 'display_complete_standings', 'guest_see_problem', 'show_disscussions', 'post_discussion', 'problem_show_tag_collection', 'problem_show_involved_contests', 'rank_show_school', 'rank_show_class', 'rank_show_nick'])
       @foreach ($btns as $name)
         new Switch($("#{{ $name }}")[0], {
           // size: 'small',
