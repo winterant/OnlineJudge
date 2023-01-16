@@ -1,9 +1,8 @@
 @extends('layout-client')
 
 @if (isset($contest))
-  @section('title', trans('main.Problem') . ' ' . index2ch($problem->index) . ' | ' . trans('main.Contest') . ' ' .
-    $contest->id)
-  @else
+  @section('title', sprintf('%s %s | %s %s', __('main.Problem'), index2ch($problem->index), __('main.Contest'), $contest->id))
+@else
   @section('title', trans('main.Problem') . ' ' . $problem->id)
 @endif
 
