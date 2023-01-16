@@ -1,84 +1,87 @@
-{{-- 模态框选择标签 --}}
-<div class="modal fade" id="modal_tag_pool">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+<div>
+  {{-- 模态框选择标签 --}}
+  <div class="modal fade" id="modal_tag_pool">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
 
-      <!-- 模态框头部 -->
-      <div class="modal-header">
-        <h4 class="modal-title">{{ __('main.Tag Pool') }}</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-
-      <!-- 模态框主体 -->
-      <div class="modal-body ck-content">
-        <div class="alert alert-success">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-            &times;
-          </button>
-          {{ __('sentence.tag_pool_select') }}
+        <!-- 模态框头部 -->
+        <div class="modal-header">
+          <h4 class="modal-title">{{ __('main.Tag Pool') }}</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-        @foreach ($tag_pool ?? [] as $tag)
-          <div class="d-inline text-nowrap mr-1">
-            <i class="fa fa-tag" aria-hidden="true"></i>
-            <a href="javascript:"
-              onclick="add_tag_input($('#add_tag_btn'),'{{ $tag->name }}');
-                              // $('#modal_tag_pool').modal('hide')">{{ $tag->name }}</a>
+
+        <!-- 模态框主体 -->
+        <div class="modal-body ck-content">
+          <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+              &times;
+            </button>
+            {{ __('sentence.tag_pool_select') }}
           </div>
-        @endforeach
-      </div>
+          @foreach ($tag_pool ?? [] as $tag)
+            <div class="d-inline text-nowrap mr-1">
+              <i class="fa fa-tag" aria-hidden="true"></i>
+              <a href="javascript:"
+                onclick="add_tag_input($('#add_tag_btn'),'{{ $tag->name }}');
+                                // $('#modal_tag_pool').modal('hide')">{{ $tag->name }}</a>
+            </div>
+          @endforeach
+        </div>
 
-      <!-- 模态框底部 -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-      </div>
+        <!-- 模态框底部 -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+        </div>
 
+      </div>
     </div>
   </div>
-</div>
 
-<div id="div_submit_tag">
+  <div id="div_submit_tag">
 
-  <div class="p-2" style="background-color: rgb(162, 212, 255)">
-    <h4 class="m-0">{{ trans('main.Tag Collection') }}</h4>
+    <div class="p-2" style="background-color: rgb(162, 212, 255)">
+      <h4 class="m-0">{{ trans('main.Tag Collection') }}</h4>
+    </div>
+
+    <form id="form_submit_tag" class="p-3 m-0">
+      <input name="problem_id" value="{{ $problem_id }}" hidden>
+
+      <div class="alert alert-success p-2">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{ __('sentence.Congratulations') }}
+      </div>
+      @if (count($tags) > 0)
+        <div class="form-group">
+          <span>{{ __('main.Most Tagged') }}：</span>
+          @foreach ($tags as $item)
+            <div class="d-inline text-nowrap">
+              <i class="fa fa-tag" aria-hidden="true"></i>
+              <a href="javascript:"
+                onclick="add_tag_input($('#add_tag_btn'),'{{ $item->name }}')">{{ $item->name }}</a>
+            </div>
+          @endforeach
+        </div>
+      @endif
+      <div class="form-inline mb-2">
+        <span>{{ __('main.Tag') }}：</span>
+        {{-- <div class="form-inline">
+          <input type="text" class="form-control mr-2" oninput="input_auto_width($(this))" required name="tag_names[]"
+            style="width: 50px">
+        </div> --}}
+        <a id="add_tag_btn" class="btn btn-sm border m-1" onclick="add_tag_input($(this))">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+          {{ __('main.Input') . ' ' . __('main.Tag') }}
+        </a>
+        <a class="btn btn-sm border m-1" data-toggle="modal" data-target="#modal_tag_pool">
+          <i class="fa fa-list" aria-hidden="true"></i>
+          {{ __('main.Tag Pool') }}
+        </a>
+        <a class="btn btn-sm bg-success text-white m-1 px-3"
+          onclick="submit_problem_tag()">{{ trans('main.Submit') }}</a>
+      </div>
+    </form>
   </div>
 
-  <form id="form_submit_tag" class="p-3 m-0">
-    <input name="problem_id" value="{{ $problem_id }}" hidden>
-
-    <div class="alert alert-success p-2">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      {{ __('sentence.Congratulations') }}
-    </div>
-    @if (count($tags) > 0)
-      <div class="form-group">
-        <span>{{ __('main.Most Tagged') }}：</span>
-        @foreach ($tags as $item)
-          <div class="d-inline text-nowrap">
-            <i class="fa fa-tag" aria-hidden="true"></i>
-            <a href="javascript:"
-              onclick="add_tag_input($('#add_tag_btn'),'{{ $item->name }}')">{{ $item->name }}</a>
-          </div>
-        @endforeach
-      </div>
-    @endif
-    <div class="form-inline mb-2">
-      <span>{{ __('main.Tag') }}：</span>
-      {{-- <div class="form-inline">
-        <input type="text" class="form-control mr-2" oninput="input_auto_width($(this))" required name="tag_names[]"
-          style="width: 50px">
-      </div> --}}
-      <a id="add_tag_btn" class="btn btn-sm border m-1" onclick="add_tag_input($(this))">
-        <i class="fa fa-plus" aria-hidden="true"></i>
-        {{ __('main.Input') . ' ' . __('main.Tag') }}
-      </a>
-      <a class="btn btn-sm border m-1" data-toggle="modal" data-target="#modal_tag_pool">
-        <i class="fa fa-list" aria-hidden="true"></i>
-        {{ __('main.Tag Pool') }}
-      </a>
-      <a class="btn btn-sm bg-success text-white m-1 px-3"
-        onclick="submit_problem_tag()">{{ trans('main.Submit') }}</a>
-    </div>
-  </form>
 </div>
 
 {{-- 问题标签的操作 --}}

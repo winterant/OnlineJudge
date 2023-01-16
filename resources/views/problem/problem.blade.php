@@ -207,16 +207,12 @@
 
       {{-- 已经AC的用户进行标签标记 --}}
       @if (get_setting('problem_show_tag_collection'))
-        <div class="my-5 border-bottom">
-          <x-problem.tag-collection :problem-id="$problem->id" :tags="$tags" />
-        </div>
+        <x-problem.tag-collection :problem-id="$problem->id" :tags="$tags" />
       @endif
 
       {{-- 题库中查看题目时，显示涉及到的竞赛 --}}
       @if (!isset($contest) && get_setting('problem_show_involved_contests'))
-        <div class="my-5 border-bottom">
-          <x-problem.involved-contests :problem-id="$problem->id" />
-        </div>
+        <x-problem.involved-contests :problem-id="$problem->id" />
       @endif
 
       {{-- 空白部分，使底部可以拉上来 --}}
