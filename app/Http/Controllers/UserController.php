@@ -115,8 +115,13 @@ class UserController extends Controller
         $users = DB::table('users')->select([
             'username', 'nick', 'solved', 'accepted', 'submitted'
         ])
-            ->when($_GET['username'] ?? false, function ($q) {
-                return $q->where('username', 'like', $_GET['username'] . '%');
+            ->when($_GET['kw'] ?? false, function ($q) {
+                $q->where(function ($q) {
+                    $q->where('username', 'like', $_GET['kw'] . '%')
+                        ->orWhere('nick', 'like', $_GET['kw'] . '%')
+                        ->orWhere('school', 'like', $_GET['kw'] . '%')
+                        ->orWhere('class', 'like', $_GET['kw'] . '%');
+                });
             })
             ->orderByDesc('solved')
             ->orderBy('submitted')
