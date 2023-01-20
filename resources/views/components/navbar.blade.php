@@ -31,7 +31,7 @@
     </li>
     <li class="nav-item">
       <a class="nav-link text-nowrap p-2 @if (preg_match('/^group\S*$/', Route::currentRouteName())) active @endif"
-        href="{{ route('groups.my') }}">
+        href="{{ route('groups', ['mygroups' => 'on']) }}">
         <i class="fa fa-users" aria-hidden="true"></i>&nbsp;{{ trans('main.Groups') }}</i>
       </a>
     </li>
@@ -48,17 +48,21 @@
         <i class="fa fa-info-circle" aria-hidden="true">&nbsp;{{ trans('main.About') }}</i>
       </a>
       <div class="dropdown-menu" aria-labelledby="contestDropdown">
-        <a class="dropdown-item" href="https://winterant.github.io/OnlineJudge/web/" target="_blank">{{ __('main.Introduction') }}</a>
-        <a class="dropdown-item text-nowrap" href="https://winterant.github.io/OnlineJudge/web/judge.html" target="_blank">
+        <a class="dropdown-item" href="https://winterant.github.io/OnlineJudge/web/"
+          target="_blank">{{ __('main.Introduction') }}</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item text-nowrap" href="https://winterant.github.io/OnlineJudge/web/judge.html"
+          target="_blank">
           {{ __('main.Judge Service') }}
         </a>
-        <a class="dropdown-item"
-          href="https://winterant.github.io/OnlineJudge/web/result.html" target="_blank">{{ __('main.Judge Result') }}</a>
+        <a class="dropdown-item" href="https://winterant.github.io/OnlineJudge/web/result.html"
+          target="_blank">{{ __('main.Judge Result') }}</a>
+
+        <a class="dropdown-item" href="https://winterant.github.io/OnlineJudge/web/spj.html"
+          target="_blank">{{ __('main.Special Judge') }}</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item"
-          href="https://winterant.github.io/OnlineJudge/web/spj.html" target="_blank">{{ __('main.Special Judge') }}</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="https://github.com/winterant/OnlineJudge" target="_blank">{{ __('main.Open-Source Code') }}</a>
+        <a class="dropdown-item" href="https://github.com/winterant/OnlineJudge"
+          target="_blank">{{ __('main.Open-Source Code') }}</a>
       </div>
     </li>
 

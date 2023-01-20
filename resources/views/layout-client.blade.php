@@ -49,29 +49,15 @@
 
   {{-- 检查微信浏览器，不允许使用微信浏览器 --}}
   @if (stripos($_SERVER['HTTP_USER_AGENT'], 'wechat') !== false ||
-      (stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') === false &&
-          stripos($_SERVER['HTTP_USER_AGENT'], 'safari') === false))
-    <div class="w-100 p-3">
-      <p class="p-3 alert-danger">
-        <strong>请使用Edge浏览器或Google Chrome浏览器访问本站！否则部分功能将无法使用！</strong>
-        <br>
-        您可以将本站网址复制下来，输入到浏览器的地址栏中，按回车即可访问。
-      </p>
-      @if (isset($_SERVER['HTTP_HOST']))
-        <p class="p-3 alert-info">
-          本站网址 {{ $_SERVER['HTTP_HOST'] }}
-        </p>
-      @endif
-      <p class="p-3 alert-danger">
-        如果您还没有安装Edge浏览器或Google Chrome浏览器，请安装！
-        <br><br>
-        Edge浏览器下载地址
-        <a href="https://www.microsoft.com/zh-cn/edge">www.microsoft.com/zh-cn/edge</a>
-        <br>
-        Google Chrome浏览器下载地址
-        <a href="https://www.google.cn/intl/zh-cn/chrome">www.google.cn/intl/zh-cn/chrome</a>
-      </p>
-    </div>
+          (stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') === false &&
+              stripos($_SERVER['HTTP_USER_AGENT'], 'safari') === false))
+    <script type="text/javascript">
+      $(function() {
+        Notiflix.Report.Failure('请在浏览器中打开本网站',
+          "您可以将本站网址（{{ $_SERVER['HTTP_HOST'] }}）复制下来，输入到浏览器的地址栏中，按回车即可访问。",
+          '好的')
+      })
+    </script>
   @endif
 
   {{-- 前台导航栏 --}}

@@ -10,6 +10,8 @@ return [
     "Operation failed"  => "Operation failed",
     "Operation successed"=> "Operation successed",
 
+    "items per page"    => "items per page",
+
 //    auth/register.blade.php
     "Must fill"         => "Must fill, use to login. a-z,A-Z or 0-9",
     "Non essential"     => "Non essential",

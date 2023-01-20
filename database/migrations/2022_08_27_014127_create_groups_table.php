@@ -21,9 +21,7 @@ class CreateGroupsTable extends Migration
             $table->string('name')->default('unamed');
             $table->text('description')->nullable();
             $table->string('teacher')->nullable()->comment('teacher\'s name');
-            $table->integer('grade')->index()->nullable();
-            $table->integer('class')->nullable();
-            $table->string('major')->nullable();
+            $table->string('class')->index()->nullable();
             $table->bigInteger('creator')->index()->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();

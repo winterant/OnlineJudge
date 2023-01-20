@@ -11,6 +11,25 @@
     <form class="p-4 col-12" onsubmit="submit_group(this); return false" enctype="multipart/form-data">
 
       <div class="form-inline mb-3">
+        <span>前台可见：</span>
+        <div class="custom-control custom-radio mx-3">
+          <input type="radio" name="group[hidden]" value="0" class="custom-control-input" id="hidden_no"
+            @if (isset($group->hidden) && $group->hidden == 0) checked @endif>
+          <label class="custom-control-label pt-1" for="hidden_no">公开</label>
+        </div>
+        <div class="custom-control custom-radio mx-3">
+          <input type="radio" name="group[hidden]" value="1" class="custom-control-input" id="hidden_yes"
+            @if (!isset($group->hidden) || $group->hidden == 1) checked @endif>
+          <label class="custom-control-label pt-1" for="hidden_yes">隐藏</label>
+        </div>
+        <div class="custom-control custom-radio">
+          <a href="javascript:" class="text-gray" onclick="whatisthis('隐藏的群组，除成员外，普通用户在前台不可见；<br>公开的群组在前台可见、可被搜索到。')">
+            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="form-inline mb-3">
         <span>群组类型：</span>
         <div class="custom-control custom-radio mx-3">
           <input type="radio" name="group[type]" value="0" class="custom-control-input" id="type_0"
@@ -31,25 +50,6 @@
       </div>
 
       <div class="form-inline mb-3">
-        <span>是否公开：</span>
-        <div class="custom-control custom-radio mx-3">
-          <input type="radio" name="group[hidden]" value="1" class="custom-control-input" id="hidden_yes"
-            @if (!isset($group->hidden) || $group->hidden == 1) checked @endif>
-          <label class="custom-control-label pt-1" for="hidden_yes">隐藏</label>
-        </div>
-        <div class="custom-control custom-radio mx-3">
-          <input type="radio" name="group[hidden]" value="0" class="custom-control-input" id="hidden_no"
-            @if (isset($group->hidden) && $group->hidden == 0) checked @endif>
-          <label class="custom-control-label pt-1" for="hidden_no">公开</label>
-        </div>
-        <div class="custom-control custom-radio">
-          <a href="javascript:" class="text-gray" onclick="whatisthis('隐藏的群组，除成员外，普通用户在前台不可见；<br>公开的群组在前台可见、可被搜索到。')">
-            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-          </a>
-        </div>
-      </div>
-
-      <div class="form-inline mb-3">
         <span>加入方式：</span>
         <div class="custom-control custom-radio ml-3">
           <input type="radio" name="group[private]" value="1" class="custom-control-input" id="shishi" checked>
@@ -57,37 +57,30 @@
         </div>
       </div>
 
-      <div class="mt-4 p-2 bg-sky">基本信息</div>
+      <div class="mt-4 p-2 bg-sky">群组基本信息</div>
       <div class="border p-2">
         <div class="input-group mb-3">
-          <span style="margin: auto">群组名称：</span>
-          <input type="text" name="group[name]" value="{{ isset($group->name) ? $group->name : '' }}" required
-            class="form-control" style="color: black" placeholder="如：数据结构公开课">
+          <span style="margin: auto">名称：</span>
+          <input type="text" name="group[name]" value="{{ $group->name ?? '' }}" required class="form-control"
+            style="color: black" placeholder="如：数据结构公开课">
         </div>
-        <div class="form-group">
-          <label class="form-inline">入学年份：
-            <input class="form-control" name="group[grade]" placeholder="如：2022"
-              value="{{ isset($group->grade) ? $group->grade : '' }}">
-          </label>
+        <div class="input-group mb-3">
+          <span style="margin: auto">班级：</span>
+          <input type="text" name="group[class]" value="{{ $group->class ?? '' }}" class="form-control"
+            style="color: black" placeholder="如：计算机2201、四年级5班">
         </div>
-        <div class="form-group">
-          <label class="form-inline">专业名称：
-            <input class="form-control" name="group[major]" placeholder="如：软件工程"
-              value="{{ isset($group->major) ? $group->major : '' }}">
-          </label>
-        </div>
-        <div class="form-group">
-          <label class="form-inline">班级编号：
-            <input class="form-control" type="number" name="group[class]" placeholder="如：1"
-              value="{{ isset($group->class) ? $group->class : '' }}">
-          </label>
+        <div class="input-group mb-3">
+          <span style="margin: auto">教师：</span>
+          <input type="text" name="group[teacher]" value="{{ $group->teacher ?? '' }}" class="form-control"
+            style="color: black" placeholder="教师姓名、职称等信息">
         </div>
       </div>
 
       <div class="mt-4 p-2 bg-sky">
         <details>
-          <summary>群组简介（点我查看备注）：</summary>
+          <summary>群组介绍（点我查看备注）：</summary>
           <p class="alert alert-info mb-0">
+            该介绍将显示在该群组的首页，您可以填写针对该群组的一些说明。<br>
             您可以在下面的编辑框里使用Latex公式。示例：<br>
             · 行内公式：\$f(x)=x^2\$（显示效果为<span class="math_formula">\$f(x)=x^2\$</span>）<br>
             · 单行居中：$$f(x)=x^2$$（显示效果如下）<span class="math_formula">$$f(x)=x^2$$</span><br>
@@ -95,7 +88,7 @@
         </details>
       </div>
       <div class="form-group">
-        <textarea id="description" name="group[description]" class="form-control-plaintext border bg-white" autoHeight>{{ isset($group->description) ? $group->description : '' }}</textarea>
+        <textarea id="description" name="group[description]" class="form-control-plaintext border bg-white">{{ $group->description ?? '' }}</textarea>
       </div>
 
       {{--

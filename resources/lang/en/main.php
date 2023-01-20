@@ -20,6 +20,7 @@ return [
     "View details"  => "View details",
     "Default"       => "Default",
     "Order"         => "Order",
+    "Keyword"       => "Keyword",
 
     //home.blade
     "Notice Board"  => "Notice Board",
@@ -224,6 +225,7 @@ return [
     // Groups
     "Group"         => "Group",
     "Groups"        => "Groups",
+    "My Groups"     => "My Groups",
     "Related Groups" => "Related Groups",
     "Creator"       => "Creator",
     "Course"        => "Course",
@@ -231,6 +233,7 @@ return [
     "Grade"         => "Grade",
     "Major"         => "Major",
     "Class"         => "Class",
+    "Teacher"       => "Teacher",
     "New Group"     => "New Group",
     "Members"       => "Members",
     "Date Added"    => "Date Added",

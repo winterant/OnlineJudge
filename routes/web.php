@@ -81,8 +81,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
 
     // ================================ groups 群组/团队 ================================
     // 群组列表
-    Route::get('my-groups', 'GroupController@mygroups')->name('groups.my');
-    Route::get('groups', 'GroupController@allgroups')->name('groups');
+    Route::get('groups', 'GroupController@groups')->name('groups');
     // 具体的群组
     Route::middleware(['auth', 'CheckGroup'])->group(function () {
         Route::get('groups/{id}', 'GroupController@group')->name('group');

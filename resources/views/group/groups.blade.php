@@ -29,52 +29,36 @@
 
   <div class="container">
 
-    {{-- 导航栏 --}}
-    <div class="tabbable mb-3">
-      <ul class="nav nav-tabs border-bottom">
-        <li class="nav-item">
-          <a class="nav-link text-center py-3 @if (Route::currentRouteName() == 'groups.my') active @endif"
-            href="{{ route('groups.my') }}">
-            {{ __('main.My') }}{{ __('main.Groups') }}
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-center py-3 @if (Route::currentRouteName() == 'groups') active @endif" href="{{ route('groups') }}">
-            {{ __('main.Find') }}{{ __('main.Groups') }}
-          </a>
-        </li>
-      </ul>
-    </div>
-
     <div class="my-container bg-white">
-      <div class="overflow-hidden mb-2">
-        {{-- <p class="pull-left">{{$current_cate->description}}</p> --}}
-        <form action="" method="get" class="mb-2 pull-right form-inline">
-          <div class="form-inline mx-1">
-            <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
-              <option value="6" @if (isset($_GET['perPage']) && $_GET['perPage'] == 6) selected @endif>6</option>
-              <option value="12" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 12) selected @endif>12</option>
-              <option value="24" @if (isset($_GET['perPage']) && $_GET['perPage'] == 24) selected @endif>24</option>
-              <option value="120" @if (isset($_GET['perPage']) && $_GET['perPage'] == 120) selected @endif>120</option>
+      <div class="overflow-hidden">
+        <form action="" method="get" class="float-right form-inline">
+
+          {{-- 已登陆用户可以选中自己的群组 --}}
+          @auth
+            <div class="custom-control custom-checkbox mx-2">
+              <input type="checkbox" name="mygroups" class="custom-control-input" id="mygroups"
+                @if ($_GET['mygroups'] ?? false) checked @endif onchange="this.form.submit()">
+              <label class="custom-control-label pt-1" for="mygroups">{{ __('main.My Groups') }}</label>
+            </div>
+          @endauth
+
+          <div class="form-inline mx-2">
+            <select name="perpage" class="form-control px-2" onchange="this.form.submit();">
+              <option value="6" @if (isset($_GET['perpage']) && $_GET['perpage'] == 6) selected @endif>6</option>
+              <option value="12" @if (!isset($_GET['perpage']) || $_GET['perpage'] == 12) selected @endif>12</option>
+              <option value="24" @if (isset($_GET['perpage']) && $_GET['perpage'] == 24) selected @endif>24</option>
+              <option value="120" @if (isset($_GET['perpage']) && $_GET['perpage'] == 120) selected @endif>120</option>
             </select>
+            {{ __('sentence.items per page') }}
           </div>
-          <div class="form-inline mx-1">
-            <input type="text" class="form-control text-center" placeholder="{{ __('main.Name') }}"
-              onchange="this.form.submit();" name="name" value="{{ $_GET['name'] ?? '' }}">
+          <div class="form-inline mx-2">
+            <input type="text" class="form-control text-center"
+              placeholder="{{ __('main.Name') }}/{{ __('main.Class') }}" onchange="this.form.submit();" name="kw"
+              value="{{ $_GET['kw'] ?? '' }}">
           </div>
-          <div class="form-inline mx-1">
-            <input type="text" class="form-control text-center" placeholder="{{ __('main.Grade') }}"
-              onchange="this.form.submit();" name="grade" value="{{ $_GET['grade'] ?? '' }}">
-          </div>
-          <div class="form-inline mx-1">
-            <input type="text" class="form-control text-center" placeholder="{{ __('main.Major') }}"
-              onchange="this.form.submit();" name="major" value="{{ $_GET['major'] ?? '' }}">
-          </div>
-          <div class="form-inline mx-1">
-            <input type="text" class="form-control text-center" placeholder="{{ __('main.Class') }}"
-              onchange="this.form.submit();" name="class" value="{{ $_GET['class'] ?? '' }}">
-          </div>
-          <button class="btn border">{{ __('main.Find') }}</button>
+          <button class="btn text-white bg-success ml-2">
+            <i class="fa fa-filter" aria-hidden="true"></i>
+            {{ __('main.Find') }}</button>
         </form>
       </div>
 
@@ -85,7 +69,7 @@
           <div class="col-12 col-sm-6 col-md-3">
             <div class="my-3 p-3 border position-relative">
               {{-- <img class="" src="" alt="" /> --}}
-              <h5>
+              <h6>
                 <span>
                   @if ($item->type == 0)
                     [<i class="fa fa-book" aria-hidden="true"></i>
@@ -104,8 +88,8 @@
                     <span class="text-gray">{{ __('main.Hidden') }}</span>
                   </span>
                 @endif
-              </h5>
-              <hr>
+              </h6>
+              <hr class="my-2">
               <div class="table-responsive">
                 <table id="table-overview" class="table table-sm mb-0">
                   <tbody>
@@ -116,16 +100,12 @@
                       }
                     </style>
                     <tr>
-                      <td nowrap>{{ __('main.Grade') }}:</td>
-                      <td nowrap>{{ $item->grade }}</td>
-                    </tr>
-                    <tr>
-                      <td nowrap>{{ __('main.Major') }}:</td>
-                      <td nowrap>{{ $item->major }}</td>
-                    </tr>
-                    <tr>
                       <td nowrap>{{ __('main.Class') }}:</td>
                       <td nowrap>{{ $item->class }}</td>
+                    </tr>
+                    <tr>
+                      <td nowrap>{{ __('main.Teacher') }}:</td>
+                      <td nowrap>{{ $item->teacher }}</td>
                     </tr>
                     <tr>
                       <td nowrap>{{ __('main.Creator') }}:</td>
@@ -157,14 +137,15 @@
 
               {{-- 操作按钮 --}}
               <div class="position-absolute" style="bottom:1rem; right:1rem;">
-                @if (isset($item->user_in_group) && $item->user_in_group <= 1)
+                {{-- @if (!isset($item->user_in_group))
                   @php($has_btn = true)
-                  @if ($item->user_in_group == 1)
-                    <a class="btn btn-info border">申请中</a>
-                  @else
-                    {{-- <a class="btn btn-info border" href="{{route('groups.joinin',['id'=>$item->id])}}">申请加入</a> --}}
-                  @endif
+                  <a class="btn btn-info border" href="{{route('groups.joinin',['id'=>$item->id])}}">申请加入</a>
+                @endif --}}
+
+                @if (($item->user_in_group ?? 0) == 1)
+                  <a class="btn btn-info border">申请中</a>
                 @endif
+
                 @if (Auth::check() && Auth::user()->has_group_permission($item, 'admin.group.update'))
                   @php($has_btn = true)
                   <a class="btn btn-info border" href="{{ route('admin.group.edit', [$item->id]) }}"

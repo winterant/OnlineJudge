@@ -10,6 +10,8 @@ return [
     "Operation failed"  => "操作失败",
     "Operation successed"=> "操作成功",
 
+    "items per page"    => "项每页",
+
 //    auth/register.blade.php
     "Must fill"         => "必填. a-z,A-Z or 0-9",
     "Non essential"     => "非必填",

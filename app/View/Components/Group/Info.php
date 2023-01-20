@@ -17,7 +17,11 @@ class Info extends Component
     {
         $this->group = DB::table('groups as g')
             ->leftJoin('users as u', 'u.id', '=', 'g.creator')
-            ->select(['g.type', 'g.grade', 'g.major', 'g.class', 'u.username as creator_username'])
+            ->select([
+                'g.type',
+                // 'g.grade', 'g.major',
+                'g.teacher', 'g.class', 'u.username as creator'
+            ])
             ->where('g.id', $groupId)
             ->first();
     }
