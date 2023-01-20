@@ -19,7 +19,7 @@
     </li>
     <li class="nav-item">
       <a class="nav-link text-nowrap p-2 @if (preg_match('/^problem\S*$/', Route::currentRouteName())) active @endif"
-        href="{{ route('problems') }}">
+        href="{{ route('problems', ['show_hidden' =>Auth::check() &&request()->user()->can('admin.problem.view')? 'on': null]) }}">
         <i class="fa fa-list" aria-hidden="true">&nbsp;{{ trans('main.Problems') }}</i>
       </a>
     </li>

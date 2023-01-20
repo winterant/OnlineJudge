@@ -9,36 +9,32 @@
       <div class="col-12 col-md-10">
         <div class="my-container bg-white">
           <div class="overflow-hidden">
-            <h4 class="pull-left">{{ __('main.Problems') }}</h4>
-            <form id="find_form" action="" method="get" class="pull-right form-inline">
+            <h4 class="float-left">{{ __('main.Problems') }}</h4>
+            <form id="find_form" action="" method="get" class="float-right form-inline">
               <input type="number" id="tag_id" name="tag_id" value="{{ $_GET['tag_id'] ?? null }}" hidden>
-              <div class="form-inline custom-control custom-checkbox">
+              <div class="form-inline custom-control custom-checkbox mx-2">
                 <input type="checkbox" name="show_hidden" class="custom-control-input" id="customCheck"
                   @if (isset($_GET['show_hidden'])) checked @endif onchange="this.form.submit()">
                 <label class="custom-control-label pt-1"
                   for="customCheck">{{ __('sentence.show_hidden_problems') }}</label>
               </div>
-              <div class="form-inline mx-1">
+              <div class="form-inline mx-2">
                 <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
                   <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
                   <option value="50" @if (isset($_GET['perPage']) && $_GET['perPage'] == 50) selected @endif>50</option>
                   <option value="100" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 100) selected @endif>100</option>
                 </select>
+                {{ __('sentence.items per page') }}
               </div>
-              <div class="form-inline mx-1">
-                <input type="number" class="form-control text-center"
-                  placeholder="{{ __('main.Problem') }} {{ __('main.ID') }}" onchange="this.form.submit();" name="pid"
-                  value="{{ isset($_GET['pid']) ? $_GET['pid'] : '' }}">
+              <div class="form-inline mx-2">
+                <input type="text" class="form-control text-center"
+                  placeholder="{{ __('main.ID') }}/{{ __('main.Title') }}/{{ __('main.Source') }}" name="kw"
+                  value="{{ $_GET['kw'] ?? '' }}">
               </div>
-              <div class="form-inline mx-1">
-                <input type="text" class="form-control text-center" placeholder="{{ __('main.Title') }}"
-                  onchange="this.form.submit();" name="title" value="{{ isset($_GET['title']) ? $_GET['title'] : '' }}">
-              </div>
-              <div class="form-inline mx-1">
-                <input type="text" class="form-control text-center" placeholder="{{ __('main.Source') }}"
-                  onchange="this.form.submit();" name="source" value="{{ isset($_GET['source']) ? $_GET['source'] : '' }}">
-              </div>
-              <button class="btn border">{{ __('main.Find') }}</button>
+              <button class="btn text-white bg-success ml-2">
+                <i class="fa fa-filter" aria-hidden="true"></i>
+                {{ __('main.Find') }}
+              </button>
             </form>
           </div>
           {{ $problems->appends($_GET)->links() }}
@@ -57,11 +53,11 @@
                 @foreach ($problems as $item)
                   <tr>
                     <td>{{ $item->id }}</td>
-                    @if ($item->hidden == 0 || (Auth::check() &&Auth::user()->can('admin.problem.view')))
+                    @if ($item->hidden == 0 || (Auth::check() && Auth::user()->can('admin.problem.view')))
                       <td nowrap>
                         <a href="{{ route('problem', $item->id) }}">{{ $item->title }}</a>
                         @if ($item->hidden == 1)
-                          (<font class="text-red">{{ trans('main.Hidden') }}</font>)
+                          (<span class="text-red">{{ trans('main.Hidden') }}</span>)
                         @endif
                       </td>
                       <td nowrap>
