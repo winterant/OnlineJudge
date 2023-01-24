@@ -1,6 +1,7 @@
 <h1 align="center">Ludong University Online Judge</h1>
 
 > 鲁东大学程序设计在线测评系统与考试平台  
+> 开发内测：<http://47.104.232.254:8080>  
 > 官方网站：<https://icpc.ldu.edu.cn>  
 > 中文文档：<https://winterant.github.io/OnlineJudge>
 

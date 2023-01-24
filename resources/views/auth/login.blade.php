@@ -1,5 +1,7 @@
 @extends('layout-client')
 
+@section('title', __('main.Login'))
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">

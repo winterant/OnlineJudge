@@ -3,7 +3,7 @@
   {{-- 父级目录 --}}
   <ul class="breadcrumb">
     <li class="mx-2">
-      <a href="{{ route('groups.my') }}">{{ __('main.My') }}{{ __('main.Groups') }}</a>
+      <a href="{{ route('groups', ['mygroups' => 'on']) }}">{{ __('main.My') }}{{ __('main.Groups') }}</a>
     </li>
     /
     <li class="mx-2 active">

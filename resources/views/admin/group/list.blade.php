@@ -1,10 +1,10 @@
 @extends('layout-admin')
 
-@section('title', __('main.Group').'管理 | 后台')
+@section('title', __('main.Group') . '管理 | 后台')
 
 @section('content')
 
-  <h2>{{__('main.Group')}}管理</h2>
+  <h2>{{ __('main.Group') }}管理</h2>
   <hr>
   <form action="" method="get" class="pull-right form-inline">
     <div class="form-inline mx-3">
@@ -45,17 +45,15 @@
       <thead>
         <tr>
           <th></th>
-          <th>编号</th>
-          <th>{{__('main.Group')}}</th>
-          <th>年级</th>
-          <th>班级</th>
-          <th>专业</th>
+          <th>{{ __('main.ID') }}</th>
+          <th>{{ __('main.Title') }}</th>
+          <th>{{ __('main.Class') }}</th>
+          <th>前台可见</th>
           <th>加入权限
             <a href="javascript:" style="color: #838383" onclick="whatisthis('public：任意用户可加入；<br>private：仅创建者指定的用户可加入。')">
               <i class="fa fa-question-circle-o" aria-hidden="true"></i>
             </a>
           </th>
-          <th>前台可见</th>
           <th>创建人</th>
           <th>操作</th>
         </tr>
@@ -70,15 +68,12 @@
             </td>
             <td>{{ $item->id }}</td>
             <td nowrap><a href="{{ route('group', $item->id) }}" target="_blank">{{ $item->name }}</a></td>
-            <td nowrap>{{ $item->grade }}</td>
             <td nowrap>{{ $item->class }}</td>
-            <td nowrap>{{ $item->major }}</td>
-            <td nowrap>{{ $item->private ? 'private' : 'public' }}</td>
             <td nowrap>
-              {{-- {{$item->hidden}} --}}
               <input id="switch_hidden{{ $item->id }}" type="checkbox"
                 @if (!$item->hidden) checked @endif>
             </td>
+            <td nowrap>{{ $item->private ? 'private' : 'public' }}</td>
             <td nowrap>{{ $item->username }}</td>
             <td nowrap>
               <a href="{{ route('admin.group.edit', [$item->id]) }}" class="mx-1" target="_blank" title="修改">

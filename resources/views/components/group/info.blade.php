@@ -26,21 +26,17 @@
           </td>
         </tr>
         <tr>
-          <td nowrap>{{ __('main.Grade') }}:</td>
-          <td nowrap>{{ $group->grade }}</td>
-        </tr>
-        <tr>
-          <td nowrap>{{ __('main.Major') }}:</td>
-          <td nowrap>{{ $group->major }}</td>
-        </tr>
-        <tr>
           <td nowrap>{{ __('main.Class') }}:</td>
           <td nowrap>{{ $group->class }}</td>
         </tr>
         <tr>
+          <td nowrap>{{ __('main.Teacher') }}:</td>
+          <td nowrap>{{ $group->teacher }}</td>
+        </tr>
+        <tr>
           <td nowrap>{{ __('main.Creator') }}:</td>
-          <td nowrap><a href="{{ route('user', $group->creator_username) }}"
-              target="_blank">{{ $group->creator_username }}</a></td>
+          <td nowrap><a href="{{ route('user', $group->creator) }}"
+              target="_blank">{{ $group->creator }}</a></td>
         </tr>
       </tbody>
     </table>

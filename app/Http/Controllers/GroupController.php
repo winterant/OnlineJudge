@@ -4,53 +4,55 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class GroupController extends Controller
 {
-    // 我的群组/当前用户的所有的群组
-    public function mygroups()
+    // 群组列表
+    public function groups()
     {
-        if (!Auth::check()) // 未登陆用户只能查看所有群组
-            return redirect(route('groups'));
-
         $groups = DB::table('groups as g')
-            ->leftJoin('users as u', 'u.id', '=', 'g.creator')
-            ->join('group_users as gu', 'gu.group_id', '=', 'g.id')
             ->select('g.*', 'u.username as creator')
-            ->where('gu.user_id', Auth::id())
-            ->where('gu.identity', '>', 1)
-            ->orderByDesc('id')
-            ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 12);
-        return view('group.groups', compact('groups'));
-    }
+            ->leftJoin('users as u', 'u.id', '=', 'g.creator');
+        if (Auth::check() && ($_GET['mygroups'] ?? false)) {
+            // 仅查看我加入的群组（含隐藏的）
+            $groups = $groups->join('group_users as gu', function ($q) {
+                $q->on('gu.group_id', '=', 'g.id')
+                    ->on('gu.identity', '>=', DB::raw(2))
+                    ->on('gu.user_id', '=', DB::raw(Auth::id()));
+            });
+        } else {
+            // 查看全部群组时，已登陆用户要查出身份
+            if (Auth::check()) {
+                $groups = $groups->leftJoin('group_users as gu', function ($q) {
+                    $q->on('gu.group_id', '=', 'g.id')
+                        ->on('gu.user_id', '=', DB::raw(Auth::id()));
+                })->addSelect('gu.identity');
+            }
+            // 查看全部群组时，未登陆 or 无特权，则只能查看不隐藏的群组
+            if (!Auth::check() || !request()->user()->can('admin.group.view')) {
+                $groups = $groups->where('hidden', 0);
+            }
+        }
+        // 其它筛选条件，以及排序、分页
+        $groups = $groups->when($_GET['kw'] ?? false, function ($q) {
+            $q->where(function ($q) { // sql加括号
+                $q->where('g.name', 'like', $_GET['kw'] . '%')
+                    ->orWhere('g.teacher', 'like', $_GET['kw'] . '%')
+                    ->orWhere('g.class', 'like', $_GET['kw'] . '%');
+            });
+        })->orderByDesc('id')
+            ->paginate($_GET['perpage'] ?? 12);
 
-    // 所有群组
-    public function allgroups()
-    {
-        /** @var \App\Models\User */
-        $user = Auth::user();
-
-        $groups = DB::table('groups as g')
-            ->leftJoin('users as u', 'u.id', '=', 'g.creator')
-            ->select('g.*', 'u.username as creator')
-            ->when(!$user || !$user->can('admin.group.view'), function ($q) {
-                return $q->where('hidden', 0);
-            })
-            ->orderByDesc('id')
-            ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 12);
-        foreach ($groups as &$g) {
-            $g->user_in_group = DB::table('group_users')
-                ->where('user_id', Auth::id())
-                ->where('group_id', $g->id)
-                ->value('identity'); // 获取当前用户在该group中的身份。未加入为null
-            if ($g->user_in_group == null)
-                $g->user_in_group = -1;
+        // 查看全部群组时，要查出身份
+        if (!isset($_GET['mygroups'])) {
+            foreach ($groups as &$g) {
+                $g->user_in_group = DB::table('group_users')
+                    ->where('user_id', Auth::id())
+                    ->where('group_id', $g->id)
+                    ->value('identity'); // 获取当前用户在该group中的身份。未加入为null
+            }
         }
         return view('group.groups', compact('groups'));
     }
@@ -68,7 +70,7 @@ class GroupController extends Controller
                 'c.title', 'c.judge_type', 'c.start_time', 'c.end_time', 'c.num_members'
             ])
             ->where('gc.group_id', $group->id)
-            ->orderBy('gc.order', $group->type == 0 ? 'asc' : 'desc')
+            ->orderBy('gc.order', $group->type == 0 ? 'asc' : 'desc') // 课程正序，竞赛列表基本不变；班级逆序，竞赛持续添加
             ->paginate($group->type == 0 ? 100 : ($_GET['perPage'] ?? 20)); // 课程显示100项，班级现实20项
         return view('group.group', compact('group', 'contests'));
     }

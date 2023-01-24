@@ -28,14 +28,12 @@ class ProblemController extends Controller
             ->when(!isset($_GET['show_hidden']), function ($q) {
                 return $q->where('hidden', 0);
             })
-            ->when(isset($_GET['pid']) && $_GET['pid'] != '', function ($q) {
-                return $q->where('problems.id', $_GET['pid']);
-            })
-            ->when(isset($_GET['title']) && $_GET['title'] != '', function ($q) {
-                return $q->where('title', 'like', '%' . $_GET['title'] . '%');
-            })
-            ->when(isset($_GET['source']) && $_GET['source'] != '', function ($q) {
-                return $q->where('source', 'like', '%' . $_GET['source'] . '%');
+            ->when(isset($_GET['kw']) && $_GET['kw'] != '', function ($q) {
+                $q->where(function ($q) {
+                    $q->where('title', 'like', '%' . $_GET['kw'] . '%')
+                        ->orWhere('source', 'like', $_GET['kw'] . '%')
+                        ->orWhere('problems.id', $_GET['kw']);
+                });
             })
             ->orderBy('problems.id')
             ->distinct()

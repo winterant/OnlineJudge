@@ -15,8 +15,8 @@
     <div class="my-container bg-white">
       <div class="overflow-hidden">
         <h4 class="pull-left">{{ __('main.Standings') }}</h4>
-        <form action="" method="get" class="pull-right form-inline">
-          <div class="form-inline mx-1">
+        <form action="" method="get" class="float-right form-inline">
+          <div class="form-inline mx-2">
             <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
               <option value="10" @if (isset($_GET['perPage']) && $_GET['perPage'] == 10) selected @endif>10</option>
               <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
@@ -24,10 +24,12 @@
               <option value="100" @if (isset($_GET['perPage']) && $_GET['perPage'] == 100) selected @endif>100</option>
               <option value="200" @if (isset($_GET['perPage']) && $_GET['perPage'] == 500) selected @endif>200</option>
             </select>
+            {{ __('sentence.items per page') }}
           </div>
-          <div class="form-inline mx-1">
-            <input type="text" class="form-control text-center" placeholder="Username" onchange="this.form.submit();"
-              name="username" value="{{ isset($_GET['username']) ? $_GET['username'] : '' }}">
+          <div class="form-inline mx-2">
+            <input type="text" class="form-control text-center"
+              placeholder="{{ __('main.Username') }}/{{ __('main.Name') }}/{{ __('main.School') }}/{{ __('main.Class') }}"
+              name="kw" value="{{ isset($_GET['kw']) ? $_GET['kw'] : '' }}">
           </div>
 
           {{--
@@ -43,7 +45,9 @@
                            :str_replace(' ','T',date('Y-m-d H:i:s',time()))}}" class="form-control" required>
                     </div>
                     --}}
-          <button class="btn border">{{ __('main.Find') }}</button>
+          <button class="btn text-white bg-success ml-2">
+            <i class="fa fa-filter" aria-hidden="true"></i>
+            {{ __('main.Find') }}</button>
         </form>
       </div>
 

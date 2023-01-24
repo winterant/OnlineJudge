@@ -20,6 +20,7 @@ return [
     "View details"  => "查看详情",
     "Default"       => "默认",
     "Order"         => "顺序",
+    "Keyword"       => "关键词",
 
     //home.blade
     "Notice Board"  => "公告板",
@@ -224,6 +225,7 @@ return [
     // Groups
     "Group"         => "群组",
     "Groups"        => "群组",
+    "My Groups"     => "我的群组",
     "Related Groups" => "相关群组",
     "Creator"       => "创建者",
     "Course"        => "课程",
@@ -231,6 +233,7 @@ return [
     "Grade"         => "年级",
     "Major"         => "专业",
     "Class"         => "班级",
+    "Teacher"       => "教师",
     "New Group"     => "新建群组",
     "Members"       => "成员",
     "Date Added"    => "加入时间",
