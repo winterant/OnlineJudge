@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -65,16 +66,19 @@ function get_client_real_ip()
 // 获取ip属地
 function getIpAddress(string $ip = '')
 {
-    // 可以自己找第三方接口，返回数据不一样
-    $url = "http://whois.pconline.com.cn/ip.jsp?ip=" . $ip;
     try {
-        $res = file_get_contents($url);
+        $res = Http::timeout(1)->get('http://whois.pconline.com.cn/ip.jsp', ['ip' => $ip]);
+        if ($res->successful()) {
+            // 因为这个接口返回的值gb2312编码，且有换行符，所以做以下处理
+            $res = preg_replace("/\s/", "", iconv("gb2312", "utf-8", $res));
+            return $res;
+        } else {
+            return 'Query failed'; // 接口通了，但没有正常返回
+        }
     } catch (Exception $e) {
         echo $e->getMessage();
-        $res = null;
+        return 'Connection failed'; // 接口不通
     }
-    // 因为这个接口返回的值gb2312编码，且有换行符，所以做以下处理
-    return preg_replace("/\s/", "", iconv("gb2312", "utf-8", $res));
 }
 
 
