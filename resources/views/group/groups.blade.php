@@ -84,8 +84,8 @@
                 </a>
                 @if ($item->hidden)
                   <span class="text-nowrap" style="font-size: 0.9rem; right:1rem; top:1rem;">
-                    <i class="fa fa-eye-slash ml-2" aria-hidden="true"></i>
-                    <span class="text-gray">{{ __('main.Hidden') }}</span>
+                    <i class="fa fa-eye-slash ml-2" aria-hidden="true" title="{{ __('main.Hidden') }}"></i>
+                    {{-- <span class="text-gray">{{ __('main.Hidden') }}</span> --}}
                   </span>
                 @endif
               </h6>

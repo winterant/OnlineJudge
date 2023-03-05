@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use DOMDocument;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UploadController;
+use App\Http\Helpers\ProblemHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -70,7 +71,7 @@ class ProblemController extends Controller
             if ($problem == null)
                 return view('message', ['msg' => '该题目不存在或操作有误!', 'success' => false, 'is_admin' => true]);
 
-            $samples = read_problem_data($problem->id);
+            $samples = ProblemHelper::readSamples($problem->id);
             //看看有没有特判文件
             $spj_exist = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));
             return view('admin.problem.edit', compact('pageTitle', 'problem', 'samples', 'spj_exist'));
@@ -91,10 +92,10 @@ class ProblemController extends Controller
             if (!$update_ret)
                 return view('message', ['msg' => '没有任何数据被修改，请检查操作是否合理!', 'success' => false, 'is_admin' => true]);
 
-            ///保存样例、spj
-            $samp_ins = $request->input('sample_ins');
-            $samp_outs = $request->input('sample_outs');
-            save_problem_data($id, (array)$samp_ins, (array)$samp_outs, true); //保存样例
+            ///保存样例
+            $samp_ins = (array)$request->input('sample_ins');
+            $samp_outs = (array)$request->input('sample_outs');
+            ProblemHelper::saveSamples($id, $samp_ins, $samp_outs); //保存样例
 
             $msg = sprintf(
                 '题目<a href="%s" target="_blank">%d</a>修改成功！ <a href="%s">上传测试数据</a>',
@@ -103,6 +104,7 @@ class ProblemController extends Controller
                 route('admin.problem.test_data', 'pid=' . $id)
             );
 
+            // 保存spj
             $spjFile = $request->file('spj_file');
             if ($spjFile != null && $spjFile->isValid()) {
                 $spjFile->move(testdata_path($id . '/spj'), 'spj.cpp');  // 保存特判代码文件spj.cpp
@@ -311,8 +313,8 @@ class ProblemController extends Controller
             $samp_outputs = (array)$node->children()->sample_output;
             $test_inputs = (array)$node->children()->test_input;
             $test_outputs = (array)$node->children()->test_output;
-            save_problem_data($pid, $samp_inputs, $samp_outputs, true); //保存样例
-            save_problem_data($pid, $test_inputs, $test_outputs, false); //保存测试数据
+            ProblemHelper::saveSamples($pid, $samp_inputs, $samp_outputs); //保存样例
+            ProblemHelper::saveTestData($pid, $test_inputs, $test_outputs); //保存测试数据
             if ($node->spj) {
                 $dir = testdata_path($pid . '/spj'); // 特判文件夹
                 if (!is_dir($dir))
@@ -432,21 +434,21 @@ class ProblemController extends Controller
             $item->appendChild($source);
 
             //sample_input & sample_output
-            foreach (read_problem_data($problem->id) as $sample) {
+            foreach (ProblemHelper::readSamples($problem->id) as $sample) {
                 $sample_input = $dom->createElement('sample_input');
-                $sample_input->appendChild($dom->createCDATASection($this->filter_export_characters($sample[0])));
+                $sample_input->appendChild($dom->createCDATASection($this->filter_export_characters($sample['in'])));
                 $item->appendChild($sample_input);
                 $sample_output = $dom->createElement('sample_output');
-                $sample_output->appendChild($dom->createCDATASection($this->filter_export_characters($sample[1])));
+                $sample_output->appendChild($dom->createCDATASection($this->filter_export_characters($sample['out'])));
                 $item->appendChild($sample_output);
             }
             //test_input & test_output
-            foreach (read_problem_data($problem->id, false) as $test) {
+            foreach (ProblemHelper::readTestData($problem->id) as $test) {
                 $test_input = $dom->createElement('test_input');
-                $test_input->appendChild($dom->createCDATASection($this->filter_export_characters($test[0])));
+                $test_input->appendChild($dom->createCDATASection($this->filter_export_characters($test['in'])));
                 $item->appendChild($test_input);
                 $test_output = $dom->createElement('test_output');
-                $test_output->appendChild($dom->createCDATASection($this->filter_export_characters($test[1])));
+                $test_output->appendChild($dom->createCDATASection($this->filter_export_characters($test['out'])));
                 $item->appendChild($test_output);
             }
             //spj language

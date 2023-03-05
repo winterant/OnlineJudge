@@ -369,7 +369,7 @@
     $(function() {
       // 代码编辑器的初始化配置
       var code_editor = CodeMirror.fromTextArea(document.getElementById("code_editor"), {
-        autofocus: true, // 初始自动聚焦
+        // autofocus: true, // 初始自动聚焦
         indentUnit: 4, //自动缩进的空格数
         indentWithTabs: true, //在缩进时，是否需要把 n*tab宽度个空格替换成n个tab字符，默认为false 。
         lineNumbers: true, //显示行号

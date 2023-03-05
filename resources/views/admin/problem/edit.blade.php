@@ -115,11 +115,11 @@
                                 <div class="form-inline border m-2">
                                     <div class="w-50 p-2">
                                         输入：
-                                        <textarea name="sample_ins[]" class="form-control-plaintext bg-white" rows="4" required>{{$sam[0]}}</textarea>
+                                        <textarea name="sample_ins[]" class="form-control-plaintext bg-white" rows="4" required>{{$sam['in']}}</textarea>
                                     </div>
                                     <div class="w-50 p-2">
                                         输出：
-                                        <textarea name="sample_outs[]" class="form-control-plaintext bg-white" rows="4" required>{{$sam[1]}}</textarea>
+                                        <textarea name="sample_outs[]" class="form-control-plaintext bg-white" rows="4" required>{{$sam['out']}}</textarea>
                                     </div>
                                 </div>
                             @endforeach

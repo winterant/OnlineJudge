@@ -111,51 +111,6 @@ function readAllFilesPath($dir_path): array
 }
 
 
-/**
- * 读取样例/测试文件
- * @param $problem_id
- * @param bool $from_sample
- * @return array  返回二维字符串数组(直接读取文件内容)，a[filename][.in/.out]=string
- */
-function read_problem_data($problem_id, $from_sample = true): array
-{
-    $samples = [];
-    $dir = testdata_path($problem_id . '/' . ($from_sample ? 'sample' : 'test'));
-    foreach (readAllFilesPath($dir) as $item) {
-        $name = pathinfo($item, PATHINFO_FILENAME);  //文件名
-        $ext = pathinfo($item, PATHINFO_EXTENSION);  //拓展名
-        if (!isset($samples[$name])) //发现新样本
-            $samples[$name] = ['', ''];
-        if ($ext === 'in')
-            $samples[$name][0] = file_get_contents($item);
-        if ($ext === 'out' || $ext === 'ans')
-            $samples[$name][1] = file_get_contents($item);
-    }
-    return $samples;
-}
-
-
-/**
- * 保存样例/测试到文件
- * @param $problem_id
- * @param $ins
- * @param $outs
- * @param bool $from_sample
- */
-function save_problem_data($problem_id, $ins, $outs, $from_sample = true)
-{
-    $dir = testdata_path($problem_id . '/' . ($from_sample ? 'sample' : 'test')); // 测试数据文件夹
-    foreach (readAllFilesPath($dir) as $item)
-        unlink($item); //删除原有文件
-    if (!is_dir($dir))
-        mkdir($dir, 0777, true);  // 文件夹不存在则创建
-    foreach ($ins as $i => $in)
-        file_put_contents(sprintf('%s/%s.in', $dir, $i), $in);
-    foreach ($outs as $i => $out)
-        file_put_contents(sprintf('%s/%s.out', $dir, $i), $out);
-}
-
-
 //将一个数字题号转为大写字母 A~Z(0~25), 27, 28, 29, ...
 function index2ch(int $index)
 {
@@ -173,9 +128,9 @@ function index2ch(int $index)
  * 1000-1002
  * 1010
  * 1024 3
- * $special_rule = true 解析为:
+ * $special_rule = true 则解析为:
  * ['1000','1001','1002','1010','1024','1024','1024']
- * $special_rule = false 解析为:
+ * $special_rule = false 则单纯按行读取，解析为:
  * ['1000-1002', '1010', '1024 3']
  */
 function decode_str_to_array($text, $special_rule = true)

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\CacheHelper;
+use App\Http\Helpers\ProblemHelper;
 use App\View\Components\Contest\ProblemsLink;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -183,7 +184,7 @@ class ContestController extends Controller
             return back();
 
         // 读取这道题的样例数据
-        $samples = read_problem_data($problem->id);
+        $samples = ProblemHelper::readSamples($problem->id);
 
         // 特判代码是否存在
         $hasSpj = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));

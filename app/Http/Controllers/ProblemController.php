@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\ProblemHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -77,7 +78,7 @@ class ProblemController extends Controller
         }
 
         //读取样例文件
-        $samples = read_problem_data($id);
+        $samples =ProblemHelper::readSamples($id);
 
         // 是否存在特判代码
         $hasSpj = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));

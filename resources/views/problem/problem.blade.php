@@ -176,13 +176,13 @@
                 {{ __('main.Input') }}
                 <a href="javascript:" onclick="copy_text($('#sam_in{{ $i }}'))">{{ __('main.Copy') }}</a>
               </div>
-              <pre class="m-1" id="sam_in{{ $i }}">{{ $sam[0] }}</pre>
+              <pre class="m-1" id="sam_in{{ $i }}">{{ $sam['in'] }}</pre>
               {{-- 样例输出 --}}
               <div class="border-top border-bottom pl-2 bg-light">
                 {{ __('main.Output') }}
                 <a href="javascript:" onclick="copy_text($('#sam_out{{ $i }}'))">{{ __('main.Copy') }}</a>
               </div>
-              <pre class="m-1" id="sam_out{{ $i }}">{{ $sam[1] }}</pre>
+              <pre class="m-1" id="sam_out{{ $i }}">{{ $sam['out'] }}</pre>
             </div>
           @endforeach
 
