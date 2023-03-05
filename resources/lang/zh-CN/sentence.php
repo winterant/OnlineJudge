@@ -29,6 +29,7 @@ return [
 
 //    client/password_reset
     "Reset Password"    => "重置密码",
+    "Modify Password"   => "修改密码",
 
 //    client/problem.blade.php
     "noSolutions"       => "你没有提交任何代码!",

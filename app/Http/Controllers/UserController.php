@@ -41,7 +41,15 @@ class UserController extends Controller
             $user->class = '****';
             $user->nick = '***';
         }
-        return view('auth.user', compact('user', 'problems_solved'));
+
+        // 当前用户已加入的群组：
+        $groups = DB::table('groups as g')
+            ->join('group_users as gu', 'gu.group_id', 'g.id')
+            ->join('users as u','u.id','g.creator')
+            ->select(['g.id','g.name','g.teacher','g.class','g.private','g.type','u.username as creator_username','g.hidden'])
+            ->where('gu.user_id', $user->id)
+            ->paginate(4);
+        return view('auth.user', compact('user', 'groups', 'problems_solved'));
     }
 
     public function user_edit(Request $request, $username)

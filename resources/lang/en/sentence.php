@@ -29,6 +29,7 @@ return [
 
 //    client/password_reset
     "Reset Password"    => "Reset Password",
+    "Modify Password"   => "Modify Password",
 
 //    client/problem.blade.php
     "noSolutions"       => "You didn't submit any solution!",
