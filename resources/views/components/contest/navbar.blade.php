@@ -30,7 +30,7 @@
     <ul class="nav nav-tabs">
       <li class="nav-item">
         <a class="nav-link py-3 @if (Route::currentRouteName() == 'contest.home') active @endif"
-          href="{{ route('contest.home', [$contest->id, 'group' => $group->id ?? null]) }}">{{ trans('main.Overview') }}</a>
+          href="{{ route('contest.home', [$contest->id, 'group' => $group->id ?? null]) }}">{{ trans('main.Problems List') }}</a>
       </li>
 
       <li class="nav-item">
@@ -43,7 +43,7 @@
           {{ trans('main.Rank') }} [ {{ $contest->judge_type }} ]
         </a>
       </li>
-      <li class="nav-item">
+      {{-- <li class="nav-item">
         <a class="nav-link py-3 @if (Route::currentRouteName() == 'contest.notices') active @endif"
           href="{{ route('contest.notices', [$contest->id, 'group' => $group->id ?? null]) }}">
           {{ trans('main.Notification') }}
@@ -51,7 +51,7 @@
             <i class="fa fa-commenting text-green" aria-hidden="true"></i>
           @endif
         </a>
-      </li>
+      </li> --}}
       @if (Auth::check() && Auth::user()->can('admin.contest_balloon'))
         <li class="nav-item">
           <a class="nav-link py-3 @if (Route::currentRouteName() == 'contest.balloons') active @endif"

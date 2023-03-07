@@ -48,6 +48,11 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::post('/problem-tags', 'ProblemController@submit_problem_tag')->name('problem.submit_problem_tag');
     });
 
+    // =========================== contest ===================================
+    Route::middleware([])->group(function () {
+        Route::get('contests/{id}/notices/{nid}', 'ContestController@get_notice')->name('contest.get_notice'); //获取一条公告
+    });
+
     // =========================== solution =================================
     Route::middleware(['auth'])->group(function () {
         Route::post('/solutions', 'SolutionController@submit_solution')->name('solution.submit_solution');
@@ -76,6 +81,11 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         // Manage contest: route('api.admin.contest.*')
         Route::patch('/contests/{id}/order/{shift}', 'Admin\ContestController@update_order')->name('contest.update_order')->middleware('Permission:admin.contest.update');
         Route::patch('/contests/{id}/cate_id/{cate_id}', 'Admin\ContestController@update_cate_id')->name('contest.update_cate_id')->middleware('Permission:admin.contest.update');
+
+        // Manage contest notice: route('api.admin.contest.*')
+        Route::post('contests/{id}/notices', 'ContestController@create_notice')->name('contest.create_notice')->middleware('Permission:admin.contest_notice.create'); //添加一条公告
+        Route::patch('contests/{id}/notices/{nid}', 'ContestController@update_notice')->name('contest.update_notice')->middleware('Permission:admin.contest_notice.update'); //编辑一条公告
+        Route::delete('contests/{id}/notices/{nid}', 'ContestController@delete_notice')->name('contest.delete_notice')->middleware('Permission:admin.contest_notice.delete'); //删除一条公告
 
         // Manage contest category: route('api.admin.contest.*')
         Route::post('/contest-categaries', 'Admin\ContestController@add_contest_cate')->name('contest.add_contest_cate')->middleware('Permission:admin.contest_cate.create');

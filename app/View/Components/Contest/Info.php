@@ -19,7 +19,7 @@ class Info extends Component
         // 读取当前竞赛所在的群组（多个）
         $this->groups = DB::table('group_contests as gc')
             ->join('groups as g', 'g.id', '=', 'gc.group_id')
-            ->select(['g.id', 'g.name'])
+            ->select(['g.id', 'g.name', 'g.type'])
             ->where('gc.contest_id', $contest->id)
             ->get();
         // 题目个数

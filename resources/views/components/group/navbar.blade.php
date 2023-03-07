@@ -15,7 +15,7 @@
     <ul class="nav nav-tabs">
       <li class="nav-item">
         <a class="nav-link py-3 @if (Route::currentRouteName() == 'group') active @endif"
-          href="{{ route('group', $groupId) }}">{{ trans('main.Overview') }}</a>
+          href="{{ route('group', $groupId) }}">{{ trans('main.Contests List') }}</a>
       </li>
       <li class="nav-item">
         <a class="nav-link py-3 @if (Route::currentRouteName() == 'group.solutions') active @endif"

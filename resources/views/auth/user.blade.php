@@ -115,18 +115,6 @@
                             target="_blank">{{ $item->creator_username }}</a>
                         </td>
                       </tr>
-                      <tr>
-                        <td nowrap>{{ __('main.Join') }}:</td>
-                        <td nowrap>
-                          @if ($item->private)
-                            <i class="fa fa-lock" aria-hidden="true"></i>
-                            <span>{{ __('main.Private') }}</span>
-                          @else
-                            <i class="fa fa-unlock" aria-hidden="true"></i>
-                            <span>{{ __('main.Public') }}</span>
-                          @endif
-                        </td>
-                      </tr>
                     </tbody>
                   </table>
                 </div>

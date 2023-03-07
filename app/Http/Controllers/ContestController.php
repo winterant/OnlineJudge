@@ -93,21 +93,23 @@ class ContestController extends Controller
 
     public function password(Request $request, $id)
     {
+        $contest = DB::table('contests')->find($id);
+        // 标记为正在请求输入密码
+        $require_password = true;
+
         // 验证密码
         if ($request->isMethod('get')) {
-            $contest = DB::table('contests')->select('id', 'judge_type', 'cate_id', 'title', 'public_rank')->find($id);
-            return view('contest.password', compact('contest'));
+            return view('contest.home', compact('contest', 'require_password'));
         }
         if ($request->isMethod('post')) //接收提交的密码
         {
-            $contest = DB::table('contests')->select('id', 'judge_type', 'password', 'cate_id', 'title', 'public_rank')->find($id);
             if ($request->input('pwd') == $contest->password) //通过验证
             {
                 DB::table('contest_users')->updateOrInsert(['contest_id' => $contest->id, 'user_id' => Auth::id()]); //保存
                 return redirect(route('contest.home', $contest->id));
             } else {
                 $msg = trans('sentence.pwd wrong');
-                return view('contest.password', compact('contest', 'msg'));
+                return view('contest.home', compact('contest', 'msg', 'require_password'));
             }
         }
     }
@@ -150,7 +152,13 @@ class ContestController extends Controller
             ];
         }
 
-        return view('contest.home', compact('contest', 'problems', 'files'));
+        // 读取当前竞赛的公告
+        $notices = DB::table('contest_notices')
+            ->where('contest_id', $id)
+            ->orderByDesc('id')
+            ->get();
+
+        return view('contest.home', compact('contest', 'problems', 'files', 'notices'));
     }
 
     // 题目详情
@@ -402,50 +410,6 @@ class ContestController extends Controller
             if (isset($_GET['username']) && $_GET['username'] != '' && stripos($user['username'], $_GET['username']) === false) unset($users[$uid]);
         }
         return view('contest.rank', compact('contest', 'users', 'problems', 'rank_time'));
-    }
-
-    // 竞赛公告
-    public function notices($id)
-    {
-        $notices = DB::table('contest_notices')
-            ->where('contest_id', $id)
-            ->orderByDesc('id')
-            ->get();
-        $contest = DB::table('contests')->find($id);
-        return view('contest.notices', compact('contest', 'notices'));
-    }
-
-    // 读取竞赛公告内容
-    public function get_notice(Request $request, $id)
-    {
-        //post
-        $notice = DB::table('contest_notices')->select(['title', 'content', 'created_at'])->find($request->input('nid'));
-        return json_encode($notice);
-    }
-
-    // 编辑公告
-    public function edit_notice(Request $request, $id)
-    {
-        //post
-        $notice = $request->input('notice');
-        if ($notice['id'] == null) {
-            //new
-            unset($notice['id']);
-            $notice['contest_id'] = $id;
-            DB::table('contest_notices')->insert($notice);
-        } else {
-            //update
-            DB::table('contest_notices')->where('id', $notice['id'])->update($notice);
-        }
-        return back();
-    }
-
-    // 删除竞赛公告
-    public function delete_notice($id, $nid)
-    {
-        //post
-        DB::table('contest_notices')->where('id', $nid)->delete();
-        return back();
     }
 
     // 显示气球列表

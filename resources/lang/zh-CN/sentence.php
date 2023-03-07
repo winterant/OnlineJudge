@@ -62,6 +62,8 @@ return [
 
 //    contest.password
     "pwd wrong"         => "密码错误",
+    "contest require pwd" => "您必须输入正确的参赛密码才能参与当前竞赛",
+    "contest input pwd" => "请输入参赛密码",
 
 //    contest
     "Start to judge"    => "开始判题",

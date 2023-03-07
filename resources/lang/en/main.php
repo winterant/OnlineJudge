@@ -38,6 +38,7 @@ return [
     "Id"            => "Id",
     "Home"          => "Home",
     "Problems"      => "Problems",
+    "Problems List" => "Problems List",
     "Problem"       => "Problem",
     "Problem_timu"  => "Problem",
     "Status"        => "Status",
@@ -47,6 +48,7 @@ return [
     "Contest"       => "Contest",
     "contest"       => "Contest",
     "Contests"      => "Contests",
+    "Contests List" => "Contests List",
     "Training"      => "Training",
     "exam"          => "Exam",
     "Exam"          => "Exam",
@@ -212,6 +214,7 @@ return [
     "OI"            => "OI",
     "EXAM"          => "EXAM",
 
+    "Notice"        => "Notice",
     "New Notice"    => "New Notification",
     "Content"       => "Content",
 

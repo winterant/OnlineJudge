@@ -46,7 +46,7 @@ class UserController extends Controller
         $groups = DB::table('groups as g')
             ->join('group_users as gu', 'gu.group_id', 'g.id')
             ->join('users as u','u.id','g.creator')
-            ->select(['g.id','g.name','g.teacher','g.class','g.private','g.type','u.username as creator_username','g.hidden'])
+            ->select(['g.id','g.name','g.teacher','g.class','g.type','u.username as creator_username','g.hidden'])
             ->where('gu.user_id', $user->id)
             ->paginate(4);
         return view('auth.user', compact('user', 'groups', 'problems_solved'));

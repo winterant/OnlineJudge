@@ -62,6 +62,8 @@ return [
 
 //    contest.password
     "pwd wrong"         => "The password is wrong",
+    "contest require pwd" => "You must enter the password to participate in this contest",
+    "contest input pwd" => "Input password, please",
 
 //    contest
     "Start to judge"    => "Start to judge",

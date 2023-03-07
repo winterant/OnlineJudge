@@ -38,6 +38,7 @@ return [
     "Id"            => "编号",
     "Home"          => "主页",
     "Problems"      => "题库",
+    "Problems List" => "题目列表",
     "Problem"       => "问题",
     "Problem_timu"  => "题目",
     "Status"        => "状态",
@@ -47,6 +48,7 @@ return [
     "Contest"       => "竞赛",
     "contest"       => "竞赛",
     "Contests"      => "竞赛",
+    "Contests List" => "作业列表",
     "Training"      => "训练",
     "exam"          => "考试",
     "Exam"          => "考试",
@@ -211,7 +213,8 @@ return [
     "OI"            => "OI",
     "EXAM"          => "EXAM",
 
-    "New Notice"    => "新告示",
+    "Notice"        => "公告",
+    "New Notice"    => "发布告示",
     "Content"       => "内容",
 
     "access_public" => "公开参加",

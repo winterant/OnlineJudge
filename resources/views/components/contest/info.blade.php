@@ -19,8 +19,19 @@
     <ul class="list-unstyled">
       @foreach ($groups as $g)
         <li>
-          <i class="fa fa-users pr-2 text-sky" aria-hidden="true"></i>
-          <a href="{{ route('group', $g->id) }}">{{ $g->id }}. {{ $g->name }}</a>
+          <i class="fa fa-users text-sky" aria-hidden="true"></i>
+          <span>
+            @if ($g->type == 0)
+              [<i class="fa fa-book" aria-hidden="true"></i>
+              {{ __('main.Course') }}]
+            @else
+              [<i class="fa fa-users" aria-hidden="true"></i>
+              {{ __('main.Class') }}]
+            @endif
+          </span>
+          <a href="{{ route('group', $g->id) }}">
+            {{ $g->name }}
+          </a>
         </li>
       @endforeach
     </ul>
@@ -44,7 +55,8 @@
       <i class="fa fa-clock-o pr-2 text-sky" aria-hidden="true"></i>
       {{ null, $time_len = strtotime($contest->end_time) - strtotime($contest->start_time) }}
       @if ($time_len > 3600 * 24 * 30)
-        {{ round($time_len / (3600 * 24 * 30), 1) }} {{ trans_choice('main.months', round($time_len / (3600 * 24 * 30), 1)) }}
+        {{ round($time_len / (3600 * 24 * 30), 1) }}
+        {{ trans_choice('main.months', round($time_len / (3600 * 24 * 30), 1)) }}
       @elseif($time_len > 3600 * 24)
         {{ round($time_len / (3600 * 24), 1) }} {{ trans_choice('main.days', round($time_len / (3600 * 24), 1)) }}
       @else

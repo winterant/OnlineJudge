@@ -71,11 +71,6 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
             Route::get('contests/{id}/balloons', 'ContestController@balloons')->name('contest.balloons');
             Route::post('contests/{id}/deliver_ball/{bid}', 'ContestController@deliver_ball')->name('contest.deliver_ball');
         });
-        // todo 获取公告 需要定制api
-        Route::post('contests/{id}/get_notice', 'ContestController@get_notice')->name('contest.get_notice'); //获取一条公告
-        // todo: 添加公告、删除公告 需要定制api
-        Route::post('contests/{id}/edit_notice', 'ContestController@edit_notice')->name('contest.edit_notice')->middleware('Permission:admin.contest_notice.update'); //编辑/添加一条公告
-        Route::post('contests/{id}/delete_notice/{nid}', 'ContestController@delete_notice')->name('contest.delete_notice')->middleware('Permission:admin.contest_notice.delete'); //删除一条公告
     });
 
 
