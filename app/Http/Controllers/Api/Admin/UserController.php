@@ -59,7 +59,6 @@ class UserController extends Controller
         foreach ($usernames as $i => $username) {
             $password = substr(str_shuffle("ABCDMNXYZ"), 0, 4) . substr(str_shuffle("0123456789ABCDEF"), 0, 4);
             $users[] = [
-                'index' => $i + 1,
                 'username' => trim($username),
                 'password' => $password,
                 'nick' => $nick[$i] ?? '',
@@ -72,18 +71,25 @@ class UserController extends Controller
             ];
         }
 
-        // 写入文件
+        // 加入到任务队列 去插入到数据库
+        dispatch(new CreateUsers($users));
+
+        // 写入文件，先转码避免乱码，再写入csv文件
+        foreach ($users as $i => &$u) {
+            $user = ['index' => $i + 1];
+            foreach ($u as $k => $v) {
+                $user[$k] = mb_convert_encoding($v, "GBK", "UTF-8"); // 转为GBK编码保存，office不乱码
+            }
+            $u = $user;
+        }
         Storage::makeDirectory('temp/created_users');
-        $file = fopen(Storage::path(sprintf('temp/created_users/%s[%s]%s.csv', date('Ymd_His'), Auth::user()->username, $users[0]['username'])), 'a');
+        $file = fopen(Storage::path(sprintf('temp/created_users/%s[%s]%s.csv', date('YmdHis'), Auth::user()->username, $users[0]['username'])), 'a');
         fputcsv($file, array_keys($users[0]));
         foreach ($users as &$user) {
             fputcsv($file, array_values($user));
-            unset($user['index']);
         }
         fclose($file);
 
-        // 加入到任务队列 去插入到数据库
-        dispatch(new CreateUsers($users));
 
         return [
             'ok' => 1,
