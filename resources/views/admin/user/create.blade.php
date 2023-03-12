@@ -103,7 +103,7 @@
       </div>
     </form>
 
-    <h3 class="mt-5">历史记录（30天）</h3>
+    <h3 class="mt-5">历史记录（365天）</h3>
     <hr>
     <div class="table-responsive">
       <table class="table table-striped table-hover table-sm">

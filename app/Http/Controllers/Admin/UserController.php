@@ -82,7 +82,7 @@ class UserController extends Controller
         $files = array_reverse($files);
         $created_csv = [];
         foreach ($files as $path) {
-            if (time() - Storage::lastModified($path) > 3600 * 24 * 30) // 超过30天的数据删除掉
+            if (time() - Storage::lastModified($path) > 3600 * 24 * 365) // 超过365天的数据删除掉
                 Storage::delete($path);
             else {
                 $info = pathinfo($path);
