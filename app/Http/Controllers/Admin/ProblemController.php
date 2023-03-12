@@ -265,7 +265,23 @@ class ProblemController extends Controller
 
     public function import_export()
     {
-        return view('admin.problem.import_export');
+        $files = Storage::allFiles('temp/exported');
+        $files = array_reverse($files);
+        $history_xml = [];
+        foreach ($files as $path) {
+            if (time() - Storage::lastModified($path) > 3600 * 24 * 365) // 超过365天的数据删除掉
+                Storage::delete($path);
+            else {
+                $info = pathinfo($path);
+                preg_match('/\[(\S+?)\]/', $info['filename'], $matches);
+                $history_xml[] = [
+                    'name' => $info['basename'],
+                    'creator' => $matches[1] ?? '',
+                    'created_at' => date('Y-m-d H:i:s', Storage::lastModified($path))
+                ];
+            }
+        }
+        return view('admin.problem.import_export', compact('history_xml'));
     }
 
     public function import(Request $request)
@@ -275,12 +291,12 @@ class ProblemController extends Controller
         }
 
         $uc = new UploadController;
-        $isUploaded = $uc->upload($request, storage_path('app/xml_temp'), 'import_problems.xml');
+        $isUploaded = $uc->upload($request, storage_path('app/temp/import'), 'import_problems.xml');
         if (!$isUploaded) return 0;
 
         //读取xml->导入题库
         ini_set('memory_limit', '4096M'); //php单线程最大内存占用，默认128M不够用
-        $xmlDoc = simplexml_load_file(storage_path('app/xml_temp/import_problems.xml'), null, LIBXML_NOCDATA | LIBXML_PARSEHUGE);
+        $xmlDoc = simplexml_load_file(storage_path('app/temp/import/import_problems.xml'), null, LIBXML_NOCDATA | LIBXML_PARSEHUGE);
         $searchNodes = $xmlDoc->xpath("/*/item");
         $first_pid = null;
         foreach ($searchNodes as $node) {
@@ -354,7 +370,7 @@ class ProblemController extends Controller
                 }
             }
         }
-        Storage::deleteDirectory("xml_temp"); //删除已经没用的xml文件
+        Storage::deleteDirectory("temp/import"); //删除已经没用的xml文件
         return $first_pid . ($first_pid < $pid ? '-' . $pid : '');
     }
 
@@ -371,13 +387,8 @@ class ProblemController extends Controller
         }
         ini_set('memory_limit', '2G'); //php单线程最大内存占用，默认128M不够用
         //处理题号,获取题目
-        $problem_ids = $request->input('pids');
-        foreach (explode(PHP_EOL, $problem_ids) as &$item) {
-            $line = explode('-', $item);
-            if (count($line) == 1) $pids[] = intval($line[0]);
-            else foreach (range(intval($line[0]), intval(($line[1]))) as $i) $pids[] = $i;
-        }
-        $problems = DB::table("problems")->whereIn('id', $pids)->orderBy('id')->get();
+        $problem_ids = decode_str_to_array($request->input('pids'));
+        $problems = DB::table("problems")->whereIn('id', $problem_ids)->orderBy('id')->get();
 
         // 生成xml
         $dom = new DOMDocument("1.0", "UTF-8");
@@ -388,7 +399,7 @@ class ProblemController extends Controller
         $attr->appendChild($dom->createTextNode('LDUOJ'));
         $generator->appendChild($attr);
         $attr = $dom->createAttribute('url');
-        $attr->appendChild($dom->createTextNode('https://github.com/iamwinter/LDUOnlineJudge'));
+        $attr->appendChild($dom->createTextNode('https://github.com/winterant/OnlineJudge'));
         $generator->appendChild($attr);
         $root->appendChild($generator);
         //遍历题目，生成xml字符串
@@ -496,16 +507,24 @@ class ProblemController extends Controller
             $root->appendChild($item);
         }
         $dom->appendChild($root);
-        $dir = "temp/problem_export_temp/";
-        if (!Storage::exists($dir . Auth::id()))
-            Storage::makeDirectory($dir . Auth::id());
-        foreach (Storage::allFiles($dir) as $fpath) {  //删除3*24小时以上的文件
-            if (time() - Storage::lastModified($fpath) > 3600 * 24 * 3)
+
+        // 创建文件夹，顺便删除过期文件
+        $dir = "temp/exported";
+        if (!Storage::exists($dir))
+            Storage::makeDirectory($dir);
+        foreach (Storage::allFiles($dir) as $fpath) {  //删除365天以上的文件
+            if (time() - Storage::lastModified($fpath) > 3600 * 24 * 365)
                 Storage::delete($fpath);
         }
-        //  $filename=str_replace("\r",',',str_replace("\n",',',str_replace("\r\n",',',$problem_ids))).".xml";
-        $filename = str_replace(["\r\n", "\r", "\n"], ',', $problem_ids) . ".xml";
-        $dom->save(storage_path("app/" . $dir . Auth::id() . '/' . $filename));
-        return Storage::download($dir . Auth::id() . '/' . $filename);
+        // 根据传入题号命名文件名
+        $filename = str_replace(["\r\n", "\r", "\n"], ',', trim($request->input('pids')));
+        $filename = sprintf('%s[%s]%s', date('YmdHis'), Auth::user()->username, $filename);
+        if (strlen($filename) > 30) // 文件名过长用省略号代替
+            $filename = substr($filename, 0, 30) + '...';
+        $filepath = sprintf('%s/%s.xml', $dir, $filename);
+
+        //  保存文件，并提供下载链接
+        $dom->save(Storage::path($filepath));
+        return Storage::download($filepath);
     }
 }

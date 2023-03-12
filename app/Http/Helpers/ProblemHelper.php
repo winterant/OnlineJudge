@@ -40,10 +40,10 @@ class ProblemHelper
     /**
      * 保存样例到文件
      * @param $problem_id
-     * @param $ins  字符串
-     * @param $outs  字符串
+     * @param $ins  字符串列表
+     * @param $outs  字符串列表
      */
-    public static function saveSamples($problem_id, $ins, $outs): bool
+    public static function saveSamples($problem_id, array $ins, array $outs): bool
     {
         $samples = [];
         foreach ($ins as $k => $si) {
@@ -74,6 +74,11 @@ class ProblemHelper
             if ($ext === 'out' || $ext === 'ans')
                 $testdata[$name]['out'] = file_get_contents($item);
         }
+
+        $testdata = array_filter($testdata, function ($v) {
+            return count($v) == 2;
+        });  // 过滤掉不完整的数据（in、out匹配才算完整）
+
         return $testdata;
     }
 
@@ -81,10 +86,10 @@ class ProblemHelper
     /**
      * 保存测试数据到文件
      * @param $problem_id
-     * @param $ins  字符串
-     * @param $outs  字符串
+     * @param $ins  字符串列表
+     * @param $outs  字符串列表
      */
-    public static function saveTestData($problem_id, $ins, $outs)
+    public static function saveTestData($problem_id, array $ins, array $outs)
     {
         $dir = testdata_path($problem_id . '/test'); // 测试数据文件夹
         foreach (readAllFilesPath($dir) as $item)

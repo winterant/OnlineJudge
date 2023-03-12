@@ -138,7 +138,7 @@ function decode_str_to_array($text, $special_rule = true)
     if ($text == null)
         return [];
 
-    $rows = explode(PHP_EOL, $text); // 按行分割
+    $rows = explode(PHP_EOL, trim($text)); // 按行分割
     $data = [];
     foreach ($rows as $row) {
         $row = trim($row);

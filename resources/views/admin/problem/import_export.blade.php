@@ -39,13 +39,42 @@
                        onclick="whatisthis('填写方法：<br>每行一个题号（如1024），或每行一个区间（如1024-1036）')">
                         <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
                     </a>
-                    <button type="submit" class="btn btn-success ml-3 border" style="vertical-align: top">下载</button>
+                    <button type="submit" class="btn btn-success ml-3 border" style="vertical-align: top">导出</button>
                 </div>
             </form>
             <div class="alert alert-info">
-                提示：若点击下载后无法连接，可能是文件过大，请适当减少题数。<br>
-                    下载文件不超过2GB
+                提示：下载文件不超过2GB。若导出失败，可能是文件过大导致，请适当减少题数。
             </div>
+
+            <h3 class="mt-5">历史记录（365天）</h3>
+            <hr>
+            <div class="table-responsive">
+              <table class="table table-striped table-hover table-sm">
+                <thead>
+                  <tr>
+                    <th>文件名</th>
+                    <th>创建者</th>
+                    <th>导出时间</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($history_xml as $item)
+                    <tr>
+                      <td nowrap>{{ $item['name'] }}</td>
+                      <td nowrap>{{ $item['creator'] }}</td>
+                      <td nowrap>{{ $item['created_at'] }}</td>
+                      <td nowrap>
+                        <a href="{{ route('api.admin.problem.download_exported_xml', ['filename' => $item['name']]) }}">
+                          <i class="fa fa-download" aria-hidden="true"></i>下载
+                        </a>
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+
         </div>
 
     </div>
