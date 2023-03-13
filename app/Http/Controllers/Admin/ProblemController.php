@@ -519,8 +519,8 @@ class ProblemController extends Controller
         // 根据传入题号命名文件名
         $filename = str_replace(["\r\n", "\r", "\n"], ',', trim($request->input('pids')));
         $filename = sprintf('%s[%s]%s', date('YmdHis'), Auth::user()->username, $filename);
-        if (strlen($filename) > 30) // 文件名过长用省略号代替
-            $filename = substr($filename, 0, 30) + '...';
+        if (strlen($filename) > 36) // 文件名过长用省略号代替
+            $filename = substr($filename, 0, 36) . '...';
         $filepath = sprintf('%s/%s.xml', $dir, $filename);
 
         //  保存文件，并提供下载链接
