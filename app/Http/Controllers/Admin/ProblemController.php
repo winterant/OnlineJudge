@@ -189,7 +189,7 @@ class ProblemController extends Controller
     }
 
 
-    //测试数据管理页面
+    // 测试数据管理页面 get
     public function test_data()
     {
         //读取数据文件
@@ -209,7 +209,7 @@ class ProblemController extends Controller
         return view('admin.problem.test_data', compact('tests'));
     }
 
-    // ajax
+    // ajax post
     public function upload_data(Request $request)
     {
         $pid = $request->input('pid');
@@ -229,7 +229,7 @@ class ProblemController extends Controller
         return 1;
     }
 
-    //ajax
+    // ajax post
     public function get_data(Request $request)
     {
         $pid = $request->input('pid');
@@ -240,7 +240,7 @@ class ProblemController extends Controller
         return json_encode($data);
     }
 
-    //form
+    // form post
     public function update_data(Request $request)
     {
         $pid = $request->input('pid');
@@ -252,7 +252,7 @@ class ProblemController extends Controller
         return back();
     }
 
-    //ajax
+    // ajax post
     public function delete_data(Request $request)
     {
         $pid = $request->input('pid');
@@ -263,6 +263,7 @@ class ProblemController extends Controller
         return 1;
     }
 
+    // get
     public function import_export()
     {
         $files = Storage::allFiles('temp/exported');
@@ -284,6 +285,7 @@ class ProblemController extends Controller
         return view('admin.problem.import_export', compact('history_xml'));
     }
 
+    // post
     public function import(Request $request)
     {
         if (!$request->isMethod('post')) {
@@ -374,14 +376,15 @@ class ProblemController extends Controller
         return $first_pid . ($first_pid < $pid ? '-' . $pid : '');
     }
 
-
-    // 导出题目时，描述、题目数据等可能含有xml不支持的特殊字符，过滤掉
-    private function filter_export_characters($str)
-    {
-        return preg_replace('/[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]/', '', $str);
-    }
+    // post
     public function export(Request $request)
     {
+        // 辅助函数：导出题目时，描述、题目数据等可能含有xml不支持的特殊字符，过滤掉
+        $filter_special_characters = function ($str) {
+            return preg_replace('/[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]/', '', $str);
+        };
+
+        // 只接受post请求
         if (!$request->isMethod('post')) {
             return redirect(route('admin.problem.import_export'));
         }
@@ -407,7 +410,7 @@ class ProblemController extends Controller
             $item = $dom->createElement('item');
             //title
             $title = $dom->createElement('title');
-            $title->appendChild($dom->createCDATASection($this->filter_export_characters($problem->title)));
+            $title->appendChild($dom->createCDATASection($filter_special_characters($problem->title)));
             $item->appendChild($title);
             //time_limit
             $unit = $dom->createAttribute('unit');
@@ -425,41 +428,41 @@ class ProblemController extends Controller
             $item->appendChild($memory_limit);
             //description
             $description = $dom->createElement('description');
-            $description->appendChild($dom->createCDATASection($this->filter_export_characters($problem->description)));
+            $description->appendChild($dom->createCDATASection($filter_special_characters($problem->description)));
             $item->appendChild($description);
             //input
             $input = $dom->createElement('input');
-            $input->appendChild($dom->createCDATASection($this->filter_export_characters($problem->input)));
+            $input->appendChild($dom->createCDATASection($filter_special_characters($problem->input)));
             $item->appendChild($input);
             //output
             $output = $dom->createElement('output');
-            $output->appendChild($dom->createCDATASection($this->filter_export_characters($problem->output)));
+            $output->appendChild($dom->createCDATASection($filter_special_characters($problem->output)));
             $item->appendChild($output);
             //hint
             $hint = $dom->createElement('hint');
-            $hint->appendChild($dom->createCDATASection($this->filter_export_characters($problem->hint)));
+            $hint->appendChild($dom->createCDATASection($filter_special_characters($problem->hint)));
             $item->appendChild($hint);
             //source
             $source = $dom->createElement('source');
-            $source->appendChild($dom->createCDATASection($this->filter_export_characters($problem->source)));
+            $source->appendChild($dom->createCDATASection($filter_special_characters($problem->source)));
             $item->appendChild($source);
 
             //sample_input & sample_output
             foreach (ProblemHelper::readSamples($problem->id) as $sample) {
                 $sample_input = $dom->createElement('sample_input');
-                $sample_input->appendChild($dom->createCDATASection($this->filter_export_characters($sample['in'])));
+                $sample_input->appendChild($dom->createCDATASection($filter_special_characters($sample['in'])));
                 $item->appendChild($sample_input);
                 $sample_output = $dom->createElement('sample_output');
-                $sample_output->appendChild($dom->createCDATASection($this->filter_export_characters($sample['out'])));
+                $sample_output->appendChild($dom->createCDATASection($filter_special_characters($sample['out'])));
                 $item->appendChild($sample_output);
             }
             //test_input & test_output
             foreach (ProblemHelper::readTestData($problem->id) as $test) {
                 $test_input = $dom->createElement('test_input');
-                $test_input->appendChild($dom->createCDATASection($this->filter_export_characters($test['in'])));
+                $test_input->appendChild($dom->createCDATASection($filter_special_characters($test['in'])));
                 $item->appendChild($test_input);
                 $test_output = $dom->createElement('test_output');
-                $test_output->appendChild($dom->createCDATASection($this->filter_export_characters($test['out'])));
+                $test_output->appendChild($dom->createCDATASection($filter_special_characters($test['out'])));
                 $item->appendChild($test_output);
             }
             //spj language

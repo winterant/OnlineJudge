@@ -79,7 +79,8 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::delete('/user/roles/{id}/users/{uid}', 'Admin\UserController@role_delete_user')->name('user.role_delete_user')->middleware('Permission:admin.user_role.update');
 
         // Manage contest: route('api.admin.problem.*')
-        Route::get('problem/export/download', 'Admin\ProblemController@download_exported_xml')->name('problem.download_exported_xml')->middleware('Permission:admin.problem.export');
+        Route::get('problem/export/download', 'Admin\ProblemController@download_exported_xml')->name('problem.download_exported_xml')->middleware('Permission:admin.problem_xml.export');
+        Route::delete('problem/export/clear', 'Admin\ProblemController@clear_exported_xml')->name('problem.clear_exported_xml')->middleware('Permission:admin.problem_xml');
 
         // Manage contest: route('api.admin.contest.*')
         Route::patch('/contests/{id}/order/{shift}', 'Admin\ContestController@update_order')->name('contest.update_order')->middleware('Permission:admin.contest.update');
