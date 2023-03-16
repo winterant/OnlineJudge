@@ -19,14 +19,6 @@ class SetGlobalVariable
      */
     public function handle($request, Closure $next)
     {
-        // ========================== 获取APItoken ===================
-        // 对于已登陆用户的api请求，自动从redis中获取api_token
-        if (Auth::check() && request()->is('api/*')) {
-            /** @var \App\Models\User */
-            $user = Auth::user();
-            $request['api_token'] = $user->get_api_token();
-        }
-
         // ========================== 设置时区 ========================
         //date()函数的时区默认UTC，用这个全局中间件来改为上海时间
         date_default_timezone_set(config('app.timezone'));

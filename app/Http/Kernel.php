@@ -44,6 +44,11 @@ class Kernel extends HttpKernel
 
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            // 允许api使用session来获取用户。session令牌可以通过cookie获得。
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+
             \App\Http\Middleware\SetGlobalVariable::class,
             \App\Http\Middleware\CheckUserLocked::class,
             \App\Http\Middleware\CheckFormDecode::class,
@@ -87,10 +92,10 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         \App\Http\Middleware\EncryptCookies::class,
         \App\Http\Middleware\SetGlobalVariable::class,
-        \App\Http\Middleware\Permission::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \App\Http\Middleware\Permission::class,
         \Illuminate\Routing\Middleware\ThrottleRequests::class,
         \App\Http\Middleware\Authenticate::class, // auth
         \Illuminate\Auth\Middleware\Authorize::class, // can
