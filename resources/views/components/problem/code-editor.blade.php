@@ -13,6 +13,7 @@
     @endif
 
     @if ($problem->type == 0)
+      {{-- 编程题 --}}
       <div class="form-inline m-2">
         {{-- 编程题可以选择语言 --}}
         <div class="flex-nowrap">
@@ -51,6 +52,7 @@
         <textarea id="code_editor" name="solution[code]" style="width: 100%;height:30rem">{{ $solution_code }}</textarea>
       </div>
     @elseif($problem->type == 1)
+      {{-- 代码填空题 --}}
       <div class="form-inline m-2">
         {{-- 代码填空由出题人指定语言 --}}
         <span class="mr-2">{{ __('main.Language') }}:</span>
@@ -385,7 +387,7 @@
       resize_code_editor()
       window.addEventListener("resize", resize_code_editor)
 
-      // 监听代码改动
+      // 监听代码改动， 将内容同步到textarea
       code_editor.on("change", function() {
         $("#code_editor").val(code_editor.getValue())
       })
@@ -443,13 +445,16 @@
       })
 
       // ======================== 初始化填充代码
-      var local_code_key = "solution_code_problem{{ $problem->id }}_contest{{ $contest_id ?? 0 }}"
-      if (code_editor.getValue() == '' && localStorage.getItem(local_code_key))
+      var local_code_key =
+        "solution_code_user{{ Auth::id() ?? null }}_problem{{ $problem->id }}_contest{{ $contest_id ?? 0 }}"
+      if (code_editor.getValue() == '' && localStorage.getItem(local_code_key)) // 有本地缓存的代码
         code_editor.setValue(localStorage.getItem(local_code_key))
+      else // 本题从未缓存代码，给予提示语
+        code_editor.setValue('// 请使用本地IDE（如DEV-CPP）运行无误后再将代码粘贴至此处并提交！\n')
 
       // ===========================监听代码输入，自动补全代码：
       code_editor.on('change', (instance, change) => {
-        // 自动补全的时候，也会触发change事件，所有判断一下，以免死循环，正则是为了不让空格，换行之类的也提示
+        // 自动补全的时候，也会触发change事件，所有判断一下，以免死循环，正则是为了不让空格、换行之类的也提示
         // 通过change对象你可以自定义一些规则去判断是否提示
         if (change.origin !== 'complete' && change.text.length < 2 && /\w|\./g.test(change.text[
             0])) {
