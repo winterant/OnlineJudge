@@ -445,10 +445,13 @@
       })
 
       // ======================== 初始化填充代码
-      var local_code_key =
+      let solution_code = $('#code_editor').val() // 后端返回的代码
+      let local_code_key =
         "solution_code_user{{ Auth::id() ?? null }}_problem{{ $problem->id }}_contest{{ $contest_id ?? 0 }}"
-      if (code_editor.getValue() == '' && localStorage.getItem(local_code_key)) // 有本地缓存的代码
-        code_editor.setValue(localStorage.getItem(local_code_key))
+      if (solution_code != null)
+        code_editor.setValue(solution_code) // 后端返回了代码
+      else if (code_editor.getValue() == '' && localStorage.getItem(local_code_key)) // 有本地缓存的代码
+        code_editor.setValue(localStorage.getItem(local_code_key)) // 本地缓存了代码
       else // 本题从未缓存代码，给予提示语
         code_editor.setValue('// 请使用本地IDE（如DEV-CPP）运行无误后再将代码粘贴至此处并提交！\n')
 
