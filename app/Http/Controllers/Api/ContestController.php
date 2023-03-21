@@ -25,7 +25,7 @@ class ContestController extends Controller
             $notice['contest_id'] = $cid;
             DB::table('contest_notices')->insert($notice);
         }
-        return ['ok'=>1,'data'=>$notice];
+        return ['ok' => 1, 'msg' => '已添加公告', 'data' => $notice];
     }
 
     // 编辑公告 // patch
@@ -33,13 +33,13 @@ class ContestController extends Controller
     {
         $notice = $request->input('notice');
         DB::table('contest_notices')->where('id', $nid)->update($notice);
-        return ['ok'=>1,'data'=>$notice];
+        return ['ok' => 1, 'msg' => '已修改公告', 'data' => $notice];
     }
 
     // 删除竞赛公告
     public function delete_notice($id, $nid)
     {
         DB::table('contest_notices')->where('id', $nid)->delete();
-        return ['ok'=>1];
+        return ['ok' => 1, 'msg' => '已删除公告'];
     }
 }

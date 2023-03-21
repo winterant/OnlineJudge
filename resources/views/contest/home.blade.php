@@ -209,12 +209,7 @@
                               <i class="fa fa-edit" aria-hidden="true"></i>
                             </a>
                             <a href="javascript:"
-                              onclick="Notiflix.Confirm.Show( '{{ __('main.Delete') }}',
-                                                         '{{ __('sentence.delete') }}',
-                                                         '{{ __('main.Confirm') }}',
-                                                         '{{ __('main.Cancel') }}',
-                                                         function(){delete_notice('{{ $item->id }}')}
-                                                         )"
+                              onclick="delete_notice('{{ $item->id }}', this.parentNode.parentNode.parentNode)"
                               class="ml-2 text-sky">
                               <i class="fa fa-trash" aria-hidden="true"></i>
                             </a>
@@ -357,17 +352,25 @@
       }
       // 管理员提交编辑公告的请求: 添加 or 编辑
       function update_notice(that) {
-        $("#content").val(editor.getData()) // 无比读取富文本框内容
+        $("#content").val(editor.getData()) // 读取富文本框内容
         if ($("#form_notice_id").val() == "") {
           // 新建
-          $.post(
-            '{{ route('api.admin.contest.create_notice', $contest->id) }}',
-            $(that).serializeJSON(),
-            function(ret) {
-              console.log(ret);
-              // location.reload()
+          $.ajax({
+            type: 'post',
+            url: '{{ route('api.admin.contest.create_notice', $contest->id) }}',
+            data: $(that).serializeJSON(),
+            success: function(ret) {
+              console.log(ret)
+              Notiflix.Notify.Success(ret.msg)
+              location.reload()
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+              Notiflix.Notify.Failure('请求失败');
+              console.log(XMLHttpRequest.status);
+              console.log(XMLHttpRequest.readyState);
+              console.log(textStatus);
             }
-          );
+          });
         } else {
           //修改
           $.ajax({
@@ -378,24 +381,41 @@
             success: function(ret) {
               console.log(ret)
               location.reload()
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+              Notiflix.Notify.Failure('请求失败')
+              console.log(XMLHttpRequest.status);
+              console.log(XMLHttpRequest.readyState);
+              console.log(textStatus);
             }
           })
         }
         return false;
       }
 
-      function delete_notice(nid) {
-        $.ajax({
-          type: 'delete',
-          url: '{{ route('api.admin.contest.delete_notice', [$contest->id, '??']) }}'.replace('??', nid),
-          success: function(ret) {
-            console.log(ret)
-            if (ret.ok)
-              location.reload()
-            else
-              alert('{{ __('main.Failed') }}')
+      function delete_notice(nid, tr) {
+        Notiflix.Confirm.Show('{{ __('main.Delete') }}',
+          '{{ __('sentence.delete') }}',
+          '{{ __('main.Confirm') }}',
+          '{{ __('main.Cancel') }}',
+          function() {
+            $.ajax({
+              type: 'delete',
+              url: '{{ route('api.admin.contest.delete_notice', [$contest->id, '??']) }}'.replace('??', nid),
+              success: function(ret) {
+                console.log(ret)
+                if (ret.ok) {
+                  Notiflix.Notify.Success(ret.msg)
+                  $(tr).hide()
+                  // location.reload()
+                } else {
+                  Notiflix.Notify.Failure('{{ __('main.Failed') }}')
+                }
+              }
+            })
           }
-        })
+        )
+
       }
     </script>
   @endif
