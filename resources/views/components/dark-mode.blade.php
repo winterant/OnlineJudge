@@ -18,6 +18,6 @@
     buttonColorLight: "#9595954f", // default: '#fff'
     saveInCookies: true, // default: true,
     label: "🌓", // default: ''
-    autoMatchOsTheme: true, // default: true
+    autoMatchOsTheme: false, // default: true
   }).showWidget();
 </script>
