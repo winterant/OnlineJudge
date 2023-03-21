@@ -162,7 +162,14 @@
         success: function(ret) {
           console.log(ret)
           if (ret.ok) {
-            Notiflix.Report.Success(ret.msg, '后台正在生成用户，请稍后刷新网页，然后在历史记录中下载')
+            Notiflix.Confirm.Show('正再生成账号',
+                ret.msg + '。后台正在生成用户，请稍等片刻后刷新网页，然后在历史记录中下载',
+                '现在刷新',
+                '暂不刷新',
+                function() {
+                  location.reload()
+                }
+              )
           } else {
             Notiflix.Report.Failure(ret.msg,
               '以下用户已存在，如果您确定它们已经不再使用，可以取消勾选“检查重名用户”，再次提交将直接覆盖它们:\n' + ret.data, 'OK')

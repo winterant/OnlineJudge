@@ -227,9 +227,16 @@
           data: $(form).serializeJSON(),
           success: function(ret) {
             console.log(ret)
-            if (ret.ok)
-              Notiflix.Notify.Success(ret.msg);
-            else
+            if (ret.ok) {
+              Notiflix.Confirm.Show('{{ __('main.Confirm') }}',
+                ret.msg + '，您可以刷新页面查看。',
+                '刷新页面',
+                '暂不刷新',
+                function() {
+                  location.reload()
+                }
+              )
+            } else
               Notiflix.Notify.Failure(ret.msg);
           }
         })

@@ -63,57 +63,57 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
 
     // =====================================================================
     // ============================ admin ==================================
-    Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
         // Manage user: route('api.admin.user.*')
-        Route::post('user/create/batch', 'Admin\UserController@create_batch')->name('user.create_batch')->middleware('Permission:admin.user.create');
-        Route::get('user/create/download', 'Admin\UserController@download_created_users_csv')->name('user.download_created_users_csv')->middleware('Permission:admin.user.create');
-        Route::post('user/delete/batch', 'Admin\UserController@delete_batch')->name('user.delete_batch')->middleware('Permission:admin.user.delete');
-        Route::patch('user/reset_password', 'Admin\UserController@reset_password')->name('user.reset_password')->middleware('Permission:admin.user.update');
+        Route::post('admin/user/create/batch', 'UserController@create_batch')->name('admin.user.create_batch')->middleware('Permission:admin.user.create');
+        Route::get('admin/user/create/download', 'UserController@download_created_users_csv')->name('admin.user.download_created_users_csv')->middleware('Permission:admin.user.create');
+        Route::post('admin/user/delete/batch', 'UserController@delete_batch')->name('admin.user.delete_batch')->middleware('Permission:admin.user.delete');
+        Route::patch('admin/user/reset_password', 'UserController@reset_password')->name('admin.user.reset_password')->middleware('Permission:admin.user.update');
 
         // permission and role
-        Route::post('/user/roles', 'Admin\UserController@create_role')->name('user.create_role')->middleware('Permission:admin.user_role.create');
-        Route::patch('/user/roles/{id}', 'Admin\UserController@update_role')->name('user.update_role')->middleware('Permission:admin.user_role.update');
-        Route::delete('/user/roles/{id}', 'Admin\UserController@delete_role')->name('user.delete_role')->middleware('Permission:admin.user_role.delete');
-        Route::get('/user/roles/{id}/permissions', 'Admin\UserController@get_role_permissions')->name('user.get_role_permissions')->middleware('Permission:admin.user_role.view');
-        Route::post('/user/roles/{id}/users/batch', 'Admin\UserController@role_add_users')->name('user.role_add_users')->middleware('Permission:admin.user_role.update');
-        Route::delete('/user/roles/{id}/users/{uid}', 'Admin\UserController@role_delete_user')->name('user.role_delete_user')->middleware('Permission:admin.user_role.update');
+        Route::post('admin/user/roles', 'UserController@create_role')->name('admin.user.create_role')->middleware('Permission:admin.user_role.create');
+        Route::patch('admin/user/roles/{id}', 'UserController@update_role')->name('admin.user.update_role')->middleware('Permission:admin.user_role.update');
+        Route::delete('admin/user/roles/{id}', 'UserController@delete_role')->name('admin.user.delete_role')->middleware('Permission:admin.user_role.delete');
+        Route::get('admin/user/roles/{id}/permissions', 'UserController@get_role_permissions')->name('admin.user.get_role_permissions')->middleware('Permission:admin.user_role.view');
+        Route::post('admin/user/roles/{id}/users/batch', 'UserController@role_add_users')->name('admin.user.role_add_users')->middleware('Permission:admin.user_role.update');
+        Route::delete('admin/user/roles/{id}/users/{uid}', 'UserController@role_delete_user')->name('admin.user.role_delete_user')->middleware('Permission:admin.user_role.update');
 
         // Manage contest: route('api.admin.problem.*')
-        Route::get('problem/export/download', 'Admin\ProblemController@download_exported_xml')->name('problem.download_exported_xml')->middleware('Permission:admin.problem_xml.export');
-        Route::delete('problem/export/clear', 'Admin\ProblemController@clear_exported_xml')->name('problem.clear_exported_xml')->middleware('Permission:admin.problem_xml');
+        Route::get('admin/problem/export/download', 'ProblemController@download_exported_xml')->name('admin.problem.download_exported_xml')->middleware('Permission:admin.problem_xml.export');
+        Route::delete('admin/problem/export/clear', 'ProblemController@clear_exported_xml')->name('admin.problem.clear_exported_xml')->middleware('Permission:admin.problem_xml');
 
         // Manage contest: route('api.admin.contest.*')
-        Route::patch('/contests/{id}/order/{shift}', 'Admin\ContestController@update_order')->name('contest.update_order')->middleware('Permission:admin.contest.update');
-        Route::patch('/contests/{id}/cate_id/{cate_id}', 'Admin\ContestController@update_cate_id')->name('contest.update_cate_id')->middleware('Permission:admin.contest.update');
+        Route::patch('admin/contests/{id}/order/{shift}', 'ContestController@update_order')->name('admin.contest.update_order')->middleware('Permission:admin.contest.update');
+        Route::patch('admin/contests/{id}/cate_id/{cate_id}', 'ContestController@update_cate_id')->name('admin.contest.update_cate_id')->middleware('Permission:admin.contest.update');
 
         // Manage contest notice: route('api.admin.contest.*')
-        Route::post('contests/{id}/notices', 'ContestController@create_notice')->name('contest.create_notice')->middleware('Permission:admin.contest_notice.create'); //添加一条公告
-        Route::patch('contests/{id}/notices/{nid}', 'ContestController@update_notice')->name('contest.update_notice')->middleware('Permission:admin.contest_notice.update'); //编辑一条公告
-        Route::delete('contests/{id}/notices/{nid}', 'ContestController@delete_notice')->name('contest.delete_notice')->middleware('Permission:admin.contest_notice.delete'); //删除一条公告
+        Route::post('admin/contests/{id}/notices', 'ContestController@create_notice')->name('admin.contest.create_notice')->middleware('Permission:admin.contest_notice.create'); //添加一条公告
+        Route::patch('admin/contests/{id}/notices/{nid}', 'ContestController@update_notice')->name('admin.contest.update_notice')->middleware('Permission:admin.contest_notice.update'); //编辑一条公告
+        Route::delete('admin/contests/{id}/notices/{nid}', 'ContestController@delete_notice')->name('admin.contest.delete_notice')->middleware('Permission:admin.contest_notice.delete'); //删除一条公告
 
         // Manage contest category: route('api.admin.contest.*')
-        Route::post('/contest-categaries', 'Admin\ContestController@add_contest_cate')->name('contest.add_contest_cate')->middleware('Permission:admin.contest_cate.create');
-        Route::patch('/contest-categaries/{id}', 'Admin\ContestController@update_contest_cate')->name('contest.update_contest_cate')->middleware('Permission:admin.contest_cate.update');
-        Route::delete('/contest-categaries/{id}', 'Admin\ContestController@delete_contest_cate')->name('contest.delete_contest_cate')->middleware('Permission:admin.contest_cate.delete');
-        Route::patch('/contest-categaries/{id}/order/{shift}', 'Admin\ContestController@update_contest_cate_order')->name('contest.update_contest_cate_order')->middleware('Permission:admin.contest_cate.update');
+        Route::post('admin/contest-categaries', 'ContestController@add_contest_cate')->name('admin.contest.add_contest_cate')->middleware('Permission:admin.contest_cate.create');
+        Route::patch('admin/contest-categaries/{id}', 'ContestController@update_contest_cate')->name('admin.contest.update_contest_cate')->middleware('Permission:admin.contest_cate.update');
+        Route::delete('admin/contest-categaries/{id}', 'ContestController@delete_contest_cate')->name('admin.contest.delete_contest_cate')->middleware('Permission:admin.contest_cate.delete');
+        Route::patch('admin/contest-categaries/{id}/order/{shift}', 'ContestController@update_contest_cate_order')->name('admin.contest.update_contest_cate_order')->middleware('Permission:admin.contest_cate.update');
 
         // Manage group: route('api.admin.group.*')
-        Route::post('/groups', 'Admin\GroupController@create')->name('group.create')->middleware('Permission:admin.group.create');
-        Route::delete('/groups/{id}', 'Admin\GroupController@delete')->name('group.delete')->middleware('Permission:admin.group.delete');
-        Route::put('/groups/{id}', 'Admin\GroupController@update')->name('group.update')->middleware('Permission:admin.group.update,groups.{id}.creator');
-        Route::patch('/groups/batch-to-one', 'Admin\GroupController@update_batch_to_one')->name('group.update_batch_to_one')->middleware('Permission:admin.group.update');
+        Route::post('admin/groups', 'GroupController@create')->name('admin.group.create')->middleware('Permission:admin.group.create');
+        Route::delete('admin/groups/{id}', 'GroupController@delete')->name('admin.group.delete')->middleware('Permission:admin.group.delete');
+        Route::put('admin/groups/{id}', 'GroupController@update')->name('admin.group.update')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::patch('admin/groups/batch-to-one', 'GroupController@update_batch_to_one')->name('admin.group.update_batch_to_one')->middleware('Permission:admin.group.update');
 
         // 对group的竞赛、成员的管理，控制器中控制权限
         // contests
-        Route::post('/groups/{id}/contests', 'Admin\GroupController@create_contests')->name('group.create_contests')->middleware('Permission:admin.group.update,groups.{id}.creator');
-        Route::delete('/groups/{id}/contests/batch', 'Admin\GroupController@delete_contests_batch')->name('group.delete_contests_batch')->middleware('Permission:admin.group.update,groups.{id}.creator');
-        Route::patch('/groups/{id}/group-contests/{gcid}/order/{shift}', 'Admin\GroupController@update_contest_order')->name('group.update_contest_order')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::post('admin/groups/{id}/contests', 'GroupController@create_contests')->name('admin.group.create_contests')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::delete('admin/groups/{id}/contests/batch', 'GroupController@delete_contests_batch')->name('admin.group.delete_contests_batch')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::patch('admin/groups/{id}/group-contests/{gcid}/order/{shift}', 'GroupController@update_contest_order')->name('admin.group.update_contest_order')->middleware('Permission:admin.group.update,groups.{id}.creator');
         // members
-        Route::post('/groups/{id}/members', 'Admin\GroupController@create_members')->name('group.create_members')->middleware('Permission:admin.group.update,groups.{id}.creator');
-        Route::delete('/groups/{id}/members/batch', 'Admin\GroupController@delete_members_batch')->name('group.delete_members_batch')->middleware('Permission:admin.group.update,groups.{id}.creator');
-        Route::patch('/groups/{id}/members/batch-to-one', 'Admin\GroupController@update_members_batch_to_one')->name('group.update_members_batch_to_one')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::post('admin/groups/{id}/members', 'GroupController@create_members')->name('admin.group.create_members')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::delete('admin/groups/{id}/members/batch', 'GroupController@delete_members_batch')->name('admin.group.delete_members_batch')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::patch('admin/groups/{id}/members/batch-to-one', 'GroupController@update_members_batch_to_one')->name('admin.group.update_members_batch_to_one')->middleware('Permission:admin.group.update,groups.{id}.creator');
 
         // settings
-        Route::patch('/settings', 'Admin\SettingController@settings')->name('settings')->middleware('Permission:admin.setting.update');
+        Route::patch('admin/settings', 'SettingController@settings')->name('admin.settings')->middleware('Permission:admin.setting.update');
     });
 });
