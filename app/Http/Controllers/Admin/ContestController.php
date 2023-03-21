@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Api\Admin\ContestController as ApiAdminContestController;
+use App\Http\Controllers\Api\ContestController as ApiAdminContestController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
