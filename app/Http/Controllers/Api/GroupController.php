@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\DBHelper;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -262,6 +263,43 @@ class GroupController extends Controller
         return [
             'ok' => 0,
             'msg' => 'Nothing has been affected.'
+        ];
+    }
+
+    // ================================= 成员个人档案 =====================================
+    /**
+     * 对某个群组成员增加档案记录
+     *
+     * post request:{
+     *   content:string
+     * }
+     *
+     * response:{
+     *   ok:(0|1),
+     *   msg:string,
+     * }
+     */
+    public function add_archive(Request $request, $group_id, $username)
+    {
+        $user_id = DB::table('users')->where('username', $username)->value('id');
+        $archive = DB::table('group_users')
+            ->where('group_id', $group_id)
+            ->where('user_id', $user_id)
+            ->first()
+            ->value('archive'); // 获取已有字段内容
+        $archive = json_decode($archive, true); // 解码为php数组
+
+        $archive[] = $request->input('content'); // 追加一条内容
+
+        // 写回数据库
+        DB::table('group_users')
+            ->where('group_id', $group_id)
+            ->where('user_id', $user_id)
+            ->update(['archive' => $archive]);
+
+        return [
+            'ok' => 1,
+            'msg' => sprintf("已向该成员档案中添加一条记录")
         ];
     }
 }

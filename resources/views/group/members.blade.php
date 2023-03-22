@@ -78,26 +78,20 @@
                     </td>
                     <td nowrap>{{ $u->created_at }}</td>
                     <td nowrap>
-                      <a href="{{ route('group.member', [$group->id, $u->user_id]) }}">{{ __('查看Ta的学习') }}</a>
+                      <a href="{{ route('group.member', [$group->id, $u->user_id]) }}" target="_blank">查看学习进度</a>
                       @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
+                        <a href="javascript:" onclick="alert('开发中，敬请期待')" class="ml-3">查看档案</a>
+
                         @if (isset($_GET['identity']) && $_GET['identity'] == 0)
                           <a class="ml-3" href="javascript:"
-                            onclick="if(confirm('该用户已被禁用，无法进入该群组。确定恢复为学生？')){
-                            update_members_identity([{{ $u->user_id }}], 2)
-                            $(this).parent().parent().remove();
-                          }">恢复学生</a>
+                            onclick="update_members_identity([{{ $u->user_id }}], 2,this.parentNode.parentNode)">恢复学生</a>
                         @else
                           <a class="ml-3" href="javascript:"
-                            onclick="if(confirm('该用户被禁用后，无法进入该群组，无法自行恢复。管理员可以从【已禁用】成员页面看到该成员，可以查看其学习信息，可以解除禁用。确定禁用？')){
-                            update_members_identity([{{ $u->user_id }}], 0)
-                            $(this).parent().parent().remove();
-                          }">禁用</a>
+                            onclick="update_members_identity([{{ $u->user_id }}], 0, this.parentNode.parentNode)">禁用</a>
                         @endif
+
                         <a class="ml-3" href="javascript:"
-                          onclick="if(confirm('该用户被彻底删除后，无法进入该群组；除提交记录外，该用户在该群组中的学习规划信息将会丢失。建议您优先考虑【禁用】该成员来代替【彻底删除】。确定彻底删除？')){
-                            delete_members_batch([{{ $u->user_id }}]);
-                            $(this).parent().parent().remove();
-                          }">彻底删除</a>
+                          onclick="delete_members_batch([{{ $u->user_id }}], this.parentNode.parentNode)">彻底删除</a>
                       @endif
                     </td>
                   </tr>
@@ -146,28 +140,40 @@
 
   <script type="text/javascript">
     // 批量修改成员的身份
-    function update_members_identity(user_ids, ident) {
-      $.ajax({
-        type: 'patch',
-        url: '{{ route('api.admin.group.update_members_batch_to_one', $group->id) }}',
-        data: {
-          'user_ids': user_ids,
-          'value': {
-            'identity': ident
-          }
-        },
-        success: function(ret) {
-          if (ret.ok) {
-            Notiflix.Notify.Success(ret.msg);
-          } else {
-            Notiflix.Report.Failure('修改失败', ret.msg, '确定')
-          }
-        },
-        error: function(err) {
-          console.log(err)
-          Notiflix.Notify.Failure("请求失败");
-        }
-      })
+    function update_members_identity(user_ids, ident, toberm) {
+      let tip = ''
+      if (ident == 0)
+        tip = '该用户被禁用后，无法进入该群组，无法自行恢复。管理员可以从【已禁用】成员页面看到该成员，可以查看其学习信息，可以解除禁用。确定禁用？'
+      if (ident == 2)
+        tip = '该用户已被禁用，无法进入该群组。确定恢复为学生？'
+      Notiflix.Confirm.Show('修改成员身份',
+        tip,
+        '确认禁用',
+        '返回',
+        function() {
+          $.ajax({
+            type: 'patch',
+            url: '{{ route('api.admin.group.update_members_batch_to_one', $group->id) }}',
+            data: {
+              'user_ids': user_ids,
+              'value': {
+                'identity': ident
+              }
+            },
+            success: function(ret) {
+              if (ret.ok) {
+                Notiflix.Notify.Success(ret.msg)
+                $(toberm).hide()
+              } else {
+                Notiflix.Report.Failure('修改失败', ret.msg, '确定')
+              }
+            },
+            error: function(err) {
+              console.log(err)
+              Notiflix.Notify.Failure("请求失败");
+            }
+          })
+        })
     }
 
     // 批量插入新成员
@@ -193,27 +199,35 @@
     }
 
     // 批量删除group成员
-    function delete_members_batch(user_ids) {
-      $.ajax({
-        type: 'delete',
-        url: '{{ route('api.admin.group.delete_members_batch', $group->id) }}',
-        data: {
-          'user_ids': user_ids
-        },
-        success: function(ret) {
-          console.log(ret)
-          if (ret.ok) {
-            Notiflix.Notify.Success(ret.msg);
-          } else {
-            Notiflix.Report.Failure('删除失败', ret.msg, '确定')
-          }
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-          console.log(XMLHttpRequest.status);
-          console.log(XMLHttpRequest.readyState);
-          console.log(textStatus);
+    function delete_members_batch(user_ids, toberemoved) {
+      Notiflix.Confirm.Show('危险操作',
+        '该用户被彻底删除后，无法进入该群组；除提交记录外，该用户在该群组中的档案信息将会彻底丢失。建议您优先考虑【禁用】该成员来代替【彻底删除】。确定彻底删除？',
+        '彻底删除',
+        '返回',
+        function() {
+          $.ajax({
+            type: 'delete',
+            url: '{{ route('api.admin.group.delete_members_batch', $group->id) }}',
+            data: {
+              'user_ids': user_ids
+            },
+            success: function(ret) {
+              console.log(ret)
+              if (ret.ok) {
+                Notiflix.Notify.Success(ret.msg)
+                $(toberemoved).slideUp()
+              } else {
+                Notiflix.Report.Failure('删除失败', ret.msg, '确定')
+              }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+              console.log(XMLHttpRequest.status);
+              console.log(XMLHttpRequest.readyState);
+              console.log(textStatus);
+            }
+          })
         }
-      })
+      )
     }
   </script>
 @endsection
