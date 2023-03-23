@@ -73,7 +73,7 @@
         <button v-show="judge_processing>0" id="btn_judge_result" type="button" data-target="#judge-result-page"
           data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
         <button id="btn_submit_code" type="button"
-          onclick="disabledSubmitButton(this, '已提交'); $('#btn_judge_result').click()" v-on:click="submit_solution"
+          onclick="disabledSubmitButton(this, '已提交');" v-on:click="submit_solution"
           class="btn bg-success text-white m-2" style="min-width: 6rem"
           @guest disabled @endguest>{{ trans('main.Submit') }}</button>
       </div>
@@ -310,6 +310,7 @@
             if (ret.ok) {
               // 收到回复，刷新判题结果
               Notiflix.Notify.Success(ret.msg)
+              $('#btn_judge_result').click()// 展示模态框
               // window.location.href = ret.data.redirect
               this.query_solution_id = ret.data.solution_id
               this.judge_processing = 2 // 判题中
@@ -403,7 +404,7 @@
         localStorage.setItem('code_editor_theme', theme_name)
       })
 
-      // ==================== 监听用户选中的语言，实时修改代码提示框
+      // ==================== 监听用户选中的语言，实时修改代码提示框 ======================
       function listen_lang_selected() {
         // var langs = JSON.parse('{!! json_encode(config('oj.judge_lang')) !!}') // 系统设定的语言候选列表
         var lang = $("#lang_select").children('option:selected').val(); // 当前选中的语言下标
@@ -430,7 +431,7 @@
         listen_lang_selected()
       });
 
-      // ======================== 监听用户选中的文件，实时读取
+      // ======================== 监听用户选中的文件，实时读取 =========================
       $("#code_file").on("change", function() {
         $('#selected_fname').html(this.files[0].name);
         var reader = new FileReader();
@@ -444,18 +445,18 @@
         }
       })
 
-      // ======================== 初始化填充代码
+      // ======================== 初始化填充代码 ===============================
       let solution_code = $('#code_editor').val() // 后端返回的代码
       let local_code_key =
         "solution_code_user{{ Auth::id() ?? null }}_problem{{ $problem->id }}_contest{{ $contest_id ?? 0 }}"
-      if (solution_code != null)
+      if (solution_code != '')
         code_editor.setValue(solution_code) // 后端返回了代码
       else if (code_editor.getValue() == '' && localStorage.getItem(local_code_key)) // 有本地缓存的代码
         code_editor.setValue(localStorage.getItem(local_code_key)) // 本地缓存了代码
       else // 本题从未缓存代码，给予提示语
         code_editor.setValue('// 请使用本地IDE（如DEV-CPP）运行无误后再将代码粘贴至此处并提交！\n')
 
-      // ===========================监听代码输入，自动补全代码：
+      // ===========================监听代码输入，自动补全代码 =============================
       code_editor.on('change', (instance, change) => {
         // 自动补全的时候，也会触发change事件，所有判断一下，以免死循环，正则是为了不让空格、换行之类的也提示
         // 通过change对象你可以自定义一些规则去判断是否提示

@@ -4,7 +4,7 @@
 
 @section('content')
 
-  <div class="container">
+  <div class="container" id="vue-archive">
     <div class="row">
       <div class="col-12 col-sm-12">
         {{-- group导航栏 --}}
@@ -80,7 +80,8 @@
                     <td nowrap>
                       <a href="{{ route('group.member', [$group->id, $u->user_id]) }}" target="_blank">查看学习进度</a>
                       @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
-                        <a href="javascript:" onclick="alert('开发中，敬请期待')" class="ml-3">查看档案</a>
+                        <a href="javascript:" class="ml-3" data-target="#archive-modal" data-toggle="modal"
+                          v-on:click="query_archive('{{ $group->id }}','{{ $u->username }}')">查看档案</a>
 
                         @if (isset($_GET['identity']) && $_GET['identity'] == 0)
                           <a class="ml-3" href="javascript:"
@@ -135,8 +136,127 @@
       </div>
 
     </div>
+
+
+    {{--    模态框,显示个人档案 --}}
+    <div class="modal fade" id="archive-modal">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+          <!-- 模态框头部 -->
+          <div class="modal-header pb-1 border-bottom">
+            <h4 id="notice-title" class="modal-title">个人档案（
+              <a :href="'{{ route('user', '') }}/' + member" target="_blank">
+                <i class="fa fa-user" aria-hidden="true"></i>
+                @{{ member }}
+              </a>
+              ）
+            </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- 模态框主体 -->
+          <div id="notice-content" class="modal-body ck-content math_formula">
+            {{-- <p id="archive-p" v-html="archive.content"></p> --}}
+            <textarea id="archive-textarea"></textarea>
+          </div>
+
+          <!-- 模态框底部 -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" v-on:click="update_archive()">保存</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
-  </div>
+
+  <script>
+    // archive-textarea
+    $(function() {
+      ClassicEditor.create(document.querySelector('#archive-textarea'), ck_config).then(editor => {
+        window.editor = editor;
+        console.log(editor.getData());
+      }).catch(error => {
+        console.log(error);
+      });
+    })
+
+    const {
+      createApp
+    } = Vue
+    createApp({
+      data() {
+        return {
+          member: '', // username
+        }
+      },
+      computed: {},
+      methods: {
+        // 查询当前成员的档案
+        query_archive(group_id, username) {
+          $.ajax({
+            type: 'get',
+            url: '{{ route('api.admin.group.get_archive', ['??1', '??2']) }}'.replace('??1', group_id).replace(
+              '??2', username),
+            dataType: 'json',
+            success: (ret) => {
+              console.log(ret)
+              this.member = username // 标记当前模态框用户名
+              if ('content' in ret)
+                window.editor.setData(ret.content)
+              else
+                window.editor.setData('')
+            },
+            error: function(ret) {
+              console.log(ret)
+              if (ret.status == 401) { // 身份验证失败
+                Notiflix.Report.Failure('身份验证未通过',
+                  '您的账号可能已在别处登陆，您已掉线。请退出当前账号，然后重新登录！',
+                  '好的'
+                );
+              } else {
+                Notiflix.Notify.Failure('请求出错，请刷新页面后重试！');
+              }
+            }
+          })
+        },
+
+        // 保存档案
+        update_archive() {
+          $.ajax({
+            type: 'patch',
+            url: '{{ route('api.admin.group.update_archive', ['??1', '??2']) }}'.replace('??1',
+              '{{ $group->id }}').replace(
+              '??2', this.member),
+            dataType: 'json',
+            data: {
+              'content': window.editor.getData(),
+            },
+            success: (ret) => {
+              console.log(ret)
+              if(ret.ok)
+                Notiflix.Notify.Success(ret.msg)
+              else
+                Notiflix.Notify.Failure('{{__('main.Failed')}}')
+            },
+            error: function(ret) {
+              console.log(ret)
+              if (ret.status == 401) { // 身份验证失败
+                Notiflix.Report.Failure('身份验证未通过',
+                  '您的账号可能已在别处登陆，您已掉线。请退出当前账号，然后重新登录！',
+                  '好的'
+                );
+              } else {
+                Notiflix.Notify.Failure('请求出错，请刷新页面后重试！');
+              }
+            }
+          })
+        }
+      }
+    }).mount('#vue-archive')
+  </script>
 
   <script type="text/javascript">
     // 批量修改成员的身份
@@ -230,4 +350,5 @@
       )
     }
   </script>
+
 @endsection

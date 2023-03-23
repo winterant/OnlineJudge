@@ -267,39 +267,65 @@ class GroupController extends Controller
     }
 
     // ================================= 成员个人档案 =====================================
+
     /**
-     * 对某个群组成员增加档案记录
+     * 查询档案记录
      *
-     * post request:{
-     *   content:string
+     * get request:{
+     *   group_id:int,
+     *   username:string
      * }
      *
-     * response:{
-     *   ok:(0|1),
-     *   msg:string,
-     * }
+     * response:[
+     *   {'content':string, 'creator': string, 'created_at': Datetime}, ...
+     * ]
+     * 当$only_latest = 1时只返回最后一项，即{'content':string, 'creator': string, 'created_at': Datetime}
      */
-    public function add_archive(Request $request, $group_id, $username)
+    public function get_archive(int $group_id, string $username, int $only_latest = 1)
     {
         $user_id = DB::table('users')->where('username', $username)->value('id');
         $archive = DB::table('group_users')
             ->where('group_id', $group_id)
             ->where('user_id', $user_id)
-            ->first()
-            ->value('archive'); // 获取已有字段内容
-        $archive = json_decode($archive, true); // 解码为php数组
+            ->first()->archive; // 获取已有字段内容
+        $archive = json_decode($archive, true) ?? []; // 解码为php数组
+        if ($only_latest == 1) // 只返回最新版本
+            return $archive[count($archive) - 1] ?? [];
+        return $archive;
+    }
 
-        $archive[] = $request->input('content'); // 追加一条内容
+    /**
+     * 查询档案记录
+     *
+     * get request:{
+     *   group_id:int,
+     *   username:string
+     * }
+     *
+     * response:[
+     *   {'content':string, 'creator': string, 'created_at': Datetime}, ...
+     * ]
+     */
+    public function update_archive(Request $request, $group_id, $username)
+    {
+        $user_id = DB::table('users')->where('username', $username)->value('id');
+        $archive = $this->get_archive($group_id, $username, 0); // 获取所有历史
+        $archive[] = [
+            'content' => $request->input('content'), // 更新内容
+            'creator' => Auth::user()->username,
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
+        // 确保最多只保留100个历史记录
+        if (count($archive) > 100) {
+            $archive = array_slice($archive, -100);
+        }
 
         // 写回数据库
         DB::table('group_users')
             ->where('group_id', $group_id)
             ->where('user_id', $user_id)
-            ->update(['archive' => $archive]);
-
-        return [
-            'ok' => 1,
-            'msg' => sprintf("已向该成员档案中添加一条记录")
-        ];
+            ->update(['archive' => json_encode($archive)]);
+        return ['ok' => 1, 'msg' => '已更新'];
     }
 }
