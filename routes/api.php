@@ -113,7 +113,8 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::delete('admin/groups/{id}/members/batch', 'GroupController@delete_members_batch')->name('admin.group.delete_members_batch')->middleware('Permission:admin.group.update,groups.{id}.creator');
         Route::patch('admin/groups/{id}/members/batch-to-one', 'GroupController@update_members_batch_to_one')->name('admin.group.update_members_batch_to_one')->middleware('Permission:admin.group.update,groups.{id}.creator');
         // 群组成员个人档案
-        Route::get('admin/groups/{id}/members/{username}', 'GroupController@get_archive')->name('admin.group.get_archive')->middleware('Permission:admin.group.view,groups.{id}.creator');
+        Route::get('admin/groups/{id}/members/{username}/archive', 'GroupController@get_archive')->name('admin.group.get_archive')->middleware('Permission:admin.group.view,groups.{id}.creator');
+        Route::get('admin/groups/{id}/members/{username}/archive-history', 'GroupController@get_archive_history')->name('admin.group.get_archive_history')->middleware('Permission:admin.group.view,groups.{id}.creator');
         Route::patch('admin/groups/{id}/members/{username}', 'GroupController@update_archive')->name('admin.group.update_archive')->middleware('Permission:admin.group.update,groups.{id}.creator');
 
         // settings

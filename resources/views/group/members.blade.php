@@ -145,7 +145,7 @@
 
           <!-- 模态框头部 -->
           <div class="modal-header pb-1 border-bottom">
-            <h4 id="notice-title" class="modal-title">个人档案（
+            <h4 id="notice-title" class="modal-title">成员档案（
               <a :href="'{{ route('user', '') }}/' + member" target="_blank">
                 <i class="fa fa-user" aria-hidden="true"></i>
                 @{{ member }}
@@ -162,8 +162,8 @@
           </div>
 
           <!-- 模态框底部 -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success" v-on:click="update_archive()">保存</button>
+          <div class="modal-footer mb-3 mr-3">
+            <button type="button" class="btn btn-success mr-3" v-on:click="update_archive('{{ $group->id }}')">保存</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
           </div>
 
@@ -224,22 +224,20 @@
         },
 
         // 保存档案
-        update_archive() {
+        update_archive(group_id) {
           $.ajax({
             type: 'patch',
-            url: '{{ route('api.admin.group.update_archive', ['??1', '??2']) }}'.replace('??1',
-              '{{ $group->id }}').replace(
-              '??2', this.member),
+            url: '{{ route('api.admin.group.update_archive', ['??1', '??2']) }}'.replace('??1', group_id).replace('??2', this.member),
             dataType: 'json',
             data: {
               'content': window.editor.getData(),
             },
             success: (ret) => {
               console.log(ret)
-              if(ret.ok)
+              if (ret.ok)
                 Notiflix.Notify.Success(ret.msg)
               else
-                Notiflix.Notify.Failure('{{__('main.Failed')}}')
+                Notiflix.Notify.Failure('{{ __('main.Failed') }}')
             },
             error: function(ret) {
               console.log(ret)

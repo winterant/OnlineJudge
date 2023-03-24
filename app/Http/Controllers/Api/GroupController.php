@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GroupController extends Controller
 {
@@ -276,12 +277,29 @@ class GroupController extends Controller
      *   username:string
      * }
      *
+     * 返回档案最新版本
+     * response: {'content':string, 'creator': string, 'created_at': Datetime}
+     */
+    public function get_archive(int $group_id, string $username)
+    {
+        $hist = $this->get_archive_history($group_id, $username); // 只返回最新版本，不存在则返回false
+        return empty($hist) ? [] : end($hist);
+    }
+
+    /**
+     * 查询档案历史记录
+     *
+     * get request:{
+     *   group_id:int,
+     *   username:string
+     * }
+     *
+     * 返回所有历史版本
      * response:[
      *   {'content':string, 'creator': string, 'created_at': Datetime}, ...
      * ]
-     * 当$only_latest = 1时只返回最后一项，即{'content':string, 'creator': string, 'created_at': Datetime}
      */
-    public function get_archive(int $group_id, string $username, int $only_latest = 1)
+    public function get_archive_history(int $group_id, string $username)
     {
         $user_id = DB::table('users')->where('username', $username)->value('id');
         $archive = DB::table('group_users')
@@ -289,8 +307,6 @@ class GroupController extends Controller
             ->where('user_id', $user_id)
             ->first()->archive; // 获取已有字段内容
         $archive = json_decode($archive, true) ?? []; // 解码为php数组
-        if ($only_latest == 1) // 只返回最新版本
-            return $archive[count($archive) - 1] ?? [];
         return $archive;
     }
 
@@ -309,14 +325,14 @@ class GroupController extends Controller
     public function update_archive(Request $request, $group_id, $username)
     {
         $user_id = DB::table('users')->where('username', $username)->value('id');
-        $archive = $this->get_archive($group_id, $username, 0); // 获取所有历史
+        $archive = $this->get_archive_history($group_id, $username); // 获取所有历史
         $archive[] = [
             'content' => $request->input('content'), // 更新内容
             'creator' => Auth::user()->username,
             'created_at' => date('Y-m-d H:i:s')
         ];
 
-        // 确保最多只保留100个历史记录
+        // 确保最多只保留100个历史记录,防止爆库
         if (count($archive) > 100) {
             $archive = array_slice($archive, -100);
         }
