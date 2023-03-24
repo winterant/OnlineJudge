@@ -55,6 +55,7 @@
                     <td nowrap>{{ $u->school }} &nbsp; {{ $u->class }}</td>
                     <td nowrap>{{ $u->nick }}</td>
                     <td nowrap>
+                      @php($ident = [0 => '已禁用', 1 => '申请加入', 2 => '学生', /* 3 => '学生班长', */ 4 => '管理员'])
                       @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
                         <div class="form-inline">
                           <select class="border" onchange="update_members_identity([{{ $u->user_id }}], $(this).val())"
@@ -72,7 +73,6 @@
                           </select>
                         </div>
                       @else
-                        @php($ident = [0 => '已禁用', 1 => '申请加入', 2 => '学生', /* 3 => '学生班长', */ 4 => '管理员'])
                         {{ $ident[intval($u->identity)] }}
                       @endif
                     </td>
@@ -163,7 +163,8 @@
 
           <!-- 模态框底部 -->
           <div class="modal-footer mb-3 mr-3">
-            <button type="button" class="btn btn-success mr-3" v-on:click="update_archive('{{ $group->id }}')">保存</button>
+            <button type="button" class="btn btn-success mr-3"
+              v-on:click="update_archive('{{ $group->id }}')">保存</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
           </div>
 
@@ -227,7 +228,8 @@
         update_archive(group_id) {
           $.ajax({
             type: 'patch',
-            url: '{{ route('api.admin.group.update_archive', ['??1', '??2']) }}'.replace('??1', group_id).replace('??2', this.member),
+            url: '{{ route('api.admin.group.update_archive', ['??1', '??2']) }}'.replace('??1', group_id)
+              .replace('??2', this.member),
             dataType: 'json',
             data: {
               'content': window.editor.getData(),
@@ -259,14 +261,15 @@
   <script type="text/javascript">
     // 批量修改成员的身份
     function update_members_identity(user_ids, ident, toberm) {
-      let tip = ''
+      let identities = @json($ident ?? []);
+      let tip = '';
       if (ident == 0)
         tip = '该用户被禁用后，无法进入该群组，无法自行恢复。管理员可以从【已禁用】成员页面看到该成员，可以查看其学习信息，可以解除禁用。确定禁用？'
-      if (ident == 2)
-        tip = '该用户已被禁用，无法进入该群组。确定恢复为学生？'
+      else
+        tip = '确认修改该成员的身份为' + identities[ident] + '?'
       Notiflix.Confirm.Show('修改成员身份',
         tip,
-        '确认禁用',
+        '确认修改',
         '返回',
         function() {
           $.ajax({
