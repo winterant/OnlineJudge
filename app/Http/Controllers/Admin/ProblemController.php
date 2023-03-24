@@ -32,17 +32,13 @@ class ProblemController extends Controller
                 'p.accepted',
                 'p.submitted'
             )
-            ->when(isset($_GET['pid']) && $_GET['pid'] != '', function ($q) {
-                return $q->where('p.id', $_GET['pid']);
-            })
-            ->when(isset($_GET['title']) && $_GET['title'] != '', function ($q) {
-                return $q->where('title', 'like', '%' . $_GET['title'] . '%');
-            })
-            ->when(isset($_GET['source']) && $_GET['source'] != '', function ($q) {
-                return $q->where('source', 'like', '%' . $_GET['source'] . '%');
+            ->when(isset($_GET['kw']) && $_GET['kw'], function ($q) {
+                return $q->where('p.id', $_GET['kw'])
+                    ->orWhere('title', 'like', '%' . $_GET['kw'] . '%')
+                    ->orWhere('source', 'like', '%' . $_GET['kw'] . '%');
             })
             ->orderByDesc('p.id')
-            ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 100);
+            ->paginate($_GET['perPage'] ?? 100);
         return view('admin.problem.list', compact('problems'));
     }
 

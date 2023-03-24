@@ -125,10 +125,10 @@ class UserController extends Controller
         ])
             ->when($_GET['kw'] ?? false, function ($q) {
                 $q->where(function ($q) {
-                    $q->where('username', 'like', $_GET['kw'] . '%')
-                        ->orWhere('nick', 'like', $_GET['kw'] . '%')
-                        ->orWhere('school', 'like', $_GET['kw'] . '%')
-                        ->orWhere('class', 'like', $_GET['kw'] . '%');
+                    $q->where('username', 'like', '%' . $_GET['kw'] . '%')
+                        ->orWhere('nick', 'like', '%' . $_GET['kw'] . '%')
+                        ->orWhere('school', 'like', '%' . $_GET['kw'] . '%')
+                        ->orWhere('class', 'like', '%' . $_GET['kw'] . '%');
                 });
             })
             ->orderByDesc('solved')

@@ -38,9 +38,9 @@ class GroupController extends Controller
         // 其它筛选条件，以及排序、分页
         $groups = $groups->when($_GET['kw'] ?? false, function ($q) {
             $q->where(function ($q) { // sql加括号
-                $q->where('g.name', 'like', $_GET['kw'] . '%')
-                    ->orWhere('g.teacher', 'like', $_GET['kw'] . '%')
-                    ->orWhere('g.class', 'like', $_GET['kw'] . '%');
+                $q->where('g.name', 'like', '%' . $_GET['kw'] . '%')
+                    ->orWhere('g.teacher', 'like', '%' . $_GET['kw'] . '%')
+                    ->orWhere('g.class', 'like', '%' . $_GET['kw'] . '%');
             });
         })->orderByDesc('id')
             ->paginate($_GET['perpage'] ?? 12);
@@ -95,7 +95,7 @@ class GroupController extends Controller
             ->select(['u.username', 'u.nick', 'u.school', 'u.class', 'u.id as user_id', 'gu.id', 'gu.identity', 'gu.created_at'])
             ->where('gu.group_id', $group_id)
             ->when(isset($_GET['username']) && $_GET['username'] != '', function ($q) {
-                return $q->where('u.username', 'like', $_GET['username'] . '%');
+                return $q->where('u.username', 'like', '%' . $_GET['username'] . '%');
             })
             ->whereIn('identity', explode(',', $_GET['identity']))
             ->orderByDesc('gu.identity')

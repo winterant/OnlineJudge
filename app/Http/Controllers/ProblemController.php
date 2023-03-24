@@ -32,7 +32,7 @@ class ProblemController extends Controller
             ->when(isset($_GET['kw']) && $_GET['kw'] != '', function ($q) {
                 $q->where(function ($q) {
                     $q->where('title', 'like', '%' . $_GET['kw'] . '%')
-                        ->orWhere('source', 'like', $_GET['kw'] . '%')
+                        ->orWhere('source', 'like', '%' . $_GET['kw'] . '%')
                         ->orWhere('problems.id', $_GET['kw']);
                 });
             })
