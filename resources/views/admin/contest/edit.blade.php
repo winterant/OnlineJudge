@@ -6,7 +6,7 @@
   <h2>{{ $pageTitle }}</h2>
   <hr>
   <div>
-    <form class="p-4 col-12" action="" method="post" enctype="multipart/form-data" onsubmit="presubmit()">
+    <form class="p-4 col-12" action="" method="post" enctype="multipart/form-data" onsubmit="presubmit()" style="max-width: 80rem">
       @csrf
       <div class="form-inline mb-3">
         <span>竞赛分类：</span>

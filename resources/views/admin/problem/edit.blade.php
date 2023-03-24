@@ -18,7 +18,7 @@
                 </div>
             </form>
         @else
-            <form id="form_problem" class="p-4 col-12 col-md-9" action="" method="post" onsubmit="return check_ckeditor_data();" enctype="multipart/form-data">
+            <form id="form_problem" class="p-4" action="" method="post" onsubmit="return check_ckeditor_data();" enctype="multipart/form-data" style="max-width: 80rem">
                 @csrf
                 <div class="form-inline mb-3">
                     <span>题目类型：</span>
@@ -102,7 +102,9 @@
                     <div class="alert alert-info mb-0">
                         备注：请将需要填空的代码替换为英文输入双问号（即??）
                     </div>
-                    <textarea id="code_editor" name="problem[fill_in_blank]">{{isset($problem)?$problem->fill_in_blank:''}}</textarea>
+                    <div class="border">
+                      <textarea id="code_editor" name="problem[fill_in_blank]">{{isset($problem)?$problem->fill_in_blank:''}}</textarea>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -112,14 +114,14 @@
 
                         @if(isset($samples))
                             @foreach($samples as $sam)
-                                <div class="form-inline border m-2">
+                                <div class="form-inline m-2">
                                     <div class="w-50 p-2">
                                         输入：
-                                        <textarea name="sample_ins[]" class="form-control-plaintext bg-white" rows="4" required>{{$sam['in']}}</textarea>
+                                        <textarea name="sample_ins[]" class="form-control-plaintext bg-white border" rows="4" required>{{$sam['in']}}</textarea>
                                     </div>
                                     <div class="w-50 p-2">
                                         输出：
-                                        <textarea name="sample_outs[]" class="form-control-plaintext bg-white" rows="4" required>{{$sam['out']}}</textarea>
+                                        <textarea name="sample_outs[]" class="form-control-plaintext bg-white border" rows="4" required>{{$sam['out']}}</textarea>
                                     </div>
                                 </div>
                             @endforeach
@@ -278,14 +280,14 @@
 
         //添加样例编辑框
         function add_input_samples(that) {
-            var dom="<div class=\"form-inline border m-2\">\n" +
+            var dom="<div class=\"form-inline m-2\">\n" +
                 "         <div class=\"w-50 p-2\">\n" +
                 "             输入：\n" +
-                "             <textarea name=\"sample_ins[]\" class=\"form-control-plaintext bg-white\" rows=\"4\" required></textarea>\n" +
+                "             <textarea name=\"sample_ins[]\" class=\"form-control-plaintext bg-white border\" rows=\"4\" required></textarea>\n" +
                 "         </div>\n" +
                 "         <div class=\"w-50 p-2\">\n" +
                 "             输出：\n" +
-                "             <textarea name=\"sample_outs[]\" class=\"form-control-plaintext bg-white\" rows=\"4\" required></textarea>\n" +
+                "             <textarea name=\"sample_outs[]\" class=\"form-control-plaintext bg-white border\" rows=\"4\" required></textarea>\n" +
                 "         </div>\n" +
                 "     </div>";
             $(that).before(dom);
