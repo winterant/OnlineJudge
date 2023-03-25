@@ -143,16 +143,17 @@
                 @endif --}}
 
                 @if (($item->user_in_group ?? 0) == 1)
+                  @php($has_btn = true)
                   <a class="btn btn-info border">申请中</a>
                 @endif
 
-                @if (Auth::check() && Auth::user()->has_group_permission($item, 'admin.group.update'))
+                {{-- @if (Auth::check() && Auth::user()->has_group_permission($item, 'admin.group.update'))
                   @php($has_btn = true)
                   <a class="btn btn-info border" href="{{ route('admin.group.edit', [$item->id]) }}"
                     target="_blank">编辑</a>
                   <a class="btn btn-danger border" href="javascript:delete_group({{ $item->id }})"
                     onclick="return confirm('数据宝贵! 确定删除吗？')">删除</a>
-                @endif
+                @endif --}}
               </div>
 
               {{-- 一个虚拟按钮撑起高度 --}}
