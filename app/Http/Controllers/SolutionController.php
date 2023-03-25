@@ -30,7 +30,7 @@ class SolutionController extends Controller
     // web 读取出错数据
     public function solution_wrong_data(Request $request, $id, $type)
     {
-        $solution = DB::table('solutions')->select(['problem_id', 'user_id', 'submit_time', 'wrong_data'])->find($id);
+        $solution = DB::table('solutions')->select(['problem_id', 'contest_id', 'user_id', 'submit_time', 'wrong_data'])->find($id);
         if (!$solution || $solution->wrong_data === null)
             return view('message', ['msg' => '没有记录出错数据']);
 
@@ -50,11 +50,13 @@ class SolutionController extends Controller
         return view('message', ['msg' => $can['msg']]); // 失败
     }
 
-
-    private function can_view_solution(Request $request, &$solution, $can_in_contest = False)
+    /**
+     * @param $can_in_unfinished_contest 当遇到未结束竞赛时，是否允许直接进入
+     */
+    private function can_view_solution(Request $request, &$solution, $can_in_unfinished_contest = false)
     {
         // ========================= 先查询所在竞赛的必要信息 ==========================
-        if (($solution->contest_id ?? -1) > 0) {
+        if ($solution->contest_id ?? false) {
             $contest = DB::table('contests as c')
                 ->join('contest_problems as cp', 'c.id', 'cp.contest_id')
                 ->select(['c.end_time', 'cp.index'])
@@ -73,7 +75,7 @@ class SolutionController extends Controller
             return ['ok' => 1];
 
         // ================ 下面检查普通用户 ===================
-        if (isset($solution->contest_id) && !$can_in_contest && date('Y-m-d H:i:s') < $solution->end_time)
+        if (isset($solution->contest_id) && !$can_in_unfinished_contest && date('Y-m-d H:i:s') < $solution->end_time)
             return ['ok' => 0, 'msg' => trans('sentence.not_end')]; // 竞赛未结束不允许查看
         if ($solution->user_id != Auth::id())
             return ['ok' => 0, 'msg' => trans('sentence.Permission denied')]; // 不能查看他人代码
