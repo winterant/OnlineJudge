@@ -17,7 +17,7 @@
       题每页
     </div>
     <div class="form-inline mx-3">
-      <input type="number" class="form-control text-center" style="width:300px" placeholder="题目编号/标题/来源" name="kw"
+      <input class="form-control text-center" style="width:300px" placeholder="题目编号/标题/来源" name="kw"
         value="{{ $_GET['kw'] ?? '' }}">
     </div>
     <button class="btn border">查询</button>
