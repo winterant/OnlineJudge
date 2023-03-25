@@ -6,9 +6,29 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\DBHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ContestController extends Controller
 {
+    // 删除一场竞赛
+    public function delete_contest(Request $request, $contest_id)
+    {
+        // 查一下该竞赛涉及哪些群组，被引用到群组时，禁止删除
+        $involved_groups = DB::table('group_contests as gc')
+            ->join('groups as g', 'g.id', 'gc.group_id')
+            ->where('contest_id', $contest_id)
+            ->get(['g.id', 'g.name']);
+        if (count($involved_groups)) {
+            $msg = '当前竞赛已在以下群组中被使用，无法删除。<br>如需删除，请先在相应的群组中移除该竞赛。<br>';
+            foreach ($involved_groups as $item)
+                $msg .= sprintf("%d.%s<br>", $item->id, $item->name);
+            return ['ok' => 0, 'msg' => $msg];
+        }
+        $deleted = DB::table('contests')->delete($contest_id);
+        return ['ok' => 1, 'msg' => sprintf("已成功删除%d条竞赛", $deleted)];
+    }
+
+
     /*****************************  竞赛公告   ***********************************/
     // 读取竞赛公告内容
     public function get_notice(Request $request, $id, $nid)

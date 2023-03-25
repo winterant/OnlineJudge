@@ -76,13 +76,14 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::delete('admin/user/roles/{id}', 'UserController@delete_role')->name('admin.user.delete_role')->middleware('Permission:admin.user_role.delete');
         Route::get('admin/user/roles/{id}/permissions', 'UserController@get_role_permissions')->name('admin.user.get_role_permissions')->middleware('Permission:admin.user_role.view');
         Route::post('admin/user/roles/{id}/users/batch', 'UserController@role_add_users')->name('admin.user.role_add_users')->middleware('Permission:admin.user_role.update');
-        Route::delete('admin/user/roles/{id}/users/{uid}', 'UserController@role_delete_user')->name('admin.user.role_delete_user')->middleware('Permission:admin.user_role.update');
+        Route::delete('admin/user/roles/{id}/users/{uid}', 'UserController@role_delete_user')->name('admin.user.role_delete_user')->middleware('Permission:admin.user_role.delete');
 
-        // Manage contest: route('api.admin.problem.*')
+        // Manage problem: route('api.admin.problem.*')
         Route::get('admin/problem/export/download', 'ProblemController@download_exported_xml')->name('admin.problem.download_exported_xml')->middleware('Permission:admin.problem_xml.export');
         Route::delete('admin/problem/export/clear', 'ProblemController@clear_exported_xml')->name('admin.problem.clear_exported_xml')->middleware('Permission:admin.problem_xml');
 
         // Manage contest: route('api.admin.contest.*')
+        Route::delete('admin/contests/{id}', 'ContestController@delete_contest')->name('admin.contest.delete')->middleware('Permission:admin.contest.delete');
         Route::patch('admin/contests/{id}/order/{shift}', 'ContestController@update_order')->name('admin.contest.update_order')->middleware('Permission:admin.contest.update');
         Route::patch('admin/contests/{id}/cate_id/{cate_id}', 'ContestController@update_cate_id')->name('admin.contest.update_cate_id')->middleware('Permission:admin.contest.update');
 
@@ -106,11 +107,11 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         // 对group的竞赛、成员的管理，控制器中控制权限
         // contests
         Route::post('admin/groups/{id}/contests', 'GroupController@create_contests')->name('admin.group.create_contests')->middleware('Permission:admin.group.update,groups.{id}.creator');
-        Route::delete('admin/groups/{id}/contests/batch', 'GroupController@delete_contests_batch')->name('admin.group.delete_contests_batch')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::delete('admin/groups/{id}/contests/batch', 'GroupController@delete_contests_batch')->name('admin.group.delete_contests_batch')->middleware('Permission:admin.group.delete,groups.{id}.creator');
         Route::patch('admin/groups/{id}/group-contests/{gcid}/order/{shift}', 'GroupController@update_contest_order')->name('admin.group.update_contest_order')->middleware('Permission:admin.group.update,groups.{id}.creator');
         // members
         Route::post('admin/groups/{id}/members', 'GroupController@create_members')->name('admin.group.create_members')->middleware('Permission:admin.group.update,groups.{id}.creator');
-        Route::delete('admin/groups/{id}/members/batch', 'GroupController@delete_members_batch')->name('admin.group.delete_members_batch')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::delete('admin/groups/{id}/members/batch', 'GroupController@delete_members_batch')->name('admin.group.delete_members_batch')->middleware('Permission:admin.group.delete,groups.{id}.creator');
         Route::patch('admin/groups/{id}/members/batch-to-one', 'GroupController@update_members_batch_to_one')->name('admin.group.update_members_batch_to_one')->middleware('Permission:admin.group.update,groups.{id}.creator');
         // 群组成员个人档案
         Route::get('admin/groups/{id}/members/{username}/archive', 'GroupController@get_archive')->name('admin.group.get_archive')->middleware('Permission:admin.group.view,groups.{id}.creator');
