@@ -45,9 +45,10 @@ class UserController extends Controller
         // 当前用户已加入的群组：
         $groups = DB::table('groups as g')
             ->join('group_users as gu', 'gu.group_id', 'g.id')
-            ->join('users as u','u.id','g.creator')
-            ->select(['g.id','g.name','g.teacher','g.class','g.type','u.username as creator_username','g.hidden'])
+            ->join('users as u', 'u.id', 'g.creator')
+            ->select(['g.id', 'g.name', 'g.teacher', 'g.class', 'g.type', 'u.username as creator_username', 'g.hidden'])
             ->where('gu.user_id', $user->id)
+            ->where('gu.identity', '>=', 2)
             ->paginate(4);
         return view('auth.user', compact('user', 'groups', 'problems_solved'));
     }
