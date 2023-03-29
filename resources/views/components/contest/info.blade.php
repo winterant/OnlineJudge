@@ -6,7 +6,7 @@
     </button>
     <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
     {{ trans('sentence.Complete Profile') }}
-    <a href="{{ route('user_edit', Auth::user()->username) }}">{{ trans('main.Confirm') }}</a>
+    <a href="{{ route('user.edit', Auth::user()->username) }}">{{ trans('main.Confirm') }}</a>
   </div>
 @endif
 

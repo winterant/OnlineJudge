@@ -82,13 +82,13 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
         Route::get('groups/{id}', 'GroupController@group')->name('group');
         Route::get('groups/{id}/solutions', 'GroupController@solutions')->name('group.solutions');
         Route::get('groups/{id}/members', 'GroupController@members')->name('group.members');
-        Route::get('groups/{id}/members/{uid}', 'GroupController@member')->name('group.member');
+        Route::get('groups/{id}/members/{username}', 'GroupController@member')->name('group.member');
     });
 
     // ================================ 用户（users） ================================
     Route::get('/standings', 'UserController@standings')->name('standings');
     Route::get('/users/{username}', 'UserController@user')->name('user');
-    Route::any('/users/{username}/edit', 'UserController@user_edit')->name('user_edit')->middleware('Permission:admin.user.update,users.{username}.id');
+    Route::any('/users/{username}/edit', 'UserController@edit')->name('user.edit')->middleware('Permission:admin.user.update,users.{username}.id');
     Route::any('/users/{username}/reset-password', 'UserController@password_reset')->name('password_reset')->middleware('Permission:admin.user.update,users.{username}.id');
 
 

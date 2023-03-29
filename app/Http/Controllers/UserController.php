@@ -50,10 +50,10 @@ class UserController extends Controller
             ->where('gu.user_id', $user->id)
             ->where('gu.identity', '>=', 2)
             ->paginate(4);
-        return view('auth.user', compact('user', 'groups', 'problems_solved'));
+        return view('user.user', compact('user', 'groups', 'problems_solved'));
     }
 
-    public function user_edit(Request $request, $username)
+    public function edit(Request $request, $username)
     {
         $user = User::where('username', $username)->first(); // 要修改的user
 
@@ -62,7 +62,7 @@ class UserController extends Controller
 
         // 提供修改界面
         if ($request->isMethod('get')) {
-            return view('auth.user_edit', compact('user'));
+            return view('user.edit', compact('user'));
         }
 
         // 提交修改资料

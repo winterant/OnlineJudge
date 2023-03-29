@@ -78,7 +78,7 @@
                     </td>
                     <td nowrap>{{ $u->created_at }}</td>
                     <td nowrap>
-                      <a href="{{ route('group.member', [$group->id, $u->user_id]) }}" target="_blank">查看学习进度</a>
+                      <a href="{{ route('group.member', [$group->id, $u->username]) }}" target="_blank">查看学习进度</a>
                       @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
                         <a href="javascript:" class="ml-3" data-target="#archive-modal" data-toggle="modal"
                           v-on:click="query_archive('{{ $group->id }}','{{ $u->username }}')">查看档案</a>

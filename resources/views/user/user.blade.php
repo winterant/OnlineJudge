@@ -10,7 +10,7 @@
       <h2>
         <span>{{ $user->username }}</span>
         @if (Auth::check() && (Auth::user()->can('admin.user.update') || Auth::user()->username == $user->username))
-          <a href="{{ route('user_edit', $user->username) }}" style="font-size:1rem">
+          <a href="{{ route('user.edit', $user->username) }}" style="font-size:1rem">
             <i class="fa fa-edit" aria-hidden="true"></i>
             <span>{{ __('main.Edit') }}</span>
           </a>
@@ -83,7 +83,7 @@
                       {{ __('main.Class') }}]
                     @endif
                   </span>
-                  <a href="{{ route('group', $item->id) }}" target="_blank">{{ $item->name }}</a>
+                  <a href="{{ route('group.members', [$item->id, 'username'=>$user->username]) }}" target="_blank">{{ $item->name }}</a>
                   @if ($item->hidden)
                     <span class="text-nowrap" style="font-size: 0.9rem; right:1rem; top:1rem;">
                       <i class="fa fa-eye-slash ml-2" aria-hidden="true" title="{{ __('main.Hidden') }}"></i>

@@ -108,10 +108,13 @@ class GroupController extends Controller
     }
 
     // 学习报告
-    public function member(Request $request, $group_id, $user_id)
+    public function member(Request $request, $group_id, $username)
     {
         $group = DB::table('groups as g')->find($group_id);
-        $user = DB::table('users')->find($user_id);
+        $user = DB::table('users')->where('username', $username)->first();
+        if(!DB::table('group_users')->where('group_id',$group_id)->where('user_id', $user->id??0)->exists()){
+            return view('message',['msg'=>'该群组内不存在该成员！']);
+        }
 
         $contests = DB::table('contests as c')
             ->join('group_contests as gc', function ($q) use ($group_id) {

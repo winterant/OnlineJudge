@@ -28,7 +28,7 @@
       @if (Auth::check())
         <li class="nav-item">
           <a class="nav-link py-3 @if (Route::currentRouteName() == 'group.member') active @endif"
-            href="{{ route('group.member', [$groupId, Auth::id()]) }}">{{ trans('main.Study Schedule') }}</a>
+            href="{{ route('group.member', [$groupId, Auth::user()->username]) }}">{{ trans('main.Study Schedule') }}</a>
         </li>
       @endif
     </ul>
