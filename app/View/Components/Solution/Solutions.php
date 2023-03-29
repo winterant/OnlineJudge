@@ -75,7 +75,7 @@ class Solutions extends Component
                 $q->where('sim_rate', '>=', $_GET['sim_rate']); // 查重率 0~100
             })
             ->when(isset($_GET['username']) && $_GET['username'] != null, function ($q) {
-                $q->where('username', 'like', $_GET['username'] . '%'); // 用户名
+                $q->where('username', 'like', '%' . $_GET['username'] . '%'); // 用户名
             })
             ->when(isset($_GET['result']) && $_GET['result'] >= 0, function ($q) {
                 $q->where('result', $_GET['result']); // 判题结果
