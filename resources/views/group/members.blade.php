@@ -157,7 +157,16 @@
 
           <!-- 模态框主体 -->
           <div id="notice-content" class="modal-body ck-content math_formula">
-            {{-- <p id="archive-p" v-html="archive.content"></p> --}}
+            <div v-for="item in cited_archives" class="mb-3 border-bottom overflow-hidden">
+              <div v-html="item.content"></div>
+              <div class="float-right" style="font-size: 0.9rem">
+                ——该档案引用自群组
+                <a :href="'{{ route('group.members', ['__1', 'username' => '__2']) }}'
+                .replace('__1', item.group_id).replace('__2', member)"
+                  v-html="item.name" target="_blank"></a>
+                <span class="text-gary">（保存于@{{ item.created_at }}）</span>
+              </div>
+            </div>
             <textarea id="archive-textarea"></textarea>
           </div>
 
@@ -191,6 +200,19 @@
       data() {
         return {
           member: '', // username
+          cited_archives: [{
+            'content': 'neirong',
+            'creator': '内容',
+            'created_at': '时间',
+            'name': 'hdsjhfdlsgfjd',
+            'group_id': 'erheyi'
+          }, {
+            'content': 'neirong',
+            'creator': '内容',
+            'created_at': '时间',
+            'name': '测试',
+            'group_id': '基础'
+          }],
         }
       },
       computed: {},
@@ -205,6 +227,7 @@
             success: (ret) => {
               console.log(ret)
               this.member = username // 标记当前模态框用户名
+              this.cited_archives = ret.cited_archives
               if ('content' in ret)
                 window.editor.setData(ret.content)
               else

@@ -112,8 +112,8 @@ class GroupController extends Controller
     {
         $group = DB::table('groups as g')->find($group_id);
         $user = DB::table('users')->where('username', $username)->first();
-        if(!DB::table('group_users')->where('group_id',$group_id)->where('user_id', $user->id??0)->exists()){
-            return view('message',['msg'=>'该群组内不存在该成员！']);
+        if (!DB::table('group_users')->where('group_id', $group_id)->where('user_id', $user->id ?? 0)->exists()) {
+            return view('message', ['msg' => '该群组内不存在该成员！']);
         }
 
         $contests = DB::table('contests as c')

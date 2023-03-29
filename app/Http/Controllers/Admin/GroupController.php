@@ -32,8 +32,13 @@ class GroupController extends Controller
     // get: 编辑已存在的 group
     public function edit(Request $request, $group_id)
     {
-        if (!($group = DB::table('groups')->find($group_id)))
+        $group = DB::table('groups')->find($group_id);
+        if (!$group)
             return view('message', ['msg' => '群组不存在!']);
+
+        // json格式解码为逗号间隔格式
+        $group->archive_cite = implode(',', json_decode($group->archive_cite ?? '[]', true));
+
         return view('admin.group.edit', compact('group'));
     }
 }

@@ -65,8 +65,30 @@ class GroupController extends Controller
      */
     public function update(Request $request, $group_id)
     {
+        $group = DB::table('groups')->find($group_id);
+
+        // 获取输入内容
         $request_group = $request->input('group');
+
+        // 特殊处理“成员档案引用”字段
+        if ($group->creator == Auth::id()) {  // 只有创建者可以修改
+            $input_cites = preg_split('/[^0-9]/', $request_group['archive_cite'], -1, PREG_SPLIT_NO_EMPTY); // 提取数字
+            $valid_cites = [];
+            /** @var App/Model/User */
+            $user = Auth::user();
+            foreach ($input_cites as $c) {
+                if ($user->has_group_permission(DB::table('groups')->find($c), 'admin.group.update'))
+                    $valid_cites[] = intval($c); // 在被引群组中，具有管理权限，才可以引用
+            }
+            $request_group['archive_cite'] = json_encode($valid_cites);
+        } else {
+            unset($request_group['archive_cite']); // 当前用户不是创建者，那么不修改档案引用
+        }
+
+        // 添加时间戳
         $request_group['updated_at'] = date('Y-m-d H:i:s');
+
+        // 执行更新
         $updated = DB::table('groups')->where('id', $group_id)->update($request_group);
         if ($updated)
             return [
@@ -278,12 +300,22 @@ class GroupController extends Controller
      * }
      *
      * 返回档案最新版本
-     * response: {'content':string, 'creator': string, 'created_at': Datetime}
+     * response: {'content':string, 'creator': string, 'created_at': Datetime, 'cited_archives':[...]}
      */
     public function get_archive(int $group_id, string $username)
     {
+        $group = DB::table('groups')->find($group_id);
         $hist = $this->get_archive_history($group_id, $username); // 只返回最新版本，不存在则返回false
-        return empty($hist) ? [] : end($hist);
+        $archive = empty($hist) ? [] : end($hist);
+        // 获取被引用的档案
+        $archive['cited_archives'] = [];
+        foreach (json_decode($group->archive_cite ?? '[]', true) as $c) {
+            $cited_group = DB::table('groups')->find($c);
+            $hist = $this->get_archive_history($c, $username); // 只返回最新版本，不存在则返回false
+            if (!empty($hist))
+                $archive['cited_archives'][] = end($hist)+['name'=>$cited_group->name,'group_id'=>$cited_group->id];
+        }
+        return $archive;
     }
 
     /**

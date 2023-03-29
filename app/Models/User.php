@@ -64,16 +64,18 @@ class User extends Authenticatable
      */
     public function has_group_permission($group, $permission = null, $or_identity_manager = true)
     {
-        if ($permission != null && $this->can($permission)) // 权限
+        if ($group == null)
+            return false; // 群组不存在，所以没有权限
+        if ($permission != null && $this->can($permission)) // 用户拥有某具体权限，则直接通过
             return true;
-        if ($group->creator == $this->id) // 创建者
+        if ($group->creator == $this->id) // 当前用户是创建者，直接通过
             return true;
         if (
             $or_identity_manager &&
             DB::table('group_users')->where('group_id', $group->id)
             ->where('user_id', $this->id)->where('identity', 4)->exists()
         )
-            return true; // 群组管理员
+            return true; // 当前用户是该群组的一位管理员
         return false;
     }
 }
