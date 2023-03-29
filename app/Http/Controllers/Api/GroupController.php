@@ -313,7 +313,7 @@ class GroupController extends Controller
             $cited_group = DB::table('groups')->find($c);
             $hist = $this->get_archive_history($c, $username); // 只返回最新版本，不存在则返回false
             if (!empty($hist))
-                $archive['cited_archives'][] = end($hist)+['name'=>$cited_group->name,'group_id'=>$cited_group->id];
+                $archive['cited_archives'][] = end($hist) + ['name' => $cited_group->name, 'group_id' => $cited_group->id];
         }
         return $archive;
     }
@@ -337,7 +337,7 @@ class GroupController extends Controller
         $archive = DB::table('group_users')
             ->where('group_id', $group_id)
             ->where('user_id', $user_id)
-            ->first()->archive; // 获取已有字段内容
+            ->first()->archive ?? '[]'; // 获取已有字段内容
         $archive = json_decode($archive, true) ?? []; // 解码为php数组
         return $archive;
     }

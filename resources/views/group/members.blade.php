@@ -200,19 +200,7 @@
       data() {
         return {
           member: '', // username
-          cited_archives: [{
-            'content': 'neirong',
-            'creator': '内容',
-            'created_at': '时间',
-            'name': 'hdsjhfdlsgfjd',
-            'group_id': 'erheyi'
-          }, {
-            'content': 'neirong',
-            'creator': '内容',
-            'created_at': '时间',
-            'name': '测试',
-            'group_id': '基础'
-          }],
+          cited_archives: [],
         }
       },
       computed: {},
