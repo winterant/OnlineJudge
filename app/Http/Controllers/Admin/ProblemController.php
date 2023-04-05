@@ -9,6 +9,7 @@ use App\Http\Helpers\ProblemHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -323,10 +324,10 @@ class ProblemController extends Controller
             $pid = DB::table('problems')->insertGetId($problem);
             if (!$first_pid) $first_pid = $pid;
             //下面保存sample，test，spj
-            $samp_inputs = (array)$node->children()->sample_input;
-            $samp_outputs = (array)$node->children()->sample_output;
-            $test_inputs = (array)$node->children()->test_input;
-            $test_outputs = (array)$node->children()->test_output;
+            $samp_inputs = (array)($node->children()->sample_input);
+            $samp_outputs = (array)($node->children()->sample_output);
+            $test_inputs = (array)($node->children()->test_input);
+            $test_outputs = (array)($node->children()->test_output);
             ProblemHelper::saveSamples($pid, $samp_inputs, $samp_outputs); //保存样例
             ProblemHelper::saveTestData($pid, $test_inputs, $test_outputs); //保存测试数据
             if ($node->spj) {

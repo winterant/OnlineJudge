@@ -13,8 +13,14 @@ class ProblemHelper
      */
     public static function readSamples($problem_id): array
     {
+        // 读取数据库中保存的样例
         $samples = DB::table('problems')->where('id', $problem_id)->value('samples') ?? "[]";
         $samples = json_decode($samples, true);
+        // 防止类型错误，筛选一遍
+        $samples = array_filter($samples, function ($e) {
+            return is_string($e['in']) && is_string($e['out']);
+        });
+        // 兼容老版本（样例保存在文件）
         if (empty($samples)) {
             // 由于数据库中没有样例，故读取文件中的样例,并转存到数据库
             // 这个if是为了兼顾一个历史遗留问题，2023.3.5之前，样例全都保存为文件
@@ -32,8 +38,8 @@ class ProblemHelper
                     $files[$name]['out'] = file_get_contents($item);
             }
             $samples = array_values($files);
+            DB::table('problems')->where('id', $problem_id)->update(['samples' => $samples]);
         }
-        DB::table('problems')->where('id', $problem_id)->update(['samples' => $samples]);
         return $samples;
     }
 
@@ -46,9 +52,10 @@ class ProblemHelper
     public static function saveSamples($problem_id, array $ins, array $outs): bool
     {
         $samples = [];
-        foreach ($ins as $k => $si) {
-            $so = $outs[$k];
-            $samples[] = ['in' => $si, 'out' => $so];
+        $size = min(count($ins), count($outs)); // 样例个数
+        for ($k = 0; $k < $size; ++$k) {
+            if (is_string($ins[$k]) && is_string($outs[$k]))
+                $samples[] = ['in' => $ins[$k], 'out' => $outs[$k]];
         }
         DB::table('problems')->where('id', $problem_id)->update(['samples' => $samples]);
         return true;
