@@ -43,7 +43,7 @@
       <h4 class="m-0">{{ trans('main.Tag Collection') }}</h4>
     </div>
 
-    <form id="form_submit_tag" class="p-3 m-0">
+    <form class="p-3 m-0" onsubmit="submit_problem_tag(this);return false">
       <input name="problem_id" value="{{ $problem_id }}" hidden>
 
       <div class="alert alert-success p-2">
@@ -76,8 +76,7 @@
           <i class="fa fa-list" aria-hidden="true"></i>
           {{ __('main.Tag Pool') }}
         </a>
-        <a class="btn btn-sm bg-success text-white m-1 px-3"
-          onclick="submit_problem_tag()">{{ trans('main.Submit') }}</a>
+        <button class="btn btn-sm bg-success text-white m-1 px-3">{{ trans('main.Submit') }}</button>
       </div>
     </form>
   </div>
@@ -96,9 +95,11 @@
       return;
     }
     var dom = "<div class=\"form-inline\">\n" +
-      "    <input type=\"text\" class=\"form-control mr-2\" oninput=\"input_auto_width($(this))\" required name=\"tag_names[]\" style=\"width: 50px\">\n" +
+      "    <input type=\"text\" class=\"form-control mr-2\"  required name=\"tag_names[]\" style=\"width: 8rem\">\n" +
       "    <a style=\"margin-left: -25px;cursor: pointer\" onclick=\"delete_tag_input($(this))\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></a>\n" +
       "</div>";
+    // oninput=\"input_auto_width($(this))\"
+
     $(that).before(dom);
     var input = $(that).prev().children("input");
     // input.focus();
@@ -127,28 +128,27 @@
   }
 
   //输入框根据字数自动调整宽度
-  function input_auto_width(that) {
-    $(that).val($(that).val().replace(/\s+/g, '')); //禁止输入空格
-    var sensor = $('<font>' + $(that).val() + '</font>').css({
-      display: 'none'
-    });
-    $('body').append(sensor);
-    var width = sensor.width();
-    sensor.remove();
-    $(that).css('width', (width + 30) + 'px');
-  }
-</script>
+  // function input_auto_width(that) {
+  //   $(that).val($(that).val().replace(/\s+/g, '')); //禁止输入空格
+  //   var sensor = $('<font>' + $(that).val() + '</font>').css({
+  //     display: 'none'
+  //   });
+  //   $('body').append(sensor);
+  //   var width = sensor.width();
+  //   sensor.remove();
+  //   $(that).css('width', (width + 300) + 'px');
+  // }
 
-<script>
   // {{-- 提交表单 --}}
-  function submit_problem_tag() {
+  function submit_problem_tag(dom) {
     $.ajax({
       method: 'post',
       url: "{{ route('api.problem.submit_problem_tag') }}",
-      data: $("#form_submit_tag").serializeJSON(),
+      data: $(dom).serializeJSON(),
       success: function(ret) {
         if (ret.ok) {
-          Notiflix.Notify.Success(ret.msg)
+          // Notiflix.Notify.Success(ret.msg)
+          Notiflix.Report.Success("{{ __('main.Success') }}", ret.msg, "{{ __('main.Confirm') }}")
           $("#div_submit_tag").hide()
         } else {
           Notiflix.Report.Failure("{{ __('main.Failure') }}", ret.msg, "{{ __('main.Confirm') }}")
