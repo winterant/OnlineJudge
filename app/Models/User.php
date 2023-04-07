@@ -46,17 +46,17 @@ class User extends Authenticatable
     /**
      * 获取该用户的api_token
      */
-    public function get_api_token(bool $regenerate = false)
-    {
-        $redis_key = 'user:' . $this->id . ':api_token';
-        if ($regenerate)
-            Cache::forget($redis_key);
-        return Cache::remember($redis_key, 3600 * 24 * 30, function () {
-            DB::table('users')->where('id', $this->id)
-                ->update(['api_token' => hash('sha256', $api_token = Str::random(64))]); // hash 64 bits
-            return $api_token;
-        });
-    }
+    // public function get_api_token(bool $regenerate = false)
+    // {
+    //     $redis_key = 'user:' . $this->id . ':api_token';
+    //     if ($regenerate)
+    //         Cache::forget($redis_key);
+    //     return Cache::remember($redis_key, 3600 * 24 * 30, function () {
+    //         DB::table('users')->where('id', $this->id)
+    //             ->update(['api_token' => hash('sha256', $api_token = Str::random(64))]); // hash 64 bits
+    //         return $api_token;
+    //     });
+    // }
 
 
     /**

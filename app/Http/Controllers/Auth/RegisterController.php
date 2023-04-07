@@ -81,12 +81,12 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $user = User::create([
-            'username' => $data['username'],
+            'username' => $data['username'] ?? 'oj_' . Str::random(8),
             'password' => Hash::make($data['password']),
-            'email' => $data['email'],
-            'school'   => $data['school'],
-            'class'   => $data['class'],
-            'nick'   => $data['nick'],
+            'email' => $data['email'] ?? '',
+            'school'   => $data['school'] ?? '',
+            'class'   => $data['class'] ?? '',
+            'nick'   => $data['nick'] ?? '',
             // 'api_token' => hash('sha256', $api_token = Str::random(64)), // hash 64 bits
         ]);
         // Cache::put('user:' . $user->getAttributes()['id'] . ':api_token', $api_token, 3600 * 24 * 30);
