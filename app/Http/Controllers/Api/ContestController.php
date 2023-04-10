@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class ContestController extends Controller
 {
     // 删除一场竞赛
-    public function delete_contest(Request $request, $contest_id)
+    public function delete(Request $request, $contest_id)
     {
         // 查一下该竞赛涉及哪些群组，被引用到群组时，禁止删除
         $involved_groups = DB::table('group_contests as gc')

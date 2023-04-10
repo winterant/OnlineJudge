@@ -79,11 +79,12 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::delete('admin/user/roles/{id}/users/{uid}', 'UserController@role_delete_user')->name('admin.user.role_delete_user')->middleware('Permission:admin.user_role.delete');
 
         // Manage problem: route('api.admin.problem.*')
+        Route::delete('admin/problems/{id}', 'ProblemController@delete')->name('admin.problem.delete')->middleware('Permission:admin.problem.delete');// 创建人无法删除
         Route::get('admin/problem/export/download', 'ProblemController@download_exported_xml')->name('admin.problem.download_exported_xml')->middleware('Permission:admin.problem_xml.export');
         Route::delete('admin/problem/export/clear', 'ProblemController@clear_exported_xml')->name('admin.problem.clear_exported_xml')->middleware('Permission:admin.problem_xml');
 
         // Manage contest: route('api.admin.contest.*')
-        Route::delete('admin/contests/{id}', 'ContestController@delete_contest')->name('admin.contest.delete')->middleware('Permission:admin.contest.delete');
+        Route::delete('admin/contests/{id}', 'ContestController@delete')->name('admin.contest.delete')->middleware('Permission:admin.contest.delete');
         Route::patch('admin/contests/{id}/order/{shift}', 'ContestController@update_order')->name('admin.contest.update_order')->middleware('Permission:admin.contest.update');
         Route::patch('admin/contests/{id}/cate_id/{cate_id}', 'ContestController@update_cate_id')->name('admin.contest.update_cate_id')->middleware('Permission:admin.contest.update');
 

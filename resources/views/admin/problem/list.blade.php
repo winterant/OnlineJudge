@@ -104,6 +104,9 @@
                 data-toggle="tooltip" title="测试数据">
                 <i class="fa fa-file" aria-hidden="true"></i> 测试数据
               </a>
+              <a href="javascript:" onclick="delete_problem({{ $item->id }}, this.parentNode.parentNode)" class="mx-1">
+                <i class="fa fa-trash" aria-hidden="true"></i> 删除
+              </a>
             </td>
           </tr>
         @endforeach
@@ -144,6 +147,31 @@
           }
         }
       );
+    }
+
+    // 删除题目
+    function delete_problem(pid, tr) {
+      Notiflix.Confirm.Show('删除题目', '这将导致该题目内容及其测试数据永久抹除，并且该题号将永久空缺！如果该题确实不再需要，建议您优先考虑修改为其它题目内容。', '立即删除', '取消', function() {
+        $.ajax({
+          type: 'delete',
+          url: '{{ route('api.admin.problem.delete', '??') }}'.replace('??', pid),
+          success: function(ret) {
+            console.log(ret)
+            if (ret.ok) {
+              Notiflix.Notify.Success(ret.msg);
+              $(tr).hide()
+            } else {
+              Notiflix.Report.Init({
+                plainText: false, // 使<br>可以换行
+              })
+              Notiflix.Report.Failure('删除失败', ret.msg, '返回')
+            }
+          },
+          error: function(err){
+            console.log(err)
+          }
+        })
+      });
     }
   </script>
 @endsection
