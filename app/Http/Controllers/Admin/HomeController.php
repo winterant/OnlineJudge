@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function home(Request $request)
     {
-        //服务器相关信息
+        // 服务器相关信息
         $systemInfo = [
             '网站域名'      => $_SERVER["HTTP_HOST"],
             '服务器主机名'   =>  $_SERVER['SERVER_NAME'],
@@ -30,13 +30,11 @@ class HomeController extends Controller
             '服务器解译引擎'  => $_SERVER['SERVER_SOFTWARE'],
             '通信协议'       => $_SERVER['SERVER_PROTOCOL']
         ];
-        $fpm_status = Http::get('http://localhost:8088/fpm-status', $_GET); // php-fpm实时状态
+        $fpm_status = Http::get('http://localhost:80/fpm-status', $_GET); // php-fpm实时状态
         return view('admin.home', compact('systemInfo', 'fpm_status'));
     }
 
-    /**
-     * 系统设置
-     */
+    // 系统设置页面
     public function settings(Request $request)
     {
         return view('admin.settings');
