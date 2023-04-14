@@ -1,4 +1,4 @@
-@extends('layout-admin')
+@extends('layouts.admin')
 
 @section('title', (isset($group) ? '修改' : '新建') . ' | 后台')
 

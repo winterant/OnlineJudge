@@ -1,4 +1,4 @@
-@extends('layout-admin')
+@extends('layouts.admin')
 
 @section('title', '题目管理 | 后台')
 

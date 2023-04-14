@@ -1,4 +1,4 @@
-@extends('layout-client')
+@extends('layouts.client')
 
 @section('title', trans('main.Rank') . ' | ' . trans('main.Contest') . $contest->id)
 

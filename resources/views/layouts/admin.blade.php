@@ -1,12 +1,13 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+{{--
+改文件继承自app.blade.php，作为后台管理的模板，包含：
+- 网页标题
+- 自定义css、js
+- 导航栏、左侧菜单栏
+- yeild: title, content
+  --}}
+@extends('layouts.app')
 
-<head>
-
-  <x-head />
-
-  <title>@yield('title') | {{ get_setting('siteName') }}</title>
-
+@section('app-head')
   <style type="text/css">
     @media screen and (min-width: 768px) {
 
@@ -114,20 +115,9 @@
       vertical-align: middle !important;
     }
   </style>
-</head>
+@endsection
 
-<body>
-
-  {{-- 深色模式，必须首先载入，否则会有闪现白页等延迟现象 --}}
-  @if (get_setting('web_page_dark_mode'))
-    <x-dark-mode />
-  @endif
-
-  {{-- 页面载入动画（管理员可在后台系统设置中手动关闭） --}}
-  @if (get_setting('web_page_loading_animation'))
-    <x-loading-animation />
-  @endif
-
+@section('app-content')
   <div class="h-100" style="padding-top: 70px;">
 
     {{-- 顶部导航栏 --}}
@@ -326,7 +316,9 @@
 
     {{-- 主体 --}}
     <main class="col-12 col-sm-12 col-md-10  ml-auto">
+      {{-- 右侧内容区域 --}}
       @yield('content')
+      {{-- 页脚 --}}
       <x-footer />
     </main>
 
@@ -353,17 +345,4 @@
       }, speed, callback);
     };
   </script>
-
-  <script>
-    //通用提示框，小问号提示这是什么
-    function whatisthis(text) {
-      Notiflix.Report.Init({
-        plainText: false, //使<br>可以换行
-      });
-      Notiflix.Report.Info('{{ __('sentence.Whats this') }}', text, '{{ __('main.Confirm') }}');
-    }
-  </script>
-
-</body>
-
-</html>
+@endsection

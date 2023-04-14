@@ -1,4 +1,4 @@
-// ==============  json 值编码 =================
+// ======================  json 值编码 =================
 function json_value_base64(data, additional_data = {}, recursive = false) {
     for (var k in data)
         if (Object.prototype.toString.call(data[k]) === '[object Object]'
@@ -14,7 +14,7 @@ function json_value_base64(data, additional_data = {}, recursive = false) {
     return data
 }
 
-// =================== 提交按钮点击后倒计时不可用
+// =================== 提交按钮点击后倒计时不可用 ==========================
 function disabledSubmitButton(dom, disabledText, second = 10) {
     if (second <= 0)
         return
@@ -47,7 +47,7 @@ function copy_text(dom) {
 }
 
 // ==================== textarea自动高度 ================
-// For example: <textarea autoheight></textarea>
+// For example: <textarea autoHeight></textarea>
 $(function () {
     $.fn.autoHeight = function () {
         function autoHeight(elem) {
@@ -65,3 +65,12 @@ $(function () {
     }
     $('textarea[autoHeight]').autoHeight();
 })
+
+
+// ============================ 用于弹窗提示 =========================
+function whatisthis(text) {
+    Notiflix.Report.Init({
+        plainText: false, //使<br>可以换行
+    });
+    Notiflix.Report.Info('提示', text, '我知道了');
+}

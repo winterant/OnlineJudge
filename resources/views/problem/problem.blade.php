@@ -1,4 +1,4 @@
-@extends('layout-client')
+@extends('layouts.client')
 
 @if (isset($contest))
   @section('title', sprintf('%s %s | %s %s', __('main.Problem'), index2ch($problem->index), __('main.Contest'), $contest->id))
