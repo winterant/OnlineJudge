@@ -1,8 +1,8 @@
 const ck_config = {
-    removePlugins: ['FontBackgroundColor'],
+    // removePlugins: ['FontBackgroundColor', 'mediaEmbed'],
     // language: 'zh-cn',
     ckfinder: {
-        uploadUrl:''
+        uploadUrl: ''
     },
     image: {
         // resizeUnit: 'rem',
@@ -61,12 +61,32 @@ const ck_config = {
     // },
     codeBlock: {
         languages: [
-            { language: 'cpp', label: 'C++', class: 'cpp'}, // The default language.
+            { language: 'cpp', label: 'C++', class: 'cpp' }, // The default language.
             // { language: 'c', label: 'C' },  // 默认class为language-c
             { language: 'java', label: 'Java' },
             { language: 'python', label: 'Python' },
             { language: 'plaintext', label: 'Plain text' },
         ]
     },
+    link: {
+        decorators: {
+            isExternal: {
+                mode: 'manual',
+                label: 'Open in a new tab',
+                defaultValue: true,
+                attributes: {
+                    target: '_blank',
+                    rel: 'noopener noreferrer'
+                }
+            },
+            isDownloadable: {
+                mode: 'manual',
+                label: 'Downloadable',
+                attributes: {
+                    download: 'file.png',
+                }
+            }
+        }
+    }
     // licenseKey: '',
 }
