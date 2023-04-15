@@ -61,7 +61,7 @@ class LineChart extends Component
 
             // 缓存历史结果；注意，若发生重判，重判后必须清空这些缓存
             $key = sprintf('solution:line-chart:%s,%s,%s,%s,%s', $userId, $contestId, $groupId, $past, date(str_replace(' ', '_', $rule['format']), $ts));
-            CacheHelper::clear_cache_if_rejudged($key);
+            CacheHelper::has_key_relies_on_solutions_after_autoclear($key);
             $counts = Cache::remember(
                 $key,
                 $next_ts <= $endTime ? ($is_now ? $next_ts - $start_ts : 3600 * 24 * 30) : 15, // 已度过的阶段长期缓存，当前阶段缓存15秒

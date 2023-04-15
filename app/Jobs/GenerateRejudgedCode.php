@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class GenerateRejudgedCode implements ShouldQueue
+class ResetSolutionStamp implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -35,7 +35,7 @@ class GenerateRejudgedCode implements ShouldQueue
      */
     public function handle()
     {
-        // 重新生成 重判标识码；请保持key名与App\Http\CacheHelper::clear_cache_if_rejudged()中一致
-        Cache::put('solution:rejudged_code', uniqid());
+        // 重新生成 solution stamp；请保持key名与App\Http\CacheHelper::has_key_relies_on_solutions_after_autoclear()中一致
+        Cache::put('solution:solution_stamp', uniqid());
     }
 }

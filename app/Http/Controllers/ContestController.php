@@ -383,8 +383,7 @@ class ContestController extends Controller
         // ========================== 调用榜单 ============================
         $users = [];
         $key = sprintf('contest:%d:rank:%s:users', $contest->id, $_GET['end']);
-        CacheHelper::clear_cache_if_rejudged($key); // 若发生了重判，先清除缓存，迫使下方业务重新计算榜单
-        if (Cache::has($key))
+        if (CacheHelper::has_key_relies_on_solutions_after_autoclear($key)) // 若发生了重判，先清除缓存，迫使下方业务重新计算榜单
             $users = Cache::get($key);
         else {
             // 由于榜单计算非常耗时，加锁避免高并发，确保并发时，榜单只被计算一次

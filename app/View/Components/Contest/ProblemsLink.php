@@ -40,7 +40,7 @@ class ProblemsLink extends Component
         foreach ($this->problems as &$item) {
             // null,0，1，2，3都视为没做； 4视为Accepted；其余视为答案错误（尝试中）
             $key = sprintf('contest:%d:problem:%d:user:%d:result', $contestId, $item->id, $userId);
-            CacheHelper::clear_cache_if_rejudged($key); // 若发生了重判，会强制清除缓存，然后下面重新查库
+            CacheHelper::has_key_relies_on_solutions_after_autoclear($key); // 若发生了重判，会强制清除缓存，然后下面重新查库
             if (!Cache::has($key)) {
                 $result = DB::table('solutions')
                     ->where('contest_id', $contestId)

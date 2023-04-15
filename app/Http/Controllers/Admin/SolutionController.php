@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\CorrectSolutionsStatistics;
-use App\Jobs\GenerateRejudgedCode;
+use App\Jobs\ResetSolutionStamp;
 
 
 class SolutionController extends Controller
@@ -47,8 +47,10 @@ class SolutionController extends Controller
             // 发生重判后必须重新统计数据，以及更新重判唯一标识符
             // 任务投入队列，预估等待到判题结束时执行
             if ($num_updated ?? 0) {
-                dispatch(new GenerateRejudgedCode())->delay($num_updated * 5); // 预估平均每条solution重判需要5秒
-                dispatch(new CorrectSolutionsStatistics())->delay($num_updated * 5);
+                // 有很多页面的提交记录数据统计依赖缓存，发生重判后，为了使旧缓存失效，依据solution stamp是否变化来判断
+                dispatch(new ResetSolutionStamp())->delay($num_updated * 10); // 预估平均每条solution重判需要10秒
+                // 重新统计提交记录
+                dispatch(new CorrectSolutionsStatistics())->delay($num_updated * 10 + 5);
             }
 
             // 返回提交记录页面
