@@ -13,8 +13,8 @@ return [
     9 => 'Output Limit Exceeded',
     10=> 'Runtime Error',
     11=> 'Compile Error',
-    12=> 'Test Completed',
+    12=> 'Rejudging',
     13=> 'Skipped',
-    14=> 'System Error',
+    14=> 'Internal Error',
     15=> 'Submitted'
 ];

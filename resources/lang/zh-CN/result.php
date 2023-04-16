@@ -13,8 +13,8 @@ return [
     'Output Limit Exceeded' => '输出超限',
     'Runtime Error'  => '运行崩溃',
     'Compile Error'  => '编译错误',
-    'Test Completed' => '测试完成',
+    'Rejudging'      => '重判中',
     'Skipped'        => '跳过',
-    'System Error'   => '系统错误',
+    'Internal Error'   => '系统错误',
     'Submitted'      => '已提交'
 ];

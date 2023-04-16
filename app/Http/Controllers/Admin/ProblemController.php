@@ -194,7 +194,7 @@ class ProblemController extends Controller
         if (isset($_GET['pid'])) {
             if (!DB::table('problems')->where('id', $_GET['pid'])->exists())
                 return view('message', ['msg' => '题目' . $_GET['pid'] . '不存在', 'success' => false, 'is_admin' => true]);
-            foreach (readAllFilesPath(testdata_path($_GET['pid'] . '/test')) as $filepath) {
+            foreach (getAllFilesPath(testdata_path($_GET['pid'] . '/test')) as $filepath) {
                 $name = pathinfo($filepath, PATHINFO_FILENAME);  //文件名
                 $ext = pathinfo($filepath, PATHINFO_EXTENSION);    //拓展名
                 $tests[] = ['index' => $name, 'filename' => $name . '.' . $ext, 'size' => filesize($filepath)];

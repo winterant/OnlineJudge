@@ -15,7 +15,7 @@
         @else
           <i class="fa fa-times fa-lg" aria-hidden="true"></i>
         @endif
-        &nbsp;{{ __('result.' . config('oj.judge_result.' . $solution->result)) }}
+        &nbsp;{{ __('result.' . config('judge.result.' . $solution->result)) }}
 
         @if ($solution->judge_type != 'acm')
           ({{ $solution->pass_rate * 100 }}%)

@@ -1,15 +1,18 @@
 <?php
-return [
-    0  => 'C (C17 -O2)',
-    1  => 'C++ (C++17 -O2)',
-    2  => 'Java (OpenJDK 8)',
-    3  => 'Python3.8',
-    // 14 => 'Python2.7',
-    // 15 => 'Go (1.13.5)',
-    // 16 => 'Kotlin (1.3.70)',
-    // 17 => 'Rust (1.40.0)',
-    // 18 => 'PHP (7.4.1)',
-    // 21 => 'Lua (5.3.5)',
-    // 22 => 'Objective-C (Clang 7.0.1)',
-    // 23 => 'R (4.0.0)'
-];
+
+// return [
+//     0  => 'C (C17 -O2)',
+
+//     1  => 'C++ (C++98 -O2)',
+//     4  => 'C++ (C++11 -O2)',
+//     5  => 'C++ (C++14 -O2)',
+//     6  => 'C++ (C++20 -O2)',
+
+//     2  => 'Java (OpenJDK 8)',
+//     3  => 'Python3.8',
+// ];
+
+// 其实就是读取judge/language.php中配置的语言
+return array_map(function ($v) {
+    return $v['name'];
+}, include(config_path('judge/language.php')));

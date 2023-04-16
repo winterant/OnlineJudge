@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -ex
-sleep 5 # Waiting for mysql being started.
 
 
 ##########################################################################
@@ -32,28 +31,6 @@ mod_env "pm.min_spare_servers" ${fpm_pm_min_spare_servers:-8}    ${php_fpm_confi
 mod_env "pm.max_spare_servers" ${fpm_pm_max_spare_servers:-1024} ${php_fpm_config_file}
 # php-fpm will be recreated after has processed for `pm.max_request` times.
 mod_env "pm.max_requests"      ${fpm_pm_max_requests:-1000}      ${php_fpm_config_file}
-
-########## config laravel env
-mod_env "APP_DEBUG"         ${APP_DEBUG:-false}        .env
-mod_env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false} .env
-mod_env "TIMEZONE"          ${TZ:-Asia/Shanghai}       .env
-mod_env "JUDGE_SERVER"      ${JUDGE_SERVER:-host.docker.internal} .env
-mod_env "DB_HOST"           ${MYSQL_HOST:-host.docker.internal}   .env
-mod_env "DB_PORT"           ${MYSQL_PORT:-3306} .env
-mod_env "DB_DATABASE"       ${MYSQL_DATABASE}   .env
-mod_env "DB_USERNAME"       ${MYSQL_USER}       .env
-mod_env "DB_PASSWORD"       ${MYSQL_PASSWORD}   .env
-mod_env "REDIS_HOST"        ${REDIS_HOST:-host.docker.internal} .env
-mod_env "REDIS_PORT"        ${REDIS_PORT:-6379}                 .env
-mod_env "REDIS_PASSWORD"    ${REDIS_PASSWORD:-null}             .env
-mod_env "MAIL_MAILER"       ${MAIL_MAILER:-smtp}                .env
-mod_env "MAIL_HOST"         ${MAIL_HOST:-smtp.qq.com}           .env
-mod_env "MAIL_PORT"         ${MAIL_PORT:-465}                   .env
-mod_env "MAIL_USERNAME"     ${MAIL_USERNAME:-null}              .env
-mod_env "MAIL_PASSWORD"     ${MAIL_PASSWORD:-null}              .env
-mod_env "MAIL_ENCRYPTION"   ${MAIL_ENCRYPTION:-ssl}             .env
-mod_env "MAIL_FROM_ADDRESS" ${MAIL_FROM_ADDRESS:-null}          .env
-mod_env "MAIL_FROM_NAME"    "\"${MAIL_FROM_NAME:-LDUOJ}\""      .env
 
 
 ##########################################################################

@@ -34,7 +34,7 @@
             <div class="d-flex m-0 p-0 bmd-form-group">
               <select name="result" class="form-control" onchange="this.form.submit();">
                 <option class="form-control" value="-1">{{ __('main.All Result') }}</option>
-                @foreach (config('oj.judge_result') as $key => $res)
+                @foreach (config('judge.result') as $key => $res)
                   <option value="{{ $key }}" class="judge-result-{{ $key }}"
                     @if (isset($_GET['result']) && $key == $_GET['result']) selected @endif>
                     {{ __('result.' . $res) }}
@@ -130,7 +130,7 @@
               <span hidden>{{ $sol->id }}</span>
               <span hidden>{{ $sol->result }}</span>
               <span id="result_{{ $sol->id }}" class="result_td judge-result-{{ $sol->result }}">
-                {{ __('result.' . config('oj.judge_result.' . $sol->result)) }}
+                {{ __('result.' . config('judge.result.' . $sol->result)) }}
                 @if ($sol->result >= 5 && $sol->result <= 10)
                   ({{ round($sol->pass_rate * 100) }}%)
                 @endif

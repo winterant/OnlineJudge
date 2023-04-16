@@ -1,8 +1,9 @@
 @extends('layouts.client')
 
 @if (isset($contest))
-  @section('title', sprintf('%s %s | %s %s', __('main.Problem'), index2ch($problem->index), __('main.Contest'), $contest->id))
-@else
+  @section('title', sprintf('%s %s | %s %s', __('main.Problem'), index2ch($problem->index), __('main.Contest'),
+    $contest->id))
+  @else
   @section('title', trans('main.Problem') . ' ' . $problem->id)
 @endif
 
@@ -225,7 +226,8 @@
 
     <div id="right">
       {{-- 代码编辑框 --}}
-      <x-problem.code-editor :problem="$problem" :contest-id="$contest->id ?? null" :allow-lang="$contest->allow_lang ?? null" :num-samples="count($samples ?? [])" />
+      {{-- <x-problem.code-editor :problem="$problem" :contest-id="$contest->id ?? null" :allow-lang="$contest->allow_lang ?? null" :num-samples="count($samples ?? [])" /> --}}
+      @livewire('problem.code-editor', ['problem' => (array) $problem, 'contest_id' => $contest->id ?? null, 'allow_lang' => $contest->allow_lang ?? null])
     </div>
   </div>
 
