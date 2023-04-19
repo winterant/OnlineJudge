@@ -152,14 +152,15 @@
   @endif
 
   {{-- 检查微信浏览器，不允许使用微信浏览器 --}}
-  @if (stripos($_SERVER['HTTP_USER_AGENT'], 'wechat') !== false ||
-          (stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') === false &&
-              stripos($_SERVER['HTTP_USER_AGENT'], 'safari') === false))
+  @if (isset($_SERVER['HTTP_USER_AGENT']) &&
+          (stripos($_SERVER['HTTP_USER_AGENT'], 'wechat') !== false ||
+              (stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') === false &&
+                  stripos($_SERVER['HTTP_USER_AGENT'], 'safari') === false)))
     <script type="text/javascript">
       $(function() {
-        Notiflix.Report.Failure('请在浏览器中打开本网站',
-          "您可以将本站网址（{{ $_SERVER['HTTP_HOST'] }}）复制下来，输入到浏览器的地址栏中，按回车即可访问。",
-          '好的')
+        Notiflix.Report.Failure('浏览器不兼容',
+          "请使用Chrome浏览器或Edge浏览器访问本网站 {{ $_SERVER['HTTP_HOST'] ?? '' }}",
+          '知道了')
       })
     </script>
   @endif

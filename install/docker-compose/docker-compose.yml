@@ -20,7 +20,7 @@ services:
       - ./data/web/storage:/app/storage
 
   go-judge:
-    image: criyle/executorserver
+    image: winterant/go-judge:1.0
     container_name: lduoj-go-judge
     restart: always
     env_file: lduoj.conf

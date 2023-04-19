@@ -198,10 +198,10 @@
         <div class="form-inline mb-3">
           <div class="pull-left">编程语言：</div>
           <input id="input_allow_lang" type="number" name="contest[allow_lang]" hidden>
-          @foreach (config('oj.judge_lang') as $lang => $name)
+          @foreach (config('judge.lang') as $lang => $name)
             <div class="custom-control custom-checkbox mx-2">
               <input type="checkbox" name="allow_lang" value="{{ $lang }}" class="lang_checkbox custom-control-input" id="allow_lang{{ $lang }}"
-                @if ((!isset($contest) && $lang == 1) || (isset($contest) && ($contest->allow_lang >> $lang) & 1)) checked @endif>
+                @if ((!isset($contest) && $lang == 7) || (isset($contest) && ($contest->allow_lang >> $lang) & 1)) checked @endif>
               <label class="custom-control-label pt-1" for="allow_lang{{ $lang }}">{{ $name }}</label>
             </div>
           @endforeach

@@ -23,7 +23,7 @@
           <span class="mr-2">{{ __('main.Language') }}:</span>
           <select id="lang_select" name="solution[language]" class="px-3 border"
             style="text-align-last: center;border-radius: 4px;">
-            @foreach (config('oj.judge_lang') as $key => $res)
+            @foreach (config('judge.lang') as $key => $res)
               @if (!isset($allow_lang) || ($allow_lang >> $key) & 1)
                 <option value="{{ $key }}">{{ $res }}</option>
               @endif
@@ -59,7 +59,7 @@
       <div class="form-inline m-2">
         {{-- 代码填空由出题人指定语言 --}}
         <span class="mr-2">{{ __('main.Language') }}:</span>
-        <span>{{ config('oj.judge_lang.' . $problem['language']) }}</span>
+        <span>{{ config('judge.lang.' . $problem['language']) }}</span>
         <input name="solution[language]" value="{{ $problem['language'] }}" hidden>
       </div>
       {{-- 代码框 --}}
@@ -359,7 +359,7 @@
                 '好的'
               );
             } else {
-              Notiflix.Notify.Failure('请求发送失败，请刷新页面后重试！');
+              Notiflix.Notify.Failure('请求处理失败，请刷新页面后重试！');
             }
           }
         })
@@ -409,7 +409,7 @@
 
       // ==================== 监听用户选中的语言，实时修改代码提示框 ======================
       function listen_lang_selected() {
-        // var langs = JSON.parse('{!! json_encode(config('oj.judge_lang')) !!}') // 系统设定的语言候选列表
+        // var langs = JSON.parse('{!! json_encode(config('judge.lang')) !!}') // 系统设定的语言候选列表
         var lang = $("#lang_select").children('option:selected').val(); // 当前选中的语言下标
         localStorage.setItem('code_lang', lang)
 

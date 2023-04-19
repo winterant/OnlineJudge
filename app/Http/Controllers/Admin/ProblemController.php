@@ -482,7 +482,7 @@ class ProblemController extends Controller
             foreach ($solutions as $sol) {
                 $solution = $dom->createElement('solution');
                 $attr = $dom->createAttribute('language');
-                $attr->appendChild($dom->createTextNode(config('oj.judge_lang.' . $sol->language)));
+                $attr->appendChild($dom->createTextNode(config('judge.lang.' . $sol->language)));
                 $solution->appendChild($attr);
                 $solution->appendChild($dom->createCDATASection($sol->code));
                 $item->appendChild($solution);

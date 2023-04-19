@@ -7,7 +7,7 @@ return [
     // 测试数据的路径
     'JUDGE_DATA_DIR' => env('JUDGE_DATA_DIR', 'storage/app/data'),
 
-    // judge0 host and port
+    // judge host and port
     'JUDGE_SERVER' => env('JUDGE_SERVER', null),
 
     /*

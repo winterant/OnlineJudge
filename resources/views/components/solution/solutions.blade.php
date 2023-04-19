@@ -64,7 +64,7 @@
             <div class="form-group m-0 p-0 bmd-form-group">
               <select name="language" class="px-2 form-control" onchange="this.form.submit();">
                 <option class="form-control" value="-1">{{ __('main.All Language') }}</option>
-                @foreach (config('oj.judge_lang') as $key => $res)
+                @foreach (config('judge.lang') as $key => $res)
                   <option value="{{ $key }}" @if (isset($_GET['language']) && $key == $_GET['language']) selected @endif>
                     {{ $res }}</option>
                 @endforeach
@@ -148,7 +148,7 @@
             <td nowrap>
               @if (Auth::check() && (Auth::user()->can('admin.solution.view') || Auth::id() == $sol->user_id))
                 <a href="{{ route('solution', $sol->id) }}"
-                  target="_blank">{{ config('oj.judge_lang.' . $sol->language) }}</a>
+                  target="_blank">{{ config('judge.lang.' . $sol->language) }}</a>
                 /
                 @if (isset($sol->index))
                   {{-- 竞赛中，跳转到竞赛题目页面 --}}
@@ -160,7 +160,7 @@
                     target="_blank">{{ __('main.Edit') }}</a>
                 @endif
               @else
-                {{ config('oj.judge_lang.' . $sol->language) }}
+                {{ config('judge.lang.' . $sol->language) }}
               @endif
             </td>
             <td nowrap>{{ $sol->submit_time }}</td>

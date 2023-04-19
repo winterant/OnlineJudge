@@ -21,7 +21,7 @@ class ContestController extends Controller
         /** @var \App\Models\User */
         $user = Auth::user();
 
-        //获取类别
+        //获取当前所处的类别
         $current_cate = DB::table('contest_cate')->find($_GET['cate'] ?? 0);
 
         //类别不存在，则自动跳转到默认竞赛(可能是cookie保存的)

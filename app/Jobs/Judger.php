@@ -29,7 +29,7 @@ class Judger implements ShouldQueue
      */
     public function __construct(array $solution)
     {
-        $this->onQueue('sending_solution');
+        $this->onQueue('solutions');
         $this->solution = $solution;
         $this->cachedIds = [];
     }
@@ -49,7 +49,7 @@ class Judger implements ShouldQueue
     private function judge()
     {
         // 更新solution结果为Queueing
-        $this->update_db_solution(['result' => 1]); // 队列中
+        $this->update_db_solution(['result' => 1, 'judge_time' => date('Y-m-d H:i:s')]); // 队列中
 
         // 获取题目的相关属性
         $problem = (array)(DB::table('problems')
@@ -57,7 +57,7 @@ class Judger implements ShouldQueue
             ->find($this->solution['problem_id']));
 
         // 获取编译运行指令
-        $config = config('judge.language')[$this->solution['language']];
+        $config = config('judge.language.'.$this->solution['language']);
         if (!empty($config['compile'])) { // 需编译
             // 向JudgeServer发送请求 编译用户代码
             $res_compile = $this->compile($this->solution['code'], $config);
@@ -65,11 +65,13 @@ class Judger implements ShouldQueue
                 $this->update_db_solution([
                     'result' => 11, // 编译错误 11
                     'error_info' => sprintf(
-                        "[%s occurred during compilation]\n%s\n%s",
+                        "[%s occurred during compilation]\n%s\n%s\n%s",
                         $res_compile['status'],
                         $res_compile['error'] ?? '',
-                        $res_compile['files']['stderr']
-                    )
+                        $res_compile['files']['stdout'] ?? '',
+                        $res_compile['files']['stderr'] ?? ''
+                    ),
+                    'pass_rate'=>0
                 ]);
                 return;
             }
@@ -94,7 +96,12 @@ class Judger implements ShouldQueue
         if (empty($config['compile'])) {
             $this->run($problem, $config, [$config['filename'] => ['content' => $this->solution['code']]], $spj_file_id ?? '');
         } else {
-            $this->run($problem, $config, ['Main' => ['fileId' => $res_compile['fileIds']['Main']]], $spj_file_id ?? '');
+            $this->run($problem, $config,
+                [
+                    $config['compile']['compiled_filename'] => ['fileId' => $res_compile['fileIds'][$config['compile']['compiled_filename']]]
+                ],
+                $spj_file_id ?? ''
+            );
         }
         // 结束
     }
@@ -104,30 +111,32 @@ class Judger implements ShouldQueue
     {
         $this->update_db_solution(['result' => 2]); // 编译中
         // 要发送的数据
-        $cmd = [
-            [
-                'args' => explode(' ', $config['compile']['command']),
-                'env' => ['PATH=/usr/bin:/bin'],
-                'files' => [   // 指定 标准输入、标准输出和标准错误的文件
-                    ['content' => ''],
-                    ['name' => 'stdout', 'max' => 10240],
-                    ['name' => 'stderr', 'max' => 10240],
-                ],
-                'cpuLimit' => $config['compile']['cpuLimit'],
-                'memoryLimit' => $config['compile']['memoryLimit'],
-                'procLimit' => $config['compile']['procLimit'],
-                'copyIn' => [
-                    $config['filename'] => ['content' => $code],
-                ],
-                'copyOut' => ['stdout', 'stderr'],
-                'copyOutCached' => ['Main'],
-                // 'copyOutDir' => '1'
+        $data = [
+            'cmd'=>[
+                [
+                    'args' => explode(' ', $config['compile']['command']),
+                    'env' => $config['env'],
+                    'files' => [   // 指定 标准输入、标准输出和标准错误的文件
+                        ['content' => ''],
+                        ['name' => 'stdout', 'max' => 10240],
+                        ['name' => 'stderr', 'max' => 10240],
+                    ],
+                    'cpuLimit' => $config['compile']['cpuLimit'],
+                    'memoryLimit' => $config['compile']['memoryLimit'],
+                    'procLimit' => $config['compile']['procLimit'],
+                    'copyIn' => [
+                        $config['filename'] => ['content' => $code],
+                    ],
+                    'copyOut' => ['stdout', 'stderr'],
+                    'copyOutCached' => [$config['compile']['compiled_filename']],
+                    // 'copyOutDir' => '1'
+                ]
             ]
         ];
 
-        $res = Http::post(config('app.JUDGE_SERVER') . '/run', ['cmd' => $cmd]);
-        if ($res[0]['fileIds']['Main'] ?? false)
-            $this->cachedIds[] = $res[0]['fileIds']['Main']; // 记录缓存的文件id，最后清除
+        $res = Http::post(config('app.JUDGE_SERVER') . '/run', $data);
+        if ($fid=($res[0]['fileIds'][$config['compile']['compiled_filename']] ?? false))
+            $this->cachedIds[] = $fid; // 记录缓存的文件id，最后清除
         return $res->json()[0];
     }
 
@@ -150,12 +159,14 @@ class Judger implements ShouldQueue
         // 遍历测试点，运行用户程序，得到输出
         $ac = 0;
         $not_ac = 0;
+        $max_time = 0;
+        $max_memory = 0;
         foreach ($tests as $k => $test) {
             // 构造请求
             $data = ['cmd' => [
                 [
                     'args' => explode(' ', $config['run']['command']),
-                    'env' => ['PATH=/usr/bin:/bin'],
+                    'env' => $config['env'],
                     'files' => [
                         ['src' => sprintf("/testdata/%d/test/%s", $problem['id'], $test['in'])],
                         ['name' => 'stdout', 'max' => $config['run']['stdoutMax']],
@@ -208,6 +219,9 @@ class Judger implements ShouldQueue
                 'error_info' => $error_info
             ];
             $this->update_db_solution(['judge0result' => $judge0result]); // 向数据库刷新测试点状态
+            // 记录时间、内存
+            $max_time=max($max_time, $judge0result[$k]['time']);
+            $max_memory=max($max_memory, $judge0result[$k]['memory']);
 
             // 统计测试点对错情况
             if ($result == 4) {
@@ -222,7 +236,7 @@ class Judger implements ShouldQueue
             }
         }
         if ($not_ac == 0) // 该solution完全正确，要告诉数据库
-            $this->update_db_solution(['result' => 4, 'pass_rate' => $ac / count($tests)]);
+            $this->update_db_solution(['result' => 4, 'pass_rate' => $ac / count($tests), 'time' => $max_time, 'memory' => $max_memory]);
     }
 
     // 特判
