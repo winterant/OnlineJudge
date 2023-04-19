@@ -56,6 +56,17 @@ class ContestController extends Controller
             ->orderBy('cc.order') // 3 同一父类下的二级类别，按自身order排序
             ->get();
 
+        // 统计子类别数量
+        $current_parent=null;
+        foreach($categories as $i=>&$c){
+            $c->num_sons=0; // 每个类别默认有0个孩子类别
+            if($c->is_parent){
+                $current_parent=$c; // 记下当前是一个一级类别
+            }else{
+                $current_parent->num_sons++;// 当前是小类别，那么一级类别就要加一个孩子
+            }
+        }
+
         //cookie记下默认每页显示的条数
         if (isset($_GET['perPage'])) {
             Cookie::queue('unencrypted_contests_default_perpage', $_GET['perPage'], 5256000); // 10 years

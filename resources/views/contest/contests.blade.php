@@ -30,31 +30,33 @@
               <div class="btn-group" style="margin:0px">
                 <a class="nav-link text-nowrap py-3 @if ($current_cate->parent_id == $cate->id || $current_cate->id == $cate->id) active @endif"
                   href="{{ route('contests', ['cate' => $cate->id]) }}"
-                  style="min-width:0px !important;padding-right:1.9rem">{{ ucfirst($cate->title) }}</a>
-                <a href="javascript:" class="py-3 dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false" style="margin-left:-2.1rem">
-                  <span class="sr-only">Toggle Dropdown</span>
-                </a>
-                <div class="dropdown-menu">
-                  <div class="btn-group d-flex flex-wrap">
-                    <a class="dropdown-item flex-nowrap border-bottom"
-                      href="{{ route('contests', ['cate' => $cate->id]) }}">
-                      <i class="fa fa-trophy px-1" aria-hidden="true"></i>
-                      {{ ucfirst($cate->title) }}
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    @foreach ($categories as $c)
-                      @if ($c->parent_id == $cate->id)
-                        <a class="btn btn-secondary dropdown-item flex-nowrap @if ($current_cate->id == $c->id) active @endif"
-                          href="{{ route('contests', ['cate' => $c->id]) }}">
-                          <i class="fa fa-book px-1" aria-hidden="true"></i>
-                          {{ ucfirst($c->title) }}
-                        </a>
-                      @endif
-                    @endforeach
+                  style="min-width:0px !important; @if($cate->num_sons>0)padding-right:1.9rem @endif">{{ ucfirst($cate->title) }}</a>
+                {{-- 有子类别的，显示下拉菜单 --}}
+                @if($cate->num_sons>0)
+                  <a href="javascript:" class="py-3 dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false" style="margin-left:-2.1rem">
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </a>
+                  <div class="dropdown-menu">
+                    <div class="btn-group d-flex flex-wrap">
+                      <a class="dropdown-item flex-nowrap border-bottom"
+                        href="{{ route('contests', ['cate' => $cate->id]) }}">
+                        <i class="fa fa-trophy px-1" aria-hidden="true"></i>
+                        {{ ucfirst($cate->title) }}
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      @foreach ($categories as $c)
+                        @if ($c->parent_id == $cate->id)
+                          <a class="btn btn-secondary dropdown-item flex-nowrap @if ($current_cate->id == $c->id) active @endif"
+                            href="{{ route('contests', ['cate' => $c->id]) }}">
+                            <i class="fa fa-book px-1" aria-hidden="true"></i>
+                            {{ ucfirst($c->title) }}
+                          </a>
+                        @endif
+                      @endforeach
+                    </div>
                   </div>
-                </div>
-
+                @endif
               </div>
 
               {{-- 普通横向菜单 --}}
@@ -69,8 +71,9 @@
         @endforeach
       </ul>
 
+      {{-- 当前一级类别下的二级类别 显示横向菜单 --}}
       <div class="btn-group d-flex flex-wrap">
-        <i class="fa fa-angle-double-right fa-lg p-2" aria-hidden="true"></i>
+        {{-- <i class="fa fa-angle-double-right fa-lg p-2" aria-hidden="true"></i> --}}
         @foreach ($categories as $cate)
           @if (!$cate->is_parent && ($cate->parent_id == $current_cate->id || $cate->parent_id == $current_cate->parent_id))
             <a class="btn btn-secondary border @if ($current_cate->id == $cate->id) active @endif" style="flex: none;"
@@ -83,7 +86,7 @@
 
     </div>
 
-    <div class="my-container bg-white mt-3">
+    <div class="my-container bg-white">
       <div class="overflow-hidden mb-2">
 
         <div class="d-flex flex-wrap float-left mr-3">
