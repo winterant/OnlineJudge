@@ -20,7 +20,7 @@ class CodeEditor extends Component
      */
     public function __construct($problem, $contestId = null, $allowLang = null, $numSamples = 0)
     {
-        $this->problem = $problem;
+        $this->problem = (array)$problem;
         $this->contest_id = $contestId;
         $this->allow_lang = $allowLang;
         $this->num_samples = $numSamples;

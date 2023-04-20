@@ -57,7 +57,7 @@ class Judger implements ShouldQueue
             ->find($this->solution['problem_id']));
 
         // 获取编译运行指令
-        $config = config('judge.language.'.$this->solution['language']);
+        $config = config('judge.language.' . $this->solution['language']);
         if (!empty($config['compile'])) { // 需编译
             // 向JudgeServer发送请求 编译用户代码
             $res_compile = $this->compile($this->solution['code'], $config);
@@ -65,13 +65,13 @@ class Judger implements ShouldQueue
                 $this->update_db_solution([
                     'result' => 11, // 编译错误 11
                     'error_info' => sprintf(
-                        "[%s occurred during compilation]\n%s\n%s\n%s",
+                        "[Compilation error] %s\n%s\n%s\n%s",
                         $res_compile['status'],
                         $res_compile['error'] ?? '',
                         $res_compile['files']['stdout'] ?? '',
                         $res_compile['files']['stderr'] ?? ''
                     ),
-                    'pass_rate'=>0
+                    'pass_rate' => 0
                 ]);
                 return;
             }
@@ -96,7 +96,9 @@ class Judger implements ShouldQueue
         if (empty($config['compile'])) {
             $this->run($problem, $config, [$config['filename'] => ['content' => $this->solution['code']]], $spj_file_id ?? '');
         } else {
-            $this->run($problem, $config,
+            $this->run(
+                $problem,
+                $config,
                 [
                     $config['compile']['compiled_filename'] => ['fileId' => $res_compile['fileIds'][$config['compile']['compiled_filename']]]
                 ],
@@ -112,7 +114,7 @@ class Judger implements ShouldQueue
         $this->update_db_solution(['result' => 2]); // 编译中
         // 要发送的数据
         $data = [
-            'cmd'=>[
+            'cmd' => [
                 [
                     'args' => explode(' ', $config['compile']['command']),
                     'env' => $config['env'],
@@ -135,7 +137,7 @@ class Judger implements ShouldQueue
         ];
 
         $res = Http::post(config('app.JUDGE_SERVER') . '/run', $data);
-        if ($fid=($res[0]['fileIds'][$config['compile']['compiled_filename']] ?? false))
+        if ($fid = ($res[0]['fileIds'][$config['compile']['compiled_filename']] ?? false))
             $this->cachedIds[] = $fid; // 记录缓存的文件id，最后清除
         return $res->json()[0];
     }
@@ -220,8 +222,8 @@ class Judger implements ShouldQueue
             ];
             $this->update_db_solution(['judge0result' => $judge0result]); // 向数据库刷新测试点状态
             // 记录时间、内存
-            $max_time=max($max_time, $judge0result[$k]['time']);
-            $max_memory=max($max_memory, $judge0result[$k]['memory']);
+            $max_time = max($max_time, $judge0result[$k]['time']);
+            $max_memory = max($max_memory, $judge0result[$k]['memory']);
 
             // 统计测试点对错情况
             if ($result == 4) {
@@ -295,11 +297,12 @@ class Judger implements ShouldQueue
                 if (strcmp($user_line, $answer_line) != 0) { // 内容不一致
                     if (strcmp(trim($user_line), trim($answer_line)) != 0) {
                         $result = 6; // WA 可见字符不一致
-                        $msg = sprintf("The content of line %d is inconsistent.", $i + 1);
                     } else {
                         $result = 5; // PE 空白符不一致
-                        $msg = sprintf("The content of line %d is inconsistent.", $i + 1);
                     }
+                    $msg = sprintf("The inconsistent content was found in line %d of test data \"%s\".\n", $i + 1, pathinfo($std_out_path, PATHINFO_BASENAME));
+                    $msg .= sprintf("The stdout of your program:\n%s\n", $user_line);
+                    $msg .= sprintf("Standard answer:\n%s\n", $answer_line);
                 }
             }
         }

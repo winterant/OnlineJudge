@@ -85,6 +85,7 @@
   <script src="{{ asset('static/codemirror-5.61.0/mode/cmake/cmake.js') }}" defer></script>
   <script src="{{ asset('static/codemirror-5.61.0/mode/clike/clike.js') }}" defer></script>
   <script src="{{ asset('static/codemirror-5.61.0/mode/python/python.js') }}" defer></script>
+  <script src="{{ asset('static/codemirror-5.61.0/mode/go/go.js') }}" defer></script>
 
 
   {{-- 代码高亮 clien/code_editor.blade.php; client/solution.blade.php --}}
