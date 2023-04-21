@@ -1,4 +1,5 @@
 <form id="form_status" action="" method="get">
+
   <div class="table-responsive">
     <table class="table table-hover">
       <thead>
@@ -32,7 +33,7 @@
           </th>
           <th>
             <div class="d-flex m-0 p-0 bmd-form-group">
-              <select name="result" class="form-control" onchange="this.form.submit();">
+              <select name="result" class="form-control" onchange="this.form.submit();" style="min-width:4rem">
                 <option class="form-control" value="-1">{{ __('main.All Result') }}</option>
                 @foreach (config('judge.result') as $key => $res)
                   <option value="{{ $key }}" class="judge-result-{{ $key }}"
@@ -43,7 +44,7 @@
               </select>
               @if (Auth::check() && Auth::user()->can('admin.solution.view'))
                 {{-- 管理员可以筛选查重记录 --}}
-                <select name="sim_rate" class="form-control ml-2" onchange="this.form.submit();">
+                <select name="sim_rate" class="form-control ml-2" onchange="this.form.submit();" style="min-width:3rem">
                   <option class="form-control" value="">{{ __('main.Similarity') }}</option>
                   @for ($i = 50; $i <= 100; $i += 10)
                     <option class="form-control" value="{{ $i }}"
@@ -198,6 +199,17 @@
           <a class="page-link px-2"
             href="{{ request()->fullUrlWithQuery(array_merge($_GET, ['top_id' => $next_top_id, 'bottom_id' => null])) }}">{{ __('main.Next Page') }}</a>
         </li>
+
+        <div class="form-inline mx-1">
+          <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
+            <option value="10" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 10) selected @endif>10</option>
+            <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
+            <option value="50" @if (isset($_GET['perPage']) && $_GET['perPage'] == 50) selected @endif>50</option>
+            <option value="100" @if (isset($_GET['perPage']) && $_GET['perPage'] == 100) selected @endif>100</option>
+            {{-- <option value="200" @if (isset($_GET['perPage']) && $_GET['perPage'] == 200)selected @endif>200</option> --}}
+          </select>
+          <span>{{ __('sentence.items per page') }}</span>
+        </div>
       @endif
     </ul>
   </nav>

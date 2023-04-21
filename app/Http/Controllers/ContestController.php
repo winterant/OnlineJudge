@@ -57,13 +57,13 @@ class ContestController extends Controller
             ->get();
 
         // 统计子类别数量
-        $current_parent=null;
-        foreach($categories as $i=>&$c){
-            $c->num_sons=0; // 每个类别默认有0个孩子类别
-            if($c->is_parent){
-                $current_parent=$c; // 记下当前是一个一级类别
-            }else{
-                $current_parent->num_sons++;// 当前是小类别，那么一级类别就要加一个孩子
+        $current_parent = $categories[0] ?? null;
+        foreach ($categories as $i => &$c) {
+            $c->num_sons = 0; // 每个类别默认有0个孩子类别
+            if ($c->is_parent) {
+                $current_parent = $c; // 记下当前是一个一级类别
+            } else {
+                $current_parent->num_sons++; // 当前是小类别，那么一级类别就要加一个孩子
             }
         }
 

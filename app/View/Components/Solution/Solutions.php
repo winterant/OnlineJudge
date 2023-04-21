@@ -3,6 +3,7 @@
 namespace App\View\Components\Solution;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\Component;
 
@@ -26,6 +27,14 @@ class Solutions extends Component
 
         /** @var \App\Models\User */
         $user = Auth::user();
+
+        // cookie记下默认每页显示的条数
+        $_GET['perPage'] = min($_GET['perPage'] ?? 10, 100); // 防止传参>100导致服务器压力大
+        if (isset($_GET['perPage'])) {
+            Cookie::queue('unencrypted_solutions_default_perpage', $_GET['perPage'], 5256000); // 10 years
+        } else {
+            $_GET['perPage'] = (request()->cookie('unencrypted_solutions_default_perpage') ?? 10);
+        }
 
         // ====================== 读取提交记录 ========================
         $this->solutions = DB::table('solutions as s')
@@ -94,7 +103,7 @@ class Solutions extends Component
                 $q->where('s.id', '>=', $_GET['bottom_id']);
             })
             ->orderBy('s.id', isset($_GET['bottom_id']) ? 'asc' : 'desc')
-            ->limit(10)
+            ->limit($_GET['perPage'] ?? 10)
             ->get();
         if (isset($_GET['bottom_id']))
             $this->solutions = $this->solutions->reverse();
