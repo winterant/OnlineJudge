@@ -69,7 +69,7 @@ bash storage/logs/nginx/auto-clear-log.sh 2>&1 &
 ##########################################################################
 # Start laravel-queue.
 ##########################################################################
-mod_env "numprocs" ${JUDGE_MAX_RUNNING:-2} /etc/supervisor/conf.d/judge-queue.conf
+mod_env "numprocs" ${JUDGE_MAX_RUNNING:-$[(`nproc`+1)/2]} /etc/supervisor/conf.d/judge-queue.conf
 supervisord                # Start up supervisor
 supervisorctl update       # Detect changes to existing config files
 supervisorctl start all    # Start all processes
