@@ -184,6 +184,7 @@ class ContestController extends Controller
             $contest->title .= "[cloned " . $cid . "]";
             $contest->num_members = 0; // 参与人数归零
             $contest->user_id = Auth::id(); // 创建人
+            $contest->order = DB::table('contests')->where('cate_id',$contest->cate_id)->max('order') + 1; // 顺序
             //复制竞赛主体
             $cloned_cid = DB::table('contests')->insertGetId((array)$contest);
             //复制题号
@@ -195,7 +196,7 @@ class ContestController extends Controller
             foreach ($con_problems as $i => $item)
                 $cps[] = ['contest_id' => $cloned_cid, 'problem_id' => $item->problem_id, 'index' => intval($i) + 1];
             DB::table('contest_problems')->insert($cps);
-            //            复制附件
+            // 复制附件
             foreach (Storage::allFiles('public/contest/files/' . $cid) as $fp) {
                 $name = pathinfo($fp, PATHINFO_FILENAME);  //文件名
                 $ext = pathinfo($fp, PATHINFO_EXTENSION);    //拓展名
