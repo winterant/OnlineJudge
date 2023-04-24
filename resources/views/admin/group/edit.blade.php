@@ -95,7 +95,7 @@
       <div class="border p-2">
         <div class="input-group mb-3">
           <span style="margin: auto">编号列表：</span>
-          <input type="text" name="group[archive_cite]" value="{{ $group->archive_cite ?? '' }}" required class="form-control"
+          <input type="text" name="group[archive_cite]" value="{{ $group->archive_cite ?? '' }}" class="form-control"
             style="color: black" placeholder="填已有群组编号，多个请以英文逗号分隔。如：16,97,128">
         </div>
         <div class="alert-warning p-3">
