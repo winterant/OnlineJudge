@@ -32,39 +32,6 @@ class UserController extends Controller
         return view('admin.user.list', compact('users'));
     }
 
-    // 已废弃；权限管理
-    public function privileges()
-    {
-        $privileges = DB::table('privileges')
-            ->leftJoin('users as u1', 'u1.id', '=', 'user_id')
-            ->leftJoin('users as u2', 'u2.id', '=', 'creator')
-            ->select(['privileges.id', 'u1.username', 'u1.nick', 'authority', 'u2.username as creator', 'privileges.created_at'])
-            ->orderBy('u1.username')->get();
-        return view('admin.user.privilege', compact('privileges'));
-    }
-
-    // public function privilege_create(Request $request)
-    // {
-    //     if ($request->isMethod('post')) {
-    //         $privilege = $request->input('privilege');
-    //         $privilege['user_id'] = DB::table('users')->where('username', $request->input('username'))->value('id');
-    //         if ($privilege['user_id'] == null)
-    //             $msg = '该用户不存在！请先至用户列表确认用户的登录名！';
-    //         else {
-    //             $privilege['creator'] = Auth::id();
-    //             $msg = '成功添加' . DB::table('privileges')->insert($privilege) . '个权限用户';
-    //         }
-    //         return back()->with('msg', $msg);
-    //     }
-    //     return view('message', ['msg' => '请求有误！', 'success' => false, 'is_admin' => true]);
-    // }
-
-    // public function privilege_delete(Request $request)
-    // {
-    //     $pids = $request->input('pids') ?: [];
-    //     return DB::table('privileges')->whereIn('id', $pids)->where('user_id', '!=', 1000)->delete();
-    // }
-
     /**
      * 显示账号生成页面，含历史数据
      */
@@ -115,6 +82,7 @@ class UserController extends Controller
         return view('admin.user.reset_password');
     }
 
+    // 用户角色管理页面
     public function roles()
     {
         if (isset($_GET['kw']) && $_GET['kw'] != '')

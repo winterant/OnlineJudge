@@ -196,13 +196,6 @@
                   <i class="fa fa-users" aria-hidden="true"></i>角色管理
                 </a>
               </li>
-
-              <li class="nav-item">
-                <a class="nav-link border-top text-gray @if (Route::currentRouteName() == 'admin.user.privileges') active @endif"
-                  href="{{ route('admin.user.privileges') }}">
-                  <i class="fa fa-universal-access" aria-hidden="true"></i>权限管理(遗弃)</a>
-              </li>
-
             </ul>
           </li>
 

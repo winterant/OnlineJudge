@@ -19,13 +19,13 @@ $defaultRun = [
     'stdoutMax' => 64 << 20, // 64MB
     'stderrMax' => 10 << 10, // 10KB
     'procLimit' => 8,
-    'limit_boost'=>1 // 运行时间、内存限制的放大倍数；C/C++之外的语言应当为2
+    'limit_amplify'=>1 // 运行时间、内存限制的放大倍数；C/C++之外的语言应当为2
 ];
 
 // 生成最终配置
 return [
     0 => [
-        'name' => 'C (C17 -O2)',
+        'name' => 'C17',
         'filename' => 'Main.c',
         'env'=>$defaultEnv,
         'compile' => array_merge($defaultCompile, [
@@ -36,53 +36,53 @@ return [
 
     // 5~8,1:C++
     5 => [
-        'name' => 'C++ (C++98 -O2)',
-        'filename' => 'Main.cc',
+        'name' => 'C++98',
+        'filename' => 'Main.cpp',
         'env'=>$defaultEnv,
         'compile' => array_merge($defaultCompile, [
-            'command' => '/usr/bin/g++ Main.cc -std=c++98 -O2 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
+            'command' => '/usr/bin/g++ Main.cpp -std=c++98 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
         ]),
         'run' => array_merge($defaultRun, [])
     ],
     6 => [
-        'name' => 'C++ (C++11 -O2)',
-        'filename' => 'Main.cc',
+        'name' => 'C++11',
+        'filename' => 'Main.cpp',
         'env'=>$defaultEnv,
         'compile' => array_merge($defaultCompile, [
-            'command' => '/usr/bin/g++ Main.cc -std=c++11 -O2 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
+            'command' => '/usr/bin/g++ Main.cpp -std=c++11 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
         ]),
         'run' => array_merge($defaultRun, [])
     ],
     7 => [
-        'name' => 'C++ (C++14 -O2)',
-        'filename' => 'Main.cc',
+        'name' => 'C++14',
+        'filename' => 'Main.cpp',
         'env'=>$defaultEnv,
         'compile' => array_merge($defaultCompile, [
-            'command' => '/usr/bin/g++ Main.cc -std=c++14 -O2 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
+            'command' => '/usr/bin/g++ Main.cpp -std=c++14 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
         ]),
         'run' => array_merge($defaultRun, [])
     ],
     1 => [
-        'name' => 'C++ (C++17 -O2)',
-        'filename' => 'Main.cc',
+        'name' => 'C++17',
+        'filename' => 'Main.cpp',
         'env'=>$defaultEnv,
         'compile' => array_merge($defaultCompile, [
-            'command' => '/usr/bin/g++ Main.cc -std=c++98 -O2 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
+            'command' => '/usr/bin/g++ Main.cpp -std=c++98 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
         ]),
         'run' => array_merge($defaultRun, [])
     ],
     8 => [
-        'name' => 'C++ (C++20 -O2)',
-        'filename' => 'Main.cc',
+        'name' => 'C++20',
+        'filename' => 'Main.cpp',
         'env'=>$defaultEnv,
         'compile' => array_merge($defaultCompile, [
-            'command' => '/usr/bin/g++ Main.cc -std=c++20 -O2 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
+            'command' => '/usr/bin/g++ Main.cpp -std=c++20 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
         ]),
         'run' => array_merge($defaultRun, [])
     ],
 
     2 => [
-        'name' => 'Java (OpenJDK 8)',
+        'name' => 'Java8',
         'filename' => 'Main.java',
         'env'=>$defaultEnv,
         'compile' => array_merge($defaultCompile, [
@@ -93,7 +93,7 @@ return [
         'run' => array_merge($defaultRun, [
             'command' => '/usr/bin/java Main',
             'procLimit' => 32,
-            'limit_boost'=>2
+            'limit_amplify'=>2
         ])
     ],
 
@@ -104,7 +104,7 @@ return [
         'compile' => null, // python 不需要编译
         'run' => array_merge($defaultRun, [
             'command' => 'python3 Main.py',
-            'limit_boost'=>2
+            'limit_amplify'=>2
         ])
     ],
 
@@ -121,7 +121,7 @@ return [
         ]),
         'run' => array_merge($defaultRun, [
             'procLimit'=>32,
-            'limit_boost'=>2
+            'limit_amplify'=>2
         ])
     ]
 ];

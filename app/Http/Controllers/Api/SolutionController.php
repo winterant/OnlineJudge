@@ -100,6 +100,8 @@ class SolutionController extends Controller
         $solution['id'] = DB::table('solutions')->insertGetId($solution);
 
         // ===================== 使用任务队列 提交判题任务 =====================
+        if ($request->input('cpp_o2') && str_starts_with(config("judge.lang.{$solution['language']}"), 'C')) // C/C++ O2优化
+            $solution['cpp_o2'] = true;
         dispatch(new Judger($solution));
 
         // ===================== 给前台返回提交信息 ====================

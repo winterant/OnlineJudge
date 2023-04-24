@@ -58,9 +58,15 @@ class Judger implements ShouldQueue
 
         // 获取编译运行指令
         $config = config('judge.language.' . $this->solution['language']);
+
+        // 时间、空间的缩放
+        $problem['time_limit'] *= $config['run']['limit_amplify'];
+        $problem['memory_limit'] *= $config['run']['limit_amplify'];
+
+        // 编译
         if (!empty($config['compile'])) { // 需编译
             // 向JudgeServer发送请求 编译用户代码
-            $res_compile = $this->compile($this->solution['code'], $config);
+            $res_compile = $this->compile($this->solution['code'], $config, $this->solution['cpp_o2'] ?? false);
             if ($res_compile != null && $res_compile['status'] != 'Accepted') { // 编译失败
                 $this->update_db_solution([
                     'result' => 11, // 编译错误 11
@@ -109,14 +115,14 @@ class Judger implements ShouldQueue
     }
 
     // 编译
-    private function compile(string $code, $config)
+    private function compile(string $code, array $config, bool $cpp_o2 = false)
     {
         $this->update_db_solution(['result' => 2]); // 编译中
         // 要发送的数据
         $data = [
             'cmd' => [
                 [
-                    'args' => explode(' ', $config['compile']['command']),
+                    'args' => explode(' ', $config['compile']['command'] . ($cpp_o2 ? ' -O2' : '')),
                     'env' => $config['env'],
                     'files' => [   // 指定 标准输入、标准输出和标准错误的文件
                         ['content' => ''],

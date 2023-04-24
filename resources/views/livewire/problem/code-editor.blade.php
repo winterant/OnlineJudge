@@ -20,7 +20,7 @@
         {{-- 编程题 --}}
         <div class="form-inline m-2">
           {{-- 编程题可以选择语言 --}}
-          <div class="flex-nowrap">
+          <div class="flex-nowrap mr-3">
             <span class="mr-2">{{ __('main.Language') }}:</span>
             <select id="lang_select" name="solution[language]" class="px-3 border"
               style="text-align-last: center;border-radius: 4px;">
@@ -31,19 +31,25 @@
               @endforeach
             </select>
           </div>
+
+          {{-- 自定义是否启用O2优化 --}}
+          <div id="checkbox_cpp_o2" class="form-inline custom-control custom-checkbox mr-3">
+            <input type="checkbox" name="cpp_o2" class="custom-control-input" id="customCheck">
+            <label class="custom-control-label pt-1" for="customCheck">{{ __('sentence.cpp_use_o2') }}</label>
+          </div>
+
           {{-- 编程题可以提交文件 --}}
-          <div class="flex-nowrap ml-3">
-            <span class="mr-2">{{ __('main.Upload File') }}:</span>
-            <a id="selected_fname" href="javascript:" class="m-0 px-0" onclick="$('#code_file').click()"
-              title="{{ __('main.Upload File') }}">
-              <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i>
-            </a>
+          <div class="flex-nowrap mr-3">
+            <a id="selected_fname" class="btn btn-sm btn-info btn-outline-info m-0 px-1" href="javascript:"
+              onclick="$('#code_file').click()"
+              style="border-radius: 4px;font-size:0.6rem;padding-top:0.18rem!important;padding-bottom:0.18rem!important">{{ __('main.Upload File') }}</a>
+            {{-- <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i> --}}
             <input type="file" class="form-control-file" id="code_file" accept=".txt .c, .cc, .cpp, .java, .py"
               hidden />
           </div>
 
           {{-- 编辑框主题 --}}
-          <div class="flex-nowrap ml-3">
+          <div class="flex-nowrap">
             <span class="mr-2">{{ __('main.Theme') }}:</span>
             <select id="theme_select" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
               <option value="idea">idea</option>
@@ -358,7 +364,7 @@
               console.log(ret)
               if (ret.status == 401) { // 身份验证失败
                 Notiflix.Report.Failure('身份验证未通过',
-                  '您的账号可能已在别处登陆，您已掉线。请退出当前账号，然后重新登录！',
+                  '您已掉线，请刷新页面并重新登录！',
                   '好的'
                 );
               } else {
@@ -427,6 +433,12 @@
           } else if (lang == 10) {
             code_editor.setOption('mode', 'text/x-go')
           }
+
+          // C/C++显示选项：启用O2优化
+          if (lang <= 1 || (5 <= lang && lang <= 8))
+            $("#checkbox_cpp_o2").show()
+          else
+            $("#checkbox_cpp_o2").hide()
         }
         // 初始切换为本地缓存的语言
         // 情况1: 已缓存选中语言  且题目允许

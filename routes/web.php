@@ -112,11 +112,6 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
         Route::post('user/update-revise', 'Admin\UserController@update_revise')->name('user.update_revise')->middleware('Permission:admin.user.update');
         Route::post('user/update-locked', 'Admin\UserController@update_locked')->name('user.update_locked')->middleware('Permission:admin.user.update');
 
-        // ====================== privileges；!!!已废弃!!! 未来版本权限改用spatie/laravel-permission）
-        Route::get('user/privileges', 'Admin\UserController@privileges')->name('user.privileges')->middleware('Permission:admin.user');
-        // Route::post('user/privilege/create', 'Admin\UserController@privilege_create')->name('user.privilege_create');
-        // Route::post('user/privilege/delete', 'Admin\UserController@privilege_delete')->name('user.privilege_delete');
-
         // ====================== 用户角色管理 （权限内置不可修改）spatie/laravel-permission. https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
         Route::get('user/roles', 'Admin\UserController@roles')->name('user.roles')->middleware('Permission:admin.user_role.view');
 
