@@ -183,7 +183,7 @@
 
         // 初始化一个预览窗口
         let preview = $(
-          '<div id="preview_{{ $domId }}" class="px-2 border ck-content" style="padding-top:1rem;flex:1;"></div>'
+          '<div id="preview_{{ $domId }}" class="px-2 border ck-content" style="padding-top:1rem;flex:1; @if (!$preview) display:none; @endif"></div>'
         )
         preview.insertAfter($("#div_{{ $domId }} .ck-editor__editable"))
         refresh_preview(preview) // 初始预览一次

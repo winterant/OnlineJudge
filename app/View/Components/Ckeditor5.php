@@ -18,15 +18,17 @@ class Ckeditor5 extends Component
     public $domId; // ckditor元素id，要求唯一性
     public $name; // input元素的name属性
     public $content;
+    public $preview;
     /**
      * Create a new component instance.
      */
-    public function __construct(string $name, string $content='', string $title=null)
+    public function __construct($name, $content = '', $title = null, $preview = false)
     {
-        $this->title=$title;
-        $this->domId=uniqid('ckeditor5_');
-        $this->name=$name;
-        $this->content=$content;
+        $this->title = $title;
+        $this->domId = uniqid('ckeditor5_');
+        $this->name = $name;
+        $this->content = $content;
+        $this->preview = $preview == 1 || $preview == 'true' ? true : false; // 默认不预览
     }
 
     /**
