@@ -16,7 +16,16 @@
     </div>
 
     <div class="my-container bg-white">
-      <h4>php-fpm服务进程</h4>
+      <h4>判题队列状态</h4>
+      <hr>
+      <div class="overflow-auto px-2">
+        <pre>@php(system('ps -aux| head -1;ps -aux | grep "artisan queue" | grep -v "grep" | grep "queue=solutions"'))</pre>
+      </div>
+      <hr>
+    </div>
+
+    <div class="my-container bg-white">
+      <h4>Web服务状态（php-fpm）</h4>
       <hr>
       <div class="overflow-auto px-2">
         <pre>{{ $fpm_status }}</pre>
