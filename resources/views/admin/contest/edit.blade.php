@@ -60,18 +60,8 @@
           class="form-control" style="color: black">
       </div>
 
-      <div class="mt-4 p-2 bg-sky">
-        <details>
-          <summary>竞赛描述/考试说明（点我查看备注）：</summary>
-          <p class="alert alert-info mb-0">
-            您可以在下面的编辑框里使用Latex公式。示例：<br>
-            · 行内公式：\$f(x)=x^2\$（显示效果为<span class="math_formula">\$f(x)=x^2\$</span>）<br>
-            · 单行居中：$$f(x)=x^2$$（显示效果如下）<span class="math_formula">$$f(x)=x^2$$</span><br>
-          </p>
-        </details>
-      </div>
-      <div class="form-group">
-        <textarea id="description" name="contest[description]" class="form-control-plaintext border bg-white">{{ isset($contest->description) ? $contest->description : '' }}</textarea>
+      <div class="form-group mt-4">
+        <x-ckeditor5 name="contest[description]" :content="$contest->description ?? ''" title="竞赛描述/考试说明" />
       </div>
 
       <div class="mt-4 p-2 bg-sky">为竞赛添加一些附件（仅支持如下类型：txt, pdf, doc, docx, xls, xlsx, csv, ppt, pptx）</div>
@@ -203,7 +193,7 @@
             <textarea name="problems" class="form-control-plaintext border bg-white" autoHeight cols="26"
               placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间">
 @foreach (isset($pids) ? $pids : [] as $item)
-{{ $item }}&#13;&#10;
+{{ $item }}
 @endforeach
 </textarea>
           </label>
@@ -316,16 +306,6 @@
         );
       });
     }
-
-    //编辑框配置
-    $(function() {
-      ClassicEditor.create(document.querySelector('#description'), ck_config).then(editor => {
-        window.editor = editor;
-        console.log(editor.getData());
-      }).catch(error => {
-        console.log(error);
-      });
-    })
   </script>
 
   <script type="text/javascript">

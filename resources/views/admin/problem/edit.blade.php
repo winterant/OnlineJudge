@@ -67,29 +67,16 @@
                     </label>
                 </div>
 
-                <div class="form-group mt-3 mb-1">
-                    <details>
-                        <summary>点我查看使用说明</summary>
-                        <p class="alert alert-info mb-0">
-                            您可以在下面所有的编辑框里使用Latex公式。示例：<br>
-                            · 行内公式：\$f(x)=x^2\$（显示效果为<span class="math_formula">\$f(x)=x^2\$</span>）<br>
-                            · 单行居中：$$f(x)=x^2$$（显示效果如下）<span class="math_formula">$$f(x)=x^2$$</span><br>
-                        </p>
-                    </details>
-                </div>
-                <div class="form-group">
-                    <label for="description">题目描述：</label>
-                    <textarea id="description" name="problem[description]" class="form-control-plaintext border bg-white">{{isset($problem->description)?$problem->description:''}}</textarea>
+                <div class="form-group mt-3">
+                  <x-ckeditor5 name="problem[description]" :content="$problem->description ?? ''" title="题目描述" />
                 </div>
 
-                <div class="form-group">
-                    <label for="input">输入描述：</label>
-                    <textarea id="input" name="problem[input]" class="form-control-plaintext border bg-white">{{isset($problem->input)?$problem->input:''}}</textarea>
+                <div class="form-group mt-3">
+                  <x-ckeditor5 name="problem[input]" :content="$problem->input ?? ''" title="输入描述" />
                 </div>
 
-                <div class="form-group">
-                    <label for="output">输出描述：</label>
-                    <textarea id="output" name="problem[output]" class="form-control-plaintext border bg-white">{{isset($problem->output)?$problem->output:''}}</textarea>
+                <div class="form-group mt-3">
+                  <x-ckeditor5 name="problem[output]" :content="$problem->output ?? ''" title="输出描述" />
                 </div>
 
                 <div id="text_fill_in_blank" class="form-group">
@@ -132,8 +119,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="hint">提示（公式、样例解释等）：</label>
-                    <textarea id="hint" name="problem[hint]" class="form-control-plaintext border bg-white">{{isset($problem->hint)?$problem->hint:''}}</textarea>
+                  <x-ckeditor5 name="problem[hint]" :content="$problem->hint ?? ''" title="提示（公式、样例解释等）" />
                 </div>
 
                 <div class="input-group">
@@ -237,23 +223,6 @@
     </script>
 
     <script type="text/javascript">
-        //各个编辑框ckeditor
-        var ck_description,ck_input,ck_output,ck_hint;
-        $(function (){
-            ClassicEditor.create(document.querySelector('#description'), ck_config).then(editor => {
-                ck_description=editor;
-            })
-            ClassicEditor.create(document.querySelector('#input'), ck_config).then(editor => {
-                ck_input = editor;
-            })
-            ClassicEditor.create(document.querySelector('#output'), ck_config).then(editor => {
-                ck_output = editor;
-            })
-            ClassicEditor.create(document.querySelector('#hint'), ck_config).then(editor => {
-                ck_hint = editor;
-            })
-        })
-
         //检查编辑框中的特殊字符
         function check_ckeditor_data(){
             function has_special_char(str) {
@@ -262,10 +231,10 @@
                 return ret; //有非法字符
             }
             var wrong=null,wrong_char;
-            if((wrong_char=has_special_char(ck_description.getData())))wrong="问题描述";
-            else if((wrong_char=has_special_char(ck_input.getData())))wrong="输入描述";
-            else if((wrong_char=has_special_char(ck_output.getData())))wrong="输出描述";
-            else if((wrong_char=has_special_char(ck_hint.getData())))wrong="提示";
+            if((wrong_char=has_special_char(window['problem[description]'].getData())))wrong="问题描述";
+            else if((wrong_char=has_special_char(window['problem[input]'].getData())))wrong="输入描述";
+            else if((wrong_char=has_special_char(window['problem[output]'].getData())))wrong="输出描述";
+            else if((wrong_char=has_special_char(window['problem[hint]'].getData())))wrong="提示";
             if(wrong!=null){
                 Notiflix.Report.Init({plainText: false});
                 Notiflix.Report.Failure("编辑器中含有无法解析的字符",

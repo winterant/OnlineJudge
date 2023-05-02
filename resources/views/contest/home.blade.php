@@ -40,7 +40,7 @@
             </p>
             <p id="remain" class="d-none">{{ $remain = strtotime($contest->end_time) - time() }}</p>
             <i class="fa fa-clock-o pr-2 text-sky" aria-hidden="true"></i>
-            <font id="remain_area"></font>
+            <span id="remain_area"></span>
           </div>
           <script>
             var ended = false;
@@ -184,7 +184,7 @@
             <hr>
             @if (Auth::user()->can('admin.contest_notice.view'))
               <button class="btn btn-info" data-toggle="modal" data-target="#edit_notice"
-                onclick="$('#form_edit_notice')[0].reset();window.editor.setData('');
+                onclick="$('#form_edit_notice')[0].reset();window['notice[content]'].setData('');
                 $('#form_notice_id').val('');/*清空编号*/">{{ __('main.New Notice') }}</button>
             @endif
             @if (isset($notices) && count($notices))
@@ -310,8 +310,7 @@
                   autocomplete="off">
               </div>
               <div class="form-group mt-2">
-                <label for="description">{{ __('main.Content') }}：</label>
-                <textarea id="content" name="notice[content]" class="form-control-plaintext border bg-white"></textarea>
+                <x-ckeditor5 name="notice[content]" title="{{ __('main.Content') }}" />
               </div>
             </div>
 
@@ -328,15 +327,6 @@
 
     {{-- 管理员：发布公告 --}}
     <script type="text/javascript">
-      //管理员；初始化编辑框
-      $(function() {
-        ClassicEditor.create(document.querySelector('#content'), ck_config).then(editor => {
-          window.editor = editor;
-          console.log(editor.getData());
-        }).catch(error => {
-          console.log(error);
-        });
-      })
       //管理员获取公告内容并编辑
       function get_notce_to_edit(cid, nid) {
         $.get(
@@ -345,14 +335,12 @@
             console.log(ret)
             $("#form_notice_id").val(nid);
             $("#form_title").val(ret.title);
-            if (ret.content != null)
-              window.editor.setData(ret.content)
+            window["notice[content]"].setData(ret.content == null ? '' : ret.content)
           }
         );
       }
       // 管理员提交编辑公告的请求: 添加 or 编辑
       function update_notice(that) {
-        $("#content").val(editor.getData()) // 读取富文本框内容
         if ($("#form_notice_id").val() == "") {
           // 新建
           $.ajax({

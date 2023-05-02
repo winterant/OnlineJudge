@@ -16,9 +16,8 @@
                 <input type="text" name="notice[title]" value="{{isset($notice->title)?$notice->title:''}}" required class="form-control">
             </div>
 
-            <div class="form-group">
-                <label for="content">内容：</label>
-                <textarea id="content" name="notice[content]" class="form-control-plaintext border bg-white">{{isset($notice->content)?$notice->content:''}}</textarea>
+            <div class="form-group mt-4">
+                <x-ckeditor5 name="notice[content]" :content="$notice->content ?? ''" title="公告详情" />
             </div>
 
             <div class="form-inline">
@@ -37,15 +36,6 @@
         </form>
     </div>
 
-    <script type="text/javascript">
-        $(function () {
-            ClassicEditor.create(document.querySelector('#content'), ck_config).then(editor => {
-                window.editor = editor;
-            } ).catch(error => {
-                console.log(error);
-            } );
-        })
-    </script>
     <script type="text/javascript">
         window.onbeforeunload = function() {
             return "确认离开当前页面吗？未保存的数据将会丢失！";

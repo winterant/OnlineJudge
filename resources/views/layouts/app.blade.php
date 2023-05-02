@@ -60,13 +60,7 @@
 
 
   {{-- ckeditor5 --}}
-  <script type="text/javascript">
-    $(function() {
-      ck_config.ckfinder.uploadUrl = "{{ route('api.ckeditor_files') }}"
-    })
-  </script>
   <script src="{{ asset('static/ckeditor5/build/ckeditor.js?v=220706') }}" defer></script>
-  <script src="{{ asset('static/ckeditor5/config.js?v=220706') }}" defer></script>
 
 
   {{-- 代码编辑器 codemirror  --}}

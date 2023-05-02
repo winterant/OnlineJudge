@@ -165,10 +165,10 @@
 
           @if (!empty($samples))
             <h4 class="my-2 text-sky">{{ __('main.Samples') }}</h4>
-            <div class="alert alert-info p-2 mb-0">
+            {{-- <div class="alert alert-info p-2 mb-0">
               <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
               <span>{{ trans('sentence.explain_sample') }}</span>
-            </div>
+            </div> --}}
           @endif
           @foreach ($samples as $i => $sam)
             <div class="border my-2 not_math">
