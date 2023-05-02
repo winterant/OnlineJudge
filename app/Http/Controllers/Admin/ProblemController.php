@@ -6,6 +6,7 @@ use DOMDocument;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UploadController;
 use App\Http\Helpers\ProblemHelper;
+use App\Jobs\Judger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -339,22 +340,13 @@ class ProblemController extends Controller
             }
             foreach ($node->solution as $solu) {
                 $language = $solu->attributes()->language;
-                if ($language == 'Python') $language .= '3';  //本oj只支持python3
-                $langs = [
-                    'C' => 0,
-                    'c' => 0,
-                    'C++' => 1,
-                    'c++' => 1,
-                    'CPP' => 1,
-                    'cpp' => 1,
-                    'Java' => 2,
-                    'java' => 2,
-                    'Python3' => 3,
-                ];
-                $lang = ($langs[(string)($solu->attributes()->language)] ?? false);
+                if ($language == 'Python') $language .= '3';  // 本oj只支持python3
+                if ($language == 'C++') $language .= '14';    // 默认C++14
+                if ($language == 'C') $language .= '17';      // 默认C17
+                $lang = array_search($language, config('judge.lang')); // 查出编程语言的代号
                 //保存提交记录
                 if ($lang !== false) {
-                    DB::table('solutions')->insert([
+                    $solution = [
                         'problem_id'    => $pid,
                         'contest_id'    => -1,
                         'user_id'       => Auth::id(),
@@ -362,10 +354,15 @@ class ProblemController extends Controller
                         'language'      => $lang,
                         'submit_time'   => date('Y-m-d H:i:s'),
                         'judge_type'    => 'oi', //acm,oi
-                        'ip'            => $request->getClientIp(),
+                        'ip'            => ($guest_ip = get_client_real_ip()),
+                        'ip_loc'        => getIpAddress($guest_ip),
                         'code_length'   => strlen($solu),
-                        'code'          => $solu,
-                    ]);
+                        'code'          => (string)$solu,
+                    ];
+                    $solution['id'] = DB::table('solutions')->insertGetId($solution);
+                    // 发送到判题队列
+                    $solution['cpp_o2'] = true; // O2优化
+                    dispatch(new Judger($solution));
                 }
             }
         }
