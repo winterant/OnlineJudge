@@ -27,7 +27,7 @@ class ProblemHelper
             // 新版本样本转存到数据库 problems表samples字段
             $files = [];
             $dir = testdata_path($problem_id . '/sample');
-            foreach (readAllFilesPath($dir) as $item) {
+            foreach (getAllFilesPath($dir) as $item) {
                 $name = pathinfo($item, PATHINFO_FILENAME);  //文件名
                 $ext = pathinfo($item, PATHINFO_EXTENSION);  //拓展名
                 if (!isset($files[$name])) //发现新样本
@@ -61,17 +61,43 @@ class ProblemHelper
         return true;
     }
 
+    /**
+     * 从文件系统读取测试数据的文件名
+     * @param $problem_id
+     * @return array  ['1'=>['in'=>'1.in', 'out'=>'1.ans'], ...]
+     */
+    public static function getTestDataFilenames($problem_id): array
+    {
+        $testdata = [];
+        $dir = testdata_path($problem_id . '/test');
+        foreach (getAllFilesPath($dir) as $item) {
+            $name = pathinfo($item, PATHINFO_FILENAME);  //文件名
+            $ext = pathinfo($item, PATHINFO_EXTENSION);  //拓展名
+            if (!isset($testdata[$name])) //发现新样本
+                $testdata[$name] = [];
+            if ($ext === 'in')
+                $testdata[$name]['in'] = $name . '.' . $ext;
+            if ($ext === 'out' || $ext === 'ans')
+                $testdata[$name]['out'] = $name . '.' . $ext;
+        }
+
+        $testdata = array_filter($testdata, function ($v) {
+            return count($v) == 2;
+        });  // 过滤掉不完整的数据（in、out匹配才算完整）
+
+        return $testdata;
+    }
 
     /**
      * 从文件读取测试数据
      * @param $problem_id
-     * @return array  ['filename':{'in':'***','out':'***'}, ...]
+     * @return array  ['filename':{'in':'***', 'out':'***'}, ...]
      */
     public static function readTestData($problem_id): array
     {
         $testdata = [];
         $dir = testdata_path($problem_id . '/test');
-        foreach (readAllFilesPath($dir) as $item) {
+        foreach (getAllFilesPath($dir) as $item) {
             $name = pathinfo($item, PATHINFO_FILENAME);  //文件名
             $ext = pathinfo($item, PATHINFO_EXTENSION);  //拓展名
             if (!isset($testdata[$name])) //发现新样本
@@ -99,7 +125,7 @@ class ProblemHelper
     public static function saveTestData($problem_id, array $ins, array $outs)
     {
         $dir = testdata_path($problem_id . '/test'); // 测试数据文件夹
-        foreach (readAllFilesPath($dir) as $item)
+        foreach (getAllFilesPath($dir) as $item)
             unlink($item); //删除原有文件
         if (!is_dir($dir))
             mkdir($dir, 0777, true);  // 文件夹不存在则创建

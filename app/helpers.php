@@ -95,7 +95,7 @@ function testdata_path($path = null): string
 
 
 //读取一个文件夹下所有文件，返回路径列表
-function readAllFilesPath($dir_path): array
+function getAllFilesPath($dir_path): array
 {
     clearstatcache(); //清除缓存
     $files = [];

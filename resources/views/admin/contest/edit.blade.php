@@ -6,7 +6,8 @@
   <h2>{{ $pageTitle }}</h2>
   <hr>
   <div>
-    <form class="p-4 col-12" action="" method="post" enctype="multipart/form-data" onsubmit="presubmit()" style="max-width: 80rem">
+    <form class="p-4 col-12" action="" method="post" enctype="multipart/form-data" onsubmit="presubmit()"
+      style="max-width: 80rem">
       @csrf
       <div class="form-inline mb-3">
         <span>竞赛分类：</span>
@@ -29,15 +30,17 @@
       <div class="form-inline mb-3">
         <span>是否发布：</span>
         <div class="custom-control custom-radio ml-3">
-          <input type="radio" name="contest[hidden]" value="1" class="custom-control-input" id="hidden_yes" checked>
+          <input type="radio" name="contest[hidden]" value="1" class="custom-control-input" id="hidden_yes"
+            checked>
           <label class="custom-control-label pt-1" for="hidden_yes">隐藏（前台无法看到该比赛）</label>
         </div>
         <div class="custom-control custom-radio ml-3">
-          <input type="radio" name="contest[hidden]" value="0" class="custom-control-input" id="hidden_no" @if (isset($contest->hidden) && $contest->hidden == 0) checked @endif>
+          <input type="radio" name="contest[hidden]" value="0" class="custom-control-input" id="hidden_no"
+            @if (isset($contest->hidden) && $contest->hidden == 0) checked @endif>
           <label class="custom-control-label pt-1" for="hidden_no">公开（前台可以看到该比赛）</label>
         </div>
       </div>
-
+      {{--
       <div class="form-inline mb-3">
         <span>题目讨论：</span>
         <div class="custom-control custom-radio ml-3">
@@ -49,31 +52,24 @@
           <label class="custom-control-label pt-1" for="guanbi">禁用（赛后可用）</label>
         </div>
       </div>
+      --}}
 
       <div class="input-group">
         <span style="margin: auto">竞赛标题：</span>
-        <input type="text" name="contest[title]" value="{{ isset($contest->title) ? $contest->title : '' }}" required class="form-control" style="color: black">
+        <input type="text" name="contest[title]" value="{{ isset($contest->title) ? $contest->title : '' }}" required
+          class="form-control" style="color: black">
       </div>
 
-      <div class="mt-4 p-2 bg-sky">
-        <details>
-          <summary>竞赛描述/考试说明（点我查看备注）：</summary>
-          <p class="alert alert-info mb-0">
-            您可以在下面的编辑框里使用Latex公式。示例：<br>
-            · 行内公式：\$f(x)=x^2\$（显示效果为<span class="math_formula">\$f(x)=x^2\$</span>）<br>
-            · 单行居中：$$f(x)=x^2$$（显示效果如下）<span class="math_formula">$$f(x)=x^2$$</span><br>
-          </p>
-        </details>
-      </div>
-      <div class="form-group">
-        <textarea id="description" name="contest[description]" class="form-control-plaintext border bg-white">{{ isset($contest->description) ? $contest->description : '' }}</textarea>
+      <div class="form-group mt-4">
+        <x-ckeditor5 name="contest[description]" :content="$contest->description ?? ''" title="竞赛描述/考试说明" />
       </div>
 
       <div class="mt-4 p-2 bg-sky">为竞赛添加一些附件（仅支持如下类型：txt, pdf, doc, docx, xls, xlsx, csv, ppt, pptx）</div>
       <div class="border p-2">
         <div class="form-group">
           <div class="form-inline">选择文件：
-            <input type="file" name="files[]" multiple class="form-control" accept=".txt, .pdf, .doc, .docx, .xls, .xlsx, .csv, .ppt, .pptx">
+            <input type="file" name="files[]" multiple class="form-control"
+              accept=".txt, .pdf, .doc, .docx, .xls, .xlsx, .csv, .ppt, .pptx">
           </div>
         </div>
 
@@ -83,8 +79,10 @@
               @foreach ($files as $i => $file)
                 <div class="mr-4">
                   {{ $i + 1 }}.
-                  <a href="{{ Storage::url('public/contest/files/' . $contest->id . '/' . $file) }}" class="mr-1" target="_blank">{{ $file }}</a>
-                  <a href="javascript:" onclick="delete_file($(this),'{{ $file }}')" title="删除"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                  <a href="{{ Storage::url('public/contest/files/' . $contest->id . '/' . $file) }}" class="mr-1"
+                    target="_blank">{{ $file }}</a>
+                  <a href="javascript:" onclick="delete_file($(this),'{{ $file }}')" title="删除"><i
+                      class="fa fa-trash" aria-hidden="true"></i></a>
                 </div>
               @endforeach
             </div>
@@ -110,8 +108,8 @@
 
         <div class="form-group mt-2">
           <label class="form-inline">封榜比例：
-            <input type="number" step="0.01" max="1" min="0" name="contest[lock_rate]" value="{{ isset($contest) ? $contest->lock_rate : 0 }}"
-              class="form-control">
+            <input type="number" step="0.01" max="1" min="0" name="contest[lock_rate]"
+              value="{{ isset($contest) ? $contest->lock_rate : 0 }}" class="form-control">
             <a href="javascript:" class="ml-1" style="color: #838383"
               onclick="whatisthis('封榜时长=比赛时长×封榜比例；<br>数值范围0.0~1.0' +
                              '<br><br>例如：封榜比例0.2，比赛总时长5小时，则比赛达到4小时后榜单停止更新' +
@@ -130,17 +128,18 @@
         <div class="form-inline my-2">
           <span>验证方式：</span>
           <div class="custom-control custom-radio mx-3">
-            <input type="radio" name="contest[access]" value="public" class="custom-control-input" id="Public" checked onchange="access_has_change('public')">
+            <input type="radio" name="contest[access]" value="public" class="custom-control-input" id="Public"
+              checked onchange="access_has_change('public')">
             <label class="custom-control-label pt-1" for="Public">Public</label>
           </div>
           <div class="custom-control custom-radio mx-3">
-            <input type="radio" name="contest[access]" value="password" class="custom-control-input" id="Password" onchange="access_has_change('password')"
-              @if (isset($contest) && $contest->access == 'password') checked @endif>
+            <input type="radio" name="contest[access]" value="password" class="custom-control-input" id="Password"
+              onchange="access_has_change('password')" @if (isset($contest) && $contest->access == 'password') checked @endif>
             <label class="custom-control-label pt-1" for="Password">Password</label>
           </div>
           <div class="custom-control custom-radio mx-3">
-            <input type="radio" name="contest[access]" value="private" class="custom-control-input" id="Private" onchange="access_has_change('private')"
-              @if (isset($contest) && $contest->access == 'private') checked @endif>
+            <input type="radio" name="contest[access]" value="private" class="custom-control-input" id="Private"
+              onchange="access_has_change('private')" @if (isset($contest) && $contest->access == 'private') checked @endif>
             <label class="custom-control-label pt-1" for="Private">Private</label>
           </div>
         </div>
@@ -159,7 +158,8 @@
           <div class="form-inline my-3">
             <label>
               参赛密码：
-              <input type="text" name="contest[password]" value="{{ isset($contest) ? $contest->password : '' }}" class="form-control">
+              <input type="text" name="contest[password]" value="{{ isset($contest) ? $contest->password : '' }}"
+                class="form-control">
             </label>
             <br>
           </div>
@@ -172,8 +172,11 @@
           <div class="float-left">指定用户：</div>
           <label>
             <textarea name="contest_users" class="form-control-plaintext border bg-white" rows="8" cols="26"
-              placeholder="user1&#13;&#10;user2&#13;&#10;每行一个用户登录名&#13;&#10;你可以将表格的整列粘贴到这里"
-              >@foreach (isset($unames) ? $unames : [] as $item){{ $item }}&#13;&#10;@endforeach</textarea>
+              placeholder="user1&#13;&#10;user2&#13;&#10;每行一个用户登录名&#13;&#10;你可以将表格的整列粘贴到这里">
+@foreach (isset($unames) ? $unames : [] as $item)
+{{ $item }}&#13;&#10;
+@endforeach
+</textarea>
           </label>
         </div>
       </div>
@@ -187,10 +190,15 @@
             @if (isset($_GET['pids']))
               {{ null, $pids[] = $_GET['pids'] }}
             @endif
-            <textarea name="problems" class="form-control-plaintext border bg-white" autoHeight cols="26" placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间"
-            >@foreach (isset($pids) ? $pids : [] as $item){{ $item }}&#13;&#10;@endforeach</textarea>
+            <textarea name="problems" class="form-control-plaintext border bg-white" autoHeight cols="26"
+              placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间">
+@foreach (isset($pids) ? $pids : [] as $item)
+{{ $item }}
+@endforeach
+</textarea>
           </label>
-          <a href="javascript:" class="text-gray" style="vertical-align: top" onclick="whatisthis('填写方法：<br>每行一个题号（如1024），或每行一个区间（如1024-1036）')">
+          <a href="javascript:" class="text-gray" style="vertical-align: top"
+            onclick="whatisthis('填写方法：<br>每行一个题号（如1024），或每行一个区间（如1024-1036）')">
             <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
           </a>
         </div>
@@ -198,10 +206,11 @@
         <div class="form-inline mb-3">
           <div class="pull-left">编程语言：</div>
           <input id="input_allow_lang" type="number" name="contest[allow_lang]" hidden>
-          @foreach (config('oj.judge_lang') as $lang => $name)
+          @foreach (config('judge.lang') as $lang => $name)
             <div class="custom-control custom-checkbox mx-2">
-              <input type="checkbox" name="allow_lang" value="{{ $lang }}" class="lang_checkbox custom-control-input" id="allow_lang{{ $lang }}"
-                @if ((!isset($contest) && $lang == 1) || (isset($contest) && ($contest->allow_lang >> $lang) & 1)) checked @endif>
+              <input type="checkbox" name="allow_lang" value="{{ $lang }}"
+                class="lang_checkbox custom-control-input" id="allow_lang{{ $lang }}"
+                @if ((!isset($contest) && $lang == 7) || (isset($contest) && ($contest->allow_lang >> $lang) & 1)) checked @endif>
               <label class="custom-control-label pt-1" for="allow_lang{{ $lang }}">{{ $name }}</label>
             </div>
           @endforeach
@@ -214,11 +223,13 @@
         <div class="form-inline mb-3">
           <span>判题规则：</span>
           <div class="custom-control custom-radio ml-2">
-            <input type="radio" name="contest[judge_type]" value="acm" class="custom-control-input" id="acmicpc" checked>
+            <input type="radio" name="contest[judge_type]" value="acm" class="custom-control-input"
+              id="acmicpc" checked>
             <label class="custom-control-label pt-1" for="acmicpc">ACM-ICPC程序设计竞赛</label>
           </div>
           <div class="custom-control custom-radio mx-4">
-            <input type="radio" name="contest[judge_type]" value="oi" class="custom-control-input" id="oixinxi" @if (isset($contest) && $contest->judge_type == 'oi') checked @endif>
+            <input type="radio" name="contest[judge_type]" value="oi" class="custom-control-input"
+              id="oixinxi" @if (isset($contest) && $contest->judge_type == 'oi') checked @endif>
             <label class="custom-control-label pt-1" for="oixinxi">OI信息学竞赛</label>
           </div>
           <a href="javascript:" style="color: #838383"
@@ -232,7 +243,8 @@
           <div class="pull-left">公开榜单：</div>
 
           <div class="custom-control custom-checkbox mx-2">
-            <input type="checkbox" name="contest[public_rank]" class="custom-control-input" id="public_rank" @if (isset($contest->public_rank) && $contest->public_rank) checked @endif>
+            <input type="checkbox" name="contest[public_rank]" class="custom-control-input" id="public_rank"
+              @if (isset($contest->public_rank) && $contest->public_rank) checked @endif>
             <label class="custom-control-label pt-1" for="public_rank">允许任意访客查看榜单</label>
           </div>
 
@@ -294,16 +306,6 @@
         );
       });
     }
-
-    //编辑框配置
-    $(function() {
-      ClassicEditor.create(document.querySelector('#description'), ck_config).then(editor => {
-        window.editor = editor;
-        console.log(editor.getData());
-      }).catch(error => {
-        console.log(error);
-      });
-    })
   </script>
 
   <script type="text/javascript">

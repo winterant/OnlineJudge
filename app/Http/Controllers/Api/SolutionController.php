@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\Judger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 
 class SolutionController extends Controller
 {
@@ -99,7 +100,9 @@ class SolutionController extends Controller
         $solution['id'] = DB::table('solutions')->insertGetId($solution);
 
         // ===================== 使用任务队列 提交判题任务 =====================
-        // dispatch(new Judger($solution['id']));
+        if ($request->input('cpp_o2') && str_starts_with(config("judge.lang.{$solution['language']}"), 'C')) // C/C++ O2优化
+            $solution['cpp_o2'] = true;
+        dispatch(new Judger($solution));
 
         // ===================== 给前台返回提交信息 ====================
         // if ($solution['contest_id'] > 0) //竞赛提交
@@ -129,42 +132,32 @@ class SolutionController extends Controller
         if (!$solution)
             return ['ok' => 0, 'msg' => '提交记录不存在'];
 
-        /*
-        // ==================== 读取判题结果 =========================
-        $judge0result = json_decode($solution->judge0result, true) ?? [];
-        // if (!$judge0result) // 无效的提交记录
-        //     return [
-        //         'ok' => 0,
-        //         'msg' => '该提交记录找不到判题痕迹，请管理员检查测试数据是否缺失，并重判提交记录',
-        //         'data' => $judge0result
-        //     ];
-        // ================= 给前台返回结果 =================
-        foreach ($judge0result as &$item) {
-            $item['result_desc'] = trans('result.' . config("oj.judge_result." . ($item["result_id"] ?? 0)));
-            // unset($item['spj']); // spj没必要给用户看
+        // 读取 所有测试数据的详细结果
+        $judge_result = json_decode($solution->judge0result, true);
+        foreach ($judge_result ?? [] as $k => &$test) {
+            $judge_result[$k]['result_desc'] = trans('result.' . config("judge.result." . $test['result'] ?? 0));
         }
-        */
 
         // 临时代替。后期开发，所有测试数据的结果
-        $judge_result = [
-            0 => [
-                'result' => $solution->result,
-                'result_desc' => trans('result.' . config("oj.judge_result." . $solution->result)),
-                'time' => $solution->time,
-                'memory' => $solution->memory,
-            ]
-        ];
+        // $judge_result = [
+        //     0 => [
+        //         'result' => $solution->result,
+        //         'result_desc' => trans('result.' . config("oj.judge_result." . $solution->result)),
+        //         'time' => $solution->time,
+        //         'memory' => $solution->memory,
+        //     ]
+        // ];
 
         return [
             'ok' => 1,
             'msg' => 'OK',
             'data' => [
                 'result' => $solution->result,
-                'result_desc' => trans('result.' . config("oj.judge_result." . $solution->result)),
+                'result_desc' => trans('result.' . config("judge.result." . $solution->result)),
                 'time' => $solution->time,
                 'memory' => $solution->memory,
                 'error_info' => $solution->error_info,
-                'details' => array_values($judge_result) // 不给用户看到 key (judge0 token)
+                'details' => $judge_result
             ]
         ];
     }

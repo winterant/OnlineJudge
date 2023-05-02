@@ -40,6 +40,7 @@ return [
 //   problem
     "missing_spj"       => "Missing spj.cpp",
     "Choose Language"   => "----Choose Language----",
+    "cpp_use_o2"        => "Enable O2 optimization",
     "Input Code"        => "Input your code to solve this problem...",
     "submit_frequently" => "Submit frequently! You are not allowed to submit twice in :sec seconds",
     "submit_ce_frequently" => "You have a compilation error in the code you submitted at :dt. As a punishment, you can't continue to submit the code in :sec seconds!",

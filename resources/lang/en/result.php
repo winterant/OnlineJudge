@@ -13,8 +13,8 @@ return [
     'Output Limit Exceeded' => 'Output Limit Exceeded',
     'Runtime Error'  => 'Runtime Error',
     'Compile Error'  => 'Compile Error',
-    'Test Completed' => 'Test Completed',
+    'Rejudging'      => 'Rejudging',
     'Skipped'        => 'Skipped',
-    'System Error'   => 'System Error',
+    'Internal Error' => 'Internal Error',
     'Submitted'      => 'Submitted'
 ];

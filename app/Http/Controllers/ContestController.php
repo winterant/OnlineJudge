@@ -21,7 +21,7 @@ class ContestController extends Controller
         /** @var \App\Models\User */
         $user = Auth::user();
 
-        //获取类别
+        //获取当前所处的类别
         $current_cate = DB::table('contest_cate')->find($_GET['cate'] ?? 0);
 
         //类别不存在，则自动跳转到默认竞赛(可能是cookie保存的)
@@ -55,6 +55,17 @@ class ContestController extends Controller
             ->orderByDesc('is_parent') // 2 同一父类下，父类排在首位
             ->orderBy('cc.order') // 3 同一父类下的二级类别，按自身order排序
             ->get();
+
+        // 统计子类别数量
+        $current_parent = $categories[0] ?? null;
+        foreach ($categories as $i => &$c) {
+            $c->num_sons = 0; // 每个类别默认有0个孩子类别
+            if ($c->is_parent) {
+                $current_parent = $c; // 记下当前是一个一级类别
+            } else {
+                $current_parent->num_sons++; // 当前是小类别，那么一级类别就要加一个孩子
+            }
+        }
 
         //cookie记下默认每页显示的条数
         if (isset($_GET['perPage'])) {

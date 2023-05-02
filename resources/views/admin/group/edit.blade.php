@@ -76,26 +76,15 @@
         </div>
       </div>
 
-      <div class="mt-4 p-2 bg-sky">
-        <details>
-          <summary>群组介绍（点我查看备注）：</summary>
-          <p class="alert alert-info mb-0">
-            该介绍将显示在该群组的首页，您可以填写针对该群组的一些说明。<br>
-            您可以在下面的编辑框里使用Latex公式。示例：<br>
-            · 行内公式：\$f(x)=x^2\$（显示效果为<span class="math_formula">\$f(x)=x^2\$</span>）<br>
-            · 单行居中：$$f(x)=x^2$$（显示效果如下）<span class="math_formula">$$f(x)=x^2$$</span><br>
-          </p>
-        </details>
-      </div>
-      <div class="form-group">
-        <textarea id="description" name="group[description]" class="form-control-plaintext border bg-white">{{ $group->description ?? '' }}</textarea>
+      <div class="form-group mt-4">
+        <x-ckeditor5 name="group[description]" :content="$group->description ?? ''" title="群组介绍"/>
       </div>
 
       <div class="mt-4 p-2 bg-sky">成员档案引用</div>
       <div class="border p-2">
         <div class="input-group mb-3">
           <span style="margin: auto">编号列表：</span>
-          <input type="text" name="group[archive_cite]" value="{{ $group->archive_cite ?? '' }}" required class="form-control"
+          <input type="text" name="group[archive_cite]" value="{{ $group->archive_cite ?? '' }}" class="form-control"
             style="color: black" placeholder="填已有群组编号，多个请以英文逗号分隔。如：16,97,128">
         </div>
         <div class="alert-warning p-3">
@@ -159,20 +148,7 @@
   </div>
 
   <script type="text/javascript">
-    //编辑框配置
-    $(function() {
-      ClassicEditor.create(document.querySelector('#description'), ck_config).then(editor => {
-        window.editor = editor;
-        // console.log(editor.getData());
-      }).catch(error => {
-        console.log(error);
-      });
-    })
-  </script>
-
-  <script type="text/javascript">
     function submit_group(that) {
-      $("#description").val(window.editor.getData()) // 手动更新提交值
       $.ajax({
         type: '{{ isset($group) ? 'put' : 'post' }}',
         url: '{{ isset($group) ? route('api.admin.group.update', $group->id) : route('api.admin.group.create') }}',

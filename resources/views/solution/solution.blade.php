@@ -15,7 +15,7 @@
         @else
           <i class="fa fa-times fa-lg" aria-hidden="true"></i>
         @endif
-        &nbsp;{{ __('result.' . config('oj.judge_result.' . $solution->result)) }}
+        &nbsp;{{ __('result.' . config('judge.result.' . $solution->result)) }}
 
         @if ($solution->judge_type != 'acm')
           ({{ $solution->pass_rate * 100 }}%)
@@ -39,7 +39,7 @@
 
         <div class="col-6 col-sm-2">{{ __('main.Time') . ': ' . $solution->time }}MS</div>
         <div class="col-6 col-sm-2">{{ __('main.Memory') . ': ' . round($solution->memory, 2) }}MB</div>
-        <div class="col-6 col-sm-2">{{ __('main.Language') . ': ' . config('oj.judge_lang.' . $solution->language) }}</div>
+        <div class="col-6 col-sm-2">{{ __('main.Language') . ': ' . config('judge.lang.' . $solution->language) }}</div>
         <div class="col-6 col-sm-2">{{ __('main.Code Length') . ': ' . $solution->code_length }}B</div>
         <div class="col-12 col-sm-4">{{ __('main.Judge Time') . ': ' . $solution->judge_time }}</div>
       </div>

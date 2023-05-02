@@ -1,8 +1,9 @@
 @extends('layouts.client')
 
 @if (isset($contest))
-  @section('title', sprintf('%s %s | %s %s', __('main.Problem'), index2ch($problem->index), __('main.Contest'), $contest->id))
-@else
+  @section('title', sprintf('%s %s | %s %s', __('main.Problem'), index2ch($problem->index), __('main.Contest'),
+    $contest->id))
+  @else
   @section('title', trans('main.Problem') . ' ' . $problem->id)
 @endif
 
@@ -164,10 +165,10 @@
 
           @if (!empty($samples))
             <h4 class="my-2 text-sky">{{ __('main.Samples') }}</h4>
-            <div class="alert alert-info p-2 mb-0">
+            {{-- <div class="alert alert-info p-2 mb-0">
               <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
               <span>{{ trans('sentence.explain_sample') }}</span>
-            </div>
+            </div> --}}
           @endif
           @foreach ($samples as $i => $sam)
             <div class="border my-2 not_math">
@@ -225,7 +226,8 @@
 
     <div id="right">
       {{-- 代码编辑框 --}}
-      <x-problem.code-editor :problem="$problem" :contest-id="$contest->id ?? null" :allow-lang="$contest->allow_lang ?? null" :num-samples="count($samples ?? [])" />
+      {{-- <x-problem.code-editor :problem="$problem" :contest-id="$contest->id ?? null" :allow-lang="$contest->allow_lang ?? null" :num-samples="count($samples ?? [])" /> --}}
+      @livewire('problem.code-editor', ['problem' => (array) $problem, 'contest_id' => $contest->id ?? null, 'allow_lang' => $contest->allow_lang ?? null])
     </div>
   </div>
 

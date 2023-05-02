@@ -30,16 +30,8 @@
           @csrf
           <input name="discussion_id" hidden>
           <input name="reply_username" hidden>
-          <details>
-            <summary>点我查看使用说明</summary>
-            <p class="alert alert-info mb-0">
-              您可以在下面所有的编辑框里使用Latex公式。示例：<br>
-              · 行内公式：\$f(x)=x^2\$（显示效果为<span class="math_formula">\$f(x)=x^2\$</span>）<br>
-              · 单行居中：$$f(x)=x^2$$（显示效果如下）<span class="math_formula">$$f(x)=x^2$$</span><br>
-            </p>
-          </details>
           <div class="form-group mt-2">
-            <textarea id="content" name="content" class="form-control-plaintext border bg-white"></textarea>
+            <x-ckeditor5 name="content" title="备注" />
           </div>
         </div>
 
@@ -66,16 +58,6 @@
       Notiflix.Notify.Failure("五分钟内只允许发起一次讨论！");
     })
   @endif
-
-  // ========================= problem讨论板 ckeditor 编辑框样式 =======================
-  $(function() {
-    ClassicEditor.create(document.querySelector('#content'), ck_config).then(editor => {
-      window.editor = editor;
-      console.log(editor.getData());
-    }).catch(error => {
-      console.log(error);
-    });
-  })
 
   // ======================= 加载discussion ===========================
   let discussion_page = 0;

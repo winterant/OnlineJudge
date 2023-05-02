@@ -167,7 +167,8 @@
                 <span class="text-gary">（保存于@{{ item.created_at }}）</span>
               </div>
             </div>
-            <textarea id="archive-textarea"></textarea>
+
+            <x-ckeditor5 name="archive-textarea"/>
           </div>
 
           <!-- 模态框底部 -->
@@ -183,15 +184,6 @@
   </div>
 
   <script>
-    // archive-textarea
-    $(function() {
-      ClassicEditor.create(document.querySelector('#archive-textarea'), ck_config).then(editor => {
-        window.editor = editor;
-        console.log(editor.getData());
-      }).catch(error => {
-        console.log(error);
-      });
-    })
 
     const {
       createApp
@@ -217,9 +209,9 @@
               this.member = username // 标记当前模态框用户名
               this.cited_archives = ret.cited_archives
               if ('content' in ret)
-                window.editor.setData(ret.content)
+                window['archive-textarea'].setData(ret.content)
               else
-                window.editor.setData('')
+                window['archive-textarea'].setData('')
             },
             error: function(ret) {
               console.log(ret)
@@ -243,7 +235,7 @@
               .replace('??2', this.member),
             dataType: 'json',
             data: {
-              'content': window.editor.getData(),
+              'content': window['archive-textarea'].getData(),
             },
             success: (ret) => {
               console.log(ret)

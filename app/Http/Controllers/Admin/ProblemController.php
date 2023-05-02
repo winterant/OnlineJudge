@@ -194,7 +194,7 @@ class ProblemController extends Controller
         if (isset($_GET['pid'])) {
             if (!DB::table('problems')->where('id', $_GET['pid'])->exists())
                 return view('message', ['msg' => '题目' . $_GET['pid'] . '不存在', 'success' => false, 'is_admin' => true]);
-            foreach (readAllFilesPath(testdata_path($_GET['pid'] . '/test')) as $filepath) {
+            foreach (getAllFilesPath(testdata_path($_GET['pid'] . '/test')) as $filepath) {
                 $name = pathinfo($filepath, PATHINFO_FILENAME);  //文件名
                 $ext = pathinfo($filepath, PATHINFO_EXTENSION);    //拓展名
                 $tests[] = ['index' => $name, 'filename' => $name . '.' . $ext, 'size' => filesize($filepath)];
@@ -482,7 +482,7 @@ class ProblemController extends Controller
             foreach ($solutions as $sol) {
                 $solution = $dom->createElement('solution');
                 $attr = $dom->createAttribute('language');
-                $attr->appendChild($dom->createTextNode(config('oj.judge_lang.' . $sol->language)));
+                $attr->appendChild($dom->createTextNode(config('judge.lang.' . $sol->language)));
                 $solution->appendChild($attr);
                 $solution->appendChild($dom->createCDATASection($sol->code));
                 $item->appendChild($solution);

@@ -10,7 +10,7 @@
       <div class="form-inline mx-3">
         <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
           <option value="10" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 10) selected @endif>10</option>
-          <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 25) selected @endif>25</option>
+          <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
           <option value="50" @if (isset($_GET['perPage']) && $_GET['perPage'] == 50) selected @endif>50</option>
           <option value="100" @if (isset($_GET['perPage']) && $_GET['perPage'] == 100) selected @endif>100</option>
           {{-- <option value="200" @if (isset($_GET['perPage']) && $_GET['perPage'] == 200)selected @endif>200</option> --}}

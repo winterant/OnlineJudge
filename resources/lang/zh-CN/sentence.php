@@ -40,6 +40,7 @@ return [
 //   problem
     "missing_spj"       => "缺少spj.cpp",
     "Choose Language"   => "----选择语言----",
+    "cpp_use_o2"        => "启用O2优化",
     "Input Code"        => "输入你的代码...",
     "submit_frequently" => "提交频繁! 请在 :sec 秒后尝试再次提交！",
     "submit_ce_frequently" => "你在 :dt 提交的代码发生了编译错误,作为惩罚,你在 :sec 秒内无法继续提交代码!",

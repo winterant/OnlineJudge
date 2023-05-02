@@ -60,13 +60,7 @@
 
 
   {{-- ckeditor5 --}}
-  <script type="text/javascript">
-    $(function() {
-      ck_config.ckfinder.uploadUrl = "{{ route('api.ckeditor_files') }}"
-    })
-  </script>
   <script src="{{ asset('static/ckeditor5/build/ckeditor.js?v=220706') }}" defer></script>
-  <script src="{{ asset('static/ckeditor5/config.js?v=220706') }}" defer></script>
 
 
   {{-- 代码编辑器 codemirror  --}}
@@ -85,6 +79,7 @@
   <script src="{{ asset('static/codemirror-5.61.0/mode/cmake/cmake.js') }}" defer></script>
   <script src="{{ asset('static/codemirror-5.61.0/mode/clike/clike.js') }}" defer></script>
   <script src="{{ asset('static/codemirror-5.61.0/mode/python/python.js') }}" defer></script>
+  <script src="{{ asset('static/codemirror-5.61.0/mode/go/go.js') }}" defer></script>
 
 
   {{-- 代码高亮 clien/code_editor.blade.php; client/solution.blade.php --}}
@@ -109,7 +104,8 @@
             inlineMath: [["$", "$"], ["\\$", "\\$"], ["\\(", "\\)"]], //行内公式选择符
             displayMath: [["$$", "$$"], ["\\[", "\\]"]],  //段内公式选择符
             skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a", "tips"], //避开某些标签
-            ignoreClass:"not_math"  // 避开class
+            ignoreClass: "not_math",  // 避开class
+            processEscapes: true      // 将\$解析为单个$（inlineMath中含有\$时失效）
         },
         "HTML-CSS": {
             availableFonts: ["STIX", "TeX"], //可选字体
@@ -152,14 +148,15 @@
   @endif
 
   {{-- 检查微信浏览器，不允许使用微信浏览器 --}}
-  @if (stripos($_SERVER['HTTP_USER_AGENT'], 'wechat') !== false ||
-          (stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') === false &&
-              stripos($_SERVER['HTTP_USER_AGENT'], 'safari') === false))
+  @if (isset($_SERVER['HTTP_USER_AGENT']) &&
+          (stripos($_SERVER['HTTP_USER_AGENT'], 'wechat') !== false ||
+              (stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') === false &&
+                  stripos($_SERVER['HTTP_USER_AGENT'], 'safari') === false)))
     <script type="text/javascript">
       $(function() {
-        Notiflix.Report.Failure('请在浏览器中打开本网站',
-          "您可以将本站网址（{{ $_SERVER['HTTP_HOST'] }}）复制下来，输入到浏览器的地址栏中，按回车即可访问。",
-          '好的')
+        Notiflix.Report.Failure('浏览器不兼容',
+          "请使用Chrome浏览器或Edge浏览器访问本网站 {{ $_SERVER['HTTP_HOST'] ?? '' }}",
+          '知道了')
       })
     </script>
   @endif

@@ -7,37 +7,56 @@
   <h2>竞赛分类管理</h2>
   <hr>
 
-  {{--    新增 --}}
-  <button class="btn bg-info text-white" onclick="$('#form_create_cate').slideToggle()">新建类别</button>
-  <form id="form_create_cate"
-    onsubmit="add_contest_cate('{{ route('api.admin.contest.add_contest_cate') }}', $(this).serializeJSON()); return false"
-    style="max-width: 1000px;display:none">
-    <div class="input-group mb-3">
-      <span style="margin: auto">类别名称：</span>
-      <input type="text" autocomplete="off" name="values[title]" class="form-control" required>
-    </div>
+  <button class="btn bg-info text-white" data-toggle="modal" data-target="#modal-new-cate">新建类别</button>
 
-    <div class="form-inline mb-3">
-      <span>父级类别：</span>
-      <select class="form-control px-3" name="values[parent_id]">
-        <option value="0">--- 作为主类别 ---</option>
-        @foreach ($categories as $item)
-          @if ($item->parent_id == 0)
-            <option value="{{ $item->id }}">{{ $item->title }}</option>
-          @endif
-        @endforeach
-      </select>
-    </div>
-    <div class="form-group">
-      <span>用途描述：</span>
-      <textarea name="values[description]" class="form-control-plaintext border bg-white" autoheight cols="112"
-        style="min-height:5rem"></textarea>
-    </div>
+  {{-- 模态框：新增类别 --}}
+  <div class="modal fade" id="modal-new-cate">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
 
-    <div class="form-group text-center">
-      <button class="btn bg-success text-white">确认</button>
+        <!-- 模态框头部 -->
+        <div class="modal-header">
+          <h4 id="notice-title" class="modal-title">{{ __('main.Notification') }}</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <form
+          onsubmit="add_contest_cate('{{ route('api.admin.contest.add_contest_cate') }}', $(this).serializeJSON()); return false">
+          <!-- 模态框主体 -->
+          <div id="notice-content" class="modal-body ck-content">
+            <div class="input-group mb-3">
+              <span style="margin: auto">类别名称：</span>
+              <input type="text" autocomplete="off" name="values[title]" class="form-control" required>
+            </div>
+
+            <div class="form-inline mb-3">
+              <span>父级类别：</span>
+              <select class="form-control px-3" name="values[parent_id]">
+                <option value="0">--- 作为主类别 ---</option>
+                @foreach ($categories as $item)
+                  @if ($item->parent_id == 0)
+                    <option value="{{ $item->id }}">{{ $item->title }}</option>
+                  @endif
+                @endforeach
+              </select>
+            </div>
+            <div class="form-group">
+              <span>用途描述：</span>
+              <textarea name="values[description]" class="form-control-plaintext border bg-white" autoheight cols="112"
+                style="min-height:5rem"></textarea>
+            </div>
+          </div>
+
+          <!-- 模态框底部 -->
+          <div class="modal-footer p-4">
+            <button type="submit" class="btn btn-success">{{ __('main.Submit') }}</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('main.Cancel') }}</button>
+          </div>
+        </form>
+
+      </div>
     </div>
-  </form>
+  </div>
 
 
   <form action="" method="get" class="pull-right form-inline">
@@ -130,7 +149,7 @@
                 <div class="form-inline">
                   <textarea class="form-control-plaintext border bg-white mr-3"
                     onchange="update_contest_cate('{{ route('api.admin.contest.update_contest_cate', $item->id) }}',{'description':$(this).val()})"
-                    autoheight>{{ $item->description }}</textarea>
+                    autoheight rows="1" style="overflow:hidden">{{ $item->description }}</textarea>
                 </div>
               </td>
               <td nowrap>
@@ -213,11 +232,4 @@
     }
   </script>
 
-  {{-- 页面元素操作 --}}
-  <script type="text/javascript">
-    //初次加载页面，隐藏添加新纪录的表单
-    // $(function() {
-    //   $('#form_create_cate').slideUp();
-    // })
-  </script>
 @endsection
