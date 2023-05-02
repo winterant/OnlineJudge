@@ -189,7 +189,7 @@
                       :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
                   </p>
                   <p class="alert-danger p-2">
-                    请使用本地IDE（如DEV-CPP）运行无误后，再提交代码！
+                    请先使用本地IDE（如DEV-CPP、Codeblocks）运行调试，测试无误后再提交代码！
                   </p>
                   <pre v-show="judge_result.error_info" class="alert-danger p-2 overflow-auto">@{{ judge_result.error_info }}</pre>
                 </div>

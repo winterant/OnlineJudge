@@ -243,8 +243,10 @@ class Judger implements ShouldQueue
                     break;
             }
         }
-        if ($not_ac == 0) // 该solution完全正确，要告诉数据库
-            $this->update_db_solution(['result' => 4, 'pass_rate' => $ac / count($tests), 'time' => $max_time, 'memory' => $max_memory]);
+        if ($ac > 0 && $not_ac == 0) // 该solution完全正确，要告诉数据库
+            $this->update_db_solution(['result' => 4, 'pass_rate' => $ac / ($ac + $not_ac), 'time' => $max_time, 'memory' => $max_memory]);
+        else // 没有测试数据，系统错误
+            $this->update_db_solution(['result' => 14, 'pass_rate' => 0, 'error_info' => 'There is no test data, please contact the administrator to add test data.']);
     }
 
     // 特判
