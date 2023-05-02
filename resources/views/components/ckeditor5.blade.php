@@ -26,6 +26,14 @@
         ckfinder: {
           uploadUrl: "{{ route('api.ckeditor_files') }}"
         },
+        toolbar: {
+          items: ["heading", "bold", "italic", "underline", "horizontalLine", "fontColor", "fontBackgroundColor",
+            "highlight", "|", "alignment", "outdent", "indent", "numberedList", "bulletedList", "todoList", "|",
+            "code", "codeBlock", "link", "blockQuote", "pageBreak", "insertTable", "imageUpload",
+            // "mediaEmbed",
+            "|", "removeFormat", "undo", "redo"
+          ]
+        },
         image: {
           // resizeUnit: 'rem',
           resizeOptions: [{
@@ -60,26 +68,14 @@
             }
           ],
           toolbar: [
-            'imageTextAlternative',
-            'toggleImageCaption',
-            'imageStyle:inline',
-            'imageStyle:block',
-            'imageStyle:side',
-            'resizeImage:original',
-            'resizeImage:S1',
-            'resizeImage:S2',
-            'resizeImage:S3',
-            'resizeImage:L1',
-            'resizeImage:L2',
+            'imageTextAlternative', 'toggleImageCaption', 'imageStyle:inline', 'imageStyle:block',
+            'imageStyle:side', 'resizeImage:original', 'resizeImage:S1', 'resizeImage:S2', 'resizeImage:S3',
+            'resizeImage:L1', 'resizeImage:L2',
           ]
         },
-        // table: {
-        //     contentToolbar: [
-        //         'tableColumn',
-        //         'tableRow',
-        //         'mergeTableCells'
-        //     ]
-        // },
+        table: {
+          contentToolbar: ["tableColumn", "tableRow", "mergeTableCells", "tableCellProperties", "tableProperties"]
+        },
         codeBlock: {
           languages: [{
               language: 'cpp',
@@ -110,13 +106,6 @@
               attributes: {
                 target: '_blank',
                 rel: 'noopener noreferrer'
-              }
-            },
-            isDownloadable: {
-              mode: 'manual',
-              label: 'Downloadable',
-              attributes: {
-                download: 'file.png',
               }
             }
           }

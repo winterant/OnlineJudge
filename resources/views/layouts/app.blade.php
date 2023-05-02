@@ -104,7 +104,8 @@
             inlineMath: [["$", "$"], ["\\$", "\\$"], ["\\(", "\\)"]], //行内公式选择符
             displayMath: [["$$", "$$"], ["\\[", "\\]"]],  //段内公式选择符
             skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a", "tips"], //避开某些标签
-            ignoreClass:"not_math"  // 避开class
+            ignoreClass: "not_math",  // 避开class
+            processEscapes: true      // 将\$解析为单个$（inlineMath中含有\$时失效）
         },
         "HTML-CSS": {
             availableFonts: ["STIX", "TeX"], //可选字体
