@@ -104,34 +104,34 @@
         <form action="" method="get" class="mb-2 float-right form-inline">
           <div class="form-inline mx-2">
             <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
-              <option value="5" @if (isset($_GET['perPage']) && $_GET['perPage'] == 5) selected @endif>5</option>
-              <option value="10" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 10) selected @endif>10</option>
-              <option value="30" @if (isset($_GET['perPage']) && $_GET['perPage'] == 30) selected @endif>30</option>
-              <option value="50" @if (isset($_GET['perPage']) && $_GET['perPage'] == 50) selected @endif>50</option>
-              <option value="100" @if (isset($_GET['perPage']) && $_GET['perPage'] == 100) selected @endif>100</option>
+              <option value="5" @if (request()->has('perPage') && request('perPage') == 5) selected @endif>5</option>
+              <option value="10" @if (!request()->has('perPage') || request('perPage') == 10) selected @endif>10</option>
+              <option value="30" @if (request()->has('perPage') && request('perPage') == 30) selected @endif>30</option>
+              <option value="50" @if (request()->has('perPage') && request('perPage') == 50) selected @endif>50</option>
+              <option value="100" @if (request()->has('perPage') && request('perPage') == 100) selected @endif>100</option>
             </select>
             {{ __('sentence.items per page') }}
           </div>
           <div class="form-inline mx-2">
             <select name="state" class="form-control px-3" onchange="this.form.submit();">
               <option value="">{{ __('main.All') }}</option>
-              <option value="waiting" @if (isset($_GET['state']) && $_GET['state'] == 'waiting') selected @endif>{{ __('main.Waiting') }}
+              <option value="waiting" @if (request()->has('state') && request('state') == 'waiting') selected @endif>{{ __('main.Waiting') }}
               </option>
-              <option value="running" @if (isset($_GET['state']) && $_GET['state'] == 'running') selected @endif> {{ __('main.Running') }}
+              <option value="running" @if (request()->has('state') && request('state') == 'running') selected @endif> {{ __('main.Running') }}
               </option>
-              <option value="ended" @if (isset($_GET['state']) && $_GET['state'] == 'ended') selected @endif>{{ __('main.Ended') }}</option>
+              <option value="ended" @if (request()->has('state') && request('state') == 'ended') selected @endif>{{ __('main.Ended') }}</option>
             </select>
           </div>
           <div class="form-inline mx-2">
             <select name="judge_type" class="form-control px-3" onchange="this.form.submit();">
               <option value="">{{ __('main.All') }}</option>
-              <option value="acm" @if (isset($_GET['judge_type']) && $_GET['judge_type'] == 'acm') selected @endif>{{ __('main.ACM') }}</option>
-              <option value="oi" @if (isset($_GET['judge_type']) && $_GET['judge_type'] == 'oi') selected @endif>{{ __('main.OI') }}</option>
+              <option value="acm" @if (request()->has('judge_type') && request('judge_type') == 'acm') selected @endif>{{ __('main.ACM') }}</option>
+              <option value="oi" @if (request()->has('judge_type') && request('judge_type') == 'oi') selected @endif>{{ __('main.OI') }}</option>
             </select>
           </div>
           <div class="form-inline mx-2">
             <input type="text" class="form-control text-center" placeholder="{{ __('main.Title') }}" name="title"
-              value="{{ $_GET['title'] ?? '' }}">
+              value="{{ request('title') ?? '' }}">
           </div>
           <button class="btn text-white bg-success ml-2">
             <i class="fa fa-filter" aria-hidden="true"></i>

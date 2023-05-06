@@ -15,7 +15,7 @@ class GroupController extends Controller
         $groups = DB::table('groups as g')
             ->select('g.*', 'u.username as creator')
             ->leftJoin('users as u', 'u.id', '=', 'g.creator');
-        if (Auth::check() && ($_GET['mygroups'] ?? false)) {
+        if (Auth::check() && (request('mygroups') ?? false)) {
             // 仅查看我加入的群组（含隐藏的）
             $groups = $groups->join('group_users as gu', function ($q) {
                 $q->on('gu.group_id', '=', 'g.id')
@@ -36,17 +36,17 @@ class GroupController extends Controller
             }
         }
         // 其它筛选条件，以及排序、分页
-        $groups = $groups->when($_GET['kw'] ?? false, function ($q) {
+        $groups = $groups->when(request('kw') ?? false, function ($q) {
             $q->where(function ($q) { // sql加括号
-                $q->where('g.name', 'like', '%' . $_GET['kw'] . '%')
-                    ->orWhere('g.teacher', 'like', '%' . $_GET['kw'] . '%')
-                    ->orWhere('g.class', 'like', '%' . $_GET['kw'] . '%');
+                $q->where('g.name', 'like', '%' . request('kw') . '%')
+                    ->orWhere('g.teacher', 'like', '%' . request('kw') . '%')
+                    ->orWhere('g.class', 'like', '%' . request('kw') . '%');
             });
         })->orderByDesc('id')
-            ->paginate($_GET['perpage'] ?? 12);
+            ->paginate(request('perpage') ?? 12);
 
         // 查看全部群组时，要查出身份
-        if (!isset($_GET['mygroups'])) {
+        if (!request()->has('mygroups')) {
             foreach ($groups as &$g) {
                 $g->user_in_group = DB::table('group_users')
                     ->where('user_id', Auth::id())
@@ -71,7 +71,7 @@ class GroupController extends Controller
             ])
             ->where('gc.group_id', $group->id)
             ->orderBy('gc.order', $group->type == 0 ? 'asc' : 'desc') // 课程正序，竞赛列表基本不变；班级逆序，竞赛持续添加
-            ->paginate($group->type == 0 ? 100 : ($_GET['perPage'] ?? 20)); // 课程显示100项，班级现实20项
+            ->paginate($group->type == 0 ? 100 : (request('perPage') ?? 20)); // 课程显示100项，班级现实20项
         return view('group.group', compact('group', 'contests'));
     }
 
@@ -87,17 +87,17 @@ class GroupController extends Controller
         $group = DB::table('groups as g')->find($group_id);
 
         // $identities = [0 => '已退出', 1 => '申请加入', 2 => '学生', 3 => '班长', 4 => '管理员'];
-        if (!isset($_GET['identity']))
+        if (!request()->has('identity'))
             $_GET['identity'] = '2,3,4'; // 以逗号分隔的数字,身份代号
 
         $members = DB::table('group_users as gu')
             ->join('users as u', 'u.id', '=', 'gu.user_id')
             ->select(['u.username', 'u.nick', 'u.school', 'u.class', 'u.id as user_id', 'gu.id', 'gu.identity', 'gu.created_at'])
             ->where('gu.group_id', $group_id)
-            ->when(isset($_GET['username']) && $_GET['username'] != '', function ($q) {
-                return $q->where('u.username', 'like', '%' . $_GET['username'] . '%');
+            ->when(request()->has('username') && request('username') != '', function ($q) {
+                return $q->where('u.username', 'like', '%' . request('username') . '%');
             })
-            ->whereIn('identity', explode(',', $_GET['identity']))
+            ->whereIn('identity', explode(',', request('identity')))
             ->orderByDesc('gu.identity')
             ->orderBy('u.username')
             ->paginate();
@@ -127,7 +127,7 @@ class GroupController extends Controller
                 'c.num_members'
             ])
             ->orderBy('gc.order', $group->type == 0 ? 'asc' : 'desc')
-            ->paginate($_GET['perPage'] ?? 15);
+            ->paginate(request('perPage') ?? 15);
         return view('group.member', compact('group', 'user', 'contests'));
     }
 }

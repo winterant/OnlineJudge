@@ -21,15 +21,15 @@
                 {{ __('main.Identity') }}:
                 <select name="identity" class="form-control px-2" onchange="this.form.submit();">
                   <option value="2,3,4">正式成员</option>
-                  <option value="2,3" @if (($_GET['identity'] ?? -1) == '2,3') selected @endif>仅学生</option>
-                  <option value="4" @if (($_GET['identity'] ?? -1) == 4) selected @endif>仅管理员</option>
-                  <option value="1" @if (($_GET['identity'] ?? -1) == 1) selected @endif>申请中</option>
-                  <option value="0" @if (($_GET['identity'] ?? -1) == 0) selected @endif>已禁用/已退出</option>
+                  <option value="2,3" @if ((request('identity') ?? -1) == '2,3') selected @endif>仅学生</option>
+                  <option value="4" @if ((request('identity') ?? -1) == 4) selected @endif>仅管理员</option>
+                  <option value="1" @if ((request('identity') ?? -1) == 1) selected @endif>申请中</option>
+                  <option value="0" @if ((request('identity') ?? -1) == 0) selected @endif>已禁用/已退出</option>
                 </select>
               </div>
               <div class="form-inline mx-3">
                 <input type="text" class="form-control text-center" placeholder="{{ __('main.Username') }}"
-                  onchange="this.form.submit();" name="username" value="{{ $_GET['username'] ?? '' }}">
+                  onchange="this.form.submit();" name="username" value="{{ request('username') ?? '' }}">
               </div>
               <button class="btn border">{{ __('main.Find') }}</button>
             </form>
@@ -62,7 +62,7 @@
                             style="width:auto; padding:0 1%;text-align:center;text-align-last:center;border-radius: 0.2rem;min-width:6rem">
                             <option disabled>修改成员身份</option>
                             @php($mod_ident = [2 => '学生', /* 3 => '学生班长', */ 4 => '管理员'])
-                            @if (isset($_GET['identity']) && $_GET['identity'] == 0)
+                            @if (request()->has('identity') && request('identity') == 0)
                               <option>已被禁用</option>
                             @endif
                             @foreach ($mod_ident as $k => $i)
@@ -83,7 +83,7 @@
                         <a href="javascript:" class="ml-3" data-target="#archive-modal" data-toggle="modal"
                           v-on:click="query_archive('{{ $group->id }}','{{ $u->username }}')">查看档案</a>
 
-                        @if (isset($_GET['identity']) && $_GET['identity'] == 0)
+                        @if (request()->has('identity') && request('identity') == 0)
                           <a class="ml-3" href="javascript:"
                             onclick="update_members_identity([{{ $u->user_id }}], 2,this.parentNode.parentNode)">恢复学生</a>
                         @else

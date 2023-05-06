@@ -20,14 +20,14 @@ class UserController extends Controller
             'solved', 'accepted', 'submitted',
             'revise', 'locked', 'created_at'
         ])
-            ->when(isset($_GET['kw']) && $_GET['kw'], function ($q) {
-                return $q->where('username', 'like', '%' . $_GET['kw'] . '%')
-                    ->orWhere('email', 'like', '%' . $_GET['kw'] . '%')
-                    ->orWhere('nick', 'like', '%' . $_GET['kw'] . '%')
-                    ->orWhere('school', 'like', '%' . $_GET['kw'] . '%')
-                    ->orWhere('class', 'like', '%' . $_GET['kw'] . '%');
+            ->when(request()->has('kw') && request('kw'), function ($q) {
+                return $q->where('username', 'like', '%' . request('kw') . '%')
+                    ->orWhere('email', 'like', '%' . request('kw') . '%')
+                    ->orWhere('nick', 'like', '%' . request('kw') . '%')
+                    ->orWhere('school', 'like', '%' . request('kw') . '%')
+                    ->orWhere('class', 'like', '%' . request('kw') . '%');
             })
-            ->orderBy('id')->paginate($_GET['perPage'] ?? 10);
+            ->orderBy('id')->paginate(request('perPage') ?? 10);
 
         return view('admin.user.list', compact('users'));
     }
@@ -85,8 +85,8 @@ class UserController extends Controller
     // 用户角色管理页面
     public function roles()
     {
-        if (isset($_GET['kw']) && $_GET['kw'] != '')
-            $roles = Role::where('name', 'like', '%' . $_GET['kw'] . '%')->get();
+        if (request()->has('kw') && request('kw') != '')
+            $roles = Role::where('name', 'like', '%' . request('kw') . '%')->get();
         else
             $roles = Role::all();
         $role_users = [];

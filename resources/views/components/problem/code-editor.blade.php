@@ -3,8 +3,8 @@
     <form id="code_form" class="mb-0">
 
       {{-- 若在群组中，url中保留群组编号 --}}
-      @if (isset($_GET['group']))
-        <input name="group" value="{{ $_GET['group'] }}" hidden>
+      @if (request()->has('group'))
+        <input name="group" value="{{ request('group') }}" hidden>
       @endif
 
       {{-- 题目编号 --}}

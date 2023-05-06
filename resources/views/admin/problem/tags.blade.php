@@ -10,24 +10,24 @@
         <div class="form-inline mx-3">
             每页
             <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
-                <option value="10" @if(isset($_GET['perPage'])&&$_GET['perPage']==10)selected @endif>10</option>
-                <option value="20" @if(!isset($_GET['perPage'])||$_GET['perPage']==20)selected @endif>20</option>
-                <option value="50" @if(isset($_GET['perPage'])&&$_GET['perPage']==50)selected @endif>50</option>
-                <option value="100" @if(isset($_GET['perPage'])&&$_GET['perPage']==100)selected @endif>100</option>
+                <option value="10" @if(request()->has('perPage')&&request('perPage')==10)selected @endif>10</option>
+                <option value="20" @if(!request()->has('perPage')||request('perPage')==20)selected @endif>20</option>
+                <option value="50" @if(request()->has('perPage')&&request('perPage')==50)selected @endif>50</option>
+                <option value="100" @if(request()->has('perPage')&&request('perPage')==100)selected @endif>100</option>
             </select>
             项
         </div>
         <div class="form-inline mx-3">
             <input type="number" class="form-control text-center" placeholder="题目编号"
-                   name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:''}}">
+                   name="pid" value="{{request()->has('pid')?request('pid'):''}}">
         </div>
         <div class="form-inline mx-3">
             <input type="text" class="form-control text-center" placeholder="提交人用户名"
-                   name="username" value="{{isset($_GET['username'])?$_GET['username']:''}}">
+                   name="username" value="{{request()->has('username')?request('username'):''}}">
         </div>
         <div class="form-inline mx-3">
             <input type="text" class="form-control text-center" placeholder="标签名"
-                   name="tag_name" value="{{isset($_GET['tag_name'])?$_GET['tag_name']:''}}">
+                   name="tag_name" value="{{request()->has('tag_name')?request('tag_name'):''}}">
         </div>
         <button class="btn border">查询</button>
     </form>

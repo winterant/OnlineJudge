@@ -9,7 +9,7 @@
 
       <div class="col-12 col-sm-12">
         {{-- 菜单 --}}
-        <x-contest.navbar :contest="$contest" :group-id="$_GET['group'] ?? null" />
+        <x-contest.navbar :contest="$contest" :group-id="request('group') ?? null" />
       </div>
 
       <div class="col-sm-12 col-12">

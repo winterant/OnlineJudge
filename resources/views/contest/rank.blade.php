@@ -16,7 +16,7 @@
     <div class="row">
       {{-- 菜单 --}}
       <div class="col-sm-12 col-12">
-        <x-contest.navbar :contest="$contest" :group-id="$_GET['group'] ?? null" />
+        <x-contest.navbar :contest="$contest" :group-id="request('group') ?? null" />
       </div>
     </div>
   </div>
@@ -31,13 +31,13 @@
 
           <form id="form_rank" action="" method="get">
 
-            @if (isset($_GET['group']))
-              <input name="group" value="{{ $_GET['group'] }}" hidden>
+            @if (request()->has('group'))
+              <input name="group" value="{{ request('group') }}" hidden>
             @endif
 
             {{-- 提交记录折线图 --}}
             <div>
-              <x-solution.line-chart :contest-id="$contest->id" :default-past="$_GET['past'] ?? '300i'" :end-time="strtotime($rank_time[$_GET['end'] ?? 'real_time']['date'])" />
+              <x-solution.line-chart :contest-id="$contest->id" :default-past="request('past') ?? '300i'" :end-time="strtotime($rank_time[request('end') ?? 'real_time']['date'])" />
             </div>
 
             <div class="float-left">
@@ -50,7 +50,7 @@
               @if ($rank_time['locked_time']['show'] ?? false)
                 <div class="custom-control custom-radio mx-3">
                   <input type="radio" name="end" value="locked_time" class="custom-control-input" id="locked_time"
-                    onchange="this.form.submit()" @if (($_GET['end'] ?? null) == 'locked_time') checked @endif
+                    onchange="this.form.submit()" @if ((request('end') ?? null) == 'locked_time') checked @endif
                     @if ($rank_time['locked_time']['able'] === false) disabled @endif>
                   <label class="custom-control-label pt-1"
                     for="locked_time">封榜({{ $rank_time['locked_time']['date'] }})</label>
@@ -59,7 +59,7 @@
               @if ($rank_time['final_time']['show'] ?? false)
                 <div class="custom-control custom-radio mx-3">
                   <input type="radio" name="end" value="final_time" class="custom-control-input" id="final_time"
-                    onchange="this.form.submit()" @if (($_GET['end'] ?? null) == 'final_time') checked @endif
+                    onchange="this.form.submit()" @if ((request('end') ?? null) == 'final_time') checked @endif
                     @if ($rank_time['final_time']['able'] === false) disabled @endif>
                   <label class="custom-control-label pt-1"
                     for="final_time">终榜({{ $rank_time['final_time']['date'] }})</label>
@@ -67,7 +67,7 @@
               @endif
               <div class="custom-control custom-radio mx-3">
                 <input type="radio" name="end" value="real_time" class="custom-control-input" id="real_time"
-                  onchange="this.form.submit()" @if (($_GET['end'] ?? null) == 'real_time') checked @endif
+                  onchange="this.form.submit()" @if ((request('end') ?? null) == 'real_time') checked @endif
                   @if ($rank_time['real_time']['able'] === false) disabled @endif>
                 <label class="custom-control-label pt-1" for="real_time">现在({{ $rank_time['real_time']['date'] }})</label>
               </div>
@@ -82,27 +82,27 @@
                     <th width="5%"><input type="text" class="form-control"
                         placeholder="{{ trans('main.Username') }}" style="height: auto;font-size: 0.9rem"
                         onchange="this.form.submit()" name="username"
-                        value="{{ isset($_GET['username']) ? $_GET['username'] : '' }}">
+                        value="{{ request()->has('username') ? request('username') : '' }}">
                     </th>
                     @if (get_setting('rank_show_school'))
                       <th width="5%">
                         <input type="text" class="form-control" placeholder="{{ trans('main.School') }}"
                           style="height: auto;font-size: 0.9rem" onchange="this.form.submit()" name="school"
-                          value="{{ isset($_GET['school']) ? $_GET['school'] : '' }}">
+                          value="{{ request()->has('school') ? request('school') : '' }}">
                       </th>
                     @endif
                     @if (get_setting('rank_show_class'))
                       <th width="5%">
                         <input type="text" class="form-control" placeholder="{{ trans('main.Class') }}"
                           style="height: auto;font-size: 0.9rem" onchange="this.form.submit()" name="class"
-                          value="{{ isset($_GET['class']) ? $_GET['class'] : '' }}">
+                          value="{{ request()->has('class') ? request('class') : '' }}">
                       </th>
                     @endif
                     @if (get_setting('rank_show_nick'))
                       <th width="5%">
                         <input type="text" class="form-control" placeholder="{{ trans('main.Name') }}"
                           style="height: auto;font-size: 0.9rem" onchange="this.form.submit()" name="nick"
-                          value="{{ isset($_GET['nick']) ? $_GET['nick'] : '' }}">
+                          value="{{ request()->has('nick') ? request('nick') : '' }}">
                       </th>
                     @endif
                     <th width="5%">
@@ -110,7 +110,7 @@
                     <th width="5%">{{ trans('main.Penalty') }}</th>
                     @foreach ($problems as $pid => $index)
                       <th><a
-                          href="{{ route('contest.problem', [$contest->id, $index, 'group' => $_GET['group'] ?? null]) }}">{{ index2ch($index) }}</a>
+                          href="{{ route('contest.problem', [$contest->id, $index, 'group' => request('group') ?? null]) }}">{{ index2ch($index) }}</a>
                       </th>
                     @endforeach
                   </tr>

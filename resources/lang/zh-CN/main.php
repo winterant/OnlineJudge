@@ -102,6 +102,7 @@ return [
     "Attempting"    => "正在尝试",
 
     //problem
+    "Problem ID"    => "问题编号",
     "Title"         => "标题",
     "PDescription"  => "题目描述",
     "IDescription"  => "输入描述",

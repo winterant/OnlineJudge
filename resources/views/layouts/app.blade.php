@@ -139,7 +139,7 @@
   @endif
 
   {{-- 判断如果是从404重定向过来的，则显示提示窗口，并跳转到网站主页 --}}
-  @if (($_GET['http_error'] ?? 0) == 404)
+  @if ((request('http_error') ?? 0) == 404)
     <script type="text/javascript">
       $(function() {
         Notiflix.Report.Failure('404', '您访问的页面不存在，可能相应的资源已被删除或者迁移，已为您跳转到首页。', '好的')

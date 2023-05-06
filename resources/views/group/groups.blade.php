@@ -37,24 +37,24 @@
           @auth
             <div class="custom-control custom-checkbox mx-2">
               <input type="checkbox" name="mygroups" class="custom-control-input" id="mygroups"
-                @if ($_GET['mygroups'] ?? false) checked @endif onchange="this.form.submit()">
+                @if (request('mygroups') ?? false) checked @endif onchange="this.form.submit()">
               <label class="custom-control-label pt-1" for="mygroups">{{ __('main.My Groups') }}</label>
             </div>
           @endauth
 
           <div class="form-inline mx-2">
             <select name="perpage" class="form-control px-2" onchange="this.form.submit();">
-              <option value="6" @if (isset($_GET['perpage']) && $_GET['perpage'] == 6) selected @endif>6</option>
-              <option value="12" @if (!isset($_GET['perpage']) || $_GET['perpage'] == 12) selected @endif>12</option>
-              <option value="24" @if (isset($_GET['perpage']) && $_GET['perpage'] == 24) selected @endif>24</option>
-              <option value="120" @if (isset($_GET['perpage']) && $_GET['perpage'] == 120) selected @endif>120</option>
+              <option value="6" @if (request()->has('perpage') && request('perpage') == 6) selected @endif>6</option>
+              <option value="12" @if (!request()->has('perpage') || request('perpage') == 12) selected @endif>12</option>
+              <option value="24" @if (request()->has('perpage') && request('perpage') == 24) selected @endif>24</option>
+              <option value="120" @if (request()->has('perpage') && request('perpage') == 120) selected @endif>120</option>
             </select>
             {{ __('sentence.items per page') }}
           </div>
           <div class="form-inline mx-2">
             <input type="text" class="form-control text-center"
               placeholder="{{ __('main.Name') }}/{{ __('main.Class') }}" onchange="this.form.submit();" name="kw"
-              value="{{ $_GET['kw'] ?? '' }}">
+              value="{{ request('kw') ?? '' }}">
           </div>
           <button class="btn text-white bg-success ml-2">
             <i class="fa fa-filter" aria-hidden="true"></i>

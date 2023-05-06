@@ -133,7 +133,7 @@ class SolutionController extends Controller
             return ['ok' => 0, 'msg' => '提交记录不存在'];
 
         // 读取 所有测试数据的详细结果
-        $judge_result = json_decode($solution->judge0result, true);
+        $judge_result = json_decode($solution->judge_result, true);
         foreach ($judge_result ?? [] as $k => &$test) {
             $judge_result[$k]['result_desc'] = trans('result.' . config("judge.result." . $test['result'] ?? 0));
         }
@@ -211,7 +211,7 @@ class SolutionController extends Controller
         return [
             'ok' => 1,
             'msg' => '运行完成',
-            'data' => ['judge0result' => $judge_response[1]]
+            'data' => ['judge_result' => $judge_response[1]]
         ];
     }
 

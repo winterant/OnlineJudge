@@ -18,25 +18,25 @@
         <form action="" method="get" class="float-right form-inline">
           <div class="form-inline mx-2">
             <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
-              <option value="10" @if (isset($_GET['perPage']) && $_GET['perPage'] == 10) selected @endif>10</option>
-              <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
-              <option value="50" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 50) selected @endif>50</option>
-              <option value="100" @if (isset($_GET['perPage']) && $_GET['perPage'] == 100) selected @endif>100</option>
-              <option value="200" @if (isset($_GET['perPage']) && $_GET['perPage'] == 500) selected @endif>200</option>
+              <option value="10" @if (request()->has('perPage') && request('perPage') == 10) selected @endif>10</option>
+              <option value="20" @if (request()->has('perPage') && request('perPage') == 20) selected @endif>20</option>
+              <option value="50" @if (!request()->has('perPage') || request('perPage') == 50) selected @endif>50</option>
+              <option value="100" @if (request()->has('perPage') && request('perPage') == 100) selected @endif>100</option>
+              <option value="200" @if (request()->has('perPage') && request('perPage') == 500) selected @endif>200</option>
             </select>
             {{ __('sentence.items per page') }}
           </div>
           <div class="form-inline mx-2">
             <input type="text" class="form-control text-center"
               placeholder="{{ __('main.Username') }}/{{ __('main.Name') }}/{{ __('main.School') }}/{{ __('main.Class') }}"
-              name="kw" value="{{ isset($_GET['kw']) ? $_GET['kw'] : '' }}">
+              name="kw" value="{{ request()->has('kw') ? request('kw') : '' }}">
           </div>
 
           {{--
                     <div class="form-inline mx-1">
                         <input type="datetime-local" name="start_time"
-                            @if (isset($_GET['start_time']))
-                                value="{{urldecode($_GET['start_time'])}}"
+                            @if (request()->has('start_time'))
+                                value="{{urldecode(request('start_time'))}}"
                             @endif
                             class="form-control">
                         <span class="mx-2">-</span>
@@ -67,7 +67,7 @@
           <tbody>
             @foreach ($users as $i => $item)
               <tr>
-                <td>{{ isset($_GET['page']) ? ($_GET['page'] - 1) * $users->perPage() + $i + 1 : $i + 1 }}</td>
+                <td>{{ request()->has('page') ? (request('page') - 1) * $users->perPage() + $i + 1 : $i + 1 }}</td>
                 <td nowrap><a href="{{ route('user', $item->username) }}" target="_blank">{{ $item->username }}</a></td>
                 <td nowrap>{{ $item->nick }}</td>
                 <td nowrap>{{ $item->solved }} / {{ $item->submitted }}</td>

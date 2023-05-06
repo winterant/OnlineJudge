@@ -118,23 +118,23 @@ class UserController extends Controller
     public function standings()
     {
         // todo
-        $timediff = isset($_GET['range']) && $_GET['range'] != '0'
-            ? sprintf(' and TIMESTAMPDIFF(%s,submit_time,now())=0', $_GET['range']) : '';
+        $timediff = request()->has('range') && request('range') != '0'
+            ? sprintf(' and TIMESTAMPDIFF(%s,submit_time,now())=0', request('range')) : '';
 
         $users = DB::table('users')->select([
             'username', 'nick', 'solved', 'accepted', 'submitted'
         ])
-            ->when($_GET['kw'] ?? false, function ($q) {
+            ->when(request('kw') ?? false, function ($q) {
                 $q->where(function ($q) {
-                    $q->where('username', 'like', '%' . $_GET['kw'] . '%')
-                        ->orWhere('nick', 'like', '%' . $_GET['kw'] . '%')
-                        ->orWhere('school', 'like', '%' . $_GET['kw'] . '%')
-                        ->orWhere('class', 'like', '%' . $_GET['kw'] . '%');
+                    $q->where('username', 'like', '%' . request('kw') . '%')
+                        ->orWhere('nick', 'like', '%' . request('kw') . '%')
+                        ->orWhere('school', 'like', '%' . request('kw') . '%')
+                        ->orWhere('class', 'like', '%' . request('kw') . '%');
                 });
             })
             ->orderByDesc('solved')
             ->orderBy('submitted')
-            ->paginate($_GET['perPage'] ?? 50);
+            ->paginate(request('perPage') ?? 50);
 
         // 对访客隐藏用户信息
         if (!Auth::check() && !get_setting('display_complete_standings')) {

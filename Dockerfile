@@ -46,8 +46,8 @@ RUN cd /app_src &&\
     sed -i "/^;extension=gettext.*/i extension=curl"  /etc/php/8.1/fpm/php.ini &&\
     sed -i "/^;extension=gettext.*/i extension=zip"   /etc/php/8.1/fpm/php.ini &&\
     sed -i "/^;extension=gettext.*/i extension=redis" /etc/php/8.1/fpm/php.ini &&\
-    sed -i "s/^.\?post_max_size\s\?=.*$/post_max_size=128M/" /etc/php/8.1/fpm/php.ini &&\
-    sed -i "s/^.\?upload_max_filesize\s\?=.*$/upload_max_filesize=128M/" /etc/php/8.1/fpm/php.ini &&\
+    sed -i "s/^.\?post_max_size\s\?=.*$/post_max_size=4096M/" /etc/php/8.1/fpm/php.ini &&\
+    sed -i "s/^.\?upload_max_filesize\s\?=.*$/upload_max_filesize=4096M/" /etc/php/8.1/fpm/php.ini &&\
     # php-fpm.conf
     sed -i "s/^.\?error_log\s\?=.*$/error_log=\/app\/storage\/logs\/php-fpm.log/" /etc/php/8.1/fpm/php-fpm.conf &&\
     # php-fpm/pool.d/www.conf

@@ -99,7 +99,7 @@ class UserController extends Controller
     // 管理员下载批量生成的用户列表csv文件
     public function download_created_users_csv(Request $request)
     {
-        return Storage::download('temp/created_users/' . $_GET['filename']);
+        return Storage::download('temp/created_users/' . request('filename'));
     }
 
     // 批量删除用户
@@ -197,7 +197,7 @@ class UserController extends Controller
     {
         $role = Role::find($role_id);
         $ret = [];
-        if ($_GET['bool'] ?? false) {
+        if (request('bool') ?? false) {
             foreach (config('init.permissions') as $p => $desc)
                 $ret[$p] = ($role->hasPermissionTo($p));
         } else {

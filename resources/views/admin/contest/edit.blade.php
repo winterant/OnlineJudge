@@ -187,8 +187,8 @@
         <div class="form-group">
           <div class="pull-left">题号列表：</div>
           <label>
-            @if (isset($_GET['pids']))
-              {{ null, $pids[] = $_GET['pids'] }}
+            @if (request()->has('pids'))
+              {{ null, $pids[] = request('pids') }}
             @endif
             <textarea name="problems" class="form-control-plaintext border bg-white" autoHeight cols="26"
               placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间">

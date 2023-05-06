@@ -26,8 +26,8 @@ class CodeEditor extends Component
         $this->num_samples = $numSamples;
 
         // 用户可能请求了已提交的代码
-        if (isset($_GET['solution']) && Auth::check()) {
-            $solution = DB::table('solutions')->select(['code', 'user_id'])->find($_GET['solution']);
+        if (request()->has('solution') && Auth::check()) {
+            $solution = DB::table('solutions')->select(['code', 'user_id'])->find(request('solution'));
             /** @var \App\Models\User */
             $user = Auth::user();
             if ($solution->user_id == Auth::id() || $user->can('admin.solution.view'))

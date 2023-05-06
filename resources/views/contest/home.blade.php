@@ -9,7 +9,7 @@
     <div class="row">
       <div class="col-12 col-sm-12">
         {{-- 导航栏 --}}
-        <x-contest.navbar :contest="$contest" :group-id="$_GET['group'] ?? null" />
+        <x-contest.navbar :contest="$contest" :group-id="request('group') ?? null" />
       </div>
       <div class="col-lg-9 col-md-8 col-sm-12 col-12">
 
@@ -146,7 +146,7 @@
                         @endif
                         @if (Auth::user()->can('admin.contest.view') || time() > strtotime($contest->start_time))
                           <a
-                            href="{{ route('contest.problem', [$contest->id, $item->index, 'group' => $_GET['group'] ?? null]) }}">{{ $item->title }}</a>
+                            href="{{ route('contest.problem', [$contest->id, $item->index, 'group' => request('group') ?? null]) }}">{{ $item->title }}</a>
                         @else
                           -
                         @endif
@@ -256,7 +256,7 @@
           <div class="my-container bg-white table-responsive text-center">
             <span>{{ __('sentence.contest require pwd') }}</span>
             <hr>
-            <form action="{{ route('contest.password', [$contest->id, 'group' => $_GET['group'] ?? null]) }}"
+            <form action="{{ route('contest.password', [$contest->id, 'group' => request('group') ?? null]) }}"
               method="post" class="" style="margin: auto">
               @csrf
               <div class="input-group mb-3" style="margin: auto">

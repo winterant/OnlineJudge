@@ -11,10 +11,10 @@
       每页
       <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
         <option value="10">10</option>
-        <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
-        <option value="30" @if (isset($_GET['perPage']) && $_GET['perPage'] == 30) selected @endif>30</option>
-        <option value="50" @if (isset($_GET['perPage']) && $_GET['perPage'] == 50) selected @endif>50</option>
-        <option value="100" @if (isset($_GET['perPage']) && $_GET['perPage'] == 100) selected @endif>100</option>
+        <option value="20" @if (request()->has('perPage') && request('perPage') == 20) selected @endif>20</option>
+        <option value="30" @if (request()->has('perPage') && request('perPage') == 30) selected @endif>30</option>
+        <option value="50" @if (request()->has('perPage') && request('perPage') == 50) selected @endif>50</option>
+        <option value="100" @if (request()->has('perPage') && request('perPage') == 100) selected @endif>100</option>
       </select>
       项
     </div>
@@ -23,9 +23,9 @@
       <select name="cate_id" class="form-control px-3" onchange="this.form.submit();"
         style="width:auto;padding:0 1%;text-align:center;text-align-last:center;">
         <option value="">所有类别</option>
-        <option value="0" @if (isset($_GET['cate_id']) && $_GET['cate_id'] === '0') selected @endif>--- 未分类 ---</option>
+        <option value="0" @if (request()->has('cate_id') && request('cate_id') === '0') selected @endif>--- 未分类 ---</option>
         @foreach ($categories as $cate)
-          <option value="{{ $cate->id }}" @if (isset($_GET['cate_id']) && $_GET['cate_id'] == $cate->id) selected @endif>
+          <option value="{{ $cate->id }}" @if (request()->has('cate_id') && request('cate_id') == $cate->id) selected @endif>
             @if ($cate->is_parent)
               --- [{{ $cate->title }}] ---
             @else
@@ -39,21 +39,21 @@
     <div class="form-inline mx-3">
       <select name="state" class="form-control px-3" onchange="this.form.submit();">
         <option value="all">所有进行阶段</option>
-        <option value="waiting" @if (isset($_GET['state']) && $_GET['state'] == 'waiting') selected @endif>尚未开始</option>
-        <option value="running" @if (isset($_GET['state']) && $_GET['state'] == 'running') selected @endif>正在进行中</option>
-        <option value="ended" @if (isset($_GET['state']) && $_GET['state'] == 'ended') selected @endif>已结束</option>
+        <option value="waiting" @if (request()->has('state') && request('state') == 'waiting') selected @endif>尚未开始</option>
+        <option value="running" @if (request()->has('state') && request('state') == 'running') selected @endif>正在进行中</option>
+        <option value="ended" @if (request()->has('state') && request('state') == 'ended') selected @endif>已结束</option>
       </select>
     </div>
     <div class="form-inline mx-3">
       <select name="judge_type" class="form-control px-3" onchange="this.form.submit();">
         <option value="">所有规则</option>
-        <option value="acm" @if (isset($_GET['judge_type']) && $_GET['judge_type'] == 'acm') selected @endif>ACM</option>
-        <option value="oi" @if (isset($_GET['judge_type']) && $_GET['judge_type'] == 'oi') selected @endif>OI</option>
+        <option value="acm" @if (request()->has('judge_type') && request('judge_type') == 'acm') selected @endif>ACM</option>
+        <option value="oi" @if (request()->has('judge_type') && request('judge_type') == 'oi') selected @endif>OI</option>
       </select>
     </div>
     <div class="form-inline mx-3">
       <input type="text" class="form-control text-center" placeholder="标题" onchange="this.form.submit();"
-        name="title" value="{{ $_GET['title'] ?? '' }}">
+        name="title" value="{{ request('title') ?? '' }}">
     </div>
     <button class="btn border">查找</button>
   </form>
@@ -83,7 +83,7 @@
         <tr>
           <th></th>
           <th>编号</th>
-          @if (isset($_GET['cate_id']) && $_GET['cate_id'] !== '')
+          @if (request()->has('cate_id') && request('cate_id') !== '')
             <th>顺序
               <a href="javascript:" style="color: #838383"
                 onclick="whatisthis('当您浏览某具体类别的竞赛时，您可以移动竞赛的位置以改变顺序。<br>后台与前台将保持同步顺序，唯一的区别是前台不向普通用户展示隐藏的竞赛。')">
@@ -128,7 +128,7 @@
                 style="vertical-align:middle;zoom: 140%">
             </td>
             <td>{{ $item->id }}</td>
-            @if (isset($_GET['cate_id']) && $_GET['cate_id'] !== '')
+            @if (request()->has('cate_id') && request('cate_id') !== '')
               <td nowrap>
                 <select onchange="update_contest_order($(this).val())"
                   style="width:auto;padding:0 1%;text-align:center;text-align-last:center;border-radius: 2px;">

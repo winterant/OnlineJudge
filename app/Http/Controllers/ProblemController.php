@@ -14,9 +14,9 @@ class ProblemController extends Controller
     public function problems()
     {
         $problems = DB::table('problems');
-        if (isset($_GET['tag_id']) && $_GET['tag_id'] != '')
+        if (request()->has('tag_id') && request('tag_id') != '')
             $problems = $problems->join('tag_marks', 'problem_id', '=', 'problems.id')
-                ->where('tag_id', $_GET['tag_id']);
+                ->where('tag_id', request('tag_id'));
         $problems = $problems->select(
             'problems.id',
             'title',
@@ -26,19 +26,19 @@ class ProblemController extends Controller
             'accepted',
             'submitted'
         )
-            ->when(!isset($_GET['show_hidden']), function ($q) {
+            ->when(!request()->has('show_hidden'), function ($q) {
                 return $q->where('hidden', 0);
             })
-            ->when(isset($_GET['kw']) && $_GET['kw'] != '', function ($q) {
+            ->when(request()->has('kw') && request('kw') != '', function ($q) {
                 $q->where(function ($q) {
-                    $q->where('title', 'like', '%' . $_GET['kw'] . '%')
-                        ->orWhere('source', 'like', '%' . $_GET['kw'] . '%')
-                        ->orWhere('problems.id', $_GET['kw']);
+                    $q->where('title', 'like', '%' . request('kw') . '%')
+                        ->orWhere('source', 'like', '%' . request('kw') . '%')
+                        ->orWhere('problems.id', request('kw'));
                 });
             })
             ->orderBy('problems.id')
             ->distinct()
-            ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 100);
+            ->paginate(request()->has('perPage') ? request('perPage') : 100);
 
         // 获取题目标签
         foreach ($problems as &$problem) {
@@ -87,7 +87,7 @@ class ProblemController extends Controller
         $tags = $this::get_problem_tags($problem->id, 5);
 
         // 可能指定了solution代码
-        $solution = DB::table('solutions')->find($_GET['solution'] ?? -1);
+        $solution = DB::table('solutions')->find(request('solution') ?? -1);
         if (Auth::check() && $solution && ($solution->user_id == Auth::id() || $user->can('admin.solution.view')))
             $solution_code = $solution->code ?? null;
         else

@@ -11,25 +11,25 @@
           <div class="overflow-hidden">
             <h4 class="float-left">{{ __('main.Problems') }}</h4>
             <form id="find_form" action="" method="get" class="float-right form-inline">
-              <input type="number" id="tag_id" name="tag_id" value="{{ $_GET['tag_id'] ?? null }}" hidden>
+              <input type="number" id="tag_id" name="tag_id" value="{{ request('tag_id') ?? null }}" hidden>
               <div class="form-inline custom-control custom-checkbox mx-2">
                 <input type="checkbox" name="show_hidden" class="custom-control-input" id="customCheck"
-                  @if (isset($_GET['show_hidden'])) checked @endif onchange="this.form.submit()">
+                  @if (request()->has('show_hidden')) checked @endif onchange="this.form.submit()">
                 <label class="custom-control-label pt-1"
                   for="customCheck">{{ __('sentence.show_hidden_problems') }}</label>
               </div>
               <div class="form-inline mx-2">
                 <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
-                  <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
-                  <option value="50" @if (isset($_GET['perPage']) && $_GET['perPage'] == 50) selected @endif>50</option>
-                  <option value="100" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 100) selected @endif>100</option>
+                  <option value="20" @if (request()->has('perPage') && request('perPage') == 20) selected @endif>20</option>
+                  <option value="50" @if (request()->has('perPage') && request('perPage') == 50) selected @endif>50</option>
+                  <option value="100" @if (!request()->has('perPage') || request('perPage') == 100) selected @endif>100</option>
                 </select>
                 {{ __('sentence.items per page') }}
               </div>
               <div class="form-inline mx-2">
                 <input type="text" class="form-control text-center"
                   placeholder="{{ __('main.ID') }}/{{ __('main.Title') }}/{{ __('main.Source') }}" name="kw"
-                  value="{{ $_GET['kw'] ?? '' }}">
+                  value="{{ request('kw') ?? '' }}">
               </div>
               <button class="btn text-white bg-success ml-2">
                 <i class="fa fa-filter" aria-hidden="true"></i>

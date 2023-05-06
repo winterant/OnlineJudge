@@ -9,10 +9,10 @@
             @if (isset($contest_id))
               {{-- 在竞赛中，仅显示字母题号 --}}
               <div class="form-group m-0 p-0 bmd-form-group">
-                <select name="index" class="form-control" onchange="this.form.submit();">
+                <select name="index" class="form-control" onchange="this.form.submit();" style="min-width:2rem">
                   <option value="">{{ __('main.Problem') }}</option>
                   @for ($i = 0; $i < $num_problems; $i++)
-                    <option value="{{ $i }}" @if (isset($_GET['index']) && $_GET['index'] == $i) selected @endif>
+                    <option value="{{ $i }}" @if (request()->has('index') && request('index') == $i) selected @endif>
                       {{ index2ch($i) }}</option>
                   @endfor
                 </select>
@@ -20,15 +20,16 @@
             @else
               {{-- 在评测、群组中显示实际题号 --}}
               <div class="form-group m-0 p-0 bmd-form-group">
-                <input type="text" class="form-control" placeholder="{{ __('main.Problem') }} {{ __('main.Id') }}"
-                  name="pid" value="{{ $_GET['pid'] ?? '' }}" onchange="this.form.submit();">
+                <input type="text" class="form-control" placeholder="{{ __('main.Problem ID') }}" name="pid"
+                  value="{{ request('pid') ?? '' }}" onchange="this.form.submit();" style="min-width:4rem">
               </div>
             @endif
           </th>
           <th>
             <div class="form-group m-0 p-0 bmd-form-group">
               <input type="text" class="form-control" placeholder="{{ trans('main.Username') }}"
-                onchange="this.form.submit();" name="username" value="{{ $_GET['username'] ?? '' }}">
+                onchange="this.form.submit();" name="username" value="{{ request('username') ?? '' }}"
+                style="min-width:3rem">
             </div>
           </th>
           <th>
@@ -37,7 +38,7 @@
                 <option class="form-control" value="-1">{{ __('main.All Result') }}</option>
                 @foreach (config('judge.result') as $key => $res)
                   <option value="{{ $key }}" class="judge-result-{{ $key }}"
-                    @if (isset($_GET['result']) && $key == $_GET['result']) selected @endif>
+                    @if (request()->has('result') && $key == request('result')) selected @endif>
                     {{ __('result.' . $res) }}
                   </option>
                 @endforeach
@@ -48,7 +49,7 @@
                   <option class="form-control" value="">{{ __('main.Similarity') }}</option>
                   @for ($i = 50; $i <= 100; $i += 10)
                     <option class="form-control" value="{{ $i }}"
-                      @if (isset($_GET['sim_rate']) && $i == $_GET['sim_rate']) selected @endif>
+                      @if (request()->has('sim_rate') && $i == request('sim_rate')) selected @endif>
                       @if ($i < 100)
                         ≥
                       @endif
@@ -63,27 +64,27 @@
           <th nowrap>{{ __('main.Memory') }}</th>
           <th>
             <div class="form-group m-0 p-0 bmd-form-group">
-              <select name="language" class="px-2 form-control" onchange="this.form.submit();">
+              <select name="language" class="px-2 form-control" onchange="this.form.submit();" style="min-width:4rem">
                 <option class="form-control" value="-1">{{ __('main.All Language') }}</option>
                 @foreach (config('judge.lang') as $key => $res)
-                  <option value="{{ $key }}" @if (isset($_GET['language']) && $key == $_GET['language']) selected @endif>
+                  <option value="{{ $key }}" @if (request()->has('language') && $key == request('language')) selected @endif>
                     {{ $res }}</option>
                 @endforeach
               </select>
             </div>
           </th>
           <th nowrap>{{ __('main.Submission Time') }}</th>
-          <th nowrap>
-            @if (Auth::check() && Auth::user()->can('admin.solution.view'))
+          @if (Auth::check() && Auth::user()->can('admin.solution.view'))
+            <th nowrap>
               <div class="form-group m-0 p-0 bmd-form-group">
                 <input type="text" class="form-control" placeholder="IP" onchange="this.form.submit();"
-                  name="ip" value="{{ $_GET['ip'] ?? '' }}">
+                  name="ip" value="{{ request('ip') ?? '' }}">
               </div>
-            @else
-              IP
-            @endif
-          </th>
-          <th nowrap>{{ __('main.Judger') }}</th>
+            </th>
+          @endif
+          {{-- <th nowrap>{{ __('main.Judger') }}</th> --}}
+
+          {{-- 提交按钮，在回车时会触发提交 --}}
           <button type="submit" hidden></button>
 
         </tr>
@@ -165,14 +166,12 @@
               @endif
             </td>
             <td nowrap>{{ $sol->submit_time }}</td>
-            <td nowrap>
-              @if (Auth::check() && Auth::user()->can('admin.solution.view'))
+            @if (Auth::check() && Auth::user()->can('admin.solution.view'))
+              <td nowrap>
                 {{ $sol->ip }} {{ $sol->ip_loc ?? null }}
-              @else
-                -
-              @endif
-            </td>
-            <td nowrap>{{ $sol->judger }}</td>
+              </td>
+            @endif
+            {{-- <td nowrap>{{ $sol->judger }}</td> --}}
           </tr>
         @endforeach
       </tbody>
@@ -202,11 +201,11 @@
 
         <div class="form-inline mx-1">
           <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
-            <option value="10" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 10) selected @endif>10</option>
-            <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
-            <option value="50" @if (isset($_GET['perPage']) && $_GET['perPage'] == 50) selected @endif>50</option>
-            <option value="100" @if (isset($_GET['perPage']) && $_GET['perPage'] == 100) selected @endif>100</option>
-            {{-- <option value="200" @if (isset($_GET['perPage']) && $_GET['perPage'] == 200)selected @endif>200</option> --}}
+            <option value="10" @if (!request()->has('perPage') || request('perPage') == 10) selected @endif>10</option>
+            <option value="20" @if (request()->has('perPage') && request('perPage') == 20) selected @endif>20</option>
+            <option value="50" @if (request()->has('perPage') && request('perPage') == 50) selected @endif>50</option>
+            <option value="100" @if (request()->has('perPage') && request('perPage') == 100) selected @endif>100</option>
+            {{-- <option value="200" @if (request()->has('perPage') && request('perPage') == 200)selected @endif>200</option> --}}
           </select>
           <span>{{ __('sentence.items per page') }}</span>
         </div>

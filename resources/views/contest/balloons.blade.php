@@ -8,7 +8,7 @@
     <div class="row">
       <div class="col-12 col-sm-12">
         {{-- 菜单 --}}
-        <x-contest.navbar :contest="$contest" :group-id="$_GET['group'] ?? null" />
+        <x-contest.navbar :contest="$contest" :group-id="request('group') ?? null" />
       </div>
       <div class="col-sm-12 col-12">
         <div class="my-container bg-white table-responsive">
@@ -39,7 +39,7 @@
                       {{ $item->send_time }}
                     @else
                       <form
-                        action="{{ route('contest.deliver_ball', [$contest->id, $item->id, 'group' => $_GET['group'] ?? null]) }}"
+                        action="{{ route('contest.deliver_ball', [$contest->id, $item->id, 'group' => request('group') ?? null]) }}"
                         method="post" class="d-inline">
                         @csrf
                         <a href="javascript:" onclick="$(this).parent().submit()"

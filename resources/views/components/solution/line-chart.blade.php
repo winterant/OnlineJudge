@@ -2,19 +2,19 @@
   <div class="float-right mr-4" style="position:relative;z-index:1">
     <select id="past-select" name="past" class="px-2"
       style="font-size: 0.85rem; text-align-last: center; border-radius: 2px;">
-      <option value="300i" @if (($_GET['past'] ?? null) == '300i') selected @endif>
+      <option value="300i" @if ((request('past') ?? null) == '300i') selected @endif>
         @lang('main.Recent') 300 {{ trans_choice('main.minutes', 2) }}
       </option>
-      <option value="24h" @if (($_GET['past'] ?? null) == '24h') selected @endif>
+      <option value="24h" @if ((request('past') ?? null) == '24h') selected @endif>
         @lang('main.Recent') 24 {{ trans_choice('main.hours', 2) }}
       </option>
-      <option value="30d" @if (!isset($_GET['past']) || $_GET['past'] == '30d') selected @endif>
+      <option value="30d" @if (!request()->has('past') || request('past') == '30d') selected @endif>
         @lang('main.Recent') 30 {{ trans_choice('main.days', 2) }}
       </option>
-      <option value="180d" @if (($_GET['past'] ?? null) == '180d') selected @endif>
+      <option value="180d" @if ((request('past') ?? null) == '180d') selected @endif>
         @lang('main.Recent') 180 {{ trans_choice('main.days', 2) }}
       </option>
-      <option value="12m" @if (($_GET['past'] ?? null) == '12m') selected @endif>
+      <option value="12m" @if ((request('past') ?? null) == '12m') selected @endif>
         @lang('main.Recent') 12 {{ trans_choice('main.months', 2) }}
       </option>
     </select>

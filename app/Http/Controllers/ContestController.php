@@ -22,7 +22,7 @@ class ContestController extends Controller
         $user = Auth::user();
 
         //获取当前所处的类别
-        $current_cate = DB::table('contest_cate')->find($_GET['cate'] ?? 0);
+        $current_cate = DB::table('contest_cate')->find(request('cate') ?? 0);
 
         //类别不存在，则自动跳转到默认竞赛(可能是cookie保存的)
         if (!$current_cate) {
@@ -68,8 +68,8 @@ class ContestController extends Controller
         }
 
         //cookie记下默认每页显示的条数
-        if (isset($_GET['perPage'])) {
-            Cookie::queue('unencrypted_contests_default_perpage', $_GET['perPage'], 5256000); // 10 years
+        if (request()->has('perPage')) {
+            Cookie::queue('unencrypted_contests_default_perpage', request('perPage'), 5256000); // 10 years
         } else {
             $_GET['perPage'] = (request()->cookie('unencrypted_contests_default_perpage') ?? 10);
         }
@@ -82,22 +82,22 @@ class ContestController extends Controller
                 'num_members'
             ])
             ->where('cate_id', $current_cate->id)
-            ->when(in_array($_GET['state'] ?? null, ['waiting', 'running', 'ended']), function ($q) {
-                if ($_GET['state'] == 'ended') return $q->where('end_time', '<', date('Y-m-d H:i:s'));
-                else if ($_GET['state'] == 'waiting') return $q->where('start_time', '>', date('Y-m-d H:i:s'));
+            ->when(in_array(request('state') ?? null, ['waiting', 'running', 'ended']), function ($q) {
+                if (request('state') == 'ended') return $q->where('end_time', '<', date('Y-m-d H:i:s'));
+                else if (request('state') == 'waiting') return $q->where('start_time', '>', date('Y-m-d H:i:s'));
                 else return $q->where('start_time', '<', date('Y-m-d H:i:s'))->where('end_time', '>', date('Y-m-d H:i:s'));
             })
-            ->when(in_array($_GET['judge_type'] ?? null, ['acm', 'oi']), function ($q) {
-                return $q->where('c.judge_type', $_GET['judge_type']);
+            ->when(in_array(request('judge_type') ?? null, ['acm', 'oi']), function ($q) {
+                return $q->where('c.judge_type', request('judge_type'));
             })
-            ->when(isset($_GET['title']) && $_GET['title'] != null, function ($q) {
-                return $q->where('c.title', 'like', '%' . $_GET['title'] . '%');
+            ->when(request()->has('title') && request('title') != null, function ($q) {
+                return $q->where('c.title', 'like', '%' . request('title') . '%');
             })
             ->when(!Auth::check() || !$user->can('admin.contest.view'), function ($q) {
                 return $q->where('c.hidden', 0); // 没登陆 or 登陆了但没权限，则隐藏
             })
             ->orderByDesc('c.order')
-            ->paginate($_GET['perPage'] ?? 10);
+            ->paginate(request('perPage') ?? 10);
 
         return view('contest.contests', compact('contests', 'categories', 'current_cate'));
     }
@@ -282,7 +282,7 @@ class ContestController extends Controller
         }
 
         // ====================== 解析用户请求的截止榜单 ==============
-        if (!isset($_GET['end']) || !in_array($_GET['end'], array_keys($rank_time))) // 不合法的参数改为默认值real_time
+        if (!request()->has('end') || !in_array(request('end'), array_keys($rank_time))) // 不合法的参数改为默认值real_time
             $_GET['end'] = 'real_time';
         if ($rank_time['real_time']['able'] === false) // real_time不允许查看，则切换为封榜
             $_GET['end'] = 'locked_time';
@@ -393,7 +393,7 @@ class ContestController extends Controller
 
         // ========================== 调用榜单 ============================
         $users = [];
-        $key = sprintf('contest:%d:rank:%s:users', $contest->id, $_GET['end']);
+        $key = sprintf('contest:%d:rank:%s:users', $contest->id, request('end'));
         if (CacheHelper::has_key_relies_on_solutions_after_autoclear($key)) // 若发生了重判，先清除缓存，迫使下方业务重新计算榜单
             $users = Cache::get($key);
         else {
@@ -401,23 +401,23 @@ class ContestController extends Controller
             // 举例：若A得到了锁，则会计算结束后释放锁，同时将结果压入缓存；B等到锁后，直接通过remember获取缓存，避免重复计算
             Cache::lock('lock:' . $key, 15)->block(10, function () use ($key, $contest, $calculate_rank, $rank_time, &$users) {
                 // 原子锁的生命周期最长 15秒；等待最多 10 秒后获得锁，否则抛出异常
-                if ($_GET['end'] == 'real_time') // 实时榜单，缓存15秒
+                if (request('end') == 'real_time') // 实时榜单，缓存15秒
                     $users = Cache::remember($key, 15, function () use ($contest, $calculate_rank) {
                         return $calculate_rank($contest);
                     });
                 else // 封榜或终榜，已经固定，长期缓存
                     $users = Cache::remember($key, 3600 * 24 * 30, function () use ($contest, $calculate_rank, $rank_time) {
-                        return $calculate_rank($contest, $rank_time[$_GET['end']]['date']);
+                        return $calculate_rank($contest, $rank_time[request('end')]['date']);
                     });
             });
         }
 
         // =========================== 模糊查询 ========================
         foreach ($users as $uid => &$user) {
-            if (isset($_GET['school']) && $_GET['school'] != '' && stripos($user['school'], $_GET['school']) === false) unset($users[$uid]);
-            if (isset($_GET['class']) && $_GET['class'] != '' && stripos($user['class'], $_GET['class']) === false) unset($users[$uid]);
-            if (isset($_GET['nick']) && $_GET['nick'] != '' && stripos($user['nick'], $_GET['nick']) === false) unset($users[$uid]);
-            if (isset($_GET['username']) && $_GET['username'] != '' && stripos($user['username'], $_GET['username']) === false) unset($users[$uid]);
+            if (request()->has('school') && request('school') != '' && stripos($user['school'], request('school')) === false) unset($users[$uid]);
+            if (request()->has('class') && request('class') != '' && stripos($user['class'], request('class')) === false) unset($users[$uid]);
+            if (request()->has('nick') && request('nick') != '' && stripos($user['nick'], request('nick')) === false) unset($users[$uid]);
+            if (request()->has('username') && request('username') != '' && stripos($user['username'], request('username')) === false) unset($users[$uid]);
         }
         return view('contest.rank', compact('contest', 'users', 'problems', 'rank_time'));
     }

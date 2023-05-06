@@ -15,7 +15,7 @@
 
   <form action="" method="get" class="pull-right form-inline">
     <div class="form-inline mx-3">
-      <input type="text" class="form-control text-center" name="kw" value="{{ $_GET['kw'] ?? '' }}"
+      <input type="text" class="form-control text-center" name="kw" value="{{ request('kw') ?? '' }}"
         placeholder="角色名称" onchange="this.form.submit();">
     </div>
     <button class="btn border">查找</button>

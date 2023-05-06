@@ -155,14 +155,14 @@ class Judger implements ShouldQueue
 
         // 初始化所有测试点
         $tests = ProblemHelper::getTestDataFilenames($problem['id']);
-        $judge0result = [];
+        $judge_result = [];
         foreach ($tests as $k => $test)
-            $judge0result[$k] = [
+            $judge_result[$k] = [
                 'result' => 0, // 等待中
                 'time' => 0,
                 'memory' => 0,
             ];
-        $this->update_db_solution(['judge0result' => $judge0result]); // 初始化测试点信息写入数据库，以供前台显示
+        $this->update_db_solution(['judge_result' => $judge_result]); // 初始化测试点信息写入数据库，以供前台显示
 
         // 遍历测试点，运行用户程序，得到输出
         $ac = 0;
@@ -220,16 +220,16 @@ class Judger implements ShouldQueue
             }
 
             // 实时更新运行结果
-            $judge0result[$k] = [
+            $judge_result[$k] = [
                 'result' => $result,
                 'time' => intdiv($res[0]['time'], 1000000), // ns==>ms
                 'memory' => $res[0]['memory'] >> 20, // B==>MB
                 'error_info' => $error_info
             ];
-            $this->update_db_solution(['judge0result' => $judge0result]); // 向数据库刷新测试点状态
+            $this->update_db_solution(['judge_result' => $judge_result]); // 向数据库刷新测试点状态
             // 记录时间、内存
-            $max_time = max($max_time, $judge0result[$k]['time']);
-            $max_memory = max($max_memory, $judge0result[$k]['memory']);
+            $max_time = max($max_time, $judge_result[$k]['time']);
+            $max_memory = max($max_memory, $judge_result[$k]['memory']);
 
             // 统计测试点对错情况
             if ($result == 4) {

@@ -61,11 +61,11 @@
       {{-- 竞赛下，显示菜单 --}}
       @if (isset($contest))
         <div class="mt-3">
-          <x-contest.navbar :contest="$contest" :group-id="$_GET['group'] ?? null" />
+          <x-contest.navbar :contest="$contest" :group-id="request('group') ?? null" />
         </div>
 
         {{-- 题号链接 --}}
-        <x-contest.problems-link :contest-id="$contest->id" :problem-index="$problem->index" :group-id="$_GET['group'] ?? null" />
+        <x-contest.problems-link :contest-id="$contest->id" :problem-index="$problem->index" :group-id="request('group') ?? null" />
       @endif
 
       {{-- 题目内容 --}}
@@ -81,7 +81,7 @@
           @if (isset($contest))
             <span style="font-size: 0.85rem">
               [ <a
-                href="{{ route('contest.solutions', [$contest->id, 'group' => $_GET['group'] ?? null, 'index' => $problem->index]) }}">{{ __('main.Solutions') }}</a>
+                href="{{ route('contest.solutions', [$contest->id, 'group' => request('group') ?? null, 'index' => $problem->index]) }}">{{ __('main.Solutions') }}</a>
               ]
             </span>
           @else

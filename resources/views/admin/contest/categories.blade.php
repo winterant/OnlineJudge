@@ -62,7 +62,7 @@
   <form action="" method="get" class="pull-right form-inline">
     <div class="form-inline mx-3">
       <input type="text" class="form-control text-center" placeholder="名称" onchange="this.form.submit();"
-        name="title" value="{{ $_GET['title'] ?? '' }}">
+        name="title" value="{{ request('title') ?? '' }}">
     </div>
     <button class="btn border">查找</button>
   </form>
@@ -82,7 +82,7 @@
       </thead>
       <tbody>
         @foreach ($categories as $item)
-          @if (!isset($_GET['title']) || $_GET['title'] == null || strpos($item->title, $_GET['title']) !== false)
+          @if (!request()->has('title') || request('title') == null || strpos($item->title, request('title')) !== false)
             <tr>
               <td>{{ $item->id }}</td>
               <td nowrap>

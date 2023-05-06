@@ -68,7 +68,7 @@ class ProblemController extends Controller
     // 管理员下载xml文件
     public function download_exported_xml(Request $request)
     {
-        return Storage::download('temp/exported/' . $_GET['filename']);
+        return Storage::download('temp/exported/' . request('filename'));
     }
 
     // 管理员清空历史xml

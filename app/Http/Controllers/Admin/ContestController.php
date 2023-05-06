@@ -36,22 +36,22 @@ class ContestController extends Controller
         $contests = DB::table('contests as c')
             ->leftJoin('users', 'users.id', '=', 'user_id')
             ->select(['c.*', 'username'])
-            ->when(isset($_GET['state']) && $_GET['state'] != 'all', function ($q) {
-                if ($_GET['state'] == 'ended') return $q->where('end_time', '<', date('Y-m-d H:i:s'));
-                else if ($_GET['state'] == 'waiting') return $q->where('start_time', '>', date('Y-m-d H:i:s'));
+            ->when(request()->has('state') && request('state') != 'all', function ($q) {
+                if (request('state') == 'ended') return $q->where('end_time', '<', date('Y-m-d H:i:s'));
+                else if (request('state') == 'waiting') return $q->where('start_time', '>', date('Y-m-d H:i:s'));
                 else return $q->where('start_time', '<', date('Y-m-d H:i:s'))->where('end_time', '>', date('Y-m-d H:i:s'));
             })
-            ->when(isset($_GET['cate_id']) && $_GET['cate_id'] != null, function ($q) {
-                return $q->where('c.cate_id', $_GET['cate_id']);
+            ->when(request()->has('cate_id') && request('cate_id') != null, function ($q) {
+                return $q->where('c.cate_id', request('cate_id'));
             })
-            ->when(isset($_GET['judge_type']) && $_GET['judge_type'] != null, function ($q) {
-                return $q->where('judge_type', $_GET['judge_type']);
+            ->when(request()->has('judge_type') && request('judge_type') != null, function ($q) {
+                return $q->where('judge_type', request('judge_type'));
             })
-            ->when(isset($_GET['title']), function ($q) {
-                return $q->where('c.title', 'like', '%' . $_GET['title'] . '%');
+            ->when(request()->has('title'), function ($q) {
+                return $q->where('c.title', 'like', '%' . request('title') . '%');
             })
-            ->orderByDesc(isset($_GET['cate_id']) && $_GET['cate_id'] !== '' ? 'c.order' : 'c.id')
-            ->paginate($_GET['perPage'] ?? 10);
+            ->orderByDesc(request()->has('cate_id') && request('cate_id') !== '' ? 'c.order' : 'c.id')
+            ->paginate(request('perPage') ?? 10);
 
         $categories = $this->get_categories();
         return view('admin.contest.list', compact('contests', 'categories'));

@@ -34,13 +34,13 @@ class ProblemController extends Controller
                 'p.accepted',
                 'p.submitted'
             )
-            ->when(isset($_GET['kw']) && $_GET['kw'], function ($q) {
-                return $q->where('p.id', $_GET['kw'])
-                    ->orWhere('title', 'like', '%' . $_GET['kw'] . '%')
-                    ->orWhere('source', 'like', '%' . $_GET['kw'] . '%');
+            ->when(request()->has('kw') && request('kw'), function ($q) {
+                return $q->where('p.id', request('kw'))
+                    ->orWhere('title', 'like', '%' . request('kw') . '%')
+                    ->orWhere('source', 'like', '%' . request('kw') . '%');
             })
             ->orderByDesc('p.id')
-            ->paginate($_GET['perPage'] ?? 100);
+            ->paginate(request('perPage') ?? 100);
         return view('admin.problem.list', compact('problems'));
     }
 
@@ -144,17 +144,17 @@ class ProblemController extends Controller
             ->join('tag_pool', 'tag_id', '=', 'tag_pool.id')
             ->join('problems', 'problem_id', '=', 'problems.id')
             ->select('tag_marks.id', 'problem_id', 'title', 'username', 'nick', 'name', 'tag_marks.created_at')
-            ->when(isset($_GET['pid']) && $_GET['pid'] != '', function ($q) {
-                return $q->where('problem_id', $_GET['pid']);
+            ->when(request()->has('pid') && request('pid') != '', function ($q) {
+                return $q->where('problem_id', request('pid'));
             })
-            ->when(isset($_GET['username']) && $_GET['username'] != '', function ($q) {
-                return $q->where('username', $_GET['username']);
+            ->when(request()->has('username') && request('username') != '', function ($q) {
+                return $q->where('username', request('username'));
             })
-            ->when(isset($_GET['tag_name']) && $_GET['tag_name'] != '', function ($q) {
-                return $q->where('name', 'like', '%' . $_GET['tag_name'] . '%');
+            ->when(request()->has('tag_name') && request('tag_name') != '', function ($q) {
+                return $q->where('name', 'like', '%' . request('tag_name') . '%');
             })
             ->orderByDesc('id')
-            ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 20);
+            ->paginate(request()->has('perPage') ? request('perPage') : 20);
         return view('admin.problem.tags', compact('tags'));
     }
     public function tag_delete(Request $request)
@@ -166,11 +166,11 @@ class ProblemController extends Controller
     {
         $tag_pool = DB::table('tag_pool')
             ->select('id', 'name', 'hidden', 'created_at')
-            ->when(isset($_GET['tag_name']) && $_GET['tag_name'] != '', function ($q) {
-                return $q->where('name', 'like', '%' . $_GET['tag_name'] . '%');
+            ->when(request()->has('tag_name') && request('tag_name') != '', function ($q) {
+                return $q->where('name', 'like', '%' . request('tag_name') . '%');
             })
             ->orderByDesc('id')
-            ->paginate(isset($_GET['perPage']) ? $_GET['perPage'] : 20);
+            ->paginate(request()->has('perPage') ? request('perPage') : 20);
         return view('admin.problem.tag_pool', compact('tag_pool'));
     }
     public function tag_pool_delete(Request $request)
@@ -192,10 +192,10 @@ class ProblemController extends Controller
     {
         //读取数据文件
         $tests = [];
-        if (isset($_GET['pid'])) {
-            if (!DB::table('problems')->where('id', $_GET['pid'])->exists())
-                return view('message', ['msg' => '题目' . $_GET['pid'] . '不存在', 'success' => false, 'is_admin' => true]);
-            foreach (getAllFilesPath(testdata_path($_GET['pid'] . '/test')) as $filepath) {
+        if (request()->has('pid')) {
+            if (!DB::table('problems')->where('id', request('pid'))->exists())
+                return view('message', ['msg' => '题目' . request('pid') . '不存在', 'success' => false, 'is_admin' => true]);
+            foreach (getAllFilesPath(testdata_path(request('pid') . '/test')) as $filepath) {
                 $name = pathinfo($filepath, PATHINFO_FILENAME);  //文件名
                 $ext = pathinfo($filepath, PATHINFO_EXTENSION);    //拓展名
                 $tests[] = ['index' => $name, 'filename' => $name . '.' . $ext, 'size' => filesize($filepath)];
@@ -245,7 +245,7 @@ class ProblemController extends Controller
         $filename = $request->input('filename');
         $filename = str_replace('../', '', $filename);
         $filename = str_replace('/', '', $filename);
-        $content = $request->input('content');
+        $content = $request->input('testdata_content');
         file_put_contents(testdata_path($pid . '/test/' . $filename), str_replace(["\r\n", "\r", "\n"], PHP_EOL, $content));
         return back();
     }

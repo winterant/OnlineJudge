@@ -11,16 +11,16 @@
       每页
       <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
         <option value="10">10</option>
-        <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
-        <option value="30" @if (isset($_GET['perPage']) && $_GET['perPage'] == 30) selected @endif>30</option>
-        <option value="50" @if (isset($_GET['perPage']) && $_GET['perPage'] == 50) selected @endif>50</option>
-        <option value="100" @if (isset($_GET['perPage']) && $_GET['perPage'] == 100) selected @endif>100</option>
+        <option value="20" @if (request()->has('perPage') && request('perPage') == 20) selected @endif>20</option>
+        <option value="30" @if (request()->has('perPage') && request('perPage') == 30) selected @endif>30</option>
+        <option value="50" @if (request()->has('perPage') && request('perPage') == 50) selected @endif>50</option>
+        <option value="100" @if (request()->has('perPage') && request('perPage') == 100) selected @endif>100</option>
       </select>
       项
     </div>
     <div class="form-inline mx-3">
       <input type="text" class="form-control text-center" placeholder="标题" onchange="this.form.submit();"
-        name="name" value="{{ $_GET['name'] ?? '' }}">
+        name="name" value="{{ request('name') ?? '' }}">
     </div>
     <button class="btn border">查找</button>
   </form>

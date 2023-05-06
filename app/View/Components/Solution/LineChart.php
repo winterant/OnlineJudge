@@ -14,7 +14,7 @@ class LineChart extends Component
     public function __construct($userId = null, $contestId = null, $groupId = null, $endTime = null, $defaultPast = '30d')
     {
         // 获取参数
-        $past = $_GET['past'] ?? $defaultPast; // 无参则取默认值
+        $past = request('past') ?? $defaultPast; // 无参则取默认值
         if (!in_array($past, ['300i', '24h', '30d', '180d', '12m']))
             $past = $defaultPast; // 无效的past改为默认值
         $_GET['past'] = $past; // 前端还要用到该值

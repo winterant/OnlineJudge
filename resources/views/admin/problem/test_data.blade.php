@@ -9,14 +9,14 @@
         <form class="text-nowrap p-3" action="" method="get">
             <div>
                 题号：
-                <input type="number" step="1" name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:''}}" required class="form-control" style="width: 7rem">
+                <input type="number" step="1" name="pid" value="{{request()->has('pid')?request('pid'):''}}" required class="form-control" style="width: 7rem">
                 <button class="btn btn-light bg-success mx-1">查看数据</button>
-                @if(isset($_GET['pid']))
-                    <a href="{{route('problem',$_GET['pid'])}}" type="button" target="_blank" class="btn btn-light bg-success mx-1">查看题目</a>
+                @if(request()->has('pid'))
+                    <a href="{{route('problem',request('pid'))}}" type="button" target="_blank" class="btn btn-light bg-success mx-1">查看题目</a>
                 @endif
             </div>
         </form>
-        @if(isset($_GET['pid']))
+        @if(request()->has('pid'))
             <form class="p-3" method="post" enctype="multipart/form-data" onsubmit="return do_upload()">
                 @csrf
                 <div>
@@ -35,7 +35,7 @@
         例如【test.in与test.out】、【1.in与1.ans】都是合法的测试数据。
     </div>
     <div>
-        @if(isset($_GET['pid']))
+        @if(request()->has('pid'))
             <div class="float-left">
                 <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
                 <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
@@ -100,7 +100,7 @@
 
                 <form action="{{route('admin.problem.update_data')}}" method="post">
                     @csrf
-                    <input type="number" name="pid" value="{{isset($_GET['pid'])?$_GET['pid']:0}}" class="form-control" hidden>
+                    <input type="number" name="pid" value="{{request()->has('pid')?request('pid'):0}}" class="form-control" hidden>
                     <input type="text" name="filename" hidden>
                     <!-- 模态框头部 -->
                     <div class="modal-header">
@@ -111,7 +111,7 @@
                     <!-- 模态框主体 -->
                     <div class="modal-body ck-content">
                         <div class="form-group">
-                            <textarea name="content" id="content" class="form-control-plaintext border" rows="18"></textarea>
+                            <textarea name="testdata_content" id="content" class="form-control-plaintext border" rows="18"></textarea>
                         </div>
                     </div>
 
@@ -134,7 +134,7 @@
                 _token:"{{csrf_token()}}",
                 files:$("#test_data")[0].files,
                 data:{
-                    'pid':"{{isset($_GET['pid'])?$_GET['pid']:0}}"
+                    'pid':"{{request()->has('pid')?request('pid'):0}}"
                 },
                 before:function (file_count, total_size) {
                     Notiflix.Loading.Hourglass('开始上传'+file_count+'个文件!总大小：'+(total_size/1024).toFixed(1)+'KB');
@@ -167,7 +167,7 @@
                 '{{route('admin.problem.get_data')}}',
                 {
                     '_token':'{{csrf_token()}}',
-                    'pid':'{{isset($_GET['pid'])?$_GET['pid']:0}}',
+                    'pid':'{{request()->has('pid')?request('pid'):0}}',
                     'filename':filename,
                 },
                 function (ret) {
@@ -195,7 +195,7 @@
                     '{{route('admin.problem.delete_data')}}',
                     {
                         '_token':'{{csrf_token()}}',
-                        'pid':'{{isset($_GET['pid'])?$_GET['pid']:0}}',
+                        'pid':'{{request()->has('pid')?request('pid'):0}}',
                         'fnames':fnames,
                     },
                     function (ret) {

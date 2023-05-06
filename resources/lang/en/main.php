@@ -103,6 +103,7 @@ return [
     "Attempting"    => "Attempting",
 
     //problem
+    "Problem ID"    => "Problem ID",
     "Title"         => "Title",
     "PDescription"  => "Problem Description",
     "IDescription"  => "Input Description",

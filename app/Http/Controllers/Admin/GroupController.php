@@ -14,11 +14,11 @@ class GroupController extends Controller
         $groups = DB::table('groups as c')
             ->leftJoin('users', 'users.id', '=', 'creator')
             ->select(['c.*', 'username'])
-            ->when(isset($_GET['name']), function ($q) {
-                return $q->where('c.name', 'like', '%' . $_GET['name'] . '%');
+            ->when(request()->has('name'), function ($q) {
+                return $q->where('c.name', 'like', '%' . request('name') . '%');
             })
             ->orderByDesc('id')
-            ->paginate($_GET['perPage'] ?? 10);
+            ->paginate(request('perPage') ?? 10);
 
         return view('admin.group.list', compact('groups'));
     }

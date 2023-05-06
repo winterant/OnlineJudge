@@ -23,12 +23,14 @@ class CreateProblemsTable extends Migration
             $table->text('output')->nullable();
             $table->text('hint')->nullable();
             $table->string('source')->nullable();
+            $table->json('tags')->nullable();  // ['***','***', ...]
             $table->json('samples')->nullable();  // [{'in':'***','out':'***'}, ...]
             $table->text('fill_in_blank')->nullable();
             $table->integer('language')->default(0)->comment('代码填空的语言');
-            $table->boolean('spj')->default(0);
+            $table->boolean('spj')->default(0); // 是否spj
+            $table->text('spj_code')->nullable();
             $table->integer('time_limit')->default(1000)->comment('MS');
-            $table->integer('memory_limit')->default(1000)->comment('MB');
+            $table->integer('memory_limit')->default(1024)->comment('MB');
             $table->boolean('hidden')->index()->default(1);
             $table->bigInteger('creator')->nullable();
 

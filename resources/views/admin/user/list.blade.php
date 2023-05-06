@@ -9,18 +9,18 @@
     <form action="" method="get" class="pull-right form-inline">
       <div class="form-inline mx-3">
         <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
-          <option value="10" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 10) selected @endif>10</option>
-          <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
-          <option value="50" @if (isset($_GET['perPage']) && $_GET['perPage'] == 50) selected @endif>50</option>
-          <option value="100" @if (isset($_GET['perPage']) && $_GET['perPage'] == 100) selected @endif>100</option>
-          {{-- <option value="200" @if (isset($_GET['perPage']) && $_GET['perPage'] == 200)selected @endif>200</option> --}}
-          {{-- <option value="1000" @if (isset($_GET['perPage']) && $_GET['perPage'] == 1000)selected @endif>1000</option> --}}
+          <option value="10" @if (!request()->has('perPage') || request('perPage') == 10) selected @endif>10</option>
+          <option value="20" @if (request()->has('perPage') && request('perPage') == 20) selected @endif>20</option>
+          <option value="50" @if (request()->has('perPage') && request('perPage') == 50) selected @endif>50</option>
+          <option value="100" @if (request()->has('perPage') && request('perPage') == 100) selected @endif>100</option>
+          {{-- <option value="200" @if (request()->has('perPage') && request('perPage') == 200)selected @endif>200</option> --}}
+          {{-- <option value="1000" @if (request()->has('perPage') && request('perPage') == 1000)selected @endif>1000</option> --}}
         </select>
         <span>项每页</span>
       </div>
       <div class="form-inline mx-1">
         <input type="text" class="form-control text-center" style="width: 20rem" placeholder="登录名/昵称/邮箱/学校/班级"
-          onchange="this.form.submit();" name="kw" value="{{ isset($_GET['kw']) ? $_GET['kw'] : '' }}">
+          onchange="this.form.submit();" name="kw" value="{{ request()->has('kw') ? request('kw') : '' }}">
       </div>
       <button class="btn border">筛选</button>
     </form>

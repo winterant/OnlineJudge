@@ -29,9 +29,9 @@ class Solutions extends Component
         $user = Auth::user();
 
         // cookie记下默认每页显示的条数
-        $_GET['perPage'] = min($_GET['perPage'] ?? 10, 100); // 防止传参>100导致服务器压力大
-        if (isset($_GET['perPage'])) {
-            Cookie::queue('unencrypted_solutions_default_perpage', $_GET['perPage'], 5256000); // 10 years
+        $_GET['perPage'] = min(request('perPage') ?? 10, 100); // 防止传参>100导致服务器压力大
+        if (request()->has('perPage')) {
+            Cookie::queue('unencrypted_solutions_default_perpage', request('perPage'), 5256000); // 10 years
         } else {
             $_GET['perPage'] = (request()->cookie('unencrypted_solutions_default_perpage') ?? 10);
         }
@@ -71,41 +71,41 @@ class Solutions extends Component
                 'result', 'time', 'memory', 'pass_rate', 'judger', 'sim_rate', 'sim_sid',
             ])
             // 以下是各个查询条件
-            ->when(isset($_GET['pid']) && $_GET['pid'] != null, function ($q) {
-                $q->where('s.problem_id', $_GET['pid']); // 限定实际题号
+            ->when(request()->has('pid') && request('pid') != null, function ($q) {
+                $q->where('s.problem_id', request('pid')); // 限定实际题号
             })
-            ->when(isset($_GET['index']) && $_GET['index'] != null, function ($q) {
-                $q->where('cp.index', $_GET['index']); // 限定竞赛中的题号
+            ->when(request()->has('index') && request('index') != null, function ($q) {
+                $q->where('cp.index', request('index')); // 限定竞赛中的题号
             })
-            ->when(isset($_GET['sid']) && $_GET['sid'] != null, function ($q) {
-                $q->where('s.id', $_GET['sid']); // 限定提交编号
+            ->when(request()->has('sid') && request('sid') != null, function ($q) {
+                $q->where('s.id', request('sid')); // 限定提交编号
             })
-            ->when(intval($_GET['sim_rate'] ?? 0) > 0, function ($q) {
-                $q->where('sim_rate', '>=', $_GET['sim_rate']); // 查重率 0~100
+            ->when(intval(request('sim_rate') ?? 0) > 0, function ($q) {
+                $q->where('sim_rate', '>=', request('sim_rate')); // 查重率 0~100
             })
-            ->when(isset($_GET['username']) && $_GET['username'] != null, function ($q) {
-                $q->where('username', 'like', '%' . $_GET['username'] . '%'); // 用户名
+            ->when(request()->has('username') && request('username') != null, function ($q) {
+                $q->where('username', 'like', '%' . request('username') . '%'); // 用户名
             })
-            ->when(isset($_GET['result']) && $_GET['result'] >= 0, function ($q) {
-                $q->where('result', $_GET['result']); // 判题结果
+            ->when(request()->has('result') && request('result') >= 0, function ($q) {
+                $q->where('result', request('result')); // 判题结果
             })
-            ->when(isset($_GET['language']) && $_GET['language'] >= 0, function ($q) {
-                $q->where('language', $_GET['language']); // 编程语言
+            ->when(request()->has('language') && request('language') >= 0, function ($q) {
+                $q->where('language', request('language')); // 编程语言
             })
-            ->when(isset($_GET['ip']) && $_GET['ip'] != null, function ($q) {
-                $q->where('ip', $_GET['ip']);
+            ->when(request()->has('ip') && request('ip') != null, function ($q) {
+                $q->where('ip', request('ip'));
             })
             // 翻页相关
-            ->when(isset($_GET['top_id']), function ($q) {
-                $q->where('s.id', '<=', $_GET['top_id']);
+            ->when(request()->has('top_id'), function ($q) {
+                $q->where('s.id', '<=', request('top_id'));
             })
-            ->when(isset($_GET['bottom_id']), function ($q) {
-                $q->where('s.id', '>=', $_GET['bottom_id']);
+            ->when(request()->has('bottom_id'), function ($q) {
+                $q->where('s.id', '>=', request('bottom_id'));
             })
-            ->orderBy('s.id', isset($_GET['bottom_id']) ? 'asc' : 'desc')
-            ->limit($_GET['perPage'] ?? 10)
+            ->orderBy('s.id', request()->has('bottom_id') ? 'asc' : 'desc')
+            ->limit(request('perPage') ?? 10)
             ->get();
-        if (isset($_GET['bottom_id']))
+        if (request()->has('bottom_id'))
             $this->solutions = $this->solutions->reverse();
 
         // ====================== 竞赛特别处理 ===================

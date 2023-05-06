@@ -26,7 +26,7 @@ class CreateSolutionsTable extends Migration
             $table->integer('language')->index()->default(0);
             $table->dateTime('submit_time')->useCurrent();
             $table->dateTime('judge_time')->useCurrent();
-            $table->json('judge0result')->nullable();
+            $table->json('judge_result')->nullable();
             $table->float('pass_rate')->default(0.0);
             $table->text('error_info')->nullable();
             $table->text('wrong_data')->nullable();
@@ -37,6 +37,7 @@ class CreateSolutionsTable extends Migration
             $table->text('code')->nullable();
             $table->integer('sim_rate')->default(0)->comment('0~100');
             $table->bigInteger('sim_sid')->nullable();
+            $table->json('sim_report')->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();
         });

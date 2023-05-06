@@ -6,19 +6,19 @@
 
   <h2>问题管理</h2>
   <hr>
-  <form action="" method="get" class="pull-right form-inline">
+  <form action="" method="get" class="pull-right form-inline" enctype="multipart/form-data">
     <div class="form-inline mx-3">
       <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
-        <option value="10" @if (isset($_GET['perPage']) && $_GET['perPage'] == 10) selected @endif>10</option>
-        <option value="20" @if (isset($_GET['perPage']) && $_GET['perPage'] == 20) selected @endif>20</option>
-        <option value="50" @if (isset($_GET['perPage']) && $_GET['perPage'] == 50) selected @endif>50</option>
-        <option value="100" @if (!isset($_GET['perPage']) || $_GET['perPage'] == 100) selected @endif>100</option>
+        <option value="10" @if (request('perPage') == 10) selected @endif>10</option>
+        <option value="20" @if (request('perPage') == 20) selected @endif>20</option>
+        <option value="50" @if (request('perPage') == 50) selected @endif>50</option>
+        <option value="100" @if (!request()->has('perPage') || request('perPage') == 100) selected @endif>100</option>
       </select>
       题每页
     </div>
     <div class="form-inline mx-3">
       <input class="form-control text-center" style="width:300px" placeholder="题目编号/标题/来源" name="kw"
-        value="{{ $_GET['kw'] ?? '' }}">
+        value="{{ request('kw') ?? '' }}">
     </div>
     <button class="btn border">查询</button>
   </form>
