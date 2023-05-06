@@ -53,7 +53,7 @@ class Judger implements ShouldQueue
 
         // 获取题目的相关属性
         $problem = (array)(DB::table('problems')
-            ->select(['id', 'time_limit', 'memory_limit', 'spj']) // MS,MB,int
+            ->select(['id', 'time_limit', 'memory_limit', 'spj','spj_language']) // MS,MB,int
             ->find($this->solution['problem_id']));
 
         // 获取编译运行指令
@@ -66,7 +66,7 @@ class Judger implements ShouldQueue
         // 编译
         if (!empty($config['compile'])) { // 需编译
             // 向JudgeServer发送请求 编译用户代码
-            $res_compile = $this->compile($this->solution['code'], $config, $this->solution['cpp_o2'] ?? false);
+            $res_compile = $this->compile($this->solution['code'], $config);
             if ($res_compile != null && $res_compile['status'] != 'Accepted') { // 编译失败
                 $this->update_db_solution([
                     'result' => 11, // 编译错误 11
@@ -86,11 +86,7 @@ class Judger implements ShouldQueue
         // 向JudgeServer发送请求 编译spj（若有）
         if ($problem['spj']) {
             // 先看是否有缓存的编译好的spj
-            if (!file_exists(testdata_path($problem['id'] . '/spj/spj.cpp'))) {
-                $this->update_db_solution(['result' => 14, 'error_info' => 'spj.cpp is not exist']); // 系统错误 14 特判程序不存在
-                return;
-            }
-            $res_compile_spj = $this->compile(file_get_contents(testdata_path($problem['id'] . '/spj/spj.cpp')), config('judge.language.6')); // C++20
+            $res_compile_spj = $this->compile(ProblemHelper::readSpj($problem['id']), config("judge.language.{$problem['spj_language']}")); // C++20
             $spj_file_id = $res_compile_spj['fileIds']['Main'] ?? ''; // 记住spj id
             if ($res_compile_spj['status'] != 'Accepted') {
                 $this->update_db_solution(['result' => 14, 'error_info' => "[Special judge compile error]\n" . $res_compile_spj['files']['stderr']]); // 系统错误 14
@@ -115,14 +111,14 @@ class Judger implements ShouldQueue
     }
 
     // 编译
-    private function compile(string $code, array $config, bool $cpp_o2 = false)
+    private function compile(string $code, array $config)
     {
         $this->update_db_solution(['result' => 2]); // 编译中
         // 要发送的数据
         $data = [
             'cmd' => [
                 [
-                    'args' => explode(' ', $config['compile']['command'] . ($cpp_o2 ? ' -O2' : '')),
+                    'args' => explode(' ', $config['compile']['command']),
                     'env' => $config['env'],
                     'files' => [   // 指定 标准输入、标准输出和标准错误的文件
                         ['content' => ''],

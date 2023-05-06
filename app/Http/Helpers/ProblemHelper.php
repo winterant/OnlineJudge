@@ -134,4 +134,24 @@ class ProblemHelper
         foreach ($outs as $i => $out)
             file_put_contents(sprintf('%s/%s.out', $dir, $i), $out);
     }
+
+    /**
+     * 读取某题的spj代码
+     *  版本兼容1.x ==> 2.x   spj代码由文件转存到数据库
+     */
+    public static function readSpj($problem_id)
+    {
+        // 读取数据库中保存的样例
+        $spj = DB::table('problems')->where('id', $problem_id)->value('spj_code') ?? "";
+        // 兼容老版本（spj在文件）
+        if (empty($spj)) {
+            // 由于数据库中没有spj，故读取文件中的spj,并转存到数据库
+            // 这个if是为了兼顾一个历史遗留问题，2023.5.6之前，spj全都保存为文件
+            // 新版本spj转存到数据库 problems表spj_code字段
+            $filepath = testdata_path($problem_id . '/spj/spj.cpp');
+            $spj = is_file($filepath) ? file_get_contents($filepath) : '';
+            DB::table('problems')->where('id', $problem_id)->update(['spj_code' => $spj]);
+        }
+        return $spj;
+    }
 }

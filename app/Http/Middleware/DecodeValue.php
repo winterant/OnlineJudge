@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\App;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class CheckFormDecode
+class DecodeValue
 {
     /**
      * Handle an incoming request.

@@ -37,7 +37,7 @@ class Kernel extends HttpKernel
 
             \App\Http\Middleware\SetGlobalVariable::class,
             \App\Http\Middleware\CheckUserLocked::class,
-            \App\Http\Middleware\CheckFormDecode::class,
+            \App\Http\Middleware\DecodeValue::class,
         ],
 
         'api' => [
@@ -52,7 +52,7 @@ class Kernel extends HttpKernel
 
             \App\Http\Middleware\SetGlobalVariable::class,
             \App\Http\Middleware\CheckUserLocked::class,
-            \App\Http\Middleware\CheckFormDecode::class,
+            \App\Http\Middleware\DecodeValue::class,
         ],
     ];
 

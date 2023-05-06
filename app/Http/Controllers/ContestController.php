@@ -191,7 +191,7 @@ class ContestController extends Controller
             ->select([
                 'cp.index', 'hidden', 'problem_id as id', 'title', 'description',
                 'language', // 代码填空的语言
-                'input', 'output', 'hint', 'source', 'time_limit', 'memory_limit', 'spj',
+                'input', 'output', 'hint', 'source', 'tags', 'time_limit', 'memory_limit', 'spj',
                 'type', 'fill_in_blank',
                 'cp.accepted', 'cp.solved', 'cp.submitted'
             ])
@@ -205,13 +205,13 @@ class ContestController extends Controller
         // 读取这道题的样例数据
         $samples = ProblemHelper::readSamples($problem->id);
 
-        // 特判代码是否存在
-        $hasSpj = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));
+        // 官方tag
+        $problem->tags = json_decode($problem->tags ?? '[]', true);// json => array
 
         // 获取本题的tag
         $tags = ProblemController::get_problem_tags($problem->id, 5);
 
-        return view('problem.problem', compact('contest', 'problem', 'samples', 'hasSpj', 'tags'));
+        return view('problem.problem', compact('contest', 'problem', 'samples', 'tags'));
     }
 
     // 竞赛提交记录

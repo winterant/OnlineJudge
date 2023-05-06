@@ -122,9 +122,6 @@
             @if ($problem->spj == 1)
               <span class="text-red">
                 {{ __('main.Special Judge') }}
-                @if (!$hasSpj)
-                  ({{ __('sentence.missing_spj') }})
-                @endif
               </span>
             @else
               {{ __('main.Text Comparison') }}
@@ -137,12 +134,23 @@
             /
             {{ $problem->submitted }}
           </div>
-          @if (count($tags) > 0 && (!isset($contest) || time() > strtotime($contest->end_time)))
-            <div style="min-width: 300px">{{ __('main.Tags') }}:
+          @if ((!isset($contest) || time() > strtotime($contest->end_time)))
+            <div style="min-width: 300px">{{ __('main.Official Tags') }}:
+              @foreach ($problem->tags as $item)
+              <span class="mx-2">
+                <i class="fa fa-tag" aria-hidden="true"></i>
+                <span class="text-nowrap">{{ $item }}</span>
+              </span>
+              @endforeach
+            </div>
+            <div style="min-width: 300px">{{ __('main.Users Marks') }}:
               @foreach ($tags as $item)
-                <span class="px-1 text-nowrap">{{ $item->name }}
-                  (<i class="fa fa-user-o" aria-hidden="true" style="padding:0 1px"></i>{{ $item->count }})
+              <span class="mx-2">
+                <i class="fa fa-tag" aria-hidden="true"></i>
+                <span class="text-nowrap">{{ $item->name }}
+                  (<i class="fa fa-user-o" aria-hidden="true"></i>{{ $item->count }})
                 </span>
+              </span>
               @endforeach
             </div>
           @endif

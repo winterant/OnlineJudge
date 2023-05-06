@@ -134,6 +134,8 @@ return [
     "Tag Collection"=> "标签收集",
     "Tag"           => "标签",
     "Tags"          => "标签",
+    "Official Tags" => "官方标签",
+    "Users Marks"   => "用户标记",
     "Input"         => "输入",
     "Tag Pool"      => "标签库",
     "Most Tagged"   => "标记最多",

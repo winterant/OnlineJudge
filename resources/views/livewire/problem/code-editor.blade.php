@@ -17,49 +17,9 @@
       @endif
 
       @if ($problem['type'] == 0)
-        {{-- 编程题 --}}
-        <div class="form-inline m-2">
-          {{-- 编程题可以选择语言 --}}
-          <div class="flex-nowrap mr-3">
-            <span class="mr-2">{{ __('main.Language') }}:</span>
-            <select id="lang_select" name="solution[language]" class="px-3 border"
-              style="text-align-last: center;border-radius: 4px;">
-              @foreach (config('judge.lang') as $key => $res)
-                @if (!isset($allow_lang) || ($allow_lang >> $key) & 1)
-                  <option value="{{ $key }}">{{ $res }}</option>
-                @endif
-              @endforeach
-            </select>
-          </div>
-
-          {{-- 自定义是否启用O2优化 --}}
-          <div id="checkbox_cpp_o2" class="form-inline custom-control custom-checkbox mr-3">
-            <input type="checkbox" name="cpp_o2" class="custom-control-input" id="customCheck">
-            <label class="custom-control-label pt-1" for="customCheck">{{ __('sentence.cpp_use_o2') }}</label>
-          </div>
-
-          {{-- 编程题可以提交文件 --}}
-          <div class="flex-nowrap mr-3">
-            <a id="selected_fname" class="btn btn-sm btn-info btn-outline-info m-0 px-1" href="javascript:"
-              onclick="$('#code_file').click()"
-              style="border-radius: 4px;font-size:0.6rem;padding-top:0.18rem!important;padding-bottom:0.18rem!important">{{ __('main.Upload File') }}</a>
-            {{-- <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i> --}}
-            <input type="file" class="form-control-file" id="code_file" accept=".txt .c, .cc, .cpp, .java, .py"
-              hidden />
-          </div>
-
-          {{-- 编辑框主题 --}}
-          <div class="flex-nowrap">
-            <span class="mr-2">{{ __('main.Theme') }}:</span>
-            <select id="theme_select" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
-              <option value="idea">idea</option>
-              <option value="mbo">mbo</option>
-            </select>
-          </div>
-        </div>
-        {{-- 代码框 --}}
-        <div class="form-group border mx-1">
-          <textarea id="code_editor" name="solution[code]" style="width: 100%;height:30rem">{{ $solution_code }}</textarea>
+        <div id="div-code-editor" style="height: calc(100vh - 110px)">
+          <x-code-editor code_name="solution[code]" lang_name="solution[language]" :code="$solution_code ?? ''"
+            :bitlanguages="$allow_lang ?? null" />
         </div>
       @elseif($problem['type'] == 1)
         {{-- 代码填空题 --}}
@@ -377,119 +337,7 @@
     }).mount('#code_editor_app')
   </script>
 
-
-  @if ($problem['type'] == 0)
-    {{-- ==================== 编程题：代码编辑框以及表单的初始化和监听 ================== --}}
-    <script type="text/javascript">
-      $(function() {
-        // 代码编辑器的初始化配置
-        var code_editor = CodeMirror.fromTextArea(document.getElementById("code_editor"), {
-          // autofocus: true, // 初始自动聚焦
-          indentUnit: 4, //自动缩进的空格数
-          indentWithTabs: true, //在缩进时，是否需要把 n*tab宽度个空格替换成n个tab字符，默认为false 。
-          lineNumbers: true, //显示行号
-          matchBrackets: true, //括号匹配
-          autoCloseBrackets: true, //自动补全括号
-          theme: 'idea', // 编辑器主题
-        });
-
-        // 代码编辑框高度
-        function resize_code_editor() {
-          code_editor.setSize("auto", (document.documentElement.clientHeight - 180) + "px")
-        }
-        resize_code_editor()
-        window.addEventListener("resize", resize_code_editor)
-
-        // 监听代码改动， 将内容同步到textarea
-        code_editor.on("change", function() {
-          $("#code_editor").val(code_editor.getValue())
-        })
-
-        //监听用户选中的主题
-        if (localStorage.getItem('code_editor_theme')) {
-          $("#theme_select").val(localStorage.getItem('code_editor_theme'))
-          code_editor.setOption('theme', localStorage.getItem('code_editor_theme'))
-        }
-        $("#theme_select").change(function() {
-          var theme_name = $(this).children('option:selected').val(); //当前选中的主题
-          code_editor.setOption('theme', theme_name)
-          localStorage.setItem('code_editor_theme', theme_name)
-        })
-
-        // ==================== 监听用户选中的语言，实时修改代码提示框 ======================
-        function listen_lang_selected() {
-          // var langs = JSON.parse('{!! json_encode(config('judge.lang')) !!}') // 系统设定的语言候选列表
-          var lang = $("#lang_select").children('option:selected').val(); // 当前选中的语言下标
-          localStorage.setItem('code_lang', lang)
-
-          if (lang == 0) {
-            code_editor.setOption('mode', 'text/x-csrc')
-          } else if (lang == 1 || (5 <= lang && lang <= 8)) {
-            code_editor.setOption('mode', 'text/x-c++src')
-          } else if (lang == 2) {
-            code_editor.setOption('mode', 'text/x-java')
-          } else if (lang == 3) {
-            code_editor.setOption('mode', 'text/x-python')
-          } else if (lang == 10) {
-            code_editor.setOption('mode', 'text/x-go')
-          }
-
-          // C/C++显示选项：启用O2优化
-          if (lang <= 1 || (5 <= lang && lang <= 8))
-            $("#checkbox_cpp_o2").show()
-          else
-            $("#checkbox_cpp_o2").hide()
-        }
-        // 初始切换为本地缓存的语言
-        // 情况1: 已缓存选中语言  且题目允许
-        if (localStorage.getItem('code_lang') !== null && $("option[value=" + localStorage.getItem('code_lang') + "]")
-          .length > 0)
-          $("#lang_select").val(localStorage.getItem('code_lang'))
-        listen_lang_selected()
-        // 情况2: 用户手动切换了语言
-        $("#lang_select").change(function() {
-          listen_lang_selected()
-        });
-
-        // ======================== 监听用户选中的文件，实时读取 =========================
-        $("#code_file").on("change", function() {
-          $('#selected_fname').html(this.files[0].name);
-          var reader = new FileReader();
-          reader.readAsText(this.files[0], "UTF-8"); // 先尝试以UTF-8读取
-          reader.onload = () => {
-            if (reader.result.indexOf('�') !== -1) {
-              reader.readAsText(this.files[0], 'GBK') // 重试以GBK读取
-              return
-            }
-            code_editor.setValue(reader.result)
-          }
-        })
-
-        // ======================== 初始化填充代码 ===============================
-        let solution_code = $('#code_editor').val() // 后端返回的代码
-        let local_code_key =
-          "solution_code_user{{ Auth::id() ?? null }}_problem{{ $problem['id'] }}_contest{{ $contest_id ?? 0 }}"
-        if (solution_code != '')
-          code_editor.setValue(solution_code) // 后端返回了代码
-        else if (code_editor.getValue() == '' && localStorage.getItem(local_code_key)) // 有本地缓存的代码
-          code_editor.setValue(localStorage.getItem(local_code_key)) // 本地缓存了代码
-        else // 本题从未缓存代码，给予提示语
-          code_editor.setValue('')
-
-        // ===========================监听代码输入，自动补全代码 =============================
-        code_editor.on('change', (instance, change) => {
-          // 自动补全的时候，也会触发change事件，所有判断一下，以免死循环，正则是为了不让空格、换行之类的也提示
-          // 通过change对象你可以自定义一些规则去判断是否提示
-          if (change.origin !== 'complete' && change.text.length < 2 && /\w|\./g.test(change.text[
-              0])) {
-            instance.showHint()
-          }
-          // 代码修改时顺便保存本地，防止丢失
-          localStorage.setItem(local_code_key, code_editor.getValue())
-        });
-      })
-    </script>
-  @elseif($problem['type'] == 1)
+  @if ($problem['type'] == 1)
     {{-- ================ 代码填空题：将需要填空的位置设置为input框 ============== --}}
     <script type="text/javascript">
       // 代码填空框自动加长

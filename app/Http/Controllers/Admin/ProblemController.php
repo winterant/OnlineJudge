@@ -69,10 +69,9 @@ class ProblemController extends Controller
             if ($problem == null)
                 return view('message', ['msg' => '该题目不存在或操作有误!', 'success' => false, 'is_admin' => true]);
 
+            $problem->tags = implode(',', json_decode($problem->tags ?? '[]', true)); // json => string
             $samples = ProblemHelper::readSamples($problem->id);
-            //看看有没有特判文件
-            $spj_exist = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));
-            return view('admin.problem.edit', compact('pageTitle', 'problem', 'samples', 'spj_exist'));
+            return view('admin.problem.edit', compact('pageTitle', 'problem', 'samples'));
         }
 
         // 提交修改好的题目
@@ -82,6 +81,20 @@ class ProblemController extends Controller
             $problem = $request->input('problem');
             if (!isset($problem['spj'])) // 默认不特判
                 $problem['spj'] = 0;
+
+            // 标签使用json保存。同时，不存在的标签插入到标签库
+            $problem['tags'] = json_encode(explode(',', $problem['tags']));
+            foreach (json_decode($problem['tags'], true) as $tag_name) {
+                if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
+                    $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name]);
+                else
+                    $tid = DB::table('tag_pool')->where('name', $tag_name)->first()->id;
+                $tag_marks[] = ['problem_id' => $id, 'user_id' => Auth::id(), 'tag_id' => $tid];
+            }
+            foreach ($tag_marks ?? [] as $mark) {
+                DB::table('tag_marks')->updateOrInsert($mark, $mark);
+            }
+            // ================================================================
 
             $problem['updated_at'] = date('Y-m-d H:i:s');
             $update_ret = DB::table('problems')
@@ -101,25 +114,8 @@ class ProblemController extends Controller
                 $id,
                 route('admin.problem.test_data', 'pid=' . $id)
             );
-
-            // 保存spj
-            $spjFile = $request->file('spj_file');
-            if ($spjFile != null && $spjFile->isValid()) {
-                $spjFile->move(testdata_path($id . '/spj'), 'spj.cpp');  // 保存特判代码文件spj.cpp
-                // $spj_compile = compile_cpp(testdata_path($id . '/spj/spj.cpp'), testdata_path($id . '/spj/spj')); //编译特判代码
-                // $msg .= '<br><br>[ 特判程序编译信息 ]:<br>' . $spj_compile;
-            }
             return view('message', ['msg' => $msg, 'success' => true, 'is_admin' => true]);
         }
-    }
-
-    public function get_spj($pid)
-    {
-        header('Content-type: text/plain; charset=UTF-8');
-        header("Content-Disposition:attachement;filename=spj" . $pid . ".cpp"); //提示下载
-        $filepath = testdata_path($pid . '/spj/spj.cpp');
-        $spj_code = is_file($filepath) ? file_get_contents($filepath) : null;
-        return $spj_code;
     }
 
     //管理员修改题目状态  0密封 or 1公开
@@ -308,6 +304,8 @@ class ProblemController extends Controller
                 'hint'        => $node->hint,
                 'source'      => $node->source,
                 'spj'         => $node->spj ? 1 : 0,
+                'spj_code'    => $node->spj ?? '',
+                'tags'        => json_encode(explode(',', $node->tags)),
                 'time_limit'  => $node->time_limit * (strtolower($node->time_limit->attributes()->unit) == 's' ? 1000 : 1), //本oj用ms
                 'memory_limit' => $node->memory_limit / (strtolower($node->memory_limit->attributes()->unit) == 'kb' ? 1024 : 1),
                 'creator'     => Auth::id()
@@ -324,24 +322,31 @@ class ProblemController extends Controller
             }
             $pid = DB::table('problems')->insertGetId($problem);
             if (!$first_pid) $first_pid = $pid;
-            //下面保存sample，test，spj
+            //下面保存sample，test
             $samp_inputs = (array)($node->children()->sample_input);
             $samp_outputs = (array)($node->children()->sample_output);
             $test_inputs = (array)($node->children()->test_input);
             $test_outputs = (array)($node->children()->test_output);
             ProblemHelper::saveSamples($pid, $samp_inputs, $samp_outputs); //保存样例
             ProblemHelper::saveTestData($pid, $test_inputs, $test_outputs); //保存测试数据
-            if ($node->spj) {
-                $dir = testdata_path($pid . '/spj'); // 特判文件夹
-                if (!is_dir($dir))
-                    mkdir($dir, 0777, true);  // 文件夹不存在则创建
-                file_put_contents($dir . '/spj.cpp', $node->spj);  // 保存代码文件
-                // compile_cpp($dir . '/spj.cpp', $dir . '/spj');  // 编译特判代码
+
+            // 标签使用json保存。同时，不存在的标签插入到标签库
+            foreach (explode(',', $node->tags) as $tag_name) {
+                if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
+                    $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name]);
+                else
+                    $tid = DB::table('tag_pool')->where('name', $tag_name)->first()->id;
+                $tag_marks[] = ['problem_id' => $pid, 'user_id' => Auth::id(), 'tag_id' => $tid];
             }
+            foreach ($tag_marks ?? [] as $mark) {
+                DB::table('tag_marks')->updateOrInsert($mark, $mark);
+            }
+            // ================================================================
+
             foreach ($node->solution as $solu) {
                 $language = $solu->attributes()->language;
                 if ($language == 'Python') $language .= '3';  // 本oj只支持python3
-                if ($language == 'C++') $language .= '14';    // 默认C++14
+                if ($language == 'C++') $language .= '14 -O2';    // 默认C++14 -O2
                 if ($language == 'C') $language .= '17';      // 默认C17
                 $lang = array_search($language, config('judge.lang')); // 查出编程语言的代号
                 //保存提交记录
@@ -361,7 +366,6 @@ class ProblemController extends Controller
                     ];
                     $solution['id'] = DB::table('solutions')->insertGetId($solution);
                     // 发送到判题队列
-                    $solution['cpp_o2'] = true; // O2优化
                     dispatch(new Judger($solution));
                 }
             }
@@ -461,16 +465,20 @@ class ProblemController extends Controller
             }
             //spj language
             if ($problem->spj) {
-                $filepath = testdata_path($problem->id . '/spj/spj.cpp');
-                $spj_code = is_file($filepath) ? file_get_contents($filepath) : '';
+                $spj_code = ProblemHelper::readSpj($problem->id);
 
                 $cpp = $dom->createElement('spj');
                 $attr = $dom->createAttribute('language');
-                $attr->appendChild($dom->createTextNode('C++'));
+                $attr->appendChild($dom->createTextNode(config("judge.lang.{$problem->spj_language}"))); // spj 语言
                 $cpp->appendChild($attr);
                 $cpp->appendChild($dom->createCDATASection($spj_code));
                 $item->appendChild($cpp);
             }
+            // tags
+            $tags = $dom->createElement('tags');
+            $tags->appendChild($dom->createCDATASection(implode(',', json_decode($problem->tags ?? '[]', true))));
+            $item->appendChild($tags);
+
             //solution language
             $solutions = DB::table('solutions')
                 ->select('language', 'code')

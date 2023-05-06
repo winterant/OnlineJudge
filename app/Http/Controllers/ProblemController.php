@@ -40,15 +40,15 @@ class ProblemController extends Controller
             ->distinct()
             ->paginate(request()->has('perPage') ? request('perPage') : 100);
 
-        // 获取题目标签
+        //  ================== 获取题目标签 =======================
         foreach ($problems as &$problem) {
-            $problem->tags = $this::get_problem_tags($problem->id);
+            $problem->tags = $this::get_problem_tags($problem->id);// 用户标记的（含出题人标记过的）
         }
 
         $tag_pool = DB::table('tag_pool')
             ->select('id', 'name')
             ->where('hidden', 0)
-            ->orderBy('id')
+            ->orderBy('name')
             ->get();
         return view('problem.problems', compact('problems', 'tag_pool'));
     }
@@ -64,7 +64,7 @@ class ProblemController extends Controller
         $problem = DB::table('problems')->select([
             'hidden', 'id', 'title', 'description',
             'language', // 代码填空的语言
-            'input', 'output', 'hint', 'source', 'time_limit', 'memory_limit', 'spj',
+            'input', 'output', 'hint', 'source', 'tags', 'time_limit', 'memory_limit', 'spj',
             'type', 'fill_in_blank',
             'accepted', 'solved', 'submitted'
         ])->find($id);
@@ -78,13 +78,13 @@ class ProblemController extends Controller
         }
 
         //读取样例文件
-        $samples =ProblemHelper::readSamples($id);
-
-        // 是否存在特判代码
-        $hasSpj = file_exists(testdata_path($problem->id . '/spj/spj.cpp'));
+        $samples = ProblemHelper::readSamples($id);
 
         // 获取本题的tag（有缓存）
         $tags = $this::get_problem_tags($problem->id, 5);
+
+        // 官方tag
+        $problem->tags = json_decode($problem->tags ?? '[]', true); // json => array
 
         // 可能指定了solution代码
         $solution = DB::table('solutions')->find(request('solution') ?? -1);
@@ -92,7 +92,7 @@ class ProblemController extends Controller
             $solution_code = $solution->code ?? null;
         else
             $solution_code = null;
-        return view('problem.problem', compact('problem', 'samples', 'hasSpj', 'tags'));
+        return view('problem.problem', compact('problem', 'samples', 'tags'));
     }
 
     /**
@@ -212,8 +212,8 @@ class ProblemController extends Controller
     public static function get_problem_tags(int $problem_id, int $limit = 3)
     {
         return  Cache::remember(
-            sprintf('problem:%d:tags:limit:%d', $problem_id, $limit),
-            1200, // 缓存20分钟
+            sprintf('problem:%d:user-tags:limit:%d', $problem_id, $limit),
+            300, // 缓存5分钟
             function () use ($problem_id, $limit) {
                 $tags = DB::table('tag_marks as tm')
                     ->join('tag_pool as tp', 'tp.id', '=', 'tm.tag_id')
@@ -223,7 +223,7 @@ class ProblemController extends Controller
                     ->groupBy('tp.id')
                     ->orderByDesc('count')
                     ->limit($limit)
-                    ->get();
+                    ->get()->toArray();
                 return $tags ?? [];
             }
         );

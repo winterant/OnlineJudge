@@ -135,6 +135,8 @@ return [
     "Tag Collection"=> "Tag Collection",
     "Tag"           => "Tag",
     "Tags"          => "Tags",
+    "Official Tags" => "Official Tags",
+    "Users Marks"   => "Users Marks",
     "Input"         => "Input",
     "Tag Pool"      => "Tag Pool",
     "Most Tagged"   => "Most Tagged",

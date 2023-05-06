@@ -27,12 +27,15 @@ return new class extends Migration
         // problems
         Schema::table('problems', function (Blueprint $table) {
             // 增加字段 tags
-            if (!Schema::hasColumn('problems', 'tag')) {
+            if (!Schema::hasColumn('problems', 'tags')) {
                 $table->json('tags')->nullable();
             }
             // 增加字段 spj_code
             if (!Schema::hasColumn('problems', 'spj_code')) {
-                $table->json('spj_code')->nullable();
+                $table->text('spj_code')->nullable();
+            }
+            if (!Schema::hasColumn('problems', 'spj_language')) {
+                $table->integer('spj_language')->default(14); // C++20 -O2
             }
         });
 

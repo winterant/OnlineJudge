@@ -123,8 +123,6 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
         Route::any('problems/{id}/update', 'Admin\ProblemController@update')->name('problem.update_withId')->middleware('Permission:admin.problem.update,problems.{id}.creator');
         // todo 修改hidden需要定制api
         Route::post('problem/update-hidden', 'Admin\ProblemController@update_hidden')->name('problem.update_hidden')->middleware('Permission:admin.problem.update');
-        // todo 获取spj需要定制api
-        Route::get('problems/{id}/get_spj', 'Admin\ProblemController@get_spj')->name('problem.get_spj')->middleware('Permission:admin.problem.view');
 
         // ====================== Manage problem tag
         Route::get('problem/tags', 'Admin\ProblemController@tags')->name('problem.tags')->middleware('Permission:admin.problem_tag.view');

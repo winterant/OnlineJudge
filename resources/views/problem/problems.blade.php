@@ -60,14 +60,14 @@
                           (<span class="text-red">{{ trans('main.Hidden') }}</span>)
                         @endif
                       </td>
-                      <td nowrap>
+                      <td>
                         <a title="{{ $item->source }}">{{ $item->source }}</a>
                       </td>
                       <td nowrap>
                         {{ $item->accepted }} / {{ $item->submitted }}
                         ({{ round(($item->accepted / max(1.0, $item->submitted)) * 100) }}%)
                       </td>
-                      <td nowrap>
+                      <td>
                         @foreach ($item->tags as $tag)
                           <div class="d-inline text-nowrap mr-1">
                             <i class="fa fa-tag" aria-hidden="true"></i><a

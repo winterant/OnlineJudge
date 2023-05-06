@@ -80,6 +80,33 @@ return [
         ]),
         'run' => array_merge($defaultRun, [])
     ],
+    12 => [
+        'name' => 'C++98 -O2',
+        'filename' => 'Main.cpp',
+        'env'=>$defaultEnv,
+        'compile' => array_merge($defaultCompile, [
+            'command' => '/usr/bin/g++ Main.cpp -std=c++98 -O2 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
+        ]),
+        'run' => array_merge($defaultRun, [])
+    ],
+    13 => [
+        'name' => 'C++14 -O2',
+        'filename' => 'Main.cpp',
+        'env'=>$defaultEnv,
+        'compile' => array_merge($defaultCompile, [
+            'command' => '/usr/bin/g++ Main.cpp -std=c++14 -O2 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
+        ]),
+        'run' => array_merge($defaultRun, [])
+    ],
+    14 => [
+        'name' => 'C++20 -O2',
+        'filename' => 'Main.cpp',
+        'env'=>$defaultEnv,
+        'compile' => array_merge($defaultCompile, [
+            'command' => '/usr/bin/g++ Main.cpp -std=c++20 -O2 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
+        ]),
+        'run' => array_merge($defaultRun, [])
+    ],
 
     2 => [
         'name' => 'Java8',
@@ -108,7 +135,7 @@ return [
         ])
     ],
 
-    10 => [
+    18 => [
         'name' => 'Golang',
         'filename' => 'Main.go',
         'env'=> array_merge($defaultEnv,[
