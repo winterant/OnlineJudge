@@ -210,7 +210,7 @@
             <div class="custom-control custom-checkbox mx-2">
               <input type="checkbox" name="allow_lang" value="{{ $lang }}"
                 class="lang_checkbox custom-control-input" id="allow_lang{{ $lang }}"
-                @if ((!isset($contest) && $lang == 7) || (isset($contest) && ($contest->allow_lang >> $lang) & 1)) checked @endif>
+                @if ((!isset($contest) && in_array($lang, [7, 13])) || (isset($contest) && ($contest->allow_lang >> $lang) & 1)) checked @endif>
               <label class="custom-control-label pt-1" for="allow_lang{{ $lang }}">{{ $name }}</label>
             </div>
           @endforeach
