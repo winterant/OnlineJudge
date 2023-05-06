@@ -83,16 +83,18 @@ class ProblemController extends Controller
                 $problem['spj'] = 0;
 
             // 标签使用json保存。同时，不存在的标签插入到标签库
-            $problem['tags'] = json_encode(explode(',', $problem['tags']));
-            foreach (json_decode($problem['tags'], true) as $tag_name) {
-                if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
-                    $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name]);
-                else
-                    $tid = DB::table('tag_pool')->where('name', $tag_name)->first()->id;
-                $tag_marks[] = ['problem_id' => $id, 'user_id' => Auth::id(), 'tag_id' => $tid];
-            }
-            foreach ($tag_marks ?? [] as $mark) {
-                DB::table('tag_marks')->updateOrInsert($mark, $mark);
+            if (!empty($problem['tags'])) {
+                $problem['tags'] = json_encode(explode(',', $problem['tags']));
+                foreach (json_decode($problem['tags'], true) as $tag_name) {
+                    if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
+                        $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name]);
+                    else
+                        $tid = DB::table('tag_pool')->where('name', $tag_name)->first()->id;
+                    $tag_marks[] = ['problem_id' => $id, 'user_id' => Auth::id(), 'tag_id' => $tid];
+                }
+                foreach ($tag_marks ?? [] as $mark) {
+                    DB::table('tag_marks')->updateOrInsert($mark, $mark);
+                }
             }
             // ================================================================
 
@@ -305,7 +307,7 @@ class ProblemController extends Controller
                 'source'      => $node->source,
                 'spj'         => $node->spj ? 1 : 0,
                 'spj_code'    => $node->spj ?? '',
-                'tags'        => json_encode(explode(',', $node->tags)),
+                'tags'        => isset($node->tags) && $node->tags != null ? json_encode(explode(',', $node->tags)) : null,
                 'time_limit'  => $node->time_limit * (strtolower($node->time_limit->attributes()->unit) == 's' ? 1000 : 1), //本oj用ms
                 'memory_limit' => $node->memory_limit / (strtolower($node->memory_limit->attributes()->unit) == 'kb' ? 1024 : 1),
                 'creator'     => Auth::id()
