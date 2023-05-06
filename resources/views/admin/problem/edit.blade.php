@@ -81,7 +81,7 @@
         </div>
 
         <div id="text_fill_in_blank" class="form-group " style="height:40rem">
-          <x-code-editor code_name="problem[fill_in_blank]" lang_name="problem[language]" :lang="$problem->language"
+          <x-code-editor code_name="problem[fill_in_blank]" lang_name="problem[language]" :lang="$problem->language ?? 13"
             :code="$problem->fill_in_blank ?? ''" title="代码填空（请将需要填空的代码替换为英文输入双问号，即??）" />
         </div>
 
@@ -125,7 +125,8 @@
 
         <div class="input-group mt-3">
           <span style="margin: auto">题目标签：</span>
-          <input type="text" name="problem[tags]"  value="{{ $problem->tags ?? '' }}" class="form-control" placeholder="出题人标记该题涉及的知识点，填写多个请用英文逗号隔开">
+          <input type="text" name="problem[tags]" value="{{ $problem->tags ?? '' }}" class="form-control"
+            placeholder="出题人标记该题涉及的知识点，填写多个请用英文逗号隔开">
         </div>
 
         <div class="border mt-3">
@@ -136,8 +137,8 @@
           </div>
 
           <div id="div-spj-code" style="height:40rem">
-            <x-code-editor code_name="problem[spj_code]" lang_name="problem[spj_language]" :lang="$problem->spj_language"
-              :code="App\Http\Helpers\ProblemHelper::readSpj($problem->id)" title="特判代码" />
+            <x-code-editor code_name="problem[spj_code]" lang_name="problem[spj_language]" :lang="$problem->spj_language ?? 14"
+              :code="isset($problem) ? App\Http\Helpers\ProblemHelper::readSpj($problem->id) : null" title="特判代码" />
           </div>
           <div class="m-2 p-2 alert-info">
             附《<a href="https://winterant.github.io/OnlineJudge/web/spj.html" target="_blank">特判使用教程</a>》
