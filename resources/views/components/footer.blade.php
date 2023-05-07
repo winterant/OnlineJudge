@@ -1,9 +1,17 @@
 <hr>
-<div id="footer" class="text-center pb-3">
+<div id="footer" class="text-center my-3">
   <div>
     <span id="localtime">{{ date('Y-m-d H:i:s') }}</span>
+    <span class="mx-2">|</span>
+    <a href="https://winterant.github.io/OnlineJudge/web/" target="_blank">{{ __('main.Introduction') }}</a>
+    <span class="mx-2">|</span>
+    <a href="https://winterant.github.io/OnlineJudge/web/judge.html" target="_blank">
+      {{ __('main.Judge Service') }}
+    </a>
+    <span class="mx-2">|</span>
+    <a href="https://winterant.github.io/OnlineJudge/web/result.html" target="_blank">{{ __('main.Judge Result') }}</a>
     @if ($footer_info = get_setting('footer_info'))
-      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <span class="mx-2">|</span>
       {{ $footer_info }}
     @endif
   </div>

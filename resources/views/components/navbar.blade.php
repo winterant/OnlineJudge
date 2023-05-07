@@ -43,7 +43,7 @@
     </li>
 
     {{-- 下拉菜单 --}}
-    <li class="nav-item dropdown">
+    {{-- <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle text-nowrap p-2" href="#" id="contestDropdown" data-toggle="dropdown">
         <i class="fa fa-info-circle" aria-hidden="true">&nbsp;{{ trans('main.About') }}</i>
       </a>
@@ -64,7 +64,7 @@
         <a class="dropdown-item" href="https://github.com/winterant/OnlineJudge"
           target="_blank">{{ __('main.Open-Source Code') }}</a>
       </div>
-    </li>
+    </li> --}}
 
   </ul>
 
