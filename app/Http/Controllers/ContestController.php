@@ -71,7 +71,7 @@ class ContestController extends Controller
         if (request()->has('perPage')) {
             Cookie::queue('unencrypted_contests_default_perpage', request('perPage'), 5256000); // 10 years
         } else {
-            $_GET['perPage'] = (request()->cookie('unencrypted_contests_default_perpage') ?? 10);
+            request()->offsetSet('perPage', (request()->cookie('unencrypted_contests_default_perpage') ?? 10));
         }
 
         $contests = DB::table('contests as c')
@@ -206,7 +206,7 @@ class ContestController extends Controller
         $samples = ProblemHelper::readSamples($problem->id);
 
         // 官方tag
-        $problem->tags = json_decode($problem->tags ?? '[]', true);// json => array
+        $problem->tags = json_decode($problem->tags ?? '[]', true); // json => array
 
         // 获取本题的tag
         $tags = ProblemController::get_problem_tags($problem->id, 5);
@@ -283,9 +283,9 @@ class ContestController extends Controller
 
         // ====================== 解析用户请求的截止榜单 ==============
         if (!request()->has('end') || !in_array(request('end'), array_keys($rank_time))) // 不合法的参数改为默认值real_time
-            $_GET['end'] = 'real_time';
+            request()->offsetSet('end', 'real_time');
         if ($rank_time['real_time']['able'] === false) // real_time不允许查看，则切换为封榜
-            $_GET['end'] = 'locked_time';
+            request()->offsetSet('end', 'locked_time');
 
 
         // ======================= 获取题单 =========================

@@ -87,9 +87,9 @@ class GroupController extends Controller
         $group = DB::table('groups as g')->find($group_id);
 
         // $identities = [0 => '已退出', 1 => '申请加入', 2 => '学生', 3 => '班长', 4 => '管理员'];
-        if (!request()->has('identity'))
-            $_GET['identity'] = '2,3,4'; // 以逗号分隔的数字,身份代号
-
+        if (!request()->has('identity')) {
+            request()->offsetSet('identity', '2,3,4'); // 以逗号分隔的数字,身份代号
+        }
         $members = DB::table('group_users as gu')
             ->join('users as u', 'u.id', '=', 'gu.user_id')
             ->select(['u.username', 'u.nick', 'u.school', 'u.class', 'u.id as user_id', 'gu.id', 'gu.identity', 'gu.created_at'])

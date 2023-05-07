@@ -29,11 +29,12 @@ class Solutions extends Component
         $user = Auth::user();
 
         // cookie记下默认每页显示的条数
-        $_GET['perPage'] = min(request('perPage') ?? 10, 100); // 防止传参>100导致服务器压力大
         if (request()->has('perPage')) {
-            Cookie::queue('unencrypted_solutions_default_perpage', request('perPage'), 5256000); // 10 years
+            $perPage = min(request('perPage') ?? 10, 100); // 防止传参>100导致服务器压力大
+            Cookie::queue('unencrypted_solutions_default_perpage', $perPage, 5256000); // 10 years
         } else {
-            $_GET['perPage'] = (request()->cookie('unencrypted_solutions_default_perpage') ?? 10);
+            $perPage = (request()->cookie('unencrypted_solutions_default_perpage') ?? 10);
+            request()->offsetSet('perPage', $perPage); // 前端分页用到
         }
 
         // ====================== 读取提交记录 ========================
