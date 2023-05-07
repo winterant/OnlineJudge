@@ -53,7 +53,7 @@ class Judger implements ShouldQueue
 
         // 获取题目的相关属性
         $problem = (array)(DB::table('problems')
-            ->select(['id', 'time_limit', 'memory_limit', 'spj','spj_language']) // MS,MB,int
+            ->select(['id', 'time_limit', 'memory_limit', 'spj', 'spj_language']) // MS,MB,int
             ->find($this->solution['problem_id']));
 
         // 获取编译运行指令
@@ -233,16 +233,20 @@ class Judger implements ShouldQueue
             } else {
                 $not_ac++;
                 if ($not_ac == 1) // 首次遇到的错误作为本solution的错误
-                    $this->update_db_solution(['result' => $result, 'pass_rate' => $ac / count($tests), 'error_info' => $error_info]);
+                    $this->update_db_solution(['result' => $result, 'error_info' => "[Test {$k}]\n" . $error_info, 'wrong_data' => $k]);
                 // 如果是acm模式，遇到错误，直接终止
                 if ($this->solution['judge_type'] == 'acm')
                     break;
             }
         }
-        if ($ac > 0 && $not_ac == 0) // 该solution完全正确，要告诉数据库
-            $this->update_db_solution(['result' => 4, 'pass_rate' => $ac / ($ac + $not_ac), 'time' => $max_time, 'memory' => $max_memory]);
-        else // 没有测试数据，系统错误
+        if ($ac == 0 && $not_ac == 0) // 没有测试数据，系统错误
             $this->update_db_solution(['result' => 14, 'pass_rate' => 0, 'error_info' => 'There is no test data, please contact the administrator to add test data.']);
+        else { // 记录下通过率和结果
+            $record = ['pass_rate' => $ac / ($ac + $not_ac), 'time' => $max_time, 'memory' => $max_memory];
+            if ($not_ac == 0) // 该solution完全正确
+                $record['result'] = 4;
+            $this->update_db_solution($record);
+        }
     }
 
     // 特判
