@@ -334,9 +334,10 @@ class ProblemController extends Controller
             ProblemHelper::saveTestData($pid, $test_inputs, $test_outputs); //保存测试数据
 
             // 不存在的标签插入到标签库
-            foreach (explode(',', $node->tags) as $tag_name) {
-                DB::table('tag_pool')->updateOrInsert(['name' => $tag_name], ['name' => $tag_name]);
-            }
+            if (isset($node->tags) && $node->tags != null)
+                foreach (explode(',', $node->tags) as $tag_name) {
+                    DB::table('tag_pool')->updateOrInsert(['name' => $tag_name], ['name' => $tag_name]);
+                }
             // ================================================================
 
             foreach ($node->solution as $solu) {
