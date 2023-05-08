@@ -55,7 +55,7 @@
                     <td nowrap>{{ $u->school }} &nbsp; {{ $u->class }}</td>
                     <td nowrap>{{ $u->nick }}</td>
                     <td nowrap>
-                      @php($ident = [0 => '已禁用', 1 => '申请加入', 2 => '学生', /* 3 => '学生班长', */ 4 => '管理员'])
+                      @php($display_identities = [0 => '已禁用', 1 => '申请加入', 2 => '学生',  3 => '学生班长',  4 => '管理员'])
                       @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
                         <div class="form-inline">
                           <select class="border" onchange="update_members_identity([{{ $u->user_id }}], $(this).val())"
@@ -73,7 +73,7 @@
                           </select>
                         </div>
                       @else
-                        {{ $ident[intval($u->identity)] }}
+                        {{ $display_identities[intval($u->identity)] }}
                       @endif
                     </td>
                     <td nowrap>{{ $u->created_at }}</td>
@@ -264,7 +264,7 @@
   <script type="text/javascript">
     // 批量修改成员的身份
     function update_members_identity(user_ids, ident, toberm) {
-      let identities = @json($ident ?? []);
+      let identities = @json($display_identities ?? []);
       let tip = '';
       if (ident == 0)
         tip = '该用户被禁用后，无法进入该群组，无法自行恢复。管理员可以从【已禁用】成员页面看到该成员，可以查看其学习信息，可以解除禁用。确定禁用？'

@@ -57,7 +57,7 @@
             <div class="d-inline text-nowrap">
               <i class="fa fa-tag" aria-hidden="true"></i>
               <a href="javascript:"
-                onclick="add_tag_input($('#add_tag_btn'),'{{ $item->name }}')">{{ $item->name }}</a>
+                onclick="add_tag_input($('#add_tag_btn'),'{{ $item['name'] }}')">{{ $item['name'] }}</a>
             </div>
           @endforeach
         </div>
