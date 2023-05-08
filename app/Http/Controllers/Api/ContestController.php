@@ -211,11 +211,16 @@ class ContestController extends Controller
             ];
         }
         $cate = DB::table('contest_cate')->find($id);
+        // 处理此类别下的所有竞赛，移动到父类别（若无则移动到未分类）
+        $contest_ids = DB::table('contests')->where('cate_id', $cate->id)->pluck('id');
+        foreach ($contest_ids as $ci)
+            $this->update_cate_id($ci, $cate->parent_id); // 设为父类别或未分类
         // order字段矫正（比当前类别大的，-1）
         DB::table('contest_cate')
             ->where('parent_id', $cate->parent_id)
             ->where('order', '>', $cate->order)
             ->decrement('order');
+        // 从数据库中删除该类别
         DB::table('contest_cate')->where('id', $id)->delete();
         return [
             'ok' => 1,

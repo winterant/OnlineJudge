@@ -28,7 +28,6 @@ class CreateProblemsTable extends Migration
             $table->text('fill_in_blank')->nullable();
             $table->integer('language')->default(0)->comment('代码填空的语言');
             $table->boolean('spj')->default(0); // 是否spj
-            $table->text('spj_code')->nullable();
             $table->integer('spj_language')->default(14); // C++20 -O2
             $table->integer('time_limit')->default(1000)->comment('MS');
             $table->integer('memory_limit')->default(1024)->comment('MB');

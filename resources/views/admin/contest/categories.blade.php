@@ -201,7 +201,7 @@
     }
 
     function delete_contest_cate(url) {
-      Notiflix.Confirm.Show('删除', '删除该类别后，属于该类别的竞赛将被设为【未分类】状态，确定删除？', '确定', '取消', function() {
+      Notiflix.Confirm.Show('删除', '删除该类别后，该类别下的所有竞赛将被移动到其【父类别】，若父类别不存在则移入【未分类】。确定删除？', '确定', '取消', function() {
         $.ajax({
           method: 'delete',
           url: url,
