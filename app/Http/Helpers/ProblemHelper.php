@@ -168,7 +168,7 @@ class ProblemHelper
             $res = json_decode(DB::table('problems')->find($problem_id)->tags ?? '[]', true); // json => array
             foreach ($res as $tag) {
                 $tags[] = [
-                    'id' => DB::table('tag_pool')->where('name', $tag)->value('id'),
+                    'id' => DB::table('tag_pool')->where('name', $tag)->value('id') ?? 0,
                     'name' => $tag, 'count' => 0
                 ];
                 $tag_names[] = $tag; // 记下标签名
