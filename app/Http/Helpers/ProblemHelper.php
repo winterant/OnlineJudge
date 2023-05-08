@@ -2,6 +2,7 @@
 
 namespace App\Http\Helpers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProblemHelper
@@ -153,5 +154,46 @@ class ProblemHelper
         // DB::table('problems')->where('id', $problem_id)->update(['spj_code' => $spj]);
         // }
         return $spj;
+    }
+
+    /**
+     * 获取某题目的标签，官方+用户收集
+     * @return [[id=>int,name=>string,count=>int], ...]
+     */
+    public static function getTags(int $problem_id, bool $official = true, bool $informal = true, int $informal_limit = 3)
+    {
+        $tags = [];  // [[id=>int,name=>string,count=>int],...]
+        if ($official) {
+            $res = json_decode(DB::table('problems')->find($problem_id)->tags ?? '[]', true); // json => array
+            foreach ($res as $tag)
+                $tags[] = [
+                    'id' => DB::table('tag_pool')->where('name', $tag)->value('id'),
+                    'name' => $tag, 'count' => 0
+                ];
+        }
+        if ($informal) {
+            $informal_tags = Cache::remember(
+                sprintf('problem:%d:user-tags:limit:%d', $problem_id, $informal_limit),
+                300, // 缓存5分钟
+                function () use ($problem_id, $informal_limit) {
+                    $tags = DB::table('tag_marks as tm')
+                        ->join('tag_pool as tp', 'tp.id', '=', 'tm.tag_id')
+                        ->select(['tp.id', 'tp.name', DB::raw('count(*) as count')])
+                        ->where('tm.problem_id', $problem_id)
+                        ->where('tp.hidden', 0)
+                        ->groupBy('tp.id')
+                        ->orderByDesc('count')
+                        ->limit($informal_limit)
+                        ->get()
+                        ->map(function ($value) {
+                            return (array)$value; // 每个对象都转为数组
+                        })
+                        ->toArray();
+                    return $tags ?? [];
+                }
+            );
+            $tags = array_merge($tags, $informal_tags);
+        }
+        return $tags;
     }
 }

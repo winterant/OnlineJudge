@@ -86,15 +86,16 @@ class ProblemController extends Controller
             if (!empty($problem['tags'])) {
                 $problem['tags'] = json_encode(explode(',', $problem['tags']));
                 foreach (json_decode($problem['tags'], true) as $tag_name) {
-                    if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
-                        $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name]);
-                    else
-                        $tid = DB::table('tag_pool')->where('name', $tag_name)->first()->id;
-                    $tag_marks[] = ['problem_id' => $id, 'user_id' => Auth::id(), 'tag_id' => $tid];
+                    DB::table('tag_pool')->updateOrInsert(['name' => $tag_name], ['name' => $tag_name]);
+                    // if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
+                    //     $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name]);
+                    // else
+                    //     $tid = DB::table('tag_pool')->where('name', $tag_name)->first()->id;
+                    // $tag_marks[] = ['problem_id' => $id, 'user_id' => Auth::id(), 'tag_id' => $tid];
                 }
-                foreach ($tag_marks ?? [] as $mark) {
-                    DB::table('tag_marks')->updateOrInsert($mark, $mark);
-                }
+                // foreach ($tag_marks ?? [] as $mark) {
+                //     DB::table('tag_marks')->updateOrInsert($mark, $mark);
+                // }
             }
             // ================================================================
 
@@ -332,16 +333,9 @@ class ProblemController extends Controller
             ProblemHelper::saveSamples($pid, $samp_inputs, $samp_outputs); //保存样例
             ProblemHelper::saveTestData($pid, $test_inputs, $test_outputs); //保存测试数据
 
-            // 标签使用json保存。同时，不存在的标签插入到标签库
+            // 不存在的标签插入到标签库
             foreach (explode(',', $node->tags) as $tag_name) {
-                if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
-                    $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name]);
-                else
-                    $tid = DB::table('tag_pool')->where('name', $tag_name)->first()->id;
-                $tag_marks[] = ['problem_id' => $pid, 'user_id' => Auth::id(), 'tag_id' => $tid];
-            }
-            foreach ($tag_marks ?? [] as $mark) {
-                DB::table('tag_marks')->updateOrInsert($mark, $mark);
+                DB::table('tag_pool')->updateOrInsert(['name' => $tag_name], ['name' => $tag_name]);
             }
             // ================================================================
 

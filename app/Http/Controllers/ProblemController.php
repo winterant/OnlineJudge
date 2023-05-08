@@ -16,7 +16,13 @@ class ProblemController extends Controller
         $problems = DB::table('problems');
         if (request()->has('tag_id') && request('tag_id') != '')
             $problems = $problems->join('tag_marks', 'problem_id', '=', 'problems.id')
-                ->where('tag_id', request('tag_id'));
+                ->where(function ($q) {
+                    // 筛选民间标签标记的题目
+                    $q->where('tag_id', request('tag_id'));
+                    // 或者官方标签标记的题目
+                    if (($official = DB::table('tag_pool')->find(request('tag_id'))->name ?? false))
+                        $q->orWhere('tags', 'like', '%' . $official . '%');
+                });
         $problems = $problems->select(
             'problems.id',
             'title',
@@ -42,7 +48,7 @@ class ProblemController extends Controller
 
         //  ================== 获取题目标签 =======================
         foreach ($problems as &$problem) {
-            $problem->tags = $this::get_problem_tags($problem->id);// 用户标记的（含出题人标记过的）
+            $problem->tags = ProblemHelper::getTags($problem->id); // 用户标记的（含出题人标记过的）
         }
 
         $tag_pool = DB::table('tag_pool')
@@ -80,8 +86,8 @@ class ProblemController extends Controller
         //读取样例文件
         $samples = ProblemHelper::readSamples($id);
 
-        // 获取本题的tag（有缓存）
-        $tags = $this::get_problem_tags($problem->id, 5);
+        // 获取本题的民间收集标签（有缓存）
+        $tags = ProblemHelper::getTags($problem->id, official: false, informal_limit: 5);
 
         // 官方tag
         $problem->tags = json_decode($problem->tags ?? '[]', true); // json => array
@@ -201,31 +207,5 @@ class ProblemController extends Controller
         return DB::table('discussions')
             ->where('id', $request->input('id'))
             ->update(['hidden' => $request->input('value')]);
-    }
-
-
-    // ================================ 公用功能 =================================
-    /**
-     * 获取某题目的标签，默认获取被标记次数最多的3个，并缓存20分钟
-     * @return array
-     */
-    public static function get_problem_tags(int $problem_id, int $limit = 3)
-    {
-        return  Cache::remember(
-            sprintf('problem:%d:user-tags:limit:%d', $problem_id, $limit),
-            300, // 缓存5分钟
-            function () use ($problem_id, $limit) {
-                $tags = DB::table('tag_marks as tm')
-                    ->join('tag_pool as tp', 'tp.id', '=', 'tm.tag_id')
-                    ->select(['tp.id', 'tp.name', DB::raw('count(*) as count')])
-                    ->where('tm.problem_id', $problem_id)
-                    ->where('tp.hidden', 0)
-                    ->groupBy('tp.id')
-                    ->orderByDesc('count')
-                    ->limit($limit)
-                    ->get()->toArray();
-                return $tags ?? [];
-            }
-        );
     }
 }

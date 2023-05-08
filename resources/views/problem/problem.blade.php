@@ -147,8 +147,8 @@
               @foreach ($tags as $item)
               <span class="mx-2">
                 <i class="fa fa-tag" aria-hidden="true"></i>
-                <span class="text-nowrap">{{ $item->name }}
-                  (<i class="fa fa-user-o" aria-hidden="true"></i>{{ $item->count }})
+                <span class="text-nowrap">{{ $item['name'] }}
+                  (<i class="fa fa-user-o" aria-hidden="true"></i>{{ $item['count'] }})
                 </span>
               </span>
               @endforeach

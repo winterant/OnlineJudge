@@ -167,7 +167,7 @@
                         <td nowrap>
                           @foreach ($item->tags as $tag)
                             <div class="d-inline text-nowrap mr-1">
-                              <i class="fa fa-tag" aria-hidden="true"></i><span>{{ $tag->name }}</span>
+                              <i class="fa fa-tag" aria-hidden="true"></i><span>{{ $tag['name'] }}</span>
                             </div>
                           @endforeach
                         </td>

@@ -148,10 +148,10 @@ class ContestController extends Controller
         $problem_link = new ProblemsLink($id, null);
         $problems = $problem_link->problems;
 
-        // 读取标签（有缓存）
+        // 读取标签(官方+民间缓存）【管理员 or 比赛结束】
         if ($user->can('admin.contest.view') || time() > strtotime($contest->end_time))
             foreach ($problems as &$problem) {
-                $problem->tags = ProblemController::get_problem_tags($problem->id);
+                $problem->tags = ProblemHelper::getTags($problem->id);
             }
 
         //读取附件，位于storage/app/public/contest/files/$cid/*
@@ -205,11 +205,11 @@ class ContestController extends Controller
         // 读取这道题的样例数据
         $samples = ProblemHelper::readSamples($problem->id);
 
-        // 官方tag
+        // 官方标签
         $problem->tags = json_decode($problem->tags ?? '[]', true); // json => array
 
-        // 获取本题的tag
-        $tags = ProblemController::get_problem_tags($problem->id, 5);
+        // 获取本题的民间收集标签
+        $tags = ProblemHelper::getTags($problem->id, 5);
 
         return view('problem.problem', compact('contest', 'problem', 'samples', 'tags'));
     }

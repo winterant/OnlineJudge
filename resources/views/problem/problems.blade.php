@@ -71,7 +71,7 @@
                         @foreach ($item->tags as $tag)
                           <div class="d-inline text-nowrap mr-1">
                             <i class="fa fa-tag" aria-hidden="true"></i><a
-                              href="javascript:findByTagId({{ $tag->id }})">{{ $tag->name }}</a>
+                              href="javascript:findByTagId({{ $tag['id'] }})">{{ $tag['name'] }}</a>
                           </div>
                         @endforeach
                       </td>
