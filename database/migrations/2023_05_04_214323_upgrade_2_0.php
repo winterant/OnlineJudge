@@ -31,9 +31,9 @@ return new class extends Migration
                 $table->json('tags')->nullable();
             }
             // 增加字段 spj_code
-            if (!Schema::hasColumn('problems', 'spj_code')) {
-                $table->text('spj_code')->nullable();
-            }
+            // if (!Schema::hasColumn('problems', 'spj_code')) {
+            //     $table->text('spj_code')->nullable();
+            // }
             if (!Schema::hasColumn('problems', 'spj_language')) {
                 $table->integer('spj_language')->default(14); // C++20 -O2
             }

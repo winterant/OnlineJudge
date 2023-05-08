@@ -49,15 +49,15 @@ service php8.1-fpm start
 ##########################################################################
 # Initialize laravel app.
 ##########################################################################
+# Change project owner.
+chown -R www-data:www-data bootstrap storage
+
 php artisan storage:link
 php artisan optimize
 php artisan key:generate --force
 php artisan migrate --force
 php artisan optimize
 php artisan lduoj:init
-
-# Change project owner.
-chown -R www-data:www-data bootstrap storage
 
 
 ##########################################################################

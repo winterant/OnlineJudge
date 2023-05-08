@@ -79,8 +79,8 @@ class LduojInit extends Command
         foreach (config('init.permissions') as $name => $attr) {
             $permission = Permission::findOrCreate($name, $guard_name ?? null);
         }
-        echo 'All Permissions: ';
-        print_r(json_decode(json_encode(Permission::all()), true));
+        // echo 'All Permissions: ';
+        // print_r(json_decode(json_encode(Permission::all()), true));
 
         //============= 创建预置角色，并分配预置权限
         if (Role::count() >= count(config('init.roles'))) // 已有角色数量达到预置角色数，则不自动添加了
