@@ -163,13 +163,16 @@ class ProblemHelper
     public static function getTags(int $problem_id, bool $official = true, bool $informal = true, int $informal_limit = 3)
     {
         $tags = [];  // [[id=>int,name=>string,count=>int],...]
+        $tag_names = [];
         if ($official) {
             $res = json_decode(DB::table('problems')->find($problem_id)->tags ?? '[]', true); // json => array
-            foreach ($res as $tag)
+            foreach ($res as $tag) {
                 $tags[] = [
                     'id' => DB::table('tag_pool')->where('name', $tag)->value('id'),
                     'name' => $tag, 'count' => 0
                 ];
+                $tag_names[] = $tag; // 记下标签名
+            }
         }
         if ($informal) {
             $informal_tags = Cache::remember(
@@ -192,7 +195,11 @@ class ProblemHelper
                     return $tags ?? [];
                 }
             );
-            $tags = array_merge($tags, $informal_tags);
+            // 官方标签与民间收集标签去重
+            foreach ($informal_tags as $t) {
+                if (!in_array($t['name'], $tag_names)) // 官方标签有了的，就不用了
+                    $tags[] = $t;
+            }
         }
         return $tags;
     }

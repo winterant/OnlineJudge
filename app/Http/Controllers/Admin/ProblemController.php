@@ -84,7 +84,14 @@ class ProblemController extends Controller
 
             // 标签使用json保存。同时，不存在的标签插入到标签库
             if (!empty($problem['tags'])) {
-                $problem['tags'] = json_encode(explode(',', $problem['tags']));
+                $problem['tags'] = json_encode(
+                    array_map(
+                        function ($v) {
+                            return trim($v);
+                        },
+                        explode(',', $problem['tags'])
+                    )
+                );
                 foreach (json_decode($problem['tags'], true) as $tag_name) {
                     DB::table('tag_pool')->updateOrInsert(['name' => $tag_name], ['name' => $tag_name]);
                     // if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
@@ -308,7 +315,14 @@ class ProblemController extends Controller
                 'source'      => $node->source,
                 'spj'         => $node->spj ? 1 : 0,
                 'spj_code'    => $node->spj ?? '',
-                'tags'        => isset($node->tags) && $node->tags != null ? json_encode(explode(',', $node->tags)) : null,
+                'tags'        => isset($node->tags) && $node->tags != null ? json_encode(
+                    array_map(
+                        function ($v) {
+                            return trim($v);
+                        },
+                        explode(',', $node->tags)
+                    )
+                ) : null,
                 'time_limit'  => $node->time_limit * (strtolower($node->time_limit->attributes()->unit) == 's' ? 1000 : 1), //本oj用ms
                 'memory_limit' => $node->memory_limit / (strtolower($node->memory_limit->attributes()->unit) == 'kb' ? 1024 : 1),
                 'creator'     => Auth::id()
@@ -336,7 +350,7 @@ class ProblemController extends Controller
             // 不存在的标签插入到标签库
             if (isset($node->tags) && $node->tags != null)
                 foreach (explode(',', $node->tags) as $tag_name) {
-                    DB::table('tag_pool')->updateOrInsert(['name' => $tag_name], ['name' => $tag_name]);
+                    DB::table('tag_pool')->updateOrInsert(['name' => trim($tag_name)], ['name' => trim($tag_name)]);
                 }
             // ================================================================
 
