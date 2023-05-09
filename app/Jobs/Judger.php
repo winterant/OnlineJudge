@@ -166,7 +166,9 @@ class Judger implements ShouldQueue
         $not_ac = 0;
         $max_time = 0;
         $max_memory = 0;
+        $test_index=0;
         foreach ($tests as $k => $test) {
+            $test_index++;
             // 构造请求
             $data = ['cmd' => [
                 [
@@ -233,7 +235,7 @@ class Judger implements ShouldQueue
                 $not_ac++;
                 if ($not_ac == 1) { // 首次遇到的错误作为本solution的错误
                     if (!empty($error_info))
-                        $error_info = "[Test {$k}]\n" . $error_info;
+                        $error_info = "[Test #{$test_index} {$k}.in]\n" . $error_info;
                     $this->update_db_solution(['result' => $result, 'error_info' => $error_info, 'wrong_data' => $k]);
                 }
                 // 如果是acm模式，遇到错误，直接终止

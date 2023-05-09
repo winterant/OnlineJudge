@@ -130,7 +130,7 @@ class SolutionController extends Controller
         // 读取 所有测试数据的详细结果
         $judge_result = json_decode($solution->judge_result ?? '[]', true);
         ksort($judge_result); // 按key排序（为了解决mysql json类型乱序）
-        foreach ($judge_result ?? [] as $k => &$test) {
+        foreach ($judge_result as $k => &$test) {
             $judge_result[$k]['result_desc'] = trans('result.' . config("judge.result." . $test['result'] ?? 0));
         }
 

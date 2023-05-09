@@ -166,8 +166,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, index) in judge_result.details">
-                      <td>@{{ index }}</td>
+                    <tr v-for="(item, key, index) in judge_result.details">
+                      <td>#@{{ index+1 }}</td>
                       <td><span :class="'judge-result-' + item.result">@{{ item.result_desc }}</span></td>
                       <td>
                         <span v-if="item.time!=null">@{{ item.time }}MS</span>
