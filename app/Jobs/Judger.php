@@ -158,7 +158,6 @@ class Judger implements ShouldQueue
                 'time' => 0,
                 'memory' => 0,
             ];
-        ksort($judge_result); // 按key排序
         $this->update_db_solution(['judge_result' => $judge_result]); // 初始化测试点信息写入数据库，以供前台显示
 
         // 遍历测试点，运行用户程序，得到输出
