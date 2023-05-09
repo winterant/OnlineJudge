@@ -48,8 +48,8 @@
           <th></th>
           <th nowrap>题号</th>
           <th nowrap>题目</th>
+          <th nowrap>提交标签</th>
           <th nowrap>提交人</th>
-          <th nowrap>标签</th>
           <th nowrap>创建时间</th>
           <th nowrap>操作</th>
         </tr>
@@ -63,9 +63,9 @@
             </td>
             <td nowrap>{{ $item->problem_id }}</td>
             <td nowrap><a href="{{ route('problem', $item->problem_id) }}" target="_blank">{{ $item->title }}</a></td>
+            <td nowrap>{{ $item->name }}</td>
             <td nowrap><a href="{{ route('user', $item->username) }}" target="_blank">{{ $item->username }}</a>
               {{ $item->nick }}</td>
-            <td nowrap>{{ $item->name }}</td>
             <td nowrap>{{ $item->created_at }}</td>
             <td nowrap>
               <a href="javascript:" onclick="tag_delete('{{ $item->id }}');" class="px-1" title="删除">
