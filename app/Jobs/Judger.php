@@ -154,7 +154,7 @@ class Judger implements ShouldQueue
         $judge_result = [];
         foreach ($tests as $k => $test)
             $judge_result[$k] = [
-                'result' => 0, // 等待中
+                'result' => 1, // 队列中
                 'time' => 0,
                 'memory' => 0,
             ];
@@ -208,11 +208,9 @@ class Judger implements ShouldQueue
                 }
             } else { // 运行出错
                 $result = array_search($res[0]['status'], config('judge.result'));
-                $error_info = "";
-                if ($result === false) {
+                if ($result === false)
                     $result = 10; // RE
-                    $error_info = sprintf("[%s]\n%s", $res[0]['status'], $res[0]['files']['stderr']);
-                }
+                $error_info = sprintf("[%s]\n%s", $res[0]['status'], $res[0]['files']['stderr']);
             }
 
             // 实时更新运行结果
@@ -232,11 +230,20 @@ class Judger implements ShouldQueue
                 $ac++;
             } else {
                 $not_ac++;
-                if ($not_ac == 1) // 首次遇到的错误作为本solution的错误
-                    $this->update_db_solution(['result' => $result, 'error_info' => "[Test {$k}]\n" . $error_info, 'wrong_data' => $k]);
+                if ($not_ac == 1) { // 首次遇到的错误作为本solution的错误
+                    if (!empty($error_info))
+                        $error_info = "[Test {$k}]\n" . $error_info;
+                    $this->update_db_solution(['result' => $result, 'error_info' => $error_info, 'wrong_data' => $k]);
+                }
                 // 如果是acm模式，遇到错误，直接终止
-                if ($this->solution['judge_type'] == 'acm')
+                if ($this->solution['judge_type'] == 'acm') {
+                    // 剩余评测点标记为放弃评测
+                    foreach ($tests as $k => $test)
+                        if ($judge_result[$k]['result'] < 4)
+                            $judge_result[$k]['result'] = 13; // 跳过
+                    $this->update_db_solution(['judge_result' => $judge_result]);
                     break;
+                }
             }
         }
         if ($ac == 0 && $not_ac == 0) // 没有测试数据，系统错误
