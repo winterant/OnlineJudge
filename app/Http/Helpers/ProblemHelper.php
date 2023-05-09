@@ -157,6 +157,19 @@ class ProblemHelper
     }
 
     /**
+     * 保存某题的spj代码
+     */
+    public static function saveSpj($problem_id, $code)
+    {
+        $dir = testdata_path($problem_id . '/spj'); // spj文件夹
+        if (!is_dir($dir))
+            mkdir($dir, 0777, true);  // 文件夹不存在则创建
+        file_put_contents(sprintf('%s/spj.cpp', $dir), $code);
+        return true;
+    }
+
+
+    /**
      * 获取某题目的标签，官方+用户收集
      * @return [[id=>int,name=>string,count=>int], ...]
      */

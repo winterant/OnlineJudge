@@ -137,7 +137,7 @@
           </div>
 
           <div id="div-spj-code" style="height:40rem">
-            <x-code-editor code_name="problem[spj_code]" lang_name="problem[spj_language]" :lang="$problem->spj_language ?? 14"
+            <x-code-editor code_name="spj_code" lang_name="problem[spj_language]" :lang="$problem->spj_language ?? 14"
               :code="isset($problem) ? App\Http\Helpers\ProblemHelper::readSpj($problem->id) : null" title="特判代码" />
           </div>
           <div class="m-2 p-2 alert-info">

@@ -118,6 +118,9 @@ class ProblemController extends Controller
             $samp_outs = (array)$request->input('sample_outs');
             ProblemHelper::saveSamples($id, $samp_ins, $samp_outs); //保存样例
 
+            // 保存spj
+            ProblemHelper::saveSpj($id, $request->input('spj_code')??'111');
+
             $msg = sprintf(
                 '题目<a href="%s" target="_blank">%d</a>修改成功！ <a href="%s">上传测试数据</a>',
                 route('problem', $id),
@@ -300,7 +303,6 @@ class ProblemController extends Controller
                 'hint'        => $node->hint,
                 'source'      => $node->source,
                 'spj'         => $node->spj ? 1 : 0,
-                'spj_code'    => $node->spj ?? '',
                 'tags'        => isset($node->tags) && $node->tags != null ? json_encode(
                     array_map(
                         function ($v) {
@@ -332,6 +334,10 @@ class ProblemController extends Controller
             $test_outputs = (array)($node->children()->test_output);
             ProblemHelper::saveSamples($pid, $samp_inputs, $samp_outputs); //保存样例
             ProblemHelper::saveTestData($pid, $test_inputs, $test_outputs); //保存测试数据
+
+            // 保存spj
+            if ($node->spj ?? false)
+                ProblemHelper::saveSpj($pid, $node->spj);
 
             // 不存在的标签插入到标签库
             if (isset($node->tags) && $node->tags != null)
