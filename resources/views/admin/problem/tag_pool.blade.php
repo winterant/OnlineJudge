@@ -58,7 +58,18 @@
                 style="vertical-align:middle;zoom: 140%">
             </td>
             <td nowrap>{{ $item->id }}</td>
-            <td nowrap><a href="{{ route('admin.problem.tags', ['tag_name' => $item->name]) }}">{{ $item->name }}</a>
+            <td nowrap>
+              {{-- 标签名 --}}
+              <span id="span_tag_name{{ $item->id }}">
+                <span>{{ $item->name }}</span>
+                <a href="javascript:"
+                  onclick="$(this).parent().hide();$('#input_tag_name{{ $item->id }}').show().focus()"><i
+                    class="fa fa-edit" aria-hidden="true"></i></a>
+              </span>
+              {{-- 标签名编辑框 --}}
+              <input type="text" id="input_tag_name{{ $item->id }}" value="{{ $item->name }}"
+                onchange="update_tag_name({{ $item->id }}, $(this).val() )"
+                onblur="$(this).hide();$('#span_tag_name{{ $item->id }}').show()" style="display:none">
             </td>
             <td nowrap>
               <a href="javascript:" title="点击切换"
@@ -66,9 +77,13 @@
                 {{ $item->hidden ? '**隐藏**' : '公开' }}
               </a>
             </td>
-            <td nowrap><a href="{{ route('user', $item->creator ?? 'unknow') }}" target="_blank">{{ $item->creator }}</a></td>
+            <td nowrap><a href="{{ route('user', $item->creator ?? 'unknow') }}"
+                target="_blank">{{ $item->creator }}</a>
+            </td>
             <td nowrap>{{ $item->created_at }}</td>
             <td nowrap>
+              <a href="{{ route('admin.problem.tags', ['tag_name' => $item->name]) }}">
+                <i class="fa fa-eye" aria-hidden="true"></i>查看标签</a>
               <a href="javascript:" onclick="tag_pool_delete('{{ $item->id }}');" class="px-1" title="删除">
                 <i class="fa fa-trash" aria-hidden="true"></i> 删除
               </a>
@@ -90,24 +105,29 @@
       var tids = [];
       $('td input[type=checkbox]:checked').each(function() {
         tids.push($(this).val());
-      });
-      $.post(
-        '{{ route('admin.problem.tag_pool_hidden') }}', {
-          '_token': '{{ csrf_token() }}',
-          'tids': tids,
-          'hidden': hidden
-        },
-        function(ret) {
-          if (id === -1) {
-            Notiflix.Report.Init();
-            Notiflix.Report.Success('操作成功', '已修改' + ret + '条数据!', 'confirm', function() {
-              location.reload();
-            })
-          } else {
-            location.reload();
+      })
+
+      $.ajax({
+        type: "patch",
+        url: '{{ route('api.admin.problem.tag_pool_update_batch') }}',
+        data: {
+          'ids': tids,
+          'value': {
+            'hidden': hidden
           }
+        },
+        success: function(ret) {
+          console.log(ret)
+          if (ret.ok) {
+            Notiflix.Notify.Success(ret.msg);
+            location.reload();
+          } else
+            Notiflix.Notify.Failure(ret.msg)
+        },
+        error: function() {
+          Notiflix.Report.Failure("失败", "请求执行失败，请重试", "好的");
         }
-      );
+      })
     }
 
     function tag_pool_delete(id = -1) {
@@ -121,12 +141,13 @@
         $('td input[type=checkbox]:checked').each(function() {
           tids.push($(this).val());
         });
-        $.post(
-          '{{ route('admin.problem.tag_pool_delete') }}', {
-            '_token': '{{ csrf_token() }}',
-            'tids': tids,
+        $.ajax({
+          type: 'delete',
+          url: '{{ route('api.admin.problem.tag_pool_delete_batch') }}',
+          data: {
+            'ids': tids,
           },
-          function(ret) {
+          success: function(ret) {
             if (id === -1) {
               Notiflix.Report.Init();
               Notiflix.Report.Success('操作成功', '已删除' + ret + '条数据!', 'confirm', function() {
@@ -136,8 +157,32 @@
               location.reload();
             }
           }
-        );
-      });
+        })
+      })
+    }
+
+    // 更新标签名
+    function update_tag_name(id, new_name) {
+      $('#span_tag_name' + id + ' span').html(new_name.trim())
+      $.ajax({
+        type: "patch",
+        url: '{{ route('api.admin.problem.tag_pool_update', ['??']) }}'.replace("??", id),
+        data: {
+          'value': {
+            'name': new_name.trim()
+          }
+        },
+        success: function(ret) {
+          console.log(ret)
+          if (ret.ok)
+            Notiflix.Notify.Success(ret.msg);
+          else
+            Notiflix.Notify.Failure(ret.msg)
+        },
+        error: function() {
+          Notiflix.Report.Failure("失败", "请求执行失败，请重试", "好的");
+        }
+      })
     }
   </script>
 @endsection

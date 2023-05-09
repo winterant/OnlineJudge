@@ -163,15 +163,11 @@ class ProblemController extends Controller
             ->paginate(request()->has('perPage') ? request('perPage') : 20);
         return view('admin.problem.tags', compact('tags'));
     }
-    public function tag_delete(Request $request)
-    {
-        $tids = $request->input('tids');
-        return DB::table('tag_marks')->whereIn('id', $tids)->delete();
-    }
+
     public function tag_pool()
     {
         $tag_pool = DB::table('tag_pool as tp')
-        ->leftJoin('users as u','u.id','=','user_id')
+            ->leftJoin('users as u', 'u.id', '=', 'user_id')
             ->select('tp.id', 'tp.name', 'tp.hidden', 'u.username as creator', 'tp.created_at')
             ->when(request()->has('tag_name') && request('tag_name') != '', function ($q) {
                 return $q->where('tp.name', 'like', '%' . request('tag_name') . '%');
@@ -180,20 +176,9 @@ class ProblemController extends Controller
             ->paginate(request()->has('perPage') ? request('perPage') : 20);
         return view('admin.problem.tag_pool', compact('tag_pool'));
     }
-    public function tag_pool_delete(Request $request)
-    {
-        $tids = $request->input('tids') ?: [];
-        DB::table('tag_marks')->whereIn('tag_id', $tids)->delete(); //先删除用户提交的标记
-        return DB::table('tag_pool')->whereIn('id', $tids)->delete();
-    }
-    public function tag_pool_hidden(Request $request)
-    {
-        $tids = $request->input('tids') ?: [];
-        $hidden = $request->input('hidden');
-        return DB::table('tag_pool')->whereIn('id', $tids)->update(['hidden' => $hidden]);
-    }
 
 
+    // ============================== 测试数据管理（2.1未来版本将遗弃） ==============================
     // 测试数据管理页面 get
     public function test_data()
     {

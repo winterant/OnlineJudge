@@ -83,6 +83,12 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::get('admin/problem/export/download', 'ProblemController@download_exported_xml')->name('admin.problem.download_exported_xml')->middleware('Permission:admin.problem_xml.export');
         Route::delete('admin/problem/export/clear', 'ProblemController@clear_exported_xml')->name('admin.problem.clear_exported_xml')->middleware('Permission:admin.problem_xml');
 
+        // Manage tag and tag_pool
+        Route::delete('problem/tags/batch', 'ProblemController@tag_delete_batch')->name('admin.problem.tag_delete_batch')->middleware('Permission:admin.problem_tag.delete');
+        Route::patch('problem/tag_pool/{id}', 'ProblemController@tag_pool_update')->name('admin.problem.tag_pool_update')->middleware('Permission:admin.problem_tag.update');
+        Route::patch('problem/tag_pool/batch', 'ProblemController@tag_pool_update_batch')->name('admin.problem.tag_pool_update_batch')->middleware('Permission:admin.problem_tag.update');
+        Route::delete('problem/tag_pool/batch', 'ProblemController@tag_pool_delete_batch')->name('admin.problem.tag_pool_delete_batch')->middleware('Permission:admin.problem_tag.delete');
+
         // Manage contest: route('api.admin.contest.*')
         Route::delete('admin/contests/{id}', 'ContestController@delete')->name('admin.contest.delete')->middleware('Permission:admin.contest.delete');
         Route::patch('admin/contests/{id}/order/{shift}', 'ContestController@update_order')->name('admin.contest.update_order')->middleware('Permission:admin.contest.update');

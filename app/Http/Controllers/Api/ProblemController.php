@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\DBHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ProblemController extends Controller
@@ -47,7 +49,7 @@ class ProblemController extends Controller
         $tag_marks = [];
         foreach ($tag_names as $tag_name) {
             if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
-                $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name, 'user_id'=>Auth::id()]);
+                $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name, 'user_id' => Auth::id()]);
             else
                 $tid = DB::table('tag_pool')->where('name', $tag_name)->first()->id;
             $tag_marks[] = ['problem_id' => $problem_id, 'user_id' => Auth::id(), 'tag_id' => $tid];
@@ -62,6 +64,58 @@ class ProblemController extends Controller
             'ok' => 1,
             'msg' => sprintf("成功为题目%d添加%d个标签", $problem_id, $inserted)
         ];
+    }
+
+    // ========================= 收集标签管理 ===========================
+    // 批量删除用户提交的标签（但不删除标签库）
+    public function tag_delete_batch(Request $request)
+    {
+        $tids = $request->input('ids');
+        $updated = DB::table('tag_marks')->whereIn('id', $tids)->delete();
+        return ['ok' => $updated ? 1 : 0, 'msg' => $updated ? 'Deleted' : 'Failed to delete'];
+    }
+
+    // 更新单个tag_pool
+    public function tag_pool_update(Request $request, $id)
+    {
+        $updated = DB::table('tag_pool')->where('id', $id)->update($request->input('value'));
+        if ($updated) {
+            return [
+                'ok' => 1,
+                'msg' => 'Updated successfully!'
+            ];
+        }
+        return [
+            'ok' => 0,
+            'msg' => 'Failed to update!'
+        ];
+    }
+    /**
+     * 批量更新groups记录
+     *
+     * patch request:{
+     *   ids:[1,2,...],
+     *   value:{},
+     * }
+     */
+    public function tag_pool_update_batch(Request $request)
+    {
+        $ids = $request->input('ids') ?? [];
+        $value = $request->input('value');
+        Log::info($ids);
+        Log::info($value);
+        $updated = DBHelper::update_batch_to_one('tag_pool', ['id' => $ids], $value);
+        if ($updated > 0)
+            return ['ok' => 1, 'msg' => '成功修改' . $updated . '条数据'];
+        return ['ok' => 0, 'msg' => '没有任何数据被修改'];
+    }
+
+    // 批量删除标签库中的标签
+    public function tag_pool_delete_batch(Request $request)
+    {
+        $tids = $request->input('ids') ?: [];
+        DB::table('tag_marks')->whereIn('tag_id', $tids)->delete(); //先删除用户提交的标记
+        return DB::table('tag_pool')->whereIn('id', $tids)->delete();
     }
 
 

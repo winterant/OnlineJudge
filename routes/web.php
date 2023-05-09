@@ -126,13 +126,8 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
 
         // ====================== Manage problem tag
         Route::get('problem/tags', 'Admin\ProblemController@tags')->name('problem.tags')->middleware('Permission:admin.problem_tag.view');
-        // todo 删除tag  需要定制api
-        Route::post('problem/tags/delete', 'Admin\ProblemController@tag_delete')->name('problem.tag_delete')->middleware('Permission:admin.problem_tag.delete');
         // tag_pool
         Route::get('problem/tag_pool', 'Admin\ProblemController@tag_pool')->name('problem.tag_pool')->middleware('Permission:admin.problem_tag.view');
-        // todo 删除、修改  需要定制api
-        Route::post('problem/tag_pool/delete', 'Admin\ProblemController@tag_pool_delete')->name('problem.tag_pool_delete')->middleware('Permission:admin.problem_tag.delete');
-        Route::post('problem/tag_pool/hidden', 'Admin\ProblemController@tag_pool_hidden')->name('problem.tag_pool_hidden')->middleware('Permission:admin.problem_tag.update');
 
         // ====================== Manage problem data
         Route::get('problem/test-data', 'Admin\ProblemController@test_data')->name('problem.test_data')->middleware('Permission:admin.problem_data.view');
