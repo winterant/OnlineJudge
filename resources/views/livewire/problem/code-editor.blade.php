@@ -40,8 +40,9 @@
         <div class="pull-right">
           <button v-show="judge_processing>0" id="btn_judge_result" type="button" data-target="#judge-result-page"
             data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
-          {{-- <button id="btn_local_test" type="button" data-target="#local-test-page" data-toggle="modal" onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
-          class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button> --}}
+          <button id="btn_local_test" type="button" data-target="#local-test-page" data-toggle="modal"
+            onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
+            class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button>
           <button id="btn_submit_code" type="button" onclick="disabledSubmitButton(this, '已提交');"
             v-on:click="submit_solution" class="btn bg-success text-white m-2" style="min-width: 6rem"
             @guest disabled @endguest>{{ trans('main.Submit') }}</button>
@@ -68,25 +69,33 @@
               <form id="form_local_test">
                 <div>
                   <span>{{ trans('main.Input') }}</span>
-                  <textarea id="local_test_input" v-model="local_test.stdin" rows="6" class="w-100" required></textarea>
+                  <textarea v-model="sample_in" id="local_test_input" class="w-100" rows="6" maxlength="500" required></textarea>
                 </div>
                 <div class="d-flex">
                   <button type="button" id="btn_submit_local_test" class="btn bg-success text-white"
                     v-on:click="submit_local_test" @guest disabled @endguest>{{ __('main.Compile and Run') }}</button>
-                  {{-- @for ($i = 0; $i < $num_samples; $i++)
-                  <button type="button" v-on:click="fill_in_sample('{{ $i }}')"
-                    class="btn bg-secondary text-white ml-2"
-                    @guest disabled @endguest>{{ __('sentence.Fill in the sample') }} {{ $i + 1 }}</button>
-                @endfor --}}
+                  @for ($i = 0; $i < count($samples); $i++)
+                    <button type="button" v-on:click="fill_in_sample('{{ $i }}')"
+                      class="btn bg-secondary text-white ml-2"
+                      @guest disabled @endguest>{{ __('sentence.Fill in the sample') }} {{ $i + 1 }}</button>
+                  @endfor
                 </div>
                 <hr>
+                <div v-show="local_test.time" class="alert-info p-2 mb-2">
+                  <span class="mr-5">{{ __('main.Time') }}: @{{ local_test.time }}MS</span>
+                  <span>{{ __('main.Memory') }}: @{{ local_test.memory }}MB</span>
+                </div>
                 <div v-show="local_test.error_info">
                   <span>{{ __('main.Run Error') }}</span>
                   <pre class="alert-danger p-2 overflow-auto">@{{ local_test.error_info }}</pre>
                 </div>
-                <div v-show="1">
+                <div v-show="local_test.stdin">
+                  <span>{{ trans('main.Input') }}</span>
+                  <pre class="alert-secondary p-2 overflow-auto" style="min-height: 1rem">@{{ local_test.stdin }}</pre>
+                </div>
+                <div v-show="local_test.stdout">
                   <span>{{ trans('main.Output') }}</span>
-                  <pre class="alert-secondary p-2 overflow-auto" style="min-height: 8rem">@{{ local_test.stdout }}</pre>
+                  <pre class="alert-secondary p-2 overflow-auto" style="min-height: 1rem">@{{ local_test.stdout }}</pre>
                 </div>
               </form>
             </div>
@@ -209,7 +218,15 @@
           query_solution_id: 0, // 当前正在查询的solution id, 频繁提交时，只查询当前这次提交
           judge_processing: 0, // 0:没提交, 1:提交中, 2:判题中, 3:判题完成
           judge_result: {},
-          local_test: {}
+          // 以下用于本地测试
+          sample_in:null,
+          local_test: {
+            'time': null,
+            'memory': null,
+            'stdin': null,
+            'stdout': null,
+            'error_info': null,
+          }
         }
       },
       computed: {
@@ -231,21 +248,17 @@
       methods: {
         // 本地运行时，填入样例
         fill_in_sample(sample_id) {
-          this.local_test.stdin = $('#sam_in' + sample_id).html()
+          this.sample_in = $('#sam_in' + sample_id).html()
         },
         // 本地运行测试
         submit_local_test() {
-          // if (!this.local_test.stdin) {
-          //   Notiflix.Notify.Failure('{{ __('sentence.Please_input') }}')
-          //   $('#local_test_input').focus()
-          //   return
-          // }
           disabledSubmitButton($("#btn_submit_local_test"), '{{ __('main.Running') }}')
           this.local_test.stdout = null
           const post_data = json_value_base64({
             ...$("#code_form").serializeJSON(),
-            'stdin': this.local_test.stdin,
+            'stdin': this.sample_in,
           })
+          console.log(post_data)
           $.ajax({
             type: 'post',
             url: '{{ route('api.solution.submit_local_test') }}',
@@ -255,15 +268,13 @@
               console.log(ret) // todo delete
               if (ret.ok) {
                 Notiflix.Notify.Success(ret.msg)
-                stdin_temp = this.local_test.stdin // 暂存下当前stdin
-                this.local_test = ret.data.details
-                this.local_test.stdin = stdin_temp;
+                this.local_test = ret.data
               } else {
                 Notiflix.Notify.Failure(ret.msg)
               }
             },
             error: function() {
-              Notiflix.Notify.Failure('已掉线，请重新登录');
+              Notiflix.Notify.Failure('请求失败，请刷新网页后重试');
             }
           })
         },

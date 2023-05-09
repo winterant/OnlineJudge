@@ -21,7 +21,7 @@ class DecodeValue
         // form 表单 base64 解码 ( 判断依据是 _encode 字段等于 base64 )
         if($request->input('_encode')=='base64'){
             foreach($request->input() as $k=>$v){
-                if(in_array($k, ['api_token', '_token', '_encode'])) //排除
+                if(in_array($k, ['_encode'])) //排除
                     continue;
                 if(is_array($v)){
                     foreach($v as $kk=>$vv)

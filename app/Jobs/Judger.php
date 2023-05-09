@@ -336,7 +336,7 @@ class Judger implements ShouldQueue
     private function deleteCachedFiles()
     {
         foreach ($this->cachedIds as $id) {
-            Http::delete(config('app.JUDGE_SERVER') . '/file/' . $id,);
+            Http::delete(config('app.JUDGE_SERVER') . '/file/' . $id);
         }
     }
 }

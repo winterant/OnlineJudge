@@ -7,6 +7,7 @@ use App\Jobs\Judger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class SolutionController extends Controller
@@ -177,27 +178,96 @@ class SolutionController extends Controller
         if ($problem->type == 1) {
             $data['code'] = $problem->fill_in_blank;
             foreach ($request->input('filled') as $ans) {
-                $data['code'] = preg_replace("/\?\?/", base64_decode($ans), $data['code'], 1);
+                $data['code'] = preg_replace("/\?\?/", $ans, $data['code'], 1);
             }
         }
 
-        //============================== 使用judge0判题 ==========================
-        $judge_response = $this->send_to_run_code(
-            ($data['language'] != null) ? $data['language'] : 0, // 默认C
-            $data['code'],
-            $request->input('stdin'),
-            $problem->time_limit,
-            $problem->memory_limit,
-            true
-        );
-        if ($judge_response[0] != 201)
-            return ['ok' => 0, 'msg' => '[Run] Cannot connect to judge server: ' . $judge_response[0]];
-
-        unset($judge_response[1]['token']); // 不给用户看到token
+        //============================== 使用go-judge判题 ==========================
+        // 获取编译运行指令
+        $config = config('judge.language.' . $data['language'] ?? 1); // 默认C++17
+        $response = $this->compile_run($data['code'], $request->input('stdin'), $config);
+        // return ['ok' => 0, 'data' => $response];
+        $data = [
+            'time' => intdiv($response['time'], 1000000), // ns==>ms
+            'memory' => $response['memory'] >> 20, // B==>MB
+            'stdin' => substr($request->input('stdin'), 0, 500),
+            'stdout' => $response['files']['stdout'],
+            'error_info' => $response['error_info'] ?? null,
+        ];
         return [
             'ok' => 1,
             'msg' => '运行完成',
-            'data' => ['judge_result' => $judge_response[1]]
+            'data' => $data
         ];
+    }
+
+    // 编译代码
+    private function compile_run(string $code, $sample_in, array $config)
+    {
+        // ===================== 编译, 要发送的数据
+        $data = [
+            'cmd' => [
+                [
+                    'args' => explode(' ', $config['compile']['command']),
+                    'env' => $config['env'],
+                    'files' => [   // 指定 标准输入、标准输出和标准错误的文件
+                        ['content' => ''],
+                        ['name' => 'stdout', 'max' => 10240],
+                        ['name' => 'stderr', 'max' => 10240],
+                    ],
+                    'cpuLimit' => $config['compile']['cpuLimit'],
+                    'memoryLimit' => $config['compile']['memoryLimit'],
+                    'procLimit' => $config['compile']['procLimit'],
+                    'copyIn' => [
+                        $config['filename'] => ['content' => $code],
+                    ],
+                    'copyOut' => ['stdout', 'stderr'],
+                    'copyOutCached' => [$config['compile']['compiled_filename']],
+                ]
+            ]
+        ];
+        $res = Http::timeout(30)->post(config('app.JUDGE_SERVER') . '/run', $data);
+        $res = $res->json()[0];
+        if ($res['exitStatus'] != 0) { // 编译失败
+            $data['error_info'] = sprintf("[Compile Error]\n %s\n%s\n", $res['status'], $res['files']['stderr']);
+            return $res;
+        }
+
+        // 可执行程序 Main 的缓存id
+        $cacheId = $res['fileIds'][$config['compile']['compiled_filename']];
+
+        // =====================运行， 要发送的数据
+        $data = [
+            'cmd' => [
+                [
+                    'args' => explode(' ', $config['run']['command']),
+                    'env' => $config['env'],
+                    'files' => [   // 指定 标准输入、标准输出和标准错误的文件
+                        ['content' => $sample_in],
+                        ['name' => 'stdout', 'max' => 10240],
+                        ['name' => 'stderr', 'max' => 10240],
+                    ],
+                    'cpuLimit' => 10000 * 1000000, // ms ==> ns
+                    'memoryLimit' => 512 << 20, // MB ==> B
+                    'strictMemoryLimit' => true,
+                    'procLimit' => $config['run']['procLimit'],
+                    'copyIn' => [
+                        $config['compile']['compiled_filename'] => ['fileId' => $cacheId]
+                    ],
+                    'copyOut' => ['stdout', 'stderr'],
+                ]
+            ]
+        ];
+        $res = Http::timeout(30)->post(config('app.JUDGE_SERVER') . '/run', $data);
+        $res = $res->json()[0];
+        if ($res['exitStatus'] != 0) { // 运行失败
+            $data['error_info'] = sprintf("[Runtime Error]\n %s\n%s\n", $res['status'], $res['files']['stderr']);
+        }
+
+        // =================== 删除go-judge缓存文件
+        Http::delete(config('app.JUDGE_SERVER') . '/file/' . $cacheId);
+
+        // 返回运行结果
+        return $res;
     }
 }

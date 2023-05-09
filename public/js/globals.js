@@ -1,16 +1,16 @@
 // ======================  json 值编码 =================
 function json_value_base64(data, additional_data = {}, recursive = false) {
+    for (var k in additional_data)
+        data[k] = additional_data[k];
     for (var k in data)
         if (Object.prototype.toString.call(data[k]) === '[object Object]'
             || Object.prototype.toString.call(data[k]) === '[object Array]')
-            data[k] = json_value_base64(data[k], null, true)
+            data[k] = json_value_base64(data[k], {}, true)
         else
             data[k] = Base64.encode(data[k]);
     if (recursive) // 递归的子对象，直接返回
         return data
-    for (var k in additional_data)
-        data[k] = additional_data[k];
-    data['_encode'] = 'base64'
+    data['_encode'] = 'base64' // 标记编码，后端将以此方式解码
     return data
 }
 
