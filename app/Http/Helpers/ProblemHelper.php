@@ -75,7 +75,7 @@ class ProblemHelper
             $name = pathinfo($item, PATHINFO_FILENAME);  //文件名
             $ext = pathinfo($item, PATHINFO_EXTENSION);  //拓展名
             if (!isset($testdata[$name])) //发现新样本
-                $testdata[$name] = [];
+                $testdata[$name] = ['filesize' => filesize($item)];
             if ($ext === 'in')
                 $testdata[$name]['in'] = $name . '.' . $ext;
             if ($ext === 'out' || $ext === 'ans')
@@ -83,9 +83,10 @@ class ProblemHelper
         }
 
         $testdata = array_filter($testdata, function ($v) {
-            return count($v) == 2;
+            return isset($v['in']) && isset($v['out']);
         });  // 过滤掉不完整的数据（in、out匹配才算完整）
 
+        ksort($testdata);
         return $testdata;
     }
 
