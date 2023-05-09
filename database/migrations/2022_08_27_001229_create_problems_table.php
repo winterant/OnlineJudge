@@ -32,7 +32,7 @@ class CreateProblemsTable extends Migration
             $table->integer('time_limit')->default(1000)->comment('MS');
             $table->integer('memory_limit')->default(1024)->comment('MB');
             $table->boolean('hidden')->index()->default(1);
-            $table->bigInteger('creator')->nullable();
+            $table->bigInteger('user_id')->nullable();
 
             $table->integer('solved')->default(0);
             $table->integer('accepted')->default(0);
@@ -68,7 +68,7 @@ class CreateProblemsTable extends Migration
         Schema::create('tag_pool', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name', 100);
-            $table->bigInteger('parent_id')->nullable();
+            $table->bigInteger('user_id')->nullable(); // 创建者
             $table->boolean('hidden')->default(0);
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();

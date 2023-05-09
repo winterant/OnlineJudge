@@ -134,23 +134,23 @@
             /
             {{ $problem->submitted }}
           </div>
-          @if ((!isset($contest) || time() > strtotime($contest->end_time)))
+          @if (!isset($contest) || time() > strtotime($contest->end_time))
             <div style="min-width: 300px">{{ __('main.Official Tags') }}:
               @foreach ($problem->tags as $item)
-              <span class="mx-2">
-                <i class="fa fa-tag" aria-hidden="true"></i>
-                <span class="text-nowrap">{{ $item }}</span>
-              </span>
+                <span class="mx-2">
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                  <span class="text-nowrap">{{ $item }}</span>
+                </span>
               @endforeach
             </div>
             <div style="min-width: 300px">{{ __('main.Users Marks') }}:
               @foreach ($tags as $item)
-              <span class="mx-2">
-                <i class="fa fa-tag" aria-hidden="true"></i>
-                <span class="text-nowrap">{{ $item['name'] }}
-                  (<i class="fa fa-user-o" aria-hidden="true"></i>{{ $item['count'] }})
+                <span class="mx-2">
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                  <span class="text-nowrap">{{ $item['name'] }}
+                    (<i class="fa fa-user-o" aria-hidden="true"></i>{{ $item['count'] }})
+                  </span>
                 </span>
-              </span>
               @endforeach
             </div>
           @endif
@@ -208,14 +208,14 @@
       </div>
 
       {{-- 讨论版（题库、开启讨论的竞赛、已结束的竞赛） --}}
-      {{-- @if (!isset($contest) || $contest->open_discussion || time() > strtotime($contest->end_time))
+      {{-- @if (!isset($contest) || $contest->enable_discussing || time() > strtotime($contest->end_time))
         <div class="mt-3">
           <x-problem.disscussions :problem-id="$problem->id" />
         </div>
       @endif --}}
 
       {{-- 已经AC的用户进行标签标记 --}}
-      @if (get_setting('problem_show_tag_collection'))
+      @if (get_setting('problem_show_tag_collection') || (isset($contest) && $contest->enable_tagging))
         <x-problem.tag-collection :problem-id="$problem->id" :tags="$tags" />
       @endif
 

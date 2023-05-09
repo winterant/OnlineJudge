@@ -16,7 +16,7 @@ class Info extends Component
     public function __construct($groupId)
     {
         $this->group = DB::table('groups as g')
-            ->leftJoin('users as u', 'u.id', '=', 'g.creator')
+            ->leftJoin('users as u', 'u.id', '=', 'g.user_id')
             ->select([
                 'g.type',
                 // 'g.grade', 'g.major',

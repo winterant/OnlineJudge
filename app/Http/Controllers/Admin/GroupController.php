@@ -11,11 +11,11 @@ class GroupController extends Controller
     // get: 后台管理 group列表
     public function list()
     {
-        $groups = DB::table('groups as c')
-            ->leftJoin('users', 'users.id', '=', 'creator')
-            ->select(['c.*', 'username'])
+        $groups = DB::table('groups as g')
+            ->leftJoin('users', 'users.id', '=', 'g.user_id')
+            ->select(['g.*', 'username'])
             ->when(request()->has('name'), function ($q) {
-                return $q->where('c.name', 'like', '%' . request('name') . '%');
+                return $q->where('g.name', 'like', '%' . request('name') . '%');
             })
             ->orderByDesc('id')
             ->paginate(request('perPage') ?? 10);

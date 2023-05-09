@@ -16,9 +16,9 @@ class CreateContestsTable extends Migration
     {
         Schema::create('contests', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->boolean('judge_instantly')->default(1);
             $table->string('judge_type', 5)->default('acm');
-            $table->boolean('open_discussion')->default(0);
+            $table->boolean('enable_discussing')->default(0); // 是否允许在比赛时使用讨论版
+            $table->boolean('enable_tagging')->default(0); // 是否允许用户过题后给题目打标签
             $table->string('title')->default('unamed');
             $table->text('description')->nullable();
             $table->bigInteger('allow_lang')->default(15)->comment('按位标记允许的语言');
@@ -63,7 +63,7 @@ class CreateContestsTable extends Migration
             $table->bigInteger('contest_id')->index()->nullable();
             $table->string('title')->default('unamed');
             $table->text('content')->nullable();
-            $table->bigInteger('creator')->nullable();
+            $table->bigInteger('user_id')->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent();
         });

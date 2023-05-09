@@ -47,7 +47,7 @@ class ProblemController extends Controller
         $tag_marks = [];
         foreach ($tag_names as $tag_name) {
             if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
-                $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name]);
+                $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name, 'user_id'=>Auth::id()]);
             else
                 $tid = DB::table('tag_pool')->where('name', $tag_name)->first()->id;
             $tag_marks[] = ['problem_id' => $problem_id, 'user_id' => Auth::id(), 'tag_id' => $tid];

@@ -111,8 +111,8 @@
                       </tr>
                       <tr>
                         <td nowrap>{{ __('main.Creator') }}:</td>
-                        <td nowrap><a href="{{ route('user', $item->creator_username) }}"
-                            target="_blank">{{ $item->creator_username }}</a>
+                        <td nowrap><a href="{{ route('user', $item->creator) }}"
+                            target="_blank">{{ $item->creator }}</a>
                         </td>
                       </tr>
                     </tbody>

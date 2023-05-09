@@ -20,7 +20,7 @@ class ProblemController extends Controller
     public function list()
     {
         $problems = DB::table('problems as p')
-            ->leftJoin('users', 'creator', '=', 'users.id')
+            ->leftJoin('users', 'p.user_id', '=', 'users.id')
             ->select(
                 'p.id',
                 'title',
@@ -54,7 +54,7 @@ class ProblemController extends Controller
         }
         //提交一条新题目
         if ($request->isMethod('post')) {
-            $pid = DB::table('problems')->insertGetId(['creator' => Auth::id()]);
+            $pid = DB::table('problems')->insertGetId(['user_id' => Auth::id()]);
             return $this->update($request, $pid, true);
         }
     }
@@ -93,7 +93,7 @@ class ProblemController extends Controller
                     )
                 );
                 foreach (json_decode($problem['tags'], true) as $tag_name) {
-                    DB::table('tag_pool')->updateOrInsert(['name' => $tag_name], ['name' => $tag_name]);
+                    DB::table('tag_pool')->updateOrInsert(['name' => $tag_name], ['name' => $tag_name, 'user_id' => Auth::id()]);
                     // if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
                     //     $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name]);
                     // else
@@ -170,12 +170,13 @@ class ProblemController extends Controller
     }
     public function tag_pool()
     {
-        $tag_pool = DB::table('tag_pool')
-            ->select('id', 'name', 'hidden', 'created_at')
+        $tag_pool = DB::table('tag_pool as tp')
+        ->leftJoin('users as u','u.id','=','user_id')
+            ->select('tp.id', 'tp.name', 'tp.hidden', 'u.username as creator', 'tp.created_at')
             ->when(request()->has('tag_name') && request('tag_name') != '', function ($q) {
-                return $q->where('name', 'like', '%' . request('tag_name') . '%');
+                return $q->where('tp.name', 'like', '%' . request('tag_name') . '%');
             })
-            ->orderByDesc('id')
+            ->orderByDesc('tp.id')
             ->paginate(request()->has('perPage') ? request('perPage') : 20);
         return view('admin.problem.tag_pool', compact('tag_pool'));
     }
@@ -325,7 +326,7 @@ class ProblemController extends Controller
                 ) : null,
                 'time_limit'  => $node->time_limit * (strtolower($node->time_limit->attributes()->unit) == 's' ? 1000 : 1), //本oj用ms
                 'memory_limit' => $node->memory_limit / (strtolower($node->memory_limit->attributes()->unit) == 'kb' ? 1024 : 1),
-                'creator'     => Auth::id()
+                'user_id'     => Auth::id()
             ];
             //保存图片
             foreach ($node->img as $img) {
@@ -350,7 +351,7 @@ class ProblemController extends Controller
             // 不存在的标签插入到标签库
             if (isset($node->tags) && $node->tags != null)
                 foreach (explode(',', $node->tags) as $tag_name) {
-                    DB::table('tag_pool')->updateOrInsert(['name' => trim($tag_name)], ['name' => trim($tag_name)]);
+                    DB::table('tag_pool')->updateOrInsert(['name' => trim($tag_name)], ['name' => trim($tag_name), 'user_id' => Auth::id()]);
                 }
             // ================================================================
 

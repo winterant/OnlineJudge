@@ -16,19 +16,20 @@ class Permission
      * @param \Illuminate\Http\Request $request
      * @param \Closure $next
      * @param $permission
-     * @param $verify_creator 验证是否为创建者，格式 table.{id}.column
-     *        例如 groups.{id}.creator 表示groups表的创建者字段是`creator`，从路由中读取{id}
+     * @param $verify_privilege 验证是否为创建者/拥有者，格式 table.{route_key}.column
+     *        例如 groups.{id}.user_id 表示取`groups`表`id`={id}这条记录的`user_id`字段，{id}取自路由参数
+     *        例如 groups.{username}.id 表示取`groups`表`username`={username}这条记录的`id`字段，{id}取自路由参数
      * @return mixed
      */
-    public function handle($request, $next, string $permission, string $verify_creator = null)
+    public function handle($request, $next, string $permission, string $verify_privilege = null)
     {
         // ======================== 创建者特权检查，验证是否是当前记录的创建者 ==================
-        if ($verify_creator && Auth::check()) {
-            [$table, $key, $creator_column] = explode('.', $verify_creator); // e.g. notices.{id}.user_id where {id} must be appeared in the route.
+        if ($verify_privilege && Auth::check()) {
+            [$table, $key, $user_column] = explode('.', $verify_privilege); // e.g. notices.{id}.user_id where {id} must be appeared in the route.
             $key = substr($key, 1, strlen($key) - 2); // strip { and }
-            $creator = DB::table($table)->where($key, $request->route($key))->value($creator_column);
+            $user_id = DB::table($table)->where($key, $request->route($key))->value($user_column);
 
-            if ($creator == Auth::id()) // 当前用户是创建者
+            if ($user_id == Auth::id()) // 当前用户是创建者
                 return $next($request);
 
             // ================ * 特判group成员管理员 ================

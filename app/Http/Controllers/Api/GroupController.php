@@ -23,7 +23,7 @@ class GroupController extends Controller
     {
         // 处理请求; 新建一条数据，跳转到修改
         $group_id = DB::table('groups')->insertGetId([
-            'creator' => Auth::id()
+            'user_id' => Auth::id()
         ]);
         // 把创建者自己加入到群组成员
         DB::table('group_users')->insert([
@@ -71,7 +71,7 @@ class GroupController extends Controller
         $request_group = $request->input('group');
 
         // 特殊处理“成员档案引用”字段
-        if ($group->creator == Auth::id()) {  // 只有创建者可以修改
+        if ($group->user_id == Auth::id()) {  // 只有创建者可以修改
             $input_cites = preg_split('/[^0-9]/', $request_group['archive_cite'], -1, PREG_SPLIT_NO_EMPTY); // 提取数字
             $valid_cites = [];
             /** @var App/Model/User */

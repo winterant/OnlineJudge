@@ -120,7 +120,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
 
         // ====================== Manage problem editor
         Route::any('problem/add', 'Admin\ProblemController@add')->name('problem.add')->middleware('Permission:admin.problem.create');
-        Route::any('problems/{id}/update', 'Admin\ProblemController@update')->name('problem.update_withId')->middleware('Permission:admin.problem.update,problems.{id}.creator');
+        Route::any('problems/{id}/update', 'Admin\ProblemController@update')->name('problem.update_withId')->middleware('Permission:admin.problem.update,problems.{id}.user_id');
         // todo 修改hidden需要定制api
         Route::post('problem/update-hidden', 'Admin\ProblemController@update_hidden')->name('problem.update_hidden')->middleware('Permission:admin.problem.update');
 
@@ -166,7 +166,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
         // ===================== Manage group
         Route::get('groups', 'Admin\GroupController@list')->name('group.list')->middleware('Permission:admin.group.view');
         Route::get('group/create', 'Admin\GroupController@create')->name('group.create')->middleware('Permission:admin.group.create');
-        Route::get('groups/{id}/edit', 'Admin\GroupController@edit')->name('group.edit')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::get('groups/{id}/edit', 'Admin\GroupController@edit')->name('group.edit')->middleware('Permission:admin.group.update,groups.{id}.user_id');
 
         // ===================== settings
         Route::get('/settings', 'Admin\HomeController@settings')->name('settings')->middleware('Permission:admin.setting.view');

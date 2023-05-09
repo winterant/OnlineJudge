@@ -68,7 +68,7 @@ class User extends Authenticatable
             return false; // 群组不存在，所以没有权限
         if ($permission != null && $this->can($permission)) // 用户拥有某具体权限，则直接通过
             return true;
-        if ($group->creator == $this->id) // 当前用户是创建者，直接通过
+        if ($group->user_id == $this->id) // 当前用户是创建者，直接通过
             return true;
         if (
             $or_identity_manager &&

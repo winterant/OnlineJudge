@@ -102,22 +102,22 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         // Manage group: route('api.admin.group.*')
         Route::post('admin/groups', 'GroupController@create')->name('admin.group.create')->middleware('Permission:admin.group.create');
         Route::delete('admin/groups/{id}', 'GroupController@delete')->name('admin.group.delete')->middleware('Permission:admin.group.delete');
-        Route::put('admin/groups/{id}', 'GroupController@update')->name('admin.group.update')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::put('admin/groups/{id}', 'GroupController@update')->name('admin.group.update')->middleware('Permission:admin.group.update,groups.{id}.user_id');
         Route::patch('admin/groups/batch-to-one', 'GroupController@update_batch_to_one')->name('admin.group.update_batch_to_one')->middleware('Permission:admin.group.update');
 
         // 对group的竞赛、成员的管理，控制器中控制权限
         // contests
-        Route::post('admin/groups/{id}/contests', 'GroupController@create_contests')->name('admin.group.create_contests')->middleware('Permission:admin.group.update,groups.{id}.creator');
-        Route::delete('admin/groups/{id}/contests/batch', 'GroupController@delete_contests_batch')->name('admin.group.delete_contests_batch')->middleware('Permission:admin.group.delete,groups.{id}.creator');
-        Route::patch('admin/groups/{id}/group-contests/{gcid}/order/{shift}', 'GroupController@update_contest_order')->name('admin.group.update_contest_order')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::post('admin/groups/{id}/contests', 'GroupController@create_contests')->name('admin.group.create_contests')->middleware('Permission:admin.group.update,groups.{id}.user_id');
+        Route::delete('admin/groups/{id}/contests/batch', 'GroupController@delete_contests_batch')->name('admin.group.delete_contests_batch')->middleware('Permission:admin.group.delete,groups.{id}.user_id');
+        Route::patch('admin/groups/{id}/group-contests/{gcid}/order/{shift}', 'GroupController@update_contest_order')->name('admin.group.update_contest_order')->middleware('Permission:admin.group.update,groups.{id}.user_id');
         // members
-        Route::post('admin/groups/{id}/members', 'GroupController@create_members')->name('admin.group.create_members')->middleware('Permission:admin.group.update,groups.{id}.creator');
-        Route::delete('admin/groups/{id}/members/batch', 'GroupController@delete_members_batch')->name('admin.group.delete_members_batch')->middleware('Permission:admin.group.delete,groups.{id}.creator');
-        Route::patch('admin/groups/{id}/members/batch-to-one', 'GroupController@update_members_batch_to_one')->name('admin.group.update_members_batch_to_one')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::post('admin/groups/{id}/members', 'GroupController@create_members')->name('admin.group.create_members')->middleware('Permission:admin.group.update,groups.{id}.user_id');
+        Route::delete('admin/groups/{id}/members/batch', 'GroupController@delete_members_batch')->name('admin.group.delete_members_batch')->middleware('Permission:admin.group.delete,groups.{id}.user_id');
+        Route::patch('admin/groups/{id}/members/batch-to-one', 'GroupController@update_members_batch_to_one')->name('admin.group.update_members_batch_to_one')->middleware('Permission:admin.group.update,groups.{id}.user_id');
         // 群组成员个人档案
-        Route::get('admin/groups/{id}/members/{username}/archive', 'GroupController@get_archive')->name('admin.group.get_archive')->middleware('Permission:admin.group.view,groups.{id}.creator');
-        Route::get('admin/groups/{id}/members/{username}/archive-history', 'GroupController@get_archive_history')->name('admin.group.get_archive_history')->middleware('Permission:admin.group.view,groups.{id}.creator');
-        Route::patch('admin/groups/{id}/members/{username}', 'GroupController@update_archive')->name('admin.group.update_archive')->middleware('Permission:admin.group.update,groups.{id}.creator');
+        Route::get('admin/groups/{id}/members/{username}/archive', 'GroupController@get_archive')->name('admin.group.get_archive')->middleware('Permission:admin.group.view,groups.{id}.user_id');
+        Route::get('admin/groups/{id}/members/{username}/archive-history', 'GroupController@get_archive_history')->name('admin.group.get_archive_history')->middleware('Permission:admin.group.view,groups.{id}.user_id');
+        Route::patch('admin/groups/{id}/members/{username}', 'GroupController@update_archive')->name('admin.group.update_archive')->middleware('Permission:admin.group.update,groups.{id}.user_id');
 
         // settings
         Route::patch('admin/settings', 'SettingController@settings')->name('admin.settings')->middleware('Permission:admin.setting.update');

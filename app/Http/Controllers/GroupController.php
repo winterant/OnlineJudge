@@ -14,7 +14,7 @@ class GroupController extends Controller
     {
         $groups = DB::table('groups as g')
             ->select('g.*', 'u.username as creator')
-            ->leftJoin('users as u', 'u.id', '=', 'g.creator');
+            ->leftJoin('users as u', 'u.id', '=', 'g.user_id');
         if (Auth::check() && (request('mygroups') ?? false)) {
             // 仅查看我加入的群组（含隐藏的）
             $groups = $groups->join('group_users as gu', function ($q) {

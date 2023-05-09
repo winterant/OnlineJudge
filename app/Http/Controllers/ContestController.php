@@ -182,7 +182,7 @@ class ContestController extends Controller
                 'start_time', 'end_time',
                 'judge_type', 'public_rank',
                 'allow_lang',
-                'open_discussion'
+                'enable_discussing'
             ])->find($id);
 
         // 拿到本题基本信息

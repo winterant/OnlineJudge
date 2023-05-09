@@ -22,7 +22,7 @@ class CreateGroupsTable extends Migration
             $table->text('description')->nullable();
             $table->string('teacher')->nullable()->comment('teacher\'s name');
             $table->string('class')->index()->nullable();
-            $table->bigInteger('creator')->index()->nullable();
+            $table->bigInteger('user_id')->index()->nullable();
             $table->integer('num_members')->default(0); // 添加字段 参与成员数
             $table->integer('num_problems')->default(0); // 添加字段 题目总数
             $table->dateTime('created_at')->useCurrent();

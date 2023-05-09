@@ -30,25 +30,46 @@
       <div class="form-inline mb-3">
         <span>是否发布：</span>
         <div class="custom-control custom-radio ml-3">
-          <input type="radio" name="contest[hidden]" value="1" class="custom-control-input" id="hidden_yes"
-            checked>
-          <label class="custom-control-label pt-1" for="hidden_yes">隐藏（前台无法看到该比赛）</label>
+          <input type="radio" name="contest[hidden]" value="0" class="custom-control-input" id="hidden_on" checked>
+          <label class="custom-control-label pt-1" for="hidden_on">发布</label>
         </div>
         <div class="custom-control custom-radio ml-3">
-          <input type="radio" name="contest[hidden]" value="0" class="custom-control-input" id="hidden_no"
-            @if (isset($contest->hidden) && $contest->hidden == 0) checked @endif>
-          <label class="custom-control-label pt-1" for="hidden_no">公开（前台可以看到该比赛）</label>
+          <input type="radio" name="contest[hidden]" value="1" class="custom-control-input" id="hidden_off"
+            @if (!isset($contest->hidden) || $contest->hidden == 1) checked @endif>
+          <label class="custom-control-label pt-1" for="hidden_off">隐藏</label>
         </div>
+        <a href="javascript:" class="text-gray mx-2" onclick="whatisthis('若设为发布，则在网站前台竞赛列表中展示；若设为隐藏，则仅管理员可在后台中看到。')">
+          <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+        </a>
       </div>
+
+      <div class="form-inline mb-3">
+        <span>标签收集：</span>
+        <div class="custom-control custom-radio ml-3">
+          <input type="radio" name="contest[enable_tagging]" value="1" class="custom-control-input"
+            id="enable_tagging_on" checked>
+          <label class="custom-control-label pt-1" for="enable_tagging_on">收集</label>
+        </div>
+        <div class="custom-control custom-radio ml-3">
+          <input type="radio" name="contest[enable_tagging]" value="0" class="custom-control-input"
+            id="enable_tagging_off" @if (!isset($contest) || $contest->enable_tagging == 0) checked @endif>
+          <label class="custom-control-label pt-1" for="enable_tagging_off">不收集</label>
+        </div>
+        <a href="javascript:" class="text-gray mx-2"
+          onclick="whatisthis('用户正确通过题目后，在题目下方邀请用户为当前题目标记（知识点名称）。<br>若设为不收集，则不会邀请用户进行标记。<br>注：若设为收集，则在比赛进行中、结束后均邀请标记，但仅在结束后显示已收集的标签。')">
+          <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+        </a>
+      </div>
+
       {{--
       <div class="form-inline mb-3">
         <span>题目讨论：</span>
         <div class="custom-control custom-radio ml-3">
-          <input type="radio" name="contest[open_discussion]" value="1" class="custom-control-input" id="kaifang" checked>
+          <input type="radio" name="contest[enable_discussing]" value="1" class="custom-control-input" id="kaifang" checked>
           <label class="custom-control-label pt-1" for="kaifang">允许讨论</label>
         </div>
         <div class="custom-control custom-radio ml-3">
-          <input type="radio" name="contest[open_discussion]" value="0" class="custom-control-input" id="guanbi" @if (!isset($contest) || $contest->open_discussion == 0) checked @endif>
+          <input type="radio" name="contest[enable_discussing]" value="0" class="custom-control-input" id="guanbi" @if (!isset($contest) || $contest->enable_discussing == 0) checked @endif>
           <label class="custom-control-label pt-1" for="guanbi">禁用（赛后可用）</label>
         </div>
       </div>
@@ -154,6 +175,11 @@
         {{--                    </label> --}}
         {{--                </div> --}}
 
+        <div id="access_type_public">
+          <p class="alert-success p-2">
+            当竞赛公开时，任意已登陆用户均可直接进入竞赛。
+          </p>
+        </div>
         <div id="type_password">
           <div class="form-inline my-3">
             <label>
@@ -164,7 +190,7 @@
             <br>
           </div>
           <p class="alert-warning p-2">
-            用户必须输入密码才能进入竞赛。注意，无论竞赛被加入任何团队，都仍然需要输入密码才能进入。
+            用户必须输入密码才能进入竞赛。注：无论竞赛被加入任何团队，都仍然需要输入密码才能进入。
           </p>
         </div>
 
@@ -174,10 +200,13 @@
             <textarea name="contest_users" class="form-control-plaintext border bg-white" rows="8" cols="26"
               placeholder="user1&#13;&#10;user2&#13;&#10;每行一个用户登录名&#13;&#10;你可以将表格的整列粘贴到这里">
 @foreach (isset($unames) ? $unames : [] as $item)
-{{ $item }}&#13;&#10;
+{{ $item }}
 @endforeach
 </textarea>
           </label>
+          <p class="alert-warning p-2">
+            当竞赛公开时，以上被邀请用户可以直接进入竞赛。注：无论竞赛被加入任何团队，以上被邀请的用户仍有权直接进入竞赛。
+          </p>
         </div>
       </div>
 
@@ -275,12 +304,15 @@
     //监听竞赛权限改变
     function access_has_change(type) {
       if (type === 'public') {
+        $("#access_type_public").show();
         $("#type_password").hide();
         $("#type_users").hide();
       } else if (type === 'password') {
+        $("#access_type_public").hide();
         $("#type_password").show();
         $("#type_users").hide();
       } else {
+        $("#access_type_public").hide();
         $("#type_password").hide();
         $("#type_users").show();
       }

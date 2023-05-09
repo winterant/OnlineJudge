@@ -123,17 +123,17 @@
             type="text" hidden>
           <span>是否在题目页面显示讨论版</span>
         </div>
-        <div class="form-group">
+        {{-- <div class="form-group">
           <input id="post_discussion" type="checkbox">
           <input name="post_discussion" value="{{ get_setting('post_discussion') ? 'true' : 'false' }}" type="text"
             hidden>
           <span>是否允许普通用户在题目讨论版发言（管理员不受限制）</span>
-        </div>
+        </div> --}}
         <div class="form-group">
           <input id="problem_show_tag_collection" type="checkbox">
           <input name="problem_show_tag_collection"
             value="{{ get_setting('problem_show_tag_collection') ? 'true' : 'false' }}" type="text" hidden>
-          <span>在题目页面是否向已解决该问题的用户收集标签（该题涉及知识点）</span>
+          <span>在题目页面是否向已解决该问题的用户收集标签（该题涉及知识点）（竞赛中的题目不受此约束）</span>
         </div>
         <div class="form-group">
           <input id="problem_show_involved_contests" type="checkbox">
