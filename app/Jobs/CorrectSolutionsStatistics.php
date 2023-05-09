@@ -13,7 +13,7 @@ class CorrectSolutionsStatistics implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $timeout = 600; // 最长执行时间10分钟
+    public $timeout = 1800; // 最长执行时间30分钟
     public $tries = 3;     // 最多尝试3次
 
     /**

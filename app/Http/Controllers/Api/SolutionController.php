@@ -122,29 +122,17 @@ class SolutionController extends Controller
     // api 从数据库查询一条提交记录的判题结果; No update Database.
     public function solution_result($solution_id)
     {
-        // $request 传入参数：
-        // solution_id: solution id
-        // return judge0result:{token1:{'result_id':, 'result_desc':, ...}, ...}
         // ==================== 根据solution id，查询结果 ====================
         $solution = DB::table('solutions')->find($solution_id);
         if (!$solution)
             return ['ok' => 0, 'msg' => '提交记录不存在'];
 
         // 读取 所有测试数据的详细结果
-        $judge_result = json_decode($solution->judge_result, true);
+        $judge_result = json_decode($solution->judge_result ?? '[]', true);
+        ksort($judge_result); // 按key排序（为了解决mysql json类型乱序）
         foreach ($judge_result ?? [] as $k => &$test) {
             $judge_result[$k]['result_desc'] = trans('result.' . config("judge.result." . $test['result'] ?? 0));
         }
-
-        // 临时代替。后期开发，所有测试数据的结果
-        // $judge_result = [
-        //     0 => [
-        //         'result' => $solution->result,
-        //         'result_desc' => trans('result.' . config("oj.judge_result." . $solution->result)),
-        //         'time' => $solution->time,
-        //         'memory' => $solution->memory,
-        //     ]
-        // ];
 
         return [
             'ok' => 1,
@@ -211,51 +199,5 @@ class SolutionController extends Controller
             'msg' => '运行完成',
             'data' => ['judge_result' => $judge_response[1]]
         ];
-    }
-
-    // 向jduge0发送一次运行请求；No Database
-    private function send_to_run_code($lang_id, $code, $stdin, $time_limit_ms, $memory_limit_mb, $wait)
-    {
-        $data = [
-            'language_id'     => config('oj.langJudge0Id.' . $lang_id),
-            'source_code'     => base64_encode($code),
-            'stdin'           => base64_encode($stdin),
-            // 'expected_output' => base64_encode(file_get_contents($sample['out'])),
-            'cpu_time_limit'  => $time_limit_ms / 1000.0, //convert to S
-            'memory_limit'    => $memory_limit_mb * 1024, //convert to KB
-            'max_file_size'   => 64, // 64KB
-            'enable_network'  => false,
-            // 'redirect_stderr_to_stdout' => true,
-        ];
-        if ($lang_id == 1) //C++
-            $data['compiler_options'] = "-O2 -std=c++17";
-        $url = config('app.JUDGE0_SERVER') . '/submissions/?' . http_build_query([
-            'base64_encoded' => 'true',
-            'wait' => $wait ? 'true' : 'false'
-        ]);
-        $res = null; // send_post($url, $data);
-        $res[1] = json_decode($res[1], true);
-        $res[1] = $this->decode_base64_judge0_submission($res[1]);
-        return $res;
-    }
-
-    // 将judge0查询结果(base64)解码， 并汇总报错信息为error_info字段
-    private function decode_base64_judge0_submission($s)
-    {
-        if (isset($s['message'])) $s['message'] = base64_decode($s['message']);
-        if (isset($s['compile_output'])) $s['compile_output'] = base64_decode($s['compile_output']);
-        if (isset($s['stderr'])) $s['stderr'] = base64_decode($s['stderr']);
-        if (isset($s['stdout'])) $s['stdout'] = base64_decode($s['stdout']);
-        if (isset($s['time'])) $s['time'] *= 1000;  // convert to MS for lduoj_web
-        if (isset($s['memory'])) $s['memory'] = round($s['memory'] / 1024.0, 2); // convert to MB for lduoj_web
-        $s['error_info'] = implode(PHP_EOL, array_filter([
-            $s['message'] ?? null,
-            $s['compile_output'] ?? null,
-            $s['stderr'] ?? null,
-        ]));
-        unset($s['message']);
-        unset($s['compile_output']);
-        unset($s['stderr']);
-        return $s;
     }
 }

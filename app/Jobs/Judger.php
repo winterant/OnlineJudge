@@ -16,7 +16,7 @@ class Judger implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $timeout = 300; // 最长执行时间 秒
+    public $timeout = 600; // 最长执行时间 秒
     public $tries = 1;    // 最多尝试次数
 
     private array $solution;
@@ -138,7 +138,7 @@ class Judger implements ShouldQueue
             ]
         ];
 
-        $res = Http::post(config('app.JUDGE_SERVER') . '/run', $data);
+        $res = Http::timeout($this->timeout)->post(config('app.JUDGE_SERVER') . '/run', $data);
         if ($fid = ($res[0]['fileIds'][$config['compile']['compiled_filename']] ?? false))
             $this->cachedIds[] = $fid; // 记录缓存的文件id，最后清除
         return $res->json()[0];
@@ -189,7 +189,7 @@ class Judger implements ShouldQueue
             ]];
 
             // 向判题服务发起请求
-            $res = Http::post(config('app.JUDGE_SERVER') . '/run', $data);
+            $res = Http::timeout($this->timeout)->post(config('app.JUDGE_SERVER') . '/run', $data);
             if ($res[0]['fileIds']['stdout'] ?? false)
                 $this->cachedIds[] = $res[0]['fileIds']['stdout']; // 记录缓存的文件id，最后清除
 
@@ -282,7 +282,7 @@ class Judger implements ShouldQueue
         ]]];
 
         // 向判题服务发起请求
-        $res = Http::post(config('app.JUDGE_SERVER') . '/run', $data);
+        $res = Http::timeout($this->timeout)->post(config('app.JUDGE_SERVER') . '/run', $data);
         return [
             'result' => $res[0]['exitStatus'] == 0 ? 4 : 6,
             'error_info' => implode("\n", array_values($res[0]['files']))
