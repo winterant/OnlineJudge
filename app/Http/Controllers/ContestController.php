@@ -182,7 +182,8 @@ class ContestController extends Controller
                 'start_time', 'end_time',
                 'judge_type', 'public_rank',
                 'allow_lang',
-                'enable_discussing'
+                'enable_discussing',
+                'enable_tagging'
             ])->find($id);
 
         // 拿到本题基本信息
@@ -209,7 +210,7 @@ class ContestController extends Controller
         $problem->tags = json_decode($problem->tags ?? '[]', true); // json => array
 
         // 获取本题的民间收集标签
-        $tags = ProblemHelper::getTags($problem->id, 5);
+        $tags = ProblemHelper::getTags($problem->id, official: false, informal_limit: 5);
 
         return view('problem.problem', compact('contest', 'problem', 'samples', 'tags'));
     }

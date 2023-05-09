@@ -67,7 +67,7 @@ return [
         'filename' => 'Main.cpp',
         'env'=>$defaultEnv,
         'compile' => array_merge($defaultCompile, [
-            'command' => '/usr/bin/g++ Main.cpp -std=c++98 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
+            'command' => '/usr/bin/g++ Main.cpp -std=c++17 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
         ]),
         'run' => array_merge($defaultRun, [])
     ],
