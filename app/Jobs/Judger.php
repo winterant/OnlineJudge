@@ -119,7 +119,7 @@ class Judger implements ShouldQueue
         $data = [
             'cmd' => [
                 [
-                    'args' => explode(' ', $config['compile']['command']),
+                    'args' => ['/bin/bash', '-c', $config['compile']['command']],
                     'env' => $config['env'],
                     'files' => [   // 指定 标准输入、标准输出和标准错误的文件
                         ['content' => ''],
@@ -148,7 +148,8 @@ class Judger implements ShouldQueue
     // 运行评测
     private function run($problem, $config, $copyIn, $spj_file_id = '')
     {
-        $this->update_db_solution(['result' => 3, 'pass_rate' => 0]); // 运行中
+        $solution = ['result' => 3, 'pass_rate' => 0, 'error_info' => '', 'time' => 0, 'memory' => 0];
+        $this->update_db_solution($solution); // 运行中
 
         // 初始化所有测试点
         $tests = ProblemHelper::getTestDataFilenames($problem['id']);
@@ -172,7 +173,7 @@ class Judger implements ShouldQueue
             // 构造请求
             $data = ['cmd' => [
                 [
-                    'args' => explode(' ', $config['run']['command']),
+                    'args' => ["/bin/bash", "-c", $config['run']['command']],
                     'env' => $config['env'],
                     'files' => [
                         ['src' => sprintf("/testdata/%d/test/%s", $problem['id'], $test['in'])],
@@ -236,7 +237,9 @@ class Judger implements ShouldQueue
                 if ($not_ac == 1) { // 首次遇到的错误作为本solution的错误
                     if (!empty($error_info))
                         $error_info = "[Test #{$test_index} {$k}.in]\n" . $error_info;
-                    $this->update_db_solution(['result' => $result, 'error_info' => $error_info, 'wrong_data' => $k]);
+                    $solution['result'] = $result;
+                    $solution['error_info'] = $error_info;
+                    $solution['wrong_data'] = $k;
                 }
                 // 如果是acm模式，遇到错误，直接终止
                 if ($this->solution['judge_type'] == 'acm') {
@@ -244,26 +247,29 @@ class Judger implements ShouldQueue
                     foreach ($tests as $k => $test)
                         if ($judge_result[$k]['result'] < 4)
                             $judge_result[$k]['result'] = 13; // 跳过
-                    $this->update_db_solution(['judge_result' => $judge_result]);
+                    $solution['judge_result'] = $judge_result;
                     break;
                 }
             }
         }
-        if ($ac == 0 && $not_ac == 0) // 没有测试数据，系统错误
-            $this->update_db_solution(['result' => 14, 'pass_rate' => 0, 'error_info' => 'There is no test data, please contact the administrator to add test data.']);
-        else { // 记录下通过率和结果
-            $record = ['pass_rate' => $ac / ($ac + $not_ac), 'time' => $max_time, 'memory' => $max_memory];
+        if ($ac == 0 && $not_ac == 0) { // 没有测试数据
+            $solution['result'] = 14;   // 系统错误
+            $solution['error_info'] = 'There is no test data, please contact the administrator to add test data.';
+        } else { // 记录下通过率和结果
+            $solution['pass_rate'] = $ac / ($ac + $not_ac);
+            $solution['time'] = $max_time;
+            $solution['memory'] = $max_memory;
             if ($not_ac == 0) // 该solution完全正确
-                $record['result'] = 4;
-            $this->update_db_solution($record);
+                $solution['result'] = 4;
         }
+        $this->update_db_solution($solution); // 更新判题结果
     }
 
     // 特判
     private function special_judge($spj_file_id, $std_in_path, $std_out_path, $user_out_file_id)
     {
         $data = ['cmd' => [[
-            'args' => explode(" ", "spj std.in std.out user.out"),
+            'args' => ["/bin/bash", "-c", "./spj std.in std.out user.out"],
             'env' => ['PATH=/usr/bin:/bin'],
             'files' => [
                 ['content' => ''],

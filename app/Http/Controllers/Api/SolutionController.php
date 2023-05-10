@@ -210,7 +210,7 @@ class SolutionController extends Controller
         $data = [
             'cmd' => [
                 [
-                    'args' => explode(' ', $config['compile']['command']),
+                    'args' => ['/bin/bash', '-c', $config['compile']['command']],
                     'env' => $config['env'],
                     'files' => [   // 指定 标准输入、标准输出和标准错误的文件
                         ['content' => ''],
