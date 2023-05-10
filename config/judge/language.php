@@ -120,7 +120,7 @@ return [
         'run' => array_merge($defaultRun, [
             'command' => '/usr/bin/java -Dfile.encoding=UTF-8 -cp Main.jar Main',
             'limit_amplify' => 2,
-            'extra_memory' => 1024 << 20, // 1024MB
+            'extra_memory' => 2000 << 20, // 2000MB
         ])
     ],
 
