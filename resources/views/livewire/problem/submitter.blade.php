@@ -38,11 +38,11 @@
       {{-- 提交等按钮 --}}
       <div class="overflow-hidden">
         <div class="pull-right">
-          <button v-show="judge_processing>0" id="btn_judge_result" type="button" data-target="#judge-result-page"
-            data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
           <button id="btn_local_test" type="button" data-target="#local-test-page" data-toggle="modal"
             onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
             class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button>
+          <button v-show="judge_processing>0" id="btn_judge_result" type="button" data-target="#judge-result-page"
+            data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
           <button id="btn_submit_code" type="button" onclick="disabledSubmitButton(this, '已提交');"
             v-on:click="submit_solution" class="btn bg-success text-white m-2" style="min-width: 6rem"
             @guest disabled @endguest>{{ trans('main.Submit') }}</button>

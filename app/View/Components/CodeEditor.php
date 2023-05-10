@@ -21,8 +21,9 @@ class CodeEditor extends Component
     public $code_name; // textarea 代码的name属性
     public $code; // 初始代码
     public $lang; // 初始语言
+    public $useLocalStorage; // 是否让浏览器缓存已选中语言、已编辑代码
 
-    public function __construct($langName, $codeName, $lang = 0, $code = '', array $languages = null, $bitlanguages = null, $title = null)
+    public function __construct($langName, $codeName, $lang = 0, $code = '', array $languages = null, $bitlanguages = null, $title = null, $useLocalStorage = true)
     {
         $this->title = $title;
         $this->domId = uniqid('code_editor_');
@@ -30,6 +31,7 @@ class CodeEditor extends Component
         $this->code_name = $codeName;
         $this->code = $code;
         $this->lang = $lang;
+        $this->useLocalStorage = $useLocalStorage ?? true; // 默认使用缓存
         // 指定语言列表
         $this->languages = $languages ?? config('judge.lang');
         // 二进制位选取语言

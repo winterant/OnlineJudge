@@ -86,7 +86,9 @@
       // ==================== 监听用户选中的语言，实时修改代码提示框 ======================
       function listen_lang_selected() {
         var lang = $("#language{{ $domId }}").children('option:selected').val(); // 当前选中的语言下标
-        localStorage.setItem('code_lang', lang)
+        @if ($useLocalStorage)
+          localStorage.setItem('code_lang', lang)
+        @endif
 
         if (lang == 0) {
           code_editor.setOption('mode', 'text/x-csrc')
@@ -152,7 +154,9 @@
           instance.showHint()
         }
         // 代码修改时顺便保存本地，防止丢失
-        localStorage.setItem(local_code_key, code_editor.getValue())
+        @if ($useLocalStorage)
+          localStorage.setItem(local_code_key, code_editor.getValue())
+        @endif
       });
     })
   </script>

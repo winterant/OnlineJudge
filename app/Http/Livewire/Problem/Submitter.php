@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-class CodeEditor extends Component
+class Submitter extends Component
 {
     public array $problem;
     public $contest_id = null; // 竞赛编号，若为null则是在题库中
@@ -35,6 +35,6 @@ class CodeEditor extends Component
 
     public function render()
     {
-        return view('livewire.problem.code-editor');
+        return view('livewire.problem.submitter');
     }
 }
