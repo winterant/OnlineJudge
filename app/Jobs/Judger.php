@@ -183,8 +183,8 @@ class Judger implements ShouldQueue
                     ],
                     'cpuLimit' => $problem['time_limit'] * 1000000, // ms ==> ns
                     'clockLimit' => $problem['time_limit'] * 1000000 * 4 + 1000000000, // *4+1s
-                    'memoryLimit' => ($problem['memory_limit'] << 20) + ($config['run']['extra_memory'] ?? 0), // MB ==> B
-                    'strictMemoryLimit' => true,
+                    'memoryLimit' => ($problem['memory_limit'] << 20), // MB ==> B
+                    // 'strictMemoryLimit' => true,
                     'procLimit' => $config['run']['procLimit'],
                     'copyIn' =>  $copyIn,
                     'copyOut' => ['stdout', 'stderr'],

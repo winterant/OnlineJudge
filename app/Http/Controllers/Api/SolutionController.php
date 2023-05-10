@@ -258,7 +258,7 @@ class SolutionController extends Controller
                     'cpuLimit' => $timeLimit, // ns
                     'clockLimit' => $timeLimit * 2, // *2 ns
                     'memoryLimit' => $memoryLimit, // B
-                    'strictMemoryLimit' => true,
+                    // 'strictMemoryLimit' => true,
                     'procLimit' => $config['run']['procLimit'],
                     'copyIn' => [
                         $config['compile']['compiled_filename'] => ['fileId' => $cacheId]
