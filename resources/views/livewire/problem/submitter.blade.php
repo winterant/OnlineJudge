@@ -249,7 +249,7 @@
         // 本地运行测试
         submit_local_test() {
           disabledSubmitButton($("#btn_submit_local_test"), '{{ __('main.Running') }}')
-          this.local_test.stdout = null
+          this.local_test = {} // 清空上一次的运行结果
           const post_data = json_value_base64({
             ...$("#code_form").serializeJSON(),
             'stdin': this.sample_in,
