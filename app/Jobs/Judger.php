@@ -61,8 +61,8 @@ class Judger implements ShouldQueue
         $config = config('judge.language.' . $this->solution['language']);
 
         // 时间、空间的缩放
-        $problem['time_limit'] *= $config['run']['limit_amplify']; // MS
-        $problem['memory_limit'] *= $config['run']['limit_amplify']; // MB
+        $problem['time_limit'] = intval($problem['time_limit']) * $config['run']['limit_amplify']; // MS
+        $problem['memory_limit'] = intval($problem['memory_limit']) * $config['run']['limit_amplify']; // MB
 
         // 编译
         if (!empty($config['compile'])) { // 需编译
