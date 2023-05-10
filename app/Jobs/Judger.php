@@ -127,7 +127,7 @@ class Judger implements ShouldQueue
                         ['name' => 'stderr', 'max' => 10240],
                     ],
                     'cpuLimit' => $config['compile']['cpuLimit'],
-                    'clockLimit' =>  $config['compile']['clockLimit'],
+                    'clockLimit' =>  $config['compile']['cpuLimit'] * 2,
                     'memoryLimit' => $config['compile']['memoryLimit'],
                     'procLimit' => $config['compile']['procLimit'],
                     'copyIn' => [
@@ -182,7 +182,7 @@ class Judger implements ShouldQueue
                         ['name' => 'stderr', 'max' => $config['run']['stderrMax']],
                     ],
                     'cpuLimit' => $problem['time_limit'] * 1000000, // ms ==> ns
-                    'clockLimit' => $problem['time_limit'] * 1000000 * 2 + 1000000000, // *2+1s
+                    'clockLimit' => $problem['time_limit'] * 1000000 * 4 + 1000000000, // *4+1s
                     'memoryLimit' => ($problem['memory_limit'] << 20) + ($config['run']['extra_memory'] ?? 0), // MB ==> B
                     'strictMemoryLimit' => true,
                     'procLimit' => $config['run']['procLimit'],
@@ -279,7 +279,7 @@ class Judger implements ShouldQueue
                 ['name' => 'stderr', 'max' => 10240],
             ],
             'cpuLimit' => 60000000000, // 60s ==> ns
-            'clockLimit' => 120000000000, // 120s
+            'clockLimit' => 300000000000, // 300s
             'memoryLimit' => 2048 << 20, // 2048MB ==> B
             'procLimit' => 128,
             'copyIn' => [

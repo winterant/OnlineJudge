@@ -223,7 +223,7 @@ class SolutionController extends Controller
                         ['name' => 'stderr', 'max' => 10240],
                     ],
                     'cpuLimit' => $config['compile']['cpuLimit'],
-                    'clockLimit' =>  $config['compile']['clockLimit'],
+                    'clockLimit' =>  $config['compile']['cpuLimit'] * 2,
                     'memoryLimit' => $config['compile']['memoryLimit'],
                     'procLimit' => $config['compile']['procLimit'],
                     'copyIn' => [

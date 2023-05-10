@@ -9,7 +9,6 @@ $defaultEnv = [
 $defaultCompile = [
     'compiled_filename' => 'Main', // 编译好的程序文件名，一般均为Main，java例外为*.class
     'cpuLimit' => 10000000000,   // ns=10s
-    'clockLimit' => 20000000000, // ns=20s
     'memoryLimit' => 512 << 20,  // B=512MB
     'procLimit' => 128
 ];
@@ -121,7 +120,7 @@ return [
         'run' => array_merge($defaultRun, [
             'command' => '/usr/bin/java -Dfile.encoding=UTF-8 -cp Main.jar Main',
             'limit_amplify' => 2,
-            'extra_memory' => 512 << 20, // 512MB
+            'extra_memory' => 1024 << 20, // 1024MB
         ])
     ],
 
