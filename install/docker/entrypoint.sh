@@ -2,6 +2,8 @@
 
 set -ex
 
+# Ensure that the web is deployed after other services are launched.
+sleep 5
 
 ##########################################################################
 # Set Time Zone
