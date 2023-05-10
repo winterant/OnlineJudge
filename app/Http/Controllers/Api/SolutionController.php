@@ -155,9 +155,6 @@ class SolutionController extends Controller
         ];
     }
 
-
-    // ==================================== 以下废弃 ===================================
-
     // api 提交一条本地测试，仅运行返回结果。 No DB
     public function submit_local_test(Request $request)
     {
@@ -234,7 +231,7 @@ class SolutionController extends Controller
         $res = Http::timeout(30)->post(config('app.JUDGE_SERVER') . '/run', $data);
         $res = $res->json()[0];
         if ($res['exitStatus'] != 0) { // 编译失败
-            $data['error_info'] = sprintf("[Compile Error]\n %s\n%s\n", $res['status'], $res['files']['stderr']);
+            $res['error_info'] = sprintf("[Compile Error]\n %s\n%s\n", $res['status'], $res['files']['stderr']);
             return $res;
         }
 
@@ -266,7 +263,7 @@ class SolutionController extends Controller
         $res = Http::timeout(30)->post(config('app.JUDGE_SERVER') . '/run', $data);
         $res = $res->json()[0];
         if ($res['exitStatus'] != 0) { // 运行失败
-            $data['error_info'] = sprintf("[Runtime Error]\n %s\n%s\n", $res['status'], $res['files']['stderr']);
+            $res['error_info'] = sprintf("[Runtime Error]\n %s\n%s\n", $res['status'], $res['files']['stderr']);
         }
 
         // =================== 删除go-judge缓存文件
