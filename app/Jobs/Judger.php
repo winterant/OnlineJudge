@@ -148,7 +148,7 @@ class Judger implements ShouldQueue
     // 运行评测
     private function run($problem, $config, $copyIn, $spj_file_id = '')
     {
-        $this->update_db_solution(['result' => 3]); // 运行中
+        $this->update_db_solution(['result' => 3, 'pass_rate' => 0]); // 运行中
 
         // 初始化所有测试点
         $tests = ProblemHelper::getTestDataFilenames($problem['id']);
