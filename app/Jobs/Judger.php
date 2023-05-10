@@ -258,7 +258,7 @@ class Judger implements ShouldQueue
             $solution['result'] = 14;   // 系统错误
             $solution['error_info'] = 'There is no test data, please contact the administrator to add test data.';
         } else { // 记录下通过率和结果
-            $solution['pass_rate'] = $ac / ($ac + $not_ac);
+            $solution['pass_rate'] = $ac / count($tests);
             $solution['time'] = $max_time;
             $solution['memory'] = $max_memory;
             if ($not_ac == 0) // 该solution完全正确
