@@ -61,8 +61,8 @@ class Judger implements ShouldQueue
         $config = config('judge.language.' . $this->solution['language']);
 
         // 时间、空间的缩放
-        $problem['time_limit'] *= $config['run']['limit_amplify'];
-        $problem['memory_limit'] *= $config['run']['limit_amplify'];
+        $problem['time_limit'] *= $config['run']['limit_amplify']; // MS
+        $problem['memory_limit'] *= $config['run']['limit_amplify']; // MB
 
         // 编译
         if (!empty($config['compile'])) { // 需编译
@@ -127,6 +127,7 @@ class Judger implements ShouldQueue
                         ['name' => 'stderr', 'max' => 10240],
                     ],
                     'cpuLimit' => $config['compile']['cpuLimit'],
+                    'clockLimit' =>  $config['compile']['clockLimit'],
                     'memoryLimit' => $config['compile']['memoryLimit'],
                     'procLimit' => $config['compile']['procLimit'],
                     'copyIn' => [
@@ -181,7 +182,8 @@ class Judger implements ShouldQueue
                         ['name' => 'stderr', 'max' => $config['run']['stderrMax']],
                     ],
                     'cpuLimit' => $problem['time_limit'] * 1000000, // ms ==> ns
-                    'memoryLimit' => $problem['memory_limit'] << 20, // MB ==> B
+                    'clockLimit' => $problem['time_limit'] * 1000000 * 2 + 1000000000, // *2+1s
+                    'memoryLimit' => ($problem['memory_limit'] << 20) + ($config['run']['extra_memory'] ?? 0), // MB ==> B
                     'strictMemoryLimit' => true,
                     'procLimit' => $config['run']['procLimit'],
                     'copyIn' =>  $copyIn,
@@ -277,8 +279,9 @@ class Judger implements ShouldQueue
                 ['name' => 'stderr', 'max' => 10240],
             ],
             'cpuLimit' => 60000000000, // 60s ==> ns
-            'memoryLimit' => 1024 << 20, // 1024MB ==> B
-            'procLimit' => 8,
+            'clockLimit' => 120000000000, // 120s
+            'memoryLimit' => 2048 << 20, // 2048MB ==> B
+            'procLimit' => 128,
             'copyIn' => [
                 'spj' => ['fileId' => $spj_file_id],
                 'std.in' => ['src' => $std_in_path],
@@ -286,7 +289,6 @@ class Judger implements ShouldQueue
                 'user.out' => ['fileId' => $user_out_file_id]
             ],
             'copyOut' => ['stdout', 'stderr'],
-            // 'copyOutDir' => '1'
         ]]];
 
         // 向判题服务发起请求

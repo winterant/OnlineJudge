@@ -7,9 +7,10 @@ $defaultEnv = [
 
 // 默认的编译配置
 $defaultCompile = [
-    'compiled_filename' => 'Main', // 编译好的程序文件名，一般均为Main，java例外为**.class
-    'cpuLimit' => 20000000000,  // ns=20s
-    'memoryLimit' => 512 << 20, // B=512MB
+    'compiled_filename' => 'Main', // 编译好的程序文件名，一般均为Main，java例外为*.class
+    'cpuLimit' => 10000000000,   // ns=10s
+    'clockLimit' => 20000000000, // ns=20s
+    'memoryLimit' => 512 << 20,  // B=512MB
     'procLimit' => 128
 ];
 
@@ -19,7 +20,8 @@ $defaultRun = [
     'stdoutMax' => 64 << 20, // 64MB
     'stderrMax' => 10 << 10, // 10KB
     'procLimit' => 128,
-    'limit_amplify' => 1 // 运行时间、内存限制的放大倍数；C/C++之外的语言应当为2
+    'limit_amplify' => 1, // 运行时间、内存限制的放大倍数；C/C++之外的语言应当为2
+    'extra_memory' => 0, // 额外内存(B)；主要是java需要
 ];
 
 // 生成最终配置
@@ -118,7 +120,8 @@ return [
         ]),
         'run' => array_merge($defaultRun, [
             'command' => '/usr/bin/java -Dfile.encoding=UTF-8 -cp Main.jar Main',
-            'limit_amplify' => 2
+            'limit_amplify' => 2,
+            'extra_memory' => 512 << 20, // 512MB
         ])
     ],
 

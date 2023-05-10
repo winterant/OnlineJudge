@@ -188,7 +188,7 @@ class SolutionController extends Controller
         //============================== 使用go-judge判题 ==========================
         // 获取编译运行指令
         $config = config('judge.language.' . $data['language'] ?? 1); // 默认C++17
-        $response = $this->compile_run($data['code'], $request->input('stdin'), $config);
+        $response = $this->compile_run($data['code'], $request->input('stdin'), $config, $problem->time_limit, $problem->memory_limit);
         $data = [
             'time' => intdiv($response['time'], 1000000), // ns==>ms
             'memory' => $response['memory'] >> 20, // B==>MB
@@ -204,8 +204,13 @@ class SolutionController extends Controller
     }
 
     // 编译代码
-    private function compile_run(string $code, $sample_in, array $config)
+    private function compile_run(string $code, $sample_in, array $config, $timeLimit, $memoryLimit)
     {
+        // 计算时空限制
+        $timeLimit *= $config['run']['limit_amplify'] * 1000000; // MS==>NS
+        $memoryLimit = ($memoryLimit * $config['run']['limit_amplify']) << 20; // MB==>B
+        $memoryLimit += ($config['run']['extra_memory'] ?? 0); // 额外内存
+
         // ===================== 编译, 要发送的数据
         $data = [
             'cmd' => [
@@ -218,6 +223,7 @@ class SolutionController extends Controller
                         ['name' => 'stderr', 'max' => 10240],
                     ],
                     'cpuLimit' => $config['compile']['cpuLimit'],
+                    'clockLimit' =>  $config['compile']['clockLimit'],
                     'memoryLimit' => $config['compile']['memoryLimit'],
                     'procLimit' => $config['compile']['procLimit'],
                     'copyIn' => [
@@ -249,8 +255,9 @@ class SolutionController extends Controller
                         ['name' => 'stdout', 'max' => 10240],
                         ['name' => 'stderr', 'max' => 10240],
                     ],
-                    'cpuLimit' => 10000 * 1000000, // ms ==> ns
-                    'memoryLimit' => 512 << 20, // MB ==> B
+                    'cpuLimit' => $timeLimit, // ns
+                    'clockLimit' => $timeLimit * 2, // *2 ns
+                    'memoryLimit' => $memoryLimit, // B
                     'strictMemoryLimit' => true,
                     'procLimit' => $config['run']['procLimit'],
                     'copyIn' => [
