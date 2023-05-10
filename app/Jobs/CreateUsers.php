@@ -20,7 +20,7 @@ class CreateUsers implements ShouldQueue
 
     public $timeout = 600; // 最长执行时间10分钟
     public $tries = 3;     // 最多尝试3次
-
+    public $backoff = 5;   // 重试任务前等待的秒数
     public $users;
     /**
      * Create a new job instance.

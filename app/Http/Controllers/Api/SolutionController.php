@@ -128,12 +128,18 @@ class SolutionController extends Controller
         if (!$solution)
             return ['ok' => 0, 'msg' => '提交记录不存在'];
 
-        // 读取 所有测试数据的详细结果
-        $judge_result = json_decode($solution->judge_result ?? '[]', true);
-        ksort($judge_result); // 按key排序（为了解决mysql json类型乱序）
+        // 读取数据库中 所有测试数据的详细结果 {'testname':{'result':int, ...}, ...}
+        $judge_result = json_decode($solution->judge_result ?? '[]', true); // 注意json无序
+        // 下面添加描述信息，并转为数组按测试名排序，最后传给前端
         foreach ($judge_result as $k => &$test) {
             $judge_result[$k]['result_desc'] = trans('result.' . config("judge.result." . $test['result'] ?? 0));
+            if (!isset($judge_result[$k]['testname']))
+                $judge_result[$k]['testname'] = $k; // 记下测试名，用于排序
         }
+        uasort($judge_result, function ($a, $b) {
+            return $a['testname'] < $b['testname'] ? -1 : 1; // 按测试名升序
+        });
+        $judge_result = array_values($judge_result); // 转为数组
 
         return [
             'ok' => 1,
@@ -186,7 +192,6 @@ class SolutionController extends Controller
         // 获取编译运行指令
         $config = config('judge.language.' . $data['language'] ?? 1); // 默认C++17
         $response = $this->compile_run($data['code'], $request->input('stdin'), $config);
-        // return ['ok' => 0, 'data' => $response];
         $data = [
             'time' => intdiv($response['time'], 1000000), // ns==>ms
             'memory' => $response['memory'] >> 20, // B==>MB

@@ -8,13 +8,16 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class CorrectSolutionsStatistics implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $timeout = 1800; // 最长执行时间30分钟
+    public $timeout = 600; // 最长执行时间10分钟
     public $tries = 3;     // 最多尝试3次
+    public $backoff = 60;  // 重试任务前等待的秒数
+
 
     /**
      * Create a new job instance.
@@ -141,5 +144,14 @@ class CorrectSolutionsStatistics implements ShouldQueue
                 ->update(['num_members' => $item->num_members]);
         }
         // Done
+    }
+
+    /**
+     * 处理失败作业
+     */
+    public function failed(Throwable $exception): void
+    {
+        // 向用户发送失败通知等...
+        dump($exception);
     }
 }

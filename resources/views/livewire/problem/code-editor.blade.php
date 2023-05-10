@@ -157,9 +157,6 @@
                     <a class="ml-3" target="_blank"
                       :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
                   </p>
-                  <p class="alert-danger p-2">
-                    请先使用本地IDE（如DEV-CPP、Codeblocks）运行调试，测试无误后再提交代码！
-                  </p>
                   <pre v-show="judge_result.error_info" class="alert-danger p-2 overflow-auto">@{{ judge_result.error_info }}</pre>
                 </div>
               </div>
@@ -175,8 +172,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, key, index) in judge_result.details">
-                      <td>#@{{ (index == undefined ? key : index) + 1 }}</td>
+                    <tr v-for="(item, index) in judge_result.details">
+                      <td>#@{{ index + 1 }}</td>
                       <td><span :class="'judge-result-' + item.result">@{{ item.result_desc }}</span></td>
                       <td>
                         <span v-if="item.time!=null">@{{ item.time }}MS</span>
@@ -219,7 +216,7 @@
           judge_processing: 0, // 0:没提交, 1:提交中, 2:判题中, 3:判题完成
           judge_result: {},
           // 以下用于本地测试
-          sample_in:null,
+          sample_in: null,
           local_test: {
             'time': null,
             'memory': null,
@@ -232,17 +229,16 @@
       computed: {
         // 计算正确通过组数
         judge_num_ac: function() {
-          var ac = 0;
-          for (var k in this.judge_result.details)
-            if (this.judge_result.details[k].result == 4)
+          let ac = 0;
+          for (let e of this.judge_result.details)
+            if (e.result == 4)
               ac++
           return ac
         },
         judge_num_test: function() {
-          var total = 0;
-          for (var k in this.judge_result.details)
-            total++
-          return total;
+          if (this.judge_result.details != undefined)
+            return this.judge_result.details.length
+          return 0
         }
       },
       methods: {
@@ -258,7 +254,7 @@
             ...$("#code_form").serializeJSON(),
             'stdin': this.sample_in,
           })
-          console.log(post_data)
+
           $.ajax({
             type: 'post',
             url: '{{ route('api.solution.submit_local_test') }}',

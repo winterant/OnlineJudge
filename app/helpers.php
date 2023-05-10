@@ -76,7 +76,7 @@ function getIpAddress(string $ip = '')
             return 'Query failed'; // 接口通了，但没有正常返回
         }
     } catch (Exception $e) {
-        echo $e->getMessage();
+        // echo $e->getMessage();
         return 'Connection failed'; // 接口不通
     }
 }

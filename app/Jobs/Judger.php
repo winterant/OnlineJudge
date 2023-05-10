@@ -10,14 +10,15 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-
+use Throwable;
 
 class Judger implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $timeout = 600; // 最长执行时间 秒
-    public $tries = 1;    // 最多尝试次数
+    public $tries = 1;     // 最多尝试次数
+    public $backoff = 5;   // 重试任务前等待的秒数
 
     private array $solution;
     private array $cachedIds;
@@ -165,7 +166,7 @@ class Judger implements ShouldQueue
         $not_ac = 0;
         $max_time = 0;
         $max_memory = 0;
-        $test_index=0;
+        $test_index = 0;
         foreach ($tests as $k => $test) {
             $test_index++;
             // 构造请求
@@ -338,5 +339,15 @@ class Judger implements ShouldQueue
         foreach ($this->cachedIds as $id) {
             Http::delete(config('app.JUDGE_SERVER') . '/file/' . $id);
         }
+    }
+
+    /**
+     * 处理失败作业
+     */
+    public function failed(Throwable $exception): void
+    {
+        // 向用户发送失败通知等...
+        dump($this->solution);
+        dump($exception);
     }
 }
