@@ -91,50 +91,26 @@ class ProblemHelper
     }
 
     /**
-     * 从文件读取测试数据
-     * @param $problem_id
-     * @return array  ['filename':{'in':'***', 'out':'***'}, ...]
-     */
-    public static function readTestData($problem_id): array
-    {
-        $testdata = [];
-        $dir = testdata_path($problem_id . '/test');
-        foreach (getAllFilesPath($dir) as $item) {
-            $name = pathinfo($item, PATHINFO_FILENAME);  //文件名
-            $ext = pathinfo($item, PATHINFO_EXTENSION);  //拓展名
-            if (!isset($testdata[$name])) //发现新样本
-                $testdata[$name] = [];
-            if ($ext === 'in')
-                $testdata[$name]['in'] = file_get_contents($item);
-            if ($ext === 'out' || $ext === 'ans')
-                $testdata[$name]['out'] = file_get_contents($item);
-        }
-
-        $testdata = array_filter($testdata, function ($v) {
-            return count($v) == 2;
-        });  // 过滤掉不完整的数据（in、out匹配才算完整）
-
-        return $testdata;
-    }
-
-
-    /**
      * 保存测试数据到文件
      * @param $problem_id
-     * @param $ins  字符串列表
-     * @param $outs  字符串列表
+     * @param $texts = ['filename'=>'content', ...]
+     * @param $clear_old 是否清空原有文件再存入新文件
      */
-    public static function saveTestData($problem_id, array $ins, array $outs)
+    public static function saveTestDatas($problem_id, array $texts, bool $clear_old = false)
     {
         $dir = testdata_path($problem_id . '/test'); // 测试数据文件夹
-        foreach (getAllFilesPath($dir) as $item)
-            unlink($item); //删除原有文件
         if (!is_dir($dir))
             mkdir($dir, 0777, true);  // 文件夹不存在则创建
-        foreach ($ins as $i => $in)
-            file_put_contents(sprintf('%s/%s.in', $dir, $i), $in);
-        foreach ($outs as $i => $out)
-            file_put_contents(sprintf('%s/%s.out', $dir, $i), $out);
+        if ($clear_old) { // 清除旧文件
+            foreach (getAllFilesPath($dir) as $item)
+                unlink($item); //删除原有文件
+        }
+        // 挨个保存文件
+        foreach ($texts as $fname => $text) {
+            if (is_numeric($fname)) // 没提供文件名，则默认序号
+                $fname .= (file_exists($dir . '/' . $fname . '.in') ? '.out' : '.in');
+            file_put_contents(sprintf('%s/%s', $dir, $fname), $text);
+        }
     }
 
     /**

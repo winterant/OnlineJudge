@@ -119,7 +119,7 @@ class ProblemController extends Controller
             ProblemHelper::saveSamples($id, $samp_ins, $samp_outs); //保存样例
 
             // 保存spj
-            ProblemHelper::saveSpj($id, $request->input('spj_code')??'111');
+            ProblemHelper::saveSpj($id, $request->input('spj_code') ?? '111');
 
             $msg = sprintf(
                 '题目<a href="%s" target="_blank">%d</a>修改成功！ <a href="%s">上传测试数据</a>',
@@ -327,13 +327,25 @@ class ProblemController extends Controller
             }
             $pid = DB::table('problems')->insertGetId($problem);
             if (!$first_pid) $first_pid = $pid;
-            //下面保存sample，test
+            // 保存sample
             $samp_inputs = (array)($node->children()->sample_input);
             $samp_outputs = (array)($node->children()->sample_output);
-            $test_inputs = (array)($node->children()->test_input);
-            $test_outputs = (array)($node->children()->test_output);
             ProblemHelper::saveSamples($pid, $samp_inputs, $samp_outputs); //保存样例
-            ProblemHelper::saveTestData($pid, $test_inputs, $test_outputs); //保存测试数据
+            // 保存test
+            $test_inputs = [];
+            foreach ($node->children()->test_input as $t) {
+                if ($fname = ((string)($t->attributes()->filename) ?? false))
+                    $test_inputs[$fname] = (string)$t;
+                else $test_inputs[] = (string)$t;
+            }
+            ProblemHelper::saveTestDatas($pid, $test_inputs, true);
+            $test_outputs = [];
+            foreach ($node->children()->test_output as $t) {
+                if ($fname = ((string)($t->attributes()->filename) ?? false))
+                    $test_outputs[$fname] = (string)$t;
+                else $test_outputs[] = (string)$t;
+            }
+            ProblemHelper::saveTestDatas($pid, $test_outputs); //保存测试数据
 
             // 保存spj
             if ($node->spj ?? false)
@@ -458,12 +470,22 @@ class ProblemController extends Controller
                 $item->appendChild($sample_output);
             }
             //test_input & test_output
-            foreach (ProblemHelper::readTestData($problem->id) as $test) {
+            foreach (ProblemHelper::getTestDataFilenames($problem->id) as $fname => $test) {
+                // input
+                $text = file_get_contents(testdata_path($problem->id . '/test/' . $test['in']));
+                $attr = $dom->createAttribute('filename');
+                $attr->appendChild($dom->createTextNode($fname . '.in')); // 文件名
                 $test_input = $dom->createElement('test_input');
-                $test_input->appendChild($dom->createCDATASection($filter_special_characters($test['in'])));
+                $test_input->appendChild($attr);
+                $test_input->appendChild($dom->createCDATASection($filter_special_characters($text)));
                 $item->appendChild($test_input);
+                // output
+                $text = file_get_contents(testdata_path($problem->id . '/test/' . $test['out']));
+                $attr = $dom->createAttribute('filename');
+                $attr->appendChild($dom->createTextNode($fname . '.out')); // 文件名
                 $test_output = $dom->createElement('test_output');
-                $test_output->appendChild($dom->createCDATASection($filter_special_characters($test['out'])));
+                $test_output->appendChild($attr);
+                $test_output->appendChild($dom->createCDATASection($filter_special_characters($text)));
                 $item->appendChild($test_output);
             }
             //spj language

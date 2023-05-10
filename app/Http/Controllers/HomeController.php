@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\CacheHelper;
+use App\Http\Helpers\ProblemHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
         $notices = DB::table('notices')
             ->leftJoin('users', 'users.id', '=', 'user_id')
