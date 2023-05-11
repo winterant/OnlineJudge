@@ -37,7 +37,7 @@
       // ckeditor5配置
       const ck5_config = {
         // removePlugins: ['FontBackgroundColor', 'mediaEmbed'],
-        // language: 'zh-cn',
+        language: 'zh-cn',
         ckfinder: {
           uploadUrl: "{{ route('api.ckeditor_files') }}"
         },
@@ -94,10 +94,10 @@
           ]
         },
         image: {
-          // resizeUnit: 'rem',
+          resizeUnit: 'rem',
           resizeOptions: [{
               name: 'resizeImage:S1',
-              value: '20',
+              value: '25',
               icon: 'small'
             },
             {
@@ -127,7 +127,7 @@
             }
           ],
           toolbar: [
-            'imageTextAlternative', 'toggleImageCaption', 'imageStyle:inline', 'imageStyle:block',
+            'imageTextAlternative', /*'toggleImageCaption',*/ 'imageStyle:inline', 'imageStyle:block',
             'imageStyle:side', 'resizeImage:original', 'resizeImage:S1', 'resizeImage:S2', 'resizeImage:S3',
             'resizeImage:L1', 'resizeImage:L2',
           ]
@@ -137,23 +137,61 @@
         },
         codeBlock: {
           languages: [{
-              language: 'cpp',
-              label: 'C++',
-              class: 'cpp'
-            }, // The default language.
-            // { language: 'c', label: 'C' },  // 默认class为language-c
-            {
-              language: 'java',
-              label: 'Java'
+              language: "plaintext",
+              label: "Plain text"
             },
             {
-              language: 'python',
-              label: 'Python'
+              language: "c",
+              label: "C"
             },
             {
-              language: 'plaintext',
-              label: 'Plain text'
+              language: "cpp",
+              label: "C++"
             },
+            {
+              language: "java",
+              label: "Java"
+            },
+            {
+              language: "python",
+              label: "Python"
+            },
+            {
+              language: "php",
+              label: "PHP"
+            },
+            {
+              language: "cs",
+              label: "C#"
+            },
+            {
+              language: "html",
+              label: "HTML"
+            },
+            {
+              language: "javascript",
+              label: "JavaScript"
+            },
+            {
+              language: "css",
+              label: "CSS"
+            },
+            {
+              language: "diff",
+              label: "Diff"
+            },
+            {
+              language: "ruby",
+              label: "Ruby"
+            },
+            {
+              language: "typescript",
+              label: "TypeScript"
+            },
+            {
+              language: "xml",
+              label: "XML"
+            }
           ]
         },
         link: {
@@ -174,24 +212,27 @@
 
       // 初始化ckeditor5
       ClassicEditor.create(document.querySelector("#{{ $domId }}"), ck5_config).then(editor => {
-        // 预览功能
-        function refresh_preview(dom) {
-          $(dom).html(editor.getData())
-          window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, document.getElementById(
-            "preview_{{ $domId }}")]) // 渲染公式
-        }
-
-        // 初始化一个预览窗口
+        // =========================== 预览功能 ============================
+        // 初始化一个预览窗口，并插入到编辑框右边
         let preview = $(
           '<div id="preview_{{ $domId }}" class="px-2 border ck-content" style="padding-top:1rem;flex:1; @if (!$preview) display:none; @endif"></div>'
         )
         preview.insertAfter($("#div_{{ $domId }} .ck-editor__editable"))
-        refresh_preview(preview) // 初始预览一次
+
+        // 定义函数：刷新预览区样式
+        function refresh_preview() {
+          preview.html(editor.getData())
+          window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub,
+            document.getElementById("preview_{{ $domId }}")
+          ]) // 渲染公式
+        }
+
+        refresh_preview() // 初始预览一次
 
         // 内容改变时及时更新实体字段
         editor.model.document.on('change:data', function() {
           document.getElementById("{{ $domId }}").value = editor.getData()
-          refresh_preview(preview) // 刷新预览
+          refresh_preview() // 刷新预览
         });
 
         // 全局记住当前editor，方便外部使用该editor
