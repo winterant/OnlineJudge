@@ -188,11 +188,12 @@ class SolutionController extends Controller
         //============================== 使用go-judge判题 ==========================
         // 获取编译运行指令
         $config = config('judge.language.' . $data['language'] ?? 1); // 默认C++17
-        $response = $this->compile_run($data['code'], $request->input('stdin'), $config, intval($problem->time_limit), intval($problem->memory_limit));
+        $stdin = substr($request->input('stdin'), 0, 500);
+        $response = $this->compile_run($data['code'], $stdin, $config, intval($problem->time_limit), intval($problem->memory_limit));
         $data = [
             'time' => intdiv($response['time'], 1000000), // ns==>ms
             'memory' => $response['memory'] >> 20, // B==>MB
-            'stdin' => substr($request->input('stdin'), 0, 500),
+            'stdin' => $stdin,
             'stdout' => $response['files']['stdout'],
             'error_info' => $response['error_info'] ?? null,
         ];

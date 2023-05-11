@@ -69,7 +69,9 @@
               <form id="form_local_test">
                 <div>
                   <span>{{ trans('main.Input') }}</span>
-                  <textarea v-model="sample_in" id="local_test_input" class="w-100" rows="6" maxlength="500" required></textarea>
+                  <textarea v-model="sample_in" id="local_test_input" class="w-100" rows="6" maxlength="501"
+                    oninput="if($(this).val().length>500){Notiflix.Report.Failure('长度超限','最多输入500个字符，超出部分将被忽略！可能会发生运行崩溃、输出有误等','好的')}"
+                    required></textarea>
                 </div>
                 <div class="d-flex">
                   <button type="button" id="btn_submit_local_test" class="btn bg-success text-white"
