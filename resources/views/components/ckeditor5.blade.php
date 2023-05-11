@@ -5,6 +5,7 @@
       display: flex;
     }
 
+    .ck-source-editing-area,
     .ck-editor__editable {
       /* 平分子盒子 */
       flex: 1;
@@ -25,29 +26,50 @@
   @endif
 
   {{-- 编辑框实体 --}}
-  <div id="div_{{ $domId }}" class="position-relative">
-    <textarea id="{{ $domId }}" name="{{ $name }}">{{ $content }}</textarea>
+  <div class="position-relative">
+    <div id="div_{{ $domId }}">
+      <textarea id="{{ $domId }}" name="{{ $name }}" rows="10" style="width:50%;flex:1">{{ $content }}</textarea>
+    </div>
     <a href="javascript:" class="position-absolute" style="top: 2.6rem; right: 0.2rem; font-size:0.6rem"
-      onclick="window['{{ $name }}_preview'].toggle()">预览</a>
+      onclick="$('#preview_{{ $domId }}').toggle()">预览</a>
   </div>
 
   {{-- 生成编辑器。前提：务必在布局中引入ckeditor.js --}}
   <script>
     $(function() {
+      // =========================== 预览功能 ============================
+      // 定义函数：刷新预览区样式
+      function refresh_preview(dom, text) {
+        dom.html(text)
+        window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub,
+          document.getElementById("preview_{{ $domId }}")
+        ]) // 渲染公式
+      }
+
+      // ============== markdown模式(预留未开发)===============
+      let is_md = false
+      if (is_md) {
+        $("#div_{{ $domId }}").css('display', 'flex')
+        let preview = $(
+          '<div id="preview_{{ $domId }}" class="px-2 border" style="flex:1"></div>'
+        )
+        preview.insertAfter($("#{{ $domId }}"))
+
+        refresh_preview(preview, marked.parse($("#{{ $domId }}").val())) // 初始预览一次
+        $("#{{ $domId }}").on('input', function() {
+          refresh_preview(preview, marked.parse($("#{{ $domId }}").val())) // 刷新预览
+        });
+        return
+      }
+
+
+      // ============== ckeditor5模式 ===============
       // ckeditor5配置
       const ck5_config = {
-        // removePlugins: ['FontBackgroundColor', 'mediaEmbed'],
+        removePlugins: ['Markdown'],
         language: 'zh-cn',
         ckfinder: {
           uploadUrl: "{{ route('api.ckeditor_files') }}"
-        },
-        toolbar: {
-          items: ["heading", "bold", "italic", "underline", "horizontalLine", "fontColor", "fontBackgroundColor",
-            "highlight", "|", "alignment", "outdent", "indent", "numberedList", "bulletedList", "todoList", "|",
-            "code", "codeBlock", "link", "blockQuote", "pageBreak", "insertTable", "imageUpload",
-            // "mediaEmbed",
-            "|", "removeFormat", "undo", "redo"
-          ]
         },
         heading: {
           options: [{
@@ -94,7 +116,7 @@
           ]
         },
         image: {
-          resizeUnit: 'rem',
+          // resizeUnit: 'rem',
           resizeOptions: [{
               name: 'resizeImage:S1',
               value: '25',
@@ -127,7 +149,7 @@
             }
           ],
           toolbar: [
-            'imageTextAlternative', /*'toggleImageCaption',*/ 'imageStyle:inline', 'imageStyle:block',
+            'imageTextAlternative', 'toggleImageCaption', 'imageStyle:inline', 'imageStyle:block',
             'imageStyle:side', 'resizeImage:original', 'resizeImage:S1', 'resizeImage:S2', 'resizeImage:S3',
             'resizeImage:L1', 'resizeImage:L2',
           ]
@@ -212,32 +234,23 @@
 
       // 初始化ckeditor5
       ClassicEditor.create(document.querySelector("#{{ $domId }}"), ck5_config).then(editor => {
-        // =========================== 预览功能 ============================
-        // 初始化一个预览窗口，并插入到编辑框右边
         let preview = $(
           '<div id="preview_{{ $domId }}" class="px-2 border ck-content" style="padding-top:1rem;flex:1; @if (!$preview) display:none; @endif"></div>'
         )
         preview.insertAfter($("#div_{{ $domId }} .ck-editor__editable"))
 
-        // 定义函数：刷新预览区样式
-        function refresh_preview() {
-          preview.html(editor.getData())
-          window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub,
-            document.getElementById("preview_{{ $domId }}")
-          ]) // 渲染公式
-        }
-
-        refresh_preview() // 初始预览一次
+        refresh_preview(preview, editor.getData()) // 初始预览一次
 
         // 内容改变时及时更新实体字段
         editor.model.document.on('change:data', function() {
           document.getElementById("{{ $domId }}").value = editor.getData()
-          refresh_preview() // 刷新预览
+          refresh_preview(preview, editor.getData()) // 刷新预览
         });
 
         // 全局记住当前editor，方便外部使用该editor
-        window["{{ $name }}"] = editor
-        window["{{ $name }}_preview"] = preview
+        if (window.ck == undefined)
+          window.ck = {}
+        window.ck["{{ $name }}"] = editor
       }).catch(error => {
         console.error(error);
       })

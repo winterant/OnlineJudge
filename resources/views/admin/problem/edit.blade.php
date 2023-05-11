@@ -54,30 +54,36 @@
           <input type="text" name="problem[title]" value="{{ isset($problem->title) ? $problem->title : '' }}" required
             maxlength="255" class="form-control" style="color: black">
         </div>
-        <div class="form-inline">
+        <div class="form-inline mt-3">
           <label>时间限制：
-            <input type="number" name="problem[time_limit]"
+            <input type="number" name="problem[time_limit]" min="1"
               value="{{ isset($problem->time_limit) ? $problem->time_limit : 1000 }}" required
               class="form-control">MS（1000MS=1秒）
           </label>
         </div>
-        <div class="form-inline">
+        <div class="form-inline mt-3">
           <label>存储限制：
-            <input type="number" name="problem[memory_limit]"
-              value="{{ isset($problem->memory_limit) ? $problem->memory_limit : 64 }}" required class="form-control">MB
+            <input type="number" name="problem[memory_limit]" min="1"
+              value="{{ isset($problem->memory_limit) ? $problem->memory_limit : 128 }}" required class="form-control">MB
           </label>
         </div>
 
-        <div class="form-group mt-3">
-          <x-ckeditor5 name="problem[description]" :content="$problem->description ?? ''" title="题目描述" />
+        <div class="input-group mt-3">
+          <span style="margin: auto">题目标签：</span>
+          <input type="text" name="problem[tags]" value="{{ $problem->tags ?? '' }}" class="form-control"
+            placeholder="出题人标记该题涉及的知识点，填写多个请用英文逗号隔开">
         </div>
 
         <div class="form-group mt-3">
-          <x-ckeditor5 name="problem[input]" :content="$problem->input ?? ''" title="输入描述" />
+          <x-ckeditor5 name="problem[description]" :content="$problem->description ?? ''" title="题目描述" :preview="true" />
         </div>
 
         <div class="form-group mt-3">
-          <x-ckeditor5 name="problem[output]" :content="$problem->output ?? ''" title="输出描述" />
+          <x-ckeditor5 name="problem[input]" :content="$problem->input ?? ''" title="输入描述" :preview="true" />
+        </div>
+
+        <div class="form-group mt-3">
+          <x-ckeditor5 name="problem[output]" :content="$problem->output ?? ''" title="输出描述" :preview="true" />
         </div>
 
         <div id="text_fill_in_blank" class="form-group " style="height:40rem">
@@ -104,7 +110,8 @@
                 </div>
               @endforeach
             @endif
-            <a class="btn border ml-3" onclick="add_input_samples($(this))"><i class="fa fa-plus" aria-hidden="true"></i>
+            <a class="btn border ml-3" onclick="add_input_samples($(this))"><i class="fa fa-plus"
+                aria-hidden="true"></i>
               增加样例</a>
             <a class="btn border ml-3" onclick="$(this).prev().prev().remove()"><i class="fa fa-minus"
                 aria-hidden="true"></i> 删除最后一个样例</a>
@@ -112,7 +119,7 @@
         </div>
 
         <div class="form-group">
-          <x-ckeditor5 name="problem[hint]" :content="$problem->hint ?? ''" title="提示（公式、样例解释等）" />
+          <x-ckeditor5 name="problem[hint]" :content="$problem->hint ?? ''" title="提示（公式、样例解释等）" :preview="true" />
         </div>
 
         <div class="input-group mt-3">
@@ -121,12 +128,6 @@
           </div>
           <input id="source" type="text" name="problem[source]"
             value="{{ isset($problem->source) ? $problem->source : '' }}" class="form-control">
-        </div>
-
-        <div class="input-group mt-3">
-          <span style="margin: auto">题目标签：</span>
-          <input type="text" name="problem[tags]" value="{{ $problem->tags ?? '' }}" class="form-control"
-            placeholder="出题人标记该题涉及的知识点，填写多个请用英文逗号隔开">
         </div>
 
         <div class="border mt-3">
@@ -188,10 +189,10 @@
       }
       var wrong = null,
         wrong_char;
-      if ((wrong_char = has_special_char(window['problem[description]'].getData()))) wrong = "问题描述";
-      else if ((wrong_char = has_special_char(window['problem[input]'].getData()))) wrong = "输入描述";
-      else if ((wrong_char = has_special_char(window['problem[output]'].getData()))) wrong = "输出描述";
-      else if ((wrong_char = has_special_char(window['problem[hint]'].getData()))) wrong = "提示";
+      if ((wrong_char = has_special_char($("textarea[name='problem\\[description\\]']").val()))) wrong = "问题描述";
+      else if ((wrong_char = has_special_char($("textarea[name='problem\\[input\\]']").val()))) wrong = "输入描述";
+      else if ((wrong_char = has_special_char($("textarea[name='problem\\[output\\]']").val()))) wrong = "输出描述";
+      else if ((wrong_char = has_special_char($("textarea[name='problem\\[hint\\]']").val()))) wrong = "提示";
       if (wrong != null) {
         Notiflix.Report.Init({
           plainText: false

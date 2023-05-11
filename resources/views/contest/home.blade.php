@@ -184,7 +184,7 @@
             <hr>
             @if (Auth::user()->can('admin.contest_notice.view'))
               <button class="btn btn-info" data-toggle="modal" data-target="#edit_notice"
-                onclick="$('#form_edit_notice')[0].reset();window['notice[content]'].setData('');
+                onclick="$('#form_edit_notice')[0].reset();window.ck['notice[content]'].setData('');
                 $('#form_notice_id').val('');/*清空编号*/">{{ __('main.New Notice') }}</button>
             @endif
             @if (isset($notices) && count($notices))
@@ -335,7 +335,7 @@
             console.log(ret)
             $("#form_notice_id").val(nid);
             $("#form_title").val(ret.title);
-            window["notice[content]"].setData(ret.content == null ? '' : ret.content)
+            window.ck["notice[content]"].setData(ret.content == null ? '' : ret.content)
           }
         );
       }

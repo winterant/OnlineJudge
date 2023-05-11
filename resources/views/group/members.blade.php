@@ -209,9 +209,9 @@
               this.member = username // 标记当前模态框用户名
               this.cited_archives = ret.cited_archives
               if ('content' in ret)
-                window['archive-textarea'].setData(ret.content)
+                window.ck['archive-textarea'].setData(ret.content)
               else
-                window['archive-textarea'].setData('')
+                window.ck['archive-textarea'].setData('')
             },
             error: function(ret) {
               console.log(ret)
@@ -235,7 +235,7 @@
               .replace('??2', this.member),
             dataType: 'json',
             data: {
-              'content': window['archive-textarea'].getData(),
+              'content': window.ck['archive-textarea'].getData(),
             },
             success: (ret) => {
               console.log(ret)

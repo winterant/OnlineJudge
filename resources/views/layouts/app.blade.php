@@ -60,8 +60,8 @@
 
 
   {{-- ckeditor5 --}}
-  <script src="{{ asset('static/ckeditor5/build/ckeditor.js?v=220706') }}" defer></script>
-
+  <script src="{{ asset('/static/ckeditor5-37.1.0/build/ckeditor.js') }}" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   {{-- 代码编辑器 codemirror  --}}
   {{-- admin/problem/edit.blade.php; client/code_editor.blade.php --}}
