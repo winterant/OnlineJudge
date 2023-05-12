@@ -7,7 +7,7 @@ OnlineJudge判题服务使用[go-judge](https://github.com/criyle/go-judge)。
 - 先创建Buildx
 
 ```bash
-docker buildx create --use --name builder
+docker buildx create --use --node builder
 ```
 
 - 查验Buildx是否创建成功

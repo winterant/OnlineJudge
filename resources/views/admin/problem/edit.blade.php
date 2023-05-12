@@ -21,7 +21,7 @@
       <form id="form_problem" class="p-4" action="" method="post" onsubmit="return check_ckeditor_data();"
         enctype="multipart/form-data" style="max-width: 80rem">
         @csrf
-        <div class="form-inline mb-3">
+        <div class="form-inline">
           <span>题目类型：</span>
           <div class="custom-control custom-radio mx-3">
             <input type="radio" name="problem[type]" value="0" class="custom-control-input" id="type0" checked
@@ -35,7 +35,7 @@
           </div>
         </div>
 
-        <div class="form-inline mb-3">
+        <div class="form-inline mt-3">
           <span>是否发布：</span>
           <div class="custom-control custom-radio ml-3">
             <input type="radio" name="problem[hidden]" value="1" class="custom-control-input" id="hidden_yes"
@@ -49,19 +49,19 @@
           </div>
         </div>
 
-        <div class="input-group">
+        <div class="input-group mt-3">
           <span style="margin: auto">题目名称：</span>
           <input type="text" name="problem[title]" value="{{ isset($problem->title) ? $problem->title : '' }}" required
             maxlength="255" class="form-control" style="color: black">
         </div>
-        <div class="form-inline mt-3">
+        <div class="form-inline mt-2">
           <label>时间限制：
             <input type="number" name="problem[time_limit]" min="1"
               value="{{ isset($problem->time_limit) ? $problem->time_limit : 1000 }}" required
               class="form-control">MS（1000MS=1秒）
           </label>
         </div>
-        <div class="form-inline mt-3">
+        <div class="form-inline mt-2">
           <label>存储限制：
             <input type="number" name="problem[memory_limit]" min="1"
               value="{{ isset($problem->memory_limit) ? $problem->memory_limit : 128 }}" required class="form-control">MB
