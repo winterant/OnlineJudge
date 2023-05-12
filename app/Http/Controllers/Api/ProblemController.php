@@ -35,7 +35,8 @@ class ProblemController extends Controller
         }
         $deleted = DB::table('problems')->delete($problem_id);
         // 删除文件夹，删除测试数据文件夹
-        File::deleteDirectories(testdata_path($problem_id));
+        if (File::isDirectory(testdata_path($problem_id)))
+            File::deleteDirectories(testdata_path($problem_id));
 
         return ['ok' => 1, 'msg' => sprintf("已成功删除%d条竞赛", $deleted)];
     }
