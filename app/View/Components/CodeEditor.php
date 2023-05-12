@@ -17,18 +17,18 @@ class CodeEditor extends Component
     public $title;
     public $domId; // 元素id，要求唯一性
     public $languages; // 编程语言列表[$language_id => $language_name]
-    public $lang_name; // input 语言的name属性
-    public $code_name; // textarea 代码的name属性
+    public $htmlPropNameOfLang; // input 语言的name属性
+    public $htmlPropNameOfCode; // textarea 代码的name属性
     public $code; // 初始代码
     public $lang; // 初始语言
     public $useLocalStorage; // 是否让浏览器缓存已选中语言、已编辑代码
 
-    public function __construct($langName, $codeName, $lang = 0, $code = '', array $languages = null, $bitlanguages = null, $title = null, $useLocalStorage = true)
+    public function __construct($htmlPropNameOfLang, $htmlPropNameOfCode, $lang = null, $code = '', array $languages = null, $bitlanguages = null, $title = null, $useLocalStorage = true)
     {
         $this->title = $title;
         $this->domId = uniqid('code_editor_');
-        $this->lang_name = $langName;
-        $this->code_name = $codeName;
+        $this->htmlPropNameOfLang = $htmlPropNameOfLang;
+        $this->htmlPropNameOfCode = $htmlPropNameOfCode;
         $this->code = $code;
         $this->lang = $lang;
         $this->useLocalStorage = $useLocalStorage ?? true; // 默认使用缓存

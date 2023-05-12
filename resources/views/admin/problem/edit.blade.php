@@ -87,7 +87,7 @@
         </div>
 
         <div id="text_fill_in_blank" class="form-group " style="height:40rem">
-          <x-code-editor code_name="problem[fill_in_blank]" lang_name="problem[language]" :lang="$problem->language ?? 13"
+          <x-code-editor html-prop-name-of-code="problem[fill_in_blank]" html-prop-name-of-lang="problem[language]" :lang="$problem->language ?? 13"
             :code="$problem->fill_in_blank ?? ''" title="代码填空（请将需要填空的代码替换为英文输入双问号，即??）" :use-local-storage="false" />
         </div>
 
@@ -138,7 +138,7 @@
           </div>
 
           <div id="div-spj-code" style="height:40rem">
-            <x-code-editor code_name="spj_code" lang_name="problem[spj_language]" :lang="$problem->spj_language ?? 14" :code="isset($problem) ? App\Http\Helpers\ProblemHelper::readSpj($problem->id) : null"
+            <x-code-editor html-prop-name-of-code="spj_code" html-prop-name-of-lang="problem[spj_language]" :lang="$problem->spj_language ?? 14" :code="isset($problem) ? App\Http\Helpers\ProblemHelper::readSpj($problem->id) : null"
               title="特判代码" :use-local-storage="false" />
           </div>
           <div class="m-2 p-2 alert-info">

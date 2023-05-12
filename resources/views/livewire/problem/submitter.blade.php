@@ -18,8 +18,8 @@
 
       @if ($problem['type'] == 0)
         <div id="div-code-editor" style="height: calc(100vh - 110px)">
-          <x-code-editor code_name="solution[code]" lang_name="solution[language]" :code="$solution_code ?? ''"
-            :bitlanguages="$allow_lang ?? null" />
+          <x-code-editor html-prop-name-of-code="solution[code]" html-prop-name-of-lang="solution[language]"
+            :code="$solution_code ?? ''" :lang="$solution_lang ?? null" :bitlanguages="$allow_lang ?? null" />
         </div>
       @elseif($problem['type'] == 1)
         {{-- 代码填空题 --}}

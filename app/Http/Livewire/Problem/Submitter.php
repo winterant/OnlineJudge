@@ -14,6 +14,7 @@ class Submitter extends Component
     public $allow_lang = null; // 允许使用的编程语言
     public $samples = []; // 本地测试时快速填入样例
     public $solution_code = null; // 可能请求了库中的代码
+    public $solution_lang = null; // 若请求了库中代码，则记住编程语言
 
     public function mount(array $problem, int $contest_id = null, int $allow_lang = null)
     {
@@ -25,11 +26,13 @@ class Submitter extends Component
 
         // 用户可能请求了已提交的代码
         if (request()->has('solution') && Auth::check()) {
-            $solution = DB::table('solutions')->select(['code', 'user_id'])->find(request('solution'));
+            $solution = DB::table('solutions')->select(['code', 'language', 'user_id'])->find(request('solution'));
             /** @var \App\Models\User */
             $user = Auth::user();
-            if ($solution->user_id == Auth::id() || $user->can('admin.solution.view'))
+            if ($solution->user_id == Auth::id() || $user->can('admin.solution.view')) {
                 $this->solution_code = $solution->code ?? null;
+                $this->solution_lang = $solution->language ?? null;
+            }
         }
     }
 

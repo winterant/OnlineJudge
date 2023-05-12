@@ -62,15 +62,6 @@ return [
         ]),
         'run' => array_merge($defaultRun, [])
     ],
-    1 => [
-        'name' => 'C++17',
-        'filename' => 'Main.cpp',
-        'env' => $defaultEnv,
-        'compile' => array_merge($defaultCompile, [
-            'command' => '/usr/bin/g++ Main.cpp -std=c++17 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
-        ]),
-        'run' => array_merge($defaultRun, [])
-    ],
     8 => [
         'name' => 'C++20',
         'filename' => 'Main.cpp',
@@ -98,6 +89,15 @@ return [
         ]),
         'run' => array_merge($defaultRun, [])
     ],
+    1 => [
+        'name' => 'C++17 -O2',
+        'filename' => 'Main.cpp',
+        'env' => $defaultEnv,
+        'compile' => array_merge($defaultCompile, [
+            'command' => '/usr/bin/g++ Main.cpp -std=c++17 -O2 -DONLINE_JUDGE -w -fmax-errors=1 -lm -o Main',
+        ]),
+        'run' => array_merge($defaultRun, [])
+    ],
     14 => [
         'name' => 'C++20 -O2',
         'filename' => 'Main.cpp',
@@ -115,6 +115,7 @@ return [
         'compile' => array_merge($defaultCompile, [
             'command' => '/usr/bin/javac -encoding UTF-8 Main.java && jar -cvf Main.jar *.class',
             'compiled_filename' => 'Main.jar',
+            'cpuLimit' => 60000000000,   // ns=60s
         ]),
         'run' => array_merge($defaultRun, [
             'command' => '/usr/bin/java -Dfile.encoding=UTF-8 -cp Main.jar Main',
@@ -142,6 +143,7 @@ return [
         ]),
         'compile' => array_merge($defaultCompile, [
             'command' => '/usr/bin/go build Main.go',
+            'cpuLimit' => 60000000000,   // ns=60s
         ]),
         'run' => array_merge($defaultRun, [
             'limit_amplify' => 2

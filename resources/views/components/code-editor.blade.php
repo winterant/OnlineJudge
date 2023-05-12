@@ -11,7 +11,7 @@
     {{-- 编程题可以选择语言 --}}
     <div class="flex-nowrap mr-3">
       <span class="mr-2">{{ __('main.Language') }}:</span>
-      <select id="language{{ $domId }}" name="{{ $lang_name }}" class="px-3 border"
+      <select id="language{{ $domId }}" name="{{ $htmlPropNameOfLang }}" class="px-3 border"
         style="text-align-last: center;border-radius: 4px;">
         @foreach ($languages as $id => $name)
           <option value="{{ $id }}">{{ $name }}</option>
@@ -41,7 +41,7 @@
 
   {{-- 代码框 --}}
   <div id="code_div{{ $domId }}" class="border" style="flex:1;height=1">
-    <textarea id="codeeditor{{ $domId }}" name="{{ $code_name }}">{{ $code }}</textarea>
+    <textarea id="codeeditor{{ $domId }}" name="{{ $htmlPropNameOfCode }}">{{ $code }}</textarea>
   </div>
 
 
@@ -104,7 +104,7 @@
       }
 
       // 初始编程语言
-      @if ($lang ?? false)
+      @if ($lang !== null)
         // 情况1:后端指定了编程语言
         $("#language{{ $domId }}").val({{ $lang }})
       @else
