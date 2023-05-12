@@ -15,23 +15,15 @@ class ProblemController extends Controller
     {
         $problems = DB::table('problems');
         if (request()->has('tag_id') && request('tag_id') != '')
-            $problems = $problems->join('tag_marks', 'problem_id', '=', 'problems.id')
+            $problems = $problems->leftJoin('tag_marks', 'problem_id', '=', 'problems.id')
                 ->where(function ($q) {
                     // 筛选民间标签标记的题目
                     $q->where('tag_id', request('tag_id'));
                     // 或者官方标签标记的题目
-                    if (($official = DB::table('tag_pool')->find(request('tag_id'))->name ?? false))
-                        $q->orWhere('tags', 'like', '%' . $official . '%');
+                    if ($official = (DB::table('tag_pool')->find(request('tag_id'))->name ?? false))
+                        $q->orWhereRaw(sprintf("JSON_CONTAINS(tags, '\"%s\"')", $official));
                 });
-        $problems = $problems->select(
-            'problems.id',
-            'title',
-            'source',
-            'hidden',
-            'solved',
-            'accepted',
-            'submitted'
-        )
+        $problems = $problems->select(['problems.id', 'title', 'source', 'hidden', 'solved', 'accepted', 'submitted'])
             ->when(!request()->has('show_hidden'), function ($q) {
                 return $q->where('hidden', 0);
             })

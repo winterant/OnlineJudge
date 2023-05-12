@@ -96,18 +96,13 @@ class Judger implements ShouldQueue
         }
 
         // 向JudgeServer发送请求 运行代码（每组测试数据运行一次）
-        if (empty($config['compile'])) {
-            $this->run($problem, $config, [$config['filename'] => ['content' => $this->solution['code']]], $spj_file_id ?? '');
-        } else {
-            $this->run(
-                $problem,
-                $config,
-                [
-                    $config['compile']['compiled_filename'] => ['fileId' => $res_compile['fileIds'][$config['compile']['compiled_filename']]]
-                ],
-                $spj_file_id ?? ''
-            );
-        }
+        $this->run(
+            $problem,
+            $config,
+            empty($config['compile']) ? [$config['filename'] => ['content' => $this->solution['code']]] :
+                [$config['compile']['compiled_filename'] => ['fileId' => $res_compile['fileIds'][$config['compile']['compiled_filename']]]],
+            $spj_file_id ?? ''
+        );
         // 结束
     }
 
