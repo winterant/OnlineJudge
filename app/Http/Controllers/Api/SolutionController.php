@@ -207,45 +207,47 @@ class SolutionController extends Controller
     // 编译代码
     private function compile_run(string $code, $sample_in, array $config, $timeLimit, $memoryLimit)
     {
+        // ======================== 编译 ========================
+        if (!empty($config['compile'])) {
+            $data = [
+                'cmd' => [
+                    [
+                        'args' => ['/bin/bash', '-c', $config['compile']['command']],
+                        'env' => $config['env'],
+                        'files' => [   // 指定 标准输入、标准输出和标准错误的文件
+                            ['content' => ''],
+                            ['name' => 'stdout', 'max' => 10240],
+                            ['name' => 'stderr', 'max' => 10240],
+                        ],
+                        'cpuLimit' => $config['compile']['cpuLimit'],
+                        'clockLimit' =>  $config['compile']['cpuLimit'] * 2,
+                        'memoryLimit' => $config['compile']['memoryLimit'],
+                        'procLimit' => $config['compile']['procLimit'],
+                        'copyIn' => [
+                            $config['filename'] => ['content' => $code],
+                        ],
+                        'copyOut' => ['stdout', 'stderr'],
+                        'copyOutCached' => [$config['compile']['compiled_filename']],
+                    ]
+                ]
+            ];
+            $res = Http::timeout(30)->post(config('app.JUDGE_SERVER') . '/run', $data);
+            $res = $res->json()[0];
+            if ($res['exitStatus'] != 0) { // 编译失败
+                $res['error_info'] = sprintf("[Compile Error]\n %s\n%s\n", $res['status'], $res['files']['stderr']);
+                return $res;
+            }
+
+            // 可执行程序 Main 的缓存id
+            $compiledFileId = $res['fileIds'][$config['compile']['compiled_filename']];
+        }
+
+        // ========================= 运行 =======================
         // 计算时空限制
         $timeLimit *= $config['run']['limit_amplify'] * 1000000; // MS==>NS
         $memoryLimit = ($memoryLimit * $config['run']['limit_amplify']) << 20; // MB==>B
         $memoryLimit += ($config['run']['extra_memory'] ?? 0); // 额外内存
-
-        // ===================== 编译, 要发送的数据
-        $data = [
-            'cmd' => [
-                [
-                    'args' => ['/bin/bash', '-c', $config['compile']['command']],
-                    'env' => $config['env'],
-                    'files' => [   // 指定 标准输入、标准输出和标准错误的文件
-                        ['content' => ''],
-                        ['name' => 'stdout', 'max' => 10240],
-                        ['name' => 'stderr', 'max' => 10240],
-                    ],
-                    'cpuLimit' => $config['compile']['cpuLimit'],
-                    'clockLimit' =>  $config['compile']['cpuLimit'] * 2,
-                    'memoryLimit' => $config['compile']['memoryLimit'],
-                    'procLimit' => $config['compile']['procLimit'],
-                    'copyIn' => [
-                        $config['filename'] => ['content' => $code],
-                    ],
-                    'copyOut' => ['stdout', 'stderr'],
-                    'copyOutCached' => [$config['compile']['compiled_filename']],
-                ]
-            ]
-        ];
-        $res = Http::timeout(30)->post(config('app.JUDGE_SERVER') . '/run', $data);
-        $res = $res->json()[0];
-        if ($res['exitStatus'] != 0) { // 编译失败
-            $res['error_info'] = sprintf("[Compile Error]\n %s\n%s\n", $res['status'], $res['files']['stderr']);
-            return $res;
-        }
-
-        // 可执行程序 Main 的缓存id
-        $cacheId = $res['fileIds'][$config['compile']['compiled_filename']];
-
-        // =====================运行， 要发送的数据
+        // 构造请求
         $data = [
             'cmd' => [
                 [
@@ -261,8 +263,10 @@ class SolutionController extends Controller
                     'memoryLimit' => $memoryLimit, // B
                     // 'strictMemoryLimit' => true,
                     'procLimit' => $config['run']['procLimit'],
-                    'copyIn' => [
-                        $config['compile']['compiled_filename'] => ['fileId' => $cacheId]
+                    'copyIn' => isset($compiledFileId) ? [
+                        $config['compile']['compiled_filename'] => ['fileId' => $compiledFileId]
+                    ] : [
+                        $config['filename'] => ['content' => $code]
                     ],
                     'copyOut' => ['stdout', 'stderr'],
                 ]
@@ -274,8 +278,9 @@ class SolutionController extends Controller
             $res['error_info'] = sprintf("[Runtime Error]\n %s\n%s\n", $res['status'], $res['files']['stderr']);
         }
 
-        // =================== 删除go-judge缓存文件
-        Http::delete(config('app.JUDGE_SERVER') . '/file/' . $cacheId);
+        // =================== 删除 go-judge 编译缓存文件 ===============
+        if (isset($compiledFileId))
+            Http::delete(config('app.JUDGE_SERVER') . '/file/' . $compiledFileId);
 
         // 返回运行结果
         return $res;

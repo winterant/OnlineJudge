@@ -6,7 +6,7 @@ function json_value_base64(data, additional_data = {}, recursive = false) {
         if (Object.prototype.toString.call(data[k]) === '[object Object]'
             || Object.prototype.toString.call(data[k]) === '[object Array]')
             data[k] = json_value_base64(data[k], {}, true)
-        else
+        else if (data[k] != null) // 注意null会被错误的认为字符串
             data[k] = Base64.encode(data[k]);
     if (recursive) // 递归的子对象，直接返回
         return data

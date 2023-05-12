@@ -38,7 +38,7 @@
 
   {{-- =================================== 自定义部分 ========================= --}}
   {{-- 自定义全局js脚本 --}}
-  <script src="{{ asset('js/globals.js') }}?v=1" defer></script>
+  <script src="{{ asset('js/globals.js') }}?v=20230512" defer></script>
 
   {{-- 大文件上传 --}}
   <script src="{{ asset('js/uploadBig.js') }}?v=1" defer></script>
