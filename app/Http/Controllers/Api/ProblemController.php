@@ -61,7 +61,8 @@ class ProblemController extends Controller
         ProblemHelper::saveSamples($id, $samp_ins, $samp_outs); //保存样例
 
         // 保存spj
-        ProblemHelper::saveSpj($id, $request->input('spj_code') ?? null);
+        if($problem['spj'])
+            ProblemHelper::saveSpj($id, $request->input('spj_code') ?? null);
 
         return ['ok' => 1, 'msg' => "已成功修改题目 {$id} ", 'data' => [
             'problem_url' => route('problem', $id),

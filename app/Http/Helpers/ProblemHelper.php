@@ -127,7 +127,7 @@ class ProblemHelper
         // 这个if是为了兼顾一个历史遗留问题，2023.5.6之前，spj全都保存为文件
         // 新版本spj转存到数据库 problems表spj_code字段
         $filepath = testdata_path($problem_id . '/spj/spj.cpp');
-        $spj = is_file($filepath) ? file_get_contents($filepath) : '';
+        $spj = is_file($filepath) ? file_get_contents($filepath) : null;
         // DB::table('problems')->where('id', $problem_id)->update(['spj_code' => $spj]);
         // }
         return $spj;

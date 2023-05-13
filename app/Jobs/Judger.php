@@ -86,11 +86,17 @@ class Judger implements ShouldQueue
 
         // 向JudgeServer发送请求 编译spj（若有）
         if ($problem['spj']) {
-            // 先看是否有缓存的编译好的spj
-            $res_compile_spj = $this->compile(ProblemHelper::readSpj($problem['id']), config("judge.language.{$problem['spj_language']}")); // C++20
-            $spj_file_id = $res_compile_spj['fileIds']['Main'] ?? ''; // 记住spj id
-            if ($res_compile_spj['status'] != 'Accepted') {
-                $this->update_db_solution(['result' => 14, 'error_info' => "[Special judge compile error]\n" . $res_compile_spj['files']['stderr']]); // 系统错误 14
+            // todo 优化：缓存编译好的特判，省去这步编译。spj.cpp修改时要重新编译。
+            $spj_code = ProblemHelper::readSpj($problem['id']);
+            if ($spj_code) {
+                $res_compile_spj = $this->compile($spj_code, config("judge.language.{$problem['spj_language']}")); // C++20
+                $spj_file_id = $res_compile_spj['fileIds']['Main'] ?? ''; // 记住spj id
+                if ($res_compile_spj['status'] != 'Accepted') {
+                    $this->update_db_solution(['result' => 14, 'error_info' => "[Special Judge Compile Error]\n" . $res_compile_spj['files']['stderr']]); // 系统错误 14
+                    return;
+                }
+            } else {
+                $this->update_db_solution(['result' => 14, 'error_info' => "[Special Judge Error] Special judge is open but no code was provided.\n"]); // 系统错误 14
                 return;
             }
         }
