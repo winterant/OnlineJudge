@@ -32,7 +32,7 @@ class ProblemController extends Controller
 
         // 标签使用json保存。同时，不存在的标签插入到标签库
         if (empty($problem['tags'])) {
-            unset($problem['tags']);
+            $problem['tags'] = null; // json字段只能为null，不能为空串
         } else {
             $problem['tags'] = json_encode(
                 array_map(
@@ -65,8 +65,6 @@ class ProblemController extends Controller
 
         return ['ok' => 1, 'msg' => "已成功修改题目 {$id} ", 'data' => [
             'problem_url' => route('problem', $id),
-            'problem_update_url' => route('admin.problem.update', $id),
-            'problem_id' => $id,
             'testdata_url' => route('admin.problem.test_data', ['pid' => $id])
         ]];
     }
