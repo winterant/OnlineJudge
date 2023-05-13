@@ -69,6 +69,16 @@ class ProblemController extends Controller
         ]];
     }
 
+    public function update_batch_to_one(Request $request)
+    {
+        $ids = $request->input('ids') ?? [];
+        $value = $request->input('value');
+        $updated = DBHelper::update_batch_to_one('problems', ['id' => $ids], $value);
+        if ($updated > 0)
+            return ['ok' => 1, 'msg' => '成功修改' . $updated . '条数据'];
+        return ['ok' => 0, 'msg' => '没有任何数据被修改'];
+    }
+
     // 删除1个题目
     public function delete($problem_id)
     {

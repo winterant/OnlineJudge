@@ -55,20 +55,6 @@ class ProblemController extends Controller
         return view('admin.problem.edit', compact('pageTitle', 'problem', 'samples'));
     }
 
-    //管理员修改题目状态  0密封 or 1公开
-    public function update_hidden(Request $request)
-    {
-        if ($request->isMethod('post')) {
-            $pids = $request->input('pids') ?: [];
-            $hidden = $request->input('hidden');
-            return DB::table('problems')
-                ->whereIn('id', $pids)
-                ->update(['hidden' => $hidden]);
-        }
-        return 0;
-    }
-
-
     //管理标签
     public function tags()
     {
