@@ -132,8 +132,9 @@
 
         <div class="border mt-3">
           <div class="custom-control custom-checkbox m-2">
-            <input type="checkbox" name="problem[spj]" value="{{ $problem->spj ?? 0 }}" class="custom-control-input"
-              id="spjCustomCheck" onchange="display_spj_code()" @if (isset($problem) && $problem->spj == 1) checked @endif>
+            <input type="checkbox" name="problem[spj]" @if ($problem->spj ?? false) checked @endif
+              class="custom-control-input" id="spjCustomCheck" onchange="display_spj_code()"
+              @if (isset($problem) && $problem->spj == 1) checked @endif>
             <label class="custom-control-label pt-1" for="spjCustomCheck">启用特判</label>
           </div>
 

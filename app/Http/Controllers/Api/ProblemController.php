@@ -24,11 +24,8 @@ class ProblemController extends Controller
 
     public function update(Request $request, $id)
     {
-        $problem = DB::table('problems')->find($id);  // 提取出要修改的题目
-        // 读取表单
         $problem = $request->input('problem');
-        if (!isset($problem['spj'])) // 默认不特判
-            $problem['spj'] = 0;
+        $problem['spj'] = (isset($problem['spj']) ? 1 : 0); // 默认不特判
 
         // 标签使用json保存。同时，不存在的标签插入到标签库
         if (empty($problem['tags'])) {
@@ -61,7 +58,7 @@ class ProblemController extends Controller
         ProblemHelper::saveSamples($id, $samp_ins, $samp_outs); //保存样例
 
         // 保存spj
-        if($problem['spj'])
+        if ($problem['spj'])
             ProblemHelper::saveSpj($id, $request->input('spj_code') ?? null);
 
         return ['ok' => 1, 'msg' => "已成功修改题目 {$id} ", 'data' => [
