@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\DBHelper;
+use App\Http\Helpers\ProblemHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,63 @@ use Illuminate\Support\Facades\Storage;
 
 class ProblemController extends Controller
 {
+    public function create(Request $request)
+    {
+        $pid = DB::table('problems')->insertGetId(['user_id' => Auth::id()]);
+        $ret = $this->update($request, $pid);
+        $ret['msg'] = "已创建题目 {$pid} ";
+        return $ret;
+    }
+
+    public function update(Request $request, $id)
+    {
+        $problem = DB::table('problems')->find($id);  // 提取出要修改的题目
+        // 读取表单
+        $problem = $request->input('problem');
+        if (!isset($problem['spj'])) // 默认不特判
+            $problem['spj'] = 0;
+
+        // 标签使用json保存。同时，不存在的标签插入到标签库
+        if (empty($problem['tags'])) {
+            unset($problem['tags']);
+        } else {
+            $problem['tags'] = json_encode(
+                array_map(
+                    function ($v) {
+                        return trim($v);
+                    },
+                    explode(',', $problem['tags'])
+                )
+            );
+            foreach (json_decode($problem['tags'], true) as $tag_name) {
+                DB::table('tag_pool')->updateOrInsert(['name' => $tag_name], ['name' => $tag_name, 'user_id' => Auth::id()]);
+            }
+        }
+        // ================================================================
+
+        $problem['updated_at'] = date('Y-m-d H:i:s');
+        $update_ret = DB::table('problems')
+            ->where('id', $id)
+            ->update($problem);
+        if (!$update_ret)
+            return ['ok' => 0, 'msg' => '没有任何数据被修改，请检查操作是否合理!'];
+
+        ///保存样例
+        $samp_ins = (array)$request->input('sample_ins');
+        $samp_outs = (array)$request->input('sample_outs');
+        ProblemHelper::saveSamples($id, $samp_ins, $samp_outs); //保存样例
+
+        // 保存spj
+        ProblemHelper::saveSpj($id, $request->input('spj_code') ?? null);
+
+        return ['ok' => 1, 'msg' => "已成功修改题目 {$id} ", 'data' => [
+            'problem_url' => route('problem', $id),
+            'problem_update_url' => route('admin.problem.update', $id),
+            'problem_id' => $id,
+            'testdata_url' => route('admin.problem.test_data', ['pid' => $id])
+        ]];
+    }
+
     // 删除1个题目
     public function delete($problem_id)
     {

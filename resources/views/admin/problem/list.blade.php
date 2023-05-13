@@ -96,7 +96,7 @@
                             class="px-1" title="点击切换">{{$item->hidden?'**隐藏**':'公开'}}</a> --}}
             </td>
             <td nowrap>
-              <a href="{{ route('admin.problem.update_withId', $item->id) }}" target="_blank" class="px-1"
+              <a href="{{ route('admin.problem.update', $item->id) }}" target="_blank" class="px-1"
                 data-toggle="tooltip" title="修改">
                 <i class="fa fa-edit" aria-hidden="true"></i> 编辑
               </a>

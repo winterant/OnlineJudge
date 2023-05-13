@@ -1,7 +1,5 @@
 FROM ubuntu:22.04
 
-ENV TZ=Asia/Shanghai
-
 # Required software and their configs
 RUN set -ex &&\
     sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.aliyun.com\/ubuntu/g' /etc/apt/sources.list &&\

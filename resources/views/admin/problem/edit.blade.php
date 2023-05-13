@@ -18,9 +18,9 @@
         </div>
       </form>
     @else
-      <form id="form_problem" class="p-4" action="" method="post" onsubmit="return check_ckeditor_data();"
+      <form id="form_problem" class="p-4" action="" method="post" onsubmit="return submit_problem()"
         enctype="multipart/form-data" style="max-width: 80rem">
-        @csrf
+
         <div class="form-inline">
           <span>题目类型：</span>
           <div class="custom-control custom-radio mx-3">
@@ -87,8 +87,8 @@
         </div>
 
         <div id="text_fill_in_blank" class="form-group " style="height:40rem">
-          <x-code-editor html-prop-name-of-code="problem[fill_in_blank]" html-prop-name-of-lang="problem[language]" :lang="$problem->language ?? 13"
-            :code="$problem->fill_in_blank ?? ''" title="代码填空（请将需要填空的代码替换为英文输入双问号，即??）" :use-local-storage="false" />
+          <x-code-editor html-prop-name-of-code="problem[fill_in_blank]" html-prop-name-of-lang="problem[language]"
+            :lang="$problem->language ?? 13" :code="$problem->fill_in_blank ?? ''" title="代码填空（请将需要填空的代码替换为英文输入双问号，即??）" :use-local-storage="false" />
         </div>
 
         <div class="form-group">
@@ -138,8 +138,8 @@
           </div>
 
           <div id="div-spj-code" style="height:40rem">
-            <x-code-editor html-prop-name-of-code="spj_code" html-prop-name-of-lang="problem[spj_language]" :lang="$problem->spj_language ?? 14" :code="isset($problem) ? App\Http\Helpers\ProblemHelper::readSpj($problem->id) : null"
-              title="特判代码" :use-local-storage="false" />
+            <x-code-editor html-prop-name-of-code="spj_code" html-prop-name-of-lang="problem[spj_language]"
+              :lang="$problem->spj_language ?? 14" :code="isset($problem) ? App\Http\Helpers\ProblemHelper::readSpj($problem->id) : null" title="特判代码" :use-local-storage="false" />
           </div>
           <div class="m-2 p-2 alert-info">
             附《<a href="https://winterant.github.io/OnlineJudge/web/spj.html" target="_blank">特判使用教程</a>》
@@ -153,8 +153,6 @@
     @endif
   </div>
 
-
-  {{--    代码编辑器的配置   这段js一定要放在函数type_has_change前面 --}}
   <script type="text/javascript">
     // 监听题目类型：代码填空or编程
     function type_has_change(number) {
@@ -205,6 +203,68 @@
         return false;
       }
       return true;
+    }
+
+    function submit_problem() {
+      if (check_ckeditor_data() == false) // 字符检查不通过
+        return false
+
+      // ajax提交
+      @if (isset($problem->id))
+        $.ajax({
+          type: 'patch',
+          url: '{{ route('api.admin.problem.update', '??') }}'.replace('??', '{{ $problem->id }}'),
+          dataType: 'json',
+          data: json_value_base64($(event.target).serializeJSON()),
+          success: (ret) => {
+            console.log(ret)
+            if (ret.ok) {
+              Notiflix.Confirm.Init({
+                plainText: false, //使<br>可以换行
+              })
+              Notiflix.Confirm.Show('修改成功',
+                ret.msg + ` | <a href="${ret.data.testdata_url}">查看测试数据<a/>`, '查看题目', '关闭',
+                function() {
+                  location.href = ret.data.problem_url
+                })
+            } else {
+              Notiflix.Notify.Failure(ret.msg)
+            }
+          },
+          error: function() {
+            Notiflix.Notify.Failure('请求失败，请刷新网页后重试');
+          }
+        })
+      @else
+        $.ajax({
+          type: 'post',
+          url: '{{ route('api.admin.problem.create') }}',
+          dataType: 'json',
+          data: json_value_base64($(event.target).serializeJSON()),
+          success: (ret) => {
+            console.log(ret)
+            if (ret.ok) {
+              Notiflix.Confirm.Init({
+                plainText: false, //使<br>可以换行
+              })
+              Notiflix.Confirm.Show('创建题目',
+                ret.msg + `<br>请<a href="${ret.data.testdata_url}">上传测试数据<a/>`, '查看题目', '继续添加新题目',
+                function() {
+                  location.href = ret.data.problem_url
+                },
+                function() {
+                  location.href = "{{ route('admin.problem.create') }}"
+                })
+            } else {
+              Notiflix.Notify.Failure(ret.msg)
+            }
+          },
+          error: function() {
+            Notiflix.Notify.Failure('请求失败，请刷新网页后重试');
+          }
+        })
+      @endif
+      return false
     }
 
     //添加样例编辑框

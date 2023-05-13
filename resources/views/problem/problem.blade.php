@@ -105,7 +105,7 @@
           {{-- 编辑链接 --}}
           @if (Auth::check() && Auth::user()->can('admin.problem.update'))
             <span style="font-size: 0.85rem">
-              [ <a href="{{ route('admin.problem.update_withId', $problem->id) }}"
+              [ <a href="{{ route('admin.problem.update', $problem->id) }}"
                 target="_blank">{{ __('main.Edit') }}</a> ]
               [ <a href="{{ route('admin.problem.test_data', ['pid' => $problem->id]) }}"
                 target="_blank">{{ __('main.Test Data') }}</a> ]

@@ -211,8 +211,8 @@
                   <i class="fa fa-list" aria-hidden="true"></i>题库</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.problem.add') active @endif"
-                  href="{{ route('admin.problem.add') }}">
+                <a class="nav-link border-top @if (Route::currentRouteName() == 'admin.problem.create') active @endif"
+                  href="{{ route('admin.problem.create') }}">
                   <i class="fa fa-plus" aria-hidden="true"></i>添加题目</a>
               </li>
               <li class="nav-item">

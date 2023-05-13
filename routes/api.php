@@ -79,6 +79,8 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::delete('admin/user/roles/{id}/users/{uid}', 'UserController@role_delete_user')->name('admin.user.role_delete_user')->middleware('Permission:admin.user_role.delete');
 
         // Manage problem: route('api.admin.problem.*')
+        Route::post('admin/problems', 'ProblemController@create')->name('admin.problem.create')->middleware('Permission:admin.problem.create');
+        Route::patch('admin/problems/{id}', 'ProblemController@update')->name('admin.problem.update')->middleware('Permission:admin.problem.update');
         Route::delete('admin/problems/{id}', 'ProblemController@delete')->name('admin.problem.delete')->middleware('Permission:admin.problem.delete');// 创建人无法删除
         Route::get('admin/problem/export/download', 'ProblemController@download_exported_xml')->name('admin.problem.download_exported_xml')->middleware('Permission:admin.problem_xml.export');
         Route::delete('admin/problem/export/clear', 'ProblemController@clear_exported_xml')->name('admin.problem.clear_exported_xml')->middleware('Permission:admin.problem_xml');

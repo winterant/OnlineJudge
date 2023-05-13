@@ -21,19 +21,10 @@ class ProblemController extends Controller
     {
         $problems = DB::table('problems as p')
             ->leftJoin('users', 'p.user_id', '=', 'users.id')
-            ->select(
-                'p.id',
-                'title',
-                'type',
-                'source',
-                'spj',
-                'p.created_at',
-                'hidden',
-                'username as creator',
-                'p.solved',
-                'p.accepted',
-                'p.submitted'
-            )
+            ->select([
+                'p.id', 'title', 'type', 'source', 'spj', 'p.created_at', 'hidden',
+                'username as creator', 'p.solved', 'p.accepted', 'p.submitted'
+            ])
             ->when(request()->has('kw') && request('kw'), function ($q) {
                 return $q->where('p.id', request('kw'))
                     ->orWhere('title', 'like', '%' . request('kw') . '%')
@@ -45,90 +36,23 @@ class ProblemController extends Controller
     }
 
     //管理员添加题目
-    public function add(Request $request)
+    public function create(Request $request)
     {
-        //提供加题界面
-        if ($request->isMethod('get')) {
-            $pageTitle = '添加题目';
-            return view('admin.problem.edit', compact('pageTitle'));
-        }
-        //提交一条新题目
-        if ($request->isMethod('post')) {
-            $pid = DB::table('problems')->insertGetId(['user_id' => Auth::id()]);
-            return $this->update($request, $pid, true);
-        }
+        $pageTitle = '添加题目';
+        return view('admin.problem.edit', compact('pageTitle'));
     }
 
     //管理员修改题目
     public function update(Request $request, $id)
     {
-        //get提供修改界面
-        if ($request->isMethod('get')) {
-            $pageTitle = '修改题目';
-            $problem = DB::table('problems')->find($id);  // 提取出要修改的题目
-            if ($problem == null)
-                return view('message', ['msg' => '该题目不存在或操作有误!', 'success' => false, 'is_admin' => true]);
+        $pageTitle = '修改题目';
+        $problem = DB::table('problems')->find($id);  // 提取出要修改的题目
+        if ($problem == null)
+            return view('message', ['msg' => '该题目不存在或操作有误!', 'success' => false, 'is_admin' => true]);
 
-            $problem->tags = implode(',', json_decode($problem->tags ?? '[]', true)); // json => string
-            $samples = ProblemHelper::readSamples($problem->id);
-            return view('admin.problem.edit', compact('pageTitle', 'problem', 'samples'));
-        }
-
-        // 提交修改好的题目
-        if ($request->isMethod('post')) {
-            $problem = DB::table('problems')->find($id);  // 提取出要修改的题目
-            // 读取表单
-            $problem = $request->input('problem');
-            if (!isset($problem['spj'])) // 默认不特判
-                $problem['spj'] = 0;
-
-            // 标签使用json保存。同时，不存在的标签插入到标签库
-            if (!empty($problem['tags'])) {
-                $problem['tags'] = json_encode(
-                    array_map(
-                        function ($v) {
-                            return trim($v);
-                        },
-                        explode(',', $problem['tags'])
-                    )
-                );
-                foreach (json_decode($problem['tags'], true) as $tag_name) {
-                    DB::table('tag_pool')->updateOrInsert(['name' => $tag_name], ['name' => $tag_name, 'user_id' => Auth::id()]);
-                    // if (!DB::table('tag_pool')->where('name', $tag_name)->exists())
-                    //     $tid = DB::table('tag_pool')->insertGetId(['name' => $tag_name]);
-                    // else
-                    //     $tid = DB::table('tag_pool')->where('name', $tag_name)->first()->id;
-                    // $tag_marks[] = ['problem_id' => $id, 'user_id' => Auth::id(), 'tag_id' => $tid];
-                }
-                // foreach ($tag_marks ?? [] as $mark) {
-                //     DB::table('tag_marks')->updateOrInsert($mark, $mark);
-                // }
-            }
-            // ================================================================
-
-            $problem['updated_at'] = date('Y-m-d H:i:s');
-            $update_ret = DB::table('problems')
-                ->where('id', $id)
-                ->update($problem);
-            if (!$update_ret)
-                return view('message', ['msg' => '没有任何数据被修改，请检查操作是否合理!', 'success' => false, 'is_admin' => true]);
-
-            ///保存样例
-            $samp_ins = (array)$request->input('sample_ins');
-            $samp_outs = (array)$request->input('sample_outs');
-            ProblemHelper::saveSamples($id, $samp_ins, $samp_outs); //保存样例
-
-            // 保存spj
-            ProblemHelper::saveSpj($id, $request->input('spj_code') ?? '111');
-
-            $msg = sprintf(
-                '题目<a href="%s" target="_blank">%d</a>修改成功！ <a href="%s">上传测试数据</a>',
-                route('problem', $id),
-                $id,
-                route('admin.problem.test_data', 'pid=' . $id)
-            );
-            return view('message', ['msg' => $msg, 'success' => true, 'is_admin' => true]);
-        }
+        $problem->tags = implode(',', json_decode($problem->tags ?? '[]', true)); // json => string
+        $samples = ProblemHelper::readSamples($problem->id);
+        return view('admin.problem.edit', compact('pageTitle', 'problem', 'samples'));
     }
 
     //管理员修改题目状态  0密封 or 1公开

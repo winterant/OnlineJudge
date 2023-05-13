@@ -119,8 +119,8 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
         Route::get('problems', 'Admin\ProblemController@list')->name('problem.list')->middleware('Permission:admin.problem.view');
 
         // ====================== Manage problem editor
-        Route::any('problem/add', 'Admin\ProblemController@add')->name('problem.add')->middleware('Permission:admin.problem.create');
-        Route::any('problems/{id}/update', 'Admin\ProblemController@update')->name('problem.update_withId')->middleware('Permission:admin.problem.update,problems.{id}.user_id');
+        Route::get('problem/create', 'Admin\ProblemController@create')->name('problem.create')->middleware('Permission:admin.problem.create');
+        Route::get('problems/{id}/update', 'Admin\ProblemController@update')->name('problem.update')->middleware('Permission:admin.problem.update,problems.{id}.user_id');
         // todo 修改hidden需要定制api
         Route::post('problem/update-hidden', 'Admin\ProblemController@update_hidden')->name('problem.update_hidden')->middleware('Permission:admin.problem.update');
 
