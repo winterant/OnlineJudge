@@ -2,8 +2,6 @@
 
 set -ex
 
-# Ensure that the web is deployed after other services are launched.
-sleep 5
 
 ##########################################################################
 # Set Time Zone
@@ -58,9 +56,10 @@ service php8.1-fpm start
 ##########################################################################
 # Initialize laravel app.
 ##########################################################################
-# Change project owner.
+# Change files owner to make laravel available.
 chown -R www-data:www-data bootstrap storage
 
+# Initialize laravel configuration.
 php artisan storage:link
 php artisan optimize
 php artisan key:generate --force
