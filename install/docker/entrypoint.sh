@@ -23,21 +23,42 @@ fi
 ##########################################################################
 # Configuration
 ##########################################################################
+# Function implementation to modify file configuration items
+# `mod_env <filepath> <key> <value?>`
 function mod_env(){
-    sed -i "s/^.\?$1\s\?=.*$/$1=${2//\//\\\/}/" $3
+    sed -i "s/^.\?$2\s\?=.*$/$2=${3//\//\\\/}/" $1
 }
 
+########### laravel .env
+mod_env .env "APP_DEBUG"         ${APP_DEBUG:-false}
+mod_env .env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false}
+mod_env .env "JUDGE_SERVER"      ${JUDGE_SERVER:-"go-judge:5050"}
+mod_env .env "DB_CONNECTION"     ${DB_CONNECTION:-mysql}
+mod_env .env "DB_HOST"           ${DB_HOST:-mysql}
+mod_env .env "DB_PORT"           ${DB_PORT:-3306}
+mod_env .env "DB_DATABASE"       ${DB_DATABASE:-lduoj}
+mod_env .env "DB_USERNAME"       ${DB_USERNAME:-oj_user}
+mod_env .env "DB_PASSWORD"       ${DB_PASSWORD:-OurFuture2045}
+mod_env .env "REDIS_HOST"        ${REDIS_HOST:-redis}
+mod_env .env "REDIS_PORT"        ${REDIS_PORT:-6379}
+mod_env .env "REDIS_PASSWORD"    ${REDIS_PASSWORD:-YourRedisPassword2012}
+mod_env .env "MAIL_MAILER"       ${MAIL_MAILER:-smtp}
+mod_env .env "MAIL_HOST"         ${MAIL_HOST:-smtp.qq.com}
+mod_env .env "MAIL_PORT"         ${MAIL_PORT:-465}
+mod_env .env "MAIL_ENCRYPTION"   ${MAIL_ENCRYPTION:-ssl}
+mod_env .env "MAIL_USERNAME"     ${MAIL_USERNAME}
+mod_env .env "MAIL_PASSWORD"     ${MAIL_PASSWORD}
+mod_env .env "MAIL_FROM_ADDRESS" ${MAIL_FROM_ADDRESS}
+mod_env .env "MAIL_FROM_NAME"    ${MAIL_FROM_NAME:-LDUOJ}
+
 ########### config php-fpm pool
-php_fpm_config_file=/etc/php/8.1/fpm/pool.d/www.conf
-# default php-fpm `pm` for server with 32GB max memory.
-mod_env "pm"                   ${fpm_pm:-dynamic}                ${php_fpm_config_file}
-mod_env "pm.max_children"      ${fpm_pm_max_children:-1024}      ${php_fpm_config_file}
-# The following item is avaliable only if pm=dynamic.
-mod_env "pm.start_servers"     ${fpm_pm_start_servers:-16}       ${php_fpm_config_file}
-mod_env "pm.min_spare_servers" ${fpm_pm_min_spare_servers:-8}    ${php_fpm_config_file}
-mod_env "pm.max_spare_servers" ${fpm_pm_max_spare_servers:-1024} ${php_fpm_config_file}
-# php-fpm will be recreated after has processed for `pm.max_request` times.
-mod_env "pm.max_requests"      ${fpm_pm_max_requests:-1000}      ${php_fpm_config_file}
+fpm=/etc/php/8.1/fpm/pool.d/www.conf
+mod_env ${fpm} "pm"                   ${fpm_pm:-dynamic}
+mod_env ${fpm} "pm.max_children"      ${fpm_pm_max_children:-1024}
+mod_env ${fpm} "pm.start_servers"     ${fpm_pm_start_servers:-16}
+mod_env ${fpm} "pm.min_spare_servers" ${fpm_pm_min_spare_servers:-8}
+mod_env ${fpm} "pm.max_spare_servers" ${fpm_pm_max_spare_servers:-1024}
+mod_env ${fpm} "pm.max_requests"      ${fpm_pm_max_requests:-1000}
 
 
 ##########################################################################
@@ -56,15 +77,14 @@ service php8.1-fpm start
 ##########################################################################
 # Initialize laravel app.
 ##########################################################################
-# Change files owner to make laravel available.
-chown -R www-data:www-data bootstrap storage
 
 # Initialize laravel configuration.
-php artisan storage:link
 php artisan optimize
 php artisan key:generate --force
 php artisan migrate --force
 php artisan optimize
+chown -R www-data:www-data bootstrap storage
+php artisan storage:link
 php artisan lduoj:init
 
 
@@ -77,7 +97,8 @@ bash storage/logs/nginx/auto-clear-log.sh 2>&1 &
 ##########################################################################
 # Start laravel-queue.
 ##########################################################################
-mod_env "numprocs" ${JUDGE_MAX_RUNNING:-$[(`nproc`+1)/2]} /etc/supervisor/conf.d/judge-queue.conf
+mod_env /etc/supervisor/conf.d/judge-queue.conf \
+    "numprocs" ${JUDGE_MAX_RUNNING:-$[(`nproc`+1)/2]}
 supervisord                # Start up supervisor
 supervisorctl update       # Detect changes to existing config files
 supervisorctl start all    # Start all processes

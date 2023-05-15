@@ -16,14 +16,17 @@ services:
     env_file: lduoj.conf
     logging: *default-logging
     volumes:
-      # - ./data/web/public/favicon.ico:/app/public/favicon.ico:ro
+      # 自定义网站图标（./data/favicon.ico 是你的图片）
+      # - ./data/favicon.ico:/app/public/favicon.ico:ro
+      # 挂载宿主机目录以永久保存网站数据（生产环境使用）
       - ./data/web/storage:/app/storage
+      # 挂载宿主机目录以永久保留源代码和数据（仅开发人员使用，与上一条不能同时启用）
+      # - ./data/web:/app
 
   go-judge:
     image: winterant/go-judge:1.0
     container_name: lduoj-go-judge
     restart: always
-    env_file: lduoj.conf
     privileged: true
     logging: *default-logging
     volumes:
