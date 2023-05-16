@@ -34,30 +34,29 @@
           <div class="card-header pt-2 pb-0" style="border-top: 5px solid #2b15ff;">
             <h3 class="text-center mb-0">{{ __('main.Notice Board') }}</h3>
           </div>
-          <div class="card-body table-responsive">
-            <table class="table table-hover border-bottom" style="table-layout:automatic;">
-              @foreach ($notices as $item)
-                <tr>
-                  <td class="text-left">
-                    <a href="javascript:" onclick="get_notice('{{ $item->id }}')" data-toggle="modal"
-                      class="pl-1 text-black @if ($item->state == 2) font-weight-bold @endif"
-                      data-target="#modal_notice">{{ $item->title }}</a>
-                    @if ($item->state == 2)
-                      <span class="text-red px-1" style="font-size: 0.7rem;vertical-align: top">{{ __('main.Top') }}
-                      </span>
-                    @endif
-                  </td>
-                  <td nowrap width="1%" style="vertical-align: bottom">
-                    {{ $item->created_at }}
-                  </td>
-                  <td nowrap width="1%" style="vertical-align: bottom">
-                    @if ($item->username)
-                      <a href="{{ route('user', $item->username) }}">{{ $item->username }}</a>
-                    @endif
-                  </td>
-                </tr>
-              @endforeach
-            </table>
+          <div class="card-body position-relative">
+            @foreach ($notices as $item)
+              <div class="pt-1 border-bottom overflow-auto">
+                <div class="text-left">
+                  <a href="javascript:" onclick="get_notice('{{ $item->id }}')" data-toggle="modal"
+                    class="pl-1 text-black @if ($item->state == 2) font-weight-bold @endif"
+                    data-target="#modal_notice">{{ $item->title }}</a>
+                  @if ($item->state == 2)
+                    <span class="text-red px-1" style="font-size: 0.7rem;vertical-align: top">{{ __('main.Top') }}
+                    </span>
+                  @endif
+                </div>
+                <span class="float-right">
+                  {{ $item->created_at }}
+                </span>
+                <span class="float-right mr-2">
+                  @if ($item->username)
+                    <a href="{{ route('user', $item->username) }}">{{ $item->username }}</a>
+                  @endif
+                </span>
+              </div>
+            @endforeach
+
             @if (count($notices) == 0)
               <p class="text-center">{{ __('sentence.No data') }}</p>
             @endif
