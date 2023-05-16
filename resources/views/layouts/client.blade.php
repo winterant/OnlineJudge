@@ -32,7 +32,8 @@
   {{-- 前台导航栏 --}}
   <nav class="navbar navbar-expand-lg navbar-light bg-white mb-3" style="z-index: 10">
     {{-- 网站名称 --}}
-    <a class="navbar-brand text-center" style="min-width: 200px">{{ get_setting('siteName') }}</a>
+    <a class="navbar-brand text-center p-0"
+      style="min-width: 200px;font-size: 1.6rem;font-weight: bold;background-image: linear-gradient(90deg,#7209d4,#2832d4 33%,#00a5b2);-webkit-background-clip: text;-webkit-text-fill-color: transparent;">{{ get_setting('siteName') }}</a>
     {{-- 导航栏菜单项 --}}
     <x-navbar />
   </nav>

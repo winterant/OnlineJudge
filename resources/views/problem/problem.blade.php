@@ -48,11 +48,6 @@
         /* height: 100vh;  */
         /* background-color:green; */
       }
-
-      .blank-placeholder {
-        width: 100%;
-        height: 30rem;
-      }
     }
   </style>
 
@@ -225,7 +220,7 @@
       @endif
 
       {{-- 空白部分，使底部可以拉上来 --}}
-      <div class="blank-placeholder"></div>
+      <div style="width: 100%; height: 10rem;"></div>
 
     </div>
 

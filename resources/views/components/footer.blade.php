@@ -1,5 +1,5 @@
 <hr>
-<div id="footer" class="text-center my-3">
+<div id="footer" class="text-center mt-3 pb-3" style="margin-bottom: auto">
   <div>
     <span id="localtime">{{ date('Y-m-d H:i:s') }}</span>
     <span class="mx-2">|</span>
