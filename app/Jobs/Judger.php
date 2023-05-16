@@ -185,6 +185,7 @@ class Judger implements ShouldQueue
                     'cpuLimit' => $problem['time_limit'] * 1000000, // ms ==> ns
                     'clockLimit' => $problem['time_limit'] * 1000000 * 4 + 1000000000, // *4+1s
                     'memoryLimit' => ($problem['memory_limit'] << 20), // MB ==> B
+                    'stackLimit' => $config['run']['stackLimit'],
                     // 'strictMemoryLimit' => true,
                     'procLimit' => $config['run']['procLimit'],
                     'copyIn' =>  $copyIn,
@@ -282,6 +283,7 @@ class Judger implements ShouldQueue
             'cpuLimit' => 60000000000, // 60s ==> ns
             'clockLimit' => 300000000000, // 300s
             'memoryLimit' => 2048 << 20, // 2048MB ==> B
+            'stackLimit' => 512 << 20, // 512MB ==> B
             'procLimit' => 128,
             'copyIn' => [
                 'spj' => ['fileId' => $spj_file_id],
