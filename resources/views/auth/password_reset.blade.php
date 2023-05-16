@@ -30,7 +30,7 @@
 
                 <div class="col-md-6">
                   <input id="old_password" type="password" class="form-control" name="user[old_password]"
-                    autocomplete="new-password" required>
+                    autocomplete="new-password" required oninput="this.value=this.value.replace(/\s+/g,'')">
                 </div>
               </div>
 
@@ -41,7 +41,7 @@
 
                 <div class="col-md-6">
                   <input id="new_password" type="password" class="form-control" name="user[new_password]" required
-                    minlength="8">
+                    minlength="8" oninput="this.value=this.value.replace(/\s+/g,'')">
                 </div>
               </div>
 
@@ -51,7 +51,7 @@
 
                 <div class="col-md-6">
                   <input id="password-confirm" type="password" class="form-control" name="user[password_confirmation]"
-                    required>
+                    required oninput="this.value=this.value.replace(/\s+/g,'')">
                 </div>
               </div>
 

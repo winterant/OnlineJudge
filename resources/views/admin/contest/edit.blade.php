@@ -155,7 +155,8 @@
           </div>
           <div class="custom-control custom-radio mx-3">
             <input type="radio" name="contest[access]" value="password" class="custom-control-input" id="Password"
-              onchange="access_has_change('password')" @if (isset($contest) && $contest->access == 'password') checked @endif>
+              oninput="this.value=this.value.replace(/\s+/g,'')" onchange="access_has_change('password')"
+              @if (isset($contest) && $contest->access == 'password') checked @endif>
             <label class="custom-control-label pt-1" for="Password">Password</label>
           </div>
           <div class="custom-control custom-radio mx-3">
