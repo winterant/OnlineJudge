@@ -42,7 +42,7 @@ class Judger implements ShouldQueue
      */
     public function handle()
     {
-        $this->judge();
+        $this->judge(); // 若有异常会自动执行failed函数
         // 清除缓存
         $this->deleteCachedFiles();
     }
@@ -191,12 +191,12 @@ class Judger implements ShouldQueue
                     'copyIn' =>  $copyIn,
                     'copyOut' => ['stdout', 'stderr'],
                     'copyOutCached' => ($problem['spj'] ? ['stdout'] : []), //copyOutCached中stdout会覆盖copyOut中stdout，故非特判时别缓存导致拿不到stdout原文
-                    'copyOutDir' => '1'
                 ]
             ]];
 
             // 向判题服务发起请求
             $res = Http::timeout($this->timeout)->post(config('app.JUDGE_SERVER') . '/run', $data);
+            $res = $res->json();
             if ($res[0]['fileIds']['stdout'] ?? false)
                 $this->cachedIds[] = $res[0]['fileIds']['stdout']; // 记录缓存的文件id，最后清除
 
@@ -357,8 +357,11 @@ class Judger implements ShouldQueue
      */
     public function failed(Throwable $exception): void
     {
-        // 向用户发送失败通知等...
-        dump($this->solution);
-        dump($exception);
+        echo $exception;
+        echo PHP_EOL;
+        echo json_encode($this->solution) . PHP_EOL;
+        echo 'Updating DB and deleting cached files...' . PHP_EOL;
+        $this->update_db_solution(['result' => 14, 'error_info' => '[Judger Error] Something went wrong when executing the job.']);
+        $this->deleteCachedFiles();
     }
 }
