@@ -233,13 +233,17 @@ class SolutionController extends Controller
             ];
             $res = Http::timeout(30)->post(config('app.JUDGE_SERVER') . '/run', $data);
             $res = $res->json()[0];
-            if ($res['status'] != 'Accepted') { // 编译失败
-                $res['error_info'] = implode("\n", ["[Compile Error]", $res['status'], $res['files']['stderr'] ?? '', $res['error'] ?? '']);
-                return $res;
-            }
 
             // 可执行程序 Main 的缓存id
-            $compiledFileId = $res['fileIds'][$config['compile']['compiled_filename']];
+            $compiledFileId = $res['fileIds'][$config['compile']['compiled_filename']] ?? null;
+
+            if ($res['status'] != 'Accepted') { // 编译失败
+                $res['error_info'] = implode("\n", ["[Compile Error]", $res['status'], $res['files']['stderr'] ?? '', $res['error'] ?? '']);
+                // 删除 go-judge 编译缓存文件(可能存在)
+                if ($compiledFileId ?? false)
+                    Http::delete(config('app.JUDGE_SERVER') . '/file/' . $compiledFileId);
+                return $res;
+            }
         }
 
         // ========================= 运行 =======================
@@ -275,11 +279,11 @@ class SolutionController extends Controller
         $res = Http::timeout(30)->post(config('app.JUDGE_SERVER') . '/run', $data);
         $res = $res->json()[0];
         if ($res['exitStatus'] != 0) { // 运行失败
-            $res['error_info'] = sprintf("[Runtime Error]\n %s\n%s\n", $res['status'], $res['files']['stderr']);
+            $res['error_info'] = implode("\n", ["[Runtime Error]", $res['status'], $res['files']['stderr'] ?? '', $res['error'] ?? '']);
         }
 
         // =================== 删除 go-judge 编译缓存文件 ===============
-        if (isset($compiledFileId))
+        if ($compiledFileId ?? false)
             Http::delete(config('app.JUDGE_SERVER') . '/file/' . $compiledFileId);
 
         // 返回运行结果

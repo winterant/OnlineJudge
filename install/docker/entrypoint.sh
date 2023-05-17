@@ -49,7 +49,7 @@ mod_env .env "MAIL_ENCRYPTION"   ${MAIL_ENCRYPTION:-ssl}
 mod_env .env "MAIL_USERNAME"     ${MAIL_USERNAME}
 mod_env .env "MAIL_PASSWORD"     ${MAIL_PASSWORD}
 mod_env .env "MAIL_FROM_ADDRESS" ${MAIL_FROM_ADDRESS}
-mod_env .env "MAIL_FROM_NAME"    ${MAIL_FROM_NAME:-LDUOJ}
+mod_env .env "MAIL_FROM_NAME"    "\"${MAIL_FROM_NAME:-LDUOJ}\""
 
 ########### config php-fpm pool
 fpm=/etc/php/8.1/fpm/pool.d/www.conf
