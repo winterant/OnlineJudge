@@ -233,8 +233,8 @@ class SolutionController extends Controller
             ];
             $res = Http::timeout(30)->post(config('app.JUDGE_SERVER') . '/run', $data);
             $res = $res->json()[0];
-            if ($res['exitStatus'] != 0) { // 编译失败
-                $res['error_info'] = sprintf("[Compile Error]\n %s\n%s\n", $res['status'], $res['files']['stderr']);
+            if ($res['status'] != 'Accepted') { // 编译失败
+                $res['error_info'] = implode("\n", ["[Compile Error]", $res['status'], $res['files']['stderr'] ?? '', $res['error'] ?? '']);
                 return $res;
             }
 

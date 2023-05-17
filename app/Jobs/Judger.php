@@ -218,7 +218,7 @@ class Judger implements ShouldQueue
                 $result = array_search($res[0]['status'], config('judge.result'));
                 if ($result === false)
                     $result = 10; // RE
-                $error_info = sprintf("[%s]\n%s", $res[0]['status'], $res[0]['files']['stderr']);
+                $error_info = sprintf("[%s]\n%s\n%s\n", $res[0]['status'], $res[0]['files']['stderr'] ?? '', $res['error'] ?? '');
             }
 
             // 实时更新运行结果
