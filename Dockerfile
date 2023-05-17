@@ -47,7 +47,7 @@ RUN cd /app_src &&\
     sed -i "s/^.\?post_max_size\s\?=.*$/post_max_size=4096M/" /etc/php/8.1/fpm/php.ini &&\
     sed -i "s/^.\?upload_max_filesize\s\?=.*$/upload_max_filesize=4096M/" /etc/php/8.1/fpm/php.ini &&\
     # php-fpm.conf
-    sed -i "s/^.\?error_log\s\?=.*$/error_log=\/app\/storage\/logs\/php-fpm.log/" /etc/php/8.1/fpm/php-fpm.conf &&\
+    sed -i "s/^.\?error_log\s\?=.*$/error_log=\/app\/storage\/logs\/php-fpm\/php-fpm.log/" /etc/php/8.1/fpm/php-fpm.conf &&\
     # php-fpm/pool.d/www.conf
     sed -i "s/^.\?pm.status_path\s\?=.*$/pm.status_path=\/fpm-status/" /etc/php/8.1/fpm/pool.d/www.conf &&\
     # Done.

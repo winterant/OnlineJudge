@@ -70,7 +70,7 @@ echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/nginx/error.lo
 service nginx start
 
 # Start php-fpm server
-echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/php-fpm.log
+echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/php-fpm/php-fpm.log
 service php8.1-fpm start
 
 
@@ -93,6 +93,7 @@ php artisan lduoj:init
 ##########################################################################
 bash storage/logs/nginx/auto-clear-log.sh 2>&1 &
 bash storage/logs/queue/auto-clear-log.sh 2>&1 &
+bash storage/logs/php-fpm/auto-clear-log.sh 2>&1 &
 
 
 ##########################################################################
