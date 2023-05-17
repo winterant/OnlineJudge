@@ -92,6 +92,7 @@ php artisan lduoj:init
 # Background running
 ##########################################################################
 bash storage/logs/nginx/auto-clear-log.sh 2>&1 &
+bash storage/logs/queue/auto-clear-log.sh 2>&1 &
 
 
 ##########################################################################
