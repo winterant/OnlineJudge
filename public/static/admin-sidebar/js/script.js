@@ -198,6 +198,12 @@ document.getElementById("btn-collapse").addEventListener("click", () => {
             element.parentElement.classList.remove("open");
         });
 
+    document.getElementById("sidebar-placeholder").classList.toggle("collapsed");
+    if (document.getElementById("sidebar-placeholder").classList.contains("collapsed"))
+        FIRST_SUB_MENUS_BTN.forEach(element => {
+            element.parentElement.classList.remove("open");
+        });
+
     updatePoppersTimeout();
 });
 
@@ -206,6 +212,7 @@ document.getElementById("btn-collapse").addEventListener("click", () => {
  */
 document.getElementById("btn-toggle").addEventListener("click", () => {
     SIDEBAR_EL.classList.toggle("toggled");
+    document.getElementById("sidebar-placeholder").classList.toggle("toggled");
 
     updatePoppersTimeout();
 });
@@ -215,6 +222,7 @@ document.getElementById("btn-toggle").addEventListener("click", () => {
  */
 document.getElementById("overlay").addEventListener("click", () => {
     SIDEBAR_EL.classList.toggle("toggled");
+    document.getElementById("sidebar-placeholder").classList.toggle("toggled");
 });
 
 const defaultOpenMenus = document.querySelectorAll(".menu-item.sub-menu.open");

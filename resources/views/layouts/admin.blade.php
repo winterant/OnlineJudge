@@ -22,7 +22,11 @@
   {{-- 后台管理模板来源 http://www.bootstrapmb.com/item/11792 --}}
   <div class="layout has-sidebar fixed-sidebar fixed-header">
 
-    <aside id="sidebar" class="sidebar break-point-lg has-bg-image border-right" style="height:100vh">
+    {{-- 占位。由于sidebar使用fiexed定位，为解决元素覆盖问题，声明一个等宽的隐藏元素 --}}
+    <aside id="sidebar-placeholder" class="sidebar break-point-lg has-bg-image" style="height:100vh;z-index:-1">
+    </aside>
+
+    <aside id="sidebar" class="position-fixed sidebar break-point-lg has-bg-image border-right">
       <div class="image-wrapper">
         <!-- <img src="imgs/1.jpg" alt="sidebar background" /> -->
       </div>
