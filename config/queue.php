@@ -64,9 +64,9 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => env('REDIS_QUEUE', 'default'),
-            'retry_after' => 60,
+            'retry_after' => 60 * 60 * 24,
             'after_commit' => false,
-            'timeout' => 60, // 不起作用，不知道为啥，在job里自定义$timeout吧
+            'timeout' => 60,
             'block_for' => null,
         ],
 
