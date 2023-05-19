@@ -1,6 +1,5 @@
 {{-- 轮询刷新结果。能否优化？ --}}
-<div wire:poll.750ms="refresh">
-
+<div @if ($result < 4) wire:poll.visible.750ms="refresh" @endif>
   @if ($showTip)
     <p
       class="@if ($result < 4) alert-info
