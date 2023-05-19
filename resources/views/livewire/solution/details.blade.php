@@ -30,7 +30,7 @@
     @foreach ($details ?? [] as $i => $res)
       <div class="m-1 p-2 judge-detail-{{ $res['result'] }}" style="width:7.3rem;"
         wire:click="display_detail({{ $i }})">
-        <div>#{{ $i }}</div>
+        <div>#{{ $i + 1 }}</div>
         <div class="text-center my-1">{{ $res['result_desc'] }}</div>
         <div class="text-center">{{ $res['time'] }}MS / {{ $res['memory'] }}MB</div>
       </div>
@@ -41,7 +41,7 @@
   @if ($display)
     <div class="border m-1 p-2">
       <div>
-        <span class="mr-3">#{{ $display['index'] }}</span>
+        <span class="mr-3">#{{ $display['index'] + 1 }}</span>
         <span class="mr-3">{{ __('main.Test Data') }}:
           {{ $display['testname'] }}.in
           /
