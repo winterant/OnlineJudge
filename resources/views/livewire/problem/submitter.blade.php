@@ -38,14 +38,16 @@
       {{-- 提交等按钮 --}}
       <div class="overflow-hidden">
         <div class="pull-right">
-          <button id="btn_local_test" type="button" data-target="#local-test-page" data-toggle="modal"
+          <button type="button" data-target="#local-test-page" data-toggle="modal"
             onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
             class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button>
-          <button v-show="judge_processing>0" id="btn_judge_result" type="button" data-target="#judge-result-page"
-            data-toggle="modal" class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
-          <button id="btn_submit_code" type="button" onclick="disabledSubmitButton(this, '已提交');"
-            v-on:click="submit_solution" class="btn bg-success text-white m-2" style="min-width: 6rem"
-            @guest disabled @endguest>{{ trans('main.Submit') }}</button>
+
+          <button type="button" data-target="#judge-result-page" data-toggle="modal"
+            class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
+          <button type="button" class="btn bg-success text-white m-2"
+            onclick="$(this).prev().click();disabledSubmitButton(this, '已提交');
+            submit_solution()"
+            style="min-width: 6rem" @guest disabled @endguest>{{ trans('main.Submit') }}</button>
         </div>
       </div>
       {{-- end of 提交等按钮 --}}
@@ -127,71 +129,9 @@
 
           <!-- 模态框主体 -->
           <div class="modal-body">
-            <p class="alert-info p-2" v-if="judge_processing==0">
-              {{ __('sentence.please_submit_code') }}
-            </p>
-            <div v-else>
-              {{-- 1提交中 --}}
-              <p class="alert-info p-2" v-if="judge_processing==1">
-                {{ __('sentence.submitting') }}
-              </p>
-              {{-- 2判题中 --}}
-              <p class="alert-info p-2" v-else-if="judge_processing==2">
-                {{ __('sentence.judging') }}
-                <span v-if="judge_num_test>0">
-                  (@{{ judge_num_ac }}/@{{ judge_num_test }})
-                </span>
-              </p>
-              {{-- 3判题完成 --}}
-              <div v-else>
-                {{-- AC --}}
-                <p class="alert-success p-2" v-if="judge_result.result==4">
-                  {{ __('sentence.pass_all_test') }}
-                  (@{{ judge_num_ac }}/@{{ judge_num_test }})
-                  <a class="ml-3" target="_blank"
-                    :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
-                </p>
-                {{-- WA --}}
-                <div v-else>
-                  <p class="alert-danger p-2">
-                    {{ __('sentence.WA') }}
-                    (@{{ judge_num_ac }}/@{{ judge_num_test }})
-                    <a class="ml-3" target="_blank"
-                      :href="'/solutions/' + query_solution_id">{{ __('main.View details') }}</a>
-                  </p>
-                  <pre v-show="judge_result.error_info" class="alert-danger p-2 overflow-auto">@{{ judge_result.error_info }}</pre>
-                </div>
-              </div>
-
-              <div class="form-group mt-2 table-responsive" v-if="judge_num_test>0">
-                <table class="table table-sm table-hover">
-                  <thead>
-                    <tr>
-                      <th>{{ __('main.Test Data') }}</th>
-                      <th>{{ __('main.Result') }}</th>
-                      <th>{{ __('main.Time') }}</th>
-                      <th>{{ __('main.Memory') }}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, index) in judge_result.details">
-                      <td>#@{{ index + 1 }}</td>
-                      <td><span :class="'judge-result-' + item.result">@{{ item.result_desc }}</span></td>
-                      <td>
-                        <span v-if="item.time!=null">@{{ item.time }}MS</span>
-                        <span v-else>-</span>
-                      </td>
-                      <td>
-                        <span v-if="item.memory!=null">@{{ item.memory }}MB</span>
-                        <span v-else>-</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              {{-- end of table div --}}
+            <div class="form-group mt-2 table-responsive">
+              @livewire('solution.details', ['showTip' => true])
             </div>
-            {{-- end of v-else --}}
           </div>
 
           <!-- 模态框底部 -->
@@ -214,9 +154,6 @@
     createApp({
       data() {
         return {
-          query_solution_id: 0, // 当前正在查询的solution id, 频繁提交时，只查询当前这次提交
-          judge_processing: 0, // 0:没提交, 1:提交中, 2:判题中, 3:判题完成
-          judge_result: {},
           // 以下用于本地测试
           sample_in: null,
           local_test: {
@@ -226,21 +163,6 @@
             'stdout': null,
             'error_info': null,
           }
-        }
-      },
-      computed: {
-        // 计算正确通过组数
-        judge_num_ac: function() {
-          let ac = 0;
-          for (let e of this.judge_result.details)
-            if (e.result == 4)
-              ac++
-          return ac
-        },
-        judge_num_test: function() {
-          if (this.judge_result.details != undefined)
-            return this.judge_result.details.length
-          return 0
         }
       },
       methods: {
@@ -275,75 +197,40 @@
               Notiflix.Notify.Failure('请求失败，请刷新网页后重试');
             }
           })
-        },
-        // 使用ajax提交代码
-        submit_solution() {
-          $('#btn_judge_result').click() // 展示模态框
-          this.judge_processing = 1 // 提交中
-          this.judge_result = {}
-          var max_query_times = 600; // 最大查询次数
-          $.ajax({
-            type: 'post',
-            url: '{{ route('api.solution.submit_solution') }}',
-            dataType: 'json',
-            data: json_value_base64($("#code_form").serializeJSON()),
-            success: (ret) => {
-              console.log(ret) // todo delete
-              if (ret.ok) {
-                // 收到回复，刷新判题结果
-                // Notiflix.Notify.Success(ret.msg)
-                // window.location.href = ret.data.redirect
-                this.query_solution_id = ret.data.solution_id
-                this.judge_processing = 2 // 判题中
-                this.judge_result = ret.data //更新表单
-                // 使用ajax不断查询判题结果，直到判题完成
-                const query_judge_result = () => {
-                  $.ajax({
-                    type: 'get',
-                    data: {},
-                    url: '/api/solutions/' + ret.data.solution_id,
-                    dataType: 'json',
-                    success: (judge_ret) => {
-                      console.log('judge result:', judge_ret) // todo delete
-                      if (judge_ret.ok) {
-                        if (ret.data.solution_id !== this.query_solution_id)
-                          return // 已经提交了新代码，solution id已变更，不再更新当前solution
-                        this.judge_result = judge_ret.data
-                        if (max_query_times-- > 0 && judge_ret.data.result < 4) { // 4: web端判题结果代号正确
-                          setTimeout(query_judge_result, 1000) // 继续查询
-                        } else {
-                          this.judge_processing = 3 // 判题完成
-                        }
-                      } else {
-                        Notiflix.Notify.Failure(judge_ret.msg)
-                      }
-                    },
-                    error: () => {
-                      Notiflix.Notify.Failure('Internal Error while reloading soluton result')
-                    }
-                  })
-                  return query_judge_result
-                }
-                query_judge_result() // 开始查询
-              } else {
-                Notiflix.Report.Failure('{{ __('main.Failed') }}', ret.msg, '{{ __('main.Confirm') }}')
-              }
-            },
-            error: function(ret) {
-              console.log(ret)
-              if (ret.status == 401) { // 身份验证失败
-                Notiflix.Report.Failure('身份验证未通过',
-                  '您已掉线，请刷新页面并重新登录！',
-                  '好的'
-                );
-              } else {
-                Notiflix.Notify.Failure('请求处理失败，请刷新页面后重试！');
-              }
-            }
-          })
         }
       }
     }).mount('#code_editor_app')
+  </script>
+
+  <script>
+    function submit_solution() {
+      window.livewire.emitTo('solution.details', 'setIsSubmitting') // 标记为提交中
+      $.ajax({
+        type: 'post',
+        url: '{{ route('api.solution.submit_solution') }}',
+        dataType: 'json',
+        data: json_value_base64($("#code_form").serializeJSON()),
+        success: (ret) => {
+          console.log(ret)
+          if (ret.ok) {
+            window.livewire.emitTo('solution.details', 'setSolutionId', ret.data.solution_id)
+          } else {
+            Notiflix.Report.Failure('{{ __('main.Failed') }}', ret.msg, '{{ __('main.Confirm') }}')
+          }
+        },
+        error: function(ret) {
+          console.log(ret)
+          if (ret.status == 401) { // 身份验证失败
+            Notiflix.Report.Failure('身份验证未通过',
+              '您已掉线，请刷新页面并重新登录！',
+              '好的'
+            );
+          } else {
+            Notiflix.Notify.Failure('请求处理失败，请刷新页面后重试！');
+          }
+        }
+      })
+    }
   </script>
 
   @if ($problem['type'] == 1)

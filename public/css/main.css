@@ -124,7 +124,7 @@ th {
     color: purple;
 }
 
-/* ======================================== 判题结果样式 ==================================== */
+/* ======================================== 判题结果字体颜色 ==================================== */
 .judge-result-0 {
     /* Waiting */
     color: black
@@ -203,6 +203,103 @@ th {
 .judge-result-15 {
     /* Submitted */
     color: black
+}
+
+/* ======================================== 判题结果测试点方块样式 ==================================== */
+.judge-detail-0 {
+    /* Waiting */
+    color: white;
+    background-color: black
+}
+
+.judge-detail-1 {
+    /* Queueing */
+    color: black;
+    background-color: #ffdd00;
+}
+
+.judge-detail-2 {
+    /* Compiling */
+    color: black;
+    background-color: rgb(242, 160, 7)
+}
+
+.judge-detail-3 {
+    /* Running */
+    color: black;
+    background-color: orange
+}
+
+.judge-detail-4 {
+    /* Accepted */
+    color: white;
+    background-color: rgb(0, 187, 0)
+}
+
+.judge-detail-5 {
+    /* Presentation Error */
+    color: white;
+    background-color: blue
+}
+
+.judge-detail-6 {
+    /* Wrong Answer */
+    color: white;
+    background-color: red
+}
+
+.judge-detail-7 {
+    /* Time Limit Exceeded */
+    color: white;
+    background-color: blue
+}
+
+.judge-detail-8 {
+    /* Memory Limit Exceeded */
+    color: white;
+    background-color: blue
+}
+
+.judge-detail-9 {
+    /* Output Limit Exceeded */
+    color: white;
+    background-color: blue
+}
+
+.judge-detail-10 {
+    /* Runtime Error */
+    color: white;
+    background-color: blue
+}
+
+.judge-detail-11 {
+    /* Compile Error */
+    color: white;
+    background-color: red
+}
+
+.judge-detail-12 {
+    /* Test Completed。2.0已改为重判中 */
+    color: white;
+    background-color: black
+}
+
+.judge-detail-13 {
+    /* Skipped */
+    color: white;
+    background-color: gray
+}
+
+.judge-detail-14 {
+    /* System Error */
+    color: white;
+    background-color: purple
+}
+
+.judge-detail-15 {
+    /* Submitted */
+    color: white;
+    background-color: black
 }
 
 /* ========================================= 背景颜色 ========================================= */

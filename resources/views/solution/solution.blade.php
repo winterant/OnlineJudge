@@ -33,7 +33,9 @@
             </a>
           @endif
         </div>
-        <div class="col-6 col-sm-2">{{ __('main.User') . ': ' }}<a href="{{ route('user', $solution->username) }}">{{ $solution->username }}</a></div>
+        <div class="col-6 col-sm-2">{{ __('main.User') . ': ' }}
+          <a href="{{ route('user', $solution->username) }}">{{ $solution->username }}</a>
+        </div>
         <div class="col-6 col-sm-2">{{ __('main.Judge Type') . ': ' . $solution->judge_type }}</div>
         <div class="col-12 col-sm-4">{{ __('main.Submission Time') . ': ' . $solution->submit_time }}</div>
 
@@ -46,14 +48,23 @@
     </div>
   </div>
 
+  {{-- 展示测试点详情 --}}
+  <div class="container">
+    <div class="my-container bg-white">
+      @livewire('solution.details', ['json_judge_result' => $solution->judge_result], key($solution->id))
+    </div>
+  </div>
+
   @if (strlen($solution->wrong_data))
     {{-- 出错的测试文件 --}}
     <div class="container">
       <div class="my-container bg-white">
         <div class="d-inline">
           <span>{{ __('main.Wrong Data') }}:</span>
-          <a class="ml-2" href="{{ route('solution_wrong_data', [$solution->id, 'in']) }}" target="_blank">{{ $solution->wrong_data }}.in</a>
-          <a class="ml-2" href="{{ route('solution_wrong_data', [$solution->id, 'out']) }}" target="_blank">{{ $solution->wrong_data }}.out</a>
+          <a class="ml-2" href="{{ route('solution_wrong_data', [$solution->id, 'in']) }}"
+            target="_blank">{{ $solution->wrong_data }}.in</a>
+          <a class="ml-2" href="{{ route('solution_wrong_data', [$solution->id, 'out']) }}"
+            target="_blank">{{ $solution->wrong_data }}.out</a>
         </div>
       </div>
     </div>
@@ -71,7 +82,8 @@
     <div class="my-container bg-white position-relative">
       <pre class="border p-1"><code>{{ $solution->code }}</code></pre>
       <span id="code" hidden>{{ $solution->code }}</span>
-      <button type="button" class="btn btn-primary border position-absolute" style="top: 2rem; right: 3rem" onclick="copy('code')">{{ __('main.Copy') }}</button>
+      <button type="button" class="btn btn-primary border position-absolute" style="top: 2rem; right: 3rem"
+        onclick="copy('code')">{{ __('main.Copy') }}</button>
       <a class="btn btn-primary border position-absolute" style="top: 2rem; right: 8rem"
         href="{{ $solution->contest_id > 0 ? route('contest.problem', [$solution->contest_id, $solution->index, 'solution' => $solution->id]) : route('problem', [$solution->problem_id, 'solution' => $solution->id]) }}">{{ __('main.Edit') }}</a>
     </div>
