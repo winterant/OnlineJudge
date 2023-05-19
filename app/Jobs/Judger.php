@@ -206,8 +206,8 @@ class Judger implements ShouldQueue
                     $std_in_path = sprintf("/testdata/%d/test/%s", $problem['id'], $test['in']);
                     $std_out_path = sprintf("/testdata/%d/test/%s", $problem['id'], $test['out']);
                     $ret = $this->special_judge($spj_file_id, $std_in_path, $std_out_path, $res[0]['fileIds']['stdout']);
-                    $result = $ret['result'];
-                    $error_info = $ret['error_info'];
+                    $result = $ret['result'] ?? 14;
+                    $error_info = $ret['error_info'] ?? '[Filed to run spj]';
                 } else {
                     $std_out_path = testdata_path(sprintf('%d/test/%s', $problem['id'], $test['out']));
                     $ret = $this->diff_judge($std_out_path, $res[0]['files']['stdout']);
