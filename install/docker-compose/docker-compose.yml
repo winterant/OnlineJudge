@@ -27,6 +27,7 @@ services:
     image: winterant/go-judge:1.0
     container_name: lduoj-go-judge
     restart: always
+    shm_size: 512m
     environment:
       - ES_FILE_TIMEOUT=10m
     privileged: true

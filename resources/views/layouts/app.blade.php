@@ -19,7 +19,7 @@
   <link href="{{ asset('static/bootstrap-material-design-dist/css/bootstrap-material-design.min.css') }}"
     rel="stylesheet">
   <link href="{{ asset('static/font-awesome-4.7.0/css/font-awesome.min.css') }}" rel="stylesheet">
-  <link href="{{ asset('css/main.css') }}?v=7" rel="stylesheet">
+  <link href="{{ asset('css/main.css') }}?v=2" rel="stylesheet">
 
   {{-- js for jquery and bootstrap --}}
   <script src="{{ asset('static/jquery-3.4.1/jquery-3.4.1.min.js') }}"></script>
