@@ -3,17 +3,19 @@
 
   @if ($showTip)
     <p
-      class="@if ($numTests == 0 || $numRunning > 0) alert-info
-              @elseif ($numAc == $numTests) alert-success
+      class="@if ($result < 4) alert-info
+              @elseif ($result == 4) alert-success
               @else alert-danger @endif p-2">
 
       {{-- 提示信息 --}}
-      @if ($numTests == 0)
+      @if ($result < 0)
+        {{ __('sentence.please_submit_code') }}
+      @elseif ($result <= 1)
         {{ __('sentence.submitting') }}
-      @elseif ($numAc == $numTests)
-        {{ __('sentence.pass_all_test') }}
-      @elseif($numRunning > 0)
+      @elseif($result < 4)
         {{ __('sentence.judging') }}
+      @elseif ($result == 4)
+        {{ __('sentence.pass_all_test') }}
       @else
         {{ __('sentence.WA') }}
       @endif
@@ -24,6 +26,10 @@
         <a href="{{ route('solution', $solution_id) }}" target="_blank">{{ __('main.View details') }}</a>
       @endif
     </p>
+
+    @if ($error_info ?? false)
+      <pre class="alert-danger p-2">{{ $error_info }}</pre>
+    @endif
   @endif
 
   <div class="d-flex flex-wrap" style="font-size:0.85rem">
@@ -38,22 +44,22 @@
   </div>
 
   {{-- 展示某一个详情数据 --}}
-  @if ($display)
+  @if ($detail ?? false)
     <div class="border m-1 p-2">
       <div>
-        <span class="mr-3">#{{ $display['index'] + 1 }}</span>
+        <span class="mr-3">#{{ $detail['index'] + 1 }}</span>
         <span class="mr-3">{{ __('main.Test Data') }}:
-          {{ $display['testname'] }}.in
+          {{ $detail['testname'] }}.in
           /
-          {{ $display['testname'] }}.out
+          {{ $detail['testname'] }}.out
         </span>
         <span class="mr-3">{{ __('main.Result') }}:
-          <span class="judge-result-{{ $display['result'] }}">{{ $display['result_desc'] }}</span>
+          <span class="judge-result-{{ $detail['result'] }}">{{ $detail['result_desc'] }}</span>
         </span>
         <span class="mr-3">{{ __('main.Time') }}: {{ $res['memory'] }}MB</span>
         <span>{{ __('main.Memory') }}: {{ $res['memory'] }}MB</span>
       </div>
-      <pre class="mt-1">{{ $display['error_info'] ?? '' }}</pre>
+      <pre class="mt-1">{{ $detail['error_info'] ?? '' }}</pre>
     </div>
   @endif
 </div>

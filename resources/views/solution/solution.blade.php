@@ -5,7 +5,8 @@
 @section('content')
 
   <div class="container">
-    <div class="my-container @if ($solution->result < 4) alert-info
+    <div
+      class="my-container @if ($solution->result < 4) alert-info
             @elseif($solution->result == 4)alert-success @else alert-danger @endif">
       <div style="font-size: 1.6rem">
         @if ($solution->result < 4)
@@ -51,7 +52,7 @@
   {{-- 展示测试点详情 --}}
   <div class="container">
     <div class="my-container bg-white">
-      @livewire('solution.details', ['json_judge_result' => $solution->judge_result], key($solution->id))
+      @livewire('solution.details', ['solution_id' => $solution->id], key($solution->id))
     </div>
   </div>
 

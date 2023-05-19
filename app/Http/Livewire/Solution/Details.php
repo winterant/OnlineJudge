@@ -7,59 +7,55 @@ use Livewire\Component;
 
 class Details extends Component
 {
-    public $solution_id;
-    public $details;
-    public $display; // 正在展示的结果
-    public int $numAc, $numTests, $numRunning;
-    public $showTip;
+    public $solution_id; // solution id
+    public $result;      // solution最终结果
+    public $error_info; // 错误信息
+    public $details;    // 所有评测点
+    public $detail;     // 正在展示的评测点
+    public int $numAc, $numTests; // 测试点计数
+    public $showTip;    // bool 是否展示提示条
 
     protected $listeners = ['setSolutionId'];
 
-    /**
-     * 初始化一个评测点详情信息
-     * @param $solution_id
-     * @param $json_judge_result json格式的评测点信息，与solution_id之前必须有一个被赋值
-     */
-    public function mount(string $json_judge_result = null, bool $showTip=false)
+    // 初始化一个评测点详情信息
+    public function mount(int $solution_id = null, bool $showTip = false)
     {
-        $this->details = $this->process_details($json_judge_result);
-        $this->solution_id = null;
-        $this->display = null;
-        $this->numTests = count($this->details ?? []);
-        $this->numAc = $this->numRunning = 0;
-        foreach ($this->details ?? [] as $d) {
-            if ($d['result'] == 4) $this->numAc++;
-            else if ($d['result'] < 4) $this->numRunning++;
-        }
+        $this->solution_id = $solution_id;
+        $this->result = -1; // 初始化未提交状态
+        $this->detail = null;
+        $this->refresh();   // 刷新结果
         $this->showTip = $showTip;
     }
 
     // livewire创建后，手动指定solution id
     public function setSolutionId($id)
     {
-        $this->refresh($id);
+        $this->solution_id = $id;
+        $this->refresh();
     }
 
     // 根据solution_id刷新。如果制定了changeId，则顺便更新solution_id
-    public function refresh($changeId = null)
+    public function refresh()
     {
-        if ($changeId != null)
-            $this->solution_id = $changeId;
-        else if ($this->solution_id == null) //即没有指定id，也不存在solution_id
+        if ($this->solution_id == null) // 既没有指定id，也不存在solution_id
             return;
 
         // 读取数据库中 所有测试数据的详细结果 {'testname':{'result':int, ...}, ...}
-        $judge_result = DB::table('solutions')->find($this->solution_id)->judge_result ?? null;
-        $this->details = $this->process_details($judge_result);
-        if ($this->display['index'] ?? false)
-            $this->display_detail($this->display['index']);
+        $solution = DB::table('solutions')
+            ->select(['result', 'error_info', 'judge_result'])->find($this->solution_id);
+        if ($solution == null)
+            return;
+        $this->result = $solution->result ?? -1;
+        $this->error_info = $solution->error_info ?? null;
+        $this->details = $this->process_details($solution->judge_result ?? null);
+        if ($this->detail['index'] ?? false)
+            $this->display_detail($this->detail['index']);
 
         // 刷新测试点通过数量
         $this->numTests = count($this->details ?? []);
-        $this->numAc = $this->numRunning = 0;
+        $this->numAc = 0;
         foreach ($this->details ?? [] as $d) {
             if ($d['result'] == 4) $this->numAc++;
-            else if ($d['result'] < 4) $this->numRunning++;
         }
     }
 
@@ -86,8 +82,8 @@ class Details extends Component
      */
     public function display_detail(int $index)
     {
-        $this->display = $this->details[$index];
-        $this->display['index'] = $index;
+        $this->detail = $this->details[$index];
+        $this->detail['index'] = $index;
     }
 
     /**
