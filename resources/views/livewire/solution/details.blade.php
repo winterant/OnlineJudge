@@ -19,7 +19,9 @@
         {{ __('sentence.WA') }}
       @endif
       {{-- 通过率 --}}
-      <span>({{ $numAc }}/{{ $numTests }})</span>
+      @if ($numTests > 0)
+        <span>({{ $numAc }}/{{ $numTests }})</span>
+      @endif
       {{-- url --}}
       @if ($solution_id ?? false)
         <a href="{{ route('solution', $solution_id) }}" target="_blank">{{ __('main.View details') }}</a>
