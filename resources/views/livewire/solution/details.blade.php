@@ -57,7 +57,7 @@
         <span class="mr-3">{{ __('main.Result') }}:
           <span class="judge-result-{{ $detail['result'] }}">{{ $detail['result_desc'] }}</span>
         </span>
-        <span class="mr-3">{{ __('main.Time') }}: {{ $detail['memory'] }}MB</span>
+        <span class="mr-3">{{ __('main.Time') }}: {{ $detail['time'] }}MS</span>
         <span>{{ __('main.Memory') }}: {{ $detail['memory'] }}MB</span>
       </div>
       <pre class="mt-1">{{ $detail['error_info'] ?? '' }}</pre>

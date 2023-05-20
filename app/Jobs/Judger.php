@@ -225,7 +225,7 @@ class Judger implements ShouldQueue
             $judge_result[$k] = [
                 'result' => $result,
                 'time' => intdiv($res[0]['time'], 1000000), // ns==>ms
-                'memory' => $res[0]['memory'] >> 20, // B==>MB
+                'memory' => round($res[0]['memory'] / 1024 / 1024, 2), // B==>MB
                 'error_info' => $error_info
             ];
             $this->update_db_solution(['judge_result' => $judge_result]); // 向数据库刷新测试点状态
