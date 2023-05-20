@@ -43,9 +43,9 @@
             class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button>
 
           <button type="button" data-target="#judge-result-page" data-toggle="modal"
-            class="btn bg-info text-white m-2">{{ __('main.judge_result') }}</button>
+            class="btn bg-info text-white m-2" style="display: none">{{ __('main.judge_result') }}</button>
           <button type="button" class="btn bg-success text-white m-2"
-            onclick="$(this).prev().click();disabledSubmitButton(this, '已提交');
+            onclick="$(this).prev().click().show();disabledSubmitButton(this, '已提交');
             submit_solution()"
             style="min-width: 6rem" @guest disabled @endguest>{{ trans('main.Submit') }}</button>
         </div>

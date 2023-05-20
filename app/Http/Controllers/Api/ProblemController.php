@@ -109,7 +109,7 @@ class ProblemController extends Controller
     function submit_problem_tag(Request $request)
     {
         $problem_id = $request->input('problem_id');
-        $tag_names = $request->input('tag_names');
+        $tag_names = $request->input('tag_names') ?? [];
         $tag_names = array_unique($tag_names);
         $tag_marks = [];
         foreach ($tag_names as $tag_name) {

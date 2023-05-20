@@ -10,7 +10,7 @@ class Details extends Component
     public $solution_id; // solution id
     public $result;      // solution最终结果
     public $error_info; // 错误信息
-    public $details;    // 所有评测点
+    public array $details;    // 所有评测点
     public $detail;     // 正在展示的评测点
     public int $numAc, $numTests; // 测试点计数
     public $showTip;    // bool 是否展示提示条
@@ -59,13 +59,18 @@ class Details extends Component
         }
     }
 
-    /**
-     * 对json数据进行预处理，返回数组
-     */
+
+    // 点击某一个detail时触发，将显示当前detail的错误细节
+    public function display_detail(int $index)
+    {
+        $this->detail = $this->details[$index] ?? null;
+        $this->detail['index'] = $index;
+    }
+
+    // json数据进行预处理，返回数组
     private function process_details(string $judge_result = null)
     {
-        if ($judge_result == null) return null;
-        $judge_result = json_decode($judge_result, true);
+        $judge_result = json_decode($judge_result ?? '[]', true);
         foreach ($judge_result as $k => &$test) {
             $judge_result[$k]['result_desc'] = trans('result.' . config("judge.result." . $test['result'] ?? 0));
             if (!isset($judge_result[$k]['testname']))
@@ -77,18 +82,7 @@ class Details extends Component
         return array_values($judge_result); // 转为数组
     }
 
-    /**
-     * 点击某一个detail时触发，将显示当前detail的错误细节
-     */
-    public function display_detail(int $index)
-    {
-        $this->detail = $this->details[$index];
-        $this->detail['index'] = $index;
-    }
-
-    /**
-     * 渲染前端
-     */
+    // 渲染前端
     public function render()
     {
         return view('livewire.solution.details');
