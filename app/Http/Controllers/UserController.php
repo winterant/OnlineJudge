@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -110,7 +112,13 @@ class UserController extends Controller
                 ->update(['password' => Hash::make($user['new_password']), 'updated_at' => date('Y-m-d H:i:s')]);
             if ($ret != 1) //失败
                 return view('message', ['msg' => trans('sentence.Operation failed')]);
-            Auth::logoutOtherDevices($user['new_password']); //其他设备全部失效
+
+            try {
+                Auth::logoutOtherDevices($user['new_password']); //其他设备全部失效
+            } catch (Exception $e) {
+                Log::error('Failed to logout other devices when modify password');
+                Log::error($e->getMessage());
+            }
             return view('message', ['success' => true, 'msg' => trans('passwords.reset')]);
         }
     }
