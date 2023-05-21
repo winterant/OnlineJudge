@@ -48,8 +48,7 @@ class Details extends Component
         $this->result = $solution->result ?? -1;
         $this->error_info = $solution->error_info ?? null;
         $this->details = $this->process_details($solution->judge_result ?? null);
-        if ($this->detail['index'] ?? false)
-            $this->display_detail($this->detail['index']);
+        $this->display_detail();
 
         // 刷新测试点通过数量
         $this->numTests = count($this->details ?? []);
@@ -59,12 +58,19 @@ class Details extends Component
         }
     }
 
-
     // 点击某一个detail时触发，将显示当前detail的错误细节
-    public function display_detail(int $index)
+    public function display_detail(int $index = null)
     {
-        $this->detail = $this->details[$index] ?? null;
-        $this->detail['index'] = $index;
+        if ($index === null)
+            $index = $this->detail['index'] ?? null; // 默认为上次的detail
+
+        // 如果上次detail存在 且 有更新值，则重新获取；否则，置空
+        if ($index !== null && ($this->details[$index] ?? false)) {
+            $this->detail = $this->details[$index];
+            $this->detail['index'] = $index;
+        } else {
+            $this->detail = null;
+        }
     }
 
     // json数据进行预处理，返回数组

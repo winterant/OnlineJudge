@@ -35,11 +35,11 @@
 
   <div class="d-flex flex-wrap" style="font-size:0.85rem">
     @foreach ($details ?? [] as $i => $res)
-      <div class="m-1 p-2 judge-detail-{{ $res['result'] }}" style="width:7.3rem;"
+      <div class="m-1 p-2 judge-detail-{{ $res['result'] }}" style="width:7rem;"
         wire:click="display_detail({{ $i }})">
         <div>#{{ $i + 1 }}</div>
         <div class="text-center my-1">{{ $res['result_desc'] }}</div>
-        <div class="text-center">{{ $res['time'] }}MS / {{ $res['memory'] }}MB</div>
+        <div class="text-center" style="font-size: 0.5rem">{{ $res['time'] }}MS / {{ $res['memory'] }}MB</div>
       </div>
     @endforeach
   </div>
