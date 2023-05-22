@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
       @if (!empty(session('message')))
         <div class="col-md-8">
-          <div class="my-container alert-danger">
+          <div class="my-container  alert alert-danger">
             <h5>
               <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
               {!! session('message') !!}

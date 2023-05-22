@@ -21,19 +21,19 @@
       <div class="mb-2 d-flex flex-wrap">
         <div class="mr-2">
           {{ __('main.School') }}:
-          <span class="mx-1 p-1 alert-info border" style="border-radius: 4px;">{{ $user->school }}</span>
+          <span class="mx-1 p-1 alert  alert-info border" style="border-radius: 4px;">{{ $user->school }}</span>
         </div>
         <div class="mr-2">
           {{ __('main.Class') }}:
-          <span class="mx-1 p-1 alert-info border" style="border-radius: 4px;">{{ $user->class }}</span>
+          <span class="mx-1 p-1 alert  alert-info border" style="border-radius: 4px;">{{ $user->class }}</span>
         </div>
         <div class="mr-2">
           {{ __('main.Name') }}:
-          <span class="mx-1 p-1 alert-info border" style="border-radius: 4px;">{{ $user->nick }}</span>
+          <span class="mx-1 p-1 alert  alert-info border" style="border-radius: 4px;">{{ $user->nick }}</span>
         </div>
         <div class="mr-2">
           {{ __('main.E-Mail') }}:
-          <span class="mx-1 p-1 alert-info border" style="border-radius: 4px;">{{ $user->email }}</span>
+          <span class="mx-1 p-1 alert  alert-info border" style="border-radius: 4px;">{{ $user->email }}</span>
         </div>
         <div class="mr-2">
           {{ __('main.Registered at') }}: {{ $user->created_at }}

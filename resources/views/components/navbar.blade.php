@@ -97,6 +97,11 @@
     <!-- Authentication Links -->
     @guest
       <li class="nav-item">
+        <span class="nav-link">
+          <x-dark-mode>{{ __('main.DarkMode') }}</x-dark-mode>
+        </span>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="{{ route('login') }}">{{ trans('main.Login') }}</a>
       </li>
       @if (Route::has('register'))
@@ -115,11 +120,22 @@
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 
           <a class="dropdown-item" href="{{ route('user', Auth::user()->username) }}">{{ trans('main.Profile') }}</a>
-          <a class="dropdown-item" href="{{ route('password_reset', Auth::user()->username) }}">{{ trans('sentence.Modify Password') }}</a>
+          <a class="dropdown-item"
+            href="{{ route('password_reset', Auth::user()->username) }}">{{ trans('sentence.Modify Password') }}</a>
 
           @can('admin.view')
             <a class="dropdown-item" href="{{ route('admin.home') }}">{{ trans('main.Administration') }}</a>
           @endcan
+
+          <a class="dropdown-item" style="cursor:pointer" data-stopPropagation=”true”>
+            <x-dark-mode>{{ __('main.DarkMode') }}</x-dark-mode>
+            <script>
+              //下拉框查询组件点击查询栏时不关闭下拉框
+              $("body").on('click', '[data-stopPropagation]', function(e) {
+                e.stopPropagation();
+              });
+            </script>
+          </a>
 
           <div class="dropdown-divider"></div>
 

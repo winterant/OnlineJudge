@@ -127,7 +127,7 @@ th {
 /* ======================================== 判题结果字体颜色 ==================================== */
 .judge-result-0 {
     /* Waiting */
-    color: black
+    color: yellow;
 }
 
 .judge-result-1 {
@@ -186,8 +186,8 @@ th {
 }
 
 .judge-result-12 {
-    /* Test Completed */
-    color: black
+    /* Rejudging */
+    color: yellow;
 }
 
 .judge-result-13 {
@@ -202,7 +202,7 @@ th {
 
 .judge-result-15 {
     /* Submitted */
-    color: black
+    color: greenyellow
 }
 
 /* ======================================== 判题结果测试点方块样式 ==================================== */

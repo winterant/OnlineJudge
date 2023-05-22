@@ -87,7 +87,7 @@
           <input type="text" name="group[archive_cite]" value="{{ $group->archive_cite ?? '' }}" class="form-control"
             style="color: black" placeholder="填已有群组编号，多个请以英文逗号分隔。如：16,97,128">
         </div>
-        <div class="alert-warning p-3">
+        <div class=" alert alert-warning p-3">
           考虑到当前群组可能存在某些前置课程/班级/群组，为方便管理员查看成员在前置群组中的档案，您可以在当前群组的成员档案中引用其它群组中该成员的档案。请注意：
           <br>
           <li>只有该群组的创建者可以编辑该字段，其它管理员修改无效；</li>

@@ -71,12 +71,6 @@
             value="{{ get_setting('web_page_loading_animation') ? 'true' : 'false' }}" type="text" hidden>
           <span>页面载入动画，页面加载过程中以半透明幕布覆盖全屏，中部显示加载动画</span>
         </div>
-        <div class="form-group">
-          <input id="web_page_dark_mode" type="checkbox">
-          <input name="web_page_dark_mode" value="{{ get_setting('web_page_dark_mode') ? 'true' : 'false' }}"
-            type="text" hidden>
-          <span>允许客户端切换深色模式（客户端首次访问时将跟随操作系统主题深色模式/浅色模式）</span>
-        </div>
       </div>
 
       <div class="my-container bg-white">
@@ -198,7 +192,7 @@
   <script>
     // 初始化所有开关按钮
     $(function() {
-      @php($btns = ['web_page_display_wide', 'web_page_loading_animation', 'web_page_dark_mode', 'login_reg_captcha', 'allow_register', 'display_complete_userinfo', 'display_complete_standings', 'guest_see_problem', 'show_disscussions', 'post_discussion', 'problem_show_tag_collection', 'problem_show_involved_contests', 'rank_show_school', 'rank_show_class', 'rank_show_nick'])
+      @php($btns = ['web_page_display_wide', 'web_page_loading_animation', 'login_reg_captcha', 'allow_register', 'display_complete_userinfo', 'display_complete_standings', 'guest_see_problem', 'show_disscussions', 'post_discussion', 'problem_show_tag_collection', 'problem_show_involved_contests', 'rank_show_school', 'rank_show_class', 'rank_show_nick'])
       @foreach ($btns as $name)
         new Switch($("#{{ $name }}")[0], {
           // size: 'small',

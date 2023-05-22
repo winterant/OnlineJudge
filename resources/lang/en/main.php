@@ -1,5 +1,7 @@
 <?php
 return [
+    // 常用词汇
+    "DarkMode"      => "Dark Mode",
     "My"            => "My ",
     "Yes"           => "Yes",
     "No"            => "No",
@@ -132,7 +134,7 @@ return [
     "hours"         => "[*,1] hour|[2,*] hours",
     "minutes"       => "[*,1] minute|[2,*] minutes",
     "problems"      => "[*,1] problem|[2,*] problems",
-    "Tag Collection"=> "Tag Collection",
+    "Tag Collection" => "Tag Collection",
     "Tag"           => "Tag",
     "Tags"          => "Tags",
     "Official Tags" => "Official Tags",

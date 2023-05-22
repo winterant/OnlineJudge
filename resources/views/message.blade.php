@@ -11,7 +11,7 @@
 @section('content')
   <div class="row justify-content-center">
     <div class="col-12 col-xl-8">
-      <div class="my-container alert-{{ ['danger', 'success'][$success ?? 0] }}">
+      <div class="my-container alert alert-{{ ['danger', 'success'][$success ?? 0] }}">
         <h5>
           <i class="fa fa-{{ ['exclamation-triangle', 'check-circle'][$success ?? 0] }} fa-lg" aria-hidden="true"></i>
           {{-- 显示提示语。如果未设置，则默认显示权限不足或操作成功 --}}

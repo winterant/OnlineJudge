@@ -85,21 +85,21 @@
                   @endfor
                 </div>
                 <hr>
-                <div v-show="local_test.time" class="alert-info p-2 mb-2">
+                <div v-show="local_test.time" class=" alert alert-info p-2 mb-2">
                   <span class="mr-5">{{ __('main.Time') }}: @{{ local_test.time }}MS</span>
                   <span>{{ __('main.Memory') }}: @{{ local_test.memory }}MB</span>
                 </div>
                 <div v-show="local_test.error_info">
                   <span>{{ __('main.Run Error') }}</span>
-                  <pre class="alert-danger p-2 overflow-auto">@{{ local_test.error_info }}</pre>
+                  <pre class=" alert alert-danger p-2 overflow-auto">@{{ local_test.error_info }}</pre>
                 </div>
                 <div v-show="local_test.stdin">
                   <span>{{ trans('main.Input') }}</span>
-                  <pre class="alert-secondary p-2 overflow-auto" style="min-height: 1rem">@{{ local_test.stdin }}</pre>
+                  <pre class=" alert alert-secondary p-2 overflow-auto" style="min-height: 1rem">@{{ local_test.stdin }}</pre>
                 </div>
                 <div v-show="local_test.stdout">
                   <span>{{ trans('main.Output') }}</span>
-                  <pre class="alert-secondary p-2 overflow-auto" style="min-height: 1rem">@{{ local_test.stdout }}</pre>
+                  <pre class=" alert alert-secondary p-2 overflow-auto" style="min-height: 1rem">@{{ local_test.stdout }}</pre>
                 </div>
               </form>
             </div>

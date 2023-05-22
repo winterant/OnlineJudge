@@ -6,7 +6,7 @@
 
   <div class="container">
     <div
-      class="my-container @if ($solution->result < 4) alert-info
+      class="my-container  alert @if ($solution->result < 4) alert-info
             @elseif($solution->result == 4)alert-success @else alert-danger @endif">
       <div style="font-size: 1.6rem">
         @if ($solution->result < 4)

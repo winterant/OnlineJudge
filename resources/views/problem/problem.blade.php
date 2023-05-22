@@ -110,7 +110,7 @@
         <hr>
 
         {{-- 题目基本信息 --}}
-        <div class="alert-info p-2 mb-2 d-flex flex-wrap" style="font-size: 0.9rem">
+        <div class=" alert alert-info p-2 mb-2 d-flex flex-wrap" style="font-size: 0.9rem">
           <div style="min-width: 300px">{{ __('main.Time Limit') }}: {{ $problem->time_limit }}MS</div>
           <div style="min-width: 300px">{{ __('main.Memory Limit') }}: {{ $problem->memory_limit }}MB</div>
           <div style="min-width: 300px">{{ __('main.Result Judgement') }}:

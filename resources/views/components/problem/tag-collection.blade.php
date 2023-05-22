@@ -39,7 +39,7 @@
 
   <div id="div_submit_tag">
 
-    <div class="p-2" style="background-color: rgb(162, 212, 255)">
+    <div class="alert alert-info p-2">
       <h4 class="m-0">{{ trans('main.Tag Collection') }}</h4>
     </div>
 
@@ -68,11 +68,11 @@
           <input type="text" class="form-control mr-2" oninput="input_auto_width($(this))" required name="tag_names[]"
             style="width: 50px">
         </div> --}}
-        <a id="add_tag_btn" class="btn btn-sm border m-1" onclick="add_tag_input($(this))">
+        <a id="add_tag_btn" class="btn btn-sm bg-secondary border m-1" onclick="add_tag_input($(this))">
           <i class="fa fa-plus" aria-hidden="true"></i>
           {{ __('main.Input') . ' ' . __('main.Tag') }}
         </a>
-        <a class="btn btn-sm border m-1" data-toggle="modal" data-target="#modal_tag_pool">
+        <a class="btn btn-sm bg-secondary border m-1" data-toggle="modal" data-target="#modal_tag_pool">
           <i class="fa fa-list" aria-hidden="true"></i>
           {{ __('main.Tag Pool') }}
         </a>

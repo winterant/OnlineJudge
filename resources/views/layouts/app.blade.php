@@ -128,10 +128,6 @@
 </head>
 
 <body>
-  {{-- 深色模式，必须首先载入，否则会有闪现白页等延迟现象 --}}
-  @if (get_setting('web_page_dark_mode'))
-    <x-dark-mode />
-  @endif
 
   {{-- 页面载入动画（管理员可在后台系统设置中手动关闭） --}}
   @if (get_setting('web_page_loading_animation'))

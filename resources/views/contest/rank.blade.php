@@ -201,7 +201,7 @@
             <div>
               <i class="fa fa-square" aria-hidden="true" style="color: #99d7ff"></i> {{ __('sentence.endedAC') }}
             </div>
-            <div class="mt-3 alert-info p-3">
+            <div class="mt-3 alert  alert-info p-3">
               <p>榜单规则说明：当前榜单支持ACM/ICPC和OI两种模式。</p>
               <p>
                 ACM/ICPC模式：按照解决题目的数量进行排名，数量同等时，按照罚时排序，罚时=每道题目通过时间+错误次数*20分钟。

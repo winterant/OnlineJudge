@@ -23,7 +23,7 @@
 
   @foreach ($roles as $role)
     <div class="border my-3">
-      <div class="alert-info p-2">
+      <div class=" alert alert-info p-2">
         <div>
           <span class="mr-3">角色名称：{{ $role->name }}</span>
           <button class="bg-white btn btn-primary" data-toggle="modal" data-target="#edit_role"
@@ -107,7 +107,7 @@
               </select>
             </div>
 
-            <div class="form-group alert-info p-3">
+            <div class="form-group alert  alert-info p-3">
               <p>该角色将拥有以下选中的权限。如果您希望该角色能够进入后台管理，请务必分配`admin.view`权限。</p>
               <p>注意，分配的权限将对所有相应的数据生效（包括其他人创建的数据），而不是仅对用户自己创建的条目生效。
                 例如：若拥有权限`admin.notice.update`将有权修改任意其他人创建的notice；若无该权限，则仅有权修改自己创建的notice。

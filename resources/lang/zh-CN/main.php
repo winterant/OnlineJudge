@@ -1,5 +1,7 @@
 <?php
 return [
+    // 常用词汇
+    "DarkMode"      => "深色模式",
     "My"            => "我的",
     "Yes"           => "是",
     "No"            => "否",
@@ -131,7 +133,7 @@ return [
     "hours"         => "[*]小时",
     "minutes"       => "[*]分钟",
     "problems"      => "[*]个问题",
-    "Tag Collection"=> "标签收集",
+    "Tag Collection" => "标签收集",
     "Tag"           => "标签",
     "Tags"          => "标签",
     "Official Tags" => "官方标签",

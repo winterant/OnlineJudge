@@ -61,7 +61,7 @@
                         @endif
                       </td>
                       <td>
-                        <a title="{{ $item->source }}">{{ $item->source }}</a>
+                        <span title="{{ $item->source }}">{{ $item->source }}</span>
                       </td>
                       <td nowrap>
                         {{ $item->accepted }} / {{ $item->submitted }}

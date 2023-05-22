@@ -177,7 +177,7 @@
         {{--                </div> --}}
 
         <div id="access_type_public">
-          <p class="alert-success p-2">
+          <p class=" alert alert-success p-2">
             当竞赛公开时，任意已登陆用户均可直接进入竞赛。
           </p>
         </div>
@@ -190,7 +190,7 @@
             </label>
             <br>
           </div>
-          <p class="alert-warning p-2">
+          <p class=" alert alert-warning p-2">
             用户必须输入密码才能进入竞赛。注：无论竞赛被加入任何团队，都仍然需要输入密码才能进入。
           </p>
         </div>
@@ -205,7 +205,7 @@
 @endforeach
 </textarea>
           </label>
-          <p class="alert-warning p-2">
+          <p class=" alert alert-warning p-2">
             当竞赛公开时，以上被邀请用户可以直接进入竞赛。注：无论竞赛被加入任何团队，以上被邀请的用户仍有权直接进入竞赛。
           </p>
         </div>

@@ -2,7 +2,7 @@
 <div @if ($result < 4) wire:poll.visible.750ms="refresh" @endif>
   @if ($showTip)
     <p
-      class="@if ($result < 4) alert-info
+      class="alert @if ($result < 4) alert-info
               @elseif ($result == 4) alert-success
               @else alert-danger @endif p-2">
 
@@ -35,7 +35,7 @@
 
   <div class="d-flex flex-wrap" style="font-size:0.85rem">
     @foreach ($details ?? [] as $i => $res)
-      <div class="m-1 p-2 judge-detail-{{ $res['result'] }}" style="width:7rem;"
+      <div class="m-1 p-2 judge-detail judge-detail-{{ $res['result'] }}" style="width:7rem;"
         wire:click="display_detail({{ $i }})">
         <div>#{{ $i + 1 }}</div>
         <div class="text-center my-1">{{ $res['result_desc'] }}</div>

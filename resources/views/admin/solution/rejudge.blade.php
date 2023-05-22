@@ -7,7 +7,7 @@
   <h2>重判提交记录</h2>
   <hr>
   <div class="p-4 col-12 col-lg-9">
-    <p class="p-3 alert-warning">
+    <p class="p-3 alert  alert-warning">
       请注意：<br>
       1. 重判大量提交记录会导致服务器判题服务满载，请确保此时没有其他比赛或活动正在进行，以避免影响其正常进行。
       <br>
@@ -55,7 +55,7 @@
           <input type="datetime-local" name="date[]" value="{{ str_replace(' ', 'T', date('Y-m-d H:i')) }}"
             class="form-control" required>
         </label>
-        <span class="alert-info mx-2 px-2 py-1">默认过去7天</span>
+        <span class=" alert alert-info mx-2 px-2 py-1">默认过去7天</span>
       </div>
 
       <div class="form-group m-4 text-center">

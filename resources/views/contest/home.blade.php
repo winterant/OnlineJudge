@@ -264,7 +264,7 @@
                 <input type="text" name="pwd" class="form-control" autofocus autocomplete="off" required>
               </div>
               @if (isset($msg))
-                <div class="alert-danger p-3 m-3">
+                <div class=" alert alert-danger p-3 m-3">
                   <i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true"></i>
                   {{ $msg }}
                 </div>
