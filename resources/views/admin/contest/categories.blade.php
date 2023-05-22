@@ -64,7 +64,7 @@
       <input type="text" class="form-control text-center" placeholder="名称" onchange="this.form.submit();"
         name="title" value="{{ request('title') ?? '' }}">
     </div>
-    <button class="btn border">查找</button>
+    <button class="btn btn-secondary border">查找</button>
   </form>
 
   <div class="table-responsive">

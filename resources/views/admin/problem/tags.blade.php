@@ -29,12 +29,12 @@
       <input type="text" class="form-control text-center" placeholder="标签名" name="tag_name"
         value="{{ request()->has('tag_name') ? request('tag_name') : '' }}">
     </div>
-    <button class="btn border">查询</button>
+    <button class="btn btn-secondary border">查询</button>
   </form>
   <div class="float-left">
     {{ $tags->appends($_GET)->links() }}
-    <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
-    <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
+    <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn btn-secondary border">全选</a>
+    <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn btn-secondary border">取消</a>
 
     <a href="javascript:tag_delete();" class="ml-3">删除</a>
     <a href="javascript:" class="text-gray" onclick="whatisthis('选中项将被删除!')">

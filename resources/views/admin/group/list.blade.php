@@ -22,12 +22,12 @@
       <input type="text" class="form-control text-center" placeholder="标题" onchange="this.form.submit();"
         name="name" value="{{ request('name') ?? '' }}">
     </div>
-    <button class="btn border">查找</button>
+    <button class="btn btn-secondary border">查找</button>
   </form>
   <div class="float-left">
     {{ $groups->appends($_GET)->links() }}
-    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
-    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
+    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',true)" class="btn btn-secondary border">全选</a>
+    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',false)" class="btn btn-secondary border">取消</a>
 
     &nbsp;前台可见性:[
     <a href="javascript:" onclick="update_hidden(0)">公开</a>

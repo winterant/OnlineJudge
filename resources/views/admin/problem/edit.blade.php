@@ -110,10 +110,10 @@
                 </div>
               @endforeach
             @endif
-            <a class="btn border ml-3" onclick="add_input_samples($(this))"><i class="fa fa-plus"
+            <a class="btn btn-secondary border ml-3" onclick="add_input_samples($(this))"><i class="fa fa-plus"
                 aria-hidden="true"></i>
               增加样例</a>
-            <a class="btn border ml-3" onclick="$(this).prev().prev().remove()"><i class="fa fa-minus"
+            <a class="btn btn-secondary border ml-3" onclick="$(this).prev().prev().remove()"><i class="fa fa-minus"
                 aria-hidden="true"></i> 删除最后一个样例</a>
           </div>
         </div>

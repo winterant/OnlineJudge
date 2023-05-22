@@ -55,12 +55,12 @@
       <input type="text" class="form-control text-center" placeholder="标题" onchange="this.form.submit();"
         name="title" value="{{ request('title') ?? '' }}">
     </div>
-    <button class="btn border">查找</button>
+    <button class="btn btn-secondary border">查找</button>
   </form>
   <div class="float-left">
     {{ $contests->appends($_GET)->links() }}
-    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
-    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
+    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',true)" class="btn btn-secondary border">全选</a>
+    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',false)" class="btn btn-secondary border">取消</a>
 
     &nbsp;公开榜单:[
     <a href="javascript:" onclick="update_public_rank(1)">公开</a>

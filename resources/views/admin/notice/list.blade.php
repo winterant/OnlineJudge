@@ -7,8 +7,8 @@
   <h2>公告列表</h2>
   <div class="float-left">
     {{ $notices->appends($_GET)->links() }}
-    <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
-    <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
+    <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn btn-secondary border">全选</a>
+    <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn btn-secondary border">取消</a>
 
     <a href="javascript:" onclick="update_state(2)" class="ml-3">设为置顶</a>
     <a href="javascript:" onclick="update_state(1)" class="ml-3">设为普通公告</a>

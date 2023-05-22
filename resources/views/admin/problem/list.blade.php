@@ -20,12 +20,12 @@
       <input class="form-control text-center" style="width:300px" placeholder="题目编号/标题/来源" name="kw"
         value="{{ request('kw') ?? '' }}">
     </div>
-    <button class="btn border">查询</button>
+    <button class="btn btn-secondary border">查询</button>
   </form>
   <div class="float-left">
     {{ $problems->appends($_GET)->links() }}
-    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
-    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
+    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',true)" class="btn btn-secondary border">全选</a>
+    <a href="javascript:$('.cb input[type=checkbox]').prop('checked',false)" class="btn btn-secondary border">取消</a>
 
     &nbsp;前台可见:[
     <a href="javascript:update_hidden(0);">公开</a>

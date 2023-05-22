@@ -18,7 +18,7 @@
       <input type="text" class="form-control text-center" name="kw" value="{{ request('kw') ?? '' }}"
         placeholder="角色名称" onchange="this.form.submit();">
     </div>
-    <button class="btn border">查找</button>
+    <button class="btn btn-secondary border">查找</button>
   </form>
 
   @foreach ($roles as $role)

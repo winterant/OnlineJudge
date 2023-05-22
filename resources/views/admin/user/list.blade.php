@@ -22,14 +22,14 @@
         <input type="text" class="form-control text-center" style="width: 20rem" placeholder="登录名/昵称/邮箱/学校/班级"
           onchange="this.form.submit();" name="kw" value="{{ request()->has('kw') ? request('kw') : '' }}">
       </div>
-      <button class="btn border">筛选</button>
+      <button class="btn btn-secondary border">筛选</button>
     </form>
   </div>
   <div>
     <div class="float-left">
       {{ $users->appends($_GET)->links() }}
-      <a href="javascript:$('.cb input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
-      <a href="javascript:$('.cb input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
+      <a href="javascript:$('.cb input[type=checkbox]').prop('checked',true)" class="btn btn-secondary border">全选</a>
+      <a href="javascript:$('.cb input[type=checkbox]').prop('checked',false)" class="btn btn-secondary border">取消</a>
 
       &nbsp;修改个人资料：[
       <a href="javascript:update_revise(1);">允许</a>

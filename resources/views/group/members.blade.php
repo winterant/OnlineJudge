@@ -31,7 +31,10 @@
                 <input type="text" class="form-control text-center" placeholder="{{ __('main.Username') }}"
                   onchange="this.form.submit();" name="username" value="{{ request('username') ?? '' }}">
               </div>
-              <button class="btn border">{{ __('main.Find') }}</button>
+              <button class="btn text-white bg-success">
+                <i class="fa fa-filter" aria-hidden="true"></i>
+                {{ __('main.Find') }}
+              </button>
             </form>
           @endif
 
@@ -55,7 +58,7 @@
                     <td nowrap>{{ $u->school }} &nbsp; {{ $u->class }}</td>
                     <td nowrap>{{ $u->nick }}</td>
                     <td nowrap>
-                      @php($display_identities = [0 => '已禁用', 1 => '申请加入', 2 => '学生',  3 => '学生班长',  4 => '管理员'])
+                      @php($display_identities = [0 => '已禁用', 1 => '申请加入', 2 => '学生', 3 => '学生班长', 4 => '管理员'])
                       @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
                         <div class="form-inline">
                           <select class="border" onchange="update_members_identity([{{ $u->user_id }}], $(this).val())"
@@ -168,7 +171,7 @@
               </div>
             </div>
 
-            <x-ckeditor5 name="archive-textarea"/>
+            <x-ckeditor5 name="archive-textarea" />
           </div>
 
           <!-- 模态框底部 -->
@@ -184,7 +187,6 @@
   </div>
 
   <script>
-
     const {
       createApp
     } = Vue

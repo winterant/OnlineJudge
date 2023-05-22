@@ -21,12 +21,12 @@
       <input type="text" class="form-control text-center" placeholder="标签名" name="tag_name"
         value="{{ request()->has('tag_name') ? request('tag_name') : '' }}">
     </div>
-    <button class="btn border">查询</button>
+    <button class="btn btn-secondary border">查询</button>
   </form>
   <div class="float-left">
     {{ $tag_pool->appends($_GET)->links() }}
-    <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn border">全选</a>
-    <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn border">取消</a>
+    <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn btn-secondary border">全选</a>
+    <a href="javascript:$('td input[type=checkbox]').prop('checked',false)" class="btn btn-secondary border">取消</a>
 
     <span class="ml-3">前台可见:</span>
     [<a href="javascript:tag_pool_hidden(0);" class="mx-1">公开</a>|

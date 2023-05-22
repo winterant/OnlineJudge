@@ -23,7 +23,7 @@
           </lable>
         </div>
         <div class="form-group col-8 text-center">
-          <button class="btn border" onclick="reset_password(this.form)">提交</button>
+          <button class="btn btn-secondary border" onclick="reset_password(this.form)">提交</button>
         </div>
       </form>
     </div>
