@@ -155,7 +155,7 @@
                       {{-- 下面是每一道题的情况 --}}
                       @foreach ($problems as $pid => $index)
                         @if (isset($user[$index]))
-                          <td class="border"
+                          <td class="rank-table-result border"
                             @if (!isset($user[$index]['solved_time'])) style="background-color: #ffafa7"
                             @elseif ($user[$index]['solved_after_end'])
                               style="background-color: #99d7ff"
@@ -189,17 +189,24 @@
 
           <div>
             <div>
-              <i class="fa fa-square" aria-hidden="true" style="color: #12d000"></i> {{ __('sentence.firstAC') }}
+              <i class="fa fa-square rank-table-result" aria-hidden="true" style="color: #12d000"></i>
+              {{ __('sentence.firstAC') }}
             </div>
             <div>
-              <i class="fa fa-square" aria-hidden="true" style="color: #87ec97"></i> {{ __('sentence.normalAC') }}
+              <i class="fa fa-square rank-table-result" aria-hidden="true" style="color: #87ec97"></i>
+              {{ __('sentence.normalAC') }}
             </div>
             <div>
-              <i class="fa fa-square" aria-hidden="true" style="color: #ffafa7"></i> {{ __('sentence.normalWA') }}
+              <i class="fa fa-square rank-table-result" aria-hidden="true" style="color: #ffafa7"></i>
+              {{ __('sentence.normalWA') }}
             </div>
-            <div><i class="fa fa-square-o" aria-hidden="true"></i> {{ __('sentence.noSubmit') }}</div>
             <div>
-              <i class="fa fa-square" aria-hidden="true" style="color: #99d7ff"></i> {{ __('sentence.endedAC') }}
+              <i class="fa fa-square-o rank-table-result" aria-hidden="true"></i>
+              {{ __('sentence.noSubmit') }}
+            </div>
+            <div>
+              <i class="fa fa-square rank-table-result" aria-hidden="true" style="color: #99d7ff"></i>
+              {{ __('sentence.endedAC') }}
             </div>
             <div class="mt-3 alert  alert-info p-3">
               <p>榜单规则说明：当前榜单支持ACM/ICPC和OI两种模式。</p>

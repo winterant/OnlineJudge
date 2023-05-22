@@ -9,6 +9,7 @@
   .darkmode--activated aside,
   .darkmode--activated a:not(.nav-link, .text-black, .dropdown-item),
   .darkmode--activated .judge-detail,
+  .darkmode--activated .rank-table-result,
   .darkmode--activated span.result_td,
   .darkmode--activated span.switch,
   .darkmode--activated .btn,
