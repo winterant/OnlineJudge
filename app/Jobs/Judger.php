@@ -86,18 +86,26 @@ class Judger implements ShouldQueue
 
         // 向JudgeServer发送请求 编译spj（若有）
         if ($problem['spj']) {
-            // todo 优化：缓存编译好的特判，省去这步编译。spj.cpp修改时要重新编译。
+            // 获取spj代码
             $spj_code = ProblemHelper::readSpj($problem['id']);
-            if ($spj_code) {
-                $res_compile_spj = $this->compile($spj_code, config("judge.language.{$problem['spj_language']}")); // C++20
-                $spj_file_id = $res_compile_spj['fileIds']['Main'] ?? ''; // 记住spj id
+            if ($spj_code == null) {
+                $this->update_db_solution(['result' => 14, 'error_info' => "[Special Judge Error] Special judge is open but no code was provided.\n"]); // 系统错误 14
+                return;
+            }
+            // 获取spj编译运行指令
+            $spj_config = config("judge.language.{$problem['spj_language']}");
+            if ($spj_config['compile'] ?? false) { // todo 优化：缓存编译好的特判，省去这步编译。spj.cpp修改时要重新编译。
+                $res_compile_spj = $this->compile($spj_code, $spj_config);
                 if ($res_compile_spj['status'] != 'Accepted') {
                     $this->update_db_solution(['result' => 14, 'error_info' => "[Special Judge Compile Error]\n" . $res_compile_spj['files']['stderr']]); // 系统错误 14
                     return;
                 }
-            } else {
-                $this->update_db_solution(['result' => 14, 'error_info' => "[Special Judge Error] Special judge is open but no code was provided.\n"]); // 系统错误 14
-                return;
+                $spj = [
+                    $spj_config['compile']['compiled_filename'] =>
+                    ['fileId' => $res_compile_spj['fileIds']['Main'] ?? null]
+                ]; // go-judge文件格式
+            } else { // spj无需编译
+                $spj = [$spj_config['filename'] => ['content' => $spj_code]]; // go-judge文件格式
             }
         }
 
@@ -105,9 +113,11 @@ class Judger implements ShouldQueue
         $this->run(
             $problem,
             $config,
-            empty($config['compile']) ? [$config['filename'] => ['content' => $this->solution['code']]] :
+            empty($config['compile']) ? // 是否已编译
+                [$config['filename'] => ['content' => $this->solution['code']]] :
                 [$config['compile']['compiled_filename'] => ['fileId' => $res_compile['fileIds'][$config['compile']['compiled_filename']]]],
-            $spj_file_id ?? ''
+            $spj ?? null,
+            $spj_config ?? null
         );
         // 结束
     }
@@ -148,7 +158,7 @@ class Judger implements ShouldQueue
     }
 
     // 运行评测
-    private function run($problem, $config, $copyIn, $spj_file_id = '')
+    private function run($problem, $config, $copyIn, $spj = null, $spj_config = null)
     {
         $solution = ['result' => 3, 'pass_rate' => 0, 'error_info' => '', 'time' => 0, 'memory' => 0];
         $this->update_db_solution($solution); // 运行中
@@ -205,7 +215,7 @@ class Judger implements ShouldQueue
                 if ($problem['spj']) {
                     $std_in_path = sprintf("/testdata/%d/test/%s", $problem['id'], $test['in']);
                     $std_out_path = sprintf("/testdata/%d/test/%s", $problem['id'], $test['out']);
-                    $ret = $this->special_judge($spj_file_id, $std_in_path, $std_out_path, $res[0]['fileIds']['stdout']);
+                    $ret = $this->special_judge($spj, $spj_config, $std_in_path, $std_out_path, $res[0]['fileIds']['stdout']);
                     $result = $ret['result'] ?? 14;
                     $error_info = $ret['error_info'] ?? '[Filed to run spj]';
                 } else {
@@ -270,11 +280,11 @@ class Judger implements ShouldQueue
     }
 
     // 特判
-    private function special_judge($spj_file_id, $std_in_path, $std_out_path, $user_out_file_id)
+    private function special_judge($spj, $spj_config, $std_in_path, $std_out_path, $user_out_file_id)
     {
         $data = ['cmd' => [[
-            'args' => ["/bin/bash", "-c", "./spj std.in std.out user.out"],
-            'env' => ['PATH=/usr/bin:/bin'],
+            'args' => ["/bin/bash", "-c", $spj_config['run']['command'] . " std.in std.out user.out"],
+            'env' => $spj_config['env'],
             'files' => [
                 ['content' => ''],
                 ['name' => 'stdout', 'max' => 10240],
@@ -283,19 +293,20 @@ class Judger implements ShouldQueue
             'cpuLimit' => 60000000000, // 60s ==> ns
             'clockLimit' => 300000000000, // 300s
             'memoryLimit' => 2048 << 20, // 2048MB ==> B
-            'stackLimit' => 512 << 20, // 512MB ==> B
-            'procLimit' => 128,
-            'copyIn' => [
-                'spj' => ['fileId' => $spj_file_id],
+            'stackLimit' => $spj_config['run']['stackLimit'],
+            'procLimit' => $spj_config['run']['procLimit'],
+            'copyIn' => array_merge($spj, [
                 'std.in' => ['src' => $std_in_path],
                 'std.out' => ['src' => $std_out_path],
                 'user.out' => ['fileId' => $user_out_file_id]
-            ],
+            ]),
             'copyOut' => ['stdout', 'stderr'],
         ]]];
 
         // 向判题服务发起请求
         $res = Http::timeout($this->timeout)->post(config('app.JUDGE_SERVER') . '/run', $data);
+        echo json_encode($data);
+        echo $res;
         return [
             'result' => $res[0]['exitStatus'] == 0 ? 4 : 6,
             'error_info' => implode("\n", array_values($res[0]['files']))
