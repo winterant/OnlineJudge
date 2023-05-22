@@ -277,7 +277,8 @@
 
 .layout.fixed-sidebar .sidebar {
     height: 100%;
-    overflow: auto;
+    overflow-y: auto;
+    z-index: 10;
 }
 
 .layout.fixed-sidebar .sidebar~.layout {

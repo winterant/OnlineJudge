@@ -27,7 +27,7 @@ class PopperObject {
     init(reference, popperTarget) {
         this.reference = reference;
         this.popperTarget = popperTarget;
-        this.instance = new Popper(this.reference, this.popperTarget, {
+        this.instance = Popper2.createPopper(this.reference, this.popperTarget, {
             placement: "right",
             strategy: "fixed",
             resize: true,
@@ -71,7 +71,7 @@ class PopperObject {
     }
 
     hide() {
-        this.instance.popper.style.visibility = "hidden";
+        this.instance.state.elements.popper.style.visibility = "hidden";
     }
 }
 
@@ -100,7 +100,7 @@ class Poppers {
 
     updatePoppers() {
         this.subMenuPoppers.forEach(element => {
-            element.instance.popper.style.display = "none";
+            element.instance.state.elements.popper.style.display = "none";
             element.instance.update();
         });
     }

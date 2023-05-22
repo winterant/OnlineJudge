@@ -15,6 +15,7 @@
   </style>
   <link rel="stylesheet" href="{{ asset('static/admin-sidebar/css/css-pro-layout.css') }}">
   <link rel="stylesheet" href="{{ asset('static/admin-sidebar/css/style.css') }}">
+  <script src="{{ asset('static/admin-sidebar/js/popper2.min.js') }}" defer></script>
   <script src="{{ asset('static/admin-sidebar/js/script.js') }}" defer></script>
 @endsection
 
