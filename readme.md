@@ -1,22 +1,21 @@
-<h1 align="center">Online Judge</h1>
+# Sparks of Fire Online Judge (SparkOJ)
 
-> 程序设计在线测评系统与考试平台  
-> 中文文档：<https://winterant.github.io/OnlineJudge>  
-> 立即体验：<http://47.104.232.254:8080>  
+> A Single Spark Can Start A Prairie Fire  
+
+<div align="center">
+  <img src="public/favicon.ico" width="150px"/>
+</div>
+
+English | [中文文档](https://winterant.github.io/OnlineJudge) | [Demo](http://47.104.232.254:8080)
 
 # 💡 Introduction
 
-+ 首页；展示公告/新闻、提交记录统计曲线、本周榜、上周榜；
-+ 评测；展示用户提交记录及其评测结果，支持**在线运行**，支持C/C++、Python、Java、Golang；
-+ 题库；展示所有题目，支持编程题、**代码填空**题；
-+ 竞赛；排名(ACM,OI)可封榜，支持**赛后补题榜**、发布公告、气球派送；
-+ 群组；**按团队/班级组织用户，批量开设竞赛作为作业/课程习题**；
-+ 排名；用户解题排行榜。
-+ 用户管理；支持**批量生成账号**、**账号锁定**、**角色管理**等；
-+ 题目管理；增删改查，**支持导入与导出(兼容hustoj)**等；
-+ 竞赛管理；增删查改；
-+ 群组管理：增删改查；
-+ 系统设置；修改网站名称、默认语言，打开/关闭全局功能等。
+- Support for multiple programming languages such as C/C++, Java, Python and Golang. Thank [go-judge](https://github.com/criyle/go-judge).
+- Support for multiple types of problems such as Programming and Fill in the Blanks with Code. (代码填空题).
+- Contest Rank supports for mode of ACM or IOI and supports for displaying submissions after end of the contest. (赛后补题榜).
+- Support for creating groups (including classes and courses) which organize users to participate in contests or assignments.
+- Support for one-click import and export of problems, compatible with [hustoj](https://github.com/zhblue/hustoj). (支持一键导入/导出题目，兼容hustoj).
+
 
 # 💝 Acknowledgements
 
