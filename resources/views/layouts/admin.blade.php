@@ -249,12 +249,10 @@
     <div class="layout">
       <header class="header navbar navbar-expand-lg navbar-light bg-white">
         {{-- 手机端菜单开关 --}}
-        {{-- <a id="btn-toggle" href="#" class="sidebar-toggler break-point-lg" style="color:rgba(0,0,0,.5);">
-          <i class="fa fa-align-justify fa-lg" aria-hidden="true"></i>
-        </a> --}}
-        <a id="btn-toggle" class="navbar-toggler sidebar-toggler break-point-lg">
+        <button id="btn-toggle" class="navbar-toggler sidebar-toggler break-point-lg">
           <span class="navbar-toggler-icon"></span>
-        </a>
+        </button>
+        {{-- 导航栏 --}}
         <x-navbar />
       </header>
       <main class="content">
