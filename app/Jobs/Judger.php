@@ -305,8 +305,6 @@ class Judger implements ShouldQueue
 
         // 向判题服务发起请求
         $res = Http::timeout($this->timeout)->post(config('app.JUDGE_SERVER') . '/run', $data);
-        echo json_encode($data);
-        echo $res;
         return [
             'result' => $res[0]['exitStatus'] == 0 ? 4 : 6,
             'error_info' => implode("\n", array_values($res[0]['files']))
@@ -340,9 +338,11 @@ class Judger implements ShouldQueue
                     } else {
                         $result = 5; // PE 空白符不一致
                     }
-                    $msg = sprintf("The inconsistent content was found in line %d of test data \"%s\".\n", $i + 1, pathinfo($std_out_path, PATHINFO_BASENAME));
-                    $msg .= sprintf("The stdout of your program:\n%s\n", $user_line);
-                    $msg .= sprintf("Standard answer:\n%s\n", $answer_line);
+                    $user_line = strlen($user_line) <= 60 ? $user_line : substr($user_line, 0, 60) . '...(Too long to display)';
+                    $answer_line = strlen($answer_line) <= 60 ? $answer_line : substr($answer_line, 0, 60) . '...(Too long to display)';
+                    $msg = sprintf("[Test %s] Wrong answer on line %d\n", pathinfo($std_out_path, PATHINFO_BASENAME), $i + 1);
+                    $msg .= sprintf("Yours:\n%s\n", ($user_line));
+                    $msg .= sprintf("Correct:\n%s\n", $answer_line);
                 }
             }
         }
