@@ -6,7 +6,7 @@
 
   /* 深色模式下，不变色的元素 */
   .darkmode--activated img,
-  .darkmode--activated aside,
+  /* .darkmode--activated aside, */
   .darkmode--activated a:not(.nav-link, .text-black, .dropdown-item),
   .darkmode--activated .judge-detail,
   .darkmode--activated .rank-table-result,
