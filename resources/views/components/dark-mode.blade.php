@@ -18,9 +18,15 @@
   }
 </style>
 
-<span style="cursor: pointer;user-select:none">
-  <span onclick="$(this).next().click()">{{ $slot }}</span>
-  <input id="darkmode-toggle" class="pl-1" type="checkbox" hidden>
+<span id="darkmode-toggle" style="cursor: pointer;user-select:none">
+  <a id="a-dark" class="nav-link" aria-hidden="true" title="{{ __('main.DarkMode') }}" data-toggle="tooltip"
+    data-placement="bottom">
+    <i class="fa fa-moon-o"></i>
+  </a>
+  <a id="a-light" class="nav-link" aria-hidden="true" title="{{ __('main.LightMode') }}" data-toggle="tooltip"
+    data-placement="bottom" style="display: none">
+    <i class="fa fa-sun-o"></i>
+  </a>
 </span>
 
 <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
@@ -31,17 +37,29 @@
     autoMatchOsTheme: true, // default: true
   })
 
-  if (localStorage.getItem('darkmode') == 'true') {
-    darkmode.toggle()
+  function check_icon() {
+    if (darkmode.isActivated()) {
+      $("#a-dark").show()
+      $("#a-light").hide()
+    } else {
+      $("#a-dark").hide()
+      $("#a-light").show()
+    }
   }
 
+  check_icon()
+
+  if (localStorage.getItem('darkmode') == 'true') {
+    darkmode.toggle()
+    check_icon()
+  }
+
+  $("#darkmode-toggle").on('click', () => {
+    darkmode.toggle()
+    check_icon()
+  })
+
   $(function() {
-    new Switch(document.querySelector("#darkmode-toggle"), {
-      size: 'small',
-      checked: darkmode.isActivated(),
-      onChange: function() {
-        darkmode.toggle()
-      }
-    })
+    $("[data-toggle='tooltip']").tooltip();
   })
 </script>

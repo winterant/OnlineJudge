@@ -2,6 +2,7 @@
 return [
     // 常用词汇
     "DarkMode"      => "深色模式",
+    "LightMode"     => "浅色模式",
     "My"            => "我的",
     "Yes"           => "是",
     "No"            => "否",

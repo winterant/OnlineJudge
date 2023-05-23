@@ -77,6 +77,11 @@
 
   {{-- 登陆按钮 --}}
   <ul class="navbar-nav ml-auto float-right">
+    {{-- 深色模式 --}}
+    <li class="nav-item mr-3">
+      <x-dark-mode>{{ __('main.DarkMode') }}</x-dark-mode>
+    </li>
+
     {{-- 语言切换 --}}
     <li class="nav-item dropdown mr-3">
       <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
@@ -96,11 +101,6 @@
 
     <!-- Authentication Links -->
     @guest
-      <li class="nav-item">
-        <span class="nav-link">
-          <x-dark-mode>{{ __('main.DarkMode') }}</x-dark-mode>
-        </span>
-      </li>
       <li class="nav-item">
         <a class="nav-link" href="{{ route('login') }}">{{ trans('main.Login') }}</a>
       </li>
@@ -126,16 +126,6 @@
           @can('admin.view')
             <a class="dropdown-item" href="{{ route('admin.home') }}">{{ trans('main.Administration') }}</a>
           @endcan
-
-          <a class="dropdown-item" style="cursor:pointer" data-stopPropagation=”true”>
-            <x-dark-mode>{{ __('main.DarkMode') }}</x-dark-mode>
-            <script>
-              //下拉框查询组件点击查询栏时不关闭下拉框
-              $("body").on('click', '[data-stopPropagation]', function(e) {
-                e.stopPropagation();
-              });
-            </script>
-          </a>
 
           <div class="dropdown-divider"></div>
 

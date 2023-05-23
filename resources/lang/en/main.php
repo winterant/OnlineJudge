@@ -2,6 +2,7 @@
 return [
     // 常用词汇
     "DarkMode"      => "Dark Mode",
+    "LightMode"     => "Light Mode",
     "My"            => "My ",
     "Yes"           => "Yes",
     "No"            => "No",
