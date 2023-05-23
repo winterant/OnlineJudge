@@ -16,7 +16,7 @@
     <div class="p-2 bg-sky">
       <details>
         <summary>{{ $title }}</summary>
-        <p class="alert mb-0">
+        <p class="px-3 mb-0">
           您可以在下面的编辑框里使用Latex公式。示例：<br>
           · 行内公式：$f(x)=x^2$（显示效果为<span class="math_formula">$f(x)=x^2$</span>）<br>
           · 单行居中：$$f(x)=x^2$$（显示效果如下）<span class="math_formula">$$f(x)=x^2$$</span><br>

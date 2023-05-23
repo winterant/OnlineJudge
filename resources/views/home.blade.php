@@ -31,7 +31,8 @@
     <div class="row">
       <div class="col-12">
         <div class="card">
-          <div class="card-header pt-2 pb-0" style="border-top: 5px solid #2b15ff;">
+          <div class="w-100 bg-primary" style="height:4px"></div>
+          <div class="card-header pt-2 pb-0">
             <h3 class="text-center mb-0">{{ __('main.Notice Board') }}</h3>
           </div>
           <div class="card-body position-relative">
@@ -67,7 +68,8 @@
 
       <div class="col-12 mt-4">
         <div class="card">
-          <div class="card-header pt-2 pb-0" style="border-top: 5px solid #31bb1f;">
+          <div class="w-100 bg-primary" style="height:4px"></div>
+          <div class="card-header pt-2 pb-0">
             <h3 class="text-center mb-0">{{ __('main.Solutions') }}</h3>
           </div>
           <x-solution.line-chart />
@@ -76,7 +78,8 @@
 
       <div class="col-sm-6 mt-4">
         <div class="card">
-          <div class="card-header pt-2 pb-0" style="border-top: 5px solid #fcc700;">
+          <div class="w-100 bg-primary" style="height:4px"></div>
+          <div class="card-header pt-2 pb-0">
             <a href="javascript:" class="pull-right" style="color: #838383"
               onclick="whatisthis('自本周一以来的AC题目数量排行榜。每天更新一次。')">
               <i class="fa fa-question-circle-o" aria-hidden="true"></i>
@@ -116,7 +119,8 @@
 
       <div class="col-sm-6 mt-4">
         <div class="card">
-          <div class="card-header pt-2 pb-0" style="border-top: 5px solid #ff0023;">
+          <div class="w-100 bg-primary" style="height:4px"></div>
+          <div class="card-header pt-2 pb-0">
             <a href="javascript:" class="pull-right" style="color: #838383"
               onclick="whatisthis('上周一至上周日七天内AC题目数量排行榜。每周一0点更新。')">
               <i class="fa fa-question-circle-o" aria-hidden="true"></i>

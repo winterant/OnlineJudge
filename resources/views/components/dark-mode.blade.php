@@ -6,13 +6,19 @@
 
   /* 深色模式下，不变色的元素 */
   .darkmode--activated img,
-  /* .darkmode--activated aside, */
+  /* 括号里是允许变色的 */
   .darkmode--activated a:not(.nav-link, .text-black, .dropdown-item),
   .darkmode--activated .judge-detail,
   .darkmode--activated .rank-table-result,
   .darkmode--activated span.result_td,
   .darkmode--activated span.switch,
   .darkmode--activated .btn,
+  .darkmode--activated .pagination,
+  .darkmode--activated .text-green,
+  .darkmode--activated .text-red,
+  .darkmode--activated .text-sky,
+  .darkmode--activated .bg-sky,
+  .darkmode--activated .bg-primary,
   .darkmode--activated .alert {
     mix-blend-mode: difference;
   }
