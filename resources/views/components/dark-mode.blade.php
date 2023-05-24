@@ -7,7 +7,7 @@
   /* 深色模式下，不变色的元素 */
   .darkmode--activated img,
   /* 括号里是允许变色的 */
-  .darkmode--activated a:not(.nav-link, .text-black, .dropdown-item),
+  .darkmode--activated a:not(.navbar-brand, .nav-link, .text-black, .dropdown-item),
   .darkmode--activated .judge-detail,
   .darkmode--activated .rank-table-result,
   .darkmode--activated span.result_td,

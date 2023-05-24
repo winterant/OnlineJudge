@@ -1,0 +1,6 @@
+/data
+/temp
+/*/*
+/public/*
+!/public/favicon.ico
+!/public/title.ico
