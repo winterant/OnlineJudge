@@ -13,7 +13,7 @@
   .darkmode--activated span.result_td,
   .darkmode--activated span.switch,
   .darkmode--activated .btn,
-  .darkmode--activated .pagination,
+  .darkmode--activated .page-item,
   .darkmode--activated .text-green,
   .darkmode--activated .text-red,
   .darkmode--activated .text-sky,

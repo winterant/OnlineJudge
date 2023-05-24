@@ -2,5 +2,6 @@
 /temp
 /*/*
 /public/*
+!/public/default.ico
 !/public/favicon.ico
 !/public/title.ico
