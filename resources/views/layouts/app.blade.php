@@ -15,7 +15,10 @@
   <meta name="force-rendering" content="webkit" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="shortcut icon" href="{{ asset('storage/favicon.ico') }}" type="image/x-icon">
+
+  <link rel="shortcut icon"
+    href="{{ Storage::exists('public/favicon.ico') ? asset('storage/favicon.ico') : asset('favicon.ico') }}"
+    type="image/x-icon">
 
   {{-- css styles --}}
   <link href="{{ asset('static/bootstrap-material-design-dist/css/bootstrap-material-design.min.css') }}"

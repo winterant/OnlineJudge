@@ -32,7 +32,8 @@
   {{-- 前台导航栏 --}}
   <nav class="navbar navbar-expand-lg navbar-light bg-white mb-3" style="z-index: 10">
     {{-- 网站名称 --}}
-    <img src="{{ asset('storage/title.ico') }}" alt="SparkOJ" height="30px" style="-webkit-user-drag: none;">
+    <img src="{{ Storage::exists('public/title.ico') ? asset('storage/title.ico') : asset('favicon.ico') }}" alt="SparkOJ"
+      height="30px" style="-webkit-user-drag: none;">
     <a class="navbar-brand p-0 mx-3"
       style="font-size: 1.5rem; cursor: default; user-select: none;">{{ get_setting('siteName') }}</a>
     {{-- 导航栏菜单项 --}}
