@@ -192,18 +192,16 @@ const updatePoppersTimeout = () => {
  */
 document.getElementById("btn-collapse").addEventListener("click", () => {
     SIDEBAR_EL.classList.toggle("collapsed");
-    PoppersInstance.closePoppers();
-    if (SIDEBAR_EL.classList.contains("collapsed"))
-        FIRST_SUB_MENUS_BTN.forEach(element => {
-            element.parentElement.classList.remove("open");
-        });
-
     document.getElementById("sidebar-placeholder").classList.toggle("collapsed");
-    if (document.getElementById("sidebar-placeholder").classList.contains("collapsed"))
+    PoppersInstance.closePoppers();
+    if (SIDEBAR_EL.classList.contains("collapsed")) {
         FIRST_SUB_MENUS_BTN.forEach(element => {
             element.parentElement.classList.remove("open");
         });
-
+        localStorage.setItem('aside_collapsed', 1)
+    } else {
+        localStorage.setItem('aside_collapsed', 0)
+    }
     updatePoppersTimeout();
 });
 

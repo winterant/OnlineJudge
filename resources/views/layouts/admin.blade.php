@@ -27,7 +27,7 @@
     <aside id="sidebar-placeholder" class="sidebar break-point-lg has-bg-image" style="height:100vh;z-index:-1">
     </aside>
 
-    <aside id="sidebar" class="position-fixed sidebar break-point-lg has-bg-image border-right">
+    <aside id="sidebar" class="position-fixed sidebar break-point-lg has-bg-image">
       <div class="image-wrapper">
         <!-- <img src="imgs/1.jpg" alt="sidebar background" /> -->
       </div>
@@ -244,6 +244,14 @@
         <div class="sidebar-footer"><span>{{ get_setting('siteName') }}</span></div>
       </div>
     </aside>
+
+    <script>
+      // 初始化，是否收缩菜单
+      if (localStorage.getItem('aside_collapsed') != false) {
+        document.getElementById("sidebar-placeholder").classList.add("collapsed");
+        document.getElementById("sidebar").classList.add("collapsed");
+      }
+    </script>
 
     <div id="overlay" class="overlay"></div>
     <div class="layout">
