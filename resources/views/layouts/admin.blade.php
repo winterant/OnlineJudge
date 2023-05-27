@@ -247,7 +247,7 @@
 
     <script>
       // 初始化，是否收缩菜单
-      if (localStorage.getItem('aside_collapsed') != false) {
+      if (localStorage.getItem('aside_collapsed') == 1) {
         document.getElementById("sidebar-placeholder").classList.add("collapsed");
         document.getElementById("sidebar").classList.add("collapsed");
       }
