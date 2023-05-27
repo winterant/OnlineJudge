@@ -130,5 +130,6 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
 
         // settings
         Route::patch('admin/settings', 'SettingController@settings')->name('admin.settings')->middleware('Permission:admin.setting.update');
+        Route::post('admin/setting/icon', 'SettingController@set_icon')->name('admin.settings.set_icon')->middleware('Permission:admin.setting.update');
     });
 });

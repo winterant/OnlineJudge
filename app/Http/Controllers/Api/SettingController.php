@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -28,5 +30,28 @@ class SettingController extends Controller
             }
         }
         return ['ok' => 1, 'msg' => 'Settings have updated.'];
+    }
+
+    public function set_icon(Request $request)
+    {
+        try {
+            $msg = '[Successfully replaced icon]';
+            foreach (['favicon', 'logo'] as $name) {
+                if ($request->has($name)) {
+                    $fav = $request->file($name);
+                    if ($fav) {
+                        Storage::putFileAs("public", $fav, "{$name}.ico");
+                        $msg .= " Saved {$name}.ico";
+                    } else { // 删除
+                        Storage::delete("public/{$name}.ico");
+                        $msg .= " Deleted {$name}.ico";
+                    }
+                    $replaced[] = $name;
+                }
+            }
+            return ['ok' => 1, 'msg' => $msg];
+        } catch (Exception $e) {
+            return ['ok' => 0, 'msg' => 'Failed to replaced icon', 'data' => $e->getMessage()];
+        }
     }
 }

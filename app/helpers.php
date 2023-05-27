@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * 获取当前项目的版本号，原理是读取文件`install/.version`首行，有缓存(每次重启时会自动清空)
@@ -18,6 +19,16 @@ function get_oj_version()
     });
 }
 
+
+// 获取网站图标或logo
+function get_icon_url($filename = 'favicon')
+{
+    assert(in_array($filename, ['favicon', 'logo']));
+    if (Storage::exists("public/{$filename}.ico")) {
+        return asset("storage/{$filename}.ico?t=" . Storage::lastModified("public/{$filename}.ico"));
+    }
+    return asset('favicon.ico');
+}
 
 /**
  * 获取配置项的值。

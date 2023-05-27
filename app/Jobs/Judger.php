@@ -17,7 +17,7 @@ class Judger implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $timeout = 600; // 最长执行时间 秒
-    public $tries = 1;     // 最多尝试次数
+    public $tries = 3;     // 最多尝试次数
     public $backoff = 5;   // 重试任务前等待的秒数
 
     private array $solution;
