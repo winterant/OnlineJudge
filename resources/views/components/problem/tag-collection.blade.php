@@ -68,14 +68,14 @@
           <input type="text" class="form-control mr-2" oninput="input_auto_width($(this))" required name="tag_names[]"
             style="width: 50px">
         </div> --}}
-        <a id="add_tag_btn" class="btn btn-sm bg-secondary border m-1" onclick="add_tag_input($(this))">
+        <button id="add_tag_btn" class="btn btn-sm btn-primary border m-1" onclick="add_tag_input($(this))">
           <i class="fa fa-plus" aria-hidden="true"></i>
           {{ __('main.Input') . ' ' . __('main.Tag') }}
-        </a>
-        <a class="btn btn-sm bg-secondary border m-1" data-toggle="modal" data-target="#modal_tag_pool">
+        </button>
+        <button class="btn btn-sm btn-primary border m-1" data-toggle="modal" data-target="#modal_tag_pool">
           <i class="fa fa-list" aria-hidden="true"></i>
           {{ __('main.Tag Pool') }}
-        </a>
+        </button>
         <button class="btn btn-sm bg-success text-white m-1 px-3">{{ trans('main.Submit') }}</button>
       </div>
     </form>

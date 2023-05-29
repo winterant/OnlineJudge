@@ -1,6 +1,6 @@
 <div>
 
-  <div class="p-2" style="background-color: rgb(162, 212, 255)">
+  <div class="alert alert-info p-2">
     <h4 class="m-0">{{ __('main.Contests involved') }}</h5>
   </div>
 

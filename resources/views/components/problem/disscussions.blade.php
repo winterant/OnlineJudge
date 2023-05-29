@@ -1,5 +1,5 @@
 <div id="discussion_block" class="ck-content">
-  <div class="d-flex p-2" style="background-color: rgb(162, 212, 255)">
+  <div class="d-flex alert alert-info p-2">
     <h4 class="flex-row mb-0">{{ __('main.Discussions') }}</h4>
     {{-- 发表按钮 --}}
     @if (Auth::check() && (get_setting('post_discussion') || Auth::user()->can('admin.problem.view')))
