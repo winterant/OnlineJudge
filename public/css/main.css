@@ -334,3 +334,7 @@ pre {
     tab-size: 4;
     /* 制表符宽度 */
 }
+
+#NotiflixNotifyWrap{
+    z-index: 100001 !important;
+}

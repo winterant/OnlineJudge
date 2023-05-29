@@ -9,7 +9,7 @@
 
 @section('app-head')
   <style>
-    i.fa {
+    .sidebar i.fa {
       min-width: 24px;
     }
   </style>
