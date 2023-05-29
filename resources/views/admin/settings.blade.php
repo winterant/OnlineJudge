@@ -29,7 +29,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text">
               <button type="button" class="btn btn-secondary"
-                onclick="Notiflix.Confirm.Show('恢复默认','确定恢复默认图标？','确定','取消',function(){set_icon('favicon',null);$('#previewImgFavicon').attr('src', '{{ asset('favicon.ico') }}')})">恢复默认</button>
+                onclick="Notiflix.Confirm.Show('恢复默认','确定恢复默认图标？','确定','取消',function(){set_icon('favicon',null);$('#previewImgFavicon').attr('src', '{{ asset_ts('favicon.ico') }}')})">恢复默认</button>
             </span>
           </div>
         </div>
@@ -49,7 +49,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text">
               <button type="button" class="btn btn-secondary"
-                onclick="Notiflix.Confirm.Show('恢复默认','确定恢复默认Logo？','确定','取消',function(){set_icon('logo',null);$('#previewImgLogo').attr('src', '{{ asset('favicon.ico') }}')})">恢复默认</button>
+                onclick="Notiflix.Confirm.Show('恢复默认','确定恢复默认Logo？','确定','取消',function(){set_icon('logo',null);$('#previewImgLogo').attr('src', '{{ asset_ts('favicon.ico') }}')})">恢复默认</button>
             </span>
           </div>
         </div>

@@ -100,7 +100,7 @@ class ProblemController extends Controller
         if (request()->has('pid')) {
             if (!DB::table('problems')->where('id', request('pid'))->exists())
                 return view('message', ['msg' => '题目' . request('pid') . '不存在', 'success' => false, 'is_admin' => true]);
-            foreach (getAllFilesPath(testdata_path(request('pid') . '/test')) as $filepath) {
+            foreach (get_all_files_path(testdata_path(request('pid') . '/test')) as $filepath) {
                 $name = pathinfo($filepath, PATHINFO_FILENAME);  //文件名
                 $ext = pathinfo($filepath, PATHINFO_EXTENSION);    //拓展名
                 $tests[] = ['index' => $name, 'filename' => $name . '.' . $ext, 'size' => filesize($filepath)];
@@ -285,7 +285,7 @@ class ProblemController extends Controller
                         'submit_time'   => date('Y-m-d H:i:s'),
                         'judge_type'    => 'oi', //acm,oi
                         'ip'            => ($guest_ip = get_client_real_ip()),
-                        'ip_loc'        => getIpAddress($guest_ip),
+                        'ip_loc'        => get_ip_address($guest_ip),
                         'code_length'   => strlen($solu),
                         'code'          => (string)$solu,
                     ];

@@ -28,7 +28,7 @@ class ProblemHelper
             // 新版本样本转存到数据库 problems表samples字段
             $files = [];
             $dir = testdata_path($problem_id . '/sample');
-            foreach (getAllFilesPath($dir) as $item) {
+            foreach (get_all_files_path($dir) as $item) {
                 $name = pathinfo($item, PATHINFO_FILENAME);  //文件名
                 $ext = pathinfo($item, PATHINFO_EXTENSION);  //拓展名
                 if (!isset($files[$name])) //发现新样本
@@ -71,7 +71,7 @@ class ProblemHelper
     {
         $testdata = [];
         $dir = testdata_path($problem_id . '/test');
-        foreach (getAllFilesPath($dir) as $item) {
+        foreach (get_all_files_path($dir) as $item) {
             $name = pathinfo($item, PATHINFO_FILENAME);  //文件名
             $ext = pathinfo($item, PATHINFO_EXTENSION);  //拓展名
             if (!isset($testdata[$name])) //发现新样本
@@ -102,7 +102,7 @@ class ProblemHelper
         if (!is_dir($dir))
             mkdir($dir, 0777, true);  // 文件夹不存在则创建
         if ($clear_old) { // 清除旧文件
-            foreach (getAllFilesPath($dir) as $item)
+            foreach (get_all_files_path($dir) as $item)
                 unlink($item); //删除原有文件
         }
         // 挨个保存文件

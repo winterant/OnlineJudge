@@ -92,7 +92,7 @@ class SolutionController extends Controller
             'judge_type'    => isset($contest->judge_type) ? $contest->judge_type : 'oi', //acm,oi
 
             'ip'            => ($guest_ip = get_client_real_ip()),
-            'ip_loc'        => getIpAddress($guest_ip),
+            'ip_loc'        => get_ip_address($guest_ip),
             'code_length'   => strlen($data['code']),
             'code'          => $data['code']
         ];

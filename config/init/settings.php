@@ -2,7 +2,7 @@
 
 // 该文件为系统默认配置，后台设置会将新配置保存在数据库中。
 return [
-	"siteName"	                => "Spark of Fire Online Judge",   //网站名称
+	"siteName"	                => "Sparks of Fire Online Judge",   //网站名称
     "APP_LOCALE"                => "en",    //网站前台默认语言
     "marquee_notice_id"         => "",      //前台滚动公告的编号
 

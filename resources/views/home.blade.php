@@ -98,7 +98,7 @@
                 <tr>
                   @if ($loop->first)
                     <td class="py-1">
-                      <img height="35rem" src="{{ asset('images/trophy/win.png') }}" alt="WIN">
+                      <img height="35rem" src="{{ asset_ts('images/trophy/win.png') }}" alt="WIN">
                     </td>
                   @else
                     <td>{{ $loop->iteration }}</td>
@@ -139,7 +139,7 @@
                 <tr>
                   @if ($loop->first)
                     <td class="py-1">
-                      <img height="35rem" src="{{ asset('images/trophy/win.png') }}" alt="WIN">
+                      <img height="35rem" src="{{ asset_ts('images/trophy/win.png') }}" alt="WIN">
                     </td>
                   @else
                     <td>{{ $loop->iteration }}</td>

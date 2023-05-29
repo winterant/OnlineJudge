@@ -146,8 +146,8 @@
           <li class="d-flex flex-wrap border-bottom pt-3 pb-2">
             <div class="p-xs-0 px-3 text-center align-self-center">
               <img height="45px"
-                @if (strtotime($item->start_time) < time() && time() < strtotime($item->end_time)) src="{{ asset('images/trophy/running.png') }}"
-                @else src="{{ asset('images/trophy/gold.png') }}" @endif
+                @if (strtotime($item->start_time) < time() && time() < strtotime($item->end_time)) src="{{ asset_ts('images/trophy/running.png') }}"
+                @else src="{{ asset_ts('images/trophy/gold.png') }}" @endif
                 alt="pic">
             </div>
             <div class="col-9 col-sm-8 pr-0">

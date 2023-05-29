@@ -20,16 +20,6 @@ function get_oj_version()
 }
 
 
-// 获取网站图标或logo
-function get_icon_url($filename = 'favicon')
-{
-    assert(in_array($filename, ['favicon', 'logo']));
-    if (Storage::exists("public/{$filename}.ico")) {
-        return asset("storage/{$filename}.ico?t=" . Storage::lastModified("public/{$filename}.ico"));
-    }
-    return asset('favicon.ico');
-}
-
 /**
  * 获取配置项的值。
  * 当$update===true时，配置项值将强制更新为$default
@@ -55,6 +45,7 @@ function get_setting($key, $default = null, bool $update = false)
 }
 
 
+// ===================================== ip信息获取 ====================================
 // 获取用户真实ip（参考https://blog.csdn.net/m0_46266407/article/details/107222142）
 function get_client_real_ip()
 {
@@ -75,7 +66,7 @@ function get_client_real_ip()
 
 
 // 获取ip属地
-function getIpAddress(string $ip = '')
+function get_ip_address(string $ip = '')
 {
     try {
         $res = Http::timeout(1)->get('http://whois.pconline.com.cn/ip.jsp', ['ip' => $ip]);
@@ -92,6 +83,25 @@ function getIpAddress(string $ip = '')
     }
 }
 
+// ===================================== 文件操作 ====================================
+// 返回带时间戳的静态资源url
+function asset_ts($path)
+{
+    $ts = (string)filemtime(public_path($path));
+    return asset($path) . '?ts=' . $ts;
+}
+
+
+// 获取网站图标或logo
+function get_icon_url($filename = 'favicon')
+{
+    assert(in_array($filename, ['favicon', 'logo']));
+    if (Storage::exists("public/{$filename}.ico")) {
+        return asset_ts("storage/{$filename}.ico");
+    }
+    return asset_ts('favicon.ico');
+}
+
 
 // 获取测试数据保存路径
 function testdata_path($path = null): string
@@ -106,7 +116,7 @@ function testdata_path($path = null): string
 
 
 //读取一个文件夹下所有文件，返回路径列表
-function getAllFilesPath($dir_path): array
+function get_all_files_path($dir_path): array
 {
     clearstatcache(); //清除缓存
     $files = [];
@@ -121,13 +131,13 @@ function getAllFilesPath($dir_path): array
     return $files;
 }
 
-
+// ===================================== 字符串处理 ====================================
 //将一个数字题号转为大写字母 A~Z(0~25), 27, 28, 29, ...
-function index2ch(int $index)
+function index2ch(int $index): string
 {
     if ($index < 26)
         return sprintf("%s (%d)", chr($index + 65), $index + 1);
-    return $index + 1; //Z的下一题是27题
+    return (string)($index + 1); //Z的下一题是27题
 }
 
 
@@ -144,7 +154,7 @@ function index2ch(int $index)
  * $special_rule = false 则单纯按行读取，解析为:
  * ['1000-1002', '1010', '1024 3']
  */
-function decode_str_to_array($text, $special_rule = true)
+function decode_str_to_array($text, $special_rule = true): array
 {
     if ($text == null)
         return [];
