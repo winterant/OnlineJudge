@@ -6,7 +6,7 @@
 
   <h2>问题管理</h2>
   <hr>
-  <form action="" method="get" class="pull-right form-inline" enctype="multipart/form-data">
+  <form action="" method="get" class="float-right form-inline" enctype="multipart/form-data">
     <div class="form-inline mx-3">
       <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
         <option value="10" @if (request('perPage') == 10) selected @endif>10</option>
@@ -17,7 +17,7 @@
       题每页
     </div>
     <div class="form-inline mx-3">
-      <input class="form-control text-center" style="width:300px" placeholder="题目编号/标题/来源" name="kw"
+      <input class="form-control text-center" style="min-width:240px" placeholder="题目编号/标题/来源" name="kw"
         value="{{ request('kw') ?? '' }}">
     </div>
     <button class="btn btn-secondary border">查询</button>

@@ -130,7 +130,7 @@
           <!-- 模态框主体 -->
           <div class="modal-body">
             <div class="form-group mt-2 table-responsive">
-              @livewire('solution.details', ['showTip' => true])
+              @livewire('solution.solution', ['only_details' => true])
             </div>
           </div>
 
@@ -213,7 +213,7 @@
         success: (ret) => {
           console.log(ret)
           if (ret.ok) {
-            window.livewire.emitTo('solution.details', 'setSolutionId', ret.data.solution_id)
+            window.livewire.emitTo('solution.solution', 'set_id', ret.data.solution_id)
           } else {
             Notiflix.Report.Failure('{{ __('main.Failed') }}', ret.msg, '{{ __('main.Confirm') }}')
           }

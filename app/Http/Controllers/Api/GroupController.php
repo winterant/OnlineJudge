@@ -77,7 +77,7 @@ class GroupController extends Controller
             /** @var App/Model/User */
             $user = Auth::user();
             foreach ($input_cites as $c) {
-                if ($user->has_group_permission(DB::table('groups')->find($c), 'admin.group.update'))
+                if ($user->can_group(DB::table('groups')->find($c), 'admin.group.update'))
                     $valid_cites[] = intval($c); // 在被引群组中，具有管理权限，才可以引用
             }
             $request_group['archive_cite'] = json_encode($valid_cites);

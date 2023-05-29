@@ -58,7 +58,7 @@ return [
     "pass_all_test"     => "Congratulations on passing all the test data!",
     "submitting"        => "Submitting, wait a while...",
     "judging"           => "Judging...",
-    "WA"                => "Unfortunately, your program can't pass all the test data.",
+    "WA"                => "Unfortunately, the program can't pass all the test data.",
     "explain_sample"    => "Samples are just examples, not all the test data. Please make sure that your program can deal with any data that meets the meaning of the question.",
 
 //    contest.password

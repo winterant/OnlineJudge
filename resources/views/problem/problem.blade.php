@@ -229,7 +229,6 @@
 
     <div id="right">
       {{-- 代码编辑框 --}}
-      {{-- <x-problem.code-editor :problem="$problem" :contest-id="$contest->id ?? null" :allow-lang="$contest->allow_lang ?? null" :num-samples="count($samples ?? [])" /> --}}
       @livewire('problem.submitter', ['problem' => (array) $problem, 'contest_id' => $contest->id ?? null, 'allow_lang' => $contest->allow_lang ?? null])
     </div>
   </div>

@@ -15,7 +15,7 @@
         <div class="my-container bg-white">
           <h4 class="float-left">{{ __('main.Group') }} {{ __('main.Members') }}</h4>
 
-          @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
+          @if (Auth::check() && Auth::user()->can_group($group, 'admin.group.update'))
             <form action="" method="get" class="float-right form-inline">
               <div class="form-inline mx-3">
                 {{ __('main.Identity') }}:
@@ -59,7 +59,7 @@
                     <td nowrap>{{ $u->nick }}</td>
                     <td nowrap>
                       @php($display_identities = [0 => '已禁用', 1 => '申请加入', 2 => '学生', 3 => '学生班长', 4 => '管理员'])
-                      @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
+                      @if (Auth::check() && Auth::user()->can_group($group, 'admin.group.update'))
                         <div class="form-inline">
                           <select class="border" onchange="update_members_identity([{{ $u->user_id }}], $(this).val())"
                             style="width:auto; padding:0 1%;text-align:center;text-align-last:center;border-radius: 0.2rem;min-width:6rem">
@@ -82,7 +82,7 @@
                     <td nowrap>{{ $u->created_at }}</td>
                     <td nowrap>
                       <a href="{{ route('group.member', [$group->id, $u->username]) }}" target="_blank">查看学习进度</a>
-                      @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
+                      @if (Auth::check() && Auth::user()->can_group($group, 'admin.group.update'))
                         <a href="javascript:" class="ml-3" data-target="#archive-modal" data-toggle="modal"
                           v-on:click="query_archive('{{ $group->id }}','{{ $u->username }}')">查看档案</a>
 
@@ -111,7 +111,7 @@
         {{-- 侧边栏信息 --}}
         <x-group.info :group-id="$group->id" />
         {{-- 管理员添加成员 --}}
-        @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
+        @if (Auth::check() && Auth::user()->can_group($group, 'admin.group.update'))
           <div class="my-container bg-white">
             <h5>添加成员</h5>
             <hr class="mt-0">

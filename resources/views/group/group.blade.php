@@ -26,7 +26,7 @@
             <span>
               {{ $group->name }}
             </span>
-            @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
+            @if (Auth::check() && Auth::user()->can_group($group, 'admin.group.update'))
               <span style="font-size: 0.85rem">
                 [ <a href="{{ route('admin.group.edit', [$group->id]) }}">{{ __('main.Edit') }}</a> ]
               </span>
@@ -45,7 +45,7 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
+                  @if (Auth::check() && Auth::user()->can_group($group, 'admin.group.update'))
                     <th>{{ __('main.Order') }}</th>
                   @endif
                   <th nowrap>{{ trans('main.Title') }}</th>
@@ -58,7 +58,7 @@
                 @foreach ($contests as $item)
                   <tr>
                     <td>{{ $item->contest_id }}</td>
-                    @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
+                    @if (Auth::check() && Auth::user()->can_group($group, 'admin.group.update'))
                       <td nowrap>
                         <select onchange="update_contest_order({{ $item->id }}, $(this).val())"
                           style="width:auto;padding:0 1%;text-align:center;text-align-last:center;border-radius: 2px;">
@@ -131,7 +131,7 @@
                       {{ $item->num_members }}
                     </td>
                     <td nowrap>
-                      @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
+                      @if (Auth::check() && Auth::user()->can_group($group, 'admin.group.update'))
                         <a class="ml-3" href="javascript:"
                           onclick="if(confirm('确定从该群组中删除该竞赛？')){
                             delete_contests_batch([{{ $item->contest_id }}]);
@@ -154,7 +154,7 @@
         <x-group.info :group-id="$group->id" />
 
         {{-- 管理员添加竞赛 --}}
-        @if (Auth::check() && Auth::user()->has_group_permission($group, 'admin.group.update'))
+        @if (Auth::check() && Auth::user()->can_group($group, 'admin.group.update'))
           <div class="my-container bg-white">
             <h5>添加竞赛</h5>
             <hr class="mt-0">

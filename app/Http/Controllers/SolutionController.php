@@ -16,17 +16,6 @@ class SolutionController extends Controller
         return view('solution.solutions');
     }
 
-    // web 查看一条提交记录
-    public function solution(Request $request, $id)
-    {
-        $solution = DB::table('solutions')->find($id);
-        $solution->username = DB::table('users')->find($solution->user_id)->username ?? null;
-        $can = $this->can_view_solution($request, $solution, true);
-        if ($can['ok'])
-            return view('solution.solution', compact('solution'));
-        return view('message', ['msg' => $can['msg']]); // 失败
-    }
-
     // web 读取出错数据
     public function solution_wrong_data(Request $request, $id, $type)
     {

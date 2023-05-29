@@ -62,7 +62,7 @@ class User extends Authenticatable
     /**
      * 判断群组管理者
      */
-    public function has_group_permission($group, $permission = null, $or_identity_manager = true)
+    public function can_group($group, $permission = null, $or_identity_manager = true)
     {
         if ($group == null)
             return false; // 群组不存在，所以没有权限
@@ -77,5 +77,24 @@ class User extends Authenticatable
         )
             return true; // 当前用户是该群组的一位管理员
         return false;
+    }
+
+    // 检查用户是否有权限查看solution
+    private function can_view_solution($solution_id)
+    {
+        // =================== 管理员特权 =====================
+        if (Auth::check() && $this->can('admin.solution.view'))
+            return true;
+
+        // ================ 下面检查普通用户 ===================
+        $solution = DB::table('solutions')->select(['user_id', 'submit_time'])->find($solution_id);
+        if ($solution == null) { // solution不存在
+            return false;
+        } else if ($solution->user_id != Auth::id()) { // 不能查看他人代码
+            return false;
+        } else if ($solution->submit_time < Auth::user()->created_at) { // 不能查看早于账号注册前的代码
+            return false;
+        }
+        return true;
     }
 }

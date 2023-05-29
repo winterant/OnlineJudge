@@ -19,7 +19,7 @@
         <span>项每页</span>
       </div>
       <div class="form-inline mx-1">
-        <input type="text" class="form-control text-center" style="width: 20rem" placeholder="登录名/昵称/邮箱/学校/班级"
+        <input type="text" class="form-control text-center" style="min-width: 240px" placeholder="登录名/昵称/邮箱/学校/班级"
           onchange="this.form.submit();" name="kw" value="{{ request()->has('kw') ? request('kw') : '' }}">
       </div>
       <button class="btn btn-secondary border">筛选</button>

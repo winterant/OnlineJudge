@@ -8,36 +8,36 @@ return [
     "No data"           => "没有数据!",
     "Permission denied" => "权限不足",
     "Operation failed"  => "操作失败",
-    "Operation successed"=> "操作成功",
+    "Operation successed" => "操作成功",
 
     "items per page"    => "项每页",
 
-//    auth/register.blade.php
+    //    auth/register.blade.php
     "Must fill"         => "必填. a-z,A-Z or 0-9",
     "Non essential"     => "非必填",
-    "Not_allow_register"=> "管理员关闭了注册功能.",
+    "Not_allow_register" => "管理员关闭了注册功能.",
 
-//    auth/login.blade.php
+    //    auth/login.blade.php
     "Forgot Password"   => "忘记密码?",
-    "Please login first"=> "请先登录!",
+    "Please login first" => "请先登录!",
 
-//    user
+    //    user
     "forbid_edit"       => "该用户当前被禁止修改个人资料，只有管理员可以修改.",
     "user_edit_chances" => "你还有 :i 次机会修改你的个人资料!",
     "User not found"    => "用户 :un 不存在!",
     "in_blacklist"      => "由于您的账号已被加入黑名单，无法显示该页面！",
 
-//    client/password_reset
+    //    client/password_reset
     "Reset Password"    => "重置密码",
     "Modify Password"   => "修改密码",
 
-//    client/problem.blade.php
+    //    client/problem.blade.php
     "noSolutions"       => "你没有提交任何代码!",
     "Submit"            => "提交你的解决方案",
     "No more discussions" => "已加载全部内容！",
     "discussion_added"  => "成功发表了一条讨论！",
 
-//   problem
+    //   problem
     "missing_spj"       => "缺少spj.cpp",
     "Choose Language"   => "----选择语言----",
     "cpp_use_o2"        => "启用O2优化",
@@ -53,20 +53,20 @@ return [
     "show_hidden_problems" => "显示隐藏的题目",
     "empty_code"        => "请输入代码!",
     "Please_input"      => "请输入内容",
-    "Fill in the sample"=> "填入样例",
-    "please_submit_code"=> "请提交代码",
-    "pass_all_test"     => "恭喜你通过了全部测试数据！",
+    "Fill in the sample" => "填入样例",
+    "please_submit_code" => "请提交代码",
+    "pass_all_test"     => "已通过全部测试数据！",
     "submitting"        => "正在提交，请稍等片刻...",
-    "judging"           => "您的代码正在评测中, 请等待...",
-    "WA"                => "很遗憾，你的程序没有通过全部测试数据.",
-    "explain_sample"    => "样例只是举例,并非全部测试数据,请保证你的程序能应对任意符合题意的数据",
+    "judging"           => "正在评测中, 请等待...",
+    "WA"                => "没有通过全部测试数据。",
+    "explain_sample"    => "样例只是举例,并非全部测试数据,请保证您的程序能应对任意符合题意的数据！",
 
-//    contest.password
+    //    contest.password
     "pwd wrong"         => "密码错误",
     "contest require pwd" => "您必须输入正确的参赛密码才能参与当前竞赛",
     "contest input pwd" => "请输入参赛密码",
 
-//    contest
+    //    contest
     "Start to judge"    => "开始判题",
     "not_invited"       => "抱歉，您没有被邀请参加本次竞赛！",
     "not_end"           => "比赛尚未结束，不能查看数据！",

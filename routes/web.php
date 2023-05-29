@@ -11,8 +11,15 @@
 |
 */
 
+use App\Http\Livewire\Solution\Solution;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+// ====================== Livewire Single Page =======================
+Route::namespace('\App\Http\Livewire')->group(function () {
+    // ================================ 提交记录 ================================
+    Route::get('/solutions/{id}', Solution::class)->name('solution');
+});
 
 
 Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-9]+', 'uid' => '[0-9]+'])->group(function () {
@@ -31,7 +38,6 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
 
     // ================================ 提交记录 ================================
     Route::get('/solutions', 'SolutionController@solutions')->name('solutions');
-    Route::get('/solutions/{id}', 'SolutionController@solution')->name('solution');
     Route::get('/solutions/{id}/wrong_data/{type}', 'SolutionController@solution_wrong_data')->name('solution_wrong_data')->where(['type' => '(in|out)']);
 
 

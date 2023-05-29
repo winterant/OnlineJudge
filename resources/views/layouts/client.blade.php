@@ -40,9 +40,7 @@
 
   {{-- 滚动公告；除了题目页面外，都要显示 --}}
   @if (!in_array(Route::currentRouteName(), ['problem', 'contest.problem']))
-    <div class="container">
-      <x-marquee />
-    </div>
+    <x-marquee />
   @endif
 
   {{-- 主界面 --}}

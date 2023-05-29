@@ -307,7 +307,7 @@ class Judger implements ShouldQueue
         $res = Http::timeout($this->timeout)->post(config('app.JUDGE_SERVER') . '/run', $data);
         return [
             'result' => $res[0]['exitStatus'] == 0 ? 4 : 6,
-            'error_info' => implode("\n", array_values($res[0]['files']))
+            'error_info' => "[Special Judge Runtime Error]\n" . implode("\n", array_values($res[0]['files']))
         ];
     }
 

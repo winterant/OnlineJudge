@@ -147,7 +147,7 @@
                   <a class="btn btn-info border">申请中</a>
                 @endif
 
-                {{-- @if (Auth::check() && Auth::user()->has_group_permission($item, 'admin.group.update'))
+                {{-- @if (Auth::check() && Auth::user()->can_group($item, 'admin.group.update'))
                   @php($has_btn = true)
                   <a class="btn btn-info border" href="{{ route('admin.group.edit', [$item->id]) }}"
                     target="_blank">编辑</a>

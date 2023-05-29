@@ -283,10 +283,6 @@
     border-color: #dee2ec;
 }
 
-.layout .sidebar .menu .menu-item.active>a .menu-icon {
-    /* color: #dee2ec; */
-}
-
 .layout .sidebar .menu>ul>.sub-menu>.sub-menu-list {
     background-color: #0b1a2c;
 }
@@ -372,7 +368,6 @@
         left: -210px;
         height: 100%;
         top: 0;
-        z-index: 100;
     }
 
     .layout .sidebar.break-point-xs.collapsed {
@@ -400,7 +395,6 @@
         left: -210px;
         height: 100%;
         top: 0;
-        z-index: 100;
     }
 
     .layout .sidebar.break-point-sm.collapsed {
@@ -428,7 +422,6 @@
         left: -210px;
         height: 100%;
         top: 0;
-        z-index: 100;
     }
 
     .layout .sidebar.break-point-md.collapsed {
@@ -456,7 +449,6 @@
         left: -210px;
         height: 100%;
         top: 0;
-        z-index: 100;
     }
 
     .layout .sidebar.break-point-lg.collapsed {
@@ -484,7 +476,6 @@
         left: -210px;
         height: 100%;
         top: 0;
-        z-index: 88;
     }
 
     .layout .sidebar.break-point-xl.collapsed {
@@ -512,7 +503,6 @@
         left: -210px;
         height: 100%;
         top: 0;
-        z-index: 100;
     }
 
     .layout .sidebar.break-point-xxl.collapsed {

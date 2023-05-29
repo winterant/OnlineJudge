@@ -6,9 +6,8 @@
 
   <h2>竞赛管理</h2>
   <hr>
-  <form action="" method="get" class="pull-right form-inline">
+  <form action="" method="get" class="float-right form-inline">
     <div class="form-inline mx-3">
-      每页
       <select name="perPage" class="form-control px-2" onchange="this.form.submit();">
         <option value="10">10</option>
         <option value="20" @if (request()->has('perPage') && request('perPage') == 20) selected @endif>20</option>
@@ -16,7 +15,7 @@
         <option value="50" @if (request()->has('perPage') && request('perPage') == 50) selected @endif>50</option>
         <option value="100" @if (request()->has('perPage') && request('perPage') == 100) selected @endif>100</option>
       </select>
-      项
+      项每页
     </div>
     <div class="form-inline mx-3">
 
