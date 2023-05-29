@@ -1,26 +1,32 @@
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; } const ANIMATION_DURATION = 300;
+function _defineProperty(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+
+const ANIMATION_DURATION = 300;
 
 const SIDEBAR_EL = document.getElementById("sidebar");
 
-const SUB_MENU_ELS = document.querySelectorAll(
-    ".menu > ul > .menu-item.sub-menu");
+const SUB_MENU_ELS = document.querySelectorAll(".menu > ul > .menu-item.sub-menu");
 
+const FIRST_SUB_MENUS_BTN = document.querySelectorAll(".menu > ul > .menu-item.sub-menu > a");
 
-const FIRST_SUB_MENUS_BTN = document.querySelectorAll(
-    ".menu > ul > .menu-item.sub-menu > a");
-
-
-const INNER_SUB_MENUS_BTN = document.querySelectorAll(
-    ".menu > ul > .menu-item.sub-menu .menu-item.sub-menu > a");
-
+const INNER_SUB_MENUS_BTN = document.querySelectorAll(".menu > ul > .menu-item.sub-menu .menu-item.sub-menu > a");
 
 class PopperObject {
-
-
-
-
     constructor(reference, popperTarget) {
-        _defineProperty(this, "instance", null); _defineProperty(this, "reference", null); _defineProperty(this, "popperTarget", null);
+        _defineProperty(this, "instance", null);
+        _defineProperty(this, "reference", null);
+        _defineProperty(this, "popperTarget", null);
         this.init(reference, popperTarget);
     }
 
@@ -37,21 +43,16 @@ class PopperObject {
                     options: {
                         adaptive: false
                     }
-                },
-
-
-                {
+                }, {
                     name: "flip",
                     options: {
                         fallbackPlacements: ["left", "right"]
                     }
-                }]
+                }
+            ]
         });
 
-        document.addEventListener(
-            "click",
-            e => this.clicker(e, this.popperTarget, this.reference),
-            false);
+        document.addEventListener("click", e => this.clicker(e, this.popperTarget, this.reference), false);
 
         const ro = new ResizeObserver(() => {
             this.instance.update();
@@ -77,8 +78,6 @@ class PopperObject {
 
 
 class Poppers {
-
-
     constructor() {
         _defineProperty(this, "subMenuPoppers", []);
         this.init();
@@ -87,7 +86,6 @@ class Poppers {
     init() {
         SUB_MENU_ELS.forEach(element => {
             this.subMenuPoppers.push(new PopperObject(element, element.lastElementChild));
-
             this.closePoppers();
         });
     }

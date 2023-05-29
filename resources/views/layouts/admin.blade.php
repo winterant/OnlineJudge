@@ -13,7 +13,6 @@
       min-width: 24px;
     }
   </style>
-  <link rel="stylesheet" href="{{ asset_ts('static/admin-sidebar/css/css-pro-layout.css') }}">
   <link rel="stylesheet" href="{{ asset_ts('static/admin-sidebar/css/style.css') }}">
   <script src="{{ asset_ts('static/admin-sidebar/js/popper2.min.js') }}" defer></script>
   <script src="{{ asset_ts('static/admin-sidebar/js/script.js') }}" defer></script>
@@ -34,7 +33,7 @@
       <div class="sidebar-layout">
         <div class="sidebar-header">
           {{-- 电脑端菜单开关 --}}
-          <a id="btn-collapse" class="ml-2 mr-3" href="#" style="color:#b3b8d4">
+          <a id="btn-collapse" class="ml-2 mr-3" href="javascript:" style="color:#b3b8d4">
             <i class="fa fa-align-justify fa-lg" aria-hidden="true"></i>
           </a>
           <span style="font-size: 1.4rem;letter-spacing: 3px;font-weight: bold;">后台管理</span>
@@ -51,7 +50,7 @@
                 </a>
               </li>
               <li class="menu-item sub-menu @if (preg_match('/^admin\.notice\S*$/', Route::currentRouteName())) open @endif">
-                <a href="#">
+                <a href="javascript:">
                   <span class="menu-icon">
                     <i class="fa fa-sticky-note-o" aria-hidden="true"></i>
                   </span>
@@ -75,7 +74,7 @@
                 </div>
               </li>
               <li class="menu-item sub-menu @if (preg_match('/^admin\.user\S*$/', Route::currentRouteName())) open @endif">
-                <a href="#">
+                <a href="javascript:">
                   <span class="menu-icon">
                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                   </span>
@@ -111,7 +110,7 @@
                 </div>
               </li>
               <li class="menu-item sub-menu @if (preg_match('/^admin\.problem\S*$/', Route::currentRouteName())) open @endif">
-                <a href="#">
+                <a href="javascript:">
                   <span class="menu-icon">
                     <i class="fa fa-file-text-o" aria-hidden="true"></i>
                   </span>
@@ -159,7 +158,7 @@
                 </div>
               </li>
               <li class="menu-item sub-menu @if (preg_match('/^admin\.solution\S*$/', Route::currentRouteName())) open @endif">
-                <a href="#">
+                <a href="javascript:">
                   <span class="menu-icon">
                     <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
                   </span>
@@ -177,7 +176,7 @@
                 </div>
               </li>
               <li class="menu-item sub-menu @if (preg_match('/^admin\.contest\S*$/', Route::currentRouteName())) open @endif">
-                <a href="#">
+                <a href="javascript:">
                   <span class="menu-icon">
                     <i class="fa fa-trophy" aria-hidden="true"></i>
                   </span>
@@ -207,7 +206,7 @@
                 </div>
               </li>
               <li class="menu-item sub-menu @if (preg_match('/^admin\.group\S*$/', Route::currentRouteName())) open @endif">
-                <a href="#">
+                <a href="javascript:">
                   <span class="menu-icon">
                     <i class="fa fa-users" aria-hidden="true"></i>
                   </span>
