@@ -120,41 +120,6 @@ class SolutionController extends Controller
         ];
     }
 
-    // api 从数据库查询一条提交记录的判题结果; No update Database.
-    public function solution_result($solution_id)
-    {
-        // ==================== 根据solution id，查询结果 ====================
-        $solution = DB::table('solutions')->find($solution_id);
-        if (!$solution)
-            return ['ok' => 0, 'msg' => '提交记录不存在'];
-
-        // 读取数据库中 所有测试数据的详细结果 {'testname':{'result':int, ...}, ...}
-        $judge_result = json_decode($solution->judge_result ?? '[]', true); // 注意json无序
-        // 下面添加描述信息，并转为数组按测试名排序，最后传给前端
-        foreach ($judge_result as $k => &$test) {
-            $judge_result[$k]['result_desc'] = trans('result.' . config("judge.result." . $test['result'] ?? 0));
-            if (!isset($judge_result[$k]['testname']))
-                $judge_result[$k]['testname'] = $k; // 记下测试名，用于排序
-        }
-        uasort($judge_result, function ($a, $b) {
-            return $a['testname'] < $b['testname'] ? -1 : 1; // 按测试名升序
-        });
-        $judge_result = array_values($judge_result); // 转为数组
-
-        return [
-            'ok' => 1,
-            'msg' => 'OK',
-            'data' => [
-                'result' => $solution->result,
-                'result_desc' => trans('result.' . config("judge.result." . $solution->result)),
-                'time' => $solution->time,
-                'memory' => $solution->memory,
-                'error_info' => $solution->error_info,
-                'details' => $judge_result
-            ]
-        ];
-    }
-
     // api 提交一条本地测试，仅运行返回结果。 No DB
     public function submit_local_test(Request $request)
     {
@@ -192,7 +157,7 @@ class SolutionController extends Controller
         $response = $this->compile_run($data['code'], $stdin, $config, intval($problem->time_limit), intval($problem->memory_limit));
         $data = [
             'time' => intdiv($response['time'], 1000000), // ns==>ms
-            'memory' => $response['memory'] >> 20, // B==>MB
+            'memory' => round($response['memory'] / 1024 / 1024, 2), // B==>MB
             'stdin' => $stdin,
             'stdout' => $response['files']['stdout'],
             'error_info' => $response['error_info'] ?? null,
