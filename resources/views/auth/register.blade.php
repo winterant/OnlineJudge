@@ -38,6 +38,28 @@
                     <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
                       name="password" required autocomplete="new-password" maxlength="30"
                       oninput="this.value=this.value.replace(/\s+/g,'')">
+
+                    <span class="position-absolute" style="top:0.5rem;right:2rem; cursor: pointer;"
+                      onclick="toggle_password()">
+                      <i id="eye-show-password" class="fa fa-lg fa-eye-slash" aria-hidden="true"></i>
+                    </span>
+
+                    <script>
+                      function toggle_password() {
+                        if ($("#eye-show-password").is('.fa-eye-slash')) {
+                          $("#eye-show-password").removeClass('fa-eye-slash')
+                          $("#eye-show-password").addClass('fa-eye')
+                          $("#password").attr("type", "")
+                          $("#password-confirm").attr("type", "")
+                        } else {
+                          $("#eye-show-password").removeClass('fa-eye')
+                          $("#eye-show-password").addClass('fa-eye-slash')
+                          $("#password").attr("type", "password")
+                          $("#password-confirm").attr("type", "password")
+                        }
+                      }
+                    </script>
+
                     @error('password')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -58,8 +80,7 @@
 
 
                 <div class="form-group row">
-                  <label for="email"
-                    class="col-md-4 col-form-label text-md-right">{{ __('main.E-Mail Address') }}</label>
+                  <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('main.E-Mail') }}</label>
 
                   <div class="col-md-6">
                     <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"

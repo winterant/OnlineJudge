@@ -85,7 +85,6 @@ return [
     "Logout"        => "Logout",
     "Username"      => "Username",
     "E-Mail"        => "E-Mail",
-    "E-Mail Address" => "E-Mail Address",
     "Password"      => "Password",
     "New Password"  => "New Password",
     "Old Password"  => "Old Password",

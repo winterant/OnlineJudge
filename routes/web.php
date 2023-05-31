@@ -11,14 +11,14 @@
 |
 */
 
-use App\Http\Livewire\Solution\Solution;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // ====================== Livewire Single Page =======================
 Route::namespace('\App\Http\Livewire')->group(function () {
     // ================================ 提交记录 ================================
-    Route::get('/solutions/{id}', Solution::class)->name('solution');
+    // Route::get('/solutions', Solution\Solutions::class)->name('solutions');
+    Route::get('/solutions/{id}', Solution\Solution::class)->name('solution');
 });
 
 

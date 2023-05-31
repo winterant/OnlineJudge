@@ -84,7 +84,7 @@ return [
     "Login"         => "登录",
     "Logout"        => "退出",
     "Username"      => "用户名",
-    "E-Mail"        => "邮箱",
+    "E-Mail"        => "电子邮箱",
     "Password"      => "密码",
     "New Password"  => "新密码",
     "Old Password"  => "旧密码",

@@ -35,6 +35,26 @@
                   <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
                     name="password" required autocomplete="new-password"
                     oninput="this.value=this.value.replace(/\s+/g,'')">
+
+                  <span class="position-absolute" style="top:0.5rem;right:2rem; cursor: pointer;"
+                    onclick="toggle_password()">
+                    <i id="eye-show-password" class="fa fa-lg fa-eye-slash" aria-hidden="true"></i>
+                  </span>
+
+                  <script>
+                    function toggle_password() {
+                      if ($("#eye-show-password").is('.fa-eye-slash')) {
+                        $("#eye-show-password").removeClass('fa-eye-slash')
+                        $("#eye-show-password").addClass('fa-eye')
+                        $("#password").attr("type", "")
+                      } else {
+                        $("#eye-show-password").removeClass('fa-eye')
+                        $("#eye-show-password").addClass('fa-eye-slash')
+                        $("#password").attr("type", "password")
+                      }
+                    }
+                  </script>
+
                   @error('password')
                     <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
