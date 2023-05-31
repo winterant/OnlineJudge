@@ -62,16 +62,16 @@ class User extends Authenticatable
     /**
      * 判断群组管理者
      */
-    public function can_group($group, $permission = null, $or_identity_manager = true)
+    public function can_group($group, string $if_has_permission = null, bool $or_if_identity_manager = true)
     {
         if ($group == null)
             return false; // 群组不存在，所以没有权限
-        if ($permission != null && $this->can($permission)) // 用户拥有某具体权限，则直接通过
+        if ($if_has_permission != null && $this->can($if_has_permission)) // 用户拥有某具体权限，则直接通过
             return true;
         if ($group->user_id == $this->id) // 当前用户是创建者，直接通过
             return true;
         if (
-            $or_identity_manager &&
+            $or_if_identity_manager &&
             DB::table('group_users')->where('group_id', $group->id)
             ->where('user_id', $this->id)->where('identity', 4)->exists()
         )
@@ -80,7 +80,7 @@ class User extends Authenticatable
     }
 
     // 检查用户是否有权限查看solution
-    private function can_view_solution($solution_id)
+    public function can_view_solution($solution_id)
     {
         // =================== 管理员特权 =====================
         if (Auth::check() && $this->can('admin.solution.view'))

@@ -23,20 +23,20 @@
             @endif
             &nbsp;{{ __('result.' . config('judge.result.' . ($solution['result'] ?? 0))) }}
 
-            @if ($solution['judge_type'] != 'acm')
-              ({{ $solution['pass_rate'] * 100 }}%)
+            @if (($solution['judge_type'] ?? null) != 'acm')
+              ({{ ($solution['pass_rate'] ?? 0) * 100 }}%)
             @endif
           </div>
 
           <div class="row mt-2">
             <div class="col-6 col-sm-2">{{ __('main.Solution') . ': ' . $solution['id'] }}</div>
             <div class="col-6 col-sm-2">{{ __('main.Problem') . ': ' }}
-              @if ($solution['contest_id'] == -1)
-                <a href="{{ route('problem', $solution['problem_id']) }}">{{ $solution['problem_id'] }}</a>
-              @else
+              @if (($solution['contest_id'] ?? 0) > 0)
                 <a href="{{ route('contest.problem', [$solution['contest_id'], $solution['index']]) }}">
                   {{ __('main.Contest') . $solution['contest_id'] }}:{{ index2ch($solution['index']) }}
                 </a>
+              @else
+                <a href="{{ route('problem', $solution['problem_id']) }}">{{ $solution['problem_id'] }}</a>
               @endif
             </div>
             <div class="col-6 col-sm-2">{{ __('main.User') . ': ' }}
@@ -110,7 +110,8 @@
               wire:click="display_detail({{ $i }})">
               <div>#{{ $i + 1 }}</div>
               <div class="text-center my-1">{{ $res['result_desc'] }}</div>
-              <div class="text-center" style="font-size: 0.5rem">{{ $res['time'] }}MS / {{ $res['memory'] }}MB</div>
+              <div class="text-center" style="font-size: 0.5rem">{{ $res['time'] }}MS / {{ $res['memory'] }}MB
+              </div>
             </div>
           @endforeach
         </div>
@@ -181,4 +182,5 @@
       });
     </script>
   @endif
+
 </div>

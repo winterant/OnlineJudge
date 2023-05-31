@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Solution;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -12,6 +13,7 @@ class Solution extends Component
     public $detail;   // 正在展示的评测点
     public int $numAccepted, $numDetails; // 测试点计数
     public bool $only_details = false;
+    public  $msg; // 可能的报错信息，例如权限不足,默认null
 
     protected $listeners = ['set_id'];
 
@@ -27,6 +29,7 @@ class Solution extends Component
         $this->sid = $id;
         $this->solution = null;
         $this->detail = null;
+        $this->msg = null;
         $this->refresh();   // 刷新结果
     }
 
@@ -35,6 +38,14 @@ class Solution extends Component
     {
         if ($this->sid == null)
             return;
+
+        // 判断权限
+        /** @var App/Model/User */
+        $user = Auth::user();
+        if (!$user->can_view_solution($this->sid)) {
+            $this->msg = __('sentence.Permission denied');
+            return;
+        }
 
         // 读取数据库中 所有测试数据的详细结果 {'testname':{'result':int, ...}, ...}
         $this->solution = DB::table('solutions')
@@ -104,6 +115,8 @@ class Solution extends Component
 
     public function render()
     {
+        if ($this->msg != null)
+            return view('message', ['msg' => $this->msg]);
         if ($this->only_details)
             return view('livewire.solution.solution');
         return view('livewire.solution.solution')->extends('layouts.client')->section('content');
