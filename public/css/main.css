@@ -127,17 +127,17 @@ th {
 /* ======================================== 判题结果字体颜色 ==================================== */
 .judge-result-0 {
     /* Waiting */
-    color: yellow;
+    color: gray;
 }
 
 .judge-result-1 {
     /* Queueing */
-    color: #ffdd00;
+    color: orange;
 }
 
 .judge-result-2 {
     /* Compiling */
-    color: rgb(242, 160, 7)
+    color: orange
 }
 
 .judge-result-3 {
@@ -187,7 +187,7 @@ th {
 
 .judge-result-12 {
     /* Rejudging */
-    color: yellow;
+    color: orange;
 }
 
 .judge-result-13 {
@@ -215,19 +215,19 @@ th {
 .judge-detail-1 {
     /* Queueing */
     color: black;
-    background-color: #ffdd00;
+    background-color: orange;
 }
 
 .judge-detail-2 {
     /* Compiling */
     color: black;
-    background-color: rgb(242, 160, 7)
+    background-color: orange;
 }
 
 .judge-detail-3 {
     /* Running */
     color: black;
-    background-color: orange
+    background-color: orange;
 }
 
 .judge-detail-4 {

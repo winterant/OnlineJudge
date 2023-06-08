@@ -49,7 +49,7 @@ class Solution extends Component
 
         // 读取数据库中 所有测试数据的详细结果 {'testname':{'result':int, ...}, ...}
         $this->solution = DB::table('solutions')
-            ->select($this->only_details ? ['id', 'result', 'error_info', 'wrong_data', 'judge_result', 'user_id'] : ['*'])
+            ->select($this->only_details ? ['id', 'result', 'error_info', 'wrong_data', 'judge_result', 'user_id', 'pass_rate'] : ['*'])
             ->find($this->sid);
         if ($this->solution ?? false) {
             // ========================= 先查询所在竞赛的必要信息 ==========================
