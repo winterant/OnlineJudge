@@ -33,6 +33,9 @@ return new class extends Migration
             if (!Schema::hasColumn('problems', 'spj_language')) {
                 $table->integer('spj_language')->default(14); // C++20 -O2
             }
+            if (!Schema::hasColumn('problems', 'level')) {
+                $table->integer('level')->default(0)->comment('0:null,1:easy,2:middle,3:difficult');
+            }
             // 改名
             if (Schema::hasColumn('problems', 'creator')) {
                 $table->renameColumn('creator', 'user_id');

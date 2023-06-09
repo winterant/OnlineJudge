@@ -34,6 +34,7 @@ class CreateProblemsTable extends Migration
             $table->boolean('hidden')->index()->default(1);
             $table->bigInteger('user_id')->nullable();
 
+            $table->integer('level')->default(0)->comment('0:null,1:easy,2:middle,3:difficult');
             $table->integer('solved')->default(0);
             $table->integer('accepted')->default(0);
             $table->integer('submitted')->default(0);
