@@ -17,7 +17,7 @@
       @endif
 
       @if ($problem['type'] == 0)
-        <div id="div-code-editor" style="height: calc(100vh - 110px)">
+        <div id="div-code-editor" style="height: calc(100vh - 115px)">
           <x-code-editor html-prop-name-of-code="solution[code]" html-prop-name-of-lang="solution[language]"
             :code="$solution_code ?? ''" :lang="$solution_lang ?? null" :bitlanguages="$allow_lang ?? null" />
         </div>

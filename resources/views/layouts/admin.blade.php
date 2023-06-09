@@ -160,7 +160,7 @@
               <li class="menu-item sub-menu @if (preg_match('/^admin\.solution\S*$/', Route::currentRouteName())) open @endif">
                 <a href="javascript:">
                   <span class="menu-icon">
-                    <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                    <i class="fa fa-hourglass-half" aria-hidden="true"></i>
                   </span>
                   <span class="menu-title">提交记录</span>
                 </a>

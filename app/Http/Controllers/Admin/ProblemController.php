@@ -322,7 +322,7 @@ class ProblemController extends Controller
         // 作者信息 generator标签
         $generator = $dom->createElement('generator');
         $attr = $dom->createAttribute('name');
-        $attr->appendChild($dom->createTextNode('LDUOJ'));
+        $attr->appendChild($dom->createTextNode('SparkOJ(LDUOJ)'));
         $generator->appendChild($attr);
         $attr = $dom->createAttribute('url');
         $attr->appendChild($dom->createTextNode('https://github.com/winterant/OnlineJudge'));

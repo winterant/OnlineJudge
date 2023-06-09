@@ -20,6 +20,7 @@ English | [中文文档](https://winterant.github.io/OnlineJudge) | [Demo](http:
 # 💝 Acknowledgements
 
 [go-judge](https://github.com/criyle/go-judge)  
+[zhblue/hustoj](https://github.com/zhblue/hustoj)  
 [laravel](https://laravel.com/)  
 [jquery-3.4.1](https://jquery.com/)  
 [bootstrap-material-design](https://fezvrasta.github.io/bootstrap-material-design/)  
@@ -30,7 +31,7 @@ English | [中文文档](https://winterant.github.io/OnlineJudge) | [Demo](http:
 [highlight.js](https://highlightjs.org/)  
 [ckeditor-5](https://ckeditor.com/ckeditor-5/)  
 [MathJax](https://www.mathjax.org/)  
-[zhblue/hustoj](https://github.com/zhblue/hustoj)  
+
 
 # 📜 License
 
