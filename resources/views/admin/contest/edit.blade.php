@@ -114,33 +114,49 @@
       <div class="mt-4 p-2 bg-sky">设置比赛时间、封榜比例</div>
       <div class="border p-2">
 
-        <div class="form-inline">
-          <label>
-            比赛时间：
-            <input type="datetime-local" name="contest[start_time]"
-              value="{{ isset($contest) ? substr(str_replace(' ', 'T', $contest->start_time), 0, 16) : str_replace(' ', 'T', date('Y-m-d H:00', time() + 3600)) }}"
-              class="form-control" required>
-            <span class="mx-2">—</span>
-            <input type="datetime-local" name="contest[end_time]"
-              value="{{ isset($contest) ? substr(str_replace(' ', 'T', $contest->end_time), 0, 16) : str_replace(' ', 'T', date('Y-m-d H:00', time() + 3600 * 6)) }}"
-              class="form-control" required>
-          </label>
+        <div class="form-inline my-2">
+          <div class="custom-control custom-checkbox mx-2">
+            <input type="checkbox" name="setToProblemList" class="custom-control-input" id="setToProblemList"
+              onchange="if($(this).prop('checked')){$('#contestTimeInput').hide()}else{$('#contestTimeInput').show()}">
+            <label class="custom-control-label pt-1" for="setToProblemList">忽略时间限制，将此竞赛视为普通的题目清单</label>
+          </div>
         </div>
+        @if ($contest->end_time == $contest->start_time)
+          <script>
+            $(() => {
+              $("#setToProblemList").click()
+            })
+          </script>
+        @endif
 
-        <div class="form-group mt-2">
-          <label class="form-inline">封榜比例：
-            <input type="number" step="0.01" max="1" min="0" name="contest[lock_rate]"
-              value="{{ isset($contest) ? $contest->lock_rate : 0 }}" class="form-control">
-            <a href="javascript:" class="ml-1" style="color: #838383"
-              onclick="whatisthis('封榜时长=比赛时长×封榜比例；<br>数值范围0.0~1.0' +
+        <div id="contestTimeInput">
+          <div class="form-inline">
+            <label>
+              比赛时间：
+              <input type="datetime-local" name="contest[start_time]"
+                value="{{ isset($contest) ? substr(str_replace(' ', 'T', $contest->start_time), 0, 16) : str_replace(' ', 'T', date('Y-m-d H:00', time() + 3600)) }}"
+                class="form-control" required>
+              <span class="mx-2">—</span>
+              <input type="datetime-local" name="contest[end_time]"
+                value="{{ isset($contest) ? substr(str_replace(' ', 'T', $contest->end_time), 0, 16) : str_replace(' ', 'T', date('Y-m-d H:00', time() + 3600 * 6)) }}"
+                class="form-control" required>
+            </label>
+          </div>
+
+          <div class="form-group mt-2">
+            <label class="form-inline">封榜比例：
+              <input type="number" step="0.01" max="1" min="0" name="contest[lock_rate]"
+                value="{{ isset($contest) ? $contest->lock_rate : 0 }}" class="form-control">
+              <a href="javascript:" class="ml-1" style="color: #838383"
+                onclick="whatisthis('封榜时长=比赛时长×封榜比例；<br>数值范围0.0~1.0' +
                              '<br><br>例如：封榜比例0.2，比赛总时长5小时，则比赛达到4小时后榜单停止更新' +
                               '（管理员依旧可以看到实时榜单）' +
                                '<br><br>若封榜比例为1.0，则全程不更新榜单，适合考试。')">
-              <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-            </a>
-          </label>
+                <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+              </a>
+            </label>
+          </div>
         </div>
-
       </div>
 
       <div class="mt-4 p-2 bg-sky">哪些用户可以参加本次竞赛/考试？</div>

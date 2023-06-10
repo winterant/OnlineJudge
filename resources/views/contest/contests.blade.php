@@ -30,9 +30,9 @@
               <div class="btn-group" style="margin:0px">
                 <a class="nav-link text-nowrap py-3 @if ($current_cate->parent_id == $cate->id || $current_cate->id == $cate->id) active @endif"
                   href="{{ route('contests', ['cate' => $cate->id]) }}"
-                  style="min-width:0px !important; @if($cate->num_sons>0)padding-right:1.9rem @endif">{{ ucfirst($cate->title) }}</a>
+                  style="min-width:0px !important; @if ($cate->num_sons > 0) padding-right:1.9rem @endif">{{ ucfirst($cate->title) }}</a>
                 {{-- 有子类别的，显示下拉菜单 --}}
-                @if($cate->num_sons>0)
+                @if ($cate->num_sons > 0)
                   <a href="javascript:" class="py-3 dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false" style="margin-left:-2.1rem">
                     <span class="sr-only">Toggle Dropdown</span>
@@ -146,7 +146,8 @@
           <li class="d-flex flex-wrap border-bottom pt-3 pb-2">
             <div class="p-xs-0 px-3 text-center align-self-center">
               <img height="45px"
-                @if (strtotime($item->start_time) < time() && time() < strtotime($item->end_time)) src="{{ asset_ts('images/trophy/running.png') }}"
+                @if ($item->end_time == $item->start_time) src="{{ asset_ts('images/trophy/problem-list.png') }}"
+                @elseif (strtotime($item->start_time) < time() && time() < strtotime($item->end_time)) src="{{ asset_ts('images/trophy/running.png') }}"
                 @else src="{{ asset_ts('images/trophy/gold.png') }}" @endif
                 alt="pic">
             </div>
@@ -154,6 +155,9 @@
               <h5 style="font-size: 1.15rem">
                 <a href="{{ route('contest.home', $item->id) }}" class="text-black">{{ $item->title }}</a>
                 <span style="font-size: 0.9rem; vertical-align: top;">
+                  @if ($item->end_time == $item->start_time)
+                    <span class="border bg-light px-1 text-sky" style="border-radius: 12px;">@lang('main.ProblemList')</span>
+                  @endif
                   <span class="border bg-light px-1 text-{{ $item->access == 'public' ? 'green' : 'red' }}"
                     style="border-radius: 12px;">
                     @if ($item->access != 'public')
@@ -178,21 +182,24 @@
                     {{ $item->judge_type == 'acm' ? 'ACM/ICPC' : 'OI/IOI' }}
                   </div>
                 </li>
-                <li class="px-2"><i class="fa fa-calendar pr-1 text-sky" aria-hidden="true"></i>{{ $item->start_time }}
-                </li>
-                <li class="px-2">
-                  <i class="fa fa-clock-o text-sky" aria-hidden="true"></i>
-                  {{ null, $time_len = strtotime($item->end_time) - strtotime($item->start_time) }}
-                  @if ($time_len > 3600 * 24 * 30)
-                    {{ round($time_len / (3600 * 24 * 30), 1) }}
-                    {{ trans_choice('main.months', round($time_len / (3600 * 24 * 30), 1)) }}
-                  @elseif($time_len > 3600 * 24)
-                    {{ round($time_len / (3600 * 24), 1) }}
-                    {{ trans_choice('main.days', round($time_len / (3600 * 24), 1)) }}
-                  @else
-                    {{ round($time_len / 3600, 1) }} {{ trans_choice('main.hours', round($time_len / 3600, 1)) }}
-                  @endif
-                </li>
+                @if ($item->end_time != $item->start_time)
+                  <li class="px-2"><i class="fa fa-calendar pr-1 text-sky"
+                      aria-hidden="true"></i>{{ $item->start_time }}
+                  </li>
+                  <li class="px-2">
+                    <i class="fa fa-clock-o text-sky" aria-hidden="true"></i>
+                    {{ null, $time_len = strtotime($item->end_time) - strtotime($item->start_time) }}
+                    @if ($time_len > 3600 * 24 * 30)
+                      {{ round($time_len / (3600 * 24 * 30), 1) }}
+                      {{ trans_choice('main.months', round($time_len / (3600 * 24 * 30), 1)) }}
+                    @elseif($time_len > 3600 * 24)
+                      {{ round($time_len / (3600 * 24), 1) }}
+                      {{ trans_choice('main.days', round($time_len / (3600 * 24), 1)) }}
+                    @else
+                      {{ round($time_len / 3600, 1) }} {{ trans_choice('main.hours', round($time_len / 3600, 1)) }}
+                    @endif
+                  </li>
+                @endif
                 <li class="px-2">
                   <i class="fa fa-user-o text-sky" aria-hidden="true"></i>
                   {{ $item->num_members }}
@@ -200,8 +207,11 @@
               </ul>
             </div>
             <div class="col-12 col-sm-3 m-auto">
-              <a href="{{ route('contest.rank', $item->id) }}" class="btn btn-secondary border" title="{{ __('main.Rank') }}">
-                @if (strtotime(date('Y-m-d H:i:s')) < strtotime($item->start_time))
+              <a href="{{ route('contest.rank', $item->id) }}" class="btn btn-secondary border"
+                title="{{ __('main.Rank') }}">
+                @if ($item->end_time == $item->start_time)
+                <i class="fa fa-thumbs-up text-red pr-1" aria-hidden="true"></i>{{ __('main.Rank') }}
+                @elseif (strtotime(date('Y-m-d H:i:s')) < strtotime($item->start_time))
                   <i class="fa fa-circle text-yellow pr-1" aria-hidden="true"></i>{{ __('main.Waiting') }}
                 @elseif(strtotime(date('Y-m-d H:i:s')) > strtotime($item->end_time))
                   <i class="fa fa-thumbs-up text-red pr-1" aria-hidden="true"></i>{{ __('main.Ended') }}

@@ -50,8 +50,8 @@ class ProblemsLink extends Component
                     ->min('result');
                 if ($result == 4) // 已经AC，长期保存
                     Cache::put($key, $result, 3600 * 24 * 30);
-                else // 没结果，则视为0（Waiting）并缓存
-                    Cache::put($key, 0, 30);
+                else
+                    Cache::put($key, (int)$result, 30);
                 $item->result = $result;
             } else
                 $item->result = Cache::get($key);

@@ -17,6 +17,9 @@
 
           <h3 class="text-center">
             {{ $contest->title }}
+            @if ($contest->end_time == $contest->start_time)
+            <span class="border bg-light px-1 text-sky" style="border-radius: 12px;font-size:0.85rem;vertical-align: top;">@lang('main.ProblemList')</span>
+            @endif
             @if (isset($notices) && count($notices))
               <span title="有公告">
                 <i class="fa fa-commenting text-green" aria-hidden="true"></i>
@@ -30,62 +33,64 @@
           </h3>
           <hr class="mt-0">
 
-          {{-- 进度条与倒计时 --}}
-          <div class="progress">
-            <div id="progress" class="progress-bar bg-info" style="width: 0"></div>
-          </div>
-          <div id="time_show" class="text-right mb-2">
-            <p id="length" class="d-none">
-              {{ $length = strtotime($contest->end_time) - strtotime($contest->start_time) }}
-            </p>
-            <p id="remain" class="d-none">{{ $remain = strtotime($contest->end_time) - time() }}</p>
-            <i class="fa fa-clock-o pr-2 text-sky" aria-hidden="true"></i>
-            <span id="remain_area"></span>
-          </div>
-          <script>
-            var ended = false;
-            var timer_id = null;
-            var remain_time = function() {
-              var remain_t = '';
-              var length = $('#length').text();
-              var remain = $('#remain').text();
-              $('#remain').html(Math.max(0, remain - 1))
+          @if ($contest->end_time != $contest->start_time)
+            {{-- 进度条与倒计时 --}}
+            <div class="progress">
+              <div id="progress" class="progress-bar bg-info" style="width: 0"></div>
+            </div>
+            <div id="time_show" class="text-right mb-2">
+              <p id="length" class="d-none">
+                {{ $length = strtotime($contest->end_time) - strtotime($contest->start_time) }}
+              </p>
+              <p id="remain" class="d-none">{{ $remain = strtotime($contest->end_time) - time() }}</p>
+              <i class="fa fa-clock-o pr-2 text-sky" aria-hidden="true"></i>
+              <span id="remain_area"></span>
+            </div>
+            <script>
+              var ended = false;
+              var timer_id = null;
+              var remain_time = function() {
+                var remain_t = '';
+                var length = $('#length').text();
+                var remain = $('#remain').text();
+                $('#remain').html(Math.max(0, remain - 1))
 
-              if (remain < 0) //结束了
-              {
-                $('#remain_area').html("{{ __('main.Ended') }}")
-                $('#progress').css('width', '100%')
-                ended = true;
-                clearInterval(timer_id);
+                if (remain < 0) //结束了
+                {
+                  $('#remain_area').html("{{ __('main.Ended') }}")
+                  $('#progress').css('width', '100%')
+                  ended = true;
+                  clearInterval(timer_id);
+                  return remain_time;
+                } else if (remain - length > 0) //尚未开始
+                {
+                  $('#time_show').removeClass('text-right');
+                  $('#time_show').addClass('text-left');
+                  remain_t += "{{ __('sentence.Waiting to start after') }}" + ' ';
+                  remain -= length;
+                } else {
+                  //比赛中
+                  $('#progress').css('width', (length - remain) / length * 100 + '%')
+                }
+
+
+                remain_t += ((remain > 3600 * 24 * 30) ? parseInt(remain / (3600 * 24 * 30)) + ' months and ' : '');
+                remain %= 3600 * 24 * 30
+                remain_t += ((remain > 3600 * 24) ? parseInt(remain / (3600 * 24)) + ' days and ' : '');
+                remain %= 3600 * 24
+                remain_t += parseInt(remain / 3600) + ':';
+                remain %= 3600
+                remain_t += parseInt(remain / 60) + ':';
+                remain %= 60
+                remain_t += remain;
+                $('#remain_area').html(remain_t)
                 return remain_time;
-              } else if (remain - length > 0) //尚未开始
-              {
-                $('#time_show').removeClass('text-right');
-                $('#time_show').addClass('text-left');
-                remain_t += "{{ __('sentence.Waiting to start after') }}" + ' ';
-                remain -= length;
-              } else {
-                //比赛中
-                $('#progress').css('width', (length - remain) / length * 100 + '%')
               }
-
-
-              remain_t += ((remain > 3600 * 24 * 30) ? parseInt(remain / (3600 * 24 * 30)) + ' months and ' : '');
-              remain %= 3600 * 24 * 30
-              remain_t += ((remain > 3600 * 24) ? parseInt(remain / (3600 * 24)) + ' days and ' : '');
-              remain %= 3600 * 24
-              remain_t += parseInt(remain / 3600) + ':';
-              remain %= 3600
-              remain_t += parseInt(remain / 60) + ':';
-              remain %= 60
-              remain_t += remain;
-              $('#remain_area').html(remain_t)
-              return remain_time;
-            }
-            remain_time();
-            if (!ended)
-              timer_id = setInterval(remain_time, 1000);
-          </script>
+              remain_time();
+              if (!ended)
+                timer_id = setInterval(remain_time, 1000);
+            </script>
+          @endif
 
           @if ($contest->description)
             <div id="description_div" class="ck-content p-2">{!! $contest->description !!}</div>
@@ -119,6 +124,10 @@
                     <th>{{ trans('main.Problem_timu') }}</th>
                     <th>{{ trans('main.Type') }}</th>
                     <th>{{ trans('main.AC/Submitted') }}</th>
+                    @if (isset($problems[0]->problem))
+                      <th class="border-left"></th>
+                      <th>{{ __('main.Source') }}</th>
+                    @endif
                     @if (isset($problems[0]->tags))
                       <th>{{ __('main.Tag') }}</th>
                     @endif
@@ -136,14 +145,6 @@
                       </td>
                       <td nowrap>{{ index2ch($item->index) }}</td>
                       <td nowrap>
-                        @if (Auth::user()->can('admin.contest.view') || time() > strtotime($contest->end_time))
-                          <span style="font-size: 0.85rem">
-                            [
-                            <a href="{{ route('problem', $item->id) }}" target="_blank">{{ $item->id }}</a>
-                            <i class="fa fa-external-link text-sky" aria-hidden="true"></i>
-                            ]
-                          </span>
-                        @endif
                         @if (Auth::user()->can('admin.contest.view') || time() > strtotime($contest->start_time))
                           <a
                             href="{{ route('contest.problem', [$contest->id, $item->index, 'group' => request('group') ?? null]) }}">{{ $item->title }}</a>
@@ -163,6 +164,33 @@
                           - / -
                         @endif
                       </td>
+
+                      @if (isset($item->problem))
+                        <td class="border-left" width="1%">
+                          <span>
+                            @if ($item->problem->result == 4)
+                              <i class="fa fa-check text-green" aria-hidden="true"></i>
+                            @elseif($item->problem->result > 0)
+                              <i class="fa fa-pencil text-red" aria-hidden="true"></i>
+                            @endif
+                          </span>
+                        </td>
+                        <td nowrap>
+                          <span class="mr-2">
+                            <a href="{{ route('problem', $item->id) }}" target="_blank">
+                              @lang('main.Problem'){{ $item->id }}
+                            </a>
+                            <i class="fa fa-external-link text-sky" aria-hidden="true"></i>
+                          </span>
+                          <span>
+                            {{ $item->problem->accepted }}
+                            (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>
+                            {{ $item->problem->solved }})
+                            /
+                            {{ $item->problem->submitted }}
+                          </span>
+                        </td>
+                      @endif
                       @if (isset($item->tags))
                         <td nowrap>
                           @foreach ($item->tags as $tag)

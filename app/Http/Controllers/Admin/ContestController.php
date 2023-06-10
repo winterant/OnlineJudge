@@ -122,8 +122,13 @@ class ContestController extends Controller
             }
 
             // ======================= 必要的字段处理 =======================
-            $contest['start_time'] = str_replace('T', ' ', $contest['start_time']);
-            $contest['end_time'] = str_replace('T', ' ', $contest['end_time']);
+            if (request('setToProblemList')) { // 设为题单，则标记开始时间=结束时间
+                $contest['start_time'] = date('Y-m-d H:i:s');
+                $contest['end_time'] = date('Y-m-d H:i:s');
+            } else {
+                $contest['start_time'] = str_replace('T', ' ', $contest['start_time']);
+                $contest['end_time'] = str_replace('T', ' ', $contest['end_time']);
+            }
             if ($contest['access'] != 'password')
                 unset($contest['password']);
             $contest['public_rank'] = isset($contest['public_rank']) ? 1 : 0; // 公开榜单
@@ -184,7 +189,7 @@ class ContestController extends Controller
             $contest->title .= "[cloned " . $cid . "]";
             $contest->num_members = 0; // 参与人数归零
             $contest->user_id = Auth::id(); // 创建人
-            $contest->order = DB::table('contests')->where('cate_id',$contest->cate_id)->max('order') + 1; // 顺序
+            $contest->order = DB::table('contests')->where('cate_id', $contest->cate_id)->max('order') + 1; // 顺序
             //复制竞赛主体
             $cloned_cid = DB::table('contests')->insertGetId((array)$contest);
             //复制题号

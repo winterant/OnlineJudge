@@ -107,6 +107,7 @@ return [
     "Attempting"    => "Attempting",
 
     //problem
+    "ProblemList"   => "Problem List",
     "Problem ID"    => "Problem ID",
     "Title"         => "Title",
     "PDescription"  => "Problem Description",
