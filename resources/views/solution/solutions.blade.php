@@ -5,7 +5,7 @@
 @section('content')
   <div class="container">
     <div class="my-container bg-white">
-      <x-solution.solutions />
+      @livewire('solution.solutions')
     </div>
   </div>
 @endsection

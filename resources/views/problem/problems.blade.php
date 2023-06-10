@@ -72,17 +72,13 @@
                   <th>
                     {{ trans('main.AC') }}
                     <a href="javascript:" onclick="resort('accepted')"><i class="fa fa-sort" aria-hidden="true"></i></a>
-                    (
-                    {{ trans('main.NumPeople') }}
-                    <a href="javascript:" onclick="resort('solved')"><i class="fa fa-sort" aria-hidden="true"></i></a>
-                    )
+                    ({{ trans('main.NumPeople') }}
+                    <a href="javascript:" onclick="resort('solved')"><i class="fa fa-sort" aria-hidden="true"></i></a>)
                     /
                     {{ trans('main.Submitted') }}
                     <a href="javascript:" onclick="resort('submitted')"><i class="fa fa-sort" aria-hidden="true"></i></a>
-                    (
-                    {{ trans('main.ACRate') }}
-                    <a href="javascript:" onclick="resort('ac_rate')"><i class="fa fa-sort" aria-hidden="true"></i></a>
-                    )
+                    ({{ trans('main.ACRate') }}
+                    <a href="javascript:" onclick="resort('ac_rate')"><i class="fa fa-sort" aria-hidden="true"></i></a>)
                   </th>
                   <th>{{ __('main.Tag') }}</th>
                 </tr>

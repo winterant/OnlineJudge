@@ -14,7 +14,7 @@
 
       <div class="col-sm-12 col-12">
         <div class="my-container bg-white">
-          <x-solution.solutions :contest-id="$contest->id"/>
+          @livewire('solution.solutions', ['contestId'=>$contest->id], key($contest->id))
         </div>
       </div>
 
