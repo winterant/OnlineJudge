@@ -121,7 +121,7 @@
             <label class="custom-control-label pt-1" for="setToProblemList">忽略时间限制，将此竞赛视为普通的题目清单</label>
           </div>
         </div>
-        @if ($contest->end_time == $contest->start_time)
+        @if (isset($contest) && $contest->end_time == $contest->start_time)
           <script>
             $(() => {
               $("#setToProblemList").click()
@@ -222,7 +222,7 @@
 </textarea>
           </label>
           <p class=" alert alert-warning p-2">
-            当竞赛公开时，以上被邀请用户可以直接进入竞赛。注：无论竞赛被加入任何团队，以上被邀请的用户仍有权直接进入竞赛。
+            竞赛发布（非隐藏）后，仅管理员和以上被邀请用户可以进入竞赛。
           </p>
         </div>
       </div>
@@ -267,20 +267,20 @@
 
 
         <div class="form-inline mb-3">
-          <span>判题规则：</span>
+          <span>判题策略：</span>
           <div class="custom-control custom-radio ml-2">
             <input type="radio" name="contest[judge_type]" value="acm" class="custom-control-input"
               id="acmicpc" checked>
-            <label class="custom-control-label pt-1" for="acmicpc">ACM-ICPC程序设计竞赛</label>
+            <label class="custom-control-label pt-1" for="acmicpc">遇错止评(ACM-ICPC)</label>
           </div>
           <div class="custom-control custom-radio mx-4">
             <input type="radio" name="contest[judge_type]" value="oi" class="custom-control-input"
               id="oixinxi" @if (isset($contest) && $contest->judge_type == 'oi') checked @endif>
-            <label class="custom-control-label pt-1" for="oixinxi">OI信息学竞赛</label>
+            <label class="custom-control-label pt-1" for="oixinxi">全部评测(OI)</label>
           </div>
           <a href="javascript:" style="color: #838383"
-            onclick="whatisthis('ACM赛制：<br>对于每题，通过时间累加为罚时，通过前的每次错误提交罚时20分钟；<br><br>' +
-                            'oi赛制：<br>对于每题，满分100分，错误提交没有惩罚；<br>你也可以自定义每题的分数')">
+            onclick="whatisthis('遇错止评：<br>用户每次提交代码后，测试数据按顺序评测，首次遇到无法通过的测试数据后，则不再评测后续测试数据，适合于ACM赛制的竞赛。<br><br>' +
+                            '全部评测：<br>用户每次提交代码后，所有测试数据都将参与评测，适合于OI赛制的竞赛。')">
             <i class="fa fa-question-circle-o" aria-hidden="true"></i>
           </a>
         </div>

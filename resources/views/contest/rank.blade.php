@@ -40,13 +40,27 @@
               <x-solution.line-chart :contest-id="$contest->id" :default-past="request('past') ?? '300i'" :end-time="strtotime($rank_time[request('end') ?? 'real_time']['date'])" />
             </div>
 
+            {{-- 榜单类型选择 --}}
+            <div class="float-left form-inline py-1">
+              <div class="custom-control custom-radio mx-3">
+                <input type="radio" name="judge_type" value="acm" class="custom-control-input" id="judge_type_acm"
+                  onchange="this.form.submit()" @if ($judge_type == 'acm') checked @endif>
+                <label class="custom-control-label pt-1" for="judge_type_acm">ACM-ICPC @lang('main.Rank')</label>
+              </div>
+              <div class="custom-control custom-radio mx-3">
+                <input type="radio" name="judge_type" value="oi" class="custom-control-input" id="judge_type_oi"
+                  onchange="this.form.submit()" @if ($judge_type == 'oi') checked @endif>
+                <label class="custom-control-label pt-1" for="judge_type_oi">OI @lang('main.Rank')</label>
+              </div>
+            </div>
+
+            {{-- 下载按钮 --}}
             <div class="float-left">
               <button type="button" class="btn btn-sm" onclick="down_rank()">{{ __('main.Download') }}</button>
             </div>
 
             {{-- 实时更新榜单的按钮 --}}
-
-            <div class="float-right form-inline">
+            <div class="float-right form-inline py-1">
               @if ($rank_time['locked_time']['show'] ?? false)
                 <div class="custom-control custom-radio mx-3">
                   <input type="radio" name="end" value="locked_time" class="custom-control-input" id="locked_time"
@@ -106,7 +120,7 @@
                       </th>
                     @endif
                     <th width="5%">
-                      {{ $contest->judge_type == 'acm' ? trans('main.Solved') : trans('main.Score') }}</th>
+                      {{ $judge_type == 'acm' ? trans('main.Solved') : trans('main.Score') }}</th>
                     <th width="5%">{{ trans('main.Penalty') }}</th>
                     @foreach ($problems as $pid => $index)
                       <th><a
@@ -147,8 +161,7 @@
                       @if (get_setting('rank_show_nick'))
                         <td nowrap>{{ $user['nick'] }}</td>
                       @endif
-                      <td>{{ $contest->judge_type == 'acm' ? $user['solved'] : $user['score'] }}
-                      </td>
+                      <td>{{ $judge_type == 'acm' ? $user['solved'] : $user['score'] }}</td>
                       <td>
                         {{ sprintf('%02d:%02d:%02d', $user['penalty'] / 3600, ($user['penalty'] % 3600) / 60, $user['penalty'] % 60) }}
                       </td>
@@ -164,7 +177,7 @@
                             @else
                               style="background-color: #87ec97" @endif>
 
-                            @if ($contest->judge_type == 'acm')
+                            @if ($judge_type == 'acm')
                               @if (isset($user[$index]['solved_time']))
                                 {{ sprintf('%02d:%02d:%02d', $user[$index]['solved_time'] / 3600, ($user[$index]['solved_time'] % 3600) / 60, $user[$index]['solved_time'] % 60) }}
                               @endif
@@ -209,14 +222,14 @@
               {{ __('sentence.endedAC') }}
             </div>
             <div class="mt-3 alert  alert-info p-3">
-              <p>榜单规则说明：当前榜单支持ACM/ICPC和OI两种模式。</p>
+              <p>榜单规则说明：当前榜单支持ACM-ICPC和OI两种模式。</p>
               <p>
-                ACM/ICPC模式：按照解决题目的数量进行排名，数量同等时，按照罚时排序，罚时=每道题目通过时间+错误次数*20分钟。
+                ACM-ICPC模式：按照解决题目的数量进行排名，数量同等时，按照罚时排序，罚时=每道题目通过时间+错误次数*20分钟。
                 任意用户对于每一道题目的提交，只有通过和不通过两种情况；
                 若通过，则解决数量+1，并且将本题的【通过时间+错误次数*20分钟】计入罚时；若不通过，不统计解决数量和罚时。
               </p>
               <p>
-                OI模式：按照得分进行排名，得分相等的，按照罚时排序（同ACM/ICPC）。
+                OI模式：按照得分进行排名，得分相等的，按照罚时排序（同ACM-ICPC）。
                 任意用户对于每一道题目的提交会根据通过数据的比例打分，满分100分；
                 请注意，每道题的得分将以最后一次提交作为最终成绩！
               </p>

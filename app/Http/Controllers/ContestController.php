@@ -259,6 +259,9 @@ class ContestController extends Controller
             return view('message', ['msg' => '该竞赛处于隐藏状态，不可查看榜单。']);
         }
 
+        // 根据判题类型，决定榜单类型，acm or oi？
+        $judge_type = request('judge_type') ?? $contest->judge_type;
+
         // ======================= 计算榜单结束时间 ======================
         // 注意：普通用户在封榜后受限制
         $rank_time = [
@@ -317,7 +320,7 @@ class ContestController extends Controller
 
 
         // ======================== 计算榜单 =======================
-        $calculate_rank = function ($contest, $end_date = null) use ($problems) {
+        $calculate_rank = function ($contest, $end_date = null) use ($problems, $judge_type) {
             // 查询所有提交记录
             $solutions = DB::table('solutions as s')
                 ->join('users', 's.user_id', '=', 'users.id')
@@ -390,7 +393,7 @@ class ContestController extends Controller
             }
 
             // 排序
-            uasort($users, $contest->judge_type == 'acm' ?
+            uasort($users, $judge_type == 'acm' ?
                 function ($x, $y) {
                     if ($x['solved'] != $y['solved'])
                         return $x['solved'] < $y['solved'];
@@ -440,7 +443,7 @@ class ContestController extends Controller
             if (request()->has('nick') && request('nick') != '' && stripos($user['nick'], request('nick')) === false) unset($users[$uid]);
             if (request()->has('username') && request('username') != '' && stripos($user['username'], request('username')) === false) unset($users[$uid]);
         }
-        return view('contest.rank', compact('contest', 'users', 'problems', 'rank_time'));
+        return view('contest.rank', compact('contest', 'users', 'problems', 'rank_time', 'judge_type'));
     }
 
     // 显示气球列表

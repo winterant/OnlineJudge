@@ -40,7 +40,7 @@
       <li class="nav-item">
         <a class="nav-link text-nowrap py-3 @if (preg_match('/^contest\.\S*rank$/', Route::currentRouteName())) active @endif"
           href="{{ route($contest->public_rank ? 'contest.rank' : 'contest.private_rank', [$contest->id, 'group' => $group->id ?? null]) }}">
-          {{ trans('main.Rank') }} [ {{ $contest->judge_type }} ]
+          {{ trans('main.Rank') }}
         </a>
       </li>
       {{-- <li class="nav-item">
