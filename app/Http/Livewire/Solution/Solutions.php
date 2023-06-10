@@ -13,6 +13,8 @@ class Solutions extends Component
     public ?int $contest_id = null, $group_id = null;
     public int $num_problems = 0;
 
+    public int $num_judging = 0;
+
     // query strings
     public int $index = -1; // 题目在竞赛中的序号
     public ?string $pid = null; // 题目真实编号
@@ -150,6 +152,13 @@ class Solutions extends Component
                 $s->ip = '-';
                 $s->ip_loc = '';
             }
+        }
+
+        // 统计判题中的数量，决定是否刷新页面
+        $this->num_judging = 0;
+        foreach ($this->solutions as $s) {
+            // $s->nick = null;
+            if ($s->result < 4) $this->num_judging++;
         }
         $this->solutions = json_decode(json_encode($this->solutions), true);
     }

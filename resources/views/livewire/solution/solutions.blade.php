@@ -1,5 +1,5 @@
 <div>
-  <div class="table-responsive">
+  <div class="table-responsive" @if($num_judging>0) wire:poll.visible.750ms="refresh" @endif>
     <table class="table table-hover">
       <thead>
         <tr>
