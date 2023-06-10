@@ -140,7 +140,7 @@
 
           <div id="div-spj-code" style="height:40rem">
             <x-code-editor html-prop-name-of-code="spj_code" html-prop-name-of-lang="problem[spj_language]"
-              :lang="$problem->spj_language ?? 14" :code="isset($problem) ? App\Http\Helpers\ProblemHelper::readSpj($problem->id) : null" title="特判代码" :use-local-storage="false" />
+              :lang="$problem->spj_language ?? 14" :code="$spj_code ?? null" title="特判代码" :use-local-storage="false" />
           </div>
           <div class="m-2 p-2 alert  alert-info">
             附《<a href="https://winterant.github.io/OnlineJudge/web/spj.html" target="_blank">特判使用教程</a>》

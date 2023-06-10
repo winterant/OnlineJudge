@@ -52,7 +52,8 @@ class ProblemController extends Controller
 
         $problem->tags = implode(',', json_decode($problem->tags ?? '[]', true)); // json => string
         $samples = ProblemHelper::readSamples($problem->id);
-        return view('admin.problem.edit', compact('pageTitle', 'problem', 'samples'));
+        $spj_code = ProblemHelper::readSpj($problem->id);
+        return view('admin.problem.edit', compact('pageTitle', 'problem', 'samples', 'spj_code'));
     }
 
     //管理标签
