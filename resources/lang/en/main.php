@@ -75,6 +75,7 @@ return [
     "Open-Source Code" => "Open-Source Code",
 
     //    user
+    "NumPeople"     => "People",
     "Captcha"       => "Captcha",
     "Confirm"       => "Confirm",
     "Cancel"        => "Cancel",
@@ -102,6 +103,7 @@ return [
     "Opened Problems" => "Opened Problems",
     "Submissions"   => "Submissions",
     "Accepted"      => "Accepted",
+    "AC"            => "AC",
     "Attempting"    => "Attempting",
 
     //problem

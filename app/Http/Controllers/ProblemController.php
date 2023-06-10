@@ -13,9 +13,9 @@ class ProblemController extends Controller
 {
     public function problems()
     {
-        $problems = DB::table('problems');
+        $problems = DB::table('problems as p');
         if (request()->has('tag_id') && request('tag_id') != '')
-            $problems = $problems->leftJoin('tag_marks', 'problem_id', '=', 'problems.id')
+            $problems = $problems->leftJoin('tag_marks', 'problem_id', '=', 'p.id')
                 ->where(function ($q) {
                     // 筛选民间标签标记的题目
                     $q->where('tag_id', request('tag_id'));
@@ -23,7 +23,14 @@ class ProblemController extends Controller
                     if ($official = (DB::table('tag_pool')->find(request('tag_id'))->name ?? false))
                         $q->orWhereRaw(sprintf("JSON_CONTAINS(tags, '\"%s\"')", $official));
                 });
-        $problems = $problems->select(['problems.id', 'title', 'source', 'hidden', 'solved', 'accepted', 'submitted'])
+
+        if (!in_array(request('sort'), ['id', 'title', 'source', 'accepted', 'solved', 'submitted', 'ac_rate']))
+            request()->offsetSet('sort', 'id');
+
+        $problems = $problems->select([
+            'p.id', 'title', 'source', 'hidden',
+            'solved', 'accepted', 'submitted', DB::raw('`accepted`/`submitted` as `ac_rate`')
+        ])
             ->when(!request()->has('show_hidden'), function ($q) {
                 return $q->where('hidden', 0);
             })
@@ -31,10 +38,10 @@ class ProblemController extends Controller
                 $q->where(function ($q) {
                     $q->where('title', 'like', '%' . request('kw') . '%')
                         ->orWhere('source', 'like', '%' . request('kw') . '%')
-                        ->orWhere('problems.id', request('kw'));
+                        ->orWhere('p.id', request('kw'));
                 });
             })
-            ->orderBy('problems.id')
+            ->orderBy(request('sort') ?? 'id', request()->has('reverse') ? 'desc' : 'asc')
             ->distinct()
             ->paginate(request()->has('perPage') ? request('perPage') : 100);
 

@@ -31,6 +31,24 @@
                   placeholder="{{ __('main.ID') }}/{{ __('main.Title') }}/{{ __('main.Source') }}" name="kw"
                   value="{{ request('kw') ?? '' }}">
               </div>
+
+              <div class="form-inline mx-2 d-none">
+                <input id="sort-field" type="text" placeholder="sort field" name="sort"
+                  value="{{ request('sort') ?? '' }}" onchange="this.form.submit()">
+                <input id="sort-reverse" type="checkbox" name="reverse" @if (request()->has('reverse')) checked @endif
+                  onchange="this.form.submit()">
+                <script>
+                  // 根据指定字段排序
+                  function resort(field) {
+                    if ($('#sort-field').val() != field) {
+                      $('#sort-field').val(field)
+                      $('#sort-field').trigger("change"); //触发事件
+                    } else
+                      $('#sort-reverse').click()
+                  }
+                </script>
+              </div>
+
               <button class="btn text-white bg-success ml-2">
                 <i class="fa fa-filter" aria-hidden="true"></i>
                 {{ __('main.Find') }}
@@ -42,10 +60,30 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>{{ trans('main.Title') }}</th>
-                  <th>{{ trans('main.Source') }}</th>
-                  <th>{{ trans('main.AC/Submitted') }}</th>
+                  <th>{{ __('main.ID') }}
+                    <a href="javascript:" onclick="resort('id')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                  </th>
+                  <th>{{ trans('main.Title') }}
+                    <a href="javascript:" onclick="resort('title')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                  </th>
+                  <th>{{ trans('main.Source') }}
+                    <a href="javascript:" onclick="resort('source')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                  </th>
+                  <th>
+                    {{ trans('main.AC') }}
+                    <a href="javascript:" onclick="resort('accepted')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                    (
+                    {{ trans('main.NumPeople') }}
+                    <a href="javascript:" onclick="resort('solved')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                    )
+                    /
+                    {{ trans('main.Submitted') }}
+                    <a href="javascript:" onclick="resort('submitted')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                    (
+                    {{ trans('main.ACRate') }}
+                    <a href="javascript:" onclick="resort('ac_rate')"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                    )
+                  </th>
                   <th>{{ __('main.Tag') }}</th>
                 </tr>
               </thead>
@@ -64,14 +102,17 @@
                         <span title="{{ $item->source }}">{{ $item->source }}</span>
                       </td>
                       <td nowrap>
-                        {{ $item->accepted }} / {{ $item->submitted }}
-                        ({{ round(($item->accepted / max(1.0, $item->submitted)) * 100) }}%)
+                        {{ $item->accepted }}
+                        (<i class="fa fa-user-o" aria-hidden="true"></i> {{ $item->solved }})
+                        /
+                        {{ $item->submitted }}
+                        ({{ round($item->ac_rate * 100) }}%)
                       </td>
                       <td>
                         @foreach ($item->tags as $tag)
                           <div class="d-inline text-nowrap mr-1">
-                            <i class="fa fa-tag" aria-hidden="true"></i><a
-                              href="javascript:findByTagId({{ $tag['id'] }})">{{ $tag['name'] }}</a>
+                            <i class="fa fa-tag" aria-hidden="true"></i>
+                            <a href="javascript:findByTagId({{ $tag['id'] }})">{{ $tag['name'] }}</a>
                           </div>
                         @endforeach
                       </td>

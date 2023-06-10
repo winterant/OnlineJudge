@@ -75,6 +75,7 @@ return [
     "Open-Source Code" => "开源代码",
 
     //    user
+    "NumPeople"     => "人数",
     "Captcha"       => "验证码",
     "Confirm"       => "确认",
     "Cancel"        => "取消",
@@ -102,6 +103,7 @@ return [
     "Opened Problems" => "已打开问题",
     "Submissions"   => "全部提交",
     "Accepted"      => "正确",
+    "AC"            => "正确",
     "Attempting"    => "正在尝试",
 
     //problem
@@ -119,7 +121,7 @@ return [
     "AC/Submitted"  => "正确/提交次数",
     "AC/Solved/Submitted"   => "正确/解决题目/提交次数",
     "Solved/Submitted"      => "解决题目/提交次数",
-    "ACRate"        => "提交正确率",
+    "ACRate"        => "正确率",
     "SolvedRate"    => "题目解决率",
     "Public"        => "公开",
     "Hidden"        => "隐藏",
