@@ -2,6 +2,7 @@
 
 namespace App\Http\Helpers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -186,5 +187,32 @@ class ProblemHelper
             }
         }
         return $tags;
+    }
+
+    // 查询某用户是否通过了某题，返回结果为4则AC，<4则判题中，>4则答案错误（尝试中）
+    public static function getUserResult($problem_id, $contest_id = null, $user_id = null)
+    {
+        // null,0，1，2，3都视为没做； 4视为Accepted；其余视为答案错误（尝试中）
+        $key = sprintf('problem:%d:user:%d:result', $problem_id, $user_id ?? Auth::id());
+        if ($contest_id)
+            $key = "contest:{$contest_id}:" . $key;
+        CacheHelper::has_key_with_autoclear_if_rejudged($key); // 若发生了重判，会强制清除缓存，然后下面重新查库
+        if (!Cache::has($key)) {
+            $result = DB::table('solutions')
+                ->when($contest_id, function ($q) use ($contest_id) {
+                    $q->where('contest_id', $contest_id);
+                })
+                ->where('problem_id', $problem_id)
+                ->where('user_id', $user_id ?? Auth::id())
+                ->where('result', '>=', 4)
+                ->min('result');
+            if ($result == 4) // 已经AC，长期保存
+                Cache::put($key, $result, 3600 * 24 * 30);
+            else if ($result !== null)
+                Cache::put($key, $result, 30);
+            return $result;
+        } else {
+            return Cache::get($key);
+        }
     }
 }
