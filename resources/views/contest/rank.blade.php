@@ -56,7 +56,7 @@
 
             {{-- 下载按钮 --}}
             <div class="float-left">
-              <button type="button" class="btn btn-sm" onclick="down_rank()">{{ __('main.Download') }}</button>
+              <button type="button" class="btn btn-sm btn-secondary" onclick="down_rank()">{{ __('main.Download') }}</button>
             </div>
 
             {{-- 实时更新榜单的按钮 --}}

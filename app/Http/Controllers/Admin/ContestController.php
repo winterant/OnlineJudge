@@ -109,22 +109,12 @@ class ContestController extends Controller
             unset($contest['cate_id']);
 
             // ======================= 题号列表 注意格式处理 =======================
-            $pids = [];
-            foreach (explode(PHP_EOL, $problem_ids) as &$item) {
-                $item = trim($item);
-                if (strlen($item) == 0)
-                    continue;
-                $line = explode('-', $item);
-
-                if (count($line) == 1) $pids[] = intval($line[0]);
-                else if (count($line) == 2)
-                    foreach (range(intval($line[0]), intval(($line[1]))) as $i) $pids[] = $i;
-            }
+            $pids = decode_str_to_array($problem_ids);
 
             // ======================= 必要的字段处理 =======================
             if (request('setToProblemList')) { // 设为题单，则标记开始时间=结束时间
-                $contest['start_time'] = date('Y-m-d H:i:s');
-                $contest['end_time'] = date('Y-m-d H:i:s');
+                $contest['start_time'] = $old_contest->created_at;
+                $contest['end_time'] = $old_contest->created_at;
             } else {
                 $contest['start_time'] = str_replace('T', ' ', $contest['start_time']);
                 $contest['end_time'] = str_replace('T', ' ', $contest['end_time']);
