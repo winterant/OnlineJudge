@@ -13,7 +13,7 @@ class CacheHelper
      *      这会迫使下游业务重新统计数据并缓存。
      * 关于solution stamp的生成，请参考/Http/Jobs/ResetSolutionStamp.php
      */
-    public static function has_key_relies_on_solutions_after_autoclear($cache_key)
+    public static function has_key_with_autoclear_if_rejudged($cache_key)
     {
         // 自动清除过期的缓存
         if (Cache::get($cache_key . ':cached:solution_stamp') != Cache::get('solution:solution_stamp')) {

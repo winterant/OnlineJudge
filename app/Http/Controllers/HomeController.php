@@ -29,7 +29,7 @@ class HomeController extends Controller
         $next_monday_time = $monday_time + 3600 * 24 * 7;
 
         $rk = 'home:cache:this_week_top10';
-        CacheHelper::has_key_relies_on_solutions_after_autoclear($rk);
+        CacheHelper::has_key_with_autoclear_if_rejudged($rk);
         $this_week = Cache::remember($rk, 3600, function () use ($monday_time) {
             $this_week = DB::table('solutions')
                 ->join('users', 'users.id', '=', 'solutions.user_id')
@@ -43,7 +43,7 @@ class HomeController extends Controller
         });
 
         $rk = 'home:cache:last_week_top10';
-        CacheHelper::has_key_relies_on_solutions_after_autoclear($rk);
+        CacheHelper::has_key_with_autoclear_if_rejudged($rk);
         $last_week = Cache::remember(
             $rk,
             $next_monday_time - time(),

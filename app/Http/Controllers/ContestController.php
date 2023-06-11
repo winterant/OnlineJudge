@@ -156,7 +156,7 @@ class ContestController extends Controller
 
                 // null,0，1，2，3都视为没做； 4视为Accepted；其余视为答案错误（尝试中）
                 $key = sprintf('problem:%d:user:%d:result', $problem->id, Auth::id());
-                CacheHelper::has_key_relies_on_solutions_after_autoclear($key); // 若发生了重判，会强制清除缓存，然后下面重新查库
+                CacheHelper::has_key_with_autoclear_if_rejudged($key); // 若发生了重判，会强制清除缓存，然后下面重新查库
                 if (!Cache::has($key)) {
                     $result = DB::table('solutions')
                         ->where('problem_id', $problem->id)
@@ -418,7 +418,7 @@ class ContestController extends Controller
         // ========================== 调用榜单 ============================
         $users = [];
         $key = sprintf('contest:%d:rank:%s:users', $contest->id, request('end'));
-        if (CacheHelper::has_key_relies_on_solutions_after_autoclear($key)) // 若发生了重判，先清除缓存，迫使下方业务重新计算榜单
+        if (CacheHelper::has_key_with_autoclear_if_rejudged($key)) // 若发生了重判，先清除缓存，迫使下方业务重新计算榜单
             $users = Cache::get($key);
         else {
             // 由于榜单计算非常耗时，加锁避免高并发，确保并发时，榜单只被计算一次

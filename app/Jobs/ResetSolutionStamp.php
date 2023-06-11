@@ -35,7 +35,7 @@ class ResetSolutionStamp implements ShouldQueue
      */
     public function handle()
     {
-        // 重新生成 solution stamp；请保持key名与App\Http\CacheHelper::has_key_relies_on_solutions_after_autoclear()中一致
+        // 重新生成 solution stamp；请保持key名与App\Http\CacheHelper::has_key_with_autoclear_if_rejudged()中一致
         Cache::put('solution:solution_stamp', uniqid());
     }
 }

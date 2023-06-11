@@ -60,6 +60,7 @@
             <table class="table table-hover">
               <thead>
                 <tr>
+                  <th width="1%"></th>
                   <th>{{ __('main.ID') }}
                     <a href="javascript:" onclick="resort('id')"><i class="fa fa-sort" aria-hidden="true"></i></a>
                   </th>
@@ -86,6 +87,13 @@
               <tbody>
                 @foreach ($problems as $item)
                   <tr>
+                    <td>
+                      @if ($item->result == 4)
+                          <i class="fa fa-check text-green" aria-hidden="true"></i>
+                        @elseif($item->result > 0)
+                          <i class="fa fa-pencil text-red" aria-hidden="true"></i>
+                        @endif
+                    </td>
                     <td>{{ $item->id }}</td>
                     @if ($item->hidden == 0 || (Auth::check() && Auth::user()->can('admin.problem.view')))
                       <td nowrap>
