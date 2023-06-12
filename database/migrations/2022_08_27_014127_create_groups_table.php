@@ -18,6 +18,7 @@ class CreateGroupsTable extends Migration
             $table->tinyInteger('type')->default(0); // 添加字段 群组类型
             $table->boolean('hidden')->default(1);
             $table->boolean('private')->default(1);
+            $table->boolean('unlock_contest')->default(0);// 若为1，则password竞赛在前一场全部AC时，将显示自己进入密码
             $table->string('name')->default('unamed');
             $table->text('description')->nullable();
             $table->string('teacher')->nullable()->comment('teacher\'s name');

@@ -19,8 +19,8 @@ class Solution extends Component
 
     public function mount($id = null, $only_details = false)
     {
-        $this->set_id($id);
         $this->only_details = $only_details;
+        $this->set_id($id);
     }
 
     // 重设solution id

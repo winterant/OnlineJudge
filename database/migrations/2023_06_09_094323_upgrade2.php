@@ -76,6 +76,9 @@ return new class extends Migration
             if (!Schema::hasColumn('groups', 'num_problems')) {
                 $table->integer('num_problems')->default(0); // 添加字段 题目总数
             }
+            if (!Schema::hasColumn('groups', 'unlock_contest')) {
+                $table->boolean('unlock_contest')->default(0);// 若为1，则password竞赛在前一场全部AC时，将显示自己进入密码
+            }
             // 改名
             if (Schema::hasColumn('groups', 'creator')) {
                 $table->renameColumn('creator', 'user_id');
