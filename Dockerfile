@@ -24,6 +24,13 @@ RUN set -ex &&\
 # Deploy laravel application.
 COPY . /app_src/
 
+# Install Code check tool sim.
+RUN cd /app_src &&\
+    apt install -y gcc make flex &&\
+    cp -rf install/sim/sim.1 /usr/share/man/man1/ &&\
+    cd install/sim/ && make install &&\
+    apt autoremove -y gcc make flex
+
 RUN cd /app_src &&\
     cp -rf .env.example .env &&\
     composer install --ignore-platform-reqs --no-dev -o &&\

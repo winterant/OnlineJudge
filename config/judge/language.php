@@ -16,8 +16,8 @@ $defaultCompile = [
 // 默认的运行配置
 $defaultRun = [
     'command' => './Main',
-    'stdoutMax' => 64 << 20, // 64MB
-    'stderrMax' => 10 << 10, // 10KB
+    'stdoutMax' => 128 << 20,  // 128MB
+    'stderrMax' => 10 << 10,   // 10KB
     'stackLimit' => 128 << 20, // 128MB
     'procLimit' => 128,
     'limit_amplify' => 1, // 运行时间、内存限制的放大倍数；C/C++之外的语言应当为2

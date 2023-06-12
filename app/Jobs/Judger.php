@@ -274,7 +274,10 @@ class Judger implements ShouldQueue
             $solution['time'] = $max_time;
             $solution['memory'] = $max_memory;
             if ($not_ac == 0) // 该solution完全正确
+            {
                 $solution['result'] = 4;
+                dispatch(new CodeReviewer($this->solution['id']));
+            }
         }
         $this->update_db_solution($solution); // 更新判题结果
     }

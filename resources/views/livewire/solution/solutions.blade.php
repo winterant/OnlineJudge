@@ -132,6 +132,7 @@
                   ({{ round($sol['pass_rate'] * 100) }}%)
                 @endif
               </span>
+              {{-- 由于代码查重晚于判题，可能查重结果出来时，页面已经不再更新，从而导致查重率只有在手动刷新页面后才显示 --}}
               @if (Auth::check() && Auth::user()->can('admin.solution.view') && $sol['sim_rate'] >= 50)
                 <a class="bg-sky px-1 text-black" style="border-radius: 3px"
                   href="{{ route('solution', $sol['sim_sid']) }}" target="_blank"
