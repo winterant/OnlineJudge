@@ -77,17 +77,16 @@ class CodeReviewer implements ShouldQueue
             ))->output();
 
             // 记录查重报告
-            if ($res ?? false) {
+            if (($res ?? false) && $res >= 50) {
                 $sim_report[] = [
                     'sim_sid' => $prev_sids[$i]->id,
                     'sim_rate' => (int)$res,
                 ];
-            }
-
-            // 只记录最大相似度
-            if ($sim_rate < ($res ?? 0)) {
-                $sim_rate = (int)$res;
-                $sim_sid = $prev_sids[$i]->id ?? null;
+                // 只记录最大相似度
+                if ($sim_rate < $res) {
+                    $sim_rate = (int)$res;
+                    $sim_sid = $prev_sids[$i]->id ?? null;
+                }
             }
         }
         if ($sim_sid)
