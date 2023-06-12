@@ -40,7 +40,7 @@ class ProblemsLink extends Component
 
         foreach ($this->problems as &$item) {
             // 当前用户在本题的提交结果。null,0，1，2，3都视为没做； 4视为Accepted；其余视为答案错误（尝试中）
-            $item->result = ProblemHelper::getUserResult($item->id, $contestId);
+            $item->result = ProblemHelper::getUserResult($item->id, $contestId, $userId);
         }
     }
 

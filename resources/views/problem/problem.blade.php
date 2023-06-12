@@ -100,8 +100,7 @@
           {{-- 编辑链接 --}}
           @if (Auth::check() && Auth::user()->can('admin.problem.update'))
             <span style="font-size: 0.85rem">
-              [ <a href="{{ route('admin.problem.update', $problem->id) }}"
-                target="_blank">{{ __('main.Edit') }}</a> ]
+              [ <a href="{{ route('admin.problem.update', $problem->id) }}" target="_blank">{{ __('main.Edit') }}</a> ]
               [ <a href="{{ route('admin.problem.test_data', ['pid' => $problem->id]) }}"
                 target="_blank">{{ __('main.Test Data') }}</a> ]
             </span>
@@ -210,7 +209,7 @@
       @endif --}}
 
       {{-- 已经AC的用户进行标签标记 --}}
-      @if (get_setting('problem_show_tag_collection') || (isset($contest) && $contest->enable_tagging))
+      @if ((!isset($contest) && get_setting('problem_show_tag_collection')) || (isset($contest) && $contest->enable_tagging))
         <x-problem.tag-collection :problem-id="$problem->id" :tags="$tags" />
       @endif
 
