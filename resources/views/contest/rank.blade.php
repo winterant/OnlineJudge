@@ -37,7 +37,7 @@
 
             {{-- 提交记录折线图 --}}
             <div>
-              <x-solution.line-chart :contest-id="$contest->id" :default-past="request('past') ?? '300i'" :end-time="strtotime($rank_time[request('end') ?? 'real_time']['date'])" />
+              @livewire('solution.line-chart', ['contestId' => $contest->id, 'defaultPast' => '300i', 'endTime' => strtotime($rank_time[request('end') ?? 'real_time']['date'])])
             </div>
 
             {{-- 榜单类型选择 --}}
@@ -56,7 +56,8 @@
 
             {{-- 下载按钮 --}}
             <div class="float-left">
-              <button type="button" class="btn btn-sm btn-secondary" onclick="down_rank()">{{ __('main.Download') }}</button>
+              <button type="button" class="btn btn-sm btn-secondary"
+                onclick="down_rank()">{{ __('main.Download') }}</button>
             </div>
 
             {{-- 实时更新榜单的按钮 --}}

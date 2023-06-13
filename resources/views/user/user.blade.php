@@ -83,7 +83,8 @@
                       {{ __('main.Class') }}]
                     @endif
                   </span>
-                  <a href="{{ route('group.members', [$item->id, 'username'=>$user->username]) }}" target="_blank">{{ $item->name }}</a>
+                  <a href="{{ route('group.members', [$item->id, 'username' => $user->username]) }}"
+                    target="_blank">{{ $item->name }}</a>
                   @if ($item->hidden)
                     <span class="text-nowrap" style="font-size: 0.9rem; right:1rem; top:1rem;">
                       <i class="fa fa-eye-slash ml-2" aria-hidden="true" title="{{ __('main.Hidden') }}"></i>
@@ -131,7 +132,7 @@
         <h6 class="text-center">{{ __('main.Solutions') }}</h6>
         {{-- 提交记录折线图 --}}
         <div>
-          <x-solution.line-chart default-past="12m" :user-id="$user->id" />
+          @livewire('solution.line-chart', ['userId' => $user->id, 'defaultPast' => '12m'], key($user->id))
         </div>
       </div>
       <hr>

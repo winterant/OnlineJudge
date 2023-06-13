@@ -72,7 +72,7 @@
           <div class="card-header pt-2 pb-0">
             <h3 class="text-center mb-0">{{ __('main.Solutions') }}</h3>
           </div>
-          <x-solution.line-chart />
+          @livewire('solution.line-chart')
         </div>
       </div>
 
