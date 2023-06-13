@@ -6,28 +6,28 @@
 
   <div @if (($solution['result'] ?? 0) < 4) wire:poll.visible.750ms="refresh" @endif>
     {{-- solution基本信息 --}}
-    <div @if (!$only_details) class="container" @endif>
-      <div
-        class="my-container alert
+    @if (!$only_details)
+      <div class="container">
+        <div
+          class="my-container alert
             @if (($solution['result'] ?? 0) < 4) alert-info
             @elseif(($solution['result'] ?? 0) == 4) alert-success
             @else alert-danger @endif">
-        <div style="font-size: 1.5rem">
-          @if (($solution['result'] ?? 0) < 4)
-            <i class="fa fa-refresh fa-lg" aria-hidden="true"></i>
-          @elseif(($solution['result'] ?? 0) == 4)
-            <i class="fa fa-check-circle fa-lg" aria-hidden="true"></i>
-          @else
-            <i class="fa fa-times fa-lg" aria-hidden="true"></i>
-          @endif
-          &nbsp;{{ __('result.' . config('judge.result.' . ($solution['result'] ?? 0))) }}
+          <div style="font-size: 1.5rem">
+            @if (($solution['result'] ?? 0) < 4)
+              <i class="fa fa-refresh fa-lg" aria-hidden="true"></i>
+            @elseif(($solution['result'] ?? 0) == 4)
+              <i class="fa fa-check-circle fa-lg" aria-hidden="true"></i>
+            @else
+              <i class="fa fa-times fa-lg" aria-hidden="true"></i>
+            @endif
+            &nbsp;{{ __('result.' . config('judge.result.' . ($solution['result'] ?? 0))) }}
 
-          @if (($solution['judge_type'] ?? null) != 'acm')
-            ({{ ($solution['pass_rate'] ?? 0) * 100 }}%)
-          @endif
-        </div>
+            @if (($solution['judge_type'] ?? null) != 'acm')
+              ({{ ($solution['pass_rate'] ?? 0) * 100 }}%)
+            @endif
+          </div>
 
-        @if (!$only_details)
           <div class="row mt-2">
             <div class="col-6 col-sm-2">{{ __('main.Solution') . ': ' . $solution['id'] }}</div>
             <div class="col-6 col-sm-2">{{ __('main.Problem') . ': ' }}
@@ -53,10 +53,10 @@
             <div class="col-6 col-sm-2">{{ __('main.Code Length') . ': ' . $solution['code_length'] }}B</div>
             <div class="col-12 col-sm-4">{{ __('main.Judge Time') . ': ' . $solution['judge_time'] }}</div>
           </div>
-        @endif
-
+        </div>
       </div>
-    </div>
+    @endif
+
 
     {{-- 展示测试点详情 --}}
     <div @if (!$only_details) class="container" @endif>
@@ -67,18 +67,33 @@
               @elseif (($solution['result'] ?? 0) == 4) alert-success
               @else alert-danger @endif p-2">
 
+          {{-- 判题结果 --}}
+          <span class="mr-2">
+            @if (($solution['result'] ?? 0) < 4)
+              <i class="fa fa-refresh fa-lg" aria-hidden="true"></i>
+            @elseif(($solution['result'] ?? 0) == 4)
+              <i class="fa fa-check-circle fa-lg" aria-hidden="true"></i>
+            @else
+              <i class="fa fa-times fa-lg" aria-hidden="true"></i>
+            @endif
+            &nbsp;{{ __('result.' . config('judge.result.' . ($solution['result'] ?? 0))) }}!
+          </span>
+
           {{-- 提示信息 --}}
-          @if (($solution['result'] ?? 0) < 0)
-            {{ __('sentence.please_submit_code') }}
-          @elseif (($solution['result'] ?? 0) <= 1)
-            {{ __('sentence.submitting') }}
-          @elseif(($solution['result'] ?? 0) < 4)
-            {{ __('sentence.judging') }}
-          @elseif (($solution['result'] ?? 0) == 4)
-            {{ __('sentence.pass_all_test') }}
-          @else
-            {{ __('sentence.WA') }}
-          @endif
+          <span>
+            @if (($solution['result'] ?? 0) < 0)
+              {{ __('sentence.please_submit_code') }}
+            @elseif (($solution['result'] ?? 0) <= 1)
+              {{ __('sentence.submitting') }}
+            @elseif(($solution['result'] ?? 0) < 4)
+              {{ __('sentence.judging') }}
+            @elseif (($solution['result'] ?? 0) == 4)
+              {{ __('sentence.pass_all_test') }}
+            @else
+              {{ __('sentence.WA') }}
+            @endif
+          </span>
+
           {{-- 通过率 --}}
           @if ($numDetails > 0)
             <span>({{ $numAccepted }}/{{ $numDetails }})</span>
