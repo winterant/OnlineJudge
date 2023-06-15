@@ -144,7 +144,7 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                <th>{{ __('main.ID') }}</th>
+                <th width="1">{{ __('main.ID') }}</th>
                 <th>{{ __('main.Title') }}</th>
                 <th>{{ __('main.Time') }}</th>
                 <th>{{ __('main.Access') }}</th>
@@ -198,6 +198,7 @@
                     </span>
                   </td>
                   <td>
+                    <i class="fa fa-users text-sky" aria-hidden="true"></i>
                     {{ $item->num_members }}
                   </td>
                   <td>
