@@ -42,7 +42,7 @@ class Solution extends Component
         // 判断权限
         /** @var App/Model/User */
         $user = Auth::user();
-        if (!$user->can_view_solution($this->sid)) {
+        if ($user == null || !$user->can_view_solution($this->sid)) {
             $this->msg = __('sentence.Permission denied');
             return;
         }
