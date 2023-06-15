@@ -31,9 +31,11 @@
     <div class="row">
       <div class="col-12">
         <div class="card">
-          <div class="w-100 bg-primary" style="height:4px"></div>
-          <div class="card-header pt-2 pb-0">
-            <h3 class="text-center mb-0">{{ __('main.Notice Board') }}</h3>
+          {{-- <div class="w-100 bg-gray" style="height:4px"></div> --}}
+          <div class="card-header pt-2 pb-0 border">
+            <h4 class="text-center">
+              <i class="fa fa-info mr-3" aria-hidden="true"></i>{{ __('main.Notice Board') }}
+            </h4>
           </div>
           <div class="card-body position-relative">
             @foreach ($notices as $item)
@@ -68,9 +70,10 @@
 
       <div class="col-12 mt-4">
         <div class="card">
-          <div class="w-100 bg-primary" style="height:4px"></div>
-          <div class="card-header pt-2 pb-0">
-            <h3 class="text-center mb-0">{{ __('main.Solutions') }}</h3>
+          <div class="card-header pt-2 pb-0 border">
+            <h4 class="text-center">
+              <i class="fa fa-line-chart mr-3" aria-hidden="true"></i>{{ __('main.Solutions') }}
+            </h4>
           </div>
           @livewire('solution.line-chart')
         </div>
@@ -78,13 +81,15 @@
 
       <div class="col-sm-6 mt-4">
         <div class="card">
-          <div class="w-100 bg-primary" style="height:4px"></div>
-          <div class="card-header pt-2 pb-0">
-            <a href="javascript:" class="pull-right" style="color: #838383"
-              onclick="whatisthis('自本周一以来的AC题目数量排行榜。每天更新一次。')">
+          <div class="card-header pt-2 pb-0 border">
+            <a href="javascript:" class="float-right" style="color: #838383"
+              onclick="whatisthis('@lang('sentence.explainThisWeek')')">
               <i class="fa fa-question-circle-o" aria-hidden="true"></i>
             </a>
-            <h3 class="text-center mb-0">{{ __('main.Top 10') }} {{ __('main.This Week') }}</h3>
+            <h4 class="text-center">
+              <i class="fa fa-sort-numeric-asc mr-3" aria-hidden="true"></i>{{ __('main.Top 10') }}
+              {{ __('main.This Week') }}
+            </h4>
           </div>
           <div class="card-body table-responsive">
             <table class="table table-hover border-bottom">
@@ -119,13 +124,15 @@
 
       <div class="col-sm-6 mt-4">
         <div class="card">
-          <div class="w-100 bg-primary" style="height:4px"></div>
-          <div class="card-header pt-2 pb-0">
-            <a href="javascript:" class="pull-right" style="color: #838383"
-              onclick="whatisthis('上周一至上周日七天内AC题目数量排行榜。每周一0点更新。')">
+          <div class="card-header pt-2 pb-0 border">
+            <a href="javascript:" class="float-right" style="color: #838383"
+              onclick="whatisthis('@lang('sentence.explainLastWeek')')">
               <i class="fa fa-question-circle-o" aria-hidden="true"></i>
             </a>
-            <h3 class="text-center mb-0">{{ __('main.Top 10') }} {{ __('main.Last Week') }}</h3>
+            <h4 class="text-center">
+              <i class="fa fa-sort-numeric-asc mr-3" aria-hidden="true"></i>{{ __('main.Top 10') }}
+              {{ __('main.Last Week') }}
+            </h4>
           </div>
           <div class="card-body table-responsive">
             <table class="table table-hover border-bottom">

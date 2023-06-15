@@ -12,6 +12,9 @@ return [
 
     "items per page"    => "项每页",
 
+    "explainLastWeek"   => "上周一00:00至上周日24:00七天内刷题数量排行榜",
+    "explainThisWeek"   => "本周一00:00至此时此刻的刷题数量排行榜",
+
     //    auth/register.blade.php
     "Must fill"         => "必填. a-z,A-Z or 0-9",
     "Non essential"     => "非必填",

@@ -1,3 +1,8 @@
+<style>
+  .nav-link{
+    color: black !important;
+  }
+</style>
 {{-- 移动端按钮 --}}
 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
   <span class="navbar-toggler-icon"></span>
@@ -32,7 +37,7 @@
     <li class="nav-item">
       <a class="nav-link text-nowrap p-2 @if (preg_match('/^group\S*$/', Route::currentRouteName())) active @endif"
         href="{{ route('groups', ['mygroups' => 'on']) }}">
-        <i class="fa fa-users" aria-hidden="true"></i>&nbsp;{{ trans('main.Groups') }}</i>
+        <i class="fa fa-users" aria-hidden="true">&nbsp;{{ trans('main.Groups') }}</i>
       </a>
     </li>
     <li class="nav-item">

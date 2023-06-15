@@ -72,5 +72,5 @@ function whatisthis(text) {
     Notiflix.Report.Init({
         plainText: false, //使<br>可以换行
     });
-    Notiflix.Report.Info('提示', text, '我知道了');
+    Notiflix.Report.Info('Tip', text, 'OK');
 }

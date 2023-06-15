@@ -65,12 +65,16 @@
 
       {{-- 题目内容 --}}
       <div class="p-3 border-bottom">
-        {{-- 非竞赛&&题目未公开，则提示 --}}
-        @if (!isset($contest) && $problem->hidden == 1)
-          [<span class="text-red">{{ trans('main.Hidden') }}</span>]
-        @endif
         <h4 class="text-center">
           {{ isset($contest) ? index2ch($problem->index) : $problem->id }}. {{ $problem->title }}
+
+          {{-- 非竞赛&&题目未公开，则提示 --}}
+          @if (!isset($contest) && $problem->hidden == 1)
+            <span class="m-2" style="font-size: 0.9rem; vertical-align: top;">
+              <i class="fa fa-eye-slash mr-1" aria-hidden="true"></i>
+              <span class="text-gray">{{ trans('main.Hidden') }}</span>
+            </span>
+          @endif
 
           {{-- 该题提交记录连接 --}}
           @if (isset($contest))

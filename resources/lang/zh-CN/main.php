@@ -205,8 +205,8 @@ return [
     "Penalty"       => "耗时",
     "Full screen"   => "全屏",
     "Up to now"     => "实时更新",
-    "Waiting"       => "等待",
-    "Running"       => "正在运行",
+    "Waiting"       => "等待中",
+    "Running"       => "正在进行",
     "Ended"         => "已结束",
     "Balloon"       => "气球",
     "Delivery"      => "派送",
@@ -217,6 +217,7 @@ return [
 
     "Contests involved" => "涉及竞赛",
 
+    "Simple Style"  => "简约风格",
 
     "ACM"           => "ACM",
     "OI"            => "OI",

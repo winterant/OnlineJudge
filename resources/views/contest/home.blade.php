@@ -140,11 +140,11 @@
                         @if ($item->result == 4)
                           <i class="fa fa-check text-green" aria-hidden="true"></i>
                         @elseif($item->result > 0)
-                          <i class="fa fa-pencil text-red" aria-hidden="true"></i>
+                          <i class="fa fa-pencil text-gray" aria-hidden="true"></i>
                         @endif
                       </td>
                       <td nowrap>{{ index2ch($item->index) }}</td>
-                      <td nowrap>
+                      <td>
                         @if (Auth::user()->can('admin.contest.view') || time() > strtotime($contest->start_time))
                           <a
                             href="{{ route('contest.problem', [$contest->id, $item->index, 'group' => request('group') ?? null]) }}">{{ $item->title }}</a>
@@ -171,7 +171,7 @@
                             @if ($item->problem->result == 4)
                               <i class="fa fa-check text-green" aria-hidden="true"></i>
                             @elseif($item->problem->result > 0)
-                              <i class="fa fa-pencil text-red" aria-hidden="true"></i>
+                              <i class="fa fa-pencil text-gray" aria-hidden="true"></i>
                             @endif
                           </span>
                         </td>
@@ -192,7 +192,7 @@
                         </td>
                       @endif
                       @if (isset($item->tags))
-                        <td nowrap>
+                        <td>
                           @foreach ($item->tags as $tag)
                             <div class="d-inline text-nowrap mr-1">
                               <i class="fa fa-tag" aria-hidden="true"></i><span>{{ $tag['name'] }}</span>

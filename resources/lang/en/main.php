@@ -160,7 +160,7 @@ return [
     "Blank Filling" => "Blank Filling",
 
     //    standing
-    "All"           => "All",
+    "All"           => "All ",
     "Year"          => "Year",
     "Month"         => "Month",
     "Week"          => "Week",
@@ -217,6 +217,7 @@ return [
 
     "Contests involved" => "Contests involved",
 
+    "Simple Style"  => "Simple Style",
 
     "ACM"           => "ACM",
     "OI"            => "OI",

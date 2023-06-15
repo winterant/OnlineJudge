@@ -91,7 +91,7 @@
                       @if ($item->result == 4)
                           <i class="fa fa-check text-green" aria-hidden="true"></i>
                         @elseif($item->result > 0)
-                          <i class="fa fa-pencil text-red" aria-hidden="true"></i>
+                          <i class="fa fa-pencil text-gray" aria-hidden="true"></i>
                         @endif
                     </td>
                     <td>{{ $item->id }}</td>
@@ -99,7 +99,8 @@
                       <td nowrap>
                         <a href="{{ route('problem', $item->id) }}">{{ $item->title }}</a>
                         @if ($item->hidden == 1)
-                          (<span class="text-red">{{ trans('main.Hidden') }}</span>)
+                        <i class="fa fa-eye-slash ml-2" aria-hidden="true"></i>
+                          <span class="text-gray">{{ trans('main.Hidden') }}</span>
                         @endif
                       </td>
                       <td>

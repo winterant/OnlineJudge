@@ -12,6 +12,9 @@ return [
 
     "items per page"    => "items per page",
 
+    "explainLastWeek"   => "Ranking of the number of problem solved within 7 days from 00:00 last Monday to 24:00 last Sunday.",
+    "explainThisWeek"   => "Ranking of the number of problem solved from 00:00 Monday to Now.",
+
 //    auth/register.blade.php
     "Must fill"         => "Must fill, use to login. a-z,A-Z or 0-9",
     "Non essential"     => "Non essential",

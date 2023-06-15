@@ -67,9 +67,21 @@ class ContestController extends Controller
             }
         }
 
+        // cookie记下是否使用简约风格
+        if (request()->has('simple_style')) {
+            Cookie::queue('unencrypted_contests_simple_style', 'on', 525600); // 1 years
+        } else {
+            if (request()->has('perPage')) { // 手动取消了简约风格
+                Cookie::queue(Cookie::forget('unencrypted_contests_simple_style'));
+            } else { // 前台没点简约风格，也没有手动取消，则尝试选择cookie中保存的模式
+                if (request()->hasCookie('unencrypted_contests_simple_style'))
+                    request()->offsetSet('simple_style', (request()->cookie('unencrypted_contests_simple_style')));
+            }
+        }
+
         //cookie记下默认每页显示的条数
         if (request()->has('perPage')) {
-            Cookie::queue('unencrypted_contests_default_perpage', request('perPage'), 5256000); // 10 years
+            Cookie::queue('unencrypted_contests_default_perpage', request('perPage'), 525600); // 1 years
         } else {
             request()->offsetSet('perPage', (request()->cookie('unencrypted_contests_default_perpage') ?? 10));
         }
@@ -153,7 +165,7 @@ class ContestController extends Controller
             foreach ($problems as &$problem) {
                 $problem->tags = ProblemHelper::getTags($problem->id);
                 $problem->problem = DB::table('problems')->select(['accepted', 'solved', 'submitted'])->find($problem->id);
-             // 当前用户在本题的提交结果。null,0，1，2，3都视为没做； 4视为Accepted；其余视为答案错误（尝试中）
+                // 当前用户在本题的提交结果。null,0，1，2，3都视为没做； 4视为Accepted；其余视为答案错误（尝试中）
                 $problem->problem->result = ProblemHelper::getUserResult($problem->id);
             }
         }
