@@ -8,7 +8,7 @@ $defaultEnv = [
 // 默认的编译配置
 $defaultCompile = [
     'compiled_filename' => 'Main', // 编译好的程序文件名，一般均为Main，java例外为*.class
-    'cpuLimit' => 10000000000,   // ns=10s
+    'cpuLimit' => 30000000000,   // ns=30s
     'memoryLimit' => 512 << 20,  // B=512MB
     'procLimit' => 128
 ];
