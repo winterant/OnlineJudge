@@ -60,7 +60,7 @@ class CodeReviewer implements ShouldQueue
 
         // 逐个代码对比
         [$sim_rate, $sim_sid, $sim_report] = [0, null, []];
-        foreach (array_reverse($prev_sids) as $i => $s) {
+        foreach (array_reverse($prev_sids) as $s) {
             $ext = pathinfo(config('judge.language.' . $solution->language)['filename'], PATHINFO_EXTENSION);
             if ($curr_ext != $ext) // 不同语言无需对比
                 continue;
@@ -79,13 +79,13 @@ class CodeReviewer implements ShouldQueue
             // 记录查重报告
             if (($res ?? false) && $res >= 50) {
                 $sim_report[] = [
-                    'sim_sid' => $prev_sids[$i]->id,
+                    'sim_sid' => $s->id,
                     'sim_rate' => (int)$res,
                 ];
                 // 只记录最大相似度
                 if ($sim_rate < $res) {
                     $sim_rate = (int)$res;
-                    $sim_sid = $prev_sids[$i]->id ?? null;
+                    $sim_sid = $s->id ?? null;
                 }
             }
         }
