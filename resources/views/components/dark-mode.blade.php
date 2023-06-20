@@ -35,7 +35,7 @@
   </a>
 </span>
 
-<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+<script src="{{ asset_ts('js/darkmode.min.js') }}"></script>
 <script>
   const darkmode = new Darkmode({
     mixColor: '#fff', // default: '#fff'
