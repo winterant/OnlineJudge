@@ -231,20 +231,20 @@
       <div class="border p-2">
 
         <div class="form-group">
-          <div class="pull-left">题号列表：</div>
+          <div class="pull-left">题目列表：</div>
           <label>
             @if (request()->has('pids'))
               {{ null, $pids[] = request('pids') }}
             @endif
-            <textarea name="problems" class="form-control-plaintext border bg-white" autoHeight cols="26"
-              placeholder="1024&#13;&#10;2048-2060&#13;&#10;每行一个题号,或一个区间">
+            <textarea name="problems" class="form-control-plaintext border bg-white" rows="10" cols="40"
+              placeholder="{Section Name}&#13;&#10;1000&#13;&#10;1024-1030&#13;&#10;每行可以填写以下三者之一：&#13;&#10;1. 一个题号,如1024&#13;&#10;2. 一个题号区间,如1024-1036&#13;&#10;3. 一个花括号括起来的小节名称,如{例题部分}">
 @foreach (isset($pids) ? $pids : [] as $item)
 {{ $item }}
 @endforeach
 </textarea>
           </label>
           <a href="javascript:" class="text-gray" style="vertical-align: top"
-            onclick="whatisthis('填写方法：<br>每行一个题号（如1024），或每行一个区间（如1024-1036）')">
+            onclick="whatisthis('每行可以填写以下三者之一：<br>1. 一个题号,如1024<br>2. 一个题号区间,如1024-1036<br>3. 一个花括号括起来的小节名称,如{例题部分}')">
             <i class="fa fa-question-circle-o" style="vertical-align: top" aria-hidden="true"></i>
           </a>
         </div>

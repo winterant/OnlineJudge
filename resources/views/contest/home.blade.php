@@ -18,7 +18,8 @@
           <h3 class="text-center">
             {{ $contest->title }}
             @if ($contest->end_time == $contest->start_time)
-            <span class="border bg-light px-1 text-sky" style="border-radius: 12px;font-size:0.85rem;vertical-align: top;">@lang('main.ProblemList')</span>
+              <span class="border bg-light px-1 text-sky"
+                style="border-radius: 12px;font-size:0.85rem;vertical-align: top;">@lang('main.ProblemList')</span>
             @endif
             @if (isset($notices) && count($notices))
               <span title="有公告">
@@ -115,96 +116,102 @@
 
           {{-- 题目列表 --}}
           @if (!($require_password ?? false))
-            <div class="table-responsive">
-              <table class="table table-sm table-hover">
-                <thead>
-                  <tr>
-                    <th width="5"></th>
-                    <th width="10">#</th>
-                    <th>{{ trans('main.Problem_timu') }}</th>
-                    <th>{{ trans('main.Type') }}</th>
-                    <th>{{ trans('main.AC/Submitted') }}</th>
-                    @if (isset($problems[0]->problem))
-                      <th class="border-left"></th>
-                      <th>{{ __('main.Source') }}</th>
-                    @endif
-                    @if (isset($problems[0]->tags))
-                      <th>{{ __('main.Tag') }}</th>
-                    @endif
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach ($problems as $item)
+            @for ($i = 0; $i < count($sections); $i++)
+              @if ($sections[$i]['name'] ?? false)
+                <h4 class="text-center text-sky">{{ $i + 1 }}.&ensp;&ensp;{{ $sections[$i]['name'] }}</h4>
+              @endif
+              <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                  <thead>
                     <tr>
-                      <td>
-                        @if ($item->result == 4)
-                          <i class="fa fa-check text-green" aria-hidden="true"></i>
-                        @elseif($item->result > 0)
-                          <i class="fa fa-pencil text-gray" aria-hidden="true"></i>
-                        @endif
-                      </td>
-                      <td nowrap>{{ index2ch($item->index) }}</td>
-                      <td>
-                        @if (Auth::user()->can('admin.contest.view') || time() > strtotime($contest->start_time))
-                          <a
-                            href="{{ route('contest.problem', [$contest->id, $item->index, 'group' => request('group') ?? null]) }}">{{ $item->title }}</a>
-                        @else
-                          -
-                        @endif
-                      </td>
-                      <td nowrap>{{ __($item->type === 0 ? 'main.Programing' : 'main.Blank Filling') }}</td>
-                      <td nowrap>
-                        @if ($item->submitted > 0)
-                          {{ $item->accepted }}
-                          (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>
-                          {{ $item->solved }})
-                          /
-                          {{ $item->submitted }}
-                        @else
-                          - / -
-                        @endif
-                      </td>
-
-                      @if (isset($item->problem))
-                        <td class="border-left" width="1%">
-                          <span>
-                            @if ($item->problem->result == 4)
-                              <i class="fa fa-check text-green" aria-hidden="true"></i>
-                            @elseif($item->problem->result > 0)
-                              <i class="fa fa-pencil text-gray" aria-hidden="true"></i>
-                            @endif
-                          </span>
-                        </td>
-                        <td nowrap>
-                          <span class="mr-2">
-                            <a href="{{ route('problem', $item->id) }}" target="_blank">
-                              @lang('main.Problem'){{ $item->id }}
-                            </a>
-                            <i class="fa fa-external-link text-sky" aria-hidden="true"></i>
-                          </span>
-                          <span>
-                            {{ $item->problem->accepted }}
-                            (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>
-                            {{ $item->problem->solved }})
-                            /
-                            {{ $item->problem->submitted }}
-                          </span>
-                        </td>
+                      <th width="1"></th>
+                      <th width="1">#</th>
+                      <th width="300">{{ trans('main.Problem_timu') }}</th>
+                      <th width="80">{{ trans('main.Type') }}</th>
+                      <th width="130">{{ trans('main.AC/Submitted') }}</th>
+                      @if (isset($problems[0]->problem))
+                        <th class="border-left"></th>
+                        <th>{{ __('main.Source') }}</th>
                       @endif
-                      @if (isset($item->tags))
-                        <td>
-                          @foreach ($item->tags as $tag)
-                            <div class="d-inline text-nowrap mr-1">
-                              <i class="fa fa-tag" aria-hidden="true"></i><span>{{ $tag['name'] }}</span>
-                            </div>
-                          @endforeach
-                        </td>
+                      @if (isset($problems[0]->tags))
+                        <th>{{ __('main.Tag') }}</th>
                       @endif
                     </tr>
-                  @endforeach
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    @for ($k = $sections[$i]['start']; $k < ($sections[$i + 1]['start'] ?? count($problems)); $k++)
+                      @php($item = $problems[$k])
+                      <tr>
+                        <td>
+                          @if ($item->result == 4)
+                            <i class="fa fa-check text-green" aria-hidden="true"></i>
+                          @elseif($item->result > 0)
+                            <i class="fa fa-pencil text-gray" aria-hidden="true"></i>
+                          @endif
+                        </td>
+                        <td nowrap>{{ index2ch($item->index) }}</td>
+                        <td>
+                          @if (Auth::user()->can('admin.contest.view') || time() > strtotime($contest->start_time))
+                            <a
+                              href="{{ route('contest.problem', [$contest->id, $item->index, 'group' => request('group') ?? null]) }}">{{ $item->title }}</a>
+                          @else
+                            -
+                          @endif
+                        </td>
+                        <td nowrap>{{ __($item->type === 0 ? 'main.Programing' : 'main.Blank Filling') }}</td>
+                        <td nowrap>
+                          @if ($item->submitted > 0)
+                            {{ $item->accepted }}
+                            (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>
+                            {{ $item->solved }})
+                            /
+                            {{ $item->submitted }}
+                          @else
+                            - / -
+                          @endif
+                        </td>
+
+                        @if (isset($item->problem))
+                          <td class="border-left" width="1%">
+                            <span>
+                              @if ($item->problem->result == 4)
+                                <i class="fa fa-check text-green" aria-hidden="true"></i>
+                              @elseif($item->problem->result > 0)
+                                <i class="fa fa-pencil text-gray" aria-hidden="true"></i>
+                              @endif
+                            </span>
+                          </td>
+                          <td nowrap>
+                            <span class="mr-2">
+                              <a href="{{ route('problem', $item->id) }}" target="_blank">
+                                @lang('main.Problem'){{ $item->id }}
+                              </a>
+                              <i class="fa fa-external-link text-sky" aria-hidden="true"></i>
+                            </span>
+                            <span>
+                              {{ $item->problem->accepted }}
+                              (<i class="fa fa-user-o text-sky" aria-hidden="true" style="padding:0 1px"></i>
+                              {{ $item->problem->solved }})
+                              /
+                              {{ $item->problem->submitted }}
+                            </span>
+                          </td>
+                        @endif
+                        @if (isset($item->tags))
+                          <td>
+                            @foreach ($item->tags as $tag)
+                              <div class="d-inline text-nowrap mr-1">
+                                <i class="fa fa-tag" aria-hidden="true"></i><span>{{ $tag['name'] }}</span>
+                              </div>
+                            @endforeach
+                          </td>
+                        @endif
+                      </tr>
+                    @endfor
+                  </tbody>
+                </table>
+              </div>
+            @endfor
           @endif
 
           {{-- 公告 --}}

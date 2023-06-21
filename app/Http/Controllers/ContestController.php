@@ -147,6 +147,7 @@ class ContestController extends Controller
         $contest = DB::table('contests')
             ->select([
                 'id', 'title', 'description', 'cate_id',
+                'sections',
                 'start_time', 'end_time',
                 'judge_type',
                 'access', 'password',
@@ -159,6 +160,11 @@ class ContestController extends Controller
         // 获取题目信息
         $problem_link = new ProblemsLink($id, null);
         $problems = $problem_link->problems;
+
+        // 获取分节信息
+        $sections = json_decode($contest->sections, true) ?? [];
+        if (empty($sections) || $sections[0]['start'] != 0)
+            array_unshift($sections, ['name' => null, 'start' => 0]); // 在最前面添加默认起始小节
 
         // 读取标签(官方+民间缓存）、题目原始信息【管理员 or 比赛结束】
         if ($user->can('admin.contest.view') || time() > strtotime($contest->end_time)) {
@@ -185,7 +191,7 @@ class ContestController extends Controller
             ->orderByDesc('id')
             ->get();
 
-        return view('contest.home', compact('contest', 'problems', 'files', 'notices'));
+        return view('contest.home', compact('contest', 'problems', 'sections', 'files', 'notices'));
     }
 
     // 题目详情

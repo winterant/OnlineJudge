@@ -30,6 +30,7 @@ class CreateContestsTable extends Migration
             $table->string('password', 40)->nullable();
             $table->bigInteger('user_id')->index()->nullable();
             $table->integer('num_members')->default(0); // 添加字段 参与成员数
+            $table->json('sections')->nullable();// 分节信息 [{'name':'Sample Section','start':int}, ...]
             $table->boolean('hidden')->index()->default(0);
             $table->bigInteger('order')->index()->default(0);
             $table->bigInteger('cate_id')->index()->default(0);

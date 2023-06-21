@@ -86,8 +86,13 @@ class ContestController extends Controller
                 ->where('contest_id', $id)
                 ->orderBy('contest_users.id')
                 ->pluck('username');
+            // 获取题号列表
             $pids = DB::table('contest_problems')->where('contest_id', $id)
-                ->orderBy('index')->pluck('problem_id');
+                ->orderBy('index')->pluck('problem_id')->toArray();
+            // 在题号列表中插入小节标题
+            foreach (array_reverse(json_decode($contest->sections, true) ?? []) as $section) {
+                array_splice($pids, $section['start'], 0, '{' . $section['name'] . '}');
+            }
             $files = [];
             foreach (Storage::allFiles('public/contest/files/' . $id) as &$item) {
                 $files[] = array_slice(explode('/', $item), -1, 1)[0];
@@ -108,9 +113,6 @@ class ContestController extends Controller
             (new ApiAdminContestController())->update_cate_id($id, $contest['cate_id']);
             unset($contest['cate_id']);
 
-            // ======================= 题号列表 注意格式处理 =======================
-            $pids = decode_str_to_array($problem_ids);
-
             // ======================= 必要的字段处理 =======================
             if (request('setToProblemList')) { // 设为题单，则标记开始时间=结束时间
                 $contest['start_time'] = $old_contest->created_at;
@@ -123,16 +125,23 @@ class ContestController extends Controller
                 unset($contest['password']);
             $contest['public_rank'] = isset($contest['public_rank']) ? 1 : 0; // 公开榜单
 
-            // ======================= 更新contests =======================
-            DB::table('contests')->where('id', $id)->update($contest);
-
             // ======================= 更新题号列表 =======================
             DB::table('contest_problems')->where('contest_id', $id)->update(['index' => -1]); //标记原来的题目为无效
-            foreach ($pids as $i => $pid) {
-                if (DB::table('problems')->find($pid)) // 更新index或插入新纪录
-                    DB::table('contest_problems')->updateOrInsert(['contest_id' => $id, 'problem_id' => $pid], ['index' => $i]);
+            $contest['sections'] = []; // 分节信息 [{'name':'Sample Section','start':int}, ...]
+            $index = 0;
+            foreach (decode_str_to_array($problem_ids) as $pid) {
+                // 花括号括起来的，看作小节名称
+                if (preg_match('/\{([\S ]+)\}/U', $pid, $matches) && isset($matches[1])) { // 当前pid不是题号而是一个小节名称
+                    $contest['sections'][] = ['name' => $matches[1], 'start' => $index]; // 小节名称和起始题号
+                } else if (DB::table('problems')->find($pid)) { // 更新index或插入新纪录（题目编号
+                    DB::table('contest_problems')->updateOrInsert(['contest_id' => $id, 'problem_id' => $pid], ['index' => $index]);
+                    ++$index;
+                }
             }
             DB::table('contest_problems')->where('contest_id', $id)->where('index', -1)->delete(); // 删除无效纪录
+
+            // ======================= 更新contests =======================
+            DB::table('contests')->where('id', $id)->update($contest);
 
             // ======================= 更新可参与用户 =======================
             if ($contest['access'] == 'private') {

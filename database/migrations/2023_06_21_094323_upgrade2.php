@@ -61,6 +61,10 @@ return new class extends Migration
             if (!Schema::hasColumn('contests', 'enable_tagging')) {
                 $table->boolean('enable_tagging')->default(0);
             }
+            // 添加 题目分节
+            if (!Schema::hasColumn('contests', 'problems')) {
+                $table->json('sections')->nullable(); // 分节信息 [{'name':'Sample Section','start':int}, ...]
+            }
         });
         Schema::table('contest_notices', function (Blueprint $table) {
             if (Schema::hasColumn('contest_notices', 'creator')) {
@@ -77,7 +81,7 @@ return new class extends Migration
                 $table->integer('num_problems')->default(0); // 添加字段 题目总数
             }
             if (!Schema::hasColumn('groups', 'unlock_contest')) {
-                $table->boolean('unlock_contest')->default(0);// 若为1，则password竞赛在前一场全部AC时，将显示自己进入密码
+                $table->boolean('unlock_contest')->default(0); // 若为1，则password竞赛在前一场全部AC时，将显示自己进入密码
             }
             // 改名
             if (Schema::hasColumn('groups', 'creator')) {
