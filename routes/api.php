@@ -81,9 +81,13 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::post('admin/problems', 'ProblemController@create')->name('admin.problem.create')->middleware('Permission:admin.problem.create');
         Route::patch('admin/problems/{id}', 'ProblemController@update')->name('admin.problem.update')->middleware('Permission:admin.problem.update');
         Route::patch('admin/problems/batch-to-one', 'ProblemController@update_batch_to_one')->name('admin.problem.update_batch_to_one')->middleware('Permission:admin.problem.update');
-        Route::delete('admin/problems/{id}', 'ProblemController@delete')->name('admin.problem.delete')->middleware('Permission:admin.problem.delete');// 创建人无法删除
+        Route::delete('admin/problems/{id}', 'ProblemController@delete')->name('admin.problem.delete')->middleware('Permission:admin.problem.delete'); // 创建人无法删除
         Route::get('admin/problem/export/download', 'ProblemController@download_exported_xml')->name('admin.problem.download_exported_xml')->middleware('Permission:admin.problem_xml.export');
         Route::delete('admin/problem/export/clear', 'ProblemController@clear_exported_xml')->name('admin.problem.clear_exported_xml')->middleware('Permission:admin.problem_xml');
+
+        // Manage problem test data
+        Route::get('admin/problems/{id}/data/{filename}', 'ProblemController@get_data')->name('admin.problem.get_data')->middleware('Permission:admin.problem_data.view');
+        Route::delete('admin/problems/{id}/data/batch', 'ProblemController@delete_data')->name('admin.problem.delete_data')->middleware('Permission:admin.problem_data.delete');
 
         // Manage tag and tag_pool
         Route::delete('problem/tags/batch', 'ProblemController@tag_delete_batch')->name('admin.problem.tag_delete_batch')->middleware('Permission:admin.problem_tag.delete');

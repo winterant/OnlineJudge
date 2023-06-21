@@ -56,7 +56,8 @@ class ProblemController extends Controller
         return view('admin.problem.edit', compact('pageTitle', 'problem', 'samples', 'spj_code'));
     }
 
-    //管理标签
+
+    // ======================== 管理题目标签 ===========================
     public function tags()
     {
         $tags = DB::table('tag_marks')
@@ -92,7 +93,7 @@ class ProblemController extends Controller
     }
 
 
-    // ============================== 测试数据管理（2.1未来版本将遗弃） ==============================
+    // ============================== 测试数据管理 ==============================
     // 测试数据管理页面 get
     public function test_data()
     {
@@ -133,17 +134,6 @@ class ProblemController extends Controller
         return 1;
     }
 
-    // ajax post
-    public function get_data(Request $request)
-    {
-        $pid = $request->input('pid');
-        $filename = $request->input('filename');
-        $filename = str_replace('../', '', $filename);
-        $filename = str_replace('/', '', $filename);
-        $data = file_get_contents(testdata_path($pid . '/test/' . $filename));
-        return json_encode($data);
-    }
-
     // form post
     public function update_data(Request $request)
     {
@@ -156,17 +146,8 @@ class ProblemController extends Controller
         return back();
     }
 
-    // ajax post
-    public function delete_data(Request $request)
-    {
-        $pid = $request->input('pid');
-        $fnames = $request->input('fnames');
-        foreach ($fnames as $filename)
-            if (file_exists(testdata_path($pid . '/test/' . $filename)))
-                unlink(testdata_path($pid . '/test/' . $filename));
-        return 1;
-    }
 
+    // =================== 题目的导入与导出 ========================
     // get
     public function import_export()
     {

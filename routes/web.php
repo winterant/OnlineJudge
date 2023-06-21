@@ -136,9 +136,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
         // ====================== Manage problem data
         Route::get('problem/test-data', 'Admin\ProblemController@test_data')->name('problem.test_data')->middleware('Permission:admin.problem_data.view');
         Route::post('problem/upload-data', 'Admin\ProblemController@upload_data')->name('problem.upload_data')->middleware('Permission:admin.problem_data.create');
-        Route::post('problem/get-data', 'Admin\ProblemController@get_data')->name('problem.get_data')->middleware('Permission:admin.problem_data.view');
         Route::post('problem/update-data', 'Admin\ProblemController@update_data')->name('problem.update_data')->middleware('Permission:admin.problem_data.update');
-        Route::post('problem/delete-data', 'Admin\ProblemController@delete_data')->name('problem.delete_data')->middleware('Permission:admin.problem_data.delete');
 
         // ====================== Manage problem import export
         Route::get('problem/import_export', 'Admin\ProblemController@import_export')->name('problem.import_export')->middleware('Permission:admin.problem_xml.view');

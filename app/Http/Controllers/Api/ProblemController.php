@@ -105,6 +105,27 @@ class ProblemController extends Controller
         return ['ok' => 1, 'msg' => sprintf("已成功删除%d条竞赛", $deleted)];
     }
 
+
+    // ================ 测试数据管理 =============================
+    public function get_data($pid, $filename)
+    {
+        $filename = str_replace('../', '', $filename);
+        $filename = str_replace('/', '', $filename);
+        $data = file_get_contents(testdata_path($pid . '/test/' . $filename));
+        return ['ok' => 1, 'data' => $data];
+    }
+
+    public function delete_data(Request $request, $pid)
+    {
+        $fnames = $request->input('fnames');
+        foreach ($fnames as $filename)
+            if (file_exists(testdata_path($pid . '/test/' . $filename)))
+                unlink(testdata_path($pid . '/test/' . $filename));
+        return ['ok' => 1, 'msg' => 'Deleted.'];
+    }
+
+
+    // ===================== 题目标签 ========================≠≠
     // 普通用户为已通过的题目贡献标签（题目涉及知识点）
     function submit_problem_tag(Request $request)
     {
