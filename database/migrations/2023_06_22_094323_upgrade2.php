@@ -62,7 +62,7 @@ return new class extends Migration
                 $table->boolean('enable_tagging')->default(0);
             }
             // 添加 题目分节
-            if (!Schema::hasColumn('contests', 'problems')) {
+            if (!Schema::hasColumn('contests', 'sections')) {
                 $table->json('sections')->nullable(); // 分节信息 [{'name':'Sample Section','start':int}, ...]
             }
         });

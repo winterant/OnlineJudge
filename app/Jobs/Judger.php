@@ -89,7 +89,7 @@ class Judger implements ShouldQueue
             // 获取spj代码
             $spj_code = ProblemHelper::readSpj($problem['id']);
             if ($spj_code == null) {
-                $this->update_db_solution(['result' => 14, 'error_info' => "[Special Judge Error] Special judge is open but no code was provided.\n"]); // 系统错误 14
+                $this->update_db_solution(['result' => 14, 'error_info' => "[Special Judge Error] Special judge is enabled but the code is not provided.\n"]); // 系统错误 14
                 return;
             }
             // 获取spj编译运行指令
