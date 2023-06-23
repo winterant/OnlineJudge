@@ -1,12 +1,12 @@
-# Sparks of Fire Online Judge (SparkOJ)
+# Sparks of Fire Online Judge (SparkOJ / LDUOJ)
 
 > A Single Spark Can Start A Prairie Fire  
 
 <div align="center">
-  <img src="public/favicon.ico" width="150px"/>
+  <img src="public/favicon.ico" width="120px"/>
 </div>
 
-English | [中文文档](https://winterant.github.io/OnlineJudge) | [Demo](http://47.104.232.254:8080)
+English | [中文文档](https://winant.gitee.io/lduoj-docs/) | [Demo](http://47.104.232.254:8080)
 
 # 💡 Introduction
 
