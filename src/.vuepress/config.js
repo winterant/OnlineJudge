@@ -2,7 +2,7 @@ module.exports = {
     title: 'SparkOJ',
     description: 'Sparks of Fire Online Judge',
     publicPath: './',
-    base: '/lduoj-docs/',
+    base: '/OnlineJudge/',
     themeConfig: {
         logo: '/favicon.ico',
         lastUpdated: '上次更新', // string | boolean
