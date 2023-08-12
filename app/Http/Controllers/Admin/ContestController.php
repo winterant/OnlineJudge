@@ -149,9 +149,9 @@ class ContestController extends Controller
                 foreach ($unames as &$item)
                     $item = trim($item); //去除多余空白符号\r
                 $new_uids = DB::table('users')->whereIn('username', $unames)->pluck('id')->toArray();
-                $old_uids = DB::table('contest_users')->where('contest_id', $id)->pluck('id')->toArray();
+                $old_uids = DB::table('contest_users')->where('contest_id', $id)->pluck('user_id')->toArray();
                 // 删除无效选手
-                DB::table('contest_users')->where('contest_id', $id)->whereIn('id', array_diff($old_uids, $new_uids))->delete();
+                DB::table('contest_users')->where('contest_id', $id)->whereIn('user_id', array_diff($old_uids, $new_uids))->delete();
                 // 添加新增选手
                 $new_uids = array_diff($new_uids, $old_uids);
                 foreach ($new_uids as &$u)
