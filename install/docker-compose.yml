@@ -19,7 +19,7 @@ services:
       - ./data/web/storage:/app/storage
 
   go-judge:
-    image: winterant/go-judge:1.0
+    image: winterant/go-judge:1.1
     container_name: lduoj-go-judge
     restart: always
     shm_size: 512m
