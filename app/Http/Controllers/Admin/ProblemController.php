@@ -28,7 +28,8 @@ class ProblemController extends Controller
             ->when(request()->has('kw') && request('kw'), function ($q) {
                 return $q->where('p.id', request('kw'))
                     ->orWhere('title', 'like', '%' . request('kw') . '%')
-                    ->orWhere('source', 'like', '%' . request('kw') . '%');
+                    ->orWhere('source', 'like', '%' . request('kw') . '%')
+                    ->orWhere('username', 'like', '%' . request('kw') . '%');
             })
             ->orderByDesc('p.id')
             ->paginate(request('perPage') ?? 100);

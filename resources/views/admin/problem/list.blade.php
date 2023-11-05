@@ -17,8 +17,7 @@
       题每页
     </div>
     <div class="form-inline mx-3">
-      <input class="form-control text-center" style="min-width:240px" placeholder="题目编号/标题/来源" name="kw"
-        value="{{ request('kw') ?? '' }}">
+      <input class="form-control text-center" style="min-width:240px" placeholder="题目编号/标题/来源/创建人" name="kw" value="{{ request('kw') ?? '' }}">
     </div>
     <button class="btn btn-secondary border">查询</button>
   </form>
@@ -56,10 +55,8 @@
       <tbody>
         @foreach ($problems as $item)
           <tr>
-            <td class="cb"
-              onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
-              <input type="checkbox" value="{{ $item->id }}" onclick="window.event.stopPropagation();"
-                style="vertical-align:middle;zoom: 140%">
+            <td class="cb" onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
+              <input type="checkbox" value="{{ $item->id }}" onclick="window.event.stopPropagation();" style="vertical-align:middle;zoom: 140%">
             </td>
             <td nowrap>{{ $item->id }}</td>
             <td><a href="{{ route('problem', $item->id) }}" target="_blank">{{ $item->title }}</a></td>
@@ -74,8 +71,7 @@
               {{ $item->submitted }}
             </td>
             <td nowrap>{{ $item->created_at }}</td>
-            <td><a @if ($item->creator) href="{{ route('user', $item->creator) }}" @endif
-                target="_blank">{{ $item->creator }}</a></td>
+            <td><a @if ($item->creator) href="{{ route('user', $item->creator) }}" @endif target="_blank">{{ $item->creator }}</a></td>
             <td nowrap>
               <input id="switch_hidden{{ $item->id }}" type="checkbox">
               <script type="text/javascript">
@@ -96,16 +92,13 @@
                             class="px-1" title="点击切换">{{$item->hidden?'**隐藏**':'公开'}}</a> --}}
             </td>
             <td nowrap>
-              <a href="{{ route('admin.problem.update', $item->id) }}" target="_blank" class="px-1"
-                data-toggle="tooltip" title="修改">
+              <a href="{{ route('admin.problem.update', $item->id) }}" target="_blank" class="px-1" data-toggle="tooltip" title="修改">
                 <i class="fa fa-edit" aria-hidden="true"></i> 编辑
               </a>
-              <a href="{{ route('admin.problem.test_data', ['pid' => $item->id]) }}" target="_blank" class="px-1"
-                data-toggle="tooltip" title="测试数据">
+              <a href="{{ route('admin.problem.test_data', ['pid' => $item->id]) }}" target="_blank" class="px-1" data-toggle="tooltip" title="测试数据">
                 <i class="fa fa-file" aria-hidden="true"></i> 测试数据
               </a>
-              <a href="javascript:" onclick="delete_problem({{ $item->id }}, this.parentNode.parentNode)"
-                class="mx-1">
+              <a href="javascript:" onclick="delete_problem({{ $item->id }}, this.parentNode.parentNode)" class="mx-1">
                 <i class="fa fa-trash" aria-hidden="true"></i> 删除
               </a>
             </td>
