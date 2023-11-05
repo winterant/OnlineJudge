@@ -11,8 +11,7 @@
     {{-- 编程题可以选择语言 --}}
     <div class="flex-nowrap mr-3">
       <span class="mr-2">{{ __('main.Language') }}:</span>
-      <select id="language{{ $domId }}" name="{{ $htmlPropNameOfLang }}" class="px-3 border"
-        style="text-align-last: center;border-radius: 4px;">
+      <select id="language{{ $domId }}" name="{{ $htmlPropNameOfLang }}" class="px-3 border" style="text-align-last: center;border-radius: 4px;">
         @foreach ($languages as $id => $name)
           <option value="{{ $id }}">{{ $name }}</option>
         @endforeach
@@ -21,12 +20,10 @@
 
     {{-- 编程题可以提交文件 --}}
     <div class="flex-nowrap mr-3">
-      <a id="btn_file{{ $domId }}" class="btn btn-sm btn-info btn-outline-info m-0 px-1" href="javascript:"
-        onclick="$('#file{{ $domId }}').click()"
+      <a id="btn_file{{ $domId }}" class="btn btn-sm btn-info btn-outline-info m-0 px-1" href="javascript:" onclick="$('#file{{ $domId }}').click()"
         style="border-radius: 4px;font-size:0.6rem;padding-top:0.18rem!important;padding-bottom:0.18rem!important">{{ __('main.Upload File') }}</a>
       {{-- <i class="fa fa-file-code-o fa-lg" aria-hidden="true"></i> --}}
-      <input type="file" class="form-control-file" id="file{{ $domId }}"
-        accept=".txt .c, .cc, .cpp, .java, .py" hidden />
+      <input type="file" class="form-control-file" id="file{{ $domId }}" accept=".txt, .c, .cc, .cpp, .java, .py, .go" hidden />
     </div>
 
     {{-- 编辑框主题 --}}
