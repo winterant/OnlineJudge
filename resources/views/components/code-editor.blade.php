@@ -133,8 +133,7 @@
 
       // ======================== 初始化填充代码 ===============================
       let solution_code = $('#codeeditor{{ $domId }}').val() // 已有的代码
-      let local_code_key =
-        "code_user{{ Auth::id() ?? null }}_url{{ url()->current() }}"
+      let local_code_key = "code_user{{ Auth::id() ?? null }}{{ $contestId ? '_contest' . $contestId : '' }}_problem{{ $problemId }}"
       if (solution_code != '')
         code_editor.setValue(solution_code) // 后端有代码
       else if (code_editor.getValue() == '' && localStorage.getItem(local_code_key)) // 有本地缓存的代码

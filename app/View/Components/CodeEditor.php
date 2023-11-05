@@ -21,9 +21,12 @@ class CodeEditor extends Component
     public $htmlPropNameOfCode; // textarea 代码的name属性
     public $code; // 初始代码
     public $lang; // 初始语言
+    // 当 $useLocalStorage == true 时，需要提供$problemId（必须）、$contestId（可选）作为缓存代码的索引
     public $useLocalStorage; // 是否让浏览器缓存已选中语言、已编辑代码
+    public $contestId;
+    public $problemId;
 
-    public function __construct($htmlPropNameOfLang, $htmlPropNameOfCode, $lang = null, $code = '', array $languages = null, $bitlanguages = null, $title = null, $useLocalStorage = true)
+    public function __construct($htmlPropNameOfLang, $htmlPropNameOfCode, $lang = null, $code = '', array $languages = null, $bitlanguages = null, $title = null, $useLocalStorage = true, $problemId = null, $contestId = null)
     {
         $this->title = $title;
         $this->domId = uniqid('code_editor_');
@@ -31,7 +34,9 @@ class CodeEditor extends Component
         $this->htmlPropNameOfCode = $htmlPropNameOfCode;
         $this->code = $code;
         $this->lang = $lang;
-        $this->useLocalStorage = $useLocalStorage ?? true; // 默认使用缓存
+        $this->useLocalStorage = $useLocalStorage ?? false; // 默认不使用缓存
+        $this->contestId = $contestId;
+        $this->problemId = $problemId;
         // 指定语言列表
         $this->languages = $languages ?? config('judge.lang');
         // 二进制位选取语言
