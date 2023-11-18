@@ -141,7 +141,6 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
         // ====================== Manage problem import export
         Route::get('problem/import_export', 'Admin\ProblemController@import_export')->name('problem.import_export')->middleware('Permission:admin.problem_xml.view');
         Route::post('problem/import', 'Admin\ProblemController@import')->name('problem.import')->middleware('Permission:admin.problem_xml.import');
-        Route::post('problem/export', 'Admin\ProblemController@export')->name('problem.export')->middleware('Permission:admin.problem_xml.export');
 
         // ====================== Manage solution rejudge
         Route::any('solution/rejudge', 'Admin\SolutionController@rejudge')->name('solution.rejudge')->middleware('Permission:admin.solution.rejudge');

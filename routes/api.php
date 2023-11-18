@@ -77,12 +77,16 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::post('admin/user/roles/{id}/users/batch', 'UserController@role_add_users')->name('admin.user.role_add_users')->middleware('Permission:admin.user_role.update');
         Route::delete('admin/user/roles/{id}/users/{uid}', 'UserController@role_delete_user')->name('admin.user.role_delete_user')->middleware('Permission:admin.user_role.delete');
 
+
         // Manage problem: route('api.admin.problem.*')
         Route::post('admin/problems', 'ProblemController@create')->name('admin.problem.create')->middleware('Permission:admin.problem.create');
         Route::patch('admin/problems/{id}', 'ProblemController@update')->name('admin.problem.update')->middleware('Permission:admin.problem.update');
         Route::patch('admin/problems/batch-to-one', 'ProblemController@update_batch_to_one')->name('admin.problem.update_batch_to_one')->middleware('Permission:admin.problem.update');
         Route::delete('admin/problems/{id}', 'ProblemController@delete')->name('admin.problem.delete')->middleware('Permission:admin.problem.delete'); // 创建人无法删除
+
+        // Manage problem's exporting and importing
         Route::get('admin/problem/export/download', 'ProblemController@download_exported_xml')->name('admin.problem.download_exported_xml')->middleware('Permission:admin.problem_xml.export');
+        Route::post('admin/problem/export', 'ProblemController@export_problems')->name('admin.problem.export')->middleware('Permission:admin.problem_xml.export');
         Route::delete('admin/problem/export/clear', 'ProblemController@clear_exported_xml')->name('admin.problem.clear_exported_xml')->middleware('Permission:admin.problem_xml');
 
         // Manage problem test data
@@ -94,6 +98,7 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::patch('problem/tag_pool/{id}', 'ProblemController@tag_pool_update')->name('admin.problem.tag_pool_update')->middleware('Permission:admin.problem_tag.update');
         Route::patch('problem/tag_pool/batch', 'ProblemController@tag_pool_update_batch')->name('admin.problem.tag_pool_update_batch')->middleware('Permission:admin.problem_tag.update');
         Route::delete('problem/tag_pool/batch', 'ProblemController@tag_pool_delete_batch')->name('admin.problem.tag_pool_delete_batch')->middleware('Permission:admin.problem_tag.delete');
+
 
         // Manage contest: route('api.admin.contest.*')
         Route::delete('admin/contests/{id}', 'ContestController@delete')->name('admin.contest.delete')->middleware('Permission:admin.contest.delete');
@@ -110,6 +115,7 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::patch('admin/contest-categaries/{id}', 'ContestController@update_contest_cate')->name('admin.contest.update_contest_cate')->middleware('Permission:admin.contest_cate.update');
         Route::delete('admin/contest-categaries/{id}', 'ContestController@delete_contest_cate')->name('admin.contest.delete_contest_cate')->middleware('Permission:admin.contest_cate.delete');
         Route::patch('admin/contest-categaries/{id}/order/{shift}', 'ContestController@update_contest_cate_order')->name('admin.contest.update_contest_cate_order')->middleware('Permission:admin.contest_cate.update');
+
 
         // Manage group: route('api.admin.group.*')
         Route::post('admin/groups', 'GroupController@create')->name('admin.group.create')->middleware('Permission:admin.group.create');
@@ -130,6 +136,7 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::get('admin/groups/{id}/members/{username}/archive', 'GroupController@get_archive')->name('admin.group.get_archive')->middleware('Permission:admin.group.view,groups.{id}.user_id');
         Route::get('admin/groups/{id}/members/{username}/archive-history', 'GroupController@get_archive_history')->name('admin.group.get_archive_history')->middleware('Permission:admin.group.view,groups.{id}.user_id');
         Route::patch('admin/groups/{id}/members/{username}', 'GroupController@update_archive')->name('admin.group.update_archive')->middleware('Permission:admin.group.update,groups.{id}.user_id');
+
 
         // settings
         Route::patch('admin/settings', 'SettingController@settings')->name('admin.settings')->middleware('Permission:admin.setting.update');

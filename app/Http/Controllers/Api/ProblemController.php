@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\DBHelper;
 use App\Http\Helpers\ProblemHelper;
+use App\Jobs\ExportProblems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -55,7 +56,7 @@ class ProblemController extends Controller
         ///保存样例
         $samp_ins = (array)$request->input('sample_ins');
         $samp_outs = (array)$request->input('sample_outs');
-        ProblemHelper::saveSamples($id, $samp_ins, $samp_outs); //保存样例
+        ProblemHelper::saveSamples($id, $samp_ins, $samp_outs); // 保存样例
 
         // 保存spj
         if ($problem['spj'])
@@ -176,6 +177,7 @@ class ProblemController extends Controller
             'msg' => 'Failed to update!'
         ];
     }
+
     /**
      * 批量更新groups记录
      *
@@ -200,21 +202,45 @@ class ProblemController extends Controller
     public function tag_pool_delete_batch(Request $request)
     {
         $tids = $request->input('ids') ?: [];
-        DB::table('tag_marks')->whereIn('tag_id', $tids)->delete(); //先删除用户提交的标记
+        DB::table('tag_marks')->whereIn('tag_id', $tids)->delete(); // 先删除用户提交的标记
         return DB::table('tag_pool')->whereIn('id', $tids)->delete();
     }
 
 
+    // ============================= 题目导入与导出 ==============================
+    // 导出（异步队列）
+    public function export_problems(Request $request): array
+    {
+        // 处理题号为int数组
+        $problem_ids = decode_str_to_array($request->input('pids'));
+
+        // 文件夹不存在则创建
+        $dir = "temp/exported_problems";
+        if (!Storage::exists($dir))
+            Storage::makeDirectory($dir);
+
+        // 根据传入题号命名文件名
+        $filename = str_replace(["\r\n", "\r", "\n"], ',', trim($request->input('pids')));
+        $filename = sprintf('%s[%s]%s', date('YmdHis'), Auth::user()->username ?? "unknown", $filename);
+        if (strlen($filename) > 36) // 文件名过长用省略号代替
+            $filename = substr($filename, 0, 36) . '...';
+        $filepath = sprintf('%s/%s.xml', $dir, $filename);
+
+        Log::info("dispatch problem exporting job: ", [$problem_ids, $filepath]);
+        dispatch(new ExportProblems($problem_ids, $filepath));
+        return ['ok' => 1, 'msg' => "已发起导出任务，请稍后在历史列表中下载{$filename}.xml"];
+    }
+
     // 管理员下载xml文件
     public function download_exported_xml(Request $request)
     {
-        return Storage::download('temp/exported/' . request('filename'));
+        return Storage::download('temp/exported_problems/' . request('filename'));
     }
 
     // 管理员清空历史xml
     public function clear_exported_xml(Request $request)
     {
-        Storage::delete(Storage::allFiles('temp/exported'));
+        Storage::delete(Storage::allFiles('temp/exported_problems'));
         return ['ok' => 1, 'msg' => '已清空'];
     }
 }
