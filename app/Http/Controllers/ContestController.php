@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\CacheHelper;
+use App\Http\Helpers\ContestHelper;
 use App\Http\Helpers\ProblemHelper;
 use App\View\Components\Contest\ProblemsLink;
 use Illuminate\Http\Request;
@@ -21,10 +22,9 @@ class ContestController extends Controller
         /** @var \App\Models\User */
         $user = Auth::user();
 
-        //获取当前所处的类别
+        // 获取当前所处的类别
         $current_cate = DB::table('contest_cate')->find(request('cate') ?? 0);
-
-        //类别不存在，则自动跳转到默认竞赛(可能是cookie保存的)
+        // 类别不存在，则自动跳转到默认竞赛(可能是cookie保存的)
         if (!$current_cate) {
             $current_cate = DB::table('contest_cate')
                 ->find(request()->cookie('unencrypted_contests_default_cate'));
@@ -33,39 +33,11 @@ class ContestController extends Controller
             if (!$current_cate)
                 return view('message', ['msg' => '竞赛中没有任何可用类别，请管理员前往后台添加类别！']);
         }
-
         // 获取父类别（有可能不存在，则为null）
         $current_cate->parent = DB::table('contest_cate')->select(['title'])->find($current_cate->parent_id);
 
         // cookie记下上次访问的类别，下次默认直接访问它
         Cookie::queue('unencrypted_contests_default_cate', $current_cate->id, 5256000); // 10 years
-
-        // 拿到所有的类别
-        $categories = DB::table('contest_cate as cc')
-            ->leftJoin('contest_cate as father', 'father.id', 'cc.parent_id')
-            ->select([
-                'cc.id', 'cc.title', 'cc.description', 'cc.hidden',
-                'cc.order', 'cc.parent_id',
-                'cc.updated_at', 'cc.created_at',
-                'father.title as parent_title',
-                DB::raw('(case cc.parent_id when 0 then 1 else 0 end) as is_parent'),
-                DB::raw('(case cc.parent_id when 0 then cc.id else cc.parent_id end) as l1_cate')
-            ])
-            ->orderBy('l1_cate') // 1 全局，统一按一级类别的order，同一大类挨在一起
-            ->orderByDesc('is_parent') // 2 同一父类下，父类排在首位
-            ->orderBy('cc.order') // 3 同一父类下的二级类别，按自身order排序
-            ->get();
-
-        // 统计子类别数量
-        $current_parent = $categories[0] ?? null;
-        foreach ($categories as $i => &$c) {
-            $c->num_sons = 0; // 每个类别默认有0个孩子类别
-            if ($c->is_parent) {
-                $current_parent = $c; // 记下当前是一个一级类别
-            } else {
-                $current_parent->num_sons++; // 当前是小类别，那么一级类别就要加一个孩子
-            }
-        }
 
         // cookie记下是否使用简约风格
         if (request()->has('simple_style')) {
@@ -79,7 +51,7 @@ class ContestController extends Controller
             }
         }
 
-        //cookie记下默认每页显示的条数
+        // cookie记下默认每页显示的条数
         if (request()->has('perPage')) {
             Cookie::queue('unencrypted_contests_default_perpage', request('perPage'), 525600); // 1 years
         } else {
@@ -95,8 +67,10 @@ class ContestController extends Controller
             ])
             ->where('cate_id', $current_cate->id)
             ->when(in_array(request('state') ?? null, ['waiting', 'running', 'ended']), function ($q) {
-                if (request('state') == 'ended') return $q->where('end_time', '<', date('Y-m-d H:i:s'));
-                else if (request('state') == 'waiting') return $q->where('start_time', '>', date('Y-m-d H:i:s'));
+                if (request('state') == 'ended')
+                    return $q->where('end_time', '<', date('Y-m-d H:i:s'));
+                else if (request('state') == 'waiting')
+                    return $q->where('start_time', '>', date('Y-m-d H:i:s'));
                 else return $q->where('start_time', '<', date('Y-m-d H:i:s'))->where('end_time', '>', date('Y-m-d H:i:s'));
             })
             ->when(in_array(request('judge_type') ?? null, ['acm', 'oi']), function ($q) {
@@ -111,6 +85,9 @@ class ContestController extends Controller
             ->orderByDesc('c.order')
             ->paginate(request('perPage') ?? 10);
 
+        // 拿到所有的类别
+        $categories = ContestHelper::get_categories();
+
         return view('contest.contests', compact('contests', 'categories', 'current_cate'));
     }
 
@@ -124,11 +101,11 @@ class ContestController extends Controller
         if ($request->isMethod('get')) {
             return view('contest.home', compact('contest', 'require_password'));
         }
-        if ($request->isMethod('post')) //接收提交的密码
+        if ($request->isMethod('post')) // 接收提交的密码
         {
-            if ($request->input('pwd') == $contest->password) //通过验证
+            if ($request->input('pwd') == $contest->password) // 通过验证
             {
-                DB::table('contest_users')->updateOrInsert(['contest_id' => $contest->id, 'user_id' => Auth::id()]); //保存
+                DB::table('contest_users')->updateOrInsert(['contest_id' => $contest->id, 'user_id' => Auth::id()]); // 保存
                 return redirect(route('contest.home', $contest->id));
             } else {
                 $msg = trans('sentence.pwd wrong');
@@ -176,12 +153,12 @@ class ContestController extends Controller
             }
         }
 
-        //读取附件，位于storage/app/public/contest/files/$cid/*
+        // 读取附件，位于storage/app/public/contest/files/$cid/*
         $files = [];
         foreach (Storage::allFiles('public/contest/files/' . $id) as &$item) {
             $files[] = [
-                array_slice(explode('/', $item), -1, 1)[0], //文件名
-                Storage::url($item),   //url
+                array_slice(explode('/', $item), -1, 1)[0], // 文件名
+                Storage::url($item),   // url
             ];
         }
 
@@ -254,7 +231,7 @@ class ContestController extends Controller
             return redirect(route('contest.private_rank', $id));
         }
 
-        //对于隐藏的竞赛，普通用户不能查看榜单
+        // 对于隐藏的竞赛，普通用户不能查看榜单
         /** @var \App\Models\User */
         $user = Auth::user();
         if ($contest->hidden && !$user->can('admin.contest.view')) {
@@ -387,7 +364,7 @@ class ContestController extends Controller
                     }
                     // oi得分，以最后得分为准
                     $user['score'] -= $user[$index]['score'];
-                    $user[$index]['score'] = $solution->pass_rate * 100; //百分制
+                    $user[$index]['score'] = $solution->pass_rate * 100; // 百分制
                     $user['score'] += $user[$index]['score']; // oi得分
                     // 尝试次数
                     $user[$index]['tries']++;
@@ -440,10 +417,14 @@ class ContestController extends Controller
 
         // =========================== 模糊查询 ========================
         foreach ($users as $uid => &$user) {
-            if (request()->has('school') && request('school') != '' && stripos($user['school'], request('school')) === false) unset($users[$uid]);
-            if (request()->has('class') && request('class') != '' && stripos($user['class'], request('class')) === false) unset($users[$uid]);
-            if (request()->has('nick') && request('nick') != '' && stripos($user['nick'], request('nick')) === false) unset($users[$uid]);
-            if (request()->has('username') && request('username') != '' && stripos($user['username'], request('username')) === false) unset($users[$uid]);
+            if (request()->has('school') && request('school') != '' && stripos($user['school'], request('school')) === false)
+                unset($users[$uid]);
+            if (request()->has('class') && request('class') != '' && stripos($user['class'], request('class')) === false)
+                unset($users[$uid]);
+            if (request()->has('nick') && request('nick') != '' && stripos($user['nick'], request('nick')) === false)
+                unset($users[$uid]);
+            if (request()->has('username') && request('username') != '' && stripos($user['username'], request('username')) === false)
+                unset($users[$uid]);
         }
         return view('contest.rank', compact('contest', 'users', 'problems', 'rank_time', 'judge_type'));
     }
@@ -452,7 +433,7 @@ class ContestController extends Controller
     public function balloons($id)
     {
         $contest = DB::table('contests')->find($id);
-        //扫描新增AC记录，添加到气球队列
+        // 扫描新增AC记录，添加到气球队列
         $max_added_sid = DB::table('contest_balloons')
             ->join('solutions', 'solutions.id', '=', 'solution_id')
             ->where('contest_id', $id)->max('solution_id');
@@ -474,7 +455,7 @@ class ContestController extends Controller
         }
         DB::table('contest_balloons')->insert($new_balloons);
 
-        //读取气球队列
+        // 读取气球队列
         $balloons = DB::table('contest_balloons')
             ->join('solutions', 'solutions.id', '=', 'solution_id')
             ->join('contest_problems', 'solutions.problem_id', '=', 'contest_problems.problem_id')
@@ -493,7 +474,7 @@ class ContestController extends Controller
     // 动作：派送气球
     public function deliver_ball($id, $bid)
     {
-        //送一个气球，更新一条气球记录
+        // 送一个气球，更新一条气球记录
         DB::table('contest_balloons')->where('id', $bid)->update(['sent' => 1, 'send_time' => date('Y-m-d H:i:s')]);
         return back();
     }

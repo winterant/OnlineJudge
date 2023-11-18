@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Api\ContestController as ApiAdminContestController;
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\ContestHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -11,34 +12,16 @@ use Illuminate\Support\Facades\Storage;
 
 class ContestController extends Controller
 {
-    private function get_categories()
-    {
-        $categories = DB::table('contest_cate as cc')
-            ->leftJoin('contest_cate as father', 'father.id', 'cc.parent_id')
-            ->select([
-                'cc.id', 'cc.title', 'cc.description', 'cc.hidden',
-                'cc.order', 'cc.parent_id',
-                'cc.updated_at', 'cc.created_at',
-                'father.title as parent_title',
-                DB::raw('(case cc.parent_id when 0 then 1 else 0 end) as is_parent'),
-                DB::raw('(case cc.parent_id when 0 then cc.id else cc.parent_id end) as l1_cate')
-            ])
-            ->orderBy('l1_cate') // 1 全局，统一按一级类别的order，同一大类挨在一起
-            ->orderByDesc('is_parent') // 2 同一父类下，父类排在首位
-            ->orderBy('cc.order') // 3 同一父类下的二级类别，按自身order排序
-            ->get();
-        // dd($categories);
-        return $categories;
-    }
-
     public function list()
     {
         $contests = DB::table('contests as c')
             ->leftJoin('users', 'users.id', '=', 'user_id')
             ->select(['c.*', 'username'])
             ->when(request()->has('state') && request('state') != 'all', function ($q) {
-                if (request('state') == 'ended') return $q->where('end_time', '<', date('Y-m-d H:i:s'));
-                else if (request('state') == 'waiting') return $q->where('start_time', '>', date('Y-m-d H:i:s'));
+                if (request('state') == 'ended')
+                    return $q->where('end_time', '<', date('Y-m-d H:i:s'));
+                else if (request('state') == 'waiting')
+                    return $q->where('start_time', '>', date('Y-m-d H:i:s'));
                 else return $q->where('start_time', '<', date('Y-m-d H:i:s'))->where('end_time', '>', date('Y-m-d H:i:s'));
             })
             ->when(request()->has('cate_id') && request('cate_id') != null, function ($q) {
@@ -53,7 +36,7 @@ class ContestController extends Controller
             ->orderByDesc(request()->has('cate_id') && request('cate_id') !== '' ? 'c.order' : 'c.id')
             ->paginate(request('perPage') ?? 10);
 
-        $categories = $this->get_categories();
+        $categories = ContestHelper::get_categories();
         return view('admin.contest.list', compact('contests', 'categories'));
     }
 
@@ -61,7 +44,7 @@ class ContestController extends Controller
     {
         if ($request->isMethod('get')) {
             $pageTitle = '创建竞赛';
-            $categories = $this->get_categories();
+            $categories = ContestHelper::get_categories();
             return view('admin.contest.edit', compact('pageTitle', 'categories'));
         }
         if ($request->isMethod('post')) {
@@ -98,7 +81,7 @@ class ContestController extends Controller
                 $files[] = array_slice(explode('/', $item), -1, 1)[0];
             }
             $pageTitle = '修改竞赛';
-            $categories = $this->get_categories();
+            $categories = ContestHelper::get_categories();
             return view('admin.contest.edit', compact('pageTitle', 'contest', 'unames', 'pids', 'files', 'categories'));
         }
         if ($request->isMethod('post')) {
@@ -106,7 +89,7 @@ class ContestController extends Controller
 
             $contest = $request->input('contest');
             $problem_ids = $request->input('problems');
-            $c_users = $request->input('contest_users'); //指定用户
+            $c_users = $request->input('contest_users'); // 指定用户
 
             // ======================= 类别 特别注意 =============================
             // 竞赛类别单独处理。竞赛类别改动时，涉及order的变动
@@ -126,7 +109,7 @@ class ContestController extends Controller
             $contest['public_rank'] = isset($contest['public_rank']) ? 1 : 0; // 公开榜单
 
             // ======================= 更新题号列表 =======================
-            DB::table('contest_problems')->where('contest_id', $id)->update(['index' => -1]); //标记原来的题目为无效
+            DB::table('contest_problems')->where('contest_id', $id)->update(['index' => -1]); // 标记原来的题目为无效
             $contest['sections'] = []; // 分节信息 [{'name':'Sample Section','start':int}, ...]
             $index = 0;
             foreach (decode_str_to_array($problem_ids) as $pid) {
@@ -147,7 +130,7 @@ class ContestController extends Controller
             if ($contest['access'] == 'private') {
                 $unames = explode(PHP_EOL, $c_users);
                 foreach ($unames as &$item)
-                    $item = trim($item); //去除多余空白符号\r
+                    $item = trim($item); // 去除多余空白符号\r
                 $new_uids = DB::table('users')->whereIn('username', $unames)->pluck('id')->toArray();
                 $old_uids = DB::table('contest_users')->where('contest_id', $id)->pluck('user_id')->toArray();
                 // 删除无效选手
@@ -168,9 +151,9 @@ class ContestController extends Controller
             // =========================== 附件 =============================
             $files = $request->file('files') ?: [];
             $allowed_ext = ["txt", "pdf", "doc", "docx", "xls", "xlsx", "csv", "ppt", "pptx"];
-            foreach ($files as $file) {     //保存附件
+            foreach ($files as $file) {     // 保存附件
                 if (in_array($file->getClientOriginalExtension(), $allowed_ext)) {
-                    $file->move(storage_path('app/public/contest/files/' . $id), $file->getClientOriginalName()); //保存附件
+                    $file->move(storage_path('app/public/contest/files/' . $id), $file->getClientOriginalName()); // 保存附件
                 }
             }
             $msg = sprintf('成功更新竞赛：<a href="%s">%d</a>', route('contest.home', $id), $id);
@@ -189,9 +172,9 @@ class ContestController extends Controller
             $contest->num_members = 0; // 参与人数归零
             $contest->user_id = Auth::id(); // 创建人
             $contest->order = DB::table('contests')->where('cate_id', $contest->cate_id)->max('order') + 1; // 顺序
-            //复制竞赛主体
+            // 复制竞赛主体
             $cloned_cid = DB::table('contests')->insertGetId((array)$contest);
-            //复制题号
+            // 复制题号
             $con_problems = DB::table('contest_problems')
                 ->distinct()->select('problem_id', 'index')
                 ->where('contest_id', $cid)
@@ -202,8 +185,8 @@ class ContestController extends Controller
             DB::table('contest_problems')->insert($cps);
             // 复制附件
             foreach (Storage::allFiles('public/contest/files/' . $cid) as $fp) {
-                $name = pathinfo($fp, PATHINFO_FILENAME);  //文件名
-                $ext = pathinfo($fp, PATHINFO_EXTENSION);    //拓展名
+                $name = pathinfo($fp, PATHINFO_FILENAME);  // 文件名
+                $ext = pathinfo($fp, PATHINFO_EXTENSION);    // 拓展名
                 Storage::copy($fp, 'public/contest/files/' . $cloned_cid . '/' . $name . $ext);
             }
 
@@ -238,7 +221,7 @@ class ContestController extends Controller
     /*****************************  类别   ***********************************/
     public function categories(Request $request)
     {
-        $categories = $this->get_categories();
+        $categories = ContestHelper::get_categories();
         return view('admin.contest.categories', compact('categories'));
     }
 }
