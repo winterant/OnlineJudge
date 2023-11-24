@@ -92,10 +92,10 @@
                             class="px-1" title="点击切换">{{$item->hidden?'**隐藏**':'公开'}}</a> --}}
             </td>
             <td nowrap>
-              <a href="{{ route('admin.problem.update', $item->id) }}" target="_blank" class="px-1" data-toggle="tooltip" title="修改">
+              <a href="{{ route('admin.problem.update', $item->id) }}" target="_blank" class="px-1">
                 <i class="fa fa-edit" aria-hidden="true"></i> 编辑
               </a>
-              <a href="{{ route('admin.problem.test_data', ['pid' => $item->id]) }}" target="_blank" class="px-1" data-toggle="tooltip" title="测试数据">
+              <a href="{{ route('admin.problem.test_data', ['pid' => $item->id]) }}" target="_blank" class="px-1">
                 <i class="fa fa-file" aria-hidden="true"></i> 测试数据
               </a>
               <a href="javascript:" onclick="delete_problem({{ $item->id }}, this.parentNode.parentNode)" class="mx-1">
