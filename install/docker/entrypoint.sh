@@ -29,28 +29,6 @@ function mod_env(){
     sed -i "s/^.\?$2\s\?=.*$/$2=${3//\//\\\/}/" $1
 }
 
-########### laravel .env
-mod_env .env "APP_DEBUG"         ${APP_DEBUG:-false}
-mod_env .env "HREF_FORCE_HTTPS"  ${HREF_FORCE_HTTPS:-false}
-mod_env .env "JUDGE_SERVER"      ${JUDGE_SERVER:-"go-judge:5050"}
-mod_env .env "DB_CONNECTION"     ${DB_CONNECTION:-mysql}
-mod_env .env "DB_HOST"           ${DB_HOST:-mysql}
-mod_env .env "DB_PORT"           ${DB_PORT:-3306}
-mod_env .env "DB_DATABASE"       ${DB_DATABASE:-lduoj}
-mod_env .env "DB_USERNAME"       ${DB_USERNAME:-oj_user}
-mod_env .env "DB_PASSWORD"       ${DB_PASSWORD:-OurFuture2045}
-mod_env .env "REDIS_HOST"        ${REDIS_HOST:-redis}
-mod_env .env "REDIS_PORT"        ${REDIS_PORT:-6379}
-mod_env .env "REDIS_PASSWORD"    ${REDIS_PASSWORD:-YourRedisPassword2012}
-mod_env .env "MAIL_MAILER"       ${MAIL_MAILER:-smtp}
-mod_env .env "MAIL_HOST"         ${MAIL_HOST:-smtp.qq.com}
-mod_env .env "MAIL_PORT"         ${MAIL_PORT:-465}
-mod_env .env "MAIL_ENCRYPTION"   ${MAIL_ENCRYPTION:-ssl}
-mod_env .env "MAIL_USERNAME"     ${MAIL_USERNAME}
-mod_env .env "MAIL_PASSWORD"     ${MAIL_PASSWORD}
-mod_env .env "MAIL_FROM_ADDRESS" ${MAIL_FROM_ADDRESS}
-mod_env .env "MAIL_FROM_NAME"    "\"${MAIL_FROM_NAME:-LDUOJ}\""
-
 ########### config php-fpm pool
 fpm=/etc/php/8.1/fpm/pool.d/www.conf
 mod_env ${fpm} "pm"                   ${fpm_pm:-dynamic}
@@ -99,8 +77,7 @@ bash storage/logs/php-fpm/auto-clear-log.sh 2>&1 &
 ##########################################################################
 # Start laravel-queue.
 ##########################################################################
-mod_env /etc/supervisor/conf.d/judge-queue.conf \
-    "numprocs" ${JUDGE_MAX_RUNNING:-$[(`nproc`+1)/2]}
+mod_env /etc/supervisor/conf.d/judge-queue.conf "numprocs" ${JUDGE_MAX_RUNNING:-$[(`nproc`+1)/2]}
 supervisord                # Start up supervisor
 supervisorctl update       # Detect changes to existing config files
 supervisorctl start all    # Start all processes

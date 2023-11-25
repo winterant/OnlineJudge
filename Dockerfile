@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-# Required software and their configs
+# 安装运行环境
 RUN set -ex &&\
     sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.aliyun.com\/ubuntu/g' /etc/apt/sources.list &&\
     apt update && apt upgrade -y &&\
@@ -21,21 +21,24 @@ RUN set -ex &&\
     export LC_ALL=en_US.UTF-8 &&\
     export LANG=en_US.UTF-8
 
-# Deploy laravel application.
+# 拷贝项目源码
 COPY . /app_src/
 
-# Install Code check tool sim.
+# 安装代码查重工具sim
 RUN cd /app_src &&\
+    apt update &&\
     apt install -y gcc make flex &&\
     cp -rf install/sim/sim.1 /usr/share/man/man1/ &&\
     cd install/sim/ && make install &&\
     apt autoremove -y gcc make flex
 
+# 安装laravel依赖
 RUN cd /app_src &&\
     cp -rf .env.example .env &&\
     composer install --ignore-platform-reqs --no-dev -o &&\
     composer dump-autoload --optimize --no-dev
 
+# 部署配置文件
 RUN cd /app_src &&\
     # docker entrypoint
     cp install/docker/entrypoint.sh /docker-entrypoint.sh &&\

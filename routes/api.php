@@ -13,6 +13,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// 访问/api时返回的提示信息
+Route::get("/", function () {
+    return [
+        'msg' => 'Welcome to use lduoj API! This is a GET request. ' .
+            'In principle, the return format of lduoj api is consistent, as shown in the value of `response_example`.',
+        'response_example' => [
+            'ok' => 1,
+            'msg' => 'Request processed successfully!',
+            'data' => [
+                'current_time' => date('Y-m-d H:i:s'),
+                'other_data' => 'Hello world'
+            ]
+        ]
+    ];
+});
+
+
 Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+', 'shift' => '^(\-|\+)?[0-9]+'])->group(function () {
     // ========================= CK editor upload image API =========================
     /**
