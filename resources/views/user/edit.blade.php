@@ -10,15 +10,14 @@
           <div class="card-header">{{ trans('main.User') }}：{{ $user->username }}</div>
 
           <div class="card-body">
-            <form method="POST" action="">
+            <form method="POST" action="{{route('user.update', $user->username)}}">
               @csrf
               <div class="form-group row">
                 <label for="email" class="col-md-4 col-form-label text-md-right">
                   {{ trans('main.E-Mail') }}：
                 </label>
                 <div class="col-md-6">
-                  <input id="email" type="email" class="form-control" name="user[email]" value="{{ $user->email }}"
-                    placeholder="可选">
+                  <input id="email" type="email" class="form-control" name="user[email]" value="{{ $user->email }}" placeholder="可选">
                 </div>
               </div>
 
@@ -28,8 +27,7 @@
                 </label>
 
                 <div class="col-md-6">
-                  <input id="school" type="text" class="form-control" name="user[school]"
-                    value="{{ $user->school }}">
+                  <input id="school" type="text" class="form-control" name="user[school]" value="{{ $user->school }}">
                 </div>
               </div>
 
@@ -39,8 +37,7 @@
                 </label>
 
                 <div class="col-md-6">
-                  <input id="class" type="text" class="form-control" name="user[class]"
-                    value="{{ $user->class }}">
+                  <input id="class" type="text" class="form-control" name="user[class]" value="{{ $user->class }}">
                 </div>
               </div>
 

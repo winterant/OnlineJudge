@@ -75,6 +75,7 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
         Route::get('contests/{id}/private_rank', 'ContestController@rank')->name('contest.private_rank'); // 私有榜单
         Route::middleware('Permission:admin.contest_balloon')->group(function () {
             Route::get('contests/{id}/balloons', 'ContestController@balloons')->name('contest.balloons');
+            // todo 气球派送页面使用livewire重写
             Route::post('contests/{id}/deliver_ball/{bid}', 'ContestController@deliver_ball')->name('contest.deliver_ball');
         });
     });
@@ -94,7 +95,8 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
     // ================================ 用户（users） ================================
     Route::get('/standings', 'UserController@standings')->name('standings');
     Route::get('/users/{username}', 'UserController@user')->name('user');
-    Route::any('/users/{username}/edit', 'UserController@edit')->name('user.edit')->middleware('Permission:admin.user.update,users.{username}.id');
+    Route::get('/users/{username}/edit', 'UserController@edit')->name('user.edit')->middleware('Permission:admin.user.update,users.{username}.id');
+    Route::post('/users/{username}', 'UserController@edit')->name('user.update')->middleware('Permission:admin.user.update,users.{username}.id');
     Route::any('/users/{username}/reset-password', 'UserController@password_reset')->name('password_reset')->middleware('Permission:admin.user.update,users.{username}.id');
 
 

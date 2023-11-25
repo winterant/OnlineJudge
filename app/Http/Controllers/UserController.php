@@ -58,16 +58,24 @@ class UserController extends Controller
     public function edit(Request $request, $username)
     {
         $user = User::where('username', $username)->first(); // 要修改的user
+        if ($user === null) {
+            return view('message', ['msg' => 'User does not exist']);
+        }
 
         if (Auth::id() == $user->id && $user->revise <= 0)     // 是本人&&没有修改次数
-            return view('message', ['msg' => trans('sentence.forbid_edit')]); // 不允许本人修改
+        {
+            /** @var \App\Models\User */
+            $online_user = Auth::user();
+            if (!$online_user->can('admin.user.update')) // 不是管理员
+                return view('message', ['msg' => trans('sentence.forbid_edit')]); // 不允许本人修改
+        }
 
-        // 提供修改界面
+        // GET 提供修改界面
         if ($request->isMethod('get')) {
             return view('user.edit', compact('user'));
         }
 
-        // 提交修改资料
+        // POST 提交修改资料
         if ($request->isMethod('post')) {
             $user = $request->input('user');
             if (!isset($user['school']))
