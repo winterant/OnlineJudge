@@ -137,21 +137,6 @@
       </form>
     </div>
 
-    <div class="my-container bg-white">
-      <h4>公告设置</h4>
-      <hr>
-      <form onsubmit="return submit_settings(this)" method="post">
-        <div class="input-group mt-2">
-          <div class="input-group-prepend">
-            <span class="input-group-text">滚动公告：</span>
-          </div>
-          <input type="text" name="marquee_notice_id" value="{{ get_setting('marquee_notice_id') }}"
-            class="form-control" autocomplete="off" placeholder="请填写一个公告编号，对应公告将在前台页面顶端滚动显示；不填则无滚动公告">
-        </div>
-        <button class="btn text-white mt-4 bg-success">保存</button>
-      </form>
-    </div>
-
     <form id="form_switch" onsubmit="return submit_settings(this)" method="post">
       @csrf
       <div class="my-container bg-white">

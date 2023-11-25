@@ -5,6 +5,18 @@
 @section('content')
 
   <h2>公告列表</h2>
+
+  <form onsubmit="submit_settings(this); return false" method="post">
+    <div class="form-inline mt-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text">前台滚动公告：</span>
+      </div>
+      <input type="number" name="marquee_notice_id" value="{{ get_setting('marquee_notice_id') }}"
+             class="form-control" autocomplete="off" placeholder="填写公告编号">
+      <button class="btn text-white bg-success ml-2">保存</button>
+    </div>
+  </form>
+
   <div class="float-left">
     {{ $notices->appends($_GET)->links() }}
     <a href="javascript:$('td input[type=checkbox]').prop('checked',true)" class="btn btn-secondary border">全选</a>
@@ -21,45 +33,45 @@
   <div class="table-responsive">
     <table class="table table-striped table-hover table-sm" style="table-layout:automatic;">
       <thead>
-        <tr>
-          <th></th>
-          <th>编号</th>
-          <th>标题</th>
-          <th>状态</th>
-          <th>创建时间</th>
-          <th>上次修改</th>
-          <th>最后修改者</th>
-          <th>操作</th>
-        </tr>
+      <tr>
+        <th></th>
+        <th>编号</th>
+        <th>标题</th>
+        <th>状态</th>
+        <th>创建时间</th>
+        <th>上次修改</th>
+        <th>最后修改者</th>
+        <th>操作</th>
+      </tr>
       </thead>
       <tbody>
-        @foreach ($notices as $item)
-          <tr>
-            <td onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
-              <input type="checkbox" value="{{ $item->id }}" onclick="window.event.stopPropagation();"
-                style="vertical-align:middle;zoom: 140%">
-            </td>
-            <td>{{ $item->id }}</td>
-            <td>
-              <a href="javascript:" onclick="get_notice('{{ $item->id }}')" data-toggle="modal"
-                data-target="#modal_notice">{{ $item->title }}</a>
-            </td>
-            <td nowrap><a href="javascript:"
-                onclick="update_state('{{ ($item->state + 1) % 3 }}',{{ $item->id }})">{{ ['隐藏', '公开', '首页置顶'][$item->state] }}</a>
-            </td>
-            <td nowrap>{{ $item->created_at }}</td>
-            <td nowrap>{{ $item->updated_at }}</td>
-            <td nowrap><a href="{{ route('user', $item->username ?: 0) }}">{{ $item->username }}</a></td>
-            <td nowrap>
-              <a href="{{ route('admin.notice.update', $item->id) }}" class="px-1" target="_blank" title="修改">
-                <i class="fa fa-edit" aria-hidden="true"></i> 编辑
-              </a>
-              <a href="javascript:" onclick="delete_notice({{ $item->id }})" class="px-1" title="删除">
-                <i class="fa fa-trash" aria-hidden="true"></i> 删除
-              </a>
-            </td>
-          </tr>
-        @endforeach
+      @foreach ($notices as $item)
+        <tr>
+          <td onclick="var cb=$(this).find('input[type=checkbox]');cb.prop('checked',!cb.prop('checked'))">
+            <input type="checkbox" value="{{ $item->id }}" onclick="window.event.stopPropagation();"
+                   style="vertical-align:middle;zoom: 140%">
+          </td>
+          <td>{{ $item->id }}</td>
+          <td>
+            <a href="javascript:" onclick="get_notice('{{ $item->id }}')" data-toggle="modal"
+               data-target="#modal_notice">{{ $item->title }}</a>
+          </td>
+          <td nowrap><a href="javascript:"
+                        onclick="update_state('{{ ($item->state + 1) % 3 }}',{{ $item->id }})">{{ ['隐藏', '公开', '首页置顶'][$item->state] }}</a>
+          </td>
+          <td nowrap>{{ $item->created_at }}</td>
+          <td nowrap>{{ $item->updated_at }}</td>
+          <td nowrap><a href="{{ route('user', $item->username ?: 0) }}">{{ $item->username }}</a></td>
+          <td nowrap>
+            <a href="{{ route('admin.notice.update', $item->id) }}" class="px-1" target="_blank" title="修改">
+              <i class="fa fa-edit" aria-hidden="true"></i> 编辑
+            </a>
+            <a href="javascript:" onclick="delete_notice({{ $item->id }})" class="px-1" title="删除">
+              <i class="fa fa-trash" aria-hidden="true"></i> 删除
+            </a>
+          </td>
+        </tr>
+      @endforeach
       </tbody>
     </table>
     {{ $notices->appends($_GET)->links() }}
@@ -92,7 +104,7 @@
     function get_notice(notice_id) {
       $.get(
         '{{ route('api.notice.get_notice', '??') }}'.replace('??', notice_id), {},
-        function(ret) {
+        function (ret) {
           console.log(ret)
           $("#notice-title").html(ret.data.title)
           $("#notice-content").html(
@@ -107,13 +119,13 @@
 
     function delete_notice(id = -1) {
       Notiflix.Confirm.Init();
-      Notiflix.Confirm.Show('操作确认', '确认删除？', '删除', '取消', function() {
+      Notiflix.Confirm.Show('操作确认', '确认删除？', '删除', '取消', function () {
         if (id !== -1) { ///单独一个
           $('td input[type=checkbox]').prop('checked', false)
           $('td input[value=' + id + ']').prop('checked', true)
         }
         var nids = [];
-        $('td input[type=checkbox]:checked').each(function() {
+        $('td input[type=checkbox]:checked').each(function () {
           nids.push($(this).val());
         });
         $.post(
@@ -121,7 +133,7 @@
             '_token': '{{ csrf_token() }}',
             'nids': nids,
           },
-          function(ret) {
+          function (ret) {
             location.reload();
           }
         );
@@ -134,7 +146,7 @@
         $('td input[value=' + id + ']').prop('checked', true)
       }
       var nids = [];
-      $('td input[type=checkbox]:checked').each(function() {
+      $('td input[type=checkbox]:checked').each(function () {
         nids.push($(this).val());
       });
       $.post(
@@ -143,10 +155,35 @@
           'nids': nids,
           'state': state,
         },
-        function(ret) {
+        function (ret) {
           location.reload();
         }
       );
+    }
+  </script>
+
+  <script>
+    {{-- 修改设置--}}
+    function submit_settings(form) {
+      $.ajax({
+        type: "patch", //方法类型
+        url: '{{ route('api.admin.settings') }}',
+        data: $(form).serialize(),
+        success: function (ret) {
+          console.log(ret)
+          if (ret.ok) {
+            if (ret.data.marquee_notice_id == null)
+              Notiflix.Notify.Success("已关闭滚动公告");
+            else
+              Notiflix.Notify.Success("已设置滚动公告");
+          } else
+            Notiflix.Report.Failure("修改失败", ret.msg, "好的")
+        },
+        error: function () {
+          Notiflix.Report.Failure("修改失败", "请求执行失败，请重试", "好的");
+        }
+      });
+      return false;
     }
   </script>
 @endsection

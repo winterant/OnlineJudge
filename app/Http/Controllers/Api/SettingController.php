@@ -22,14 +22,22 @@ class SettingController extends Controller
         foreach ($modified as $key => $val) {
             // 只允许系统配置项传入
             if (in_array($key, array_keys(config('init.settings')))) {
-                if ($val === null) $val = ''; // 前端传过来的空串会被laravel转为null，此处还原为空串
-                if ($val === 'true') $val = true;
-                if ($val === 'false') $val = false;
-                if (is_numeric($val)) $val = intval($val);
+                // 转换非字符串类型的值
+                if ($val === null)
+                    $val = ''; // 前端传过来的空串会被laravel转为null，此处还原为空串
+                else if ($val === 'true')
+                    $val = true;
+                else if ($val === 'false')
+                    $val = false;
+                else if (filter_var($val, FILTER_VALIDATE_INT) !== false)
+                    $val = intval($val); // 如果是整数，则转为整数类型
+                else if (filter_var($val, FILTER_VALIDATE_FLOAT) !== false)
+                    $val = floatval($val); // 如果是小数，则转为浮点数类型
+                //  更新
                 get_setting($key, $val, true);
             }
         }
-        return ['ok' => 1, 'msg' => 'Settings have updated.'];
+        return ['ok' => 1, 'msg' => 'Settings have updated.', 'data' => $modified];
     }
 
     public function set_icon(Request $request)
