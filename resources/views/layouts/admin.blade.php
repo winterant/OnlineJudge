@@ -64,8 +64,8 @@
                         <span class="menu-title">公告列表</span>
                       </a>
                     </li>
-                    <li class="menu-item @if (Route::currentRouteName() == 'admin.notice.add') active @endif">
-                      <a href="{{ route('admin.notice.add') }}">
+                    <li class="menu-item @if (Route::currentRouteName() == 'admin.notice.create') active @endif">
+                      <a href="{{ route('admin.notice.create') }}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                         <span class="menu-title">发布公告</span>
                       </a>

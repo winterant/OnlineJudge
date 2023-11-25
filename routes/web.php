@@ -102,18 +102,17 @@ Route::middleware([])->where(['id' => '[0-9]+', 'bid' => '[0-9]+', 'nid' => '[0-
 
     // ================================ Administration 后台管理 ================================
     Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-        // ===================== Admin Home
+        // =========================== Admin Home ====================================
         Route::get('/', 'Admin\HomeController@home')->name('home')->middleware('Permission:admin.view');
 
-        // ===================== Manage notice
-        Route::get('notices', 'Admin\NoticeController@list')->name('notice.list')->middleware('Permission:admin.notice.view');
-        Route::any('notice/add', 'Admin\NoticeController@add')->name('notice.add')->middleware('Permission:admin.notice.create');
-        Route::any('notices/{id}/update', 'Admin\NoticeController@update')->name('notice.update')->middleware('Permission:admin.notice.update,notices.{id}.user_id');
-        // todo 删除、更新公告 需要定制api
-        Route::post('notice/delete', 'Admin\NoticeController@delete')->name('notice.delete')->middleware('Permission:admin.notice.delete');
-        Route::post('notice/update-state', 'Admin\NoticeController@update_state')->name('notice.update_state')->middleware('Permission:admin.notice.update');
 
-        // ===================== Manage user
+        // ========================= Manage notice ==================================
+        Route::get('notices', 'Admin\NoticeController@list')->name('notice.list')->middleware('Permission:admin.notice.view');
+        Route::get('notice/create', 'Admin\NoticeController@create')->name('notice.create')->middleware('Permission:admin.notice.create');
+        Route::get('notices/{id}/update', 'Admin\NoticeController@update')->name('notice.update')->middleware('Permission:admin.notice.update,notices.{id}.user_id');
+
+
+        // ========================= Manage user ===========================
         Route::get('users', 'Admin\UserController@list')->name('user.list')->middleware('Permission:admin.user.view');
         Route::get('user/create', 'Admin\UserController@create')->name('user.create')->middleware('Permission:admin.user.create');
         Route::get('user/reset_password', 'Admin\UserController@reset_password')->name('user.reset_password')->middleware('Permission:admin.user.update');

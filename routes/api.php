@@ -63,6 +63,14 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
     // =====================================================================
     // ============================ admin ==================================
     Route::middleware(['auth'])->group(function () {
+        // Manage notice route('api.admin.notice.*')
+        Route::post('notices', 'NoticeController@create')->name('admin.notice.create')->middleware('Permission:admin.notice.create');
+        Route::put('notices/{id}', 'NoticeController@update')->name('admin.notice.update')->middleware('Permission:admin.notice.update,notices.{id}.user_id');
+        Route::patch('notices/state/batch', 'NoticeController@update_state_batch')->name('admin.notice.update_state_batch')->middleware('Permission:admin.notice.update');
+        Route::delete('notices/{id}', 'NoticeController@delete')->name('admin.notice.delete')->middleware('Permission:admin.notice.delete');
+        Route::delete('notices/batch', 'NoticeController@delete_batch')->name('admin.notice.delete_batch')->middleware('Permission:admin.notice.delete');
+
+
         // Manage user: route('api.admin.user.*')
         Route::post('admin/user/create/batch', 'UserController@create_batch')->name('admin.user.create_batch')->middleware('Permission:admin.user.create');
         Route::get('admin/user/create/download', 'UserController@download_created_users_csv')->name('admin.user.download_created_users_csv')->middleware('Permission:admin.user.create');
