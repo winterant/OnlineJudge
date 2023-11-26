@@ -125,7 +125,7 @@ class UserController extends Controller
                 Auth::logoutOtherDevices($user['new_password']); //其他设备全部失效
             } catch (Exception $e) {
                 Log::error('Failed to logout other devices when modify password');
-                Log::error($e->getMessage());
+                Log::error($e);
             }
             return view('message', ['success' => true, 'msg' => trans('passwords.reset')]);
         }

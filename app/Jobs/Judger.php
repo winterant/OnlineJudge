@@ -259,9 +259,9 @@ class Judger implements ShouldQueue
                 // 如果是acm模式，遇到错误，直接终止
                 if ($this->solution['judge_type'] == 'acm') {
                     // 剩余评测点标记为放弃评测
-                    foreach ($tests as $k => $test)
-                        if ($judge_result[$k]['result'] < 4)
-                            $judge_result[$k]['result'] = 13; // 跳过
+                    foreach ($tests as $kk => $test2)
+                        if ($judge_result[$kk]['result'] < 4)
+                            $judge_result[$kk]['result'] = 13; // 跳过
                     $solution['judge_result'] = $judge_result;
                     break;
                 }
@@ -343,6 +343,7 @@ class Judger implements ShouldQueue
                         $result = 5; // PE 空白符不一致
                     }
                     $user_line = strlen($user_line) <= 60 ? $user_line : substr($user_line, 0, 60) . '...(Too long to display)';
+                    $user_line=preg_replace('/[^\x{0000}-\x{007F}\x{0080}-\x{07FF}\x{0800}-\x{FFFF}]/u', '', $user_line);
                     $answer_line = strlen($answer_line) <= 60 ? $answer_line : substr($answer_line, 0, 60) . '...(Too long to display)';
                     $msg = sprintf("[Test %s] Wrong answer on line %d\n", pathinfo($std_out_path, PATHINFO_BASENAME), $i + 1);
                     $msg .= sprintf("Yours:\n%s\n", ($user_line));

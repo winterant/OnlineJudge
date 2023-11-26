@@ -59,8 +59,8 @@ class ExportProblems implements ShouldQueue
             Log::info("Successfully generated xml file and save to {$this->file_save_path}");
             Storage::move($this->file_save_path . '.saving', $this->file_save_path);
         } catch (Exception $e) {
-            Log::error("On queue {$this->queue} | ExportProblems catch exception | " . $e->getMessage());
-            Storage::put($this->file_save_path . '.failed', "任务异常！请适当减少题目数量后重试！若仍无法解决，请向开发者提供下面的异常信息：\n\n" . $e->getMessage());
+            Log::error("On queue {$this->queue} | ExportProblems catch exception | " . $e);
+            Storage::put($this->file_save_path . '.failed', "任务异常！请适当减少题目数量后重试！若仍无法解决，请向开发者提供下面的异常信息：\n\n" . $e);
         } finally {
             Storage::delete($this->file_save_path . '.pending');
             Storage::delete($this->file_save_path . '.running');
@@ -70,11 +70,11 @@ class ExportProblems implements ShouldQueue
 
     public function failed(Throwable $exception): void
     {
-        Log::error("On queue {$this->queue} | ExportProblems failed | " . $exception->getMessage());
+        Log::error("On queue {$this->queue} | ExportProblems failed | " . $exception);
         Storage::delete($this->file_save_path . '.pending');
         Storage::delete($this->file_save_path . '.running');
         Storage::delete($this->file_save_path . '.saving');
-        Storage::put($this->file_save_path . '.failed', "任务执行失败，您可以适当减少题目数量后重试。若仍无法解决，请向开发者提供下面的异常信息：\n\n" . $exception->getMessage());
+        Storage::put($this->file_save_path . '.failed', "任务执行失败，您可以适当减少题目数量后重试。若仍无法解决，请向开发者提供下面的异常信息：\n\n" . $exception);
     }
 
     /**

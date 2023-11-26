@@ -79,7 +79,7 @@ function get_ip_address(string $ip = '')
             return 'Query failed'; // 接口通了，但没有正常返回
         }
     } catch (Exception $e) {
-        Log::error($e->getMessage());
+        Log::error($e);
         return 'Connection failed'; // 接口不通
     }
 }

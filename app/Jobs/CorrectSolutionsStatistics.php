@@ -153,6 +153,6 @@ class CorrectSolutionsStatistics implements ShouldQueue
     public function failed(Throwable $exception): void
     {
         // 向用户发送失败通知等...
-        Log::error($exception->getMessage());
+        Log::error($exception);
     }
 }

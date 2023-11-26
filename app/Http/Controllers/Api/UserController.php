@@ -152,10 +152,10 @@ class UserController extends Controller
                 'msg' => sprintf('成功创建角色: %s (%s)', $role_name, $role_guard_name),
             ];
         } catch (Exception $e) {
-            Log::error($e->getMessage());
+            Log::error($e);
             return [
                 'ok' => 1,
-                'msg' => sprintf('角色创建失败: %s (%s); 可能角色已存在', $role_name, $role_guard_name),
+                'msg' => sprintf("角色创建失败: %s (%s)\n%s", $role_name, $role_guard_name, $e->getMessage()),
             ];
         }
     }
@@ -181,10 +181,10 @@ class UserController extends Controller
                 'msg' => '已删除'
             ];
         } catch (Exception $e) {
-            Log::error($e->getMessage());
+            Log::error($e);
             return [
                 'ok' => 1,
-                'msg' => '删除失败，请确认数据存在！'
+                'msg' => "删除失败\n" . $e->getMessage()
             ];
         }
     }
