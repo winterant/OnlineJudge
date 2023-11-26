@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Judge;
 
 use App\Http\Helpers\ProblemHelper;
+use App\Jobs\Solution\CodeReviewer;
 use Illuminate\Bus\Queueable;
-use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,7 @@ class Judger implements ShouldQueue
 
     public $timeout = 600; // 最长执行时间 秒
     public $tries = 3;     // 最多尝试次数
-    public $backoff = 5;   // 重试任务前等待的秒数
+    public $backoff = [3, 10, 60];   // 重试任务前等待的秒数
 
     private array $solution;
     private array $cachedIds;

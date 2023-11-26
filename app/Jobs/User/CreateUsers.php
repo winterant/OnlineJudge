@@ -1,18 +1,14 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\User;
 
-use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 
 class CreateUsers implements ShouldQueue
 {
@@ -20,7 +16,8 @@ class CreateUsers implements ShouldQueue
 
     public $timeout = 600; // 最长执行时间10分钟
     public $tries = 3;     // 最多尝试3次
-    public $backoff = 5;   // 重试任务前等待的秒数
+    public $backoff = [3, 10, 60];   // 重试任务前等待的秒数
+
     public $users;
     /**
      * Create a new job instance.

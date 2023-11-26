@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Http\Helpers\DBHelper;
-use App\Jobs\CorrectSolutionsStatistics;
-use Illuminate\Console\Command;
+use App\Jobs\Solution\CorrectSolutionsStatistics;
 use App\Models\User;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;

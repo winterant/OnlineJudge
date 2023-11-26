@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Solution;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class ResetSolutionStamp implements ShouldQueue
 {
@@ -17,6 +15,7 @@ class ResetSolutionStamp implements ShouldQueue
 
     public $timeout = 5;
     public $tries = 3;
+    public $backoff=5;
 
     /**
      * Create a new job instance.

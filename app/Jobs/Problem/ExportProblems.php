@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Problem;
 
 use App\Http\Helpers\ProblemHelper;
 use DOMDocument;
@@ -20,9 +20,9 @@ class ExportProblems implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $timeout = 600; // 最长执行时间10分钟
-    public int $tries = 3;     // 最多尝试3次
-    public int $backoff = 5;   // 重试任务前等待的秒数
+    public $timeout = 600; // 最长执行时间10分钟
+    public $tries = 3;     // 最多尝试3次
+    public $backoff = [3, 10, 60];   // 重试任务前等待的秒数
 
     public array $problem_ids;   // 题号列表，元素为int
     public string $file_save_path;  // 导出文件xml保存路径

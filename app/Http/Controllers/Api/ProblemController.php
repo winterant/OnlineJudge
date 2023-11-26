@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\DBHelper;
 use App\Http\Helpers\ProblemHelper;
-use App\Jobs\ExportProblems;
+use App\Jobs\Problem\ExportProblems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

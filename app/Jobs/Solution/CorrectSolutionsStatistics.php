@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Solution;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,7 +17,7 @@ class CorrectSolutionsStatistics implements ShouldQueue
 
     public $timeout = 600; // 最长执行时间10分钟
     public $tries = 3;     // 最多尝试3次
-    public $backoff = 60;  // 重试任务前等待的秒数
+    public $backoff = [3, 10, 60]; // 自定义重试间隔时间（以秒为单位）
 
 
     /**

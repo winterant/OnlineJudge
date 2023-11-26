@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\CreateUsers;
+use App\Jobs\User\CreateUsers;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;

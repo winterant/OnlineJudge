@@ -64,10 +64,10 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => env('REDIS_QUEUE', 'default'),
-            'retry_after' => 60 * 60 * 24,
-            'after_commit' => false,
-            'timeout' => 60,
-            'block_for' => null,
+            'retry_after' => 60 * 60 * 24,  // 秒 任务执行到此时间无论是否超时都会打回队列重新执行
+            'timeout' => 60,          // 秒 默认的单个任务最长执行时间
+            'after_commit' => false,  // 是否在提交数据库事务后立即执行任务
+            'block_for' => null,      // 秒 队列进程轮询redis队列时阻塞的时长
         ],
 
     ],

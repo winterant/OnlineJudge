@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\Judge\Judger;
+use App\Jobs\Solution\CorrectSolutionsStatistics;
+use App\Jobs\Solution\ResetSolutionStamp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Jobs\CorrectSolutionsStatistics;
-use App\Jobs\Judger;
-use App\Jobs\ResetSolutionStamp;
 
 
 class SolutionController extends Controller

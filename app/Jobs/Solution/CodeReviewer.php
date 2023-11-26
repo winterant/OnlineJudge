@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Solution;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -18,7 +17,12 @@ class CodeReviewer implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $timeout = 300; // 最长执行时间 秒
+    public $tries = 3;     // 最多尝试3次
+    public $backoff = [3, 10, 60]; // 自定义重试间隔时间（以秒为单位）
+
     public int $sid;
+
     /**
      * Create a new job instance.
      */
