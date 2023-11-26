@@ -25,7 +25,9 @@
             {{ [trans('sentence.Permission denied'), trans('sentence.Operation successed')][$success ?? 0] }}
           @endif
         </h5>
-        <a href="javascript:window.history.back()">{{__('main.Back')}}</a>
+        <div class="mt-4">
+          <a class="btn btn-info" href="javascript:window.history.back()">{{__('sentence.back previous page')}}</a>
+        </div>
       </div>
     </div>
   </div>

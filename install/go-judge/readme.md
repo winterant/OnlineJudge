@@ -24,8 +24,8 @@ Name:      builder0
 Endpoint:  unix:///var/run/docker.sock
 Status:    running
 Platforms: linux/arm64, linux/amd64, linux/ppc64le, linux/s390x, linux/386, linux/arm/v7, linux/arm/v6
-
 ```
+
 - 构建适用于不同平台的镜像
 
 ```bash

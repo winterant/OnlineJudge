@@ -1,9 +1,9 @@
 <?php
 return [
-
-    "Whats this"     => "这是什么?",
-    "delete"         => "确定删除?",
-    "copy"           => "已复制到剪贴板!",
+    "back previous page" => "返回上一页",
+    "Whats this"        => "这是什么?",
+    "delete"            => "确定删除?",
+    "copy"              => "已复制到剪贴板!",
 
     "No data"           => "没有数据!",
     "Permission denied" => "权限不足",
