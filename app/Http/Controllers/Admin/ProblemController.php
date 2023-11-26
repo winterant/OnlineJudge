@@ -160,6 +160,7 @@ class ProblemController extends Controller
             if (time() - Storage::lastModified($path) > 3600 * 24 * 365) // 超过365天的数据删除掉
                 Storage::delete($path);
             else {
+                // 根据文件后缀分析任务状态
                 $info = pathinfo($path);
                 $status = [
                     'pending' => '等待中',
@@ -168,9 +169,11 @@ class ProblemController extends Controller
                     'failed' => '失败',
                     'xml' => '成功'
                 ][$info['extension']];
-                preg_match('/\[(\S+?)\]/', $info['filename'], $matches); // 匹配出创建者用户名
+                // 匹配出创建者用户名
+                preg_match('/\[(\S+?)\]/', $info['filename'], $matches);
                 $history_xml[] = [
                     'name' => $info['basename'],
+                    'filesize' => filesize(Storage::path($path)), // Byte
                     'status' => $status,
                     'creator' => $matches[1] ?? '',
                     'created_at' => date('Y-m-d H:i:s', Storage::lastModified($path))

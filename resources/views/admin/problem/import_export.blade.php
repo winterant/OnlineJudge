@@ -53,22 +53,24 @@
         <table class="table table-striped table-hover table-sm">
           <thead>
           <tr>
-            <th>文件名</th>
-            <th>状态</th>
-            <th>创建者</th>
             <th>导出时间</th>
+            <th>创建者</th>
+            <th>状态</th>
+            <th>文件名</th>
+            <th>大小</th>
             <th>操作</th>
           </tr>
           </thead>
           <tbody id="hist_xml_tbody">
           @foreach ($history_xml as $item)
             <tr>
-              <td nowrap>{{ $item['name'] }}</td>
-              <td nowrap>{{ $item['status'] }}</td>
-              <td nowrap>{{ $item['creator'] }}</td>
               <td nowrap>{{ $item['created_at'] }}</td>
+              <td nowrap>{{ $item['creator'] }}</td>
+              <td nowrap>{{ $item['status'] }}</td>
+              <td nowrap>{{ $item['name'] }}</td>
+              <td nowrap>{{ round($item['filesize'] / (1<<20), 2)}}MB</td>
               <td nowrap>
-                @if($item['status']=='成功')
+                @if(!str_ends_with($item['name'], 'ing'))
                   <a href="{{ route('api.admin.problem.download_exported_xml', ['filename' => $item['name']]) }}">
                     <i class="fa fa-download" aria-hidden="true"></i>下载
                   </a>

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class CorrectSolutionsStatistics implements ShouldQueue
@@ -152,6 +153,6 @@ class CorrectSolutionsStatistics implements ShouldQueue
     public function failed(Throwable $exception): void
     {
         // 向用户发送失败通知等...
-        dump($exception);
+        Log::error($exception->getMessage());
     }
 }

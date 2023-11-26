@@ -41,7 +41,7 @@ class SolutionController extends Controller
                     })->get()->toArray();
 
                 // 更新solution结果为rejudging
-                DB::table('solutions')->whereIn('id', array_map(function ($v) {
+                $num_updated = DB::table('solutions')->whereIn('id', array_map(function ($v) {
                     return $v->id;
                 }, $solutions))->update(['result' => 12]); // rejudging
 
@@ -62,9 +62,12 @@ class SolutionController extends Controller
 
             // 返回提交记录页面
             $query = ['inc_contest' => 'on'];
-            if ($pid) $query['pid'] = $pid;
-            if ($cid) $query['cid'] = $cid;
-            if ($sid) $query['sid'] = $sid;
+            if ($pid)
+                $query['pid'] = $pid;
+            if ($cid)
+                $query['cid'] = $cid;
+            if ($sid)
+                $query['sid'] = $sid;
             return redirect(route("solutions", $query));
         }
     }
