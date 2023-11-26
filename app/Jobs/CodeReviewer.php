@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
@@ -99,7 +100,6 @@ class CodeReviewer implements ShouldQueue
      */
     public function failed(Throwable $exception): void
     {
-        echo $exception;
-        echo PHP_EOL;
+        Log::error($exception);
     }
 }

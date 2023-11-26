@@ -14,6 +14,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class ExportProblems implements ShouldQueue
 {
@@ -51,19 +52,29 @@ class ExportProblems implements ShouldQueue
             Storage::put($this->file_save_path . '.running', '正在生成中, 不要着急~, 请稍后重新下载...');
             // 2. 导出dom对象，并暂存到.saving文件
             $dom = $this->export();
+            Log::info("Generated xml object! Start to save to file");
             Storage::delete($this->file_save_path . '.running');
             $dom->save(Storage::path($this->file_save_path . '.saving'));
             // 3. 文件保存完成，修改文件名为正式xml文件
-            Storage::move($this->file_save_path . '.saving', $this->file_save_path);
             Log::info("Successfully generated xml file and save to {$this->file_save_path}");
+            Storage::move($this->file_save_path . '.saving', $this->file_save_path);
         } catch (Exception $e) {
-            Log::error("On queue {$this->queue} | ExportProblems failed | " . $e->getMessage());
-            Storage::put($this->file_save_path . '.failed', "生成失败，可能是题目过多导致文件过大，请适当减少题目数量\n\n" . $e->getMessage());
+            Log::error("On queue {$this->queue} | ExportProblems catch exception | " . $e->getMessage());
+            Storage::put($this->file_save_path . '.failed', "任务异常！请适当减少题目数量后重试！若仍无法解决，请向开发者提供下面的异常信息：\n\n" . $e->getMessage());
         } finally {
             Storage::delete($this->file_save_path . '.pending');
             Storage::delete($this->file_save_path . '.running');
             Storage::delete($this->file_save_path . '.saving');
         }
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        Log::error("On queue {$this->queue} | ExportProblems failed | " . $exception->getMessage());
+        Storage::delete($this->file_save_path . '.pending');
+        Storage::delete($this->file_save_path . '.running');
+        Storage::delete($this->file_save_path . '.saving');
+        Storage::put($this->file_save_path . '.failed', "任务执行失败，您可以适当减少题目数量后重试。若仍无法解决，请向开发者提供下面的异常信息：\n\n" . $exception->getMessage());
     }
 
     /**

@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class Judger implements ShouldQueue
@@ -359,7 +360,7 @@ class Judger implements ShouldQueue
     }
 
     // 清除所有judge server中的缓存文件
-    private function deleteCachedFiles()
+    private function deleteCachedFiles(): void
     {
         foreach ($this->cachedIds as $id) {
             Http::delete(config('app.JUDGE_SERVER') . '/file/' . $id);
@@ -371,10 +372,9 @@ class Judger implements ShouldQueue
      */
     public function failed(Throwable $exception): void
     {
-        echo $exception;
-        echo PHP_EOL;
-        echo json_encode($this->solution) . PHP_EOL;
-        echo 'Updating DB and deleting cached files...' . PHP_EOL;
+        Log::error($exception);
+        Log::error(json_encode($this->solution));
+        Log::error("Judge Failed. Updating DB and deleting cached files...");
         $this->update_db_solution(['result' => 14, 'error_info' => '[Judger Error] Something went wrong when executing the job.']);
         $this->deleteCachedFiles();
     }

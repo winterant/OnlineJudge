@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
@@ -78,7 +79,7 @@ function get_ip_address(string $ip = '')
             return 'Query failed'; // 接口通了，但没有正常返回
         }
     } catch (Exception $e) {
-        // echo $e->getMessage();
+        Log::error($e->getMessage());
         return 'Connection failed'; // 接口不通
     }
 }

@@ -196,7 +196,7 @@ class ProblemHelper
         $key = sprintf('problem:%d:user:%d:result', $problem_id, $user_id ?? Auth::id());
         if ($contest_id)
             $key = "contest:{$contest_id}:" . $key;
-        CacheHelper::has_key_with_autoclear_if_rejudged($key); // 若发生了重判，会强制清除缓存，然后下面重新查库
+        CacheHelper::forgetIfRejudged($key); // 若发生了重判，会强制清除缓存，然后下面重新查库
         if (!Cache::has($key)) {
             $result = DB::table('solutions')
                 ->when($contest_id, function ($q) use ($contest_id) {

@@ -7,20 +7,25 @@ use Illuminate\Support\Facades\Cache;
 class CacheHelper
 {
     /**
-     * 凡是依赖solutions表统计的数据，放入缓存中（key-value），key需要记住此时的solution stamp（如下代码）
-     * 从缓存中取出该key使用时，必须执行该函数进行检查：
-     *      如果solutions数据发生了变化（也就是重判了），那么要立即清除该key的数据及其solution stamp，
-     *      这会迫使下游业务重新统计数据并缓存。
-     * 关于solution stamp的生成，请参考/Http/Jobs/ResetSolutionStamp.php
+     * 若发生过重判，清除指定的key。
+     * 竞赛榜单、提交记录曲线统计等功能，由于比较耗时，将结果放在了缓存中。如果有管理员进行了代码重判，会导致缓存中的统计结果不再准确。
+     * 为了清理不再准确的数据，每次重判完成后，重新生成一个「重判时间戳」，用于标记发生过重判。
+     * 具体工作流程：
+     *  从缓存中取某个统计结果(如竞赛榜单)前，先调用该函数进行验证。
+     *  如果key对应的重判时间戳发生了变化，那么遗忘掉key；
+     *  并且记住新的重判时间戳，以标记该key接下来的value都是基于该「重判时间戳」有效的。
+     *  关于「重判时间戳」的生成，请参考ResetSolutionStamp.php
+     *
+     * @return bool 若成功清除了key则返回true；若没有任何操作则返回false
      */
-    public static function has_key_with_autoclear_if_rejudged($cache_key)
+    public static function forgetIfRejudged($cache_key): bool
     {
-        // 自动清除过期的缓存
-        if (Cache::get($cache_key . ':cached:solution_stamp') != Cache::get('solution:solution_stamp')) {
-            Cache::put($cache_key . ':cached:solution_stamp', Cache::get('solution:solution_stamp'));
-            Cache::forget($cache_key);
-            return false; // 已清除缓存，自然无key
+        // 判断缓存的「重判时间戳」是否已变；若变了说明缓存不再可信，强制清除过期的缓存，并记住新的「重判时间戳」
+        if (Cache::get($cache_key . ':cached:rejudged_datetime') != Cache::get('solution:rejudged_datetime')) {
+            Cache::forget($cache_key);  // 清除不再可信的key
+            Cache::put($cache_key . ':cached:rejudged_datetime', Cache::get('solution:rejudged_datetime')); // 标记新的重判时间戳
+            return true; // 成功清除了key
         }
-        return Cache::has($cache_key); // 此函数内未发生清除缓存操作，以Cache结果为准。
+        return false; // 没有任何操作
     }
 }
