@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Jobs\Judge\Judger;
 use App\Jobs\Solution\CorrectSolutionsStatistics;
-use App\Jobs\Solution\ResetSolutionStamp;
+use App\Jobs\Solution\ResetRejudgeStamp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -53,7 +53,7 @@ class SolutionController extends Controller
                 // 任务投入队列，预估等待到判题结束时执行
                 if ($num_updated ?? 0) {
                     // 有很多页面的提交记录数据统计依赖缓存，发生重判后，为了使旧缓存失效，依据solution stamp是否变化来判断
-                    dispatch(new ResetSolutionStamp())->delay(count($solutions) * 10); // 预估平均每条solution重判需要10秒
+                    dispatch(new ResetRejudgeStamp())->delay(count($solutions) * 10); // 预估平均每条solution重判需要10秒
                     // 重新统计提交记录
                     dispatch(new CorrectSolutionsStatistics())->delay(count($solutions) * 10 + 5);
                 }
