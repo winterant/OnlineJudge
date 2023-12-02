@@ -164,6 +164,9 @@ function decode_str_to_array($text, $special_rule = true): array
     $data = [];
     foreach ($rows as $row) {
         $row = trim($row);
+        if (empty($row)) {
+            continue;
+        }
         if ($special_rule && preg_match('/^\d+\s*-\s*\d+$/', $row)) { // 特殊规则1
             $values = preg_split('/\s*-\s*/', $row);
             $range = array_map(function ($x) {

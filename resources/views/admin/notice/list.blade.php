@@ -12,7 +12,7 @@
     </div>
     <input type="number" name="marquee_notice_id" value="{{ get_setting('marquee_notice_id') }}"
            class="form-control" autocomplete="off" placeholder="填写公告编号">
-    <button class="btn text-white bg-success ml-2">保存</button>
+    <button class="btn text-white bg-success ml-2"><i class="fa fa-save" aria-hidden="true"></i>  保存</button>
   </form>
 
   {{-- 查询 --}}
@@ -31,7 +31,7 @@
              placeholder="{{ __('main.ID') }}/{{ __('main.Title') }}/{{ __('main.Content') }}" name="kw" value="{{ request('kw') ?? '' }}">
     </div>
 
-    <button class="btn text-white bg-success ml-2"><i class="fa fa-filter" aria-hidden="true"></i>{{ __('main.Find') }}</button>
+    <button class="btn text-white bg-success ml-2"><i class="fa fa-filter" aria-hidden="true"></i> {{ __('main.Find') }}</button>
   </form>
 
   <div class="float-left">

@@ -43,12 +43,12 @@ mod_env ${fpm} "pm.max_requests"      ${fpm_pm_max_requests:-1000}
 # Start Server
 ##########################################################################
 # start nginx server
-echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/nginx/access.log
-echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/nginx/error.log
+echo -e "\n\nStart at $(date '+%Y-%m-%d %H:%M:%S')\n" >> /app/storage/logs/nginx/access.log
+echo -e "\n\nStart at $(date '+%Y-%m-%d %H:%M:%S')\n" >> /app/storage/logs/nginx/error.log
 service nginx start
 
 # Start php-fpm server
-echo "Start at" $(date "+%Y-%m-%d %H:%M:%S") >> /app/storage/logs/php-fpm/php-fpm.log
+echo -e "\n\nStart at $(date '+%Y-%m-%d %H:%M:%S')\n" >> /app/storage/logs/php-fpm/php-fpm.log
 service php8.1-fpm start
 
 

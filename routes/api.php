@@ -111,8 +111,6 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
 
         // Manage problem's exporting and importing
         Route::get('admin/problem/export/download', 'ProblemController@download_exported_xml')->name('admin.problem.download_exported_xml')->middleware('Permission:admin.problem_xml.export');
-        Route::post('admin/problem/export', 'ProblemController@export_problems')->name('admin.problem.export')->middleware('Permission:admin.problem_xml.export');
-        Route::delete('admin/problem/export/clear', 'ProblemController@clear_exported_xml')->name('admin.problem.clear_exported_xml')->middleware('Permission:admin.problem_xml');
 
         // Manage problem test data
         Route::get('admin/problems/{id}/data/{filename}', 'ProblemController@get_data')->name('admin.problem.get_data')->middleware('Permission:admin.problem_data.view');

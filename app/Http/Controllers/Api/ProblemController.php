@@ -208,39 +208,9 @@ class ProblemController extends Controller
 
 
     // ============================= 题目导入与导出 ==============================
-    // 导出（异步队列）
-    public function export_problems(Request $request): array
-    {
-        // 处理题号为int数组
-        $problem_ids = decode_str_to_array($request->input('pids'));
-
-        // 文件夹不存在则创建
-        $dir = "temp/exported_problems";
-        if (!Storage::exists($dir))
-            Storage::makeDirectory($dir);
-
-        // 根据传入题号命名文件名
-        $filename = str_replace(["\r\n", "\r", "\n"], ',', trim($request->input('pids')));
-        $filename = sprintf('%s[%s]%s', date('YmdHis'), Auth::user()->username ?? "unknown", $filename);
-        if (strlen($filename) > 36) // 文件名过长用省略号代替
-            $filename = substr($filename, 0, 36) . '...';
-        $filepath = sprintf('%s/%s.xml', $dir, $filename);
-
-        Log::info("dispatch problem exporting job: ", [$problem_ids, $filepath]);
-        dispatch(new ExportProblems($problem_ids, $filepath));
-        return ['ok' => 1, 'msg' => "已发起导出任务，请稍后在历史列表中下载{$filename}.xml"];
-    }
-
     // 管理员下载xml文件
     public function download_exported_xml(Request $request)
     {
         return Storage::download('temp/exported_problems/' . request('filename'));
-    }
-
-    // 管理员清空历史xml
-    public function clear_exported_xml(Request $request)
-    {
-        Storage::delete(Storage::allFiles('temp/exported_problems'));
-        return ['ok' => 1, 'msg' => '已清空'];
     }
 }

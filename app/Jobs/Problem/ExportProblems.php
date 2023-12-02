@@ -20,9 +20,9 @@ class ExportProblems implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $timeout = 600; // 最长执行时间10分钟
-    public $tries = 3;     // 最多尝试3次
-    public $backoff = [3, 10, 60];   // 重试任务前等待的秒数
+    public $timeout = 600; // 最长执行时间 秒
+    public $tries = 2;   // 最多执行2次
+    public $backoff = [1, 8];   // 首次失败1秒后重试，之后失败都是8秒后重试
 
     public array $problem_ids;   // 题号列表，元素为int
     public string $file_save_path;  // 导出文件xml保存路径
@@ -32,12 +32,15 @@ class ExportProblems implements ShouldQueue
      */
     public function __construct(array $problem_ids, string $file_save_path)
     {
+        $this->onQueue('default');
         $this->problem_ids = $problem_ids;
         $this->file_save_path = $file_save_path;
-        $this->onQueue('default');
         Log::info("On queue {$this->queue} | ExportProblems received job", [$problem_ids, $file_save_path]);
 
         // 4种未完成状态，通过文件后缀来标记： pending, running, saving, failed
+        Storage::delete($this->file_save_path . '.pending');
+        Storage::delete($this->file_save_path . '.running');
+        Storage::delete($this->file_save_path . '.saving');
         Storage::put($file_save_path . '.pending', '等待中...');
     }
 

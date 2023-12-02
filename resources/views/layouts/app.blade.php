@@ -154,9 +154,7 @@
                   stripos($_SERVER['HTTP_USER_AGENT'], 'safari') === false)))
     <script type="text/javascript">
       $(function() {
-        Notiflix.Report.Failure('浏览器不兼容',
-          "请使用Chrome浏览器或Edge浏览器访问本网站 {{ $_SERVER['HTTP_HOST'] ?? '' }}",
-          '知道了')
+        Notiflix.Notify.Failure("请使用Chrome浏览器或Edge浏览器访问本网站 {{ $_SERVER['HTTP_HOST'] ?? '' }}")
       })
     </script>
   @endif
