@@ -9,6 +9,7 @@ use App\Jobs\Judge\Judger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -194,6 +195,23 @@ class ProblemController extends Controller
                 'memory_limit' => $node->memory_limit / (strtolower($node->memory_limit->attributes()->unit) == 'kb' ? 1024 : 1),
                 'user_id' => Auth::id()
             ];
+
+            // 如有特判，提取编程语言代号
+            if ($node->spj ?? false) {
+                $language = $node->spj->attributes()->language;
+                if ($language == 'Python')
+                    $language .= '3';  // 本oj只支持python3
+                if ($language == 'C++')
+                    $language .= '14 -O2';    // 默认C++14 -O2
+                if ($language == 'C')
+                    $language .= '17';      // 默认C17
+                $lang = array_search($language, config('judge.lang')); // 查出编程语言的代号
+                // 保存提交记录
+                if ($lang !== false) {
+                    $problem['spj_language'] = $lang;
+                }
+            }
+
             // 保存图片
             foreach ($node->img as $img) {
                 $ext = pathinfo($img->src, PATHINFO_EXTENSION); // 后缀
@@ -204,9 +222,12 @@ class ProblemController extends Controller
                 $problem['output'] = str_replace($img->src, Storage::url($save_path), $problem['output']);
                 $problem['hint'] = str_replace($img->src, Storage::url($save_path), $problem['hint']);
             }
+
+            // ==== 写入数据库 =====
             $pid = DB::table('problems')->insertGetId($problem);
             if (!$first_pid)
                 $first_pid = $pid;
+
             // 保存sample
             $samp_inputs = (array)($node->children()->sample_input);
             $samp_outputs = (array)($node->children()->sample_output);
