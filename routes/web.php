@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // ====================== Livewire Single Page =======================
-Route::namespace('\App\Http\Livewire')->group(function () {
+Route::namespace('\App\Livewire')->group(function () {
     // ================================ 提交记录 ================================
     // Route::get('/solutions', Solution\Solutions::class)->name('solutions');
     Route::get('/solutions/{id}', Solution\Solution::class)->name('solution');

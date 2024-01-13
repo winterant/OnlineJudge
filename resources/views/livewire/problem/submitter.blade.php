@@ -200,7 +200,7 @@
 
   <script>
     function submit_solution() {
-      window.livewire.emitTo('solution.details', 'setIsSubmitting') // 标记为提交中
+      Livewire.dispatch('Solution.Solution.clearDetails') // 清空之前展示的提交记录结果
       $.ajax({
         type: 'post',
         url: '{{ route('api.solution.submit_solution') }}',
@@ -209,7 +209,7 @@
         success: (ret) => {
           console.log(ret)
           if (ret.ok) {
-            window.livewire.emitTo('solution.solution', 'set_id', ret.data.solution_id)
+            Livewire.dispatch('Solution.Solution.resetSolutionId', {'id': ret.data.solution_id})
           } else {
             Notiflix.Report.Failure('{{ __('main.Failed') }}', ret.msg, '{{ __('main.Confirm') }}')
           }

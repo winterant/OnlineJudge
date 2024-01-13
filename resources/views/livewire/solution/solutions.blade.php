@@ -1,5 +1,5 @@
 <div>
-  <div class="table-responsive" @if($num_judging>0) wire:poll.visible.750ms="refresh" @endif>
+  <div class="table-responsive" @if($num_judging) wire:poll.visible.750ms="refresh" @endif>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -8,7 +8,7 @@
             @if (isset($contest_id))
               {{-- 在竞赛中，仅显示字母题号 --}}
               <div class="form-group m-0 p-0 bmd-form-group">
-                <select wire:model="index" class="form-control" style="min-width:2rem">
+                <select wire:model.live="index" class="form-control" style="min-width:2rem">
                   <option value="-1">{{ __('main.Problem') }}</option>
                   @for ($i = 0; $i < $num_problems; $i++)
                     <option value="{{ $i }}">
@@ -21,19 +21,19 @@
               {{-- 在评测、群组中显示实际题号 --}}
               <div class="form-group m-0 p-0 bmd-form-group">
                 <input oninput="value=value.replace(/[^\d]/g,'')" class="form-control"
-                  placeholder="{{ __('main.Problem ID') }}" wire:model.lazy="pid" style="min-width:4rem">
+                  placeholder="{{ __('main.Problem ID') }}" wire:model.blur="pid" style="min-width:4rem">
               </div>
             @endif
           </th>
           <th>
             <div class="form-group m-0 p-0 bmd-form-group">
               <input type="text" class="form-control" placeholder="{{ trans('main.Username') }}"
-                wire:model.lazy="username" style="min-width:3rem">
+                wire:model.blur="username" style="min-width:3rem">
             </div>
           </th>
           <th>
             <div class="d-flex m-0 p-0 bmd-form-group">
-              <select wire:model="result" class="form-control" style="min-width:4rem">
+              <select wire:model.live="result" class="form-control" style="min-width:4rem">
                 <option class="form-control" value="-1">{{ __('main.All Result') }}</option>
                 @foreach (config('judge.result') as $key => $res)
                   <option value="{{ $key }}" class="judge-result-{{ $key }}">
@@ -43,7 +43,7 @@
               </select>
               @if (Auth::check() && Auth::user()->can('admin.solution.view'))
                 {{-- 管理员可以筛选查重记录 --}}
-                <select wire:model="sim_rate" class="form-control ml-2" style="min-width:3rem">
+                <select wire:model.live="sim_rate" class="form-control ml-2" style="min-width:3rem">
                   <option class="form-control" value="0">{{ __('main.Similarity') }}</option>
                   @for ($i = 50; $i <= 100; $i += 10)
                     <option class="form-control" value="{{ $i }}">
@@ -61,7 +61,7 @@
           <th nowrap>{{ __('main.Memory') }}</th>
           <th>
             <div class="form-group m-0 p-0 bmd-form-group">
-              <select wire:model="language" class="px-2 form-control" style="min-width:4rem">
+              <select wire:model.live="language" class="px-2 form-control" style="min-width:4rem">
                 <option class="form-control" value="-1">{{ __('main.All Language') }}</option>
                 @foreach (config('judge.lang') as $key => $res)
                   <option value="{{ $key }}">{{ $res }}</option>
@@ -73,7 +73,7 @@
           @if (Auth::check() && Auth::user()->can('admin.solution.view'))
             <th nowrap>
               <div class="form-group m-0 p-0 bmd-form-group">
-                <input type="text" class="form-control" placeholder="IP" wire:model.lazy="ip">
+                <input type="text" class="form-control" placeholder="IP" wire:model.blur="ip">
               </div>
             </th>
           @endif
@@ -193,7 +193,7 @@
         </li>
 
         <div class="form-inline mx-1">
-          <select wire:model="perPage" class="form-control px-2">
+          <select wire:model.live="perPage" class="form-control px-2">
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="50">50</option>

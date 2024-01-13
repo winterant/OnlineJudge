@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Solution;
+namespace App\Livewire\Solution;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;

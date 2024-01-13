@@ -1,30 +1,42 @@
 <?php
 
-namespace App\Http\Livewire\Solution;
+namespace App\Livewire\Solution;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Solution extends Component
 {
-    public $sid;
-    public $solution;
-    public $detail;   // 正在展示的评测点
+    public ?int $sid = null;        // 提交记录的唯一编号
+    public ?array $solution = null; // 提交记录所有详细信息
+    public ?array $detail = null;   // 正在展示的评测点详细信息{'time':**, 'memory':**, ...}
+    public ?string $msg = null;     // 可能的报错信息，例如权限不足,默认null
     public int $numAccepted, $numDetails; // 测试点计数
-    public bool $only_details = false;
-    public  $msg; // 可能的报错信息，例如权限不足,默认null
+    public bool $isJudged = false; // 是否在判题完成
+    public bool $only_details = false; // 标记仅展示测试点信息，其他信息如提交时间、代码等都不展示
 
-    protected $listeners = ['set_id'];
 
     public function mount($id = null, $only_details = false)
     {
         $this->only_details = $only_details;
-        $this->set_id($id);
+        $this->resetSolutionId($id);
     }
 
-    // 重设solution id
-    public function set_id($id)
+    // 监听前端，清空当前solution信息
+    #[On('Solution.Solution.clearDetails')]
+    public function clearDetails(): void
+    {
+        $this->sid = null;
+        $this->solution = null;
+        $this->detail = null;
+        $this->msg = null;
+    }
+
+    // 重设solution id，并重新刷新solution结果
+    #[On('Solution.Solution.resetSolutionId')]
+    public function resetSolutionId($id): void
     {
         $this->sid = $id;
         $this->solution = null;
@@ -33,8 +45,8 @@ class Solution extends Component
         $this->refresh();   // 刷新结果
     }
 
-    // 根据solution id刷新
-    public function refresh()
+    // 根据solution id刷新当前solution结果
+    public function refresh(): void
     {
         if ($this->sid == null)
             return;
@@ -48,26 +60,26 @@ class Solution extends Component
         }
 
         // 读取数据库中 所有测试数据的详细结果 {'testname':{'result':int, ...}, ...}
-        $this->solution = DB::table('solutions')
+        $db_solution = DB::table('solutions')
             ->select($this->only_details ? ['id', 'result', 'error_info', 'wrong_data', 'judge_result', 'user_id', 'pass_rate'] : ['*'])
             ->find($this->sid);
-        if ($this->solution ?? false) {
+        if ($db_solution ?? false) {
             // ========================= 先查询所在竞赛的必要信息 ==========================
-            if ($this->solution->contest_id ?? false) {
+            if ($db_solution->contest_id ?? false) {
                 $contest = DB::table('contests as c')
                     ->join('contest_problems as cp', 'c.id', 'cp.contest_id')
                     ->select(['c.end_time', 'cp.index'])
-                    ->where('c.id', $this->solution->contest_id)
-                    ->where('cp.problem_id', $this->solution->problem_id)
+                    ->where('c.id', $db_solution->contest_id)
+                    ->where('cp.problem_id', $db_solution->problem_id)
                     ->first();
                 if ($contest) {
-                    $this->solution->index = $contest->index; // 记下该代码在竞赛中的题号
-                    $this->solution->end_time = $contest->end_time; // 记下所在竞赛的结束时间
+                    $db_solution->index = $contest->index; // 记下该代码在竞赛中的题号
+                    $db_solution->end_time = $contest->end_time; // 记下所在竞赛的结束时间
                 } else
-                    $this->solution->contest_id = -1; // 这条solution以前是竞赛中的，但题目现在被从竞赛中删除了
+                    $db_solution->contest_id = -1; // 这条solution以前是竞赛中的，但题目现在被从竞赛中删除了
             }
             // 转为数组，前端读取
-            $this->solution = json_decode(json_encode($this->solution), true);
+            $this->solution = json_decode(json_encode($db_solution), true);
 
             $this->solution['username'] = DB::table('users')->find($this->solution['user_id'])->username ?? null;
 
@@ -76,10 +88,14 @@ class Solution extends Component
             $this->numDetails = count($this->solution['judge_result']);
             $this->numAccepted = 0;
             foreach ($this->solution['judge_result'] ?? [] as $d) {
-                if ($d['result'] == 4) $this->numAccepted++;
+                if ($d['result'] == 4)
+                    $this->numAccepted++;
             }
             // 展示详情点
             $this->display_detail();
+
+            // 标记判题是否完成
+            $this->isJudged = (($this->solution['result'] ?? PHP_INT_MAX) >= 4);
         }
     }
 
@@ -116,7 +132,7 @@ class Solution extends Component
     public function render()
     {
         if ($this->msg != null)
-            return view('message', ['msg' => $this->msg]);
+            return view('livewire.message', ['msg' => $this->msg])->extends('layouts.client')->section('content');
         if ($this->only_details)
             return view('livewire.solution.solution');
         return view('livewire.solution.solution')->extends('layouts.client')->section('content');

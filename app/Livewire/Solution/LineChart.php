@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Livewire\Solution;
+namespace App\Livewire\Solution;
 
 use App\Http\Helpers\CacheHelper;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class LineChart extends Component
 {
-    public $userId, $contestId, $groupId, $endTime, $past;
-    protected $queryString = [
-        'past' => ['except' => ''],
-    ];
+    public $userId, $contestId, $groupId, $endTime;
+
+    #[Url]  // 自动获取url参数
+    public string $past;
 
     public array $x, $submitted, $accepted, $solved;
 
@@ -22,8 +23,16 @@ class LineChart extends Component
         $this->contestId = $contestId;
         $this->groupId = $groupId;
         $this->endTime = $endTime;
-        $this->past = $defaultPast;
-        $this->queryString['past']['except'] = $defaultPast;
+        if (empty($this->past)) // past未指定（可能是url参数指定）时，设为默认值
+            $this->past = $defaultPast;
+
+        $this->updated(); // 初次加载页面，将统计数据发送给前端展示
+    }
+
+    public function updated()
+    {
+        $this->refresh();
+        $this->dispatch("solution.line-chart.update", ["x" => $this->x, "submitted" => $this->submitted, "accepted" => $this->accepted, "solved" => $this->solved]);
     }
 
     public function refresh()
@@ -46,12 +55,12 @@ class LineChart extends Component
         // 声明时间规则
         $rules = [
             'i' => [
-                'current' =>  $endTime - $endTime % 60,
+                'current' => $endTime - $endTime % 60,
                 'format' => 'Y-m-d H:i',
                 'unit' => 'minute'
             ],
             'h' => [
-                'current' =>  $endTime - $endTime % 3600,
+                'current' => $endTime - $endTime % 3600,
                 'format' => 'Y-m-d H',
                 'unit' => 'hour'
             ],
@@ -114,7 +123,6 @@ class LineChart extends Component
 
     public function render()
     {
-        $this->refresh();
         return view('livewire.solution.line-chart');
     }
 }

@@ -16,7 +16,7 @@
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.0",
         "league/flysystem": "^3.10",
-        "livewire/livewire": "^2.12",
+        "livewire/livewire": "^3.0",
         "mews/captcha": "^3.2",
         "spatie/laravel-permission": "^5.5"
     },

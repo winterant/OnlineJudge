@@ -1,7 +1,7 @@
 <div>
-  <div class="p-2">
+  <div wire:ignore class="p-2">
     <div class="float-right mr-4" style="position:relative;z-index:1">
-      <select wire:model="past" class="px-2" style="font-size: 0.85rem; text-align-last: center; border-radius: 2px;">
+      <select wire:model.live="past" class="px-2" style="font-size: 0.85rem; text-align-last: center; border-radius: 2px;">
         <option value="300i">
           @lang('main.Recent') 300 {{ trans_choice('main.minutes', 2) }}
         </option>
@@ -25,9 +25,13 @@
   </div>
 
   <script>
+    let myChart = null
+
     function plot_chart(x, submitted, accepted, solved) {
       // 基于准备好的dom，初始化echarts实例
-      let myChart = echarts.init(document.getElementById('solution-line-chart'));
+      if (myChart == null) {
+        myChart = echarts.init(document.getElementById('solution-line-chart'));
+      }
 
       let type = (x.length <= 1 ? 'bar' : 'line')
       // 指定图表的配置项和数据
@@ -80,16 +84,14 @@
       // 使用刚指定的配置项和数据显示图表。
       myChart.setOption(option);
     }
-    document.addEventListener("DOMContentLoaded", () => {
-      Livewire.hook('component.initialized', (component) => {
-        console.log('component.initialized')
-        plot_chart(@js($x), @js($submitted), @js($accepted), @js($solved))
-      })
-      Livewire.hook('message.processed', (message, component) => {
-        console.log('message.processed')
-        plot_chart(@this.x, @this.submitted, @this.accepted, @this.solved)
+
+    document.addEventListener("livewire:init", () => {
+      // 监听数据变化，由后端通知过来
+      Livewire.on('solution.line-chart.update', messages => {
+        for (let data of messages) {
+          plot_chart(data.x, data.submitted, data.accepted, data.solved)
+        }
       })
     })
   </script>
-
 </div>

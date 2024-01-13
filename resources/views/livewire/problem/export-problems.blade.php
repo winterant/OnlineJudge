@@ -1,9 +1,9 @@
 <div>
   {{-- 导出操作 --}}
   <div>
-    <form class="form-group" wire:submit.prevent="export">
+    <form class="form-group" wire:submit="export">
       <label class="">
-            <textarea wire:model.lazy="problemIdsStr" class="form-control-plaintext border bg-white"
+            <textarea wire:model.blur="problemIdsStr" class="form-control-plaintext border bg-white"
                       oninput="this.value = this.value.replace(/[^0-9\n\-]/g, '')"
                       placeholder="每行一个题号或一个区间,如:&#13;&#10;1024&#13;&#10;2048-2060" cols="26"
                       autoHeight
@@ -60,44 +60,37 @@
       </tbody>
     </table>
   </div>
+
   <script>
     // 清空历史记录
     function confirmClearExportedXml() {
       Notiflix.Confirm.Show("{{__('main.Delete')}}", "确认删除？", "{{__('main.Confirm')}}", "{{__('main.Cancel')}}", function () {
-        console.log("发起请求：清空历史记录")
-        window.livewire.emit('clearExportedXml') // 发起清空
+        Livewire.dispatch('Problem.ExportProblems.clearExportedXml') // 发起清空
       })
     }
 
-    // 监听后端回调
-    window.addEventListener('notify', e => {
-      console.log(e);
-      if (e.detail.ok) {
-        Notiflix.Notify.Success(e.detail.msg)
-      } else {
-        Notiflix.Notify.Failure(e.detail.msg)
-      }
-    })
-    window.addEventListener('report', e => {
-      console.log(e);
-      if (e.detail.ok) {
-        Notiflix.Report.Success("{{__('main.Success')}}", e.detail.msg, "{{__('main.Confirm')}}")
-      } else {
-        Notiflix.Report.Failure("{{__('main.Success')}}", e.detail.msg, "{{__('main.Confirm')}}")
-      }
-    })
-
-    // 监听页面生命周期
-    document.addEventListener("DOMContentLoaded", () => {
-      // Livewire.hook('component.initialized', (component) => {console.log("component.initialized")})
-      // Livewire.hook('element.initialized', (el, component) => {console.log("element.initialized")})
-      // Livewire.hook('element.updating', (fromEl, toEl, component) => {console.log("element.updating")})
-      // Livewire.hook('element.updated', (el, component) => {console.log("element.updated")})
-      // Livewire.hook('element.removed', (el, component) => {console.log("element.removed")})
-      // Livewire.hook('message.sent', (message, component) => {console.log("message.sent")})
-      // Livewire.hook('message.failed', (message, component) => {console.log("message.failed")})
-      // Livewire.hook('message.received', (message, component) => {console.log("message.received")})
-      // Livewire.hook('message.processed', (message, component) => {console.log("message.processed")})
+    document.addEventListener("livewire:init", () => {
+      // 监听后端回调
+      Livewire.on('notify', messages => {
+        console.log(messages);
+        for (const ret of messages) {
+          if (ret.ok) {
+            Notiflix.Notify.Success(ret.msg)
+          } else {
+            Notiflix.Notify.Failure(ret.msg)
+          }
+        }
+      })
+      Livewire.on('report', messages => {
+        console.log(messages);
+        for (const ret of messages) {
+          if (ret.ok) {
+            Notiflix.Report.Success("{{__('main.Success')}}", ret.msg, "{{__('main.Confirm')}}")
+          } else {
+            Notiflix.Report.Failure("{{__('main.Success')}}", ret.msg, "{{__('main.Confirm')}}")
+          }
+        }
+      })
     })
   </script>
 </div>

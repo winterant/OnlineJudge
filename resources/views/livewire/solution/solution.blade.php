@@ -4,7 +4,7 @@
     @section('title', __('main.Solution'))
   @endif
 
-  <div @if (($solution['result'] ?? 0) < 4) wire:poll.visible.750ms="refresh" @endif>
+  <div @if (!$isJudged) wire:poll.visible.750ms="refresh" @endif>
     {{-- solution基本信息 --}}
     @if (!$only_details)
       <div class="container">
@@ -182,20 +182,12 @@
       }
 
       // 代码高亮
-      document.addEventListener('livewire:load', function() {
+      document.addEventListener("livewire:init", () => {
         hljs.highlightAll();
         $("code").each(function() { // 代码添加行号
           $(this).html("<ol><li>" + $(this).html().replace(/\n/g, "\n</li><li>") + "\n</li></ol>");
         })
       })
-      document.addEventListener("DOMContentLoaded", () => {
-        Livewire.hook('message.processed', (message, component) => {
-          hljs.highlightAll();
-          $("code").each(function() { // 代码添加行号
-            $(this).html("<ol><li>" + $(this).html().replace(/\n/g, "\n</li><li>") + "\n</li></ol>");
-          })
-        })
-      });
     </script>
   @endif
 

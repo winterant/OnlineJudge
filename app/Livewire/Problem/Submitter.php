@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Problem;
+namespace App\Livewire\Problem;
 
 use App\Http\Helpers\ProblemHelper;
 use Illuminate\Support\Facades\Auth;
