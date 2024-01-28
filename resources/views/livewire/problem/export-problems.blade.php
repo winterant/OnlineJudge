@@ -51,9 +51,11 @@
           <td nowrap>
             @if(!str_ends_with($item['name'], 'ing'))
               <a href="{{ route('api.admin.problem.download_exported_xml', ['filename' => $item['name']]) }}">
-                <i class="fa fa-download" aria-hidden="true"></i>下载
+                <i class="fa fa-download" aria-hidden="true"></i> 下载
               </a>
             @endif
+            {{-- livewire下载大文件不好用，点击后好久没反应，下载完了又报错，暂不使用 --}}
+            {{-- <a href="javascript:" wire:click="downloadExportedXml('{{$item['name']}}')"><i class="fa fa-download" aria-hidden="true"></i> 下载</a> --}}
           </td>
         </tr>
       @endforeach
