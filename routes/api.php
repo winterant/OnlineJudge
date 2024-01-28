@@ -110,11 +110,14 @@ Route::namespace('Api')->name('api.')->where(['id' => '[0-9]+', 'uid' => '[0-9]+
         Route::delete('admin/problems/{id}', 'ProblemController@delete')->name('admin.problem.delete')->middleware('Permission:admin.problem.delete'); // 创建人无法删除
 
         // Manage problem's exporting and importing
-        Route::get('admin/problem/export/download', 'ProblemController@download_exported_xml')->name('admin.problem.download_exported_xml')->middleware('Permission:admin.problem_xml.export');
+        Route::post('problem/import', 'ProblemController@import')->name('admin.problem.import')->middleware(['Permission:admin.problem_xml.import'])->withoutMiddleware(['throttle:60,1']); // 由于分片上传,取消请求频率限制
+        Route::get('admin/problem/export/download', 'ProblemController@download_exported_xml')->name('admin.problem.download_exported_xml')->middleware(['Permission:admin.problem_xml.export']);
 
         // Manage problem test data
         Route::get('admin/problems/{id}/data/{filename}', 'ProblemController@get_data')->name('admin.problem.get_data')->middleware('Permission:admin.problem_data.view');
         Route::delete('admin/problems/{id}/data/batch', 'ProblemController@delete_data')->name('admin.problem.delete_data')->middleware('Permission:admin.problem_data.delete');
+        Route::post('problem/upload-data', 'ProblemController@upload_data')->name('admin.problem.upload_data')->middleware('Permission:admin.problem_data.create')->withoutMiddleware(['throttle:60,1']); // 由于分片上传,取消请求频率限制;
+        Route::post('problem/update-data', 'ProblemController@update_data')->name('admin.problem.update_data')->middleware('Permission:admin.problem_data.update');
 
         // Manage tag and tag_pool
         Route::delete('problem/tags/batch', 'ProblemController@tag_delete_batch')->name('admin.problem.tag_delete_batch')->middleware('Permission:admin.problem_tag.delete');

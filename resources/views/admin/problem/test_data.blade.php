@@ -101,7 +101,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
 
-        <form action="{{ route('admin.problem.update_data') }}" method="post">
+        <form action="{{ route('api.admin.problem.update_data') }}" method="post">
           @csrf
           <input type="number" name="pid" value="{{ request()->has('pid') ? request('pid') : 0 }}"
             class="form-control" hidden>
@@ -134,18 +134,18 @@
   <script>
     function do_upload() {
       uploadBig({
-        url: "{{ route('admin.problem.upload_data') }}",
+        url: "{{ route('api.admin.problem.upload_data') }}",
         _token: "{{ csrf_token() }}",
         files: $("#test_data")[0].files,
         data: {
           'pid': "{{ request()->has('pid') ? request('pid') : 0 }}"
         },
         before: function(file_count, total_size) {
-          Notiflix.Loading.Hourglass('开始上传' + file_count + '个文件!总大小：' + (total_size / 1024).toFixed(1) + 'KB');
+          Notiflix.Loading.Hourglass('开始上传' + file_count + '个文件!总大小：' + (total_size / 1024 / 1024).toFixed(1) + 'MB');
         },
         uploading: function(file_count, index, up_size, fsize) {
           Notiflix.Loading.Change('上传中' + index + '/' + file_count + ' : ' +
-            (up_size / 1024).toFixed(2) + 'MB/' + (fsize / 1024).toFixed(2) + 'MB (' +
+            (up_size / 1024 / 1024).toFixed(2) + 'MB/' + (fsize / 1024 / 1024).toFixed(2) + 'MB (' +
             Math.round(up_size * 100 / fsize) + '%)');
         },
         success: function(file_count, ret) {

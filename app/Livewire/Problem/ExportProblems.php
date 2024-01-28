@@ -88,6 +88,13 @@ class ExportProblems extends Component
         }
     }
 
+    // 管理员下载xml文件。备注：这里livewire下载大文件不好用，点击后好久没反应，下载完了又报错，暂未使用。
+    public function downloadExportedXml($filename)
+    {
+        ini_set('memory_limit', '4G');
+        return Storage::download('temp/exported_problems/' . $filename);
+    }
+
     // 清空历史导出过的xml
     #[On('Problem.ExportProblems.clearExportedXml')]
     public function clearExportedXml()
