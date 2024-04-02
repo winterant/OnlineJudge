@@ -31,7 +31,7 @@ services:
       - ./data/web/storage/app/data:/testdata:ro
 
   mysql:
-    image: docker.io/mysql:8.0
+    image: docker.io/mysql:8.0.36
     container_name: lduoj-mysql
     restart: always
     security_opt:
@@ -51,7 +51,7 @@ services:
       - ./data/mysql:/var/lib/mysql
 
   redis:
-    image: redis:7.0
+    image: docker.io/redis:7.0.15
     container_name: lduoj-redis
     restart: always
     env_file: lduoj.conf
