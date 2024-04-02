@@ -3,13 +3,13 @@
   <div>
     <span id="localtime">{{ date('Y-m-d H:i:s') }}</span>
     <span class="mx-2">|</span>
-    <a href="https://winterant.github.io/OnlineJudge/web/" target="_blank">{{ __('main.Introduction') }}</a>
+    <a href="https://winant.gitee.io/lduoj-doc/web/" target="_blank">{{ __('main.Introduction') }}</a>
     <span class="mx-2">|</span>
-    <a href="https://winterant.github.io/OnlineJudge/web/judge.html" target="_blank">
+    <a href="https://winant.gitee.io/lduoj-doc/web/judge.html" target="_blank">
       {{ __('main.Judge Service') }}
     </a>
     <span class="mx-2">|</span>
-    <a href="https://winterant.github.io/OnlineJudge/web/result.html" target="_blank">{{ __('main.Judge Result') }}</a>
+    <a href="https://winant.gitee.io/lduoj-doc/web/result.html" target="_blank">{{ __('main.Judge Result') }}</a>
     @if ($footer_info = get_setting('footer_info'))
       <span class="mx-2">|</span>
       {{ $footer_info }}

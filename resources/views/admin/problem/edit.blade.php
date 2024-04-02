@@ -144,7 +144,7 @@
               :use-local-storage="false" />
           </div>
           <div class="m-2 p-2 alert  alert-info">
-            附《<a href="https://winterant.github.io/OnlineJudge/web/spj.html" target="_blank">特判使用教程</a>》
+            附《<a href="https://winant.gitee.io/lduoj-doc/web/spj.html" target="_blank">特判使用教程</a>》
           </div>
         </div>
 

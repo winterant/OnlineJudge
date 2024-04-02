@@ -53,17 +53,17 @@
         <i class="fa fa-info-circle" aria-hidden="true">&nbsp;{{ trans('main.About') }}</i>
       </a>
       <div class="dropdown-menu" aria-labelledby="contestDropdown">
-        <a class="dropdown-item" href="https://winterant.github.io/OnlineJudge/web/"
+        <a class="dropdown-item" href="https://winant.gitee.io/lduoj-doc/web/"
           target="_blank">{{ __('main.Introduction') }}</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item text-nowrap" href="https://winterant.github.io/OnlineJudge/web/judge.html"
+        <a class="dropdown-item text-nowrap" href="https://winant.gitee.io/lduoj-doc/web/judge.html"
           target="_blank">
           {{ __('main.Judge Service') }}
         </a>
-        <a class="dropdown-item" href="https://winterant.github.io/OnlineJudge/web/result.html"
+        <a class="dropdown-item" href="https://winant.gitee.io/lduoj-doc/web/result.html"
           target="_blank">{{ __('main.Judge Result') }}</a>
 
-        <a class="dropdown-item" href="https://winterant.github.io/OnlineJudge/web/spj.html"
+        <a class="dropdown-item" href="https://winant.gitee.io/lduoj-doc/web/spj.html"
           target="_blank">{{ __('main.Special Judge') }}</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="https://github.com/winterant/OnlineJudge"
