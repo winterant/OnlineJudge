@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 # 安装运行环境
 RUN set -ex &&\
-    sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.aliyun.com\/ubuntu/g' /etc/apt/sources.list &&\
+    # sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.aliyun.com\/ubuntu/g' /etc/apt/sources.list &&\
     apt update && apt upgrade -y &&\
     # php, composer
     apt install -y software-properties-common &&\
