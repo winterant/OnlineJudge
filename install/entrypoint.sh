@@ -61,7 +61,7 @@ php artisan optimize
 php artisan key:generate --force
 php artisan migrate --force
 php artisan optimize
-chown -R www-data:www-data .  # bootstrap storage
+chown -R www-data:www-data ./bootstrap ./public ./storage
 php artisan storage:link
 php artisan lduoj:init
 
