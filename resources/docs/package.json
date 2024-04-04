@@ -809,7 +809,7 @@
     "wbuf": "^1.7.3",
     "webpack": "^4.46.0",
     "webpack-chain": "^6.5.1",
-    "webpack-dev-middleware": "^3.7.3",
+    "webpack-dev-middleware": "^5.3.4",
     "webpack-dev-server": "^3.11.3",
     "webpack-log": "^2.0.0",
     "webpack-merge": "^4.2.2",
