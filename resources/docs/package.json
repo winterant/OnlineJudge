@@ -302,7 +302,7 @@
     "globalthis": "^1.0.3",
     "globby": "^9.2.0",
     "gopd": "^1.0.1",
-    "got": "^9.6.0",
+    "got": "^11.8.5",
     "graceful-fs": "^4.2.11",
     "gray-matter": "^4.0.3",
     "handle-thing": "^2.0.1",
