@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: LDUOJ Web Docker Image CI
 
 on:
   workflow_dispatch:
@@ -24,9 +24,12 @@ jobs:
         run: |
           VERSION=unknown
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/v}
+            VERSION=${GITHUB_REF#refs/tags/}
+          elif [[ $GITHUB_REF == refs/heads/* ]]; then
+            VERSION=${GITHUB_REF#refs/heads/}-$(date +%Y%m%d)
           fi
           echo "v=${VERSION}" >> $GITHUB_OUTPUT
+          echo "${VERSION}" > ./install/.version
 
       - name: Set up Docker BuildX
         uses: docker/setup-buildx-action@v2
@@ -39,8 +42,6 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v4
-        run: |
-          echo ${{ steps.output-id.outputs.v }} > ./install/.version
         with:
           context: .
           file: ./install/Dockerfile
