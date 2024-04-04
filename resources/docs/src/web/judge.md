@@ -1,9 +1,9 @@
 # 判题服务
 
-对于2.x版本，采用[go-judge](https://github.com/criyle/go-judge)作为判题服务。
+对于lduoj v2.x版本，采用[go-judge](https://github.com/criyle/go-judge)作为判题服务。
 
-对于1.新版本，你可以参考判题服务[开源代码](https://github.com/winterant/judge)深入了解判题逻辑；
-你的代码提交后，将由判题服务运行并评测。判题服务接收到你提交的代码，将经历以下步骤。
+对于lduoj v1.x版本，采用自研判题服务[开源代码](https://github.com/winterant/judge)（已停止维护）。
+
 
 ## 编译
    
