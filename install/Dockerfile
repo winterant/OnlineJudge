@@ -1,5 +1,7 @@
 FROM ubuntu:22.04
 
+ENV DEBIAN_FRONTEND noninteractive
+
 # 安装运行环境
 RUN set -ex &&\
     # sed -i 's/\/\/.*\/ubuntu/\/\/mirrors.aliyun.com\/ubuntu/g' /etc/apt/sources.list &&\
@@ -41,7 +43,7 @@ RUN cd /app_src &&\
 # 部署配置文件
 RUN cd /app_src &&\
     # docker entrypoint
-    cp install/docker/entrypoint.sh /docker-entrypoint.sh &&\
+    cp install/entrypoint.sh /docker-entrypoint.sh &&\
     chmod +x /docker-entrypoint.sh &&\
     # nginx
     rm -rf /etc/nginx/sites-enabled/default &&\
