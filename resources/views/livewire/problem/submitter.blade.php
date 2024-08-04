@@ -19,7 +19,7 @@
       @if ($problem['type'] == 0)
         <div id="div-code-editor" style="height: calc(100vh - 115px)">
           <x-code-editor html-prop-name-of-code="solution[code]" html-prop-name-of-lang="solution[language]" :code="$solution_code ?? ''" :lang="$solution_lang ?? null" :bitlanguages="$allow_lang ?? null" :use-local-storage="true"
-            :problem-id="$problem['id']" :contest-id="$contest_id ?? null" />
+            :problem-id="$problem['id']" :contest-id="$contest_id ?? null" :ban-code-editor="$ban_code_editor" />
         </div>
       @elseif($problem['type'] == 1)
         {{-- 代码填空题 --}}
@@ -38,8 +38,11 @@
       {{-- 提交等按钮 --}}
       <div class="overflow-hidden">
         <div class="pull-right">
-          <button type="button" data-target="#local-test-page" data-toggle="modal" onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
-            class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button>
+
+          @if(!$ban_code_editor)
+            <button type="button" data-target="#local-test-page" data-toggle="modal" onclick="setTimeout(function(){$('#local_test_input').focus()}, 500);"
+              class="btn bg-primary text-white m-2">{{ __('main.local_test') }}</button>
+          @endif
 
           <button type="button" data-target="#judge-result-page" data-toggle="modal" class="btn bg-info text-white m-2"
             style="display: none">{{ __('main.judge_result') }}</button>
@@ -53,63 +56,65 @@
     </form>
 
     {{-- 模态框 本地测试 --}}
-    <div class="modal fade" id="local-test-page">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+    @if(!$ban_code_editor)
+      <div class="modal fade" id="local-test-page">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
 
-          <!-- 模态框头部 -->
-          <div class="modal-header">
-            <h4 class="modal-title">{{ __('main.local_test') }}</h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-          </div>
-
-          <!-- 模态框主体 -->
-          <div class="modal-body">
-            <div class="form-group mt-2">
-              <form id="form_local_test">
-                <div>
-                  <span>{{ trans('main.Input') }}</span>
-                  <textarea v-model="sample_in" id="local_test_input" class="w-100" rows="6" maxlength="501"
-                    oninput="if($(this).val().length>500){Notiflix.Report.Failure('长度超限','最多输入500个字符，超出部分将被忽略！可能会发生运行崩溃、输出有误等','好的')}" required></textarea>
-                </div>
-                <div class="d-flex">
-                  <button type="button" id="btn_submit_local_test" class="btn bg-success text-white" v-on:click="submit_local_test"
-                    @guest disabled @endguest>{{ __('main.Compile and Run') }}</button>
-                  @for ($i = 0; $i < count($samples); $i++)
-                    <button type="button" v-on:click="fill_in_sample('{{ $i }}')" class="btn bg-secondary text-white ml-2"
-                      @guest disabled @endguest>{{ __('sentence.Fill in the sample') }} {{ $i + 1 }}</button>
-                  @endfor
-                </div>
-                <hr>
-                <div v-show="local_test.time" class=" alert alert-info p-2 mb-2">
-                  <span class="mr-5">{{ __('main.Time') }}: @{{ local_test.time }}MS</span>
-                  <span>{{ __('main.Memory') }}: @{{ local_test.memory }}MB</span>
-                </div>
-                <div v-show="local_test.error_info">
-                  <span>{{ __('main.Run Error') }}</span>
-                  <pre class=" alert alert-danger p-2 overflow-auto">@{{ local_test.error_info }}</pre>
-                </div>
-                <div v-show="local_test.stdin">
-                  <span>{{ trans('main.Input') }}</span>
-                  <pre class=" alert alert-secondary p-2 overflow-auto" style="min-height: 1rem">@{{ local_test.stdin }}</pre>
-                </div>
-                <div v-show="local_test.stdout">
-                  <span>{{ trans('main.Output') }}</span>
-                  <pre class=" alert alert-secondary p-2 overflow-auto" style="min-height: 1rem">@{{ local_test.stdout }}</pre>
-                </div>
-              </form>
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+              <h4 class="modal-title">{{ __('main.local_test') }}</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-          </div>
 
-          <!-- 模态框底部 -->
-          <div class="modal-footer p-4">
-            {{-- <a href="#" class="btn btn-success bg-success text-white"></a> --}}
-            <button type="button" class="btn btn-info" data-dismiss="modal">{{ __('main.Close') }}</button>
-          </div>
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+              <div class="form-group mt-2">
+                <form id="form_local_test">
+                  <div>
+                    <span>{{ trans('main.Input') }}</span>
+                    <textarea v-model="sample_in" id="local_test_input" class="w-100" rows="6" maxlength="501"
+                      oninput="if($(this).val().length>500){Notiflix.Report.Failure('长度超限','最多输入500个字符，超出部分将被忽略！可能会发生运行崩溃、输出有误等','好的')}" required></textarea>
+                  </div>
+                  <div class="d-flex">
+                    <button type="button" id="btn_submit_local_test" class="btn bg-success text-white" v-on:click="submit_local_test"
+                      @guest disabled @endguest>{{ __('main.Compile and Run') }}</button>
+                    @for ($i = 0; $i < count($samples); $i++)
+                      <button type="button" v-on:click="fill_in_sample('{{ $i }}')" class="btn bg-secondary text-white ml-2"
+                        @guest disabled @endguest>{{ __('sentence.Fill in the sample') }} {{ $i + 1 }}</button>
+                    @endfor
+                  </div>
+                  <hr>
+                  <div v-show="local_test.time" class=" alert alert-info p-2 mb-2">
+                    <span class="mr-5">{{ __('main.Time') }}: @{{ local_test.time }}MS</span>
+                    <span>{{ __('main.Memory') }}: @{{ local_test.memory }}MB</span>
+                  </div>
+                  <div v-show="local_test.error_info">
+                    <span>{{ __('main.Run Error') }}</span>
+                    <pre class=" alert alert-danger p-2 overflow-auto">@{{ local_test.error_info }}</pre>
+                  </div>
+                  <div v-show="local_test.stdin">
+                    <span>{{ trans('main.Input') }}</span>
+                    <pre class=" alert alert-secondary p-2 overflow-auto" style="min-height: 1rem">@{{ local_test.stdin }}</pre>
+                  </div>
+                  <div v-show="local_test.stdout">
+                    <span>{{ trans('main.Output') }}</span>
+                    <pre class=" alert alert-secondary p-2 overflow-auto" style="min-height: 1rem">@{{ local_test.stdout }}</pre>
+                  </div>
+                </form>
+              </div>
+            </div>
 
+            <!-- 模态框底部 -->
+            <div class="modal-footer p-4">
+              {{-- <a href="#" class="btn btn-success bg-success text-white"></a> --}}
+              <button type="button" class="btn btn-info" data-dismiss="modal">{{ __('main.Close') }}</button>
+            </div>
+
+          </div>
         </div>
       </div>
-    </div>
+    @endif
     {{-- end of 模态框 本地测试 --}}
 
     {{-- 模态框 判题结果 --}}

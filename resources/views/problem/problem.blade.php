@@ -232,7 +232,8 @@
 
     <div id="right">
       {{-- 代码编辑框 --}}
-      @livewire('problem.submitter', ['problem' => (array) $problem, 'contest_id' => $contest->id ?? null, 'allow_lang' => $contest->allow_lang ?? null])
+      @livewire('problem.submitter', ['problem' => (array) $problem, 'contest_id' => $contest->id ?? null,
+                'allow_lang' => $contest->allow_lang ?? null, 'ban_code_editor'=> $contest->ban_code_editor ?? false])
     </div>
   </div>
 

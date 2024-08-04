@@ -15,12 +15,14 @@ class Submitter extends Component
     public $samples = []; // 本地测试时快速填入样例
     public $solution_code = null; // 可能请求了库中的代码
     public $solution_lang = null; // 若请求了库中代码，则记住编程语言
+    public $ban_code_editor = false;
 
-    public function mount(array $problem, int $contest_id = null, int $allow_lang = null)
+    public function mount(array $problem, int $contest_id = null, int $allow_lang = null, $ban_code_editor = false)
     {
         $this->problem = $problem;
         $this->contest_id = $contest_id;
         $this->allow_lang = $allow_lang;
+        $this->ban_code_editor = $ban_code_editor;
         //读取样例文件
         $this->samples = ProblemHelper::readSamples($problem['id']);
 

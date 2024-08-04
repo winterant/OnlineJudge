@@ -150,7 +150,7 @@ return [
     "reply to"      => "reply to",
     "New Discussion" => "New Discussion",
 
-    "local_test"    => "Local Test",
+    "local_test"    => "Running Online",
     "judge_result"  => "Judge Result",
     "Compile and Run" => "Compile and Run",
     "Run Error"     => "Run Error",
