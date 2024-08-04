@@ -150,7 +150,7 @@ return [
     "reply to"      => "回复",
     "New Discussion" => "我要发言",
 
-    "local_test"    => "本地测试",
+    "local_test"    => "在线运行",
     "judge_result"  => "评测结果",
     "Compile and Run" => "编译运行",
     "Run Error"     => "运行出错",

@@ -25,8 +25,9 @@ class CodeEditor extends Component
     public $useLocalStorage; // 是否让浏览器缓存已选中语言、已编辑代码
     public $contestId;
     public $problemId;
+    public bool $banCodeEditor;
 
-    public function __construct($htmlPropNameOfLang, $htmlPropNameOfCode, $lang = null, $code = '', array $languages = null, $bitlanguages = null, $title = null, $useLocalStorage = true, $problemId = null, $contestId = null)
+    public function __construct($htmlPropNameOfLang, $htmlPropNameOfCode, $lang = null, $code = '', array $languages = null, $bitlanguages = null, $title = null, $useLocalStorage = true, $problemId = null, $contestId = null, $banCodeEditor = false)
     {
         $this->title = $title;
         $this->domId = uniqid('code_editor_');
@@ -48,6 +49,7 @@ class CodeEditor extends Component
             }
             $this->languages = $temp;
         }
+        $this->banCodeEditor = $banCodeEditor;
     }
 
     /**

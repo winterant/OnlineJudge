@@ -182,7 +182,8 @@ class ContestController extends Controller
                 'judge_type', 'public_rank',
                 'allow_lang',
                 'enable_discussing',
-                'enable_tagging'
+                'enable_tagging',
+                'ban_code_editor'
             ])->find($id);
 
         // 拿到本题基本信息

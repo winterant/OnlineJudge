@@ -265,6 +265,21 @@
           </a>
         </div>
 
+        <div class="form-inline mb-3">
+          <span>在线运行：</span>
+          <div class="custom-control custom-radio ml-2">
+            <input type="radio" name="contest[ban_code_editor]" value="0" class="custom-control-input" id="ban_code_editor_0" checked>
+            <label class="custom-control-label pt-1" for="ban_code_editor_0">允许使用</label>
+          </div>
+          <div class="custom-control custom-radio mx-4">
+            <input type="radio" name="contest[ban_code_editor]" value="1" class="custom-control-input" id="ban_code_editor_1" @if (isset($contest) && $contest->ban_code_editor == 1) checked @endif>
+            <label class="custom-control-label pt-1" for="ban_code_editor_1">禁用（强制学生使用本地IDE写代码并运行测试）</label>
+          </div>
+          <a href="javascript:" style="color: #838383"
+             onclick="whatisthis('如果禁用网页代码编辑器，则参赛选手无法在网页上编辑代码和运行测试。该功能旨在强制选手使用本地IDE，避免过度依赖网页代码编辑器')">
+            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+          </a>
+        </div>
 
         <div class="form-inline mb-3">
           <span>判题策略：</span>
