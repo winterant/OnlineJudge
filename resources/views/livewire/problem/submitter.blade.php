@@ -255,13 +255,16 @@
         })
 
         // 替换??为input框
-        var blank_code = $("#blank_code")
+        let blank_code = $("#blank_code")
         if (blank_code.length > 0) {
-          var reg = new RegExp(/\?\?/, "g"); //g,表示全部替换。
-          $code = blank_code.html().replace(reg,
+          let code = blank_code.html()
+          code = code.replace(new RegExp(/\n\S*\?\?\S*\n/, "g"),
+            "<br><textarea name='filled[]' cols='120' autoHeight autocomplete='off' required></textarea>"
+          )
+          code = code.replace(new RegExp(/\?\?/, "g"),
             "<input class='code_blanks' name='filled[]' oninput='input_extend_width($(this))' autocomplete='off' required>"
           )
-          blank_code.html($code)
+          blank_code.html(code)
         }
       });
     </script>
