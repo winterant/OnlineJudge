@@ -258,7 +258,7 @@
         let blank_code = $("#blank_code")
         if (blank_code.length > 0) {
           let code = blank_code.html()
-          code = code.replace(new RegExp(/\n\S*\?\?\S*\n/, "g"),
+          code = code.replace(new RegExp(/\n\s*?\?\?\s*?\n/, "g"),
             "<br><textarea name='filled[]' cols='120' autoHeight autocomplete='off' required></textarea>"
           )
           code = code.replace(new RegExp(/\?\?/, "g"),
