@@ -124,6 +124,7 @@ class Solution extends Component
         if ($index !== null && ($this->solution['judge_result'][$index] ?? false)) {
             $this->detail = $this->solution['judge_result'][$index];
             $this->detail['index'] = $index;
+            $this->dispatch("solution.detail.display");
         } else {
             $this->detail = null;
         }

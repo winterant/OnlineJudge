@@ -267,6 +267,12 @@
           blank_code.html(code)
         }
       });
+
+      $(function (){
+        $(".judge-detail").onclick = function (){
+          $(".judge-detail").toggleClass("active")
+        }
+      })
     </script>
   @endif
 

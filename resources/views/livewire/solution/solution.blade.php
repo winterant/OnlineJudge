@@ -109,9 +109,9 @@
           <p class="alert alert-danger p-2">
             <span>{{ __('main.Wrong Data') }}:</span>
             <a class="ml-2" href="{{ route('solution_wrong_data', [$solution['id'], 'in']) }}"
-              target="_blank">{{ $solution['wrong_data'] }}.in</a>
+               target="_blank">{{ $solution['wrong_data'] }}.in</a>
             <a class="ml-2" href="{{ route('solution_wrong_data', [$solution['id'], 'out']) }}"
-              target="_blank">{{ $solution['wrong_data'] }}.out</a>
+               target="_blank">{{ $solution['wrong_data'] }}.out</a>
           </p>
         @endif
 
@@ -122,8 +122,8 @@
 
         <div class="d-flex flex-wrap" style="font-size:0.85rem">
           @foreach ($solution['judge_result'] ?? [] as $i => $res)
-            <div class="m-1 p-2 judge-detail judge-detail-{{ $res['result'] }}" style="width:7rem;"
-              wire:click="display_detail({{ $i }})">
+            <div class="m-1 p-2 judge-detail judge-detail-{{ $res['result'] }}" style="width:7rem; cursor: pointer"
+                 wire:click="display_detail({{ $i }})">
               <div>#{{ $i + 1 }}</div>
               <div class="text-center my-1">{{ $res['result_desc'] }}</div>
               <div class="text-center" style="font-size: 0.5rem">{{ $res['time'] }}MS / {{ $res['memory'] }}MB
@@ -134,7 +134,7 @@
 
         {{-- 展示某一个详情数据 --}}
         @if ($detail ?? false)
-          <div class="border m-1 p-2">
+          <div id="detail_container" class="border m-1 p-2">
             <div>
               <span class="mr-3">#{{ $detail['index'] + 1 }}</span>
               <span class="mr-3">{{ __('main.Test Data') }}:
@@ -148,7 +148,7 @@
               <span class="mr-3">{{ __('main.Time') }}: {{ $detail['time'] }}MS</span>
               <span>{{ __('main.Memory') }}: {{ $detail['memory'] }}MB</span>
             </div>
-            <pre class="mt-1">{{ $detail['error_info'] ?? '' }}</pre>
+            <pre id="detail_error_info" class="mt-1"><code>{{ $detail['error_info'] ?? '' }}</code></pre>
           </div>
         @endif
       </div>
@@ -157,38 +157,71 @@
     @if (!$only_details)
       {{-- 源代码 --}}
       <div class="container">
-        <div class="my-container bg-white position-relative">
-          <pre class="border p-1"><code>{{ $solution['code'] }}</code></pre>
+        <div class="my-container bg-white position-relative" wire:ignore>
+          <pre class="border p-1" id="display_code"><code>{{ $solution['code'] }}</code></pre>
           <span id="code" hidden>{{ $solution['code'] }}</span>
           <button type="button" class="btn btn-primary border position-absolute" style="top: 2rem; right: 3rem"
-            onclick="copy('code')">{{ __('main.Copy') }}</button>
+                  onclick="copy('code')">{{ __('main.Copy') }}</button>
           <a class="btn btn-primary border position-absolute" style="top: 2rem; right: 8rem"
-            href="{{ $solution['contest_id'] > 0 ? route('contest.problem', [$solution['contest_id'], $solution['index'], 'solution' => $solution['id']]) : route('problem', [$solution['problem_id'], 'solution' => $solution['id']]) }}">{{ __('main.Edit') }}</a>
+             href="{{ $solution['contest_id'] > 0 ? route('contest.problem', [$solution['contest_id'], $solution['index'], 'solution' => $solution['id']]) : route('problem', [$solution['problem_id'], 'solution' => $solution['id']]) }}">{{ __('main.Edit') }}</a>
         </div>
       </div>
     @endif
   </div>
 
-  @if (!$only_details)
-    {{-- 复制、代码高亮等脚本 --}}
-    <script type="text/javascript">
-      // 复制
-      function copy(tag_id) {
-        $("body").append('<textarea id="copy_temp">' + $('#' + tag_id).html() + '</textarea>');
-        $("#copy_temp").select();
-        document.execCommand("Copy");
-        $("#copy_temp").remove();
-        Notiflix.Notify.Success('{{ __('sentence.copy') }}');
-      }
 
+  {{-- 复制、代码高亮等脚本 --}}
+  <script type="text/javascript">
+    // 复制
+    function copy(tag_id) {
+      $("body").append('<textarea id="copy_temp">' + $('#' + tag_id).html() + '</textarea>');
+      $("#copy_temp").select();
+      document.execCommand("Copy");
+      $("#copy_temp").remove();
+      Notiflix.Notify.Success('{{ __('sentence.copy') }}');
+    }
+
+    document.addEventListener("livewire:init", () => {
       // 代码高亮
-      document.addEventListener("livewire:init", () => {
-        hljs.highlightAll();
-        $("code").each(function() { // 代码添加行号
-          $(this).html("<ol><li>" + $(this).html().replace(/\n/g, "\n</li><li>") + "\n</li></ol>");
-        })
+      hljs.highlightAll();
+      $("#display_code code").each(function () { // 代码添加行号
+        $(this).html("<ol><li>" + $(this).html().replace(/\n/g, "\n</li><li>") + "\n</li></ol>");
       })
-    </script>
-  @endif
+
+      // detail展示事件，给detail加行号
+      Livewire.on('solution.detail.display', messages => {
+        setTimeout(() => {
+          hljs.highlightAll();
+          $("#detail_error_info code").each(function () {
+            $(this).html("<ol><li>" + $(this).html().replace(/\n/g, "\n</li><li>") + "\n</li></ol>");
+          })
+
+          @if($only_details)
+
+          document.getElementById("judge-result-page").scrollTo({top: 1e9, behavior: 'smooth'});
+
+          @else
+
+          let detailContainer = document.getElementById('detail_container');
+          if (detailContainer) {
+            let containerTop = detailContainer.getBoundingClientRect().top // 到屏幕顶端的实时距离
+            let targetY = window.scrollY + containerTop - window.innerHeight / 2
+            targetY = Math.min(targetY, window.scrollY + containerTop + detailContainer.offsetHeight - window.innerHeight)
+            if (window.scrollY < targetY) {
+              window.scrollTo({
+                top: targetY,
+                behavior: 'smooth'
+              });
+            }
+          }
+
+          @endif
+
+        }, 10)
+
+      })
+    })
+
+  </script>
 
 </div>
