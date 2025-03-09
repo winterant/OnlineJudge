@@ -30,4 +30,8 @@ return [
 	"penalty_acm"	            => 1200,    //竞赛acm模式错误一次的罚时，1200秒=20分钟
 	"compile_error_submit_interval"	=> 60,  //编译错误后，在此时间内不能再次提交，60秒
 	"submit_interval"	        => 10,      //同一用户两次提交最小间隔，10秒
+
+    "openai_chat_endpoint"      => "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+    "openai_chat_model"         => "",
+    "openai_api_key"            => "",
 ];

@@ -235,6 +235,7 @@
 
       <div class="my-container bg-white">
         <h4>竞赛设置</h4>
+        <hr>
         <div class="form-group">
           <input id="rank_show_school" type="checkbox">
           <input name="rank_show_school" value="{{ get_setting('rank_show_school') ? 'true' : 'false' }}"
@@ -279,6 +280,39 @@
             <input type="number" name="penalty_acm" value="{{ get_setting('penalty_acm') }}" required
                    class="form-control">秒（竞赛在ACM模式下每次错误提交的罚时，建议1200秒，即20分钟）
           </label>
+        </div>
+        <button class="mt-4 btn text-white bg-success"><i class="fa fa-save" aria-hidden="true"></i> 保存</button>
+      </form>
+    </div>
+
+    <div class="my-container bg-white">
+      <h4>AI助手</h4>
+      <hr>
+      <div class="alert-info p-1" style="border-radius: 0.2rem;font-size: 0.9rem">
+        参考文档：
+        <a href="https://www.volcengine.com/docs/82379/1298454" target="_blank">火山方舟API调用</a>
+      </div>
+      <form onsubmit="return submit_settings(this)" method="post">
+        @csrf
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">对话地址：</span>
+          </div>
+          <input type="text" name="openai_chat_endpoint" value="{{ get_setting('openai_chat_endpoint') }}" required class="form-control" autocomplete="off"
+                 placeholder="https://xxxx/xxxx">
+        </div>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">对话模型：</span>
+          </div>
+          <input type="text" name="openai_chat_model" value="{{ get_setting('openai_chat_model') }}" required class="form-control" autocomplete="off"
+                 placeholder="deepseek-v3-241203">
+        </div>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">API Key：</span>
+          </div>
+          <input type="text" name="openai_api_key" value="{{ get_setting('openai_api_key') }}" required class="form-control" autocomplete="off" placeholder="">
         </div>
         <button class="mt-4 btn text-white bg-success"><i class="fa fa-save" aria-hidden="true"></i> 保存</button>
       </form>

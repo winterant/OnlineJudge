@@ -2,8 +2,14 @@
 
 namespace App\Livewire\Solution;
 
+use App\Http\Helpers\ProblemHelper;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -17,6 +23,8 @@ class Solution extends Component
     public bool $isJudged = false; // 是否在判题完成
     public bool $only_details = false; // 标记仅展示测试点信息，其他信息如提交时间、代码等都不展示
 
+
+    public string $aiChatResult = '';
 
     public function mount($id = null, $only_details = false)
     {
@@ -127,6 +135,69 @@ class Solution extends Component
             $this->dispatch("solution.detail.display");
         } else {
             $this->detail = null;
+        }
+    }
+
+    public function ai_chat()
+    {
+        $lock = Cache::lock('solution.ai_chat.' . Auth::user()->username, 180);
+        if (!$lock->get()) {
+            $this->aiChatResult = implode("\n\n", ["3分钟内只能使用1次AI答疑哦~", $this->aiChatResult]);
+            $this->dispatch("solution.ai_chat_result", trim($this->aiChatResult));
+            return;
+        }
+
+        // 构造问题
+        $problem = DB::table('problems')->select(['title', 'description', 'input', 'output', 'hint', 'time_limit', 'memory_limit',])->find($this->solution['problem_id']);
+        $samples = ProblemHelper::readSamples($this->solution['problem_id']);
+        $samplesStr = implode("\n", array_map(function ($sample) {
+            return "输入: " . $sample['in'] . "\n输出: " . $sample['out'];
+        }, $samples));
+        $question = "### 问题描述\n" .
+            $problem->description . "\n\n" .
+            "### 输入描述\n" .
+            $problem->input . "\n\n" .
+            "### 输出描述\n" .
+            $problem->output . "\n\n" .
+            "### 样例\n" .
+            $samplesStr . "\n\n" .
+            "### 我的代码\n" .
+            "```\n" .
+            $this->solution['code'] .
+            "```\n\n" .
+            "### 错误信息\n" .
+            $this->solution['error_info'] . "\n\n" .
+            "请问我的代码错在哪里？指出错误之处，以及可能得解决方法，无需给出完整答案";
+
+        // 请求大模型
+        $endpoint = get_setting('openai_chat_endpoint');
+        $model = get_setting('openai_chat_model');
+        $apiKey = get_setting('openai_api_key');
+        $client = new Client();
+        try {
+            Log::info("AI chat for solution " . $this->solution['id']);
+            $response = $client->post($endpoint, [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $apiKey,
+                ],
+                'json' => [
+                    'model' => $model,
+                    // 'stream' => true,
+                    'messages' => [
+                        ["role" => "system", "content" => "你是一个编程老师，热衷于指导学生解决编程问题"],
+                        ["role" => "user", "content" => $question],
+                    ],
+                ],
+                'timeout' => 180,
+                // 'stream' => true,
+            ]);
+            $body = json_decode($response->getBody(), true);
+            Log::info("AI chat for solution " . $this->solution['id'] . ": " . $response->getBody());
+            $this->aiChatResult = $body['choices'][0]['message']['content'] ?? $body;
+            $this->dispatch("solution.ai_chat_result", trim($this->aiChatResult));
+        } catch (RequestException|GuzzleException $e) {
+            $this->dispatch("solution.ai_chat_result", $e->getMessage());
         }
     }
 

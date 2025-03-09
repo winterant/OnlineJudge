@@ -104,6 +104,21 @@
           @endif
         </p>
 
+        <div wire:ignore class="mb-2">
+          {{-- AI答疑按钮 --}}
+          @if (($solution['result'] ?? 0) > 4)
+            <span id="ai_chat_trigger">
+              实在看不出错在哪里？
+              <a href="javascript:" wire:click="ai_chat()" onclick="start_ai_chat()">试试AI答疑</a>！
+            </span>
+          @endif
+
+          <div id="ai_chat_div" style="display: none">
+            <span>AI答疑：</span>
+            <p id="ai_chat_result" class="alert" style="border: #808080 solid 1px; border-radius: 4px;"></p>
+          </div>
+        </div>
+
         {{-- 出错的测试文件 --}}
         @if (strlen($solution['wrong_data'] ?? ''))
           <p class="alert alert-danger p-2">
@@ -220,8 +235,41 @@
         }, 10)
 
       })
+
+      // 大模型对话的响应实时更新
+      Livewire.on('solution.ai_chat_result', messages => {
+        setTimeout(() => {
+          clearInterval(aiChatIntervalId)
+          for (let ret of messages) {
+            document.getElementById('ai_chat_result').innerHTML = marked.parse(ret);
+            hljs.highlightAll();
+            $("#ai_chat_result pre code").css({"background-color": "#ededed"})
+          }
+        }, 10)
+      })
     })
 
+
+    // “分析中”提示字的刷新计时器。返回响应时，需要关闭这个刷新
+    let aiChatIntervalId;
+
+    function start_ai_chat() {
+      $('#ai_chat_div').css('display', 'block')
+      let hint = 'AI分析中，不要关闭该页面！请耐心等待1~3分钟.'
+      $('#ai_chat_result').html(hint)
+      let seconds = 0
+      aiChatIntervalId = setInterval(() => {
+        document.getElementById('ai_chat_result').innerHTML = hint + '.'.repeat(seconds % 4) + ' (' + seconds + 's)'
+        seconds++
+        if (seconds > 300) {
+          clearInterval(aiChatIntervalId)
+          document.getElementById('ai_chat_result').innerHTML = '请求超时，请稍后重试'
+        }
+      }, 1000)
+      setTimeout(() => {
+        $('#ai_chat_trigger').remove()
+      }, 10)
+    }
   </script>
 
 </div>

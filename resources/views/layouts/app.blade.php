@@ -85,6 +85,8 @@
   <script src="{{ asset_ts('static/codemirror-5.61.0/mode/python/python.js') }}" defer></script>
   <script src="{{ asset_ts('static/codemirror-5.61.0/mode/go/go.js') }}" defer></script>
 
+  {{-- markdown --}}
+  <script src="{{ asset_ts('static/markdown/marked.min.js') }}" defer></script>
 
   {{-- 代码高亮 clien/code_editor.blade.php; client/solution.blade.php --}}
   <link rel="stylesheet" href="{{ asset_ts('static/highlight/styles/github-gist.css') }}">
