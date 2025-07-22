@@ -274,7 +274,7 @@
     "for-in": "^1.0.2",
     "foreach": "^2.0.6",
     "forever-agent": "^0.6.1",
-    "form-data": "^2.3.3",
+    "form-data": "^2.5.5",
     "forwarded": "^0.2.0",
     "fragment-cache": "^0.2.1",
     "fresh": "^0.5.2",
