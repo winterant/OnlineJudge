@@ -30,6 +30,7 @@ class NoticeController extends Controller
     {
         $notice = $request->input('notice');
         $notice['user_id'] = Auth::id();
+        $notice["title"] = htmlspecialchars($notice["title"], ENT_QUOTES, 'UTF-8');
         $notice['id'] = DB::table('notices')->insertGetId($notice);
         return ['ok' => 1, 'msg' => 'Created a new notice.', 'data' => $notice, 'redirect' => route('admin.notice.list', ['kw' => $notice['id']])];
     }
@@ -39,6 +40,7 @@ class NoticeController extends Controller
     {
         $notice = $request->input('notice');
         $notice['updated_at'] = date('Y-m-d H:i:s');
+        $notice["title"] = htmlspecialchars($notice["title"], ENT_QUOTES, "UTF-8");
         $ret = DB::table('notices')->where('id', $noticeId)->update($notice);
         if ($ret == 0) {
             return ['ok' => 0, 'msg' => 'Failed to update the notice.', 'data' => $notice, 'redirect' => route('admin.notice.list')];

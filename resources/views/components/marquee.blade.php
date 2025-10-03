@@ -4,7 +4,7 @@
     onMouseOut="this.start()" onMouseOver="this.stop()">
     <a href="javascript:" onclick="get_marq_notice('{{ $notice->id }}')" data-toggle="modal"
       data-target="#home_notice">
-      {!! $notice->title !!}
+      {{ $notice->title }}
     </a>
   </marquee>
 
