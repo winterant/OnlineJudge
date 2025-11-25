@@ -74,7 +74,7 @@
     "bindings": "^1.5.0",
     "bluebird": "^3.7.2",
     "bn.js": "^5.2.1",
-    "body-parser": "^1.20.1",
+    "body-parser": "^2.2.1",
     "bonjour": "^3.5.0",
     "boolbase": "^1.0.0",
     "boxen": "^4.2.0",
