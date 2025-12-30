@@ -611,7 +611,7 @@
     "punycode": "^2.3.0",
     "pupa": "^2.1.1",
     "q": "^1.5.1",
-    "qs": "^6.5.3",
+    "qs": "^6.14.1",
     "query-string": "^5.1.1",
     "querystring-es3": "^0.2.1",
     "querystringify": "^2.2.0",
