@@ -414,7 +414,7 @@
     "isstream": "^0.1.2",
     "javascript-stringify": "^2.1.0",
     "js-tokens": "^4.0.0",
-    "js-yaml": "^3.14.1",
+    "js-yaml": "^4.1.1",
     "jsbn": "^0.1.1",
     "jsesc": "^2.5.2",
     "json-buffer": "^3.0.0",
