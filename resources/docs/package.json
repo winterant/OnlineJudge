@@ -116,7 +116,7 @@
     "chownr": "^1.1.4",
     "chrome-trace-event": "^1.0.3",
     "ci-info": "^2.0.0",
-    "cipher-base": "^1.0.4",
+    "cipher-base": "^1.0.6",
     "class-utils": "^0.3.6",
     "clean-css": "^4.2.4",
     "cli-boxes": "^2.2.1",
