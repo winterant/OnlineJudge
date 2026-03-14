@@ -674,7 +674,7 @@
     "set-value": "^2.0.1",
     "setimmediate": "^1.0.5",
     "setprototypeof": "^1.2.0",
-    "sha.js": "^2.4.11",
+    "sha.js": "^2.4.12",
     "shebang-command": "^1.2.0",
     "shebang-regex": "^1.0.0",
     "side-channel": "^1.0.4",
